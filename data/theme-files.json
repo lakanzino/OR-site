@@ -1,0 +1,326 @@
+[
+ {
+  "file": "404.php",
+  "category": "قالب اصلی (Template)",
+  "type": "php",
+  "lines": 29,
+  "bytes": 680,
+  "purpose": "قالب خطای 404",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "CHANGELOG.md",
+  "category": "مستندات قالب",
+  "type": "md",
+  "lines": 70,
+  "bytes": 5666,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "archive.php",
+  "category": "قالب اصلی (Template)",
+  "type": "php",
+  "lines": 44,
+  "bytes": 937,
+  "purpose": "قالب بایگانی",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "assets/css/editor-style.css",
+  "category": "استایل (CSS)",
+  "type": "css",
+  "lines": 17,
+  "bytes": 255,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "assets/css/fonts.css",
+  "category": "استایل (CSS)",
+  "type": "css",
+  "lines": 25,
+  "bytes": 614,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "assets/css/main-rtl.css",
+  "category": "استایل (CSS)",
+  "type": "css",
+  "lines": 12,
+  "bytes": 410,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "assets/css/main.css",
+  "category": "استایل (CSS)",
+  "type": "css",
+  "lines": 488,
+  "bytes": 8408,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "assets/fonts/fa/OFL.txt",
+  "category": "فونت و دارایی",
+  "type": "txt",
+  "lines": 93,
+  "bytes": 4391,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "assets/fonts/fa/Vazirmatn-Bold.woff2",
+  "category": "فونت و دارایی",
+  "type": "woff2",
+  "lines": 1328,
+  "bytes": 51020,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "assets/fonts/fa/Vazirmatn-Medium.woff2",
+  "category": "فونت و دارایی",
+  "type": "woff2",
+  "lines": 1338,
+  "bytes": 51128,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "assets/fonts/fa/Vazirmatn-Regular.woff2",
+  "category": "فونت و دارایی",
+  "type": "woff2",
+  "lines": 1375,
+  "bytes": 50684,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "assets/js/main.js",
+  "category": "اسکریپت (JS)",
+  "type": "js",
+  "lines": 50,
+  "bytes": 1474,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "comments.php",
+  "category": "قالب اصلی (Template)",
+  "type": "php",
+  "lines": 55,
+  "bytes": 1076,
+  "purpose": "قالب دیدگاه‌ها",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "footer.php",
+  "category": "قالب اصلی (Template)",
+  "type": "php",
+  "lines": 56,
+  "bytes": 1334,
+  "purpose": "پابرگ و متن کپی‌رایت",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "functions.php",
+  "category": "قالب اصلی (Template)",
+  "type": "php",
+  "lines": 140,
+  "bytes": 4168,
+  "purpose": "راه‌اندازی قالب، enqueue دارایی‌ها، منو و سایز تصویر",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "header.php",
+  "category": "قالب اصلی (Template)",
+  "type": "php",
+  "lines": 81,
+  "bytes": 2585,
+  "purpose": "سربرگ، لوگو، ناوبری و جستجوی هدر",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "inc/customizer.php",
+  "category": "منطق و هوک‌ها (inc)",
+  "type": "php",
+  "lines": 80,
+  "bytes": 2087,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "inc/template-functions.php",
+  "category": "منطق و هوک‌ها (inc)",
+  "type": "php",
+  "lines": 43,
+  "bytes": 1051,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "inc/template-tags.php",
+  "category": "منطق و هوک‌ها (inc)",
+  "type": "php",
+  "lines": 97,
+  "bytes": 3287,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "index.php",
+  "category": "قالب اصلی (Template)",
+  "type": "php",
+  "lines": 42,
+  "bytes": 745,
+  "purpose": "قالب اصلی فهرست نوشته‌ها",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "languages/fa_IR.mo",
+  "category": "زبان و ترجمه",
+  "type": "mo",
+  "lines": 49,
+  "bytes": 3312,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "languages/fa_IR.po",
+  "category": "زبان و ترجمه",
+  "type": "po",
+  "lines": 130,
+  "bytes": 3328,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "page.php",
+  "category": "قالب اصلی (Template)",
+  "type": "php",
+  "lines": 31,
+  "bytes": 502,
+  "purpose": "قالب برگه",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "readme.txt",
+  "category": "مستندات قالب",
+  "type": "txt",
+  "lines": 38,
+  "bytes": 1850,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "screenshot.png",
+  "category": "دارایی تصویری",
+  "type": "png",
+  "lines": 1283,
+  "bytes": 55103,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "search.php",
+  "category": "قالب اصلی (Template)",
+  "type": "php",
+  "lines": 49,
+  "bytes": 1028,
+  "purpose": "قالب نتایج جستجو",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "searchform.php",
+  "category": "قالب اصلی (Template)",
+  "type": "php",
+  "lines": 18,
+  "bytes": 655,
+  "purpose": "فرم جستجو",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "sidebar.php",
+  "category": "قالب اصلی (Template)",
+  "type": "php",
+  "lines": 16,
+  "bytes": 318,
+  "purpose": "نوار کناری ابزارک‌ها",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "single.php",
+  "category": "قالب اصلی (Template)",
+  "type": "php",
+  "lines": 38,
+  "bytes": 683,
+  "purpose": "قالب نوشته تکی",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "style.css",
+  "category": "مستندات قالب",
+  "type": "css",
+  "lines": 16,
+  "bytes": 1001,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "template-parts/content-none.php",
+  "category": "اجزای قالب (Template Parts)",
+  "type": "php",
+  "lines": 49,
+  "bytes": 1209,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "template-parts/content-page.php",
+  "category": "اجزای قالب (Template Parts)",
+  "type": "php",
+  "lines": 65,
+  "bytes": 1378,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "template-parts/content-search.php",
+  "category": "اجزای قالب (Template Parts)",
+  "type": "php",
+  "lines": 32,
+  "bytes": 804,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "template-parts/content-single.php",
+  "category": "اجزای قالب (Template Parts)",
+  "type": "php",
+  "lines": 50,
+  "bytes": 1043,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "template-parts/content.php",
+  "category": "اجزای قالب (Template Parts)",
+  "type": "php",
+  "lines": 46,
+  "bytes": 1156,
+  "purpose": "—",
+  "status": "موجود در 1.0.1"
+ },
+ {
+  "file": "inc/sanitization.php",
+  "category": "منطق و هوک‌ها (inc)",
+  "type": "php",
+  "lines": "",
+  "bytes": "",
+  "purpose": "توابع sanitize بلااستفاده",
+  "status": "حذف شد در 1.0.1 (فاز ۴)"
+ }
+]

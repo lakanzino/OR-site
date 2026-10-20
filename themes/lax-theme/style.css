@@ -1,0 +1,16 @@
+/*
+Theme Name: Lax Theme
+Author: محمدرضا لک
+Description: قالب والد سبک، راست‌چین و استاندارد وردپرس (کلاسیک) — اسکلت خنثی و قابل‌توسعه که امکانات هر پروژه در قالب فرزند آن پیاده می‌شود. فونت وزیرمتن محلی، بدون jQuery و بدون درخواست خارجی. (تغییرنام‌یافته از قالب Sarzamin Aryan — سابقه در CHANGELOG.md)
+Version: 1.0.1
+Requires at least: 6.4
+Tested up to: 7.1
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: lax-theme
+Domain Path: /languages
+Tags: rtl-language-support, custom-menu, custom-logo, featured-images, threaded-comments, translation-ready, blog, news, accessibility-ready
+*/
+
+/* استایل‌های اصلی قالب در assets/css/main.css قرار دارند. هیچ @import در این فایل مجاز نیست. */

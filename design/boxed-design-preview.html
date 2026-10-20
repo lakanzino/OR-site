@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>پیش‌نمایش طراحی باکس‌دار — فقط سرمه‌ای</title>
+<style>
+:root{--bg:#f4f8fc;--box:#fff;--soft:#eef4fa;--navy:#06265c;--navy-deep:#041a3f;--navy-mid:#0a2f6b;--highlight:#06265c;--highlight-deep:#041a3f;--ink:#071a33;--muted:#38536e;--line:#b9c9d9;--deep:0 24px 48px rgba(4,26,63,.25),0 5px 14px rgba(4,26,63,.18);--sh:0 14px 30px rgba(4,26,63,.18);--sm:0 8px 18px rgba(4,26,63,.16);--inset:inset 4px 4px 10px rgba(4,26,63,.14),inset -4px -4px 10px rgba(255,255,255,.95)}
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:radial-gradient(55rem 26rem at 90% -5%,rgba(10,47,107,.12),transparent 60%),radial-gradient(60rem 30rem at 0% 0%,rgba(10,47,107,.10),transparent 55%),var(--bg);color:var(--ink);line-height:1.9}
+a{color:var(--navy);text-decoration:none}.container{max-width:1180px;margin-inline:auto;padding-inline:1rem}
+header.site{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.97);border-bottom:3px solid var(--navy);box-shadow:var(--sh)}
+header.site .bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.75rem 0}
+.brand{display:flex;gap:.6rem;align-items:center;font-weight:800;white-space:nowrap}
+.mark{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,var(--navy-mid),var(--navy-deep));box-shadow:var(--sm)}
+nav.menu{display:flex;gap:.3rem;flex-wrap:nowrap;overflow-x:auto}
+nav.menu a{padding:.35rem .7rem;border-radius:10px;color:var(--navy-deep);font-weight:700;white-space:nowrap}
+nav.menu a.on{background:var(--highlight);color:#fff}
+.btn{border:2px solid var(--navy);border-radius:12px;padding:.5rem 1rem;background:#fff;box-shadow:var(--sm);color:var(--navy);font-family:inherit;font-weight:800;cursor:pointer;white-space:nowrap}
+.paper{background:#fff;border:2px solid var(--line);border-radius:22px;box-shadow:var(--deep);padding:clamp(1.2rem,3.5vw,2.5rem);margin:1.75rem 0}
+.titlebox{background:#fff;border:3px solid var(--navy);border-top:10px solid var(--navy-deep);border-radius:20px;box-shadow:var(--deep);padding:clamp(1rem,3vw,1.7rem);margin-bottom:1.4rem}
+h1{color:var(--navy-deep);margin:.3rem 0 .5rem;font-size:clamp(1.15rem,1rem + 3.2vw,2.3rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badges{display:flex;gap:.5rem;flex-wrap:nowrap;overflow-x:auto}
+.badge{flex:0 0 auto;background:var(--highlight);border:2px solid var(--highlight-deep);border-radius:999px;color:#fff;font-size:.82rem;font-weight:800;padding:.25rem .85rem;white-space:nowrap}
+.lead{background:var(--highlight);border:2px solid var(--highlight-deep);border-radius:16px;color:#fff;padding:.9rem 1.2rem;margin:.8rem 0}
+.meta{color:var(--muted);font-size:.88rem;display:flex;gap:1rem;white-space:nowrap;overflow:hidden}
+.crumbs{color:var(--muted);font-size:.85rem;display:flex;gap:.45rem;white-space:nowrap;overflow:hidden;margin-bottom:1rem}
+figure.hero{margin:1.5rem 0;background:#fff;border:3px solid var(--navy);border-radius:22px;box-shadow:var(--deep);padding:.65rem;overflow:hidden}
+figure.hero img{width:100%;border-radius:16px;display:block;aspect-ratio:16/9;object-fit:cover}
+figcaption,.caption{background:var(--highlight);border:2px solid var(--highlight-deep);border-radius:12px;color:#fff;font-size:.9rem;font-weight:700;padding:.6rem .9rem;margin-top:.6rem}
+.layout{display:grid;gap:1.75rem}
+@media(min-width:992px){.layout{grid-template-columns:minmax(0,1fr) 290px;align-items:start}.toc{position:sticky;top:6rem}}
+.toc{background:#fff;border:2px solid var(--navy);border-radius:20px;box-shadow:var(--sh);overflow:hidden}
+.toc .th{background:var(--navy);color:#fff;font-weight:800;padding:.75rem 1.1rem;white-space:nowrap}
+.toc ol{list-style:none;margin:0;padding:.7rem .9rem .9rem}
+.toc li{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:.3rem 0}
+.toc a{font-weight:700}
+.content h2{background:#fff;border:2px solid var(--navy);border-inline-start:8px solid var(--navy-deep);border-radius:14px;box-shadow:var(--sm);color:var(--navy-deep);padding:.5rem .9rem;margin-top:2rem;font-size:clamp(1.05rem,.95rem + 1.6vw,1.5rem);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.content h3{color:var(--navy-deep);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.media{background:#fff;border:2px solid var(--line);border-radius:20px;box-shadow:var(--sh);padding:clamp(.8rem,2.4vw,1.25rem);margin:1.6rem 0}
+.media figure{margin:0;border:3px solid var(--navy);border-radius:18px;box-shadow:var(--deep);overflow:hidden;background:var(--soft);padding:.45rem}
+.media img{width:100%;border-radius:13px;display:block}
+.cols{display:grid;gap:1.25rem}
+@media(min-width:769px){.half{grid-template-columns:1fr 1fr}.third{grid-template-columns:1fr 2fr}}
+.mtext{background:var(--highlight);border:2px solid var(--highlight-deep);border-radius:16px;color:#fff;padding:1rem 1.15rem}
+.disclaimer{background:var(--highlight);border:2px solid var(--highlight-deep);border-inline-start:8px solid #fff;border-radius:16px;color:#fff;padding:1rem 1.25rem;margin-top:2rem}
+.grid{display:grid;gap:1.6rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));margin:1.5rem 0 2.5rem}
+.card{background:#fff;border:2px solid var(--line);border-radius:22px;box-shadow:var(--sh);overflow:hidden}
+.card .ph{height:150px;margin:.85rem .85rem 0;border:2px solid var(--line);border-radius:16px;background:linear-gradient(145deg,var(--navy-mid),var(--navy-deep));display:grid;place-items:center;color:#fff;font-weight:800;box-shadow:var(--inset)}
+.card .bd{padding:1.05rem 1.25rem 1.3rem}
+.card h3{margin:.4rem 0;color:var(--navy-deep);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card p{color:var(--muted);margin:.2rem 0}
+table.sizes{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:2px solid var(--line);border-radius:16px;box-shadow:var(--sm);overflow:hidden;display:block;overflow-x:auto}
+table.sizes th,table.sizes td{padding:.65rem .9rem;border-bottom:1px solid var(--line);text-align:start;white-space:nowrap}
+.navybox{background:linear-gradient(150deg,var(--navy-mid),var(--navy) 55%,var(--navy-deep));border:3px solid var(--navy-deep);border-radius:26px;box-shadow:var(--deep);color:#fff;padding:clamp(1.5rem,4vw,2.8rem);text-align:center;margin:2rem 0}
+.navybox h2{color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+footer.site{background:var(--navy-deep);box-shadow:var(--deep);color:#fff;padding:2rem 0;margin-top:2rem;text-align:center}
+.note{color:var(--muted);font-size:.9rem}
+@media(max-width:768px){.cols{grid-template-columns:1fr}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="site"><div class="container bar">
+  <div class="brand"><span class="mark">L</span><span>سایت آموزشی اتاق عمل</span></div>
+  <nav class="menu"><a class="on" href="#">راهنمای بیمار</a><a href="#">اتاق عمل و تجهیزات</a><a href="#">جراحی‌ها</a><a href="#">دانشجویان</a><a href="#">واژه‌نامه</a></nav>
+  <button class="btn" type="button">جستجو</button>
+</div></header>
+
+<main class="container">
+  <div class="navybox"><h2>باکس سرمه‌ای — نوشته‌ی سفید</h2><p>برای هیرو، بنرها و بخش‌های تأکیدی سایت</p></div>
+
+  <article class="paper">
+    <div class="crumbs"><a href="#">خانه</a><span>/</span><a href="#">جراحی‌ها</a><span>/</span><a href="#">جراحی عمومی</a><span>/</span><span>عنوان نمونه‌ی مقاله</span></div>
+    <div class="titlebox">
+      <div class="badges"><span class="badge">جراحی عمومی</span><span class="badge">معرفی و مراحل عمل</span></div>
+      <h1>عنوان نمونه‌ی مقاله داخل باکس با سایه‌ی عمیق</h1>
+      <div class="lead">[متن نمونه — توسط تیم محتوا جایگزین شود]</div>
+      <div class="meta"><span>۱۹ اکتبر ۲۰۲۶</span><span>۳ دقیقه مطالعه</span></div>
+    </div>
+
+    <figure class="hero">
+      <img alt="تصویر شاخص نمونه" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='675'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2306265c'/%3E%3Cstop offset='.6' stop-color='%230a2f6b'/%3E%3Cstop offset='1' stop-color='%23041a3f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='675' fill='url(%23g)'/%3E%3Ccircle cx='980' cy='120' r='180' fill='%230a2f6b' fill-opacity='.45'/%3E%3C/svg%3E">
+      <figcaption>هایلایت توضیح تصویر شاخص — باکس سرمه‌ای تیره با نوشته‌ی سفید (۱۲۰۰×۶۷۵)</figcaption>
+    </figure>
+
+    <div class="layout">
+      <div class="content">
+        <h2>بخش نخست مقاله</h2>
+        <p>[متن نمونه — توسط تیم محتوا جایگزین شود]</p>
+
+        <div class="media"><b>مدل ۱ — تصویر تمام‌عرض، توضیح زیر آن (۱۲۰۰×۶۷۵)</b>
+          <figure style="margin-top:.7rem"><img alt="تمام‌عرض" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='675'%3E%3Crect width='1200' height='675' fill='%230a2f6b'/%3E%3C/svg%3E"></figure>
+          <p class="caption">[توضیح تصویر — در صورت نیاز]</p>
+        </div>
+
+        <h2>بخش دوم مقاله</h2>
+        <div class="media"><b>مدل ۲ — نصف نوشته، نصف تصویر (تصویر ۸۰۰×۶۰۰)</b>
+          <div class="cols half" style="margin-top:.7rem">
+            <div class="mtext">[متن نمونه — توسط تیم محتوا جایگزین شود]</div>
+            <div><figure><img alt="نصف" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Crect width='800' height='600' fill='%230a2f6b'/%3E%3C/svg%3E"></figure><p class="caption">[توضیح تصویر]</p></div>
+          </div>
+        </div>
+
+        <h2>بخش سوم مقاله</h2>
+        <div class="media"><b>مدل ۳ — یک‌سوم نوشته، دوسوم تصویر (تصویر ۱۲۰۰×۷۵۰)</b>
+          <div class="cols third" style="margin-top:.7rem">
+            <div class="mtext">[متن نمونه — توسط تیم محتوا جایگزین شود]</div>
+            <div><figure><img alt="دوسوم" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='750'%3E%3Crect width='1200' height='750' fill='%2306265c'/%3E%3C/svg%3E"></figure><p class="caption">[توضیح تصویر]</p></div>
+          </div>
+        </div>
+
+        <div class="disclaimer">[متن نمونه — توسط تیم محتوا جایگزین شود]</div>
+      </div>
+
+      <aside class="toc"><div class="th">فهرست مطالب</div>
+        <ol><li><a href="#">بخش نخست مقاله</a></li><li><a href="#">بخش دوم مقاله</a></li><li><a href="#">بخش سوم مقاله</a></li></ol>
+      </aside>
+    </div>
+  </article>
+
+  <h2 style="color:var(--navy-deep)">مقالات مرتبط</h2>
+  <div class="grid">
+    <div class="card"><div class="ph">جراحی‌ها</div><div class="bd"><span class="badge">قبل از عمل</span><h3>عنوان نمونه‌ی کارت یک</h3><p>[متن نمونه]</p><div class="meta"><span>۳ دقیقه مطالعه</span></div></div></div>
+    <div class="card"><div class="ph">راهنمای بیمار</div><div class="bd"><span class="badge">حین عمل</span><h3>عنوان نمونه‌ی کارت دو</h3><p>[متن نمونه]</p><div class="meta"><span>۴ دقیقه مطالعه</span></div></div></div>
+    <div class="card"><div class="ph">تجهیزات</div><div class="bd"><span class="badge">دستگاه‌ها</span><h3>عنوان نمونه‌ی کارت سه</h3><p>[متن نمونه]</p><div class="meta"><span>۲ دقیقه مطالعه</span></div></div></div>
+  </div>
+
+  <div class="paper"><h2 style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--navy-deep)">سایزهای رسمی تصاویر — WebP</h2>
+    <table class="sizes"><tr><th>کاربرد</th><th>سایز ارسالی</th><th>نسبت</th><th>حجم هدف</th></tr>
+    <tr><td>تصویر شاخص هر مقاله</td><td>۱۲۰۰×۶۷۵</td><td>16:9</td><td>حداکثر ~۱۵۰KB</td></tr>
+    <tr><td>تصویر تمام‌عرض داخل مقاله</td><td>۱۲۰۰×۶۷۵</td><td>16:9</td><td>حداکثر ~۱۵۰KB</td></tr>
+    <tr><td>بلاک نصف نوشته / نصف تصویر</td><td>۸۰۰×۶۰۰</td><td>4:3</td><td>حداکثر ~۹۰KB</td></tr>
+    <tr><td>بلاک یک‌سوم نوشته / دوسوم تصویر</td><td>۱۲۰۰×۷۵۰</td><td>8:5</td><td>حداکثر ~۱۵۰KB</td></tr>
+    <tr><td>کارت آرشیو</td><td>خودکار از تصویر شاخص (۶۰۰×۳۳۸)</td><td>16:9</td><td>—</td></tr></table>
+    <p class="note">همه‌ی فایل‌ها WebP با sRGB و کیفیت حدود ۸۰؛ قالب هیچ برشی نمی‌زند و نسخه‌های کوچک‌تر را خودش می‌سازد.</p>
+  </div>
+</main>
+
+<footer class="site">پانویس سرمه‌ای — نوشته‌ی سفید</footer>
+</body>
+</html>

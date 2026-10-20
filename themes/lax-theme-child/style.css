@@ -1,0 +1,19 @@
+/*
+Theme Name: Lax Theme Child
+Theme URI:
+Author: محمدرضا لک
+Author URI:
+Description: قالب فرزند اختصاصی سایت آموزشی اتاق عمل بر پایه‌ی قالب والد Lax Theme: ساختار محتوای راهنمای بیمار، محیط اتاق عمل، جراحی‌ها، محتوای دانشجویی و واژه‌نامه. متن‌های پزشکی فقط توسط تیم محتوا نوشته و بازبینی می‌شوند.
+Template: lax-theme
+Version: 0.4.0
+Requires at least: 6.4
+Tested up to: 7.1
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: lax-theme-child
+Domain Path: /languages
+Tags: rtl-language-support, education, custom-post-types
+*/
+
+/* استایل‌های فرزند در assets/css/child.css است؛ این فایل فقط هدر قالب را نگه می‌دارد. */

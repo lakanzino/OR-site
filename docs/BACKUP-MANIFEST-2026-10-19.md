@@ -1,0 +1,22 @@
+# پشتیبان کامل پروژه — 2026-10-19
+
+- فایل: `or-site-full-backup-2026-10-19.zip`
+- حجم: 821409 بایت
+- SHA-256: `c1c5a82666a99527a3400a0aa07fd6816ff05be9bb41e16219c060f737224dbc`
+- تعداد فایل داخل ZIP: 94
+
+## محتوا
+
+- `themes/lax-theme/` — سورس قالب والد نسخه 1.0.1
+- `themes/lax-theme-child/` — سورس قالب فرزند نسخه 0.4.0 شامل ساختار محتوا، طراحی باکس‌دار و پالت تک‌رنگ سرمه‌ای
+- `project/docs/` — قوانین فازبندی، ADRها، نقشه محتوا و همه گزارش‌ها
+- `project/data/theme-files.json` — موجودی دسته‌بندی فایل‌های قالب والد
+- `project/deliverables/` — ZIP والد، ZIP فرزند و ZIP ورودی اصلی
+
+## وضعیت نسخه‌ها
+
+- Parent: lax-theme 1.0.1
+- Child: lax-theme-child 0.4.0
+- Content structure: ORSITE_STRUCTURE_VERSION 1.0.0؛ 5 CPT، 6 taxonomy، 112 seed terms
+
+این پشتیبان جایگزین موقت GitHub است و باید عیناً در اولین فرصت به مخزن منتقل شود.
