@@ -32,6 +32,7 @@ LIVE_PUBLISHED_PATHS = {
     "/patient-guide/general-anesthesia/",
     "/patient-guide/general-vs-spinal-anesthesia/",
     "/patient-guide/fear-of-anesthesia-awareness/",
+    "/patient-guide/mental-preparation-before-surgery/",
     "/patient-guide/pacu-recovery/",
     "/patient-guide/post-surgery-pain/",
     "/patient-guide/early-walking-after-surgery/",
@@ -278,14 +279,10 @@ def audit_article(pkg_dir: pathlib.Path) -> tuple[list[str], list[str], list[str
     else:
         passed.append("بخش پایانی «سلب مسئولیت پزشکی» دقیقاً مطابق تک‌جمله‌ی مصوب 0.10.2+ است.")
 
-    disc_pos = html.find("<h2>سلب مسئولیت پزشکی</h2>")
-    sig_pos = html.find("محمدرضا لک")
-    if sig_pos == -1:
-        errors.append("امضای نویسنده («محمدرضا لک») در متن مقاله یافت نشد.")
-    elif disc_pos != -1 and sig_pos > disc_pos:
-        errors.append("امضای نویسنده بعد از «سلب مسئولیت پزشکی» قرار گرفته و توسط فیلتر قالب حذف خواهد شد!")
+    if "محمدرضا لک" in plain or "hj-author-signature" in html:
+        errors.append("نام نویسنده در انتهای متن مقاله دیده شد (طبق دستور کارفرما باید حذف شود؛ بایلاین در هدر قالب نمایش داده می‌شود).")
     else:
-        passed.append("امضای نویسنده («محمدرضا لک») پیش از «سلب مسئولیت پزشکی» قرار گرفته و ۱۰۰٪ در نمایش زنده حفظ می‌شود.")
+        passed.append("نام نویسنده در انتهای مقاله درج نشده است (صرفاً در هدر قالب نمایش داده می‌شود).")
 
     blockquotes = re.findall(r"<blockquote\b[^>]*>(.*?)</blockquote>", html, re.S)
     if len(blockquotes) != 1:
