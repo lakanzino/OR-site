@@ -614,38 +614,83 @@ function hj_v0101_retire_medical_disclaimer_run() {
 		wp_trash_post( $disc_page_id );
 	}
 
-	// 4. Strip trailing `<h2>سلب مسئولیت پزشکی</h2>` sections from published articles.
-	if ( function_exists( 'orsite_strip_disclaimer_section' ) ) {
-		$articles = get_posts(
-			array(
-				'post_type'      => array( 'patient_guide', 'or_environment', 'surgery', 'student_content', 'glossary', 'post' ),
-				'post_status'    => array( 'publish', 'draft', 'pending', 'future', 'private' ),
-				'posts_per_page' => 250,
-			)
-		);
-		if ( is_array( $articles ) ) {
-			foreach ( $articles as $article ) {
-				if ( empty( $article->post_content ) || ( false === strpos( $article->post_content, 'سلب' ) && false === stripos( $article->post_content, 'medical-disclaimer' ) ) ) {
-					continue;
-				}
-				$cleaned = orsite_strip_disclaimer_section( (string) $article->post_content );
-				if ( is_string( $cleaned ) && $cleaned !== $article->post_content ) {
-					wp_update_post(
-						wp_slash(
-							array(
-								'ID'           => (int) $article->ID,
-								'post_content' => $cleaned,
-							)
-						)
-					);
-				}
-			}
-		}
-	}
+	// 4. Normalize the trailing `<h2>سلب مسئولیت پزشکی</h2>` section on all articles.
+	hj_normalize_all_articles_disclaimer_in_db();
 
-	update_option( 'hj_v0101_cleanup_done', '0.10.1' );
+	update_option( 'hj_v0101_cleanup_done', '0.10.2' );
+	update_option( 'hj_v0102_disclaimer_fixed', '0.10.2' );
 }
 add_action( 'init', 'hj_v0101_retire_medical_disclaimer', 100 );
+
+/**
+ * Normalize `post_content` of every article in WordPress so its final
+ * `<h2>سلب مسئولیت پزشکی</h2>` section contains ONLY the approved first
+ * sentence ("این مقاله صرفاً جنبه‌ی آموزش و اطلاع‌رسانی دارد و جایگزین
+ * تشخیص، مشاوره یا درمان پزشکی نیست.") and nothing after it.
+ *
+ * @return void
+ */
+function hj_normalize_all_articles_disclaimer_in_db() {
+	if ( ! function_exists( 'orsite_clean_content_disclaimers_and_tables' ) ) {
+		return;
+	}
+	$articles = get_posts(
+		array(
+			'post_type'      => array( 'patient_guide', 'or_environment', 'surgery', 'student_content', 'glossary', 'post' ),
+			'post_status'    => array( 'publish', 'draft', 'pending', 'future', 'private' ),
+			'posts_per_page' => -1,
+		)
+	);
+	if ( ! is_array( $articles ) ) {
+		return;
+	}
+	$changed_any = false;
+	foreach ( $articles as $article ) {
+		if ( empty( $article->post_content ) ) {
+			continue;
+		}
+		$normalized = orsite_clean_content_disclaimers_and_tables( (string) $article->post_content, true );
+		if ( is_string( $normalized ) && $normalized !== $article->post_content ) {
+			wp_update_post(
+				wp_slash(
+					array(
+						'ID'           => (int) $article->ID,
+						'post_content' => $normalized,
+					)
+				)
+			);
+			$changed_any = true;
+		}
+	}
+	if ( $changed_any ) {
+		if ( function_exists( 'wp_cache_flush' ) ) {
+			wp_cache_flush();
+		}
+		do_action( 'litespeed_purge_all' );
+	}
+}
+
+/**
+ * One-time migration on upgrade to 0.10.2: ensure all published/draft
+ * articles have the exact shortened 2-line `سلب مسئولیت پزشکی` section
+ * (including articles with >20 headings or articles touched by 0.10.1).
+ *
+ * @return void
+ */
+function hj_v0102_normalize_article_disclaimers() {
+	if ( wp_installing() || get_option( 'hj_v0102_disclaimer_fixed' ) ) {
+		return;
+	}
+	try {
+		hj_normalize_all_articles_disclaimer_in_db();
+		update_option( 'hj_v0102_disclaimer_fixed', '0.10.2' );
+	} catch ( \Throwable $e ) {
+		if ( function_exists( 'error_log' ) ) {
+			error_log( 'Hamyar Jarahi v0.10.2 disclaimer migration caught: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		}
+	}
+}
+add_action( 'init', 'hj_v0102_normalize_article_disclaimers', 101 );
 
 /**
  * Launch checks for administrators. The theme never changes permalink
