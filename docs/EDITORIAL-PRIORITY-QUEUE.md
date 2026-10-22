@@ -35,21 +35,21 @@
 | **#1** | `mental-preparation-before-surgery` | **آمادگی روانی قبل از عمل: چطور با اضطراب جراحی کنار بیاییم؟** | `patient_guide` / `anxiety-support` | **جایگاه C (میانه‌ی مقاله — ۳۳٪ بدنه)** | ✅ **تأیید و بسته‌بندی نهایی (`post_status: publish`)** |
 | **#2** | `anesthesia-consultation` | **مشاوره‌ی بیهوشی پیش از عمل: چه مواردی بررسی می‌شود؟** | `patient_guide` / `consent-anesthesia` | **جایگاه B (پس از بخش اول — ۱۴٪ بدنه)** | ✅ **تأیید و بسته‌بندی نهایی (`post_status: publish`)** |
 | **#3** | `anesthesia-side-effects` | **عوارض شایع بعد از بیهوشی: تهوع، گلودرد، لرز و گیجی** | `patient_guide` / `anesthesia-types` | **جایگاه D (پس از بخش همراه — ۵۸٪ بدنه)** | ✅ **تأیید و بسته‌بندی نهایی (`post_status: publish`)** |
-| **#4** | `warning-signs-after-surgery` | **علائم خطر بعد از عمل: چه زمانی فوراً به پزشک خبر دهیم؟** | `patient_guide` / `warning-signs` | **جایگاه A (بلافاصله پس از مقدمه — ۶٪ بدنه)** | **✍️ پیش‌نویس آماده بازبینی شما (همین نوبت)** |
+| **#4** | `warning-signs-after-surgery` | **علائم خطر بعد از عمل: چه زمانی فوراً به پزشک خبر دهیم؟** | `patient_guide` / `warning-signs` | **جایگاه A (بلافاصله پس از مقدمه — ۷٪ بدنه)** | ✅ **تأیید و بسته‌بندی نهایی (`post_status: publish`)** |
 
 ### ب) سه سه‌گانه‌ی نخست بخش «جراحی‌ها» (فاز ۱ — `surgery` — افتتاح بخش جراحی‌های سایت)
 
-| نوبت | اسلاگ | عنوان مصوب | تخصص / مرحله | جایگاه رندوم خاطره |
-|---:|---|---|---|---|
-| **#5** | `appendectomy-overview` | آپاندکتومی (عمل آپاندیس) چیست و چه مراحلی دارد؟ | `appendectomy` / `surgery-overview` | جایگاه C |
-| **#6** | `appendectomy-preparation` | قبل از آپاندکتومی (عمل آپاندیس) چه آمادگی‌هایی لازم است؟ | `appendectomy` / `before-surgery` | جایگاه B |
-| **#7** | `appendectomy-recovery` | بعد از آپاندکتومی (عمل آپاندیس) چه مراقبت‌هایی لازم است؟ | `appendectomy` / `after-surgery` | جایگاه E |
-| **#8** | `cesarean-overview` | سزارین چیست و چه مراحلی دارد؟ | `cesarean` / `surgery-overview` | جایگاه A |
-| **#9** | `cesarean-preparation` | قبل از سزارین چه آمادگی‌هایی لازم است؟ | `cesarean` / `before-surgery` | جایگاه D |
-| **#10** | `cesarean-recovery` | بعد از سزارین چه مراقبت‌هایی لازم است؟ | `cesarean` / `after-surgery` | جایگاه B |
-| **#11** | `hernia-overview` | جراحی فتق (هرنی) چیست و چه مراحلی دارد؟ | `hernia-repair` / `surgery-overview` | جایگاه C |
-| **#12** | `hernia-preparation` | قبل از جراحی فتق (هرنی) چه آمادگی‌هایی لازم است؟ | `hernia-repair` / `before-surgery` | جایگاه E |
-| **#13** | `hernia-recovery` | بعد از جراحی فتق (هرنی) چه مراقبت‌هایی لازم است؟ | `hernia-repair` / `after-surgery` | جایگاه A |
+| نوبت | اسلاگ | عنوان مصوب | تخصص / مرحله | جایگاه رندوم خاطره | وضعیت |
+|---:|---|---|---|---|---|
+| **#5** | `appendectomy-overview` | **آپاندکتومی (عمل آپاندیس) چیست و چه مراحلی دارد؟** | `appendectomy` / `surgery-overview` | **جایگاه C (میانه‌ی مقاله — پس از جدول مقایسه)** | **✍️ پیش‌نویس آماده بازبینی شما (همین نوبت)** |
+| **#6** | `appendectomy-preparation` | قبل از آپاندکتومی (عمل آپاندیس) چه آمادگی‌هایی لازم است؟ | `appendectomy` / `before-surgery` | جایگاه B | در صف |
+| **#7** | `appendectomy-recovery` | بعد از آپاندکتومی (عمل آپاندیس) چه مراقبت‌هایی لازم است؟ | `appendectomy` / `after-surgery` | جایگاه E | در صف |
+| **#8** | `cesarean-overview` | سزارین چیست و چه مراحلی دارد؟ | `cesarean` / `surgery-overview` | جایگاه A | در صف |
+| **#9** | `cesarean-preparation` | قبل از سزارین چه آمادگی‌هایی لازم است؟ | `cesarean` / `before-surgery` | جایگاه D | در صف |
+| **#10** | `cesarean-recovery` | بعد از سزارین چه مراقبت‌هایی لازم است؟ | `cesarean` / `after-surgery` | جایگاه B | در صف |
+| **#11** | `hernia-overview` | جراحی فتق (هرنی) چیست و چه مراحلی دارد؟ | `hernia-repair` / `surgery-overview` | جایگاه C | در صف |
+| **#12** | `hernia-preparation` | قبل از جراحی فتق (هرنی) چه آمادگی‌هایی لازم است؟ | `hernia-repair` / `before-surgery` | جایگاه E | در صف |
+| **#13** | `hernia-recovery` | بعد از جراحی فتق (هرنی) چه مراقبت‌هایی لازم است؟ | `hernia-repair` / `after-surgery` | جایگاه A | در صف |
 
 ---
 

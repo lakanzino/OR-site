@@ -43,6 +43,7 @@ LIVE_PUBLISHED_PATHS = {
     "/patient-guide/post-surgery-nutrition/",
     "/patient-guide/surgical-site-infection/",
     "/patient-guide/suture-removal/",
+    "/patient-guide/warning-signs-after-surgery/",
     "/or-environment/surgical-team-roles/",
     "/glossary/",
 }
@@ -442,7 +443,14 @@ def audit_article(pkg_dir: pathlib.Path) -> tuple[list[str], list[str], list[str
         if len(clean_t) > 58:
             warnings.append(f"زیرتیتر H{lvl} برای نمایش تک‌خطی موبایل طولانی است ({len(clean_t)} کاراکتر): «{clean_t}»")
 
-    self_path = f"/patient-guide/{slug}/"
+    cpt_prefix_map = {
+        "patient_guide": "/patient-guide/",
+        "surgery": "/surgery/",
+        "or_environment": "/or-environment/",
+        "student_content": "/student/",
+    }
+    post_type = manifest.get("post_type", "patient_guide").strip()
+    self_path = f"{cpt_prefix_map.get(post_type, '/patient-guide/')}{slug}/"
     links = re.findall(r'<a\b[^>]*href=["\']([^"\']+)["\']', html)
     internal_links = [u for u in links if u.startswith("/")]
     if len(internal_links) < 3:
