@@ -3,7 +3,7 @@
   "slug": "anesthesia-consultation",
   "title": "مشاوره‌ی بیهوشی پیش از عمل: چه مواردی بررسی می‌شود؟",
   "post_type": "patient_guide",
-  "post_status": "draft",
+  "post_status": "publish",
   "taxonomy": {
     "taxonomy": "guide_stage",
     "term": "consent-anesthesia"

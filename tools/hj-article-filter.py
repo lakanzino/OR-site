@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-Hamyar Jarahi Custom Editorial, Legal & SEO Filter (v2.1)
-=========================================================
-Combines all 4 mandatory quality gates for hamyarjarahi.ir articles:
-  1. `no-ai-slop-fa` (`SKILL.fa.md` + `checklist.fa.md` + `eval.fa.md`)
-  2. YMYL Medical & Legal Safety Rules (`PROJECT-RULES-PHASED.md` + `ARTICLE-STYLE-GUIDE.fa.md`)
-  3. First-person OR Veteran Persona + Varied `<blockquote>` Memory + Pre-Disclaimer Signature
-  4. `lax-theme-child` Technical / SEO / Live-Internal-Link / `fit-headings.js` Audit
+Hamyar Jarahi Custom Editorial, AI-Footprint, Persian Grammar & YMYL Filter (v2.3)
+===================================================================================
+Enforces all 5 mandatory quality gates for hamyarjarahi.ir articles:
+  1. `no-ai-slop-fa` Deep AI-Signature & Translationese Elimination
+  2. Standard Persian Grammar, Academy Orthography (ZWNJ) & Punctuation Engine
+  3. YMYL Medical & Legal Safety Rules (`PROJECT-RULES-PHASED.md` + `ARTICLE-STYLE-GUIDE.fa.md`)
+  4. First-person OR Veteran Persona + Varied `<blockquote>` Memory + Zero Author Name in Body/JSON
+  5. `lax-theme-child` Technical / SEO / Live-Internal-Link / Single-Line Heading Audit
 """
 
 from __future__ import annotations
@@ -14,6 +15,7 @@ from __future__ import annotations
 import json
 import pathlib
 import re
+import statistics
 import sys
 from html.parser import HTMLParser
 
@@ -33,6 +35,7 @@ LIVE_PUBLISHED_PATHS = {
     "/patient-guide/general-vs-spinal-anesthesia/",
     "/patient-guide/fear-of-anesthesia-awareness/",
     "/patient-guide/mental-preparation-before-surgery/",
+    "/patient-guide/anesthesia-consultation/",
     "/patient-guide/pacu-recovery/",
     "/patient-guide/post-surgery-pain/",
     "/patient-guide/early-walking-after-surgery/",
@@ -74,13 +77,24 @@ BANNED_SLOP_WORDS = [
     "وادی",
 ]
 
-BANNED_BUREAUCRATIC = [
+BANNED_BUREAUCRATIC_WORDS = [
     "می‌باشد",
     "می‌باشند",
     "می باشد",
     "می باشند",
     "بایستی",
     "می‌بایست",
+    "گردید",
+    "گردیده",
+]
+
+BANNED_BUREAUCRATIC_PHRASES = [
+    "مورد بررسی قرار",
+    "مورد ارزیابی قرار",
+    "مورد استفاده قرار",
+    "مورد توجه قرار",
+    "به عمل می‌آید",
+    "انجام می‌پذیرد",
     "صورت می‌پذیرد",
     "صورت می‌گیرد",
     "انجام می‌گیرد",
@@ -95,6 +109,8 @@ BANNED_EMPTY_PHRASES = [
     "در عصر حاضر",
     "نکته قابل توجه این است که",
     "شایان ذکر است",
+    "لازم به ذکر است",
+    "ناگفته نماند که",
     "ذکر این نکته ضروری است",
     "در حقیقت امر",
     "واقعیت این است که",
@@ -104,19 +120,24 @@ BANNED_EMPTY_PHRASES = [
     "در بطن ماجرا",
     "در هسته‌ی خود",
     "در راستای",
+    "در این راستا",
     "در خصوص",
     "در ارتباط با",
     "به منظور",
+    "به نوبه‌ی خود",
     "در این مقاله قصد داریم",
     "در این نوشتار بر آنیم",
     "بیایید نگاهی بیندازیم",
     "اجازه دهید بررسی کنیم",
     "در پایان می‌توان گفت",
+    "در مجموع می‌توان گفت",
+    "در نهایت باید گفت",
     "به طور خلاصه",
     "به‌طور خلاصه",
     "به طور کلی",
     "به‌طور کلی",
     "در نتیجه می‌توان دریافت",
+    "بدون شک",
     "جای هیچ شکی نیست",
     "آنچه مسلم است",
     "نکته کلیدی این است که",
@@ -136,6 +157,13 @@ BANNED_WEASEL = [
     "منابع علمی تأیید می‌کنند",
     "پزشکان توصیه می‌کنند",
     "متخصصان می‌گویند",
+]
+
+BINARY_CONTRAST_PATTERNS = [
+    r"این\s+فقط\s+.{2,50}نیست[،؛,]?\s+بلکه",
+    r"تنها\s+.{2,45}کافی\s+نیست",
+    r"هدف\s+این\s+نیست\s+که\s+.{3,70}[؛،.]\s*هدف\s+این\s+است\s+که",
+    r"موضوع\s+فقط\s+.{3,60}نیست[؛،.]\s*موضوع",
 ]
 
 CANONICAL_DISCLAIMER = (
@@ -179,51 +207,115 @@ def audit_article(pkg_dir: pathlib.Path) -> tuple[list[str], list[str], list[str
     if not manifest_path.is_file() or not html_path.is_file():
         return (["article.json یا content.html یافت نشد."], [], [])
 
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    raw_json = manifest_path.read_text(encoding="utf-8")
+    manifest = json.loads(raw_json)
     html = html_path.read_text(encoding="utf-8")
     plain = strip_tags(html)
     words = [w for w in re.split(r"\s+", plain) if w]
     word_count = len(words)
 
-    # 1. Word count & sentence cadence
+    # 1. Word count, sentence length & human paragraph cadence
     if word_count < 1200:
         errors.append(f"تعداد واژگان کم است ({word_count} کلمه؛ حداقل ۱۲۰۰ کلمه).")
     else:
         passed.append(f"حجم مقاله استاندارد است: {word_count} واژه (~{max(1, round(word_count / 190))} دقیقه مطالعه).")
 
-    # Extract prose without disclaimer to compute real sentence length
-    sentences = [
-        s.strip()
-        for s in re.split(r"[.؟!\n]+", plain)
-        if len(s.strip().split()) >= 3
-    ]
+    sentences = [s.strip() for s in re.split(r"[.؟!\n]+", plain) if len(s.strip().split()) >= 3]
     avg_sentence_len = sum(len(s.split()) for s in sentences) / max(1, len(sentences))
-    if avg_sentence_len > 22.0:
+    if avg_sentence_len > 20.0:
         warnings.append(f"میانگین طول جمله بالاست ({avg_sentence_len:.1f} کلمه؛ هدف <= ۲۰ کلمه).")
     else:
         passed.append(f"میانگین طول جمله‌ها کوتاه و خوش‌خوان است ({avg_sentence_len:.1f} کلمه؛ هدف <= ۲۰).")
 
-    # 2. Scan banned AI-slop words, bureaucratic forms, empty phrases, weasel words, binary contrasts
+    p_blocks = [strip_tags(p) for p in re.findall(r"<p\b[^>]*>(.*?)</p>", html, re.S)]
+    prose_p_lengths = [len(p.split()) for p in p_blocks if len(p.split()) >= 12]
+    if len(prose_p_lengths) >= 5:
+        p_stdev = statistics.pstdev(prose_p_lengths)
+        if p_stdev < 6.0:
+            warnings.append(f"یکنواختی مصنوعی طول پاراگراف‌ها دیده شد (انحراف معیار {p_stdev:.1f} واژه).")
+        else:
+            passed.append(f"ریتم طبیعی پاراگراف‌نویسی تأیید شد (تنوع طول پاراگراف: ±{p_stdev:.1f} واژه).")
+
+    # 2. Deep AI-Slop & Translationese Scan (`no-ai-slop-fa`)
+    slop_hits: list[str] = []
     for label, wordlist in [
         ("واژه‌ی ممنوعه اسلوپ", BANNED_SLOP_WORDS),
-        ("نثر اداری/ممنوع", BANNED_BUREAUCRATIC),
-        ("عبارت توخالی اسلوپ", BANNED_EMPTY_PHRASES),
+        ("عبارت اداری/دیوانی", BANNED_BUREAUCRATIC_PHRASES),
+        ("عبارت توخالی هوش مصنوعی", BANNED_EMPTY_PHRASES),
         ("اسناد سست بدون منبع", BANNED_WEASEL),
     ]:
         for term in wordlist:
-            # Skip canonical disclaimer single "صرفاً" check: "صرفاً" isn't in lists anyway
             if term in plain:
-                errors.append(f"{label} یافت شد: «{term}»")
+                slop_hits.append(f"{label} یافت شد: «{term}»")
 
-    if re.search(r"این\s+فقط\s+.{2,45}نیست،?\s+بلکه", plain):
-        errors.append("الگوی تقابل دوتایی («این فقط X نیست، بلکه Y است») یافت شد.")
-    if re.search(r"تنها\s+.{2,40}کافی\s+نیست", plain):
-        errors.append("الگوی تقابل دوتایی («تنها X کافی نیست...») یافت شد.")
+    for bw in BANNED_BUREAUCRATIC_WORDS:
+        if re.search(rf"(?<![آ-ی\u200c]){re.escape(bw)}(?![آ-ی\u200c])", plain):
+            slop_hits.append(f"فعل اداری/جعلی یافت شد: «{bw}»")
 
-    if not any("یافت شد" in e for e in errors):
-        passed.append("اسکن کامل فیلتر no-ai-slop-fa (واژگان ممنوعه، نثر اداری، عبارات توخالی، اسناد سست، تقابل دوتایی): ۰ خطا.")
+    # Ban auxiliary pseudo-literary «می‌گردد / می‌گردند» while allowing active Persian «برمی‌گردد» and «دنبال/پی/دور ... می‌گردد»
+    cleaned_active_gard = re.sub(r"(?:دنبال|پی|دور)\s+[^.،؛؟!\n]{1,35}?می‌گرد(?:د|ند)", "", plain)
+    if re.search(r"(?<![آ-ی\u200c])می‌گرد(?:د|ند)(?![آ-ی\u200c])", cleaned_active_gard):
+        slop_hits.append("فعل مجهول/دیوانی «می‌گردد/می‌گردند» به جای «می‌شود/می‌شوند» یافت شد.")
 
-    # 3. Formatting & cleanliness checks
+    for pat in BINARY_CONTRAST_PATTERNS:
+        m = re.search(pat, plain)
+        if m:
+            slop_hits.append(f"الگوی تقابل دوتایی ترجمه‌زده یافت شد: «{m.group(0)}»")
+
+    if slop_hits:
+        errors.extend(slop_hits)
+    else:
+        passed.append("فیلتر حذف علائم هوش مصنوعی (no-ai-slop-fa + تقابل دوتایی + افعال دیوانی): ۰ خطا.")
+
+    # 3. Dedicated Persian Grammar, Academy Orthography (ZWNJ) & Punctuation Filter
+    grammar_issues: list[str] = []
+
+    if "\u064a" in html or "\u0643" in html or "\u064a" in raw_json or "\u0643" in raw_json:
+        grammar_issues.append("حروف عربی «ي» یا «ك» یافت شد؛ باید به «ی» و «ک» معیار فارسی تبدیل شود.")
+
+    detached_mi = re.findall(r"(?<![آ-ی\u200c])ن?می[ ]+[آ-ی]{2,}", plain)
+    if detached_mi:
+        grammar_issues.append(f"فاصله‌ی معمولی به جای نیم‌فاصله پس از «می/نمی»: {detached_mi[:4]}")
+
+    detached_ha = re.findall(r"[آ-ی][ ]+ها(?:ی|یی|ست|یش|یمان|یتان|یشان)?(?![آ-ی])", plain)
+    if detached_ha:
+        grammar_issues.append(f"فاصله‌ی معمولی به جای نیم‌فاصله پیش از «ها/های»: {detached_ha[:4]}")
+
+    detached_tar = re.findall(r"[آ-ی][ ]+تر(?:ین)?(?![آ-ی])", plain)
+    if detached_tar:
+        grammar_issues.append(f"فاصله‌ی معمولی به جای نیم‌فاصله پیش از «تر/ترین»: {detached_tar[:4]}")
+
+    detached_ezafe = re.findall(r"[آ-ی]ه[ ]+ی(?![آ-ی])", plain)
+    if detached_ezafe:
+        grammar_issues.append(f"نگارش نادرست «ه ی» با فاصله‌ی معمولی (باید با نیم‌فاصله «ـه‌ی» نوشته شود): {detached_ezafe[:4]}")
+
+    if "ۀ" in plain and "ه‌ی" in plain:
+        grammar_issues.append("عدم یکدستی رسم‌الخط اضافه پس از «ه» (اختلاط «ۀ» و «ـه‌ی» در یک متن).")
+
+    latin_punct = re.findall(r"[آ-ی]\s*[,;?]", plain)
+    if latin_punct:
+        grammar_issues.append(f"علامت سجاوندی انگلیسی (, ; ?) در متن فارسی یافت شد: {latin_punct[:4]}")
+
+    space_before_punct = re.findall(r"[آ-ی0-9۰-۹][ ]+[،؛؟!.]", plain)
+    if space_before_punct:
+        grammar_issues.append(f"فاصله‌ی اضافه پیش از علامت سجاوندی یافت شد: {space_before_punct[:4]}")
+
+    if plain.count("«") != plain.count("»"):
+        grammar_issues.append(f"گیومه‌های فارسی «...» جفت نیستند («={plain.count('«')}, »={plain.count('»')}).")
+
+    if '"' in plain:
+        grammar_issues.append('گیومه‌ی مستقیم انگلیسی (") داخل متن فارسی دیده شد؛ از «...» استفاده کنید.')
+
+    ascii_digits_in_prose = re.findall(r"[0-9٠-٩]+", plain)
+    if ascii_digits_in_prose:
+        grammar_issues.append(f"اعداد انگلیسی یا عربی در متن فارسی یافت شد (باید فارسی ۰-۹ باشد): {ascii_digits_in_prose[:4]}")
+
+    if grammar_issues:
+        errors.extend(grammar_issues)
+    else:
+        passed.append("فیلتر گرامر، دستور خط فرهنگستان (نیم‌فاصله، یای اضافه، حروف و اعداد فارسی) و سجاوندی: ۰ خطا.")
+
+    # 4. Formatting & English-leak & Shamsi-calendar checks
     if "<br" in html.lower():
         errors.append("تگ <br> در HTML یافت شد (طبق استاندارد v2.0 ممنوع است).")
     if re.search(r"\\[#*\[\]()]", html):
@@ -236,7 +328,6 @@ def audit_article(pkg_dir: pathlib.Path) -> tuple[list[str], list[str], list[str
     else:
         passed.append(f"کنترل خط تیره‌ی بلند (—) استاندارد است ({em_dash_count} مورد <= ۲).")
 
-    # Check raw English words outside parentheses (...) in body paragraphs
     html_no_tags = re.sub(r"<[^>]+>", " ", html)
     outside_parens = re.sub(r"\([^)]*\)", " ", html_no_tags)
     english_leaks = re.findall(r"[A-Za-z]{2,}", outside_parens)
@@ -245,14 +336,13 @@ def audit_article(pkg_dir: pathlib.Path) -> tuple[list[str], list[str], list[str
     else:
         passed.append("هیچ نشت واژه‌ی انگلیسی رها در متن فارسی وجود ندارد (تمام معادل‌های علمی داخل پرانتز تعریف شده‌اند).")
 
-    # Check Gregorian years 19xx/20xx in prose
     greg_years = re.findall(r"(?:19|20)\d{2}|(?:۱۹|۲۰)[۰-۹]{2}", plain)
     if greg_years:
         errors.append(f"سال میلادی در متن فارسی یافت شد (طبق قانون تاریخ شمسی ممنوع است): {greg_years}")
     else:
         passed.append("هیچ تاریخ یا سال میلادی در متن فارسی وجود ندارد.")
 
-    # 4. YMYL Medical & Legal Safety Gate
+    # 5. YMYL Medical & Legal Safety Gate
     if re.search(r"میلی‌گرم|میلی گرم|میکروگرم|\bmg\b|\bmcg\b", plain, re.I):
         errors.append("خطای ایمنی پزشکی: واحد دوز دارویی در متن دیده شد.")
     if re.search(r"[0-9۰-۹]+\s*ساعت\s*(?:قبل|پیش|ناشتا)", plain):
@@ -273,16 +363,16 @@ def audit_article(pkg_dir: pathlib.Path) -> tuple[list[str], list[str], list[str
         else:
             passed.append(f"الزام ایمنی تأیید شد: {desc}.")
 
-    # 5. Canonical single-sentence disclaimer + pre-disclaimer Author Signature + Blockquote Story
+    # 6. Canonical single-sentence disclaimer + ZERO Author Name Anywhere + Blockquote Story
     if not html.strip().endswith(CANONICAL_DISCLAIMER):
         errors.append("انتهای مقاله دقیقاً با تک‌جمله‌ی استاندارد «سلب مسئولیت پزشکی» نسخه 0.10.2+ تمام نشده است.")
     else:
         passed.append("بخش پایانی «سلب مسئولیت پزشکی» دقیقاً مطابق تک‌جمله‌ی مصوب 0.10.2+ است.")
 
-    if "محمدرضا لک" in plain or "hj-author-signature" in html:
-        errors.append("نام نویسنده در انتهای متن مقاله دیده شد (طبق دستور کارفرما باید حذف شود؛ بایلاین در هدر قالب نمایش داده می‌شود).")
+    if "محمدرضا لک" in html or "محمدرضا لک" in raw_json or "hj-author-signature" in html or "نویسنده:" in plain:
+        errors.append("نام نویسنده در متن یا متادیتای مقاله دیده شد (طبق دستور کارفرما نام نویسنده در هیچ مقاله‌ای نباید ذکر شود).")
     else:
-        passed.append("نام نویسنده در انتهای مقاله درج نشده است (صرفاً در هدر قالب نمایش داده می‌شود).")
+        passed.append("عدم ذکر نام نویسنده در سراسر متن و متادیتای مقاله تأیید شد.")
 
     blockquotes = re.findall(r"<blockquote\b[^>]*>(.*?)</blockquote>", html, re.S)
     if len(blockquotes) != 1:
@@ -297,7 +387,7 @@ def audit_article(pkg_dir: pathlib.Path) -> tuple[list[str], list[str], list[str
                 f"خاطره‌ی آموزنده‌ی اتاق عمل داخل <blockquote> ثبت شده است ({bq_words} واژه، موقعیت نسبی در بدنه: {int(bq_pos_ratio * 100)}٪)."
             )
 
-    # 6. Headings & Internal Links & SEO Metadata Audit (inc/article-importer.php parity)
+    # 7. Headings & Internal Links & SEO Metadata Audit (inc/article-importer.php parity)
     title = manifest.get("title", "").strip()
     slug = manifest.get("slug", "").strip()
     meta_desc = manifest.get("seo", {}).get("meta_description", "").strip()
@@ -351,14 +441,15 @@ def audit_article(pkg_dir: pathlib.Path) -> tuple[list[str], list[str], list[str
         if len(clean_t) > 58:
             warnings.append(f"زیرتیتر H{lvl} برای نمایش تک‌خطی موبایل طولانی است ({len(clean_t)} کاراکتر): «{clean_t}»")
 
+    self_path = f"/patient-guide/{slug}/"
     links = re.findall(r'<a\b[^>]*href=["\']([^"\']+)["\']', html)
     internal_links = [u for u in links if u.startswith("/")]
     if len(internal_links) < 3:
         warnings.append(f"تعداد لینک‌های داخلی کم است ({len(internal_links)}؛ حداقل ۳ لینک توصیه می‌شود).")
     else:
-        bad_links = [u for u in internal_links if u not in LIVE_PUBLISHED_PATHS]
+        bad_links = [u for u in internal_links if u not in LIVE_PUBLISHED_PATHS or u == self_path]
         if bad_links:
-            errors.append(f"لینک داخلی به صفحه‌ی هنوز منتشرنشده یافت شد (خطر ۴۰۴): {bad_links}")
+            errors.append(f"لینک داخلی نامعتبر یا خودارجاع یافت شد: {bad_links}")
         else:
             passed.append(
                 f"{len(internal_links)} لینک داخلی معتبر و ۱۰۰٪ زنده روی سایت (بدون حتی یک لینک ۴۰۴) ثبت شده است."
@@ -368,24 +459,30 @@ def audit_article(pkg_dir: pathlib.Path) -> tuple[list[str], list[str], list[str
 
 
 def main() -> int:
-    if len(sys.argv) != 2:
-        print("Usage: python3 tools/hj-article-filter.py <article-folder>")
+    if len(sys.argv) < 2:
+        print("Usage: python3 tools/hj-article-filter.py <article-folder> [more-folders...]")
         return 2
-    pkg_dir = pathlib.Path(sys.argv[1]).resolve()
-    errors, warnings, passed = audit_article(pkg_dir)
-    print(f"=== گزارش ممیزی فیلتر اختصاصی همیار جراحی: {pkg_dir.name} ===")
-    print(f"✅ موارد تأییدشده ({len(passed)}):")
-    for p in passed:
-        print(f"   ✓ {p}")
-    print(f"\n⚠️ هشدارها ({len(warnings)}):")
-    for w in warnings:
-        print(f"   ! {w}")
-    print(f"\n❌ خطاها ({len(errors)}):")
-    for e in errors:
-        print(f"   ✗ {e}")
-    status = "PASS (100%)" if not errors and not warnings else ("PASS WITH WARNINGS" if not errors else "FAIL")
-    print(f"\nنتیجه‌ی نهایی فیلتر اختصاصی: {status}")
-    return 0 if not errors and not warnings else 1
+    rc = 0
+    for idx, arg in enumerate(sys.argv[1:]):
+        if idx > 0:
+            print("=" * 60)
+        pkg_dir = pathlib.Path(arg).resolve()
+        errors, warnings, passed = audit_article(pkg_dir)
+        print(f"=== گزارش ممیزی فیلتر اختصاصی همیار جراحی: {pkg_dir.name} ===")
+        print(f"✅ موارد تأییدشده ({len(passed)}):")
+        for p in passed:
+            print(f"   ✓ {p}")
+        print(f"\n⚠️ هشدارها ({len(warnings)}):")
+        for w in warnings:
+            print(f"   ! {w}")
+        print(f"\n❌ خطاها ({len(errors)}):")
+        for e in errors:
+            print(f"   ✗ {e}")
+        status = "PASS (100%)" if not errors and not warnings else ("PASS WITH WARNINGS" if not errors else "FAIL")
+        print(f"\nنتیجه‌ی نهایی فیلتر اختصاصی: {status}")
+        if errors or warnings:
+            rc = 1
+    return rc
 
 
 if __name__ == "__main__":
