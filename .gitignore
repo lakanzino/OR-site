@@ -1,6 +1,7 @@
 # خروجی‌های ساخته‌شده و فایل‌های موقت — سورس و اسناد در مخزن می‌مانند
 *.zip
 !releases/*.zip
+!releases/article-packages/*.zip
 !themes/lax-theme-child/content-imports/*.zip
 .DS_Store
 Thumbs.db
