@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.10.2' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.11.0' );
 }
 
 /**
@@ -57,9 +57,17 @@ require_once get_stylesheet_directory() . '/inc/analytics.php';
 require_once get_stylesheet_directory() . '/inc/github-updater.php';
 
 /**
- * Load the single-article package importer (ZIP -> post + SEO + featured image).
+ * Load the multi-group package importer (ZIP -> post + SEO + featured image + audit).
  */
 require_once get_stylesheet_directory() . '/inc/article-importer.php';
+
+/**
+ * Load the editorial roadmap catalog and admin publishing progress dashboard.
+ */
+if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+	require_once get_stylesheet_directory() . '/inc/content-roadmap-data.php';
+	require_once get_stylesheet_directory() . '/inc/content-dashboard.php';
+}
 
 /**
  * Child theme setup.
