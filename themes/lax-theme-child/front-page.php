@@ -21,7 +21,7 @@ get_header();
 
 $hj_latest = new WP_Query(
 	array(
-		'post_type'           => array( 'patient_guide', 'or_environment', 'surgery', 'glossary' ),
+		'post_type'           => array( 'patient_guide', 'or_environment', 'surgery', 'student_content' ),
 		'post_status'         => 'publish',
 		'posts_per_page'      => 6,
 		'ignore_sticky_posts' => true,
@@ -29,7 +29,8 @@ $hj_latest = new WP_Query(
 	)
 );
 
-$hj_glossary_terms = get_posts(
+$hj_glossary_fast_terms = function_exists( 'hj_glossary_get_featured_terms' ) ? hj_glossary_get_featured_terms( 10 ) : array();
+$hj_glossary_terms      = empty( $hj_glossary_fast_terms ) ? get_posts(
 	array(
 		'post_type'      => 'glossary',
 		'post_status'    => 'publish',
@@ -37,7 +38,7 @@ $hj_glossary_terms = get_posts(
 		'orderby'        => 'title',
 		'order'          => 'ASC',
 	)
-);
+) : array();
 
 $hj_surgery_groups = get_terms(
 	array(
@@ -232,7 +233,17 @@ $hj_faqs = array(
 				</div>
 			<?php endif; ?>
 
-			<?php if ( $hj_glossary_terms ) : ?>
+			<?php if ( ! empty( $hj_glossary_fast_terms ) ) : ?>
+				<div class="hj-glossary-strip">
+					<h3>از واژه‌نامه شروع کنید</h3>
+					<ul>
+						<?php foreach ( $hj_glossary_fast_terms as $hj_gitem ) : ?>
+							<li><a href="<?php echo esc_url( $hj_gitem['url'] ); ?>" title="<?php echo esc_attr( $hj_gitem['definition'] ); ?>"><?php echo esc_html( $hj_gitem['term'] ); ?></a></li>
+						<?php endforeach; ?>
+					</ul>
+					<a class="hj-text-link" href="<?php echo esc_url( hj_archive_url( 'glossary' ) ); ?>">همه‌ی اصطلاحات اتاق عمل</a>
+				</div>
+			<?php elseif ( $hj_glossary_terms ) : ?>
 				<div class="hj-glossary-strip">
 					<h3>از واژه‌نامه شروع کنید</h3>
 					<ul>

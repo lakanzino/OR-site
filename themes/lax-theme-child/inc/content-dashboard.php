@@ -258,7 +258,7 @@ function hj_dashboard_render_page(): void {
 	$base_mode_url = add_query_arg( array( 'page' => 'hj-content-dashboard' ), admin_url( 'admin.php' ) );
 	$full_mode_url = add_query_arg( array( 'page' => 'hj-content-dashboard', 'full' => '1' ), admin_url( 'admin.php' ) );
 	$hub_imp_url   = add_query_arg( array( 'page' => 'hj-importer-hub' ), admin_url( 'admin.php' ) );
-	$gl_imp_url    = function_exists( 'hj_importer_admin_url' ) ? hj_importer_admin_url( 'glossary' ) : $hub_imp_url;
+	$gl_imp_url    = function_exists( 'hj_glossary_admin_url' ) ? hj_glossary_admin_url( 'import' ) : ( function_exists( 'hj_importer_admin_url' ) ? hj_importer_admin_url( 'glossary' ) : $hub_imp_url );
 	$post_action   = admin_url( 'admin-post.php' );
 
 	// Donut SVG calculations (r = 52 -> circumference = 326.73).
@@ -403,11 +403,11 @@ function hj_dashboard_render_page(): void {
 					</span>
 				</div>
 
-				<div class="hj-rd-kpi" style="border-top:4px solid #2563eb">
-					<span class="hj-rd-kpi__lbl">📖 واژه‌نامه اتاق عمل (Glossary)</span>
-					<div class="hj-rd-kpi__val" style="color:#1d4ed8"><?php echo esc_html( number_format_i18n( $gl['percent'], 1 ) ); ?>٪</div>
+				<div class="hj-rd-kpi" style="border-top:4px solid #059669">
+					<span class="hj-rd-kpi__lbl">📖 بانک واژه‌نامه و هایلایت سبز</span>
+					<div class="hj-rd-kpi__val" style="color:#047857"><?php echo esc_html( number_format_i18n( $gl['published'] ) ); ?></div>
 					<span class="hj-rd-kpi__sub">
-						<?php echo esc_html( number_format_i18n( $gl['published'] ) ); ?> منتشر · <?php echo esc_html( number_format_i18n( $gl['draft'] ) ); ?> پیش‌نویس (هدف اولیه: <?php echo esc_html( number_format_i18n( $gl['target'] ) ); ?>) · <a href="<?php echo esc_url( $gl_imp_url ); ?>">ایمپورت</a>
+						واژه‌ی فعال (هدف: +<?php echo esc_html( number_format_i18n( $gl['target'] ) ); ?> واژه) · <a href="<?php echo esc_url( $gl_imp_url ); ?>" style="font-weight:700;color:#059669;">ورود انبوه اکسل/CSV</a>
 					</span>
 				</div>
 			</div>

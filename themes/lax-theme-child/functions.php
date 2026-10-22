@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.11.1' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.12.0' );
 }
 
 /**
@@ -62,14 +62,20 @@ require_once get_stylesheet_directory() . '/inc/analytics.php';
 require_once get_stylesheet_directory() . '/inc/github-updater.php';
 
 /**
+ * Load high-performance Glossary & Auto-Tooltip Engine (5,000+ terms).
+ */
+require_once get_stylesheet_directory() . '/inc/glossary-engine.php';
+
+/**
  * Load the multi-group package importer (ZIP -> post + SEO + featured image + audit).
  */
 require_once get_stylesheet_directory() . '/inc/article-importer.php';
 
 /**
- * Load the editorial roadmap catalog and admin publishing progress dashboard.
+ * Load the editorial roadmap catalog, admin publishing progress dashboard, and Glossary Admin.
  */
 if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+	require_once get_stylesheet_directory() . '/inc/glossary-admin.php';
 	require_once get_stylesheet_directory() . '/inc/content-roadmap-data.php';
 	require_once get_stylesheet_directory() . '/inc/content-dashboard.php';
 }
@@ -97,9 +103,24 @@ function lax_theme_child_assets() {
 		LAX_THEME_CHILD_VERSION
 	);
 
+	wp_enqueue_style(
+		'lax-theme-child-glossary',
+		get_stylesheet_directory_uri() . '/assets/css/glossary.css',
+		array( 'lax-theme-child' ),
+		LAX_THEME_CHILD_VERSION
+	);
+
 	wp_enqueue_script(
 		'lax-theme-child-fit-headings',
 		get_stylesheet_directory_uri() . '/assets/js/fit-headings.js',
+		array(),
+		LAX_THEME_CHILD_VERSION,
+		true
+	);
+
+	wp_enqueue_script(
+		'lax-theme-child-glossary-tooltip',
+		get_stylesheet_directory_uri() . '/assets/js/glossary-tooltip.js',
 		array(),
 		LAX_THEME_CHILD_VERSION,
 		true

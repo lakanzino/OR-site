@@ -614,11 +614,14 @@ function hj_roadmap_compute_progress( bool $include_optional = false ): array {
 	$totals['phase1_percent']  = $totals['phase1_total'] > 0 ? round( ( $totals['phase1_publish'] / $totals['phase1_total'] ) * 100, 1 ) : 0.0;
 	$totals['badge']           = hj_roadmap_progress_badge( $totals['percent_publish'], $totals['draft'] );
 
-	// Glossary CPT stats (tracked separately from the 184/210 long-form articles).
+	// Glossary engine stats (5,000+ terms bank, tracked separately from the 184/210 long-form articles).
 	$glossary_counts = wp_count_posts( 'glossary' );
-	$glossary_pub    = isset( $glossary_counts->publish ) ? (int) $glossary_counts->publish : 0;
-	$glossary_draft  = ( isset( $glossary_counts->draft ) ? (int) $glossary_counts->draft : 0 ) + ( isset( $glossary_counts->pending ) ? (int) $glossary_counts->pending : 0 );
-	$glossary_target = 32; // Initial v2.1 seed target (4 groups).
+	$cpt_pub         = isset( $glossary_counts->publish ) ? (int) $glossary_counts->publish : 0;
+	$cpt_draft       = ( isset( $glossary_counts->draft ) ? (int) $glossary_counts->draft : 0 ) + ( isset( $glossary_counts->pending ) ? (int) $glossary_counts->pending : 0 );
+	$fast_stats      = function_exists( 'hj_glossary_get_stats' ) ? hj_glossary_get_stats() : array( 'published' => 0, 'draft' => 0 );
+	$glossary_pub    = max( $cpt_pub, (int) ( $fast_stats['published'] ?? 0 ) );
+	$glossary_draft  = max( $cpt_draft, (int) ( $fast_stats['draft'] ?? 0 ) );
+	$glossary_target = 5000;
 	$glossary_pct    = min( 100.0, round( ( $glossary_pub / $glossary_target ) * 100, 1 ) );
 
 	return array(
