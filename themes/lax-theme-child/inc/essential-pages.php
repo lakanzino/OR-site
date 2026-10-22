@@ -182,7 +182,6 @@ function hj_seed_menus( $page_ids ) {
 				array( 'title' => 'درباره ما', 'page' => 'about' ),
 				array( 'title' => 'تماس با ما', 'page' => 'contact' ),
 				array( 'title' => 'پرسش‌های متداول', 'page' => 'faq' ),
-				array( 'title' => 'سلب مسئولیت پزشکی', 'page' => 'medical-disclaimer' ),
 				array( 'title' => 'حریم خصوصی', 'page' => 'privacy' ),
 				array( 'title' => 'شرایط استفاده', 'page' => 'terms' ),
 			),
@@ -521,6 +520,132 @@ function hj_v090_retire_editorial_policy_run() {
 	update_option( 'hj_v090_cleanup_done', '0.9.1' );
 }
 add_action( 'init', 'hj_v090_retire_editorial_policy', 99 );
+
+/**
+ * One-time cleanup on upgrade to 0.10.1: retire the `medical-disclaimer`
+ * page completely, remove its menu items and in-text references across
+ * seeded pages, and strip trailing `<h2>سلب مسئولیت پزشکی</h2>` sections
+ * from already-published articles.
+ *
+ * Wrapped in `try / catch ( \Throwable )` so no migration error can ever
+ * break front-end rendering.
+ *
+ * @return void
+ */
+function hj_v0101_retire_medical_disclaimer() {
+	if ( wp_installing() || get_option( 'hj_v0101_cleanup_done' ) ) {
+		return;
+	}
+
+	try {
+		hj_v0101_retire_medical_disclaimer_run();
+	} catch ( \Throwable $e ) {
+		if ( function_exists( 'error_log' ) ) {
+			error_log( 'Hamyar Jarahi v0.10.1 migration caught: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		}
+	}
+}
+
+/**
+ * Worker for `hj_v0101_retire_medical_disclaimer()`.
+ *
+ * @return void
+ */
+function hj_v0101_retire_medical_disclaimer_run() {
+	$disc_page    = get_page_by_path( 'medical-disclaimer', OBJECT, 'page' );
+	$disc_page_id = $disc_page ? (int) $disc_page->ID : 0;
+
+	// 1. Clean in-text sentences pointing to `/medical-disclaimer/` in seeded pages.
+	$patterns = array(
+		'/\s*<p>مرز مسئولیت آموزشی ما در <a\b[^>]*medical-disclaimer[^>]*>سلب مسئولیت پزشکی<\/a> روشن شده است\.<\/p>/u' => '',
+		'/مرز استفاده از محتوای این مجله را در <a\b[^>]*medical-disclaimer[^>]*>سلب مسئولیت پزشکی<\/a> بخوانید\.\s*/u'    => '',
+		'/\s*مرز کامل این موضوع در <a\b[^>]*medical-disclaimer[^>]*>سلب مسئولیت پزشکی<\/a> آمده است\./u'                   => '',
+		'/\s*و پیش از تکیه بر هر متن آموزشی، <a\b[^>]*medical-disclaimer[^>]*>سلب مسئولیت پزشکی<\/a> را بخوانید\./u'      => '.',
+		'/\s*<a\b[^>]*medical-disclaimer[^>]*>سلب مسئولیت پزشکی<\/a> بخش جدایی‌ناپذیر این شرایط است\./u'                   => '',
+	);
+
+	foreach ( array( 'about', 'contact', 'faq', 'privacy', 'terms' ) as $slug ) {
+		$page = get_page_by_path( $slug, OBJECT, 'page' );
+		if ( ! $page ) {
+			continue;
+		}
+		$updated = (string) $page->post_content;
+		foreach ( $patterns as $pattern => $replacement ) {
+			$res = preg_replace( $pattern, $replacement, $updated );
+			if ( is_string( $res ) ) {
+				$updated = $res;
+			}
+		}
+		if ( function_exists( 'orsite_strip_disclaimer_section' ) ) {
+			$updated = orsite_strip_disclaimer_section( $updated );
+		}
+		if ( $updated !== $page->post_content ) {
+			wp_update_post(
+				wp_slash(
+					array(
+						'ID'           => (int) $page->ID,
+						'post_content' => $updated,
+					)
+				)
+			);
+		}
+	}
+
+	// 2. Remove nav menu items pointing to `medical-disclaimer` via front-end-safe `wp_delete_post()`.
+	$menus = wp_get_nav_menus();
+	if ( ! is_wp_error( $menus ) && is_array( $menus ) ) {
+		foreach ( $menus as $menu ) {
+			$items = wp_get_nav_menu_items( $menu->term_id );
+			if ( ! is_array( $items ) ) {
+				continue;
+			}
+			foreach ( $items as $item ) {
+				$matches_url = false !== strpos( (string) $item->url, 'medical-disclaimer' );
+				$matches_obj = $disc_page_id > 0 && isset( $item->object_id ) && (int) $item->object_id === $disc_page_id;
+				if ( $matches_url || $matches_obj ) {
+					wp_delete_post( (int) $item->ID, true );
+				}
+			}
+		}
+	}
+
+	// 3. Trash the retired `medical-disclaimer` page itself.
+	if ( $disc_page && 'trash' !== $disc_page->post_status ) {
+		wp_trash_post( $disc_page_id );
+	}
+
+	// 4. Strip trailing `<h2>سلب مسئولیت پزشکی</h2>` sections from published articles.
+	if ( function_exists( 'orsite_strip_disclaimer_section' ) ) {
+		$articles = get_posts(
+			array(
+				'post_type'      => array( 'patient_guide', 'or_environment', 'surgery', 'student_content', 'glossary', 'post' ),
+				'post_status'    => array( 'publish', 'draft', 'pending', 'future', 'private' ),
+				'posts_per_page' => 250,
+			)
+		);
+		if ( is_array( $articles ) ) {
+			foreach ( $articles as $article ) {
+				if ( empty( $article->post_content ) || ( false === strpos( $article->post_content, 'سلب' ) && false === stripos( $article->post_content, 'medical-disclaimer' ) ) ) {
+					continue;
+				}
+				$cleaned = orsite_strip_disclaimer_section( (string) $article->post_content );
+				if ( is_string( $cleaned ) && $cleaned !== $article->post_content ) {
+					wp_update_post(
+						wp_slash(
+							array(
+								'ID'           => (int) $article->ID,
+								'post_content' => $cleaned,
+							)
+						)
+					);
+				}
+			}
+		}
+	}
+
+	update_option( 'hj_v0101_cleanup_done', '0.10.1' );
+}
+add_action( 'init', 'hj_v0101_retire_medical_disclaimer', 100 );
 
 /**
  * Launch checks for administrators. The theme never changes permalink

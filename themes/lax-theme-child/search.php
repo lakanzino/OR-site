@@ -16,7 +16,7 @@ get_header();
 				<?php
 				printf(
 					/* translators: %s: search query. */
-					esc_html__( 'Search results for: %s', 'lax-theme-child' ),
+					esc_html__( 'نتایج جست‌وجو برای: %s', 'lax-theme-child' ),
 					'<span>' . esc_html( get_search_query() ) . '</span>'
 				);
 				?>
@@ -37,8 +37,8 @@ get_header();
 			<?php
 			the_posts_pagination(
 				array(
-					'prev_text' => esc_html__( 'Previous', 'lax-theme-child' ),
-					'next_text' => esc_html__( 'Next', 'lax-theme-child' ),
+					'prev_text' => esc_html__( 'قبلی', 'lax-theme-child' ),
+					'next_text' => esc_html__( 'بعدی', 'lax-theme-child' ),
 				)
 			);
 			?>

@@ -257,6 +257,9 @@ function hj_importer_import_package( $zip_path, $source = 'upload' ) {
 		return new WP_Error( 'no_content', 'فایل content.html داخل بسته پیدا نشد.' );
 	}
 	$html = (string) file_get_contents( $html_path );
+	if ( function_exists( 'orsite_strip_disclaimer_section' ) ) {
+		$html = orsite_strip_disclaimer_section( $html );
+	}
 	$html = wp_kses_post( $html );
 
 	// Upsert by slug inside the target post type.

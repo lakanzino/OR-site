@@ -48,10 +48,11 @@ get_header();
 				<?php
 				$hj_current_slug = get_post_field( 'post_name', get_the_ID() );
 				$hj_trust_links  = array(
-					'about'              => 'درباره ما',
-					'medical-disclaimer' => 'سلب مسئولیت پزشکی',
-					'privacy'            => 'حریم خصوصی',
-					'contact'            => 'تماس با ما',
+					'about'   => 'درباره ما',
+					'faq'     => 'پرسش‌های متداول',
+					'privacy' => 'حریم خصوصی',
+					'terms'   => 'شرایط استفاده',
+					'contact' => 'تماس با ما',
 				);
 				?>
 				<nav class="hj-page-links" aria-label="<?php esc_attr_e( 'صفحه‌های اعتماد و راهنما', 'lax-theme-child' ); ?>">

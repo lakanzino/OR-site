@@ -58,9 +58,9 @@ get_header();
 
 			<div class="orsite-article__layout">
 				<?php if ( count( $toc_items ) >= 2 ) : ?>
-					<aside class="orsite-toc" aria-label="<?php esc_attr_e( 'Table of contents', 'lax-theme-child' ); ?>">
+					<aside class="orsite-toc" aria-label="<?php esc_attr_e( 'فهرست مطالب', 'lax-theme-child' ); ?>">
 						<details open>
-							<summary><?php esc_html_e( 'Table of contents', 'lax-theme-child' ); ?></summary>
+							<summary><?php esc_html_e( 'فهرست مطالب', 'lax-theme-child' ); ?></summary>
 							<ol>
 								<?php foreach ( $toc_items as $item ) : ?>
 									<li class="orsite-toc__item orsite-toc__item--level-<?php echo esc_attr( (string) $item['level'] ); ?>">
@@ -77,25 +77,19 @@ get_header();
 					<?php
 					wp_link_pages(
 						array(
-							'before' => '<div class="page-links">' . esc_html__( 'Pages:', 'lax-theme-child' ),
+							'before' => '<div class="page-links">' . esc_html__( 'صفحه‌ها:', 'lax-theme-child' ),
 							'after'  => '</div>',
 						)
 					);
 					?>
 				</div>
 			</div>
-
-			<div class="orsite-disclaimer" role="note">
-				<strong><?php esc_html_e( 'سلب مسئولیت پزشکی:', 'lax-theme-child' ); ?></strong>
-				<?php esc_html_e( 'این متن آموزش عمومی است و جایگزین معاینه، تشخیص و دستور پزشک و تیم درمان شما نیست. برای تصمیم درمانی با تیم درمانی که پرونده‌تان را دیده است مشورت کنید؛ در وضعیت فوری در ایران با ۱۱۵ تماس بگیرید.', 'lax-theme-child' ); ?>
-				<a href="<?php echo esc_url( hj_page_url( 'medical-disclaimer' ) ); ?>"><?php esc_html_e( 'متن کامل سلب مسئولیت پزشکی', 'lax-theme-child' ); ?></a>
-			</div>
 		</article>
 
 		<?php $related = orsite_related_articles( get_the_ID() ); ?>
 		<?php if ( $related ) : ?>
-			<section class="orsite-related" aria-label="<?php esc_attr_e( 'Related articles', 'lax-theme-child' ); ?>">
-				<h2 class="orsite-related__title"><?php esc_html_e( 'Related articles', 'lax-theme-child' ); ?></h2>
+			<section class="orsite-related" aria-label="<?php esc_attr_e( 'مقاله‌های مرتبط', 'lax-theme-child' ); ?>">
+				<h2 class="orsite-related__title"><?php esc_html_e( 'مقاله‌های مرتبط', 'lax-theme-child' ); ?></h2>
 				<div class="orsite-card-grid">
 					<?php
 					foreach ( $related as $post ) : // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
@@ -111,8 +105,8 @@ get_header();
 		<?php
 		the_post_navigation(
 			array(
-				'prev_text' => esc_html__( 'Previous article', 'lax-theme-child' ),
-				'next_text' => esc_html__( 'Next article', 'lax-theme-child' ),
+				'prev_text' => esc_html__( 'مقاله‌ی قبلی', 'lax-theme-child' ),
+				'next_text' => esc_html__( 'مقاله‌ی بعدی', 'lax-theme-child' ),
 			)
 		);
 

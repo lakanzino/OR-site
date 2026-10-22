@@ -36,8 +36,8 @@ $is_home_listing = is_home() || is_front_page();
 			<?php
 			the_posts_pagination(
 				array(
-					'prev_text' => esc_html__( 'Previous', 'lax-theme-child' ),
-					'next_text' => esc_html__( 'Next', 'lax-theme-child' ),
+					'prev_text' => esc_html__( 'قبلی', 'lax-theme-child' ),
+					'next_text' => esc_html__( 'بعدی', 'lax-theme-child' ),
 				)
 			);
 			?>

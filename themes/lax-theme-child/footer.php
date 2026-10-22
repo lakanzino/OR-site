@@ -46,10 +46,6 @@ $hj_footer_pages = array(
 		'label' => 'پرسش‌های متداول',
 	),
 	array(
-		'url'   => hj_page_url( 'medical-disclaimer' ),
-		'label' => 'سلب مسئولیت پزشکی',
-	),
-	array(
 		'url'   => hj_page_url( 'privacy' ),
 		'label' => 'حریم خصوصی',
 	),
@@ -105,7 +101,6 @@ $hj_footer_pages = array(
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a>
 				— همه‌ی حقوق محفوظ است.
 			</p>
-			<p class="hj-footer__credit">متن‌های آموزشی، جایگزین مشاوره‌ی پزشکی نیستند.</p>
 		</div>
 
 	</div>

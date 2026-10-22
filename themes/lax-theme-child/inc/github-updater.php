@@ -166,14 +166,21 @@ function orsite_gh_release( $force = false ) {
 	$want    = array( ORSITE_GH_CHILD_ASSET, ORSITE_GH_PARENT_ASSET );
 	$release = null;
 	foreach ( $list as $item ) {
-		if ( empty( $item['assets'] ) || ! is_array( $item['assets'] ) ) {
+		if ( ! empty( $item['draft'] ) || ! empty( $item['prerelease'] ) ) {
 			continue;
 		}
-		foreach ( $item['assets'] as $asset ) {
-			if ( in_array( $asset['name'], $want, true ) ) {
-				$release = $item;
-				break 2;
+		if ( ! empty( $item['assets'] ) && is_array( $item['assets'] ) ) {
+			foreach ( $item['assets'] as $asset ) {
+				if ( isset( $asset['name'] ) && in_array( $asset['name'], $want, true ) ) {
+					$release = $item;
+					break 2;
+				}
 			}
+		}
+		$candidate_tag = isset( $item['tag_name'] ) ? (string) $item['tag_name'] : '';
+		if ( null !== orsite_gh_parse_tag_version( $candidate_tag, 'child-v' ) || null !== orsite_gh_parse_tag_version( $candidate_tag, 'parent-v' ) ) {
+			$release = $item;
+			break;
 		}
 	}
 
@@ -182,21 +189,42 @@ function orsite_gh_release( $force = false ) {
 		return is_array( $cache ) && isset( $cache['data'] ) ? $cache['data'] : $err;
 	}
 
+	$tag_name   = isset( $release['tag_name'] ) ? (string) $release['tag_name'] : '';
 	$normalized = array(
-		'tag_name'    => isset( $release['tag_name'] ) ? (string) $release['tag_name'] : '',
-		'name'        => isset( $release['name'] ) ? (string) $release['name'] : '',
+		'tag_name'     => $tag_name,
+		'name'         => isset( $release['name'] ) ? (string) $release['name'] : '',
 		'published_at' => isset( $release['published_at'] ) ? (string) $release['published_at'] : '',
-		'html_url'    => isset( $release['html_url'] ) ? (string) $release['html_url'] : ORSITE_GH_WEB . '/releases',
-		'body'        => isset( $release['body'] ) ? (string) $release['body'] : '',
-		'assets'      => array(),
+		'html_url'     => isset( $release['html_url'] ) ? (string) $release['html_url'] : ORSITE_GH_WEB . '/releases',
+		'body'         => isset( $release['body'] ) ? (string) $release['body'] : '',
+		'assets'       => array(),
 	);
-	foreach ( $release['assets'] as $asset ) {
-		$normalized['assets'][] = array(
-			'name'                 => (string) $asset['name'],
-			'browser_download_url' => isset( $asset['browser_download_url'] ) ? (string) $asset['browser_download_url'] : '',
-			'url'                  => isset( $asset['url'] ) ? (string) $asset['url'] : '',
-			'size'                 => isset( $asset['size'] ) ? (int) $asset['size'] : 0,
-		);
+	$have_names = array();
+	if ( ! empty( $release['assets'] ) && is_array( $release['assets'] ) ) {
+		foreach ( $release['assets'] as $asset ) {
+			$aname                     = (string) $asset['name'];
+			$have_names[ $aname ]      = true;
+			$normalized['assets'][] = array(
+				'name'                 => $aname,
+				'browser_download_url' => isset( $asset['browser_download_url'] ) ? (string) $asset['browser_download_url'] : '',
+				'url'                  => isset( $asset['url'] ) ? (string) $asset['url'] : '',
+				'accept'               => 'application/octet-stream',
+				'size'                 => isset( $asset['size'] ) ? (int) $asset['size'] : 0,
+			);
+		}
+	}
+	if ( '' !== $tag_name ) {
+		foreach ( array( ORSITE_GH_CHILD_ASSET, ORSITE_GH_PARENT_ASSET, ORSITE_GH_MANIFEST_ASSET ) as $expected_name ) {
+			if ( isset( $have_names[ $expected_name ] ) ) {
+				continue;
+			}
+			$normalized['assets'][] = array(
+				'name'                 => $expected_name,
+				'browser_download_url' => ORSITE_GH_WEB . '/raw/' . rawurlencode( $tag_name ) . '/releases/' . rawurlencode( $expected_name ),
+				'url'                  => ORSITE_GH_API . '/contents/releases/' . rawurlencode( $expected_name ) . '?ref=' . rawurlencode( $tag_name ),
+				'accept'               => 'application/vnd.github.raw+json',
+				'size'                 => 0,
+			);
+		}
 	}
 
 	update_option( 'orsite_gh_release_cache', array( 'time' => time(), 'data' => $normalized ), false );
@@ -238,13 +266,16 @@ function orsite_gh_download_asset( $asset ) {
 		}
 	}
 
-	if ( null === $body && ! empty( $asset['url'] ) && orsite_gh_token() ) {
-		// Fall back to the API asset endpoint with the octet-stream accept header.
+	if ( null === $body && ! empty( $asset['url'] ) ) {
+		// Fall back to the API asset / contents endpoint.
+		$accept  = ! empty( $asset['accept'] ) ? (string) $asset['accept'] : 'application/octet-stream';
 		$headers = array(
-			'Accept'        => 'application/octet-stream',
-			'Authorization' => 'Bearer ' . orsite_gh_token(),
-			'User-Agent'    => 'hamyarjarahi-theme-updater',
+			'Accept'     => $accept,
+			'User-Agent' => 'hamyarjarahi-theme-updater',
 		);
+		if ( orsite_gh_token() ) {
+			$headers['Authorization'] = 'Bearer ' . orsite_gh_token();
+		}
 		$response = wp_remote_get(
 			$asset['url'],
 			array(
