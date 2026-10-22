@@ -85,7 +85,11 @@ function lax_theme_child_github_release( $force = false ) {
 			}
 
 			if ( '' === $zip ) {
-				continue;
+				// GitHub Release assets are also published under /releases/ in this
+				// repo, so the updater can fall back to the raw file at that tag.
+				$zip = 'https://raw.githubusercontent.com/' . LAX_THEME_CHILD_GH_REPO
+					. '/' . $candidate['tag_name']
+					. '/releases/lax-theme-child-' . $matches[1] . '.zip';
 			}
 
 			$release = array(
