@@ -36,6 +36,7 @@ LIVE_PUBLISHED_PATHS = {
     "/patient-guide/fear-of-anesthesia-awareness/",
     "/patient-guide/mental-preparation-before-surgery/",
     "/patient-guide/anesthesia-consultation/",
+    "/patient-guide/anesthesia-side-effects/",
     "/patient-guide/pacu-recovery/",
     "/patient-guide/post-surgery-pain/",
     "/patient-guide/early-walking-after-surgery/",
