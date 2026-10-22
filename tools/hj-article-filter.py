@@ -45,6 +45,7 @@ LIVE_PUBLISHED_PATHS = {
     "/patient-guide/suture-removal/",
     "/patient-guide/warning-signs-after-surgery/",
     "/or-environment/surgical-team-roles/",
+    "/surgery/appendectomy-overview/",
     "/glossary/",
 }
 
