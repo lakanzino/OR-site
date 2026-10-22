@@ -150,6 +150,10 @@ add_filter( 'pre_set_site_transient_update_themes', 'lax_theme_child_github_chec
  * @return mixed
  */
 function lax_theme_child_github_theme_info( $result, $action, $args ) {
+	if ( 'theme_information' !== $action ) {
+		return $result;
+	}
+
 	if ( ! is_object( $args ) || empty( $args->slug ) || $args->slug !== get_stylesheet() ) {
 		return $result;
 	}
@@ -181,13 +185,18 @@ function lax_theme_child_github_theme_info( $result, $action, $args ) {
 add_filter( 'themes_api', 'lax_theme_child_github_theme_info', 10, 3 );
 
 /**
- * Drop the cached release when WordPress is forced to re-check for updates.
+ * Clear the cached release when someone deletes the update transient manually
+ * (e.g. a "check again" click that unsets it) so the next request is fresh.
  *
- * @param mixed $transient The `update_themes` transient.
- * @return mixed
+ * Note: WordPress also deletes this transient internally on every refresh, so
+ * the cache is only cleared on an explicit empty/unset by an admin request.
  */
-function lax_theme_child_github_clear_cache( $transient ) {
+function lax_theme_child_github_clear_cache() {
+	if ( ! is_admin() ) {
+		return;
+	}
+
 	delete_site_transient( 'lax_theme_child_gh_release' );
-	return $transient;
 }
-add_action( 'delete_site_transient_update_themes', 'lax_theme_child_github_clear_cache' );
+add_action( 'load-update-core.php', 'lax_theme_child_github_clear_cache' );
+add_action( 'load-themes.php', 'lax_theme_child_github_clear_cache' );
