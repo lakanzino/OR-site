@@ -3,7 +3,7 @@
  * Plugin Name:       به‌روزرسانی قالب از GitHub — همیار جراحی
  * Plugin URI:        https://github.com/lakanzino/OR-site
  * Description:       کانال به‌روزرسانی قالب‌های lax-theme و lax-theme-child از GitHub Releases؛ نسخه‌ی جدید را در «پیشخوان → به‌روزرسانی‌ها» نشان می‌دهد. بدون نیاز به توکن، بدون به‌روزرسانی خودکار.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            محمدرضا لک
@@ -19,7 +19,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'LAXGHU_REPO', 'lakanzino/OR-site' );
-define( 'LAXGHU_VERSION', '1.0.0' );
+define( 'LAXGHU_VERSION', '1.0.1' );
+
+/**
+ * Pick the first download URL that actually answers.
+ *
+ * GitHub release assets are the primary channel. When a release has no asset
+ * (as with packages committed under `/releases`), two mirrors are tried in
+ * order because `raw.githubusercontent.com` is not reachable from every host.
+ *
+ * @param string[] $urls Candidate URLs, most preferred first.
+ * @return string First reachable URL, or the first candidate as a last resort.
+ */
+function laxghu_first_reachable( array $urls ) {
+	foreach ( $urls as $url ) {
+		$head = wp_remote_head(
+			$url,
+			array(
+				'timeout'     => 7,
+				'redirection' => 3,
+				'user-agent'  => 'WordPress; ' . home_url( '/' ),
+			)
+		);
+
+		if ( ! is_wp_error( $head ) && 200 === (int) wp_remote_retrieve_response_code( $head ) ) {
+			return $url;
+		}
+	}
+
+	return $urls[0];
+}
 
 /**
  * Release tag prefix => theme stylesheet slug.
@@ -86,9 +115,14 @@ function laxghu_releases( $force = false ) {
 			}
 
 			if ( '' === $zip ) {
-				// Built packages are also committed under /releases at the same tag.
-				$zip = 'https://raw.githubusercontent.com/' . LAXGHU_REPO . '/' . $release['tag_name']
-					. '/releases/' . $slug . '-' . $m[1] . '.zip';
+				// Built packages are committed under `/releases` at the same tag.
+				$asset = 'releases/' . $slug . '-' . $m[1] . '.zip';
+				$zip   = laxghu_first_reachable(
+					array(
+						'https://cdn.jsdelivr.net/gh/' . LAXGHU_REPO . '@' . $release['tag_name'] . '/' . $asset,
+						'https://raw.githubusercontent.com/' . LAXGHU_REPO . '/' . $release['tag_name'] . '/' . $asset,
+					)
+				);
 			}
 
 			$found[ $slug ] = array(

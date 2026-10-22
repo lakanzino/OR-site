@@ -29,6 +29,35 @@ if ( ! defined( 'LAX_THEME_CHILD_GH_REPO' ) ) {
 }
 
 /**
+ * Pick the first download URL that actually answers.
+ *
+ * GitHub release assets are the primary channel. When a release has no asset
+ * (as with packages committed under `/releases`), two mirrors are tried in
+ * order because `raw.githubusercontent.com` is not reachable from every host.
+ *
+ * @param string[] $urls Candidate URLs, most preferred first.
+ * @return string First reachable URL, or the first candidate as a last resort.
+ */
+function lax_theme_child_first_reachable( array $urls ) {
+	foreach ( $urls as $url ) {
+		$head = wp_remote_head(
+			$url,
+			array(
+				'timeout'     => 7,
+				'redirection' => 3,
+				'user-agent'  => 'WordPress; ' . home_url( '/' ),
+			)
+		);
+
+		if ( ! is_wp_error( $head ) && 200 === (int) wp_remote_retrieve_response_code( $head ) ) {
+			return $url;
+		}
+	}
+
+	return $urls[0];
+}
+
+/**
  * Fetch (and cache) the newest `child-v*` release from GitHub.
  *
  * @param bool $force Bypass the cache.
@@ -85,11 +114,14 @@ function lax_theme_child_github_release( $force = false ) {
 			}
 
 			if ( '' === $zip ) {
-				// GitHub Release assets are also published under /releases/ in this
-				// repo, so the updater can fall back to the raw file at that tag.
-				$zip = 'https://raw.githubusercontent.com/' . LAX_THEME_CHILD_GH_REPO
-					. '/' . $candidate['tag_name']
-					. '/releases/lax-theme-child-' . $matches[1] . '.zip';
+				// Built packages are committed under `/releases` at the same tag.
+				$asset = 'releases/lax-theme-child-' . $matches[1] . '.zip';
+				$zip   = lax_theme_child_first_reachable(
+					array(
+						'https://cdn.jsdelivr.net/gh/' . LAX_THEME_CHILD_GH_REPO . '@' . $candidate['tag_name'] . '/' . $asset,
+						'https://raw.githubusercontent.com/' . LAX_THEME_CHILD_GH_REPO . '/' . $candidate['tag_name'] . '/' . $asset,
+					)
+				);
 			}
 
 			$release = array(
