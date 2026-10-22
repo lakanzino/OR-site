@@ -48,6 +48,7 @@ LIVE_PUBLISHED_PATHS = {
     "/surgery/appendectomy-overview/",
     "/surgery/appendectomy-preparation/",
     "/surgery/appendectomy-recovery/",
+    "/surgery/cesarean-overview/",
     "/glossary/",
 }
 
