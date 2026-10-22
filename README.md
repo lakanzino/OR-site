@@ -18,6 +18,18 @@
 - `design/` — پیش‌نمایش HTML طراحی جاری.
 - `data/` — موجودی دسته‌بندی‌شده‌ی فایل‌های قالب والد.
 
+
+## به‌روزرسانی قالب‌ها از GitHub (پیشخوان)
+
+وردپرس فقط به‌روزرسانی‌های WordPress.org را می‌بیند؛ برای همین کانال GitHub ساخته شده است:
+
+1. **یک‌بار** افزونه‌ی `lax-github-updater` را نصب و فعال کنید:
+   [releases/lax-github-updater-1.0.0.zip](https://github.com/lakanzino/OR-site/raw/child-v0.9.2/releases/lax-github-updater-1.0.0.zip)
+2. از آن به بعد، هر ریلیز `child-vX.Y.Z` در «پیشخوان → به‌روزرسانی‌ها» و «نمایش → پوسته‌ها» دیده می‌شود.
+3. برای انتشار نسخه‌ی جدید: نسخه را در `style.css` و `LAX_THEME_CHILD_VERSION` بالا ببرید، ZIP را در `releases/` بگذارید، تگ `child-vX.Y.Z` و Release بسازید.
+
+قطعه‌ی کد همان کانال داخل خود قالب هم هست (`themes/lax-theme-child/inc/github-updater.php`، ADR-011)؛ افزونه برای سایت‌هایی است که قالبشان هنوز آن فایل را ندارد.
+
 ## نصب
 
 1. قالب والد `lax-theme` را نصب کنید (فعال نکنید).
