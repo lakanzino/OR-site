@@ -46,6 +46,7 @@ LIVE_PUBLISHED_PATHS = {
     "/patient-guide/warning-signs-after-surgery/",
     "/or-environment/surgical-team-roles/",
     "/surgery/appendectomy-overview/",
+    "/surgery/appendectomy-preparation/",
     "/glossary/",
 }
 
