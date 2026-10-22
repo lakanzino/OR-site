@@ -7,7 +7,7 @@
 | جزء | نسخه | مسیر |
 |---|---|---|
 | قالب والد `lax-theme` | 1.0.1 | [`themes/lax-theme/`](themes/lax-theme/) |
-| قالب فرزند `lax-theme-child` | 0.4.0 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
+| قالب فرزند `lax-theme-child` | 0.9.2 (کانال به‌روزرسانی GitHub) | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
 | ساختار محتوا (`ORSITE_STRUCTURE_VERSION`) | 1.0.0 | `themes/lax-theme-child/inc/content-types.php` |
 
 ## ساختار مخزن

@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.4.0
+Stable tag: 0.9.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.9.2 =
+* نسخه‌ی آزمایشی: افزودن کانال به‌روزرسانی از GitHub Releases (inc/github-updater.php).
+* هشدار: بستهٔ ظاهری این نسخه هنوز پایه‌ی 0.4.0 است؛ فقط برای آزمون نمایش به‌روزرسانی در پیشخوان.
 
 = 0.1.0 =
 * اسکلت اولیه‌ی فرزند و ساختار محتوا (inc/content-types.php، نسخه‌ی ساختار 1.0.0).

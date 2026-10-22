@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.4.0' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.9.2' );
 }
 
 /**
@@ -32,6 +32,11 @@ require_once get_stylesheet_directory() . '/inc/article-display.php';
  */
 require_once get_stylesheet_directory() . '/inc/image-sizes.php';
 require_once get_stylesheet_directory() . '/inc/media-blocks.php';
+
+/**
+ * Load the GitHub release update channel (dashboard update notices).
+ */
+require_once get_stylesheet_directory() . '/inc/github-updater.php';
 
 /**
  * Child theme setup.
