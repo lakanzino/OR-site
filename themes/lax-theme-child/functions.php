@@ -14,8 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.11.0' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.11.1' );
 }
+
+/**
+ * Load Solar Hijri (Jalali) date conversion & unified byline helpers.
+ */
+require_once get_stylesheet_directory() . '/inc/jalali-date.php';
 
 /**
  * Load content architecture (post types and taxonomies).

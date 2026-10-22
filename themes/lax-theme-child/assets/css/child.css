@@ -1485,11 +1485,7 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 }
 
 .hj-page-byline {
-	background: var(--bx-soft);
-	border: 2px solid var(--bx-line);
-	border-radius: 14px;
-	box-shadow: var(--bx-inset);
-	padding: 0.9rem 1.1rem;
+	display: none;
 }
 
 .hj-page-updated {

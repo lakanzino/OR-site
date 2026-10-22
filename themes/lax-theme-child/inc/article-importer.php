@@ -824,7 +824,9 @@ function hj_importer_snapshot_post( WP_Post $post ): array {
 		'thumb_id'      => $thumb_id,
 		'thumb_alt'     => trim( $thumb_alt ),
 		'thumb_hash'    => $thumb_hash,
-		'modified'      => get_post_modified_time( 'Y-m-d H:i', false, $post ),
+		'modified'      => function_exists( 'hj_get_jalali_post_modified_date' )
+			? hj_get_jalali_post_modified_date( $post->ID, 'datetime' )
+			: get_post_modified_time( 'Y-m-d H:i', false, $post ),
 	);
 }
 
@@ -1129,7 +1131,9 @@ function hj_importer_record_history( array $entry ): void {
 	array_unshift(
 		$log,
 		array(
-			'time'         => current_time( 'Y-m-d H:i' ),
+			'time'         => function_exists( 'hj_format_jalali_timestamp' )
+				? hj_format_jalali_timestamp( time(), 'datetime' )
+				: current_time( 'Y-m-d H:i' ),
 			'user'         => $user && $user->exists() ? $user->display_name : 'مدیر',
 			'slug'         => isset( $entry['slug'] ) ? (string) $entry['slug'] : '',
 			'title'        => isset( $entry['title'] ) ? (string) $entry['title'] : '',

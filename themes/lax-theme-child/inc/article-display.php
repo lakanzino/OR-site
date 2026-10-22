@@ -167,6 +167,33 @@ function orsite_clean_content_disclaimers_and_tables( $content, $append_canonica
 		}
 	}
 
+	// 6. Strip redundant in-body duplicate byline block (`.hj-page-byline` or leading dual author/date paragraph).
+	if ( false !== stripos( $content, 'hj-page-byline' ) ) {
+		$cleaned = preg_replace(
+			'/\s*<p\b[^>]*\bhj-page-byline\b[^>]*>.*?<\/p>\s*/isu',
+			"\n",
+			$content
+		);
+		if ( is_string( $cleaned ) ) {
+			$content = ltrim( $cleaned );
+		}
+	}
+	if ( false !== strpos( $content, 'تاریخ نگارش' ) && false !== strpos( $content, 'نویسنده' ) ) {
+		$cleaned = preg_replace(
+			'/^\s*<p\b[^>]*>\s*<strong>\s*نویسنده\s*:?\s*<\/strong>.*?تاریخ\s+نگارش.*?<\/p>\s*/isu',
+			'',
+			$content
+		);
+		if ( is_string( $cleaned ) ) {
+			$content = ltrim( $cleaned );
+		}
+	}
+
+	// 7. Convert any stray inline Gregorian dates in Persian text to Solar Hijri (Jalali).
+	if ( function_exists( 'hj_convert_inline_gregorian_dates' ) ) {
+		$content = hj_convert_inline_gregorian_dates( $content );
+	}
+
 	if ( $append_canonical ) {
 		$content = rtrim( $content ) . "\n" . ORSITE_CANONICAL_DISCLAIMER_HTML . "\n";
 	}

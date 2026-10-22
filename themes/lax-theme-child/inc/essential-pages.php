@@ -693,6 +693,76 @@ function hj_v0102_normalize_article_disclaimers() {
 add_action( 'init', 'hj_v0102_normalize_article_disclaimers', 101 );
 
 /**
+ * One-time migration on upgrade to 0.11.1:
+ *   1) Strip redundant in-body `.hj-page-byline` dual author/date blocks from
+ *      static pages so only the single clean Jalali header meta remains.
+ *   2) Convert stray inline Gregorian dates (e.g. «۲۰۲۶/۱۰/۲۰» or «۲۰۲۶-۱۰-۲۰»)
+ *      in static pages and articles into Solar Hijri (Jalali), preserving
+ *      original `post_modified` timestamps.
+ *
+ * @return void
+ */
+function hj_v0111_normalize_bylines_and_jalali() {
+	if ( wp_installing() || get_option( 'hj_v0111_jalali_byline_done' ) ) {
+		return;
+	}
+	try {
+		global $wpdb;
+		if ( ! function_exists( 'orsite_clean_content_disclaimers_and_tables' ) ) {
+			update_option( 'hj_v0111_jalali_byline_done', '0.11.1' );
+			return;
+		}
+
+		$posts = get_posts(
+			array(
+				'post_type'      => array( 'page', 'patient_guide', 'or_environment', 'surgery', 'student_content', 'glossary', 'post' ),
+				'post_status'    => array( 'publish', 'draft', 'pending', 'future', 'private' ),
+				'posts_per_page' => -1,
+				'no_found_rows'  => true,
+			)
+		);
+
+		$changed_any = false;
+		if ( is_array( $posts ) ) {
+			foreach ( $posts as $p ) {
+				if ( empty( $p->post_content ) ) {
+					continue;
+				}
+				$is_article = ( 'page' !== $p->post_type && 'glossary' !== $p->post_type );
+				$cleaned    = orsite_clean_content_disclaimers_and_tables( (string) $p->post_content, $is_article );
+				if ( is_string( $cleaned ) && $cleaned !== $p->post_content ) {
+					$wpdb->update( // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+						$wpdb->posts,
+						array( 'post_content' => $cleaned ),
+						array( 'ID' => (int) $p->ID ),
+						array( '%s' ),
+						array( '%d' )
+					);
+					clean_post_cache( (int) $p->ID );
+					$changed_any = true;
+				}
+			}
+		}
+
+		if ( $changed_any ) {
+			if ( function_exists( 'wp_cache_flush' ) ) {
+				wp_cache_flush();
+			}
+			if ( has_action( 'litespeed_purge_all' ) ) {
+				do_action( 'litespeed_purge_all' );
+			}
+		}
+
+		update_option( 'hj_v0111_jalali_byline_done', '0.11.1' );
+	} catch ( \Throwable $e ) {
+		if ( function_exists( 'error_log' ) ) {
+			error_log( 'Hamyar Jarahi v0.11.1 Jalali/byline migration caught: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		}
+	}
+}
+add_action( 'init', 'hj_v0111_normalize_bylines_and_jalali', 102 );
+
+/**
  * Launch checks for administrators. The theme never changes permalink
  * or search-engine-visibility settings silently; it only warns here.
  *

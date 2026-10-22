@@ -28,10 +28,15 @@ get_header();
 					<div class="orsite-article__lead"><?php the_excerpt(); ?></div>
 				<?php endif; ?>
 				<div class="orsite-article__meta">
-					<span class="orsite-article__author"><?php echo esc_html( get_the_author() ); ?></span>
-					<time datetime="<?php echo esc_attr( get_the_date( DATE_W3C ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
-					<?php if ( get_the_modified_time( 'U' ) > get_the_time( 'U' ) ) : ?>
-						<time datetime="<?php echo esc_attr( get_the_modified_date( DATE_W3C ) ); ?>"><?php echo esc_html( 'به‌روزرسانی: ' . get_the_modified_date() ); ?></time>
+					<?php
+					$hj_author_label = function_exists( 'hj_get_clean_author_label' ) ? hj_get_clean_author_label( get_the_ID() ) : get_the_author();
+					$hj_pub_jalali   = function_exists( 'hj_get_jalali_post_date' ) ? hj_get_jalali_post_date( get_the_ID() ) : get_the_date();
+					$hj_mod_jalali   = function_exists( 'hj_get_jalali_post_modified_date' ) ? hj_get_jalali_post_modified_date( get_the_ID() ) : get_the_modified_date();
+					?>
+					<span class="orsite-article__author"><?php echo esc_html( $hj_author_label ); ?></span>
+					<time datetime="<?php echo esc_attr( get_the_date( DATE_W3C ) ); ?>"><?php echo esc_html( $hj_pub_jalali ); ?></time>
+					<?php if ( get_the_modified_time( 'U' ) > get_the_time( 'U' ) && $hj_mod_jalali !== $hj_pub_jalali ) : ?>
+						<time datetime="<?php echo esc_attr( get_the_modified_date( DATE_W3C ) ); ?>"><?php echo esc_html( 'به‌روزرسانی: ' . $hj_mod_jalali ); ?></time>
 					<?php endif; ?>
 					<span class="orsite-article__reading"><?php echo esc_html( orsite_reading_time( $article_content ) ); ?> <?php esc_html_e( 'دقیقه مطالعه', 'lax-theme-child' ); ?></span>
 				</div>

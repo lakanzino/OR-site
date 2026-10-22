@@ -544,7 +544,9 @@ function hj_roadmap_compute_progress( bool $include_optional = false ): array {
 				'has_alt'    => '' !== trim( $alt_txt ),
 				'has_meta'   => '' !== trim( $meta_desc ),
 				'has_faq'    => $has_faq,
-				'updated_at' => get_post_modified_time( 'Y-m-d', false, $matched ),
+				'updated_at' => function_exists( 'hj_get_jalali_post_modified_date' )
+					? hj_get_jalali_post_modified_date( $matched->ID, 'numeric' )
+					: get_post_modified_time( 'Y-m-d', false, $matched ),
 			);
 		}
 
