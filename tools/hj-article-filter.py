@@ -382,16 +382,23 @@ def audit_article(pkg_dir: pathlib.Path) -> tuple[list[str], list[str], list[str
         passed.append("عدم ذکر نام نویسنده در سراسر متن و متادیتای مقاله تأیید شد.")
 
     blockquotes = re.findall(r"<blockquote\b[^>]*>(.*?)</blockquote>", html, re.S)
-    if len(blockquotes) != 1:
-        errors.append(f"تعداد بلوک نقل‌قول خاطره باید دقیقاً ۱ عدد باشد (یافت‌شده: {len(blockquotes)}).")
+    post_status = manifest.get("post_status", "draft").strip()
+    if len(blockquotes) > 1:
+        errors.append(f"بیش از ۱ بلوک نقل‌قول در مقاله مجاز نیست (یافت‌شده: {len(blockquotes)}).")
+    elif len(blockquotes) == 0:
+        passed.append("بدون بلوک نقل‌قول/خاطره (۰ عدد — رعایت ریتم طبیعی و پرهیز از یکنواختی فرمولی بین مقالات).")
     else:
         bq_words = len(strip_tags(blockquotes[0]).split())
         bq_pos_ratio = html.find("<blockquote") / max(1, len(html))
-        if bq_words < 70:
-            warnings.append(f"خاطره‌ی نقل‌قول کوتاه است ({bq_words} واژه).")
+        if bq_words < 12:
+            warnings.append(f"نقل‌قول بیش از حد کوتاه است ({bq_words} واژه).")
+        elif post_status == "draft" and bq_words > 85:
+            warnings.append(
+                f"خاطره/نقل‌قول طولانی است ({bq_words} واژه؛ در مقالات جدید باید کوتاه و گذرا — حداکثر ۸۵ واژه — باشد و سریع رد شود)."
+            )
         else:
             passed.append(
-                f"خاطره‌ی آموزنده‌ی اتاق عمل داخل <blockquote> ثبت شده است ({bq_words} واژه، موقعیت نسبی در بدنه: {int(bq_pos_ratio * 100)}٪)."
+                f"نقل‌قول/خاطره‌ی کوتاه داخل <blockquote> ثبت شده است ({bq_words} واژه، موقعیت نسبی در بدنه: {int(bq_pos_ratio * 100)}٪)."
             )
 
     # 7. Headings & Internal Links & SEO Metadata Audit (inc/article-importer.php parity)
