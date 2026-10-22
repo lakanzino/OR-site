@@ -22,6 +22,14 @@
 - دامنه‌ی رسمی سایت: **hamyarjarahi.ir**
 - برنامه‌ی استقرار: سایت ظرف ۲۴ ساعت آینده (تا 2026-10-21) روی هاست قرار می‌گیرد؛ قالب والد `lax-theme` 1.0.1 و فرزند `lax-theme-child` 0.4.0 از Release گیت‌هاب (`child-v0.4.0`) نصب خواهند شد.
 
+## [اصلاح و همگام‌سازی] — 2026-10-22
+
+- **بازگردانی کد واقعی:** `themes/lax-theme-child/` با نسخهٔ 0.9.1 مستقر روی سایت (از Drive) جایگزین شد؛ ۲۹ فایل شامل `inc/github-updater.php` (صفحهٔ پیشخوان «بروزرسانی گیت‌هاب»)، `inc/analytics.php`، `inc/seo-basics.php`، `inc/essential-pages.php`، `inc/article-importer.php` و `content-imports/`.
+- **حذف انحراف:** ریلیز آزمایشی `child-v0.9.2` (بر پایهٔ 0.4.0) و افزونهٔ موقت `lax-github-updater` حذف شدند؛ کانال موازی با کانال داخلی قالب بود و باعث از دست رفتن صفحهٔ GitHub در پیشخوان شد.
+- **ریلیز درست:** `child-v0.9.1` با assetهای قرارداد قالب: `lax-theme-child.zip`، `lax-theme.zip`، `orsite-release.json` (در `releases/`).
+- **آینه‌ی محتوا:** ۵ مقاله (`article.json`/`content.html`/`featured.webp`)، ۶ برگه، و اسناد حاکم در `content/live-mirror/`.
+- **اسناد محتوا:** `docs/content/CONTENT-ROADMAP-v2-MERGED.fa.md`، `docs/content/ARTICLE-STYLE-GUIDE.fa.md`، `docs/content/NEXT-ARTICLES-PLAN.md`.
+
 ## [0.9.2] — 2026-10-22
 
 - **کانال به‌روزرسانی GitHub (ADR-011):** فایل `inc/github-updater.php` در قالب فرزند اضافه شد؛ قالب حالا ریلیزهای `lakanzino/OR-site` را می‌خواند و نسخه‌ی جدید را در پیشخوان نشان می‌دهد.

@@ -7,7 +7,7 @@
 | جزء | نسخه | مسیر |
 |---|---|---|
 | قالب والد `lax-theme` | 1.0.1 | [`themes/lax-theme/`](themes/lax-theme/) |
-| قالب فرزند `lax-theme-child` | 0.9.2 (کانال به‌روزرسانی GitHub) | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
+| قالب فرزند `lax-theme-child` | 0.9.1 (همان نسخهٔ مستقر روی سایت) | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
 | ساختار محتوا (`ORSITE_STRUCTURE_VERSION`) | 1.0.0 | `themes/lax-theme-child/inc/content-types.php` |
 
 ## ساختار مخزن
@@ -19,16 +19,15 @@
 - `data/` — موجودی دسته‌بندی‌شده‌ی فایل‌های قالب والد.
 
 
-## به‌روزرسانی قالب‌ها از GitHub (پیشخوان)
+## به‌روزرسانی از پیشخوان (قابلیت داخلی قالب)
 
-وردپرس فقط به‌روزرسانی‌های WordPress.org را می‌بیند؛ برای همین کانال GitHub ساخته شده است:
+قالب از نسخهٔ 0.5.0 صفحهٔ **«بروزرسانی گیت‌هاب»** را در پیشخوان دارد: ذخیرهٔ توکن، اتصال به همین
+مخزن، مقایسهٔ نسخهٔ نصب‌شده با آخرین ریلیز، پیش‌نمایش فایل‌های تغییرکرده و به‌روزرسانی فایلی
+(فقط فایل‌های متفاوت جایگزین می‌شوند).
 
-1. **یک‌بار** افزونه‌ی `lax-github-updater` (نسخه‌ی 1.0.2) را نصب و فعال کنید:
-   [releases/lax-github-updater-1.0.2.zip](https://github.com/lakanzino/OR-site/raw/child-v0.9.2/releases/lax-github-updater-1.0.2.zip)
-2. از آن به بعد، هر ریلیز `child-vX.Y.Z` در «پیشخوان → به‌روزرسانی‌ها» و «نمایش → پوسته‌ها» دیده می‌شود.
-3. برای انتشار نسخه‌ی جدید: نسخه را در `style.css` و `LAX_THEME_CHILD_VERSION` بالا ببرید، ZIP را در `releases/` بگذارید، تگ `child-vX.Y.Z` و Release بسازید.
-
-قطعه‌ی کد همان کانال داخل خود قالب هم هست (`themes/lax-theme-child/inc/github-updater.php`، ADR-011)؛ افزونه برای سایت‌هایی است که قالبشان هنوز آن فایل را ندارد.
+**قرارداد ریلیز:** تگ `child-vX.Y.Z` + سه فایل در Assets:
+`lax-theme-child.zip`، `lax-theme.zip`، `orsite-release.json`.
+این سه فایل در [`releases/`](releases/) ساخته و نگه‌داری می‌شوند و باید در صفحهٔ هر ریلیز آپلود شوند.
 
 ## نصب
 
