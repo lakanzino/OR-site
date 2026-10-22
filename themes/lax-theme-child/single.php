@@ -28,8 +28,12 @@ get_header();
 					<div class="orsite-article__lead"><?php the_excerpt(); ?></div>
 				<?php endif; ?>
 				<div class="orsite-article__meta">
+					<span class="orsite-article__author"><?php echo esc_html( get_the_author() ); ?></span>
 					<time datetime="<?php echo esc_attr( get_the_date( DATE_W3C ) ); ?>"><?php echo esc_html( get_the_date() ); ?></time>
-					<span class="orsite-article__reading"><?php echo esc_html( orsite_reading_time( $article_content ) ); ?> <?php esc_html_e( 'min read', 'lax-theme-child' ); ?></span>
+					<?php if ( get_the_modified_time( 'U' ) > get_the_time( 'U' ) ) : ?>
+						<time datetime="<?php echo esc_attr( get_the_modified_date( DATE_W3C ) ); ?>"><?php echo esc_html( 'به‌روزرسانی: ' . get_the_modified_date() ); ?></time>
+					<?php endif; ?>
+					<span class="orsite-article__reading"><?php echo esc_html( orsite_reading_time( $article_content ) ); ?> <?php esc_html_e( 'دقیقه مطالعه', 'lax-theme-child' ); ?></span>
 				</div>
 			</header>
 
@@ -81,8 +85,10 @@ get_header();
 				</div>
 			</div>
 
-			<div class="orsite-disclaimer">
-				<?php esc_html_e( '[متن نمونه — توسط تیم محتوا جایگزین شود]', 'lax-theme-child' ); ?>
+			<div class="orsite-disclaimer" role="note">
+				<strong><?php esc_html_e( 'سلب مسئولیت پزشکی:', 'lax-theme-child' ); ?></strong>
+				<?php esc_html_e( 'این متن آموزش عمومی است و جایگزین معاینه، تشخیص و دستور پزشک و تیم درمان شما نیست. برای تصمیم درمانی با تیم درمانی که پرونده‌تان را دیده است مشورت کنید؛ در وضعیت فوری در ایران با ۱۱۵ تماس بگیرید.', 'lax-theme-child' ); ?>
+				<a href="<?php echo esc_url( hj_page_url( 'medical-disclaimer' ) ); ?>"><?php esc_html_e( 'متن کامل سلب مسئولیت پزشکی', 'lax-theme-child' ); ?></a>
 			</div>
 		</article>
 

@@ -43,8 +43,9 @@ $is_home_listing = is_home() || is_front_page();
 			?>
 		<?php else : ?>
 			<div class="orsite-empty">
-				<h1><?php esc_html_e( 'Nothing found', 'lax-theme-child' ); ?></h1>
-				<p><?php esc_html_e( '[متن نمونه — توسط تیم محتوا جایگزین شود]', 'lax-theme-child' ); ?></p>
+				<h1><?php esc_html_e( 'هنوز نوشته‌ای در این فهرست منتشر نشده است', 'lax-theme-child' ); ?></h1>
+				<p><?php esc_html_e( 'مقاله‌های همیار جراحی پس از بازبینی مرحله‌ای منتشر می‌شوند. از صفحه‌ی خانه، بخش مناسب مسیرتان را انتخاب کنید یا در سایت جستجو کنید.', 'lax-theme-child' ); ?></p>
+				<div class="orsite-hero__search"><?php get_search_form(); ?></div>
 			</div>
 		<?php endif; ?>
 	</main>

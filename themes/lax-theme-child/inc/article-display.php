@@ -31,6 +31,44 @@ function orsite_article_taxonomy_map() {
 }
 
 /**
+ * Clean Persian archive titles without the generic "Archives:" prefix.
+ * Keeps the visible H1 and the document title aligned with the section
+ * name a patient actually chose.
+ *
+ * @param string $title Default archive title.
+ * @return string
+ */
+function orsite_archive_title( $title ) {
+	if ( is_post_type_archive() ) {
+		$object = get_queried_object();
+		if ( $object && isset( $object->labels->name ) ) {
+			return $object->labels->name;
+		}
+		$post_type = get_query_var( 'post_type' );
+		if ( is_string( $post_type ) && $post_type ) {
+			$object = get_post_type_object( $post_type );
+			if ( $object ) {
+				return $object->labels->name;
+			}
+		}
+	}
+	if ( is_category() || is_tag() || is_tax() ) {
+		$term = get_queried_object();
+		if ( $term && isset( $term->name ) ) {
+			return $term->name;
+		}
+	}
+	if ( is_author() ) {
+		$author = get_queried_object();
+		if ( $author && isset( $author->display_name ) ) {
+			return $author->display_name;
+		}
+	}
+	return $title;
+}
+add_filter( 'get_the_archive_title', 'orsite_archive_title' );
+
+/**
  * Add stable anchor ids to H2/H3 headings and collect the TOC.
  *
  * Runs on `the_content` before wpautop so raw headings are still plain.

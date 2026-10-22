@@ -102,8 +102,8 @@ function orsite_content_map(): array {
 							'children' => array(
 								'surgeon'          => 'جراح و دستیار',
 								'anesthesia-team'  => 'تیم بیهوشی',
-								'scrub-technician' => 'تکنیسین اسکراب',
-								'circulator'       => 'تکنیسین سیرکولر',
+								'scrub-technician' => 'تکنسین اسکراب',
+								'circulator'       => 'تکنسین سیرکولر',
 								'recovery-nurse'   => 'پرستار ریکاوری و بخش',
 								'support-staff'    => 'پرسنل استریلیزاسیون و خدمات',
 							),

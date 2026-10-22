@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.9.2' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.9.1' );
 }
 
 /**
@@ -34,9 +34,32 @@ require_once get_stylesheet_directory() . '/inc/image-sizes.php';
 require_once get_stylesheet_directory() . '/inc/media-blocks.php';
 
 /**
- * Load the GitHub release update channel (dashboard update notices).
+ * Load the essential static pages (data is generated from
+ * content/pages/*.md by scripts/build-essential-pages.py).
+ */
+require_once get_stylesheet_directory() . '/inc/essential-pages-data.php';
+require_once get_stylesheet_directory() . '/inc/essential-pages.php';
+
+/**
+ * Load baseline technical SEO (silent when an SEO plugin is active).
+ */
+require_once get_stylesheet_directory() . '/inc/seo-basics.php';
+
+/**
+ * Load analytics & search-console connections (dashboard codes page,
+ * GA4/Clarity tags, verification metas, dashboard deep links).
+ */
+require_once get_stylesheet_directory() . '/inc/analytics.php';
+
+/**
+ * Load the GitHub updater (dashboard connection, versions, file-level updates).
  */
 require_once get_stylesheet_directory() . '/inc/github-updater.php';
+
+/**
+ * Load the single-article package importer (ZIP -> post + SEO + featured image).
+ */
+require_once get_stylesheet_directory() . '/inc/article-importer.php';
 
 /**
  * Child theme setup.
