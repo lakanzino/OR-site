@@ -3,7 +3,7 @@
   "slug": "appendectomy-recovery",
   "title": "بعد از آپاندکتومی (عمل آپاندیس) چه مراقبت‌هایی لازم است؟",
   "post_type": "surgery",
-  "post_status": "draft",
+  "post_status": "publish",
   "taxonomy": {
     "taxonomy": "surgery_stage",
     "term": "after-surgery"
@@ -40,7 +40,7 @@
   },
   "featured_image": {
     "file": "featured.webp",
-    "alt": "مراقبت و همراهی ایمن بیمار هنگام برخاستن آرام از تخت پس از جراحی آپاندکتومی"
+    "alt": "مراقبت پرستار اتاق عمل از بیمار در بخش ریکاوری پس از جراحی آپاندکتومی همراه با بالش کوچک حمایتی روی شکم"
   },
   "story_slot": {
     "slot_id": "E",

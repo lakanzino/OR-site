@@ -47,6 +47,7 @@ LIVE_PUBLISHED_PATHS = {
     "/or-environment/surgical-team-roles/",
     "/surgery/appendectomy-overview/",
     "/surgery/appendectomy-preparation/",
+    "/surgery/appendectomy-recovery/",
     "/glossary/",
 }
 
