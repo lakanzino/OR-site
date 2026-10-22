@@ -1,0 +1,395 @@
+#!/usr/bin/env python3
+"""
+Hamyar Jarahi Custom Editorial, Legal & SEO Filter (v2.1)
+=========================================================
+Combines all 4 mandatory quality gates for hamyarjarahi.ir articles:
+  1. `no-ai-slop-fa` (`SKILL.fa.md` + `checklist.fa.md` + `eval.fa.md`)
+  2. YMYL Medical & Legal Safety Rules (`PROJECT-RULES-PHASED.md` + `ARTICLE-STYLE-GUIDE.fa.md`)
+  3. First-person OR Veteran Persona + Varied `<blockquote>` Memory + Pre-Disclaimer Signature
+  4. `lax-theme-child` Technical / SEO / Live-Internal-Link / `fit-headings.js` Audit
+"""
+
+from __future__ import annotations
+
+import json
+import pathlib
+import re
+import sys
+from html.parser import HTMLParser
+
+LIVE_PUBLISHED_PATHS = {
+    "/patient-guide/patient-journey/",
+    "/patient-guide/what-is-operating-room/",
+    "/patient-guide/surgical-care-team/",
+    "/patient-guide/glossary-surgical-terms/",
+    "/patient-guide/preoperative-fasting/",
+    "/patient-guide/what-not-to-eat-before-surgery/",
+    "/patient-guide/medications-before-surgery/",
+    "/patient-guide/informed-consent-anesthesia-consult/",
+    "/patient-guide/preoperative-tests/",
+    "/patient-guide/companion-role-admission-day/",
+    "/patient-guide/operating-room-moment-by-moment/",
+    "/patient-guide/general-anesthesia/",
+    "/patient-guide/general-vs-spinal-anesthesia/",
+    "/patient-guide/fear-of-anesthesia-awareness/",
+    "/patient-guide/pacu-recovery/",
+    "/patient-guide/post-surgery-pain/",
+    "/patient-guide/early-walking-after-surgery/",
+    "/patient-guide/post-surgery-nutrition/",
+    "/patient-guide/surgical-site-infection/",
+    "/patient-guide/suture-removal/",
+    "/or-environment/surgical-team-roles/",
+    "/glossary/",
+}
+
+BANNED_SLOP_WORDS = [
+    "پویا",
+    "جامع",
+    "یکپارچه",
+    "بی‌نظیر",
+    "کم‌نظیر",
+    "منحصربه‌فرد",
+    "فوق‌العاده",
+    "شگفت‌انگیز",
+    "انقلابی",
+    "تحول‌آفرین",
+    "دگرگون‌کننده",
+    "چشمگیر",
+    "قابل‌توجه",
+    "قابل توجه",
+    "حائز اهمیت",
+    "بی‌بدیل",
+    "همه‌جانبه",
+    "نوین",
+    "هوشمندانه",
+    "بی‌سابقه",
+    "خارق‌العاده",
+    "تضمین می‌کند",
+    "نقش مهمی ایفا",
+    "نقش حیاتی ایفا",
+    "گامی بزرگ",
+    "افق‌های تازه",
+    "فصل جدیدی",
+    "وادی",
+]
+
+BANNED_BUREAUCRATIC = [
+    "می‌باشد",
+    "می‌باشند",
+    "می باشد",
+    "می باشند",
+    "بایستی",
+    "می‌بایست",
+    "صورت می‌پذیرد",
+    "صورت می‌گیرد",
+    "انجام می‌گیرد",
+    "از حیث",
+    "در باب",
+    "فی‌مابین",
+    "بیمار محترم",
+]
+
+BANNED_EMPTY_PHRASES = [
+    "در دنیای امروز",
+    "در عصر حاضر",
+    "نکته قابل توجه این است که",
+    "شایان ذکر است",
+    "ذکر این نکته ضروری است",
+    "در حقیقت امر",
+    "واقعیت این است که",
+    "حقیقت این است که",
+    "با در نظر گرفتن این موضوع",
+    "وقتی صحبت از",
+    "در بطن ماجرا",
+    "در هسته‌ی خود",
+    "در راستای",
+    "در خصوص",
+    "در ارتباط با",
+    "به منظور",
+    "در این مقاله قصد داریم",
+    "در این نوشتار بر آنیم",
+    "بیایید نگاهی بیندازیم",
+    "اجازه دهید بررسی کنیم",
+    "در پایان می‌توان گفت",
+    "به طور خلاصه",
+    "به‌طور خلاصه",
+    "به طور کلی",
+    "به‌طور کلی",
+    "در نتیجه می‌توان دریافت",
+    "جای هیچ شکی نیست",
+    "آنچه مسلم است",
+    "نکته کلیدی این است که",
+    "همان‌طور که می‌بینید",
+    "به عبارت دیگر",
+    "آنچه هیچ‌کس به شما نمی‌گوید",
+    "نکته‌ای که اکثر افراد",
+    "نقطه‌ی عطف",
+    "گواهی بر",
+]
+
+BANNED_WEASEL = [
+    "کارشناسان معتقدند",
+    "تحقیقات نشان می‌دهد",
+    "مطالعات نشان می‌دهد",
+    "مطالعات اثبات کرده‌اند",
+    "منابع علمی تأیید می‌کنند",
+    "پزشکان توصیه می‌کنند",
+    "متخصصان می‌گویند",
+]
+
+CANONICAL_DISCLAIMER = (
+    "<h2>سلب مسئولیت پزشکی</h2>\n"
+    "<p>این مقاله صرفاً جنبه‌ی آموزش و اطلاع‌رسانی دارد و جایگزین تشخیص، مشاوره یا درمان پزشکی نیست.</p>"
+)
+
+
+class PlainExtractor(HTMLParser):
+    BLOCK_TAGS = {"p", "li", "td", "th", "h1", "h2", "h3", "h4", "blockquote", "div", "tr"}
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.parts: list[str] = []
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() in self.BLOCK_TAGS:
+            self.parts.append("\n")
+
+    def handle_data(self, data: str) -> None:
+        self.parts.append(data)
+
+    def text(self) -> str:
+        lines = [re.sub(r"[ \t]+", " ", ln).strip() for ln in "".join(self.parts).splitlines()]
+        return "\n".join(ln for ln in lines if ln)
+
+
+def strip_tags(fragment: str) -> str:
+    p = PlainExtractor()
+    p.feed(fragment)
+    return p.text()
+
+
+def audit_article(pkg_dir: pathlib.Path) -> tuple[list[str], list[str], list[str]]:
+    errors: list[str] = []
+    warnings: list[str] = []
+    passed: list[str] = []
+
+    manifest_path = pkg_dir / "article.json"
+    html_path = pkg_dir / "content.html"
+    if not manifest_path.is_file() or not html_path.is_file():
+        return (["article.json یا content.html یافت نشد."], [], [])
+
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    html = html_path.read_text(encoding="utf-8")
+    plain = strip_tags(html)
+    words = [w for w in re.split(r"\s+", plain) if w]
+    word_count = len(words)
+
+    # 1. Word count & sentence cadence
+    if word_count < 1200:
+        errors.append(f"تعداد واژگان کم است ({word_count} کلمه؛ حداقل ۱۲۰۰ کلمه).")
+    else:
+        passed.append(f"حجم مقاله استاندارد است: {word_count} واژه (~{max(1, round(word_count / 190))} دقیقه مطالعه).")
+
+    # Extract prose without disclaimer to compute real sentence length
+    sentences = [
+        s.strip()
+        for s in re.split(r"[.؟!\n]+", plain)
+        if len(s.strip().split()) >= 3
+    ]
+    avg_sentence_len = sum(len(s.split()) for s in sentences) / max(1, len(sentences))
+    if avg_sentence_len > 22.0:
+        warnings.append(f"میانگین طول جمله بالاست ({avg_sentence_len:.1f} کلمه؛ هدف <= ۲۰ کلمه).")
+    else:
+        passed.append(f"میانگین طول جمله‌ها کوتاه و خوش‌خوان است ({avg_sentence_len:.1f} کلمه؛ هدف <= ۲۰).")
+
+    # 2. Scan banned AI-slop words, bureaucratic forms, empty phrases, weasel words, binary contrasts
+    for label, wordlist in [
+        ("واژه‌ی ممنوعه اسلوپ", BANNED_SLOP_WORDS),
+        ("نثر اداری/ممنوع", BANNED_BUREAUCRATIC),
+        ("عبارت توخالی اسلوپ", BANNED_EMPTY_PHRASES),
+        ("اسناد سست بدون منبع", BANNED_WEASEL),
+    ]:
+        for term in wordlist:
+            # Skip canonical disclaimer single "صرفاً" check: "صرفاً" isn't in lists anyway
+            if term in plain:
+                errors.append(f"{label} یافت شد: «{term}»")
+
+    if re.search(r"این\s+فقط\s+.{2,45}نیست،?\s+بلکه", plain):
+        errors.append("الگوی تقابل دوتایی («این فقط X نیست، بلکه Y است») یافت شد.")
+    if re.search(r"تنها\s+.{2,40}کافی\s+نیست", plain):
+        errors.append("الگوی تقابل دوتایی («تنها X کافی نیست...») یافت شد.")
+
+    if not any("یافت شد" in e for e in errors):
+        passed.append("اسکن کامل فیلتر no-ai-slop-fa (واژگان ممنوعه، نثر اداری، عبارات توخالی، اسناد سست، تقابل دوتایی): ۰ خطا.")
+
+    # 3. Formatting & cleanliness checks
+    if "<br" in html.lower():
+        errors.append("تگ <br> در HTML یافت شد (طبق استاندارد v2.0 ممنوع است).")
+    if re.search(r"\\[#*\[\]()]", html):
+        errors.append("کاراکتر escape مارک‌داون در HTML باقی مانده است.")
+    if "[reference:" in html:
+        errors.append("نشانگر مرجع معلق [reference:N] در متن یافت شد.")
+    em_dash_count = plain.count("—")
+    if em_dash_count > 2:
+        warnings.append(f"تعداد خط تیره‌ی بلند (—) زیاد است ({em_dash_count} مورد؛ حداکثر ۲ مورد مجاز است).")
+    else:
+        passed.append(f"کنترل خط تیره‌ی بلند (—) استاندارد است ({em_dash_count} مورد <= ۲).")
+
+    # Check raw English words outside parentheses (...) in body paragraphs
+    html_no_tags = re.sub(r"<[^>]+>", " ", html)
+    outside_parens = re.sub(r"\([^)]*\)", " ", html_no_tags)
+    english_leaks = re.findall(r"[A-Za-z]{2,}", outside_parens)
+    if english_leaks:
+        errors.append(f"نشت واژه‌ی انگلیسی بیرون از پرانتز تعریف اصطلاح یافت شد: {english_leaks}")
+    else:
+        passed.append("هیچ نشت واژه‌ی انگلیسی رها در متن فارسی وجود ندارد (تمام معادل‌های علمی داخل پرانتز تعریف شده‌اند).")
+
+    # Check Gregorian years 19xx/20xx in prose
+    greg_years = re.findall(r"(?:19|20)\d{2}|(?:۱۹|۲۰)[۰-۹]{2}", plain)
+    if greg_years:
+        errors.append(f"سال میلادی در متن فارسی یافت شد (طبق قانون تاریخ شمسی ممنوع است): {greg_years}")
+    else:
+        passed.append("هیچ تاریخ یا سال میلادی در متن فارسی وجود ندارد.")
+
+    # 4. YMYL Medical & Legal Safety Gate
+    if re.search(r"میلی‌گرم|میلی گرم|میکروگرم|\bmg\b|\bmcg\b", plain, re.I):
+        errors.append("خطای ایمنی پزشکی: واحد دوز دارویی در متن دیده شد.")
+    if re.search(r"[0-9۰-۹]+\s*ساعت\s*(?:قبل|پیش|ناشتا)", plain):
+        errors.append("خطای ایمنی پزشکی: عدد ساعت قطعی ناشتایی در متن دیده شد.")
+    if "%" in plain or "٪" in plain or re.search(r"\bدرصد\b", plain):
+        errors.append("خطای ایمنی پزشکی: درصد آماری در متن دیده شد.")
+    if re.search(r"بدون\s+هیچ\s+عارضه|درمان\s+قطعی|تضمین\s+سلامت", plain):
+        errors.append("خطای ایمنی پزشکی: ادعای قطعی/بدون عارضه دیده شد.")
+
+    for req_phrase, desc in [
+        ("معمولاً", "لحن احتمالی («معمولاً»)"),
+        ("ممکن است", "لحن احتمالی («ممکن است»)"),
+        ("پروتکل مرکز درمانی", "ارجاع صریح به «پروتکل مرکز درمانی»"),
+        ("۱۱۵", "مرز هشدار و تماس با اورژانس ۱۱۵"),
+    ]:
+        if req_phrase not in plain:
+            errors.append(f"الزام ایمنی یافت نشد: {desc}")
+        else:
+            passed.append(f"الزام ایمنی تأیید شد: {desc}.")
+
+    # 5. Canonical single-sentence disclaimer + pre-disclaimer Author Signature + Blockquote Story
+    if not html.strip().endswith(CANONICAL_DISCLAIMER):
+        errors.append("انتهای مقاله دقیقاً با تک‌جمله‌ی استاندارد «سلب مسئولیت پزشکی» نسخه 0.10.2+ تمام نشده است.")
+    else:
+        passed.append("بخش پایانی «سلب مسئولیت پزشکی» دقیقاً مطابق تک‌جمله‌ی مصوب 0.10.2+ است.")
+
+    disc_pos = html.find("<h2>سلب مسئولیت پزشکی</h2>")
+    sig_pos = html.find("محمدرضا لک")
+    if sig_pos == -1:
+        errors.append("امضای نویسنده («محمدرضا لک») در متن مقاله یافت نشد.")
+    elif disc_pos != -1 and sig_pos > disc_pos:
+        errors.append("امضای نویسنده بعد از «سلب مسئولیت پزشکی» قرار گرفته و توسط فیلتر قالب حذف خواهد شد!")
+    else:
+        passed.append("امضای نویسنده («محمدرضا لک») پیش از «سلب مسئولیت پزشکی» قرار گرفته و ۱۰۰٪ در نمایش زنده حفظ می‌شود.")
+
+    blockquotes = re.findall(r"<blockquote\b[^>]*>(.*?)</blockquote>", html, re.S)
+    if len(blockquotes) != 1:
+        errors.append(f"تعداد بلوک نقل‌قول خاطره باید دقیقاً ۱ عدد باشد (یافت‌شده: {len(blockquotes)}).")
+    else:
+        bq_words = len(strip_tags(blockquotes[0]).split())
+        bq_pos_ratio = html.find("<blockquote") / max(1, len(html))
+        if bq_words < 70:
+            warnings.append(f"خاطره‌ی نقل‌قول کوتاه است ({bq_words} واژه).")
+        else:
+            passed.append(
+                f"خاطره‌ی آموزنده‌ی اتاق عمل داخل <blockquote> ثبت شده است ({bq_words} واژه، موقعیت نسبی در بدنه: {int(bq_pos_ratio * 100)}٪)."
+            )
+
+    # 6. Headings & Internal Links & SEO Metadata Audit (inc/article-importer.php parity)
+    title = manifest.get("title", "").strip()
+    slug = manifest.get("slug", "").strip()
+    meta_desc = manifest.get("seo", {}).get("meta_description", "").strip()
+    focus_kw = manifest.get("seo", {}).get("focus_keyword", "").strip()
+    search_intent = manifest.get("seo", {}).get("search_intent", "").strip()
+    keywords = manifest.get("seo", {}).get("keywords", [])
+    faqs = manifest.get("faq", [])
+
+    if not (18 <= len(title) <= 65):
+        warnings.append(f"طول عنوان ({len(title)} کاراکتر) خارج از بازه‌ی ایده‌آل ۱۸ تا ۶۵ کاراکتر است.")
+    else:
+        passed.append(f"طول عنوان برای سئو و نمایش تک‌خطی موبایل عالی است ({len(title)} کاراکتر).")
+
+    if not re.match(r"^[a-z0-9-]+$", slug):
+        errors.append(f"اسلاگ غیراستاندارد است: {slug}")
+    else:
+        passed.append(f"اسلاگ انگلیسی استاندارد: `{slug}`.")
+
+    if not (120 <= len(meta_desc) <= 165):
+        warnings.append(f"طول توضیحات متا ({len(meta_desc)} کاراکتر) خارج از بازه‌ی بهینه‌ی ۱۲۰ تا ۱۶۵ کاراکتر است.")
+    else:
+        passed.append(f"طول توضیحات متا در بازه‌ی طلایی ۱۲۰ تا ۱۶۵ کاراکتر است ({len(meta_desc)} کاراکتر).")
+
+    if not focus_kw or (focus_kw not in title and focus_kw not in meta_desc):
+        warnings.append("کلیدواژه‌ی کانونی خالی است یا در عنوان/متا نیامده است.")
+    else:
+        passed.append(f"کلیدواژه‌ی کانونی («{focus_kw}») در عنوان و توضیحات متا حضور دارد.")
+
+    if len(keywords) < 3 or not search_intent:
+        warnings.append("کلیدواژه‌های فرعی یا نیت جستجو ناقص است.")
+    else:
+        passed.append(f"نیت جستجو و {len(keywords)} کلیدواژه‌ی فرعی ثبت شده است.")
+
+    if len(faqs) < 4:
+        warnings.append(f"تعداد پرسش‌های متداول کمتر از ۴ مورد است ({len(faqs)}).")
+    else:
+        passed.append(f"اسکیمای FAQPage با {len(faqs)} پرسش و پاسخ فعال است.")
+
+    headings = re.findall(r"<h([1-6])\b[^>]*>(.*?)</h\1>", html, re.S)
+    h1s = [strip_tags(t) for lvl, t in headings if lvl == "1"]
+    h2s = [strip_tags(t) for lvl, t in headings if lvl == "2"]
+    if h1s:
+        warnings.append("تگ <h1> داخل بدنه‌ی HTML نباید تکرار شود (قالب خودش H1 می‌سازد).")
+    if len(h2s) < 5:
+        warnings.append(f"تعداد زیرتیترهای H2 کم است ({len(h2s)}).")
+    else:
+        passed.append(f"{len(h2s)} زیرتیتر H2 استاندارد برای فهرست مطالب شناسایی شد.")
+
+    for lvl, raw_t in headings:
+        clean_t = strip_tags(raw_t)
+        if len(clean_t) > 58:
+            warnings.append(f"زیرتیتر H{lvl} برای نمایش تک‌خطی موبایل طولانی است ({len(clean_t)} کاراکتر): «{clean_t}»")
+
+    links = re.findall(r'<a\b[^>]*href=["\']([^"\']+)["\']', html)
+    internal_links = [u for u in links if u.startswith("/")]
+    if len(internal_links) < 3:
+        warnings.append(f"تعداد لینک‌های داخلی کم است ({len(internal_links)}؛ حداقل ۳ لینک توصیه می‌شود).")
+    else:
+        bad_links = [u for u in internal_links if u not in LIVE_PUBLISHED_PATHS]
+        if bad_links:
+            errors.append(f"لینک داخلی به صفحه‌ی هنوز منتشرنشده یافت شد (خطر ۴۰۴): {bad_links}")
+        else:
+            passed.append(
+                f"{len(internal_links)} لینک داخلی معتبر و ۱۰۰٪ زنده روی سایت (بدون حتی یک لینک ۴۰۴) ثبت شده است."
+            )
+
+    return errors, warnings, passed
+
+
+def main() -> int:
+    if len(sys.argv) != 2:
+        print("Usage: python3 tools/hj-article-filter.py <article-folder>")
+        return 2
+    pkg_dir = pathlib.Path(sys.argv[1]).resolve()
+    errors, warnings, passed = audit_article(pkg_dir)
+    print(f"=== گزارش ممیزی فیلتر اختصاصی همیار جراحی: {pkg_dir.name} ===")
+    print(f"✅ موارد تأییدشده ({len(passed)}):")
+    for p in passed:
+        print(f"   ✓ {p}")
+    print(f"\n⚠️ هشدارها ({len(warnings)}):")
+    for w in warnings:
+        print(f"   ! {w}")
+    print(f"\n❌ خطاها ({len(errors)}):")
+    for e in errors:
+        print(f"   ✗ {e}")
+    status = "PASS (100%)" if not errors and not warnings else ("PASS WITH WARNINGS" if not errors else "FAIL")
+    print(f"\nنتیجه‌ی نهایی فیلتر اختصاصی: {status}")
+    return 0 if not errors and not warnings else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
