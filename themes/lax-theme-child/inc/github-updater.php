@@ -98,7 +98,7 @@ function lax_theme_child_github_release( $force = false ) {
 
 	if ( is_array( $releases ) ) {
 		foreach ( $releases as $candidate ) {
-			if ( empty( $candidate['tag_name'] ) || ! empty( $candidate['draft'] ) ) {
+			if ( empty( $candidate['tag_name'] ) || ! empty( $candidate['draft'] ) || ! empty( $candidate['prerelease'] ) ) {
 				continue;
 			}
 			if ( ! preg_match( '/^child-v(\d+\.\d+\.\d+)$/i', $candidate['tag_name'], $matches ) ) {

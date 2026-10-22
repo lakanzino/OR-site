@@ -3,7 +3,7 @@
  * Plugin Name:       به‌روزرسانی قالب از GitHub — همیار جراحی
  * Plugin URI:        https://github.com/lakanzino/OR-site
  * Description:       کانال به‌روزرسانی قالب‌های lax-theme و lax-theme-child از GitHub Releases؛ نسخه‌ی جدید را در «پیشخوان → به‌روزرسانی‌ها» نشان می‌دهد. بدون نیاز به توکن، بدون به‌روزرسانی خودکار.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            محمدرضا لک
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'LAXGHU_REPO', 'lakanzino/OR-site' );
-define( 'LAXGHU_VERSION', '1.0.1' );
+define( 'LAXGHU_VERSION', '1.0.2' );
 
 /**
  * Pick the first download URL that actually answers.
@@ -94,7 +94,7 @@ function laxghu_releases( $force = false ) {
 	$found = array();
 
 	foreach ( (array) $raw as $release ) {
-		if ( empty( $release['tag_name'] ) || ! empty( $release['draft'] ) ) {
+		if ( empty( $release['tag_name'] ) || ! empty( $release['draft'] ) || ! empty( $release['prerelease'] ) ) {
 			continue;
 		}
 

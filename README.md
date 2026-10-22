@@ -23,8 +23,8 @@
 
 وردپرس فقط به‌روزرسانی‌های WordPress.org را می‌بیند؛ برای همین کانال GitHub ساخته شده است:
 
-1. **یک‌بار** افزونه‌ی `lax-github-updater` (نسخه‌ی 1.0.1) را نصب و فعال کنید:
-   [releases/lax-github-updater-1.0.1.zip](https://github.com/lakanzino/OR-site/raw/child-v0.9.2/releases/lax-github-updater-1.0.1.zip)
+1. **یک‌بار** افزونه‌ی `lax-github-updater` (نسخه‌ی 1.0.2) را نصب و فعال کنید:
+   [releases/lax-github-updater-1.0.2.zip](https://github.com/lakanzino/OR-site/raw/child-v0.9.2/releases/lax-github-updater-1.0.2.zip)
 2. از آن به بعد، هر ریلیز `child-vX.Y.Z` در «پیشخوان → به‌روزرسانی‌ها» و «نمایش → پوسته‌ها» دیده می‌شود.
 3. برای انتشار نسخه‌ی جدید: نسخه را در `style.css` و `LAX_THEME_CHILD_VERSION` بالا ببرید، ZIP را در `releases/` بگذارید، تگ `child-vX.Y.Z` و Release بسازید.
 
