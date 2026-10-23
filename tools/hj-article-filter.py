@@ -51,6 +51,7 @@ LIVE_PUBLISHED_PATHS = {
     "/surgery/cesarean-overview/",
     "/surgery/cesarean-preparation/",
     "/surgery/cesarean-recovery/",
+    "/surgery/hernia-overview/",
     "/glossary/",
 }
 
