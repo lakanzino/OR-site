@@ -14,8 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.4.0' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.12.0' );
 }
+
+/**
+ * Load Solar Hijri (Jalali) date conversion & unified byline helpers.
+ */
+require_once get_stylesheet_directory() . '/inc/jalali-date.php';
 
 /**
  * Load content architecture (post types and taxonomies).
@@ -32,6 +37,48 @@ require_once get_stylesheet_directory() . '/inc/article-display.php';
  */
 require_once get_stylesheet_directory() . '/inc/image-sizes.php';
 require_once get_stylesheet_directory() . '/inc/media-blocks.php';
+
+/**
+ * Load the essential static pages (data is generated from
+ * content/pages/*.md by scripts/build-essential-pages.py).
+ */
+require_once get_stylesheet_directory() . '/inc/essential-pages-data.php';
+require_once get_stylesheet_directory() . '/inc/essential-pages.php';
+
+/**
+ * Load baseline technical SEO (silent when an SEO plugin is active).
+ */
+require_once get_stylesheet_directory() . '/inc/seo-basics.php';
+
+/**
+ * Load analytics & search-console connections (dashboard codes page,
+ * GA4/Clarity tags, verification metas, dashboard deep links).
+ */
+require_once get_stylesheet_directory() . '/inc/analytics.php';
+
+/**
+ * Load the GitHub updater (dashboard connection, versions, file-level updates).
+ */
+require_once get_stylesheet_directory() . '/inc/github-updater.php';
+
+/**
+ * Load high-performance Glossary & Auto-Tooltip Engine (5,000+ terms).
+ */
+require_once get_stylesheet_directory() . '/inc/glossary-engine.php';
+
+/**
+ * Load the multi-group package importer (ZIP -> post + SEO + featured image + audit).
+ */
+require_once get_stylesheet_directory() . '/inc/article-importer.php';
+
+/**
+ * Load the editorial roadmap catalog, admin publishing progress dashboard, and Glossary Admin.
+ */
+if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+	require_once get_stylesheet_directory() . '/inc/glossary-admin.php';
+	require_once get_stylesheet_directory() . '/inc/content-roadmap-data.php';
+	require_once get_stylesheet_directory() . '/inc/content-dashboard.php';
+}
 
 /**
  * Child theme setup.
@@ -54,6 +101,29 @@ function lax_theme_child_assets() {
 		get_stylesheet_directory_uri() . '/assets/css/child.css',
 		array( 'lax-theme-style' ),
 		LAX_THEME_CHILD_VERSION
+	);
+
+	wp_enqueue_style(
+		'lax-theme-child-glossary',
+		get_stylesheet_directory_uri() . '/assets/css/glossary.css',
+		array( 'lax-theme-child' ),
+		LAX_THEME_CHILD_VERSION
+	);
+
+	wp_enqueue_script(
+		'lax-theme-child-fit-headings',
+		get_stylesheet_directory_uri() . '/assets/js/fit-headings.js',
+		array(),
+		LAX_THEME_CHILD_VERSION,
+		true
+	);
+
+	wp_enqueue_script(
+		'lax-theme-child-glossary-tooltip',
+		get_stylesheet_directory_uri() . '/assets/js/glossary-tooltip.js',
+		array(),
+		LAX_THEME_CHILD_VERSION,
+		true
 	);
 }
 add_action( 'wp_enqueue_scripts', 'lax_theme_child_assets', 20 );
