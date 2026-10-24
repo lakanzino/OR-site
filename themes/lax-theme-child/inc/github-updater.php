@@ -17,6 +17,17 @@
  *  - `orsite-release.json` declares parent/child versions and changelog
  *    bullets; the tag is the fallback for the child version.
  *
+ * Release selection (since 0.12.1): every release returned by the API is
+ * parsed and the HIGHEST VERSION wins via version_compare(). The list order of
+ * `GET /repos/:owner/:repo/releases` is not guaranteed to be newest-first —
+ * for this repository it returns `child-v0.9.1` before `child-v0.12.0`, which
+ * made older builds report the installed theme as "up to date" forever.
+ *
+ * Connection state is reported honestly: a failed call never hides behind the
+ * cached release. The dashboard shows "قطع — داده‌ی ذخیره‌شده" with the real
+ * HTTP/transport error, and offers a self-test of every GitHub endpoint the
+ * updater uses (API, releases.atom, raw, codeload, token validity).
+ *
  * Security: fixed repository and asset allow-list, nonces and `update_themes`
  * capability on every action, the token is never printed in full and is never
  * written into logs, ZIP extraction rejects path traversal, and files are
@@ -48,30 +59,68 @@ if ( ! defined( 'ORSITE_GH_PARENT_ASSET' ) ) {
 if ( ! defined( 'ORSITE_GH_MANIFEST_ASSET' ) ) {
 	define( 'ORSITE_GH_MANIFEST_ASSET', 'orsite-release.json' );
 }
+if ( ! defined( 'ORSITE_GH_RAW' ) ) {
+	define( 'ORSITE_GH_RAW', 'https://raw.githubusercontent.com/lakanzino/OR-site' );
+}
+if ( ! defined( 'ORSITE_GH_CODELOAD' ) ) {
+	define( 'ORSITE_GH_CODELOAD', 'https://codeload.github.com/lakanzino/OR-site' );
+}
 
 /* -------------------------------------------------------------------------
  * Token handling
  * ---------------------------------------------------------------------- */
 
 /**
- * Resolve the GitHub token: wp-config.php constant wins, then the saved option.
+ * Resolve the GitHub token.
+ *
+ * Precedence: a token saved in this dashboard while "override" is on, then the
+ * `GITHUB_ACCESS_TOKEN` constant in wp-config.php, then the saved option.
  *
  * @return string Token or empty string.
  */
 function orsite_gh_token() {
+	$saved = (string) get_option( 'orsite_gh_token', '' );
+	if ( '' !== $saved && orsite_gh_token_override() ) {
+		return $saved;
+	}
 	if ( defined( 'GITHUB_ACCESS_TOKEN' ) && GITHUB_ACCESS_TOKEN ) {
 		return (string) GITHUB_ACCESS_TOKEN;
 	}
-	return (string) get_option( 'orsite_gh_token', '' );
+	return $saved;
 }
 
 /**
- * Is the token provided through wp-config.php (so the option is read-only)?
+ * Should the token saved in the dashboard win over wp-config.php?
+ *
+ * @return bool
+ */
+function orsite_gh_token_override() {
+	return '1' === (string) get_option( 'orsite_gh_token_override', '0' );
+}
+
+/**
+ * Where does the active token come from?
+ *
+ * @return string `override`, `constant`, `option` or `none`.
+ */
+function orsite_gh_token_source() {
+	$saved = (string) get_option( 'orsite_gh_token', '' );
+	if ( '' !== $saved && orsite_gh_token_override() ) {
+		return 'override';
+	}
+	if ( defined( 'GITHUB_ACCESS_TOKEN' ) && GITHUB_ACCESS_TOKEN ) {
+		return 'constant';
+	}
+	return '' !== $saved ? 'option' : 'none';
+}
+
+/**
+ * Is the active token the one from wp-config.php?
  *
  * @return bool
  */
 function orsite_gh_token_is_constant() {
-	return defined( 'GITHUB_ACCESS_TOKEN' ) && (bool) GITHUB_ACCESS_TOKEN;
+	return 'constant' === orsite_gh_token_source();
 }
 
 /**
@@ -94,141 +143,602 @@ function orsite_gh_mask_token( $token ) {
  * ---------------------------------------------------------------------- */
 
 /**
- * GET a URL with project headers and return body + code.
+ * One GET request that keeps everything needed to explain a failure.
  *
- * @param string $url      Absolute URL.
- * @param bool   $is_api   Add GitHub API headers (Accept + token).
- * @param int    $timeout  Seconds.
- * @return array|WP_Error { body, code, headers }
+ * @param string $url  Absolute URL.
+ * @param array  $args Optional: `auth` (bool), `accept` (string), `timeout`
+ *                     (int), `limit` (int, bytes) and `token` (string|null).
+ * @return array { url, body, code, error, ms, remaining, reset }
  */
-function orsite_gh_http( $url, $is_api = true, $timeout = 30 ) {
-	$headers = array(
-		'Accept'     => $is_api ? 'application/vnd.github+json' : '*/*',
-		'User-Agent' => 'hamyarjarahi-theme-updater',
-	);
-	$token   = orsite_gh_token();
-	if ( $is_api && $token ) {
-		$headers['Authorization'] = 'Bearer ' . $token;
-	}
-
-	$response = wp_remote_get(
-		$url,
+function orsite_gh_fetch( $url, $args = array() ) {
+	$args = wp_parse_args(
+		$args,
 		array(
-			'timeout'     => $timeout,
-			'redirection' => 5,
-			'headers'     => $headers,
+			'auth'    => false,
+			'accept'  => 'application/vnd.github+json',
+			'timeout' => 25,
+			'limit'   => 0,
+			'token'   => null,
 		)
 	);
 
-	if ( is_wp_error( $response ) ) {
-		return $response;
+	$token   = ( null === $args['token'] ) ? orsite_gh_token() : (string) $args['token'];
+	$headers = array(
+		'Accept'               => (string) $args['accept'],
+		'User-Agent'           => 'hamyarjarahi-theme-updater',
+		'X-GitHub-Api-Version' => '2022-11-28',
+	);
+	if ( $args['auth'] && '' !== $token ) {
+		$headers['Authorization'] = 'Bearer ' . $token;
 	}
 
+	$request = array(
+		'timeout'     => max( 5, (int) $args['timeout'] ),
+		'redirection' => 5,
+		'headers'     => $headers,
+	);
+	if ( (int) $args['limit'] > 0 ) {
+		$request['limit_response_size'] = (int) $args['limit'];
+	}
+
+	$start    = microtime( true );
+	$response = wp_remote_get( $url, $request );
+	$out      = array(
+		'url'       => $url,
+		'body'      => '',
+		'code'      => 0,
+		'error'     => '',
+		'ms'        => 0,
+		'remaining' => '',
+		'reset'     => 0,
+	);
+
+	if ( is_wp_error( $response ) ) {
+		$out['error'] = $response->get_error_message();
+		$out['ms']    = (int) round( ( microtime( true ) - $start ) * 1000 );
+		return $out;
+	}
+
+	$out['body'] = (string) wp_remote_retrieve_body( $response );
+	$out['code'] = (int) wp_remote_retrieve_response_code( $response );
+
+	$headers_all = wp_remote_retrieve_headers( $response );
+	if ( is_object( $headers_all ) && method_exists( $headers_all, 'getAll' ) ) {
+		$headers_all = $headers_all->getAll();
+	} elseif ( is_object( $headers_all ) ) {
+		$headers_all = get_object_vars( $headers_all );
+	}
+	if ( is_array( $headers_all ) ) {
+		$headers_all = array_change_key_case( $headers_all, CASE_LOWER );
+		if ( isset( $headers_all['x-ratelimit-remaining'] ) ) {
+			$out['remaining'] = (string) $headers_all['x-ratelimit-remaining'];
+		}
+		if ( isset( $headers_all['x-ratelimit-reset'] ) ) {
+			$out['reset'] = (int) $headers_all['x-ratelimit-reset'];
+		}
+	}
+
+	$out['ms'] = (int) round( ( microtime( true ) - $start ) * 1000 );
+
+	return $out;
+}
+
+/**
+ * Human readable explanation for a failed GitHub response.
+ *
+ * @param array $res Result of orsite_gh_fetch().
+ * @return string
+ */
+function orsite_gh_fetch_error( $res ) {
+	$code = isset( $res['code'] ) ? (int) $res['code'] : 0;
+
+	if ( ! empty( $res['error'] ) ) {
+		/* translators: %s: transport error message */
+		return sprintf( __( 'اتصال شبکه برقرار نشد: %s', 'lax-theme-child' ), $res['error'] );
+	}
+
+	$detail = '';
+	if ( ! empty( $res['body'] ) ) {
+		$json = json_decode( (string) $res['body'], true );
+		if ( is_array( $json ) && ! empty( $json['message'] ) ) {
+			$detail = (string) $json['message'];
+		}
+	}
+
+	switch ( $code ) {
+		case 401:
+			$msg = __( 'توکن گیت‌هاب نامعتبر یا منقضی است (HTTP 401). توکن را اصلاح یا پاک کنید.', 'lax-theme-child' );
+			break;
+		case 403:
+		case 429:
+			$msg = __( 'گیت‌هاب درخواست را محدود کرده است (محدودیت نرخ یا دسترسی). چند دقیقه بعد دوباره تلاش کنید.', 'lax-theme-child' );
+			break;
+		case 404:
+			$msg = __( 'مخزن یا فایل در گیت‌هاب پیدا نشد (HTTP 404). برای مخزن خصوصی، توکن لازم است.', 'lax-theme-child' );
+			break;
+		case 0:
+			$msg = __( 'پاسخی از گیت‌هاب دریافت نشد (خطای شبکه یا مسدود بودن دامنه روی هاست).', 'lax-theme-child' );
+			break;
+		default:
+			/* translators: %d: HTTP status code */
+			$msg = sprintf( __( 'گیت‌هاب کد HTTP %d برگرداند.', 'lax-theme-child' ), $code );
+	}
+
+	if ( '' !== $detail ) {
+		$msg .= ' (' . $detail . ')';
+	}
+	return $msg;
+}
+
+/**
+ * Legacy helper: GET a URL and return body + code (WP_Error on transport
+ * failure). Used by the download paths.
+ *
+ * @param string $url     Absolute URL.
+ * @param bool   $is_api  Send API headers + token.
+ * @param int    $timeout Seconds.
+ * @return array|WP_Error { body, code, headers }
+ */
+function orsite_gh_http( $url, $is_api = true, $timeout = 30 ) {
+	$res = orsite_gh_fetch(
+		$url,
+		array(
+			'auth'    => (bool) $is_api,
+			'accept'  => $is_api ? 'application/vnd.github+json' : '*/*',
+			'timeout' => (int) $timeout,
+		)
+	);
+	if ( '' !== $res['error'] ) {
+		return new WP_Error( 'orsite_gh_transport', $res['error'] );
+	}
 	return array(
-		'body'    => wp_remote_retrieve_body( $response ),
-		'code'    => (int) wp_remote_retrieve_response_code( $response ),
-		'headers' => wp_remote_retrieve_headers( $response ),
+		'body'    => $res['body'],
+		'code'    => $res['code'],
+		'headers' => array(),
+	);
+}
+
+/* -------------------------------------------------------------------------
+ * Release discovery
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Parse "child-v1.2.3" style tags into a bare version string.
+ *
+ * @param string $tag    Tag name.
+ * @param string $prefix Prefix such as `child-v` or `parent-v`.
+ * @return string|null
+ */
+function orsite_gh_parse_tag_version( $tag, $prefix = 'child-v' ) {
+	$tag = (string) $tag;
+	if ( 0 !== strpos( $tag, $prefix ) ) {
+		return null;
+	}
+	$version = substr( $tag, strlen( $prefix ) );
+	return preg_match( '/^\d+(\.\d+)*$/', $version ) ? $version : null;
+}
+
+/**
+ * Build the candidate list from raw release objects.
+ *
+ * Ordered by version (highest first) — never by the order the API happened to
+ * return, because `/releases` is not guaranteed to be newest-first and used to
+ * hand back an old tag first, which made the updater offer a stale release.
+ *
+ * @param array $items Raw release objects (API) or normalized atom items.
+ * @return array
+ */
+function orsite_gh_release_candidates( $items ) {
+	$cands = array();
+
+	foreach ( (array) $items as $item ) {
+		if ( ! is_array( $item ) ) {
+			continue;
+		}
+		if ( ! empty( $item['draft'] ) || ! empty( $item['prerelease'] ) ) {
+			continue;
+		}
+		$tag = isset( $item['tag_name'] ) ? (string) $item['tag_name'] : '';
+		if ( '' === $tag ) {
+			continue;
+		}
+		$child  = orsite_gh_parse_tag_version( $tag, 'child-v' );
+		$parent = ( null === $child ) ? orsite_gh_parse_tag_version( $tag, 'parent-v' ) : null;
+		if ( null === $child && null === $parent ) {
+			continue;
+		}
+		$when    = isset( $item['published_at'] ) ? (string) $item['published_at'] : '';
+		$cands[] = array(
+			'tag'     => $tag,
+			'child'   => $child,
+			'parent'  => $parent,
+			'version' => (string) ( null !== $child ? $child : $parent ),
+			'family'  => ( null !== $child ) ? 'child' : 'parent',
+			'when'    => $when,
+			'order'   => ( '' !== $when ) ? (int) strtotime( $when ) : 0,
+			'item'    => $item,
+		);
+	}
+
+	usort(
+		$cands,
+		static function ( $a, $b ) {
+			$cmp = version_compare( $b['version'], $a['version'] );
+			if ( 0 !== $cmp ) {
+				return ( $cmp > 0 ) ? 1 : -1;
+			}
+			return $b['order'] <=> $a['order'];
+		}
+	);
+
+	return $cands;
+}
+
+/**
+ * Pick the highest child release, falling back to the highest parent release.
+ *
+ * @param array $cands Candidates from orsite_gh_release_candidates().
+ * @return array|null
+ */
+function orsite_gh_pick_candidate( $cands ) {
+	$fallback = null;
+	foreach ( (array) $cands as $cand ) {
+		if ( 'child' === $cand['family'] ) {
+			return $cand;
+		}
+		if ( null === $fallback ) {
+			$fallback = $cand;
+		}
+	}
+	return $fallback;
+}
+
+/**
+ * Strip candidate entries down to what the dashboard needs to store.
+ *
+ * @param array $cands Candidates.
+ * @return array
+ */
+function orsite_gh_public_candidates( $cands ) {
+	$out = array();
+	foreach ( (array) $cands as $cand ) {
+		$out[] = array(
+			'tag'     => $cand['tag'],
+			'version' => $cand['version'],
+			'family'  => $cand['family'],
+			'when'    => $cand['when'],
+		);
+		if ( count( $out ) >= 12 ) {
+			break;
+		}
+	}
+	return $out;
+}
+
+/**
+ * Parse the public `releases.atom` feed into release objects.
+ *
+ * This channel needs no API and no token, so it still works on hosts where
+ * api.github.com is blocked.
+ *
+ * @param string $body Atom XML.
+ * @return array
+ */
+function orsite_gh_parse_atom_releases( $body ) {
+	$items = array();
+	if ( ! preg_match_all( '#<entry>(.*?)</entry>#s', (string) $body, $matches ) ) {
+		return $items;
+	}
+
+	foreach ( $matches[1] as $entry ) {
+		$tag = '';
+		if ( preg_match( '#Repository/\d+/([^<]+)#', $entry, $m ) ) {
+			$tag = trim( html_entity_decode( $m[1] ) );
+		}
+		if ( '' === $tag ) {
+			continue;
+		}
+
+		$name = '';
+		if ( preg_match( '#<title>(.*?)</title>#s', $entry, $m ) ) {
+			$name = trim( html_entity_decode( wp_strip_all_tags( $m[1] ) ) );
+		}
+
+		$when = '';
+		if ( preg_match( '#<updated>(.*?)</updated>#s', $entry, $m ) ) {
+			$when = trim( $m[1] );
+		}
+
+		$link = ORSITE_GH_WEB . '/releases/tag/' . rawurlencode( $tag );
+		if ( preg_match( '#<link[^>]+href="([^"]+)"#', $entry, $m ) ) {
+			$link = $m[1];
+		}
+
+		$text = '';
+		if ( preg_match( '#<content[^>]*>(.*?)</content>#s', $entry, $m ) ) {
+			$text = trim( wp_strip_all_tags( html_entity_decode( $m[1] ) ) );
+		}
+
+		$items[] = array(
+			'tag_name'     => $tag,
+			'name'         => $name,
+			'published_at' => $when,
+			'html_url'     => $link,
+			'body'         => $text,
+			'assets'       => array(),
+		);
+	}
+
+	return $items;
+}
+
+/**
+ * Repository copy of a release file (used when no attachment is uploaded).
+ *
+ * @param string $tag  Release tag.
+ * @param string $name File name.
+ * @return array
+ */
+function orsite_gh_repo_asset( $tag, $name ) {
+	return array(
+		'name'                 => $name,
+		'browser_download_url' => ORSITE_GH_WEB . '/raw/' . rawurlencode( $tag ) . '/releases/' . rawurlencode( $name ),
+		'url'                  => ORSITE_GH_API . '/contents/releases/' . rawurlencode( $name ) . '?ref=' . rawurlencode( $tag ),
+		'accept'               => 'application/vnd.github.raw+json',
+		'size'                 => 0,
+		'tag'                  => $tag,
 	);
 }
 
 /**
- * Fetch the release list and pick the newest release that carries our assets.
+ * Normalize one release: real attachments first, repository copies after.
  *
- * Result is cached for one hour unless $force is true.
- *
- * @param bool $force Bypass cache.
- * @return array|WP_Error Normalized release: tag_name, name, published_at,
- *                        html_url, body, assets[] {name, browser_download_url, url, size}.
+ * @param array  $item   Raw release object.
+ * @param string $source `api` or `atom`.
+ * @return array
  */
-function orsite_gh_release( $force = false ) {
-	$cache = get_option( 'orsite_gh_release_cache' );
-	if ( ! $force && is_array( $cache ) && isset( $cache['time'], $cache['data'] ) && ( time() - (int) $cache['time'] ) < HOUR_IN_SECONDS ) {
-		return $cache['data'];
-	}
-
-	$res = orsite_gh_http( ORSITE_GH_API . '/releases?per_page=10' );
-	if ( is_wp_error( $res ) ) {
-		return is_array( $cache ) && isset( $cache['data'] ) ? $cache['data'] : $res;
-	}
-	if ( 200 !== $res['code'] ) {
-		$hint = ( 403 === $res['code'] || 429 === $res['code'] )
-			? __( 'نرخ درخواست گیت‌هاب پر شده است؛ یک توکن دسترسی ذخیره کنید و دوباره تلاش کنید.', 'lax-theme-child' )
-			: __( 'پاسخ نامعتبر از API گیت‌هاب دریافت شد.', 'lax-theme-child' );
-		$fallback = is_array( $cache ) && isset( $cache['data'] ) ? $cache['data'] : null;
-		return $fallback ? $fallback : new WP_Error( 'orsite_gh_http_' . $res['code'], $hint );
-	}
-
-	$list = json_decode( $res['body'], true );
-	if ( ! is_array( $list ) ) {
-		return is_array( $cache ) && isset( $cache['data'] ) ? $cache['data'] : new WP_Error( 'orsite_gh_json', __( 'خروجی گیت‌هاب قابل خواندن نبود.', 'lax-theme-child' ) );
-	}
-
-	$want    = array( ORSITE_GH_CHILD_ASSET, ORSITE_GH_PARENT_ASSET );
-	$release = null;
-	foreach ( $list as $item ) {
-		if ( ! empty( $item['draft'] ) || ! empty( $item['prerelease'] ) ) {
-			continue;
-		}
-		if ( ! empty( $item['assets'] ) && is_array( $item['assets'] ) ) {
-			foreach ( $item['assets'] as $asset ) {
-				if ( isset( $asset['name'] ) && in_array( $asset['name'], $want, true ) ) {
-					$release = $item;
-					break 2;
-				}
-			}
-		}
-		$candidate_tag = isset( $item['tag_name'] ) ? (string) $item['tag_name'] : '';
-		if ( null !== orsite_gh_parse_tag_version( $candidate_tag, 'child-v' ) || null !== orsite_gh_parse_tag_version( $candidate_tag, 'parent-v' ) ) {
-			$release = $item;
-			break;
-		}
-	}
-
-	if ( ! $release ) {
-		$err = new WP_Error( 'orsite_gh_no_release', __( 'هیچ انتشاری با فایل‌های قالب در مخزن پیدا نشد.', 'lax-theme-child' ) );
-		return is_array( $cache ) && isset( $cache['data'] ) ? $cache['data'] : $err;
-	}
-
-	$tag_name   = isset( $release['tag_name'] ) ? (string) $release['tag_name'] : '';
-	$normalized = array(
-		'tag_name'     => $tag_name,
-		'name'         => isset( $release['name'] ) ? (string) $release['name'] : '',
-		'published_at' => isset( $release['published_at'] ) ? (string) $release['published_at'] : '',
-		'html_url'     => isset( $release['html_url'] ) ? (string) $release['html_url'] : ORSITE_GH_WEB . '/releases',
-		'body'         => isset( $release['body'] ) ? (string) $release['body'] : '',
+function orsite_gh_normalize_release( $item, $source = 'api' ) {
+	$tag  = isset( $item['tag_name'] ) ? (string) $item['tag_name'] : '';
+	$norm = array(
+		'tag_name'     => $tag,
+		'name'         => isset( $item['name'] ) ? (string) $item['name'] : '',
+		'published_at' => isset( $item['published_at'] ) ? (string) $item['published_at'] : '',
+		'html_url'     => ! empty( $item['html_url'] ) ? (string) $item['html_url'] : ORSITE_GH_WEB . '/releases/tag/' . rawurlencode( $tag ),
+		'body'         => isset( $item['body'] ) ? (string) $item['body'] : '',
 		'assets'       => array(),
+		'_source'      => (string) $source,
+		'_stale'       => false,
+		'_error'       => '',
+		'_fetched_at'  => time(),
 	);
-	$have_names = array();
-	if ( ! empty( $release['assets'] ) && is_array( $release['assets'] ) ) {
-		foreach ( $release['assets'] as $asset ) {
-			$aname                     = (string) $asset['name'];
-			$have_names[ $aname ]      = true;
-			$normalized['assets'][] = array(
+
+	$have = array();
+	if ( ! empty( $item['assets'] ) && is_array( $item['assets'] ) ) {
+		foreach ( $item['assets'] as $asset ) {
+			if ( empty( $asset['name'] ) ) {
+				continue;
+			}
+			$aname            = (string) $asset['name'];
+			$have[ $aname ]   = true;
+			$norm['assets'][] = array(
 				'name'                 => $aname,
 				'browser_download_url' => isset( $asset['browser_download_url'] ) ? (string) $asset['browser_download_url'] : '',
 				'url'                  => isset( $asset['url'] ) ? (string) $asset['url'] : '',
 				'accept'               => 'application/octet-stream',
 				'size'                 => isset( $asset['size'] ) ? (int) $asset['size'] : 0,
-			);
-		}
-	}
-	if ( '' !== $tag_name ) {
-		foreach ( array( ORSITE_GH_CHILD_ASSET, ORSITE_GH_PARENT_ASSET, ORSITE_GH_MANIFEST_ASSET ) as $expected_name ) {
-			if ( isset( $have_names[ $expected_name ] ) ) {
-				continue;
-			}
-			$normalized['assets'][] = array(
-				'name'                 => $expected_name,
-				'browser_download_url' => ORSITE_GH_WEB . '/raw/' . rawurlencode( $tag_name ) . '/releases/' . rawurlencode( $expected_name ),
-				'url'                  => ORSITE_GH_API . '/contents/releases/' . rawurlencode( $expected_name ) . '?ref=' . rawurlencode( $tag_name ),
-				'accept'               => 'application/vnd.github.raw+json',
-				'size'                 => 0,
+				'tag'                  => $tag,
 			);
 		}
 	}
 
-	update_option( 'orsite_gh_release_cache', array( 'time' => time(), 'data' => $normalized ), false );
-	return $normalized;
+	if ( '' !== $tag ) {
+		foreach ( array( ORSITE_GH_CHILD_ASSET, ORSITE_GH_PARENT_ASSET, ORSITE_GH_MANIFEST_ASSET ) as $expected ) {
+			if ( isset( $have[ $expected ] ) ) {
+				continue;
+			}
+			$norm['assets'][] = orsite_gh_repo_asset( $tag, $expected );
+		}
+	}
+
+	return $norm;
+}
+
+/**
+ * Remember how the last GitHub call went (drives the honest status card).
+ *
+ * @param array $state { ok, http, error, source, tag }.
+ */
+function orsite_gh_record_state( $state ) {
+	$prev = (array) get_option( 'orsite_gh_last_fetch', array() );
+	$now  = time();
+	$same = isset( $prev['ok'] )
+		&& (bool) $prev['ok'] === (bool) $state['ok']
+		&& ( isset( $prev['tag'] ) ? (string) $prev['tag'] : '' ) === (string) $state['tag']
+		&& ( isset( $prev['http'] ) ? (int) $prev['http'] : 0 ) === (int) $state['http'];
+
+	if ( $same && ( $now - (int) ( isset( $prev['time'] ) ? $prev['time'] : 0 ) ) < 600 ) {
+		return;
+	}
+
+	$state['time'] = $now;
+	update_option( 'orsite_gh_last_fetch', $state, false );
+}
+
+/**
+ * Ask GitHub for the newest theme release.
+ *
+ * Order of trust: REST API, then the public Atom feed. Every item is parsed and
+ * the HIGHEST VERSION wins — the first item of the list is never trusted.
+ *
+ * @return array { release, error, http, source, candidates, tried, time }
+ */
+function orsite_gh_fetch_remote_release() {
+	$out = array(
+		'release'    => null,
+		'error'      => '',
+		'http'       => 0,
+		'source'     => '',
+		'candidates' => array(),
+		'tried'      => array(),
+		'time'       => time(),
+	);
+
+	$api_url       = ORSITE_GH_API . '/releases?per_page=100';
+	$res           = orsite_gh_fetch( $api_url, array( 'auth' => true, 'timeout' => 15 ) );
+	$out['tried'][] = array(
+		'label' => __( 'API گیت‌هاب — فهرست انتشارها', 'lax-theme-child' ),
+		'url'   => $api_url,
+		'code'  => (int) $res['code'],
+		'ms'    => (int) $res['ms'],
+		'ok'    => ( 200 === (int) $res['code'] && '' === $res['error'] ),
+		'error' => ( 200 === (int) $res['code'] && '' === $res['error'] ) ? '' : orsite_gh_fetch_error( $res ),
+	);
+
+	if ( 200 === (int) $res['code'] && '' === $res['error'] ) {
+		$list = json_decode( (string) $res['body'], true );
+		if ( is_array( $list ) ) {
+			$cands = orsite_gh_release_candidates( $list );
+			if ( $cands ) {
+				$pick              = orsite_gh_pick_candidate( $cands );
+				$out['release']    = orsite_gh_normalize_release( $pick['item'], 'api' );
+				$out['source']     = 'api';
+				$out['http']       = 200;
+				$out['candidates'] = $cands;
+				return $out;
+			}
+			$out['error'] = __( 'در مخزن هیچ انتشاری با تگ child-vX.Y.Z پیدا نشد.', 'lax-theme-child' );
+		} else {
+			$out['error'] = __( 'خروجی JSON فهرست انتشارها خوانا نبود.', 'lax-theme-child' );
+		}
+	} else {
+		$out['http']  = (int) $res['code'];
+		$out['error'] = orsite_gh_fetch_error( $res );
+	}
+
+	// Fallback channel: public Atom feed on github.com (no API, no token).
+	$atom_url        = ORSITE_GH_WEB . '/releases.atom';
+	$atom            = orsite_gh_fetch(
+		$atom_url,
+		array(
+			'auth'    => false,
+			'accept'  => 'application/atom+xml, application/xml;q=0.9, */*;q=0.8',
+			'timeout' => 12,
+		)
+	);
+	$out['tried'][] = array(
+		'label' => __( 'خوراک Releases در github.com', 'lax-theme-child' ),
+		'url'   => $atom_url,
+		'code'  => (int) $atom['code'],
+		'ms'    => (int) $atom['ms'],
+		'ok'    => ( 200 === (int) $atom['code'] && '' === $atom['error'] ),
+		'error' => ( 200 === (int) $atom['code'] && '' === $atom['error'] ) ? '' : orsite_gh_fetch_error( $atom ),
+	);
+
+	if ( 200 === (int) $atom['code'] && '' === $atom['error'] ) {
+		$cands = orsite_gh_release_candidates( orsite_gh_parse_atom_releases( $atom['body'] ) );
+		if ( $cands ) {
+			$pick              = orsite_gh_pick_candidate( $cands );
+			$out['release']    = orsite_gh_normalize_release( $pick['item'], 'atom' );
+			$out['source']     = 'atom';
+			$out['http']       = 200;
+			$out['candidates'] = $cands;
+			$out['error']      = '';
+			return $out;
+		}
+		$out['error'] .= ' ' . __( 'خوراک Releases هم انتشاری برنگرداند.', 'lax-theme-child' );
+	}
+
+	return $out;
+}
+
+/**
+ * Newest theme release, cached for one hour and marked when it goes stale.
+ *
+ * @param bool $force Bypass the cache.
+ * @return array|WP_Error Normalized release, with `_stale` / `_error` flags.
+ */
+function orsite_gh_release( $force = false ) {
+	$cache = get_option( 'orsite_gh_release_cache' );
+	$valid = is_array( $cache ) && ! empty( $cache['data'] ) && is_array( $cache['data'] ) && ! empty( $cache['time'] );
+
+	if ( ! $force && $valid && ( time() - (int) $cache['time'] ) < HOUR_IN_SECONDS ) {
+		$cached                = $cache['data'];
+		$cached['_stale']      = false;
+		$cached['_error']      = '';
+		$cached['_fetched_at'] = (int) $cache['time'];
+		$cached['_source']     = isset( $cache['source'] ) ? (string) $cache['source'] : 'cache';
+		return $cached;
+	}
+
+	// Back off for ten minutes after a failure so an unreachable host does not
+	// turn every dashboard page load into two network timeouts.
+	$state = (array) get_option( 'orsite_gh_last_fetch', array() );
+	if ( ! $force && isset( $state['ok'], $state['time'] ) && ! $state['ok'] && ( time() - (int) $state['time'] ) < 10 * MINUTE_IN_SECONDS ) {
+		if ( $valid ) {
+			$stale                = $cache['data'];
+			$stale['_stale']      = true;
+			$stale['_fetched_at'] = (int) $cache['time'];
+			$stale['_source']     = isset( $cache['source'] ) ? (string) $cache['source'] : 'cache';
+			$stale['_error']      = isset( $state['error'] ) ? (string) $state['error'] : '';
+			$stale['_http']       = isset( $state['http'] ) ? (int) $state['http'] : 0;
+			return $stale;
+		}
+		return new WP_Error(
+			'orsite_gh_connection',
+			isset( $state['error'] ) && '' !== (string) $state['error'] ? (string) $state['error'] : __( 'اتصال به گیت‌هاب برقرار نشد.', 'lax-theme-child' )
+		);
+	}
+
+	$attempt = orsite_gh_fetch_remote_release();
+
+	if ( ! empty( $attempt['release'] ) ) {
+		update_option(
+			'orsite_gh_release_cache',
+			array(
+				'time'       => time(),
+				'source'     => $attempt['source'],
+				'data'       => $attempt['release'],
+				'candidates' => orsite_gh_public_candidates( $attempt['candidates'] ),
+				'tried'      => $attempt['tried'],
+			),
+			false
+		);
+		orsite_gh_record_state(
+			array(
+				'ok'     => true,
+				'http'   => (int) $attempt['http'],
+				'error'  => '',
+				'source' => (string) $attempt['source'],
+				'tag'    => (string) $attempt['release']['tag_name'],
+			)
+		);
+		return $attempt['release'];
+	}
+
+	orsite_gh_record_state(
+		array(
+			'ok'     => false,
+			'http'   => (int) $attempt['http'],
+			'error'  => (string) $attempt['error'],
+			'source' => '',
+			'tag'    => '',
+		)
+	);
+
+	if ( $valid ) {
+		$stale                = $cache['data'];
+		$stale['_stale']      = true;
+		$stale['_fetched_at'] = (int) $cache['time'];
+		$stale['_source']     = isset( $cache['source'] ) ? (string) $cache['source'] : 'cache';
+		$stale['_error']      = (string) $attempt['error'];
+		$stale['_http']       = (int) $attempt['http'];
+		return $stale;
+	}
+
+	return new WP_Error(
+		'orsite_gh_connection',
+		'' !== $attempt['error'] ? (string) $attempt['error'] : __( 'اتصال به گیت‌هاب برقرار نشد.', 'lax-theme-child' )
+	);
 }
 
 /**
@@ -248,52 +758,86 @@ function orsite_gh_find_asset( $release, $name ) {
 }
 
 /**
- * Download a release asset to a temporary file.
+ * Download a release file to a temporary path.
  *
- * Public assets download from `browser_download_url` first (no token needed);
- * if that fails and a token exists, the API asset endpoint is used instead.
+ * Tries in order: the release attachment, the copy committed at the release
+ * tag on raw.githubusercontent.com, the contents API, and finally the whole
+ * repository ZIP of that tag (codeload) — so an update still works when one of
+ * the GitHub domains is unreachable from the host.
  *
- * @param array $asset Asset array from orsite_gh_find_asset().
+ * @param array  $asset Asset array from orsite_gh_find_asset().
+ * @param string $tag   Release tag, used by the fallbacks.
  * @return string|WP_Error Path to the downloaded temp file.
  */
-function orsite_gh_download_asset( $asset ) {
-	$body = null;
+function orsite_gh_download_asset( $asset, $tag = '' ) {
+	$name = isset( $asset['name'] ) ? (string) $asset['name'] : '';
+	$tag  = ( '' !== $tag ) ? (string) $tag : ( isset( $asset['tag'] ) ? (string) $asset['tag'] : '' );
 
+	$sources = array();
 	if ( ! empty( $asset['browser_download_url'] ) ) {
-		$res = orsite_gh_http( $asset['browser_download_url'], false, 120 );
-		if ( ! is_wp_error( $res ) && 200 === $res['code'] && '' !== $res['body'] ) {
+		$sources[] = array(
+			'url'     => $asset['browser_download_url'],
+			'auth'    => false,
+			'accept'  => '*/*',
+			'timeout' => 120,
+		);
+	}
+	if ( '' !== $tag && '' !== $name ) {
+		$sources[] = array(
+			'url'     => ORSITE_GH_RAW . '/' . rawurlencode( $tag ) . '/releases/' . rawurlencode( $name ),
+			'auth'    => false,
+			'accept'  => '*/*',
+			'timeout' => 120,
+		);
+	}
+	if ( ! empty( $asset['url'] ) ) {
+		$sources[] = array(
+			'url'     => $asset['url'],
+			'auth'    => true,
+			'accept'  => ! empty( $asset['accept'] ) ? (string) $asset['accept'] : 'application/octet-stream',
+			'timeout' => 120,
+		);
+	}
+
+	$body = null;
+	foreach ( $sources as $source ) {
+		$res = orsite_gh_fetch(
+			$source['url'],
+			array(
+				'auth'    => $source['auth'],
+				'accept'  => $source['accept'],
+				'timeout' => $source['timeout'],
+			)
+		);
+		if ( 200 === (int) $res['code'] && '' !== $res['body'] ) {
+			$body = $res['body'];
+			break;
+		}
+	}
+
+	if ( null === $body && '' !== $tag ) {
+		// Last resort: the repository ZIP of the tag (contains themes/<slug>/).
+		$res = orsite_gh_fetch(
+			ORSITE_GH_CODELOAD . '/zip/refs/tags/' . rawurlencode( $tag ),
+			array(
+				'accept'  => 'application/zip, */*',
+				'timeout' => 180,
+			)
+		);
+		if ( 200 === (int) $res['code'] && '' !== $res['body'] ) {
 			$body = $res['body'];
 		}
 	}
 
-	if ( null === $body && ! empty( $asset['url'] ) ) {
-		// Fall back to the API asset / contents endpoint.
-		$accept  = ! empty( $asset['accept'] ) ? (string) $asset['accept'] : 'application/octet-stream';
-		$headers = array(
-			'Accept'     => $accept,
-			'User-Agent' => 'hamyarjarahi-theme-updater',
-		);
-		if ( orsite_gh_token() ) {
-			$headers['Authorization'] = 'Bearer ' . orsite_gh_token();
-		}
-		$response = wp_remote_get(
-			$asset['url'],
-			array(
-				'timeout' => 120,
-				'headers' => $headers,
+	if ( null === $body || '' === $body ) {
+		return new WP_Error(
+			'orsite_gh_download',
+			sprintf(
+				/* translators: %s: asset file name */
+				__( 'دانلود فایل %s از گیت‌هاب ناموفق بود.', 'lax-theme-child' ),
+				'' !== $name ? $name : 'ZIP'
 			)
 		);
-		if ( ! is_wp_error( $response ) && 200 === (int) wp_remote_retrieve_response_code( $response ) ) {
-			$body = wp_remote_retrieve_body( $response );
-		}
-	}
-
-	if ( null === $body || '' === $body ) {
-		return new WP_Error( 'orsite_gh_download', sprintf(
-			/* translators: %s: asset file name */
-			__( 'دانلود فایل %s از گیت‌هاب ناموفق بود.', 'lax-theme-child' ),
-			$asset['name']
-		) );
 	}
 
 	$tmp = tempnam( get_temp_dir(), 'orsite-dl-' );
@@ -307,55 +851,105 @@ function orsite_gh_download_asset( $asset ) {
 }
 
 /**
- * Parse "child-v1.2.3" style tags into a bare version string.
+ * Fetch `releases/orsite-release.json` for one tag from the first reachable
+ * source (raw, github.com/raw, contents API).
  *
- * @param string $tag    Tag name.
- * @param string $prefix Prefix such as `child-v` or `parent-v`.
- * @return string|null
+ * @param string $tag Release tag.
+ * @return array|null
  */
-function orsite_gh_parse_tag_version( $tag, $prefix = 'child-v' ) {
-	$tag = (string) $tag;
-	if ( 0 !== strpos( $tag, $prefix ) ) {
-		return null;
+function orsite_gh_fetch_manifest( $tag ) {
+	$tag     = (string) $tag;
+	$name    = ORSITE_GH_MANIFEST_ASSET;
+	$sources = array(
+		array(
+			'url'    => ORSITE_GH_RAW . '/' . rawurlencode( $tag ) . '/releases/' . rawurlencode( $name ),
+			'auth'   => false,
+			'accept' => 'application/json, text/plain, */*',
+		),
+		array(
+			'url'    => ORSITE_GH_WEB . '/raw/' . rawurlencode( $tag ) . '/releases/' . rawurlencode( $name ),
+			'auth'   => false,
+			'accept' => 'application/json, text/plain, */*',
+		),
+		array(
+			'url'    => ORSITE_GH_API . '/contents/releases/' . rawurlencode( $name ) . '?ref=' . rawurlencode( $tag ),
+			'auth'   => true,
+			'accept' => 'application/vnd.github.raw+json',
+		),
+	);
+
+	foreach ( $sources as $source ) {
+		$res = orsite_gh_fetch(
+			$source['url'],
+			array(
+				'auth'    => $source['auth'],
+				'accept'  => $source['accept'],
+				'timeout' => 20,
+			)
+		);
+		if ( 200 !== (int) $res['code'] || '' === trim( (string) $res['body'] ) ) {
+			continue;
+		}
+		$json = json_decode( (string) $res['body'], true );
+		if ( is_array( $json ) ) {
+			return $json;
+		}
 	}
-	$version = substr( $tag, strlen( $prefix ) );
-	return preg_match( '/^\d+(\.\d+)*$/', $version ) ? $version : null;
+	return null;
 }
 
 /**
  * Remote versions from the release manifest, falling back to tag parsing.
  *
+ * The manifest is cached per tag for an hour so opening the dashboard does not
+ * hit GitHub on every page load.
+ *
  * @param array $release Normalized release.
- * @return array { child: ?string, parent: ?string, changelog: array, source: string }
+ * @return array { child, parent, changelog, source, error }
  */
 function orsite_gh_remote_versions( $release ) {
+	$tag = isset( $release['tag_name'] ) ? (string) $release['tag_name'] : '';
 	$out = array(
-		'child'     => orsite_gh_parse_tag_version( $release['tag_name'], 'child-v' ),
-		'parent'    => orsite_gh_parse_tag_version( $release['tag_name'], 'parent-v' ),
+		'child'     => orsite_gh_parse_tag_version( $tag, 'child-v' ),
+		'parent'    => orsite_gh_parse_tag_version( $tag, 'parent-v' ),
 		'changelog' => array(),
 		'source'    => 'tag',
+		'error'     => '',
 	);
 
-	$asset = orsite_gh_find_asset( $release, ORSITE_GH_MANIFEST_ASSET );
-	if ( $asset ) {
-		$file = orsite_gh_download_asset( $asset );
-		if ( ! is_wp_error( $file ) ) {
-			$json = json_decode( (string) file_get_contents( $file ), true );
-			@unlink( $file );
-			if ( is_array( $json ) ) {
-				if ( isset( $json['child']['version'] ) ) {
-					$out['child'] = (string) $json['child']['version'];
-				}
-				if ( isset( $json['parent']['version'] ) ) {
-					$out['parent'] = (string) $json['parent']['version'];
-				}
-				if ( isset( $json['changelog'] ) && is_array( $json['changelog'] ) ) {
-					$out['changelog'] = $json['changelog'];
-				}
-				$out['source'] = 'manifest';
-			}
-		}
+	if ( '' === $tag ) {
+		return $out;
 	}
+
+	$cache = (array) get_option( 'orsite_gh_manifest_cache', array() );
+	if ( isset( $cache[ $tag ]['time'], $cache[ $tag ]['data'] ) && ( time() - (int) $cache[ $tag ]['time'] ) < HOUR_IN_SECONDS ) {
+		return (array) $cache[ $tag ]['data'];
+	}
+
+	$json = orsite_gh_fetch_manifest( $tag );
+	if ( is_array( $json ) ) {
+		if ( isset( $json['child']['version'] ) ) {
+			$out['child'] = (string) $json['child']['version'];
+		}
+		if ( isset( $json['parent']['version'] ) ) {
+			$out['parent'] = (string) $json['parent']['version'];
+		}
+		if ( isset( $json['changelog'] ) && is_array( $json['changelog'] ) ) {
+			$out['changelog'] = $json['changelog'];
+		}
+		$out['source'] = 'manifest';
+	} else {
+		$out['error'] = __( 'خواندن مانیفست انتشار ناموفق بود؛ نسخه از روی تگ حساب شد.', 'lax-theme-child' );
+	}
+
+	$cache[ $tag ] = array(
+		'time' => time(),
+		'data' => $out,
+	);
+	if ( count( $cache ) > 5 ) {
+		$cache = array_slice( $cache, -5, null, true );
+	}
+	update_option( 'orsite_gh_manifest_cache', $cache, false );
 
 	return $out;
 }
@@ -486,9 +1080,11 @@ function orsite_updater_list_files( $dir ) {
  * Rejects path traversal entries and packages without a `style.css`.
  *
  * @param string $zip_path Path to the ZIP file.
+ * @param string $slug     Expected theme folder name (used when the ZIP is a
+ *                         full repository archive with a themes/ folder).
  * @return array|WP_Error { root, tmpdir }
  */
-function orsite_updater_extract( $zip_path ) {
+function orsite_updater_extract( $zip_path, $slug = '' ) {
 	if ( ! class_exists( 'ZipArchive' ) ) {
 		return new WP_Error( 'orsite_no_zip', __( 'افزونه‌ی zip روی هاست فعال نیست؛ با پشتیبانی هاست تماس بگیرید.', 'lax-theme-child' ) );
 	}
@@ -524,14 +1120,8 @@ function orsite_updater_extract( $zip_path ) {
 	}
 	$zip->close();
 
-	// Locate the theme root: either the single top folder or the tmp dir itself.
-	$entries = array_values( array_diff( (array) scandir( $tmpdir ), array( '.', '..' ) ) );
-	$root    = $tmpdir;
-	if ( 1 === count( $entries ) && is_dir( $tmpdir . '/' . $entries[0] ) ) {
-		$root = $tmpdir . '/' . $entries[0];
-	}
-
-	if ( ! file_exists( $root . '/style.css' ) ) {
+	$root = orsite_updater_find_root( $tmpdir, $slug );
+	if ( '' === $root ) {
 		orsite_updater_rrmdir( $tmpdir );
 		return new WP_Error( 'orsite_zip_theme', __( 'فایل ZIP ساختار قالب وردپرس را ندارد (style.css پیدا نشد).', 'lax-theme-child' ) );
 	}
@@ -540,6 +1130,39 @@ function orsite_updater_extract( $zip_path ) {
 		'root'   => $root,
 		'tmpdir' => $tmpdir,
 	);
+}
+
+/**
+ * Find the theme root inside an extracted package.
+ *
+ * Handles both a theme-only ZIP (`lax-theme-child/style.css`) and a full
+ * repository archive (`OR-site-<sha>/themes/lax-theme-child/style.css`).
+ *
+ * @param string $tmpdir Extraction directory.
+ * @param string $slug   Theme folder name.
+ * @return string Absolute theme root or an empty string.
+ */
+function orsite_updater_find_root( $tmpdir, $slug = '' ) {
+	$slug       = ( '' !== $slug ) ? $slug : 'lax-theme-child';
+	$candidates = array();
+	$entries    = array_values( array_diff( (array) scandir( $tmpdir ), array( '.', '..' ) ) );
+
+	$tops = array( $tmpdir );
+	if ( 1 === count( $entries ) && is_dir( $tmpdir . '/' . $entries[0] ) ) {
+		$tops[] = $tmpdir . '/' . $entries[0];
+	}
+	foreach ( $tops as $top ) {
+		$candidates[] = $top;
+		$candidates[] = $top . '/' . $slug;
+		$candidates[] = $top . '/themes/' . $slug;
+	}
+
+	foreach ( $candidates as $path ) {
+		if ( is_dir( $path ) && file_exists( $path . '/style.css' ) ) {
+			return $path;
+		}
+	}
+	return '';
 }
 
 /**
@@ -645,12 +1268,13 @@ function orsite_gh_plan_update( $which, $release ) {
 		) );
 	}
 
-	$zip = orsite_gh_download_asset( $asset );
+	$zip = orsite_gh_download_asset( $asset, isset( $release['tag_name'] ) ? (string) $release['tag_name'] : '' );
 	if ( is_wp_error( $zip ) ) {
 		return $zip;
 	}
 
-	$extract = orsite_updater_extract( $zip );
+	$slug    = 'parent' === $which ? 'lax-theme' : 'lax-theme-child';
+	$extract = orsite_updater_extract( $zip, $slug );
 	@unlink( $zip );
 	if ( is_wp_error( $extract ) ) {
 		return $extract;
@@ -714,6 +1338,180 @@ function orsite_gh_update_theme( $which ) {
 }
 
 /* -------------------------------------------------------------------------
+ * Diagnostics
+ * ---------------------------------------------------------------------- */
+
+/**
+ * One self-test row for the connectivity table.
+ *
+ * @param string $key   Stable identifier.
+ * @param string $label Human label.
+ * @param string $url   URL to test.
+ * @param array  $args  Arguments for orsite_gh_fetch().
+ * @return array { key, label, url, code, ms, ok, error, remaining, detail, body }
+ */
+function orsite_gh_diag_row( $key, $label, $url, $args ) {
+	$res = orsite_gh_fetch( $url, $args );
+	$ok  = ( 200 === (int) $res['code'] && '' === $res['error'] );
+
+	// A capped download may abort mid-transfer; reaching the host is enough.
+	if ( ! $ok && 'codeload' === $key && false !== stripos( (string) $res['error'], 'outstanding read data' ) ) {
+		$ok           = true;
+		$res['error'] = '';
+	}
+
+	return array(
+		'key'       => $key,
+		'label'     => $label,
+		'url'       => $url,
+		'code'      => (int) $res['code'],
+		'ms'        => (int) $res['ms'],
+		'ok'        => $ok,
+		'error'     => $ok ? '' : orsite_gh_fetch_error( $res ),
+		'remaining' => (string) $res['remaining'],
+		'detail'    => '',
+		'body'      => (string) $res['body'],
+	);
+}
+
+/**
+ * Environment values that explain most "cannot reach GitHub" reports.
+ *
+ * @return array
+ */
+function orsite_gh_diag_env() {
+	global $wp_version;
+
+	$curl = '';
+	if ( function_exists( 'curl_version' ) ) {
+		$info = curl_version();
+		if ( is_array( $info ) && ! empty( $info['version'] ) ) {
+			$curl = (string) $info['version'];
+		}
+	}
+
+	return array(
+		'wp'        => (string) $wp_version,
+		'php'       => PHP_VERSION,
+		'curl'      => $curl,
+		'openssl'   => defined( 'OPENSSL_VERSION_TEXT' ) ? (string) OPENSSL_VERSION_TEXT : '',
+		'blocked'   => ( defined( 'WP_HTTP_BLOCK_EXTERNAL' ) && WP_HTTP_BLOCK_EXTERNAL ) ? 'WP_HTTP_BLOCK_EXTERNAL' : '',
+		'proxy'     => ( defined( 'WP_PROXY_HOST' ) && WP_PROXY_HOST ) ? (string) WP_PROXY_HOST : '',
+		'sslverify' => ( defined( 'WP_HTTP_SSL_VERIFY' ) && ! WP_HTTP_SSL_VERIFY ) ? 'WP_HTTP_SSL_VERIFY=false' : '',
+		'zip'       => class_exists( 'ZipArchive' ) ? 'yes' : 'no',
+		'temp'      => is_writable( get_temp_dir() ) ? 'yes' : 'no',
+	);
+}
+
+/**
+ * Run a one-click connectivity self-test and store the result.
+ *
+ * Covers everything the updater needs: the API, the release feed, the raw file
+ * host, codeload, and (when a token exists) whether that token is accepted.
+ *
+ * @return array { time, token, masked, tests, env, release, fetch, cand }
+ */
+function orsite_gh_diagnostics() {
+	$token = orsite_gh_token();
+	$tests = array();
+
+	$repo = orsite_gh_diag_row(
+		'repo',
+		__( 'مخزن در API گیت‌هاب', 'lax-theme-child' ),
+		ORSITE_GH_API,
+		array( 'auth' => true, 'timeout' => 20 )
+	);
+	$json = json_decode( (string) $repo['body'], true );
+	if ( is_array( $json ) && ! empty( $json['full_name'] ) ) {
+		$visibility     = isset( $json['visibility'] ) ? (string) $json['visibility'] : ( ! empty( $json['private'] ) ? 'private' : 'public' );
+		$repo['detail'] = $json['full_name'] . ' · ' . $visibility;
+		if ( ! empty( $json['pushed_at'] ) ) {
+			$repo['detail'] .= ' · ' . (string) $json['pushed_at'];
+		}
+	}
+	$tests[] = $repo;
+
+	$tests[] = orsite_gh_diag_row(
+		'releases',
+		__( 'فهرست انتشارها (API)', 'lax-theme-child' ),
+		ORSITE_GH_API . '/releases?per_page=5',
+		array( 'auth' => true, 'timeout' => 20 )
+	);
+
+	$tests[] = orsite_gh_diag_row(
+		'atom',
+		__( 'خوراک Releases در github.com', 'lax-theme-child' ),
+		ORSITE_GH_WEB . '/releases.atom',
+		array( 'auth' => false, 'accept' => 'application/atom+xml, */*', 'timeout' => 20 )
+	);
+
+	$tests[] = orsite_gh_diag_row(
+		'raw',
+		__( 'فایل مانیفست (raw.githubusercontent.com)', 'lax-theme-child' ),
+		ORSITE_GH_RAW . '/main/releases/' . ORSITE_GH_MANIFEST_ASSET,
+		array( 'auth' => false, 'accept' => '*/*', 'timeout' => 20 )
+	);
+
+	$tests[] = orsite_gh_diag_row(
+		'codeload',
+		__( 'بسته‌ی ZIP مخزن (codeload.github.com)', 'lax-theme-child' ),
+		ORSITE_GH_CODELOAD . '/zip/refs/heads/main',
+		array( 'auth' => false, 'accept' => 'application/zip, */*', 'timeout' => 25, 'limit' => 2048 )
+	);
+
+	if ( '' !== $token ) {
+		$user = orsite_gh_diag_row(
+			'user',
+			__( 'اعتبار توکن (GET /user)', 'lax-theme-child' ),
+			'https://api.github.com/user',
+			array( 'auth' => true, 'timeout' => 20 )
+		);
+		$json = json_decode( (string) $user['body'], true );
+		if ( is_array( $json ) && ! empty( $json['login'] ) ) {
+			$user['detail'] = 'login: ' . $json['login'];
+			if ( ! empty( $json['type'] ) ) {
+				$user['detail'] .= ' · ' . $json['type'];
+			}
+		}
+		$tests[] = $user;
+	}
+
+	// Drop the response bodies before storing the report.
+	foreach ( $tests as $index => $row ) {
+		unset( $tests[ $index ]['body'] );
+	}
+
+	$release = orsite_gh_release( true );
+	$fetch   = (array) get_option( 'orsite_gh_last_fetch', array() );
+	$cache   = (array) get_option( 'orsite_gh_release_cache', array() );
+
+	$report = array(
+		'time'    => time(),
+		'token'   => orsite_gh_token_source(),
+		'masked'  => '' !== $token ? orsite_gh_mask_token( $token ) : '',
+		'tests'   => array_values( $tests ),
+		'env'     => orsite_gh_diag_env(),
+		'release' => is_wp_error( $release )
+			? array(
+				'ok'    => false,
+				'tag'   => '',
+				'error' => $release->get_error_message(),
+			)
+			: array(
+				'ok'     => empty( $release['_stale'] ),
+				'tag'    => (string) $release['tag_name'],
+				'source' => (string) $release['_source'],
+				'error'  => (string) $release['_error'],
+			),
+		'fetch'   => $fetch,
+		'cand'    => isset( $cache['candidates'] ) ? (array) $cache['candidates'] : array(),
+	);
+
+	update_option( 'orsite_gh_diag', $report, false );
+	return $report;
+}
+
+/* -------------------------------------------------------------------------
  * Admin page
  * ---------------------------------------------------------------------- */
 
@@ -767,6 +1565,17 @@ function orsite_gh_admin_notice() {
 		delete_option( 'orsite_gh_auto_done' );
 	}
 
+	$state = (array) get_option( 'orsite_gh_last_fetch', array() );
+	if ( isset( $state['ok'] ) && ! $state['ok'] && ( time() - (int) $state['time'] ) < DAY_IN_SECONDS ) {
+		printf(
+			'<div class="notice notice-error"><p>⚠️ %1$s <strong>%2$s</strong> — <a href="%3$s">%4$s</a></p></div>',
+			esc_html__( 'اتصال به گیت‌هاب برقرار نشد؛ وضعیت هاست یا توکن را در صفحه‌ی بروزرسانی گیت‌هاب بررسی کنید:', 'lax-theme-child' ),
+			esc_html( (string) ( isset( $state['error'] ) ? $state['error'] : '' ) ),
+			esc_url( admin_url( 'admin.php?page=orsite-github-updater' ) ),
+			esc_html__( 'تست کامل اتصال', 'lax-theme-child' )
+		);
+	}
+
 	$flag = get_option( 'orsite_gh_update_flag' );
 	if ( empty( $flag['child'] ) && empty( $flag['parent'] ) ) {
 		return;
@@ -805,23 +1614,57 @@ function orsite_gh_handle_actions() {
 
 	switch ( $action ) {
 		case 'save_token':
-			if ( orsite_gh_token_is_constant() ) {
+			$token = isset( $_POST['orsite_gh_token'] ) ? sanitize_text_field( wp_unslash( $_POST['orsite_gh_token'] ) ) : '';
+			if ( '' === $token ) {
+				$redirect = add_query_arg( 'orsite_msg', 'token_empty', $page );
 				break;
 			}
-			$token = isset( $_POST['orsite_gh_token'] ) ? sanitize_text_field( wp_unslash( $_POST['orsite_gh_token'] ) ) : '';
-			if ( $token ) {
-				update_option( 'orsite_gh_token', $token, false );
-				update_option( 'orsite_gh_release_cache', array(), false );
-				$redirect = add_query_arg( 'orsite_msg', 'token_saved', $page );
-			} else {
-				$redirect = add_query_arg( 'orsite_msg', 'token_empty', $page );
-			}
+
+			$constant = defined( 'GITHUB_ACCESS_TOKEN' ) && GITHUB_ACCESS_TOKEN;
+			update_option( 'orsite_gh_token', $token, false );
+			// A token typed in the dashboard must take effect even when
+			// wp-config.php still holds an outdated constant.
+			update_option( 'orsite_gh_token_override', $constant ? '1' : '0', false );
+			update_option( 'orsite_gh_release_cache', array(), false );
+			delete_option( 'orsite_gh_manifest_cache' );
+
+			// Validate immediately so a bad paste is visible right away.
+			$check = orsite_gh_fetch( 'https://api.github.com/user', array( 'auth' => true, 'timeout' => 20 ) );
+			$json  = json_decode( (string) $check['body'], true );
+			update_option(
+				'orsite_gh_token_check',
+				array(
+					'time'  => time(),
+					'ok'    => ( 200 === (int) $check['code'] && '' === $check['error'] ),
+					'login' => ( is_array( $json ) && ! empty( $json['login'] ) ) ? (string) $json['login'] : '',
+					'error' => ( 200 === (int) $check['code'] && '' === $check['error'] ) ? '' : orsite_gh_fetch_error( $check ),
+				),
+				false
+			);
+
+			$redirect = add_query_arg( 'orsite_msg', ( 200 === (int) $check['code'] && '' === $check['error'] ) ? 'token_saved' : 'token_bad', $page );
 			break;
 
 		case 'clear_token':
 			delete_option( 'orsite_gh_token' );
+			delete_option( 'orsite_gh_token_override' );
+			delete_option( 'orsite_gh_token_check' );
 			update_option( 'orsite_gh_release_cache', array(), false );
+			delete_option( 'orsite_gh_manifest_cache' );
 			$redirect = add_query_arg( 'orsite_msg', 'token_cleared', $page );
+			break;
+
+		case 'diagnose':
+			set_time_limit( 180 );
+			$diag = orsite_gh_diagnostics();
+			$ok   = ! empty( $diag['release']['ok'] );
+			foreach ( (array) $diag['tests'] as $test ) {
+				if ( 'codeload' !== $test['key'] && empty( $test['ok'] ) ) {
+					$ok = false;
+					break;
+				}
+			}
+			$redirect = add_query_arg( 'orsite_msg', $ok ? 'diag_ok' : 'diag_fail', $page );
 			break;
 
 		case 'save_settings':
@@ -835,6 +1678,11 @@ function orsite_gh_handle_actions() {
 			if ( is_wp_error( $release ) ) {
 				update_option( 'orsite_gh_last_check', array( 'time' => time(), 'error' => $release->get_error_message() ), false );
 				$redirect = add_query_arg( 'orsite_msg', 'check_fail', $page );
+				break;
+			}
+			if ( ! empty( $release['_stale'] ) ) {
+				update_option( 'orsite_gh_last_check', array( 'time' => time(), 'error' => (string) $release['_error'] ), false );
+				$redirect = add_query_arg( 'orsite_msg', 'check_stale', $page );
 				break;
 			}
 			$report = orsite_gh_build_check_report( $release );
@@ -1076,15 +1924,22 @@ function orsite_gh_render_file_list( $files, $limit = 40 ) {
  */
 function orsite_gh_flash_message() {
 	$msg = isset( $_GET['orsite_msg'] ) ? sanitize_key( wp_unslash( $_GET['orsite_msg'] ) ) : '';
+	$check = (array) get_option( 'orsite_gh_token_check', array() );
+	$login = ! empty( $check['login'] ) ? $check['login'] : '';
+
 	$map = array(
-		'token_saved'   => array( 'success', __( 'توکن دسترسی ذخیره شد.', 'lax-theme-child' ) ),
-		'token_empty'   => array( 'warning', __( 'توکنی وارد نشد.', 'lax-theme-child' ) ),
-		'token_cleared' => array( 'success', __( 'توکن ذخیره‌شده پاک شد.', 'lax-theme-child' ) ),
+		'token_saved'    => array( 'success', sprintf( /* translators: %s: GitHub login */ __( 'توکن ذخیره و تأیید شد%s.', 'lax-theme-child' ), '' !== $login ? ' (' . $login . ')' : '' ) ),
+		'token_bad'      => array( 'error', sprintf( /* translators: %s: error text */ __( 'توکن ذخیره شد ولی گیت‌هاب آن را نپذیرفت: %s', 'lax-theme-child' ), ! empty( $check['error'] ) ? $check['error'] : __( 'بدون پاسخ', 'lax-theme-child' ) ) ),
+		'token_empty'    => array( 'warning', __( 'توکنی وارد نشد.', 'lax-theme-child' ) ),
+		'token_cleared'  => array( 'success', __( 'توکن ذخیره‌شده پاک شد؛ اگر GITHUB_ACCESS_TOKEN در wp-config.php باشد، همان استفاده می‌شود.', 'lax-theme-child' ) ),
 		'settings_saved' => array( 'success', __( 'تنظیمات بروزرسانی خودکار ذخیره شد.', 'lax-theme-child' ) ),
-		'check_ok'      => array( 'success', __( 'بررسی انجام شد؛ نتیجه در کارت «فایل‌های تغییریافته» آمده است.', 'lax-theme-child' ) ),
-		'check_fail'    => array( 'error', __( 'بررسی ناموفق بود؛ جزئیات در کارت «وضعیت اتصال» است.', 'lax-theme-child' ) ),
-		'update_ok'     => array( 'success', __( 'بروزرسانی انجام شد؛ لاگ در کارت «آخرین بروزرسانی» است.', 'lax-theme-child' ) ),
-		'update_fail'   => array( 'error', __( 'بروزرسانی با خطا همراه بود؛ جزئیات در کارت «آخرین بروزرسانی» است.', 'lax-theme-child' ) ),
+		'check_ok'       => array( 'success', __( 'بررسی انجام شد؛ نتیجه در کارت «فایل‌های تغییریافته» آمده است.', 'lax-theme-child' ) ),
+		'check_stale'    => array( 'error', __( 'اتصال به گیت‌هاب برقرار نشد و داده‌ی ذخیره‌شده نمایش داده می‌شود؛ جزئیات در کارت «وضعیت اتصال» است.', 'lax-theme-child' ) ),
+		'check_fail'     => array( 'error', __( 'بررسی ناموفق بود؛ جزئیات در کارت «وضعیت اتصال» است.', 'lax-theme-child' ) ),
+		'update_ok'      => array( 'success', __( 'بروزرسانی انجام شد؛ لاگ در کارت «آخرین بروزرسانی» است.', 'lax-theme-child' ) ),
+		'update_fail'    => array( 'error', __( 'بروزرسانی با خطا همراه بود؛ جزئیات در کارت «آخرین بروزرسانی» است.', 'lax-theme-child' ) ),
+		'diag_ok'        => array( 'success', __( 'همه‌ی مسیرهای گیت‌هاب پاسخ دادند؛ جدول تست در کارت «تست اتصال» است.', 'lax-theme-child' ) ),
+		'diag_fail'      => array( 'error', __( 'دست‌کم یکی از مسیرهای گیت‌هاب پاسخ نداد؛ جدول تست را ببینید.', 'lax-theme-child' ) ),
 	);
 	if ( ! isset( $map[ $msg ] ) ) {
 		return '';
@@ -1105,11 +1960,17 @@ function orsite_gh_render_page() {
 	}
 
 	$token        = orsite_gh_token();
-	$token_const  = orsite_gh_token_is_constant();
+	$source       = orsite_gh_token_source();
 	$release      = orsite_gh_release( false );
 	$release_err  = is_wp_error( $release ) ? $release->get_error_message() : '';
 	$release_data = is_wp_error( $release ) ? null : $release;
 	$remote       = $release_data ? orsite_gh_remote_versions( $release_data ) : array( 'child' => null, 'parent' => null, 'changelog' => array() );
+	$stale        = $release_data ? ! empty( $release_data['_stale'] ) : false;
+	$channel      = $release_data && ! empty( $release_data['_source'] ) ? (string) $release_data['_source'] : '';
+	$cache        = (array) get_option( 'orsite_gh_release_cache', array() );
+	$candidates   = isset( $cache['candidates'] ) ? (array) $cache['candidates'] : array();
+	$diag         = (array) get_option( 'orsite_gh_diag', array() );
+	$token_check  = (array) get_option( 'orsite_gh_token_check', array() );
 	$diff         = (array) get_option( 'orsite_gh_last_diff', array() );
 	$last_update  = (array) get_option( 'orsite_gh_last_update', array() );
 	$last_run     = (array) get_option( 'orsite_gh_last_run', array() );
@@ -1117,6 +1978,9 @@ function orsite_gh_render_page() {
 	$child        = orsite_gh_theme_info( 'child' );
 	$parent       = orsite_gh_theme_info( 'parent' );
 	$nonce        = wp_nonce_field( 'orsite_gh_admin', 'orsite_gh_nonce' );
+
+	$channel_label = 'api' === $channel ? __( 'API گیت‌هاب', 'lax-theme-child' )
+		: ( 'atom' === $channel ? __( 'خوراک جایگزین github.com', 'lax-theme-child' ) : __( 'حافظه‌ی محلی', 'lax-theme-child' ) );
 	?>
 	<div class="wrap orsite-gh-wrap" dir="rtl">
 	<style>
@@ -1136,6 +2000,7 @@ function orsite_gh_render_page() {
 	.orsite-status-ok { color: #0A2F6B; font-weight: 700; }
 	.orsite-status-new { color: #041A3F; background: #EEF4FA; border: 1px solid #0A2F6B; border-radius: 6px; padding: 1px 8px; font-weight: 700; }
 	.orsite-status-bad { color: #7a1220; font-weight: 700; }
+	.orsite-code { direction: ltr; display: inline-block; background: #EEF4FA; border: 1px solid #B9C9D9; border-radius: 6px; padding: 1px 6px; font-size: 11.5px; }
 	</style>
 
 	<h1><?php esc_html_e( 'بروزرسانی قالب‌ها از گیت‌هاب — همیار جراحی', 'lax-theme-child' ); ?></h1>
@@ -1146,37 +2011,107 @@ function orsite_gh_render_page() {
 		<p>
 			<?php esc_html_e( 'مخزن پروژه:', 'lax-theme-child' ); ?>
 			<a href="<?php echo esc_url( ORSITE_GH_WEB ); ?>" target="_blank" rel="noopener"><code><?php echo esc_html( ORSITE_GH_REPO ); ?></code></a>
-			<?php if ( $release_data ) : ?>
-				— <span class="orsite-status-ok"><?php esc_html_e( 'متصل', 'lax-theme-child' ); ?></span>
+			<?php if ( $release_data && ! $stale ) : ?>
+				— <span class="orsite-status-ok"><?php echo 'atom' === $channel ? esc_html__( 'متصل (کانال جایگزین)', 'lax-theme-child' ) : esc_html__( 'متصل', 'lax-theme-child' ); ?></span>
+			<?php elseif ( $release_data && $stale ) : ?>
+				— <span class="orsite-status-bad"><?php esc_html_e( 'قطع — داده‌ی ذخیره‌شده', 'lax-theme-child' ); ?></span>
 			<?php else : ?>
-				— <span class="orsite-status-bad"><?php echo esc_html( $release_err ? $release_err : __( 'اتصال برقرار نشده', 'lax-theme-child' ) ); ?></span>
+				— <span class="orsite-status-bad"><?php esc_html_e( 'قطع', 'lax-theme-child' ); ?></span>
 			<?php endif; ?>
 		</p>
 
-		<?php if ( $token_const ) : ?>
-			<p class="orsite-meta"><?php esc_html_e( 'توکن از ثابت GITHUB_ACCESS_TOKEN در wp-config.php خوانده می‌شود و در این صفحه قابل تغییر نیست.', 'lax-theme-child' ); ?></p>
+		<?php if ( $release_data && $stale ) : ?>
+			<p class="orsite-status-bad"><?php echo esc_html( $release_data['_error'] ); ?></p>
+			<p class="orsite-meta">
+				<?php
+				printf(
+					/* translators: 1: relative time, 2: release tag */
+					esc_html__( 'این اطلاعات از آخرین بازخوانی موفق (%1$s پیش — انتشار %2$s) آمده و ممکن است قدیمی باشد.', 'lax-theme-child' ),
+					esc_html( human_time_diff( (int) $release_data['_fetched_at'] ) ),
+					esc_html( (string) $release_data['tag_name'] )
+				);
+				?>
+			</p>
+		<?php elseif ( ! $release_data ) : ?>
+			<p class="orsite-status-bad"><?php echo esc_html( '' !== $release_err ? $release_err : __( 'اتصال برقرار نشده', 'lax-theme-child' ) ); ?></p>
 		<?php else : ?>
-			<form method="post" action="">
-				<?php echo $nonce; // phpcs:ignore WordPress.Security.EscapeOutput -- nonce field. ?>
-				<p>
-					<label for="orsite-gh-token"><strong><?php esc_html_e( 'توکن دسترسی گیت‌هاب (اختیاری)', 'lax-theme-child' ); ?></strong></label><br />
-					<input type="password" id="orsite-gh-token" name="orsite_gh_token" value="" class="regular-text code" autocomplete="off" placeholder="<?php echo esc_attr( $token ? orsite_gh_mask_token( $token ) : 'github_pat_… / ghp_…' ); ?>" />
-					<?php if ( $token ) : ?>
-						<span class="orsite-meta"><?php printf( esc_html__( 'ذخیره‌شده: %s', 'lax-theme-child' ), esc_html( orsite_gh_mask_token( $token ) ) ); ?></span>
-					<?php endif; ?>
-				</p>
-				<p class="orsite-meta">
-					<?php esc_html_e( 'برای مخزن عمومی، دانلود بدون توکن هم کار می‌کند؛ توکن فقط نرخ درخواست API را بالا می‌برد و برای مخزن خصوصی لازم است. توکن Fine-grained با دسترسی فقط Contents: Read روی همین مخزن بسازید.', 'lax-theme-child' ); ?>
-				</p>
-				<p>
-					<button type="submit" name="orsite_gh_action" value="save_token" class="button orsite-btn"><?php esc_html_e( 'ذخیره‌ی توکن', 'lax-theme-child' ); ?></button>
-					<?php if ( $token ) : ?>
-						<button type="submit" name="orsite_gh_action" value="clear_token" class="button orsite-btn-danger"><?php esc_html_e( 'پاک‌کردن توکن', 'lax-theme-child' ); ?></button>
-					<?php endif; ?>
-					<button type="submit" name="orsite_gh_action" value="check" class="button orsite-btn"><?php esc_html_e( 'بررسی اتصال و دریافت آخرین انتشار', 'lax-theme-child' ); ?></button>
-				</p>
-			</form>
+			<p class="orsite-meta">
+				<?php
+				printf(
+					/* translators: 1: relative time, 2: channel name, 3: release tag */
+					esc_html__( 'آخرین بازخوانی موفق: %1$s پیش از %2$s — آخرین انتشار: %3$s', 'lax-theme-child' ),
+					esc_html( human_time_diff( (int) $release_data['_fetched_at'] ) ),
+					esc_html( $channel_label ),
+					esc_html( (string) $release_data['tag_name'] )
+				);
+				?>
+			</p>
 		<?php endif; ?>
+
+		<p class="orsite-meta">
+			<?php esc_html_e( 'منبع توکن:', 'lax-theme-child' ); ?>
+			<?php
+			if ( 'constant' === $source ) {
+				esc_html_e( 'ثابت GITHUB_ACCESS_TOKEN در wp-config.php', 'lax-theme-child' );
+			} elseif ( 'override' === $source ) {
+				esc_html_e( 'توکن ذخیره‌شده در پیشخوان (بر ثابت wp-config.php اولویت دارد)', 'lax-theme-child' );
+			} elseif ( 'option' === $source ) {
+				esc_html_e( 'توکن ذخیره‌شده در پیشخوان', 'lax-theme-child' );
+			} else {
+				esc_html_e( 'بدون توکن — دسترسی عمومی مخزن', 'lax-theme-child' );
+			}
+			if ( '' !== $token ) :
+				?>
+				— <code class="orsite-code"><?php echo esc_html( orsite_gh_mask_token( $token ) ); ?></code>
+			<?php endif; ?>
+		</p>
+
+		<?php if ( ! empty( $token_check['time'] ) ) : ?>
+			<?php if ( ! empty( $token_check['ok'] ) ) : ?>
+				<p class="orsite-status-ok">
+					<?php
+					printf(
+						/* translators: 1: GitHub login, 2: relative time */
+						esc_html__( 'توکن تأیید شد (%1$s) — %2$s پیش', 'lax-theme-child' ),
+						esc_html( (string) $token_check['login'] ),
+						esc_html( human_time_diff( (int) $token_check['time'] ) )
+					);
+					?>
+				</p>
+			<?php else : ?>
+				<p class="orsite-status-bad">
+					<?php
+					printf(
+						/* translators: %s: error text */
+						esc_html__( 'توکن رد شد: %s', 'lax-theme-child' ),
+						esc_html( (string) $token_check['error'] )
+					);
+					?>
+				</p>
+			<?php endif; ?>
+		<?php endif; ?>
+
+		<form method="post" action="">
+			<?php echo $nonce; // phpcs:ignore WordPress.Security.EscapeOutput -- nonce field. ?>
+			<p>
+				<label for="orsite-gh-token"><strong><?php esc_html_e( 'توکن دسترسی گیت‌هاب (اختیاری)', 'lax-theme-child' ); ?></strong></label><br />
+				<input type="password" id="orsite-gh-token" name="orsite_gh_token" value="" class="regular-text code" autocomplete="off" placeholder="<?php echo esc_attr( '' !== $token ? orsite_gh_mask_token( $token ) : 'github_pat_… / ghp_…' ); ?>" />
+			</p>
+			<p class="orsite-meta">
+				<?php esc_html_e( 'برای مخزن عمومی، دانلود بدون توکن هم کار می‌کند؛ توکن فقط سقف نرخ درخواست API را بالا می‌برد و برای مخزن خصوصی لازم است. توکن Fine-grained با دسترسی فقط Contents: Read روی همین مخزن بسازید.', 'lax-theme-child' ); ?>
+				<?php if ( 'constant' === $source ) : ?>
+					<?php esc_html_e( 'اگر ثابت wp-config.php منقضی شده است، توکن تازه را همین‌جا ذخیره کنید؛ تا وقتی ذخیره باشد بر ثابت اولویت دارد و با «پاک‌کردن توکن» دوباره به ثابت برمی‌گردید.', 'lax-theme-child' ); ?>
+				<?php endif; ?>
+			</p>
+			<p>
+				<button type="submit" name="orsite_gh_action" value="save_token" class="button orsite-btn"><?php esc_html_e( 'ذخیره و بررسی توکن', 'lax-theme-child' ); ?></button>
+				<?php if ( '' !== $token || '' !== (string) get_option( 'orsite_gh_token', '' ) ) : ?>
+					<button type="submit" name="orsite_gh_action" value="clear_token" class="button orsite-btn-danger"><?php esc_html_e( 'پاک‌کردن توکن', 'lax-theme-child' ); ?></button>
+				<?php endif; ?>
+				<button type="submit" name="orsite_gh_action" value="check" class="button orsite-btn"><?php esc_html_e( 'بررسی اتصال و دریافت آخرین انتشار', 'lax-theme-child' ); ?></button>
+				<button type="submit" name="orsite_gh_action" value="diagnose" class="button orsite-btn-danger"><?php esc_html_e( 'تست کامل اتصال', 'lax-theme-child' ); ?></button>
+			</p>
+		</form>
 
 		<?php if ( ! empty( $last_check['error'] ) ) : ?>
 			<p class="orsite-status-bad"><?php echo esc_html( $last_check['error'] ); ?></p>
@@ -1205,6 +2140,135 @@ function orsite_gh_render_page() {
 	</div>
 
 	<div class="orsite-card">
+		<h2><?php esc_html_e( 'نسخه‌های دیده‌شده در گیت‌هاب', 'lax-theme-child' ); ?></h2>
+		<?php if ( empty( $candidates ) ) : ?>
+			<p class="orsite-meta"><?php esc_html_e( 'هنوز فهرستی ذخیره نشده است؛ دکمه‌ی «بررسی اتصال و دریافت آخرین انتشار» را بزنید.', 'lax-theme-child' ); ?></p>
+		<?php else : ?>
+			<p class="orsite-meta">
+				<?php esc_html_e( 'نسخه‌ی برتر از میان همه‌ی انتشارها انتخاب می‌شود، نه اولین آیتم فهرست API؛ فهرست زیر دقیقاً همان چیزی است که دیده شده است.', 'lax-theme-child' ); ?>
+			</p>
+			<table class="widefat striped orsite-table">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'تگ', 'lax-theme-child' ); ?></th>
+						<th><?php esc_html_e( 'نسخه', 'lax-theme-child' ); ?></th>
+						<th><?php esc_html_e( 'خانواده', 'lax-theme-child' ); ?></th>
+						<th><?php esc_html_e( 'تاریخ انتشار (UTC)', 'lax-theme-child' ); ?></th>
+						<th><?php esc_html_e( 'وضعیت', 'lax-theme-child' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $candidates as $candidate ) : ?>
+						<tr>
+							<td><code class="orsite-code"><?php echo esc_html( (string) $candidate['tag'] ); ?></code></td>
+							<td><code class="orsite-code"><?php echo esc_html( (string) $candidate['version'] ); ?></code></td>
+							<td><?php echo 'child' === $candidate['family'] ? esc_html__( 'فرزند', 'lax-theme-child' ) : esc_html__( 'والد', 'lax-theme-child' ); ?></td>
+							<td class="orsite-meta"><?php echo esc_html( (string) $candidate['when'] ); ?></td>
+							<td>
+								<?php if ( $release_data && (string) $release_data['tag_name'] === (string) $candidate['tag'] ) : ?>
+									<span class="orsite-status-new"><?php esc_html_e( 'انتخاب‌شده', 'lax-theme-child' ); ?></span>
+								<?php endif; ?>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		<?php endif; ?>
+	</div>
+
+	<div class="orsite-card">
+		<h2><?php esc_html_e( 'تست اتصال', 'lax-theme-child' ); ?></h2>
+		<?php if ( empty( $diag['tests'] ) ) : ?>
+			<p class="orsite-meta"><?php esc_html_e( 'هنوز تستی اجرا نشده است؛ دکمه‌ی «تست کامل اتصال» را بزنید تا وضعیت تک‌تک مسیرهای گیت‌هاب و اعتبار توکن سنجیده شود.', 'lax-theme-child' ); ?></p>
+		<?php else : ?>
+			<p class="orsite-meta">
+				<?php
+				printf(
+					/* translators: %s: relative time */
+					esc_html__( 'آخرین تست: %s پیش', 'lax-theme-child' ),
+					esc_html( human_time_diff( (int) $diag['time'] ) )
+				);
+				?>
+			</p>
+			<table class="widefat striped orsite-table">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'مسیر', 'lax-theme-child' ); ?></th>
+						<th><?php esc_html_e( 'نتیجه', 'lax-theme-child' ); ?></th>
+						<th><?php esc_html_e( 'کد', 'lax-theme-child' ); ?></th>
+						<th><?php esc_html_e( 'زمان', 'lax-theme-child' ); ?></th>
+						<th><?php esc_html_e( 'توضیح', 'lax-theme-child' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( (array) $diag['tests'] as $test ) : ?>
+						<tr>
+							<td><?php echo esc_html( (string) $test['label'] ); ?></td>
+							<td>
+								<?php if ( ! empty( $test['ok'] ) ) : ?>
+									<span class="orsite-status-ok">✔ <?php esc_html_e( 'پاسخ داد', 'lax-theme-child' ); ?></span>
+								<?php else : ?>
+									<span class="orsite-status-bad">✖ <?php esc_html_e( 'ناموفق', 'lax-theme-child' ); ?></span>
+								<?php endif; ?>
+							</td>
+							<td><code class="orsite-code"><?php echo esc_html( (string) $test['code'] ); ?></code></td>
+							<td class="orsite-meta"><?php echo esc_html( (string) $test['ms'] ); ?> ms</td>
+							<td class="orsite-meta">
+								<?php echo esc_html( '' !== (string) $test['detail'] ? (string) $test['detail'] : (string) $test['error'] ); ?>
+								<?php if ( '' !== (string) $test['remaining'] ) : ?>
+									<br /><span class="orsite-code">rate-limit: <?php echo esc_html( (string) $test['remaining'] ); ?></span>
+								<?php endif; ?>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+			<?php if ( ! empty( $diag['release'] ) ) : ?>
+				<p>
+					<?php esc_html_e( 'نتیجه‌ی یافتن آخرین انتشار:', 'lax-theme-child' ); ?>
+					<?php if ( ! empty( $diag['release']['ok'] ) ) : ?>
+						<span class="orsite-status-ok"><?php echo esc_html( (string) $diag['release']['tag'] ); ?></span>
+					<?php else : ?>
+						<span class="orsite-status-bad"><?php echo esc_html( '' !== (string) $diag['release']['error'] ? (string) $diag['release']['error'] : __( 'ناموفق', 'lax-theme-child' ) ); ?></span>
+						<?php if ( ! empty( $diag['release']['tag'] ) ) : ?>
+							<span class="orsite-meta"><?php printf( esc_html__( '(نمایش داده‌ی ذخیره‌شده‌ی %s)', 'lax-theme-child' ), esc_html( (string) $diag['release']['tag'] ) ); ?></span>
+						<?php endif; ?>
+					<?php endif; ?>
+				</p>
+			<?php endif; ?>
+			<?php if ( ! empty( $diag['env'] ) ) : ?>
+				<p class="orsite-meta">
+					<?php
+					$env = (array) $diag['env'];
+					$bits = array();
+					if ( ! empty( $env['wp'] ) ) {
+						$bits[] = 'WordPress ' . $env['wp'];
+					}
+					if ( ! empty( $env['php'] ) ) {
+						$bits[] = 'PHP ' . $env['php'];
+					}
+					if ( ! empty( $env['curl'] ) ) {
+						$bits[] = 'cURL ' . $env['curl'];
+					}
+					$bits[] = 'ZipArchive: ' . ( ! empty( $env['zip'] ) && 'yes' === $env['zip'] ? '✔' : '✖' );
+					$bits[] = __( 'پوشه‌ی موقت قابل نوشتن:', 'lax-theme-child' ) . ' ' . ( ! empty( $env['temp'] ) && 'yes' === $env['temp'] ? '✔' : '✖' );
+					if ( ! empty( $env['blocked'] ) ) {
+						$bits[] = '⚠ ' . $env['blocked'];
+					}
+					if ( ! empty( $env['proxy'] ) ) {
+						$bits[] = 'proxy: ' . $env['proxy'];
+					}
+					if ( ! empty( $env['sslverify'] ) ) {
+						$bits[] = '⚠ ' . $env['sslverify'];
+					}
+					echo esc_html( implode( ' · ', $bits ) );
+					?>
+				</p>
+			<?php endif; ?>
+		<?php endif; ?>
+	</div>
+
+	<div class="orsite-card">
 		<h2><?php esc_html_e( 'نسخه‌های قالب', 'lax-theme-child' ); ?></h2>
 		<table class="widefat striped orsite-table">
 			<thead>
@@ -1229,6 +2293,8 @@ function orsite_gh_render_page() {
 					<td>
 						<?php if ( $update ) : ?>
 							<span class="orsite-status-new"><?php esc_html_e( 'بروزرسانی موجود است', 'lax-theme-child' ); ?></span>
+						<?php elseif ( $remote_v && version_compare( $theme['version'], $remote_v, '>' ) ) : ?>
+							<span class="orsite-status-bad"><?php esc_html_e( 'نسخه‌ی نصب‌شده از آخرین انتشار جدیدتر است', 'lax-theme-child' ); ?></span>
 						<?php elseif ( $remote_v ) : ?>
 							<span class="orsite-status-ok"><?php esc_html_e( 'به‌روز است', 'lax-theme-child' ); ?></span>
 						<?php else : ?>
@@ -1260,6 +2326,12 @@ function orsite_gh_render_page() {
 
 	<div class="orsite-card">
 		<h2><?php esc_html_e( 'آخرین انتشار گیت‌هاب', 'lax-theme-child' ); ?></h2>
+		<?php if ( $release_data && $stale ) : ?>
+			<p class="orsite-status-bad">
+				<?php esc_html_e( 'این کارت از داده‌ی ذخیره‌شده پر شده است؛ اتصال تازه برقرار نشد:', 'lax-theme-child' ); ?>
+				<?php echo esc_html( (string) $release_data['_error'] ); ?>
+			</p>
+		<?php endif; ?>
 		<?php if ( $release_data ) : ?>
 			<p>
 				<strong><?php echo esc_html( $release_data['tag_name'] ); ?></strong>
