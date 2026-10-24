@@ -48,6 +48,15 @@ if ( ! defined( 'ORSITE_GH_PARENT_ASSET' ) ) {
 if ( ! defined( 'ORSITE_GH_MANIFEST_ASSET' ) ) {
 	define( 'ORSITE_GH_MANIFEST_ASSET', 'orsite-release.json' );
 }
+if ( ! defined( 'ORSITE_GH_BRANCH' ) ) {
+	define( 'ORSITE_GH_BRANCH', 'main' );
+}
+if ( ! defined( 'ORSITE_GH_CHECK_INTERVAL' ) ) {
+	define( 'ORSITE_GH_CHECK_INTERVAL', 3 * HOUR_IN_SECONDS );
+}
+if ( ! defined( 'ORSITE_GH_CHECK_RETRY' ) ) {
+	define( 'ORSITE_GH_CHECK_RETRY', 15 * MINUTE_IN_SECONDS );
+}
 
 /* -------------------------------------------------------------------------
  * Token handling
@@ -325,16 +334,28 @@ function orsite_gh_parse_tag_version( $tag, $prefix = 'child-v' ) {
 /**
  * Remote versions from the release manifest, falling back to tag parsing.
  *
- * @param array $release Normalized release.
+ * The manifest download is cached for 30 minutes per release tag so the
+ * dashboard widget and the native update list never re-download it.
+ *
+ * @param array $release      Normalized release.
+ * @param bool  $bypass_cache Ignore the cached manifest.
  * @return array { child: ?string, parent: ?string, changelog: array, source: string }
  */
-function orsite_gh_remote_versions( $release ) {
+function orsite_gh_remote_versions( $release, $bypass_cache = false ) {
+	$tag = isset( $release['tag_name'] ) ? (string) $release['tag_name'] : '';
+	$key = 'manifest_' . md5( $tag );
+
 	$out = array(
-		'child'     => orsite_gh_parse_tag_version( $release['tag_name'], 'child-v' ),
-		'parent'    => orsite_gh_parse_tag_version( $release['tag_name'], 'parent-v' ),
+		'child'     => orsite_gh_parse_tag_version( $tag, 'child-v' ),
+		'parent'    => orsite_gh_parse_tag_version( $tag, 'parent-v' ),
 		'changelog' => array(),
 		'source'    => 'tag',
 	);
+
+	$cache = get_option( 'orsite_gh_versions_cache', array() );
+	if ( ! $bypass_cache && '' !== $key && isset( $cache[ $key ]['time'], $cache[ $key ]['data'] ) && ( time() - (int) $cache[ $key ]['time'] ) < ( 30 * MINUTE_IN_SECONDS ) ) {
+		return (array) $cache[ $key ]['data'];
+	}
 
 	$asset = orsite_gh_find_asset( $release, ORSITE_GH_MANIFEST_ASSET );
 	if ( $asset ) {
@@ -343,10 +364,10 @@ function orsite_gh_remote_versions( $release ) {
 			$json = json_decode( (string) file_get_contents( $file ), true );
 			@unlink( $file );
 			if ( is_array( $json ) ) {
-				if ( isset( $json['child']['version'] ) ) {
+				if ( isset( $json['child']['version'] ) && '' !== (string) $json['child']['version'] ) {
 					$out['child'] = (string) $json['child']['version'];
 				}
-				if ( isset( $json['parent']['version'] ) ) {
+				if ( isset( $json['parent']['version'] ) && '' !== (string) $json['parent']['version'] ) {
 					$out['parent'] = (string) $json['parent']['version'];
 				}
 				if ( isset( $json['changelog'] ) && is_array( $json['changelog'] ) ) {
@@ -357,8 +378,152 @@ function orsite_gh_remote_versions( $release ) {
 		}
 	}
 
+	if ( '' !== $key ) {
+		$cache            = is_array( $cache ) ? $cache : array();
+		$cache[ $key ]    = array( 'time' => time(), 'data' => $out );
+		update_option( 'orsite_gh_versions_cache', $cache, false );
+	}
+
 	return $out;
 }
+
+/**
+ * Installed version of the repository branch for both themes.
+ *
+ * Reading `style.css` from `main` is what makes a plain commit (without a new
+ * GitHub release/tag) visible in the dashboard as a pending update.
+ *
+ * @param bool $bypass_cache Ignore the 30-minute cache.
+ * @return array { child: ?string, parent: ?string, sha: string, time: int, error: string }
+ */
+function orsite_gh_branch_versions( $bypass_cache = false ) {
+	$empty = array( 'child' => null, 'parent' => null, 'sha' => '', 'time' => 0, 'error' => '' );
+	$cache = get_option( 'orsite_gh_branch_cache' );
+
+	if ( ! $bypass_cache && is_array( $cache ) && isset( $cache['time'] ) && ( time() - (int) $cache['time'] ) < ( 30 * MINUTE_IN_SECONDS ) ) {
+		return $cache;
+	}
+
+	$out = $empty;
+	$out['time'] = time();
+
+	foreach ( array( 'child' => 'lax-theme-child', 'parent' => 'lax-theme' ) as $which => $slug ) {
+		$url = ORSITE_GH_API . '/contents/themes/' . rawurlencode( $slug ) . '/style.css?ref=' . rawurlencode( ORSITE_GH_BRANCH );
+		$res = orsite_gh_http( $url );
+		if ( is_wp_error( $res ) ) {
+			$out['error'] = $res->get_error_message();
+			continue;
+		}
+		if ( 200 !== $res['code'] ) {
+			$out['error'] = sprintf(
+				/* translators: %d: HTTP status code */
+				__( 'خواندن style.css از شاخه‌ی %1$s ناموفق بود (کد %2$d).', 'lax-theme-child' ),
+				ORSITE_GH_BRANCH,
+				(int) $res['code']
+			);
+			continue;
+		}
+
+		$json = json_decode( $res['body'], true );
+		$css  = '';
+		if ( is_array( $json ) ) {
+			if ( ! empty( $json['content'] ) ) {
+				$css = (string) base64_decode( preg_replace( '/\s+/', '', (string) $json['content'] ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- GitHub contents API payload.
+			}
+			if ( ! empty( $json['sha'] ) && 'child' === $which ) {
+				$out['sha'] = substr( (string) $json['sha'], 0, 10 );
+			}
+		}
+
+		if ( '' !== $css && preg_match( '/^\s*\*?\s*Version:\s*(.+)$/mi', $css, $m ) ) {
+			$out[ $which ] = trim( $m[1] );
+		}
+	}
+
+	if ( '' === $out['error'] || $out['child'] || $out['parent'] ) {
+		update_option( 'orsite_gh_branch_cache', $out, false );
+	}
+
+	return $out;
+}
+
+/**
+ * Synthetic package source for the repository branch.
+ *
+ * The GitHub branch ZIP (`codeload`) always exists even when no release was
+ * published, so a plain push can still be applied with the file-level updater.
+ * Each asset carries `kind=zipball` and the theme `subdir` inside the archive.
+ *
+ * @return array Normalized release-shaped array.
+ */
+function orsite_gh_branch_source() {
+	$versions = orsite_gh_branch_versions();
+	$zip      = 'https://codeload.github.com/' . ORSITE_GH_REPO . '/zip/refs/heads/' . ORSITE_GH_BRANCH;
+	$tag      = ORSITE_GH_BRANCH . ( ! empty( $versions['sha'] ) ? ' @ ' . $versions['sha'] : '' );
+
+	return array(
+		'tag_name'     => 'main',
+		'name'         => __( 'آخرین کد شاخه‌ی main در گیت‌هاب', 'lax-theme-child' ),
+		'published_at' => '',
+		'html_url'     => ORSITE_GH_WEB . '/commits/' . ORSITE_GH_BRANCH,
+		'body'         => '',
+		'branch'       => true,
+		'branch_label' => $tag,
+		'assets'       => array(
+			array(
+				'name'                 => ORSITE_GH_CHILD_ASSET,
+				'browser_download_url' => $zip,
+				'url'                  => ORSITE_GH_API . '/zipball/' . ORSITE_GH_BRANCH,
+				'accept'               => 'application/vnd.github+json',
+				'size'                 => 0,
+				'kind'                 => 'zipball',
+				'subdir'               => 'themes/lax-theme-child',
+			),
+			array(
+				'name'                 => ORSITE_GH_PARENT_ASSET,
+				'browser_download_url' => $zip,
+				'url'                  => ORSITE_GH_API . '/zipball/' . ORSITE_GH_BRANCH,
+				'accept'               => 'application/vnd.github+json',
+				'size'                 => 0,
+				'kind'                 => 'zipball',
+				'subdir'               => 'themes/lax-theme',
+			),
+		),
+	);
+}
+
+/**
+ * Pick the freshest source for one theme: the published release or, when the
+ * branch carries a higher version, the branch ZIP.
+ *
+ * @param string $which `child` or `parent`.
+ * @param bool   $force Bypass the release cache.
+ * @return array|WP_Error Normalized release-shaped array.
+ */
+function orsite_gh_package_source( $which = 'child', $force = false ) {
+	$release = orsite_gh_release( $force );
+	$branch  = orsite_gh_branch_versions( $force );
+	$branch_v = isset( $branch[ $which ] ) ? $branch[ $which ] : null;
+
+	if ( is_wp_error( $release ) ) {
+		if ( $branch_v ) {
+			return orsite_gh_branch_source();
+		}
+		return $release;
+	}
+
+	$versions   = orsite_gh_remote_versions( $release );
+	$release_v  = isset( $versions[ $which ] ) ? $versions[ $which ] : null;
+	$local      = orsite_gh_theme_info( $which );
+	$local_v    = $local['version'];
+
+	$branch_newer = $branch_v
+		&& ( ! $release_v || version_compare( $branch_v, $release_v, '>' ) )
+		&& version_compare( $branch_v, $local_v, '>' );
+
+	return $branch_newer ? orsite_gh_branch_source() : $release;
+}
+
 
 /* -------------------------------------------------------------------------
  * Local theme info
@@ -486,9 +651,11 @@ function orsite_updater_list_files( $dir ) {
  * Rejects path traversal entries and packages without a `style.css`.
  *
  * @param string $zip_path Path to the ZIP file.
+ * @param string $subdir   Optional theme folder inside the archive (used for
+ *                         GitHub branch ZIPs: `themes/lax-theme-child`).
  * @return array|WP_Error { root, tmpdir }
  */
-function orsite_updater_extract( $zip_path ) {
+function orsite_updater_extract( $zip_path, $subdir = '' ) {
 	if ( ! class_exists( 'ZipArchive' ) ) {
 		return new WP_Error( 'orsite_no_zip', __( 'افزونه‌ی zip روی هاست فعال نیست؛ با پشتیبانی هاست تماس بگیرید.', 'lax-theme-child' ) );
 	}
@@ -529,6 +696,15 @@ function orsite_updater_extract( $zip_path ) {
 	$root    = $tmpdir;
 	if ( 1 === count( $entries ) && is_dir( $tmpdir . '/' . $entries[0] ) ) {
 		$root = $tmpdir . '/' . $entries[0];
+	}
+
+	// GitHub branch ZIPs keep the theme below `themes/<slug>/`.
+	$subdir = trim( str_replace( '\\', '/', (string) $subdir ), '/' );
+	if ( '' !== $subdir && ! file_exists( $root . '/style.css' ) ) {
+		$candidate = $root . '/' . $subdir;
+		if ( file_exists( $candidate . '/style.css' ) ) {
+			$root = $candidate;
+		}
 	}
 
 	if ( ! file_exists( $root . '/style.css' ) ) {
@@ -650,7 +826,8 @@ function orsite_gh_plan_update( $which, $release ) {
 		return $zip;
 	}
 
-	$extract = orsite_updater_extract( $zip );
+	$subdir  = ! empty( $asset['subdir'] ) ? (string) $asset['subdir'] : '';
+	$extract = orsite_updater_extract( $zip, $subdir );
 	@unlink( $zip );
 	if ( is_wp_error( $extract ) ) {
 		return $extract;
@@ -674,7 +851,7 @@ function orsite_gh_plan_update( $which, $release ) {
  * @return array|WP_Error Result summary.
  */
 function orsite_gh_update_theme( $which ) {
-	$release = orsite_gh_release( true );
+	$release = orsite_gh_package_source( $which, true );
 	if ( is_wp_error( $release ) ) {
 		return $release;
 	}
@@ -710,7 +887,38 @@ function orsite_gh_update_theme( $which ) {
 	$log[ $which ]  = $summary;
 	update_option( 'orsite_gh_last_update', $log, false );
 
+	orsite_gh_sync_snapshot_after_update( $which );
+
 	return $summary;
+}
+
+/**
+ * Re-read the installed version after an in-place update and store it in the
+ * dashboard snapshot so the widget and the native update list stop reporting
+ * the update that was just applied.
+ *
+ * @param string $which `child` or `parent`.
+ * @return string Installed version after the update.
+ */
+function orsite_gh_sync_snapshot_after_update( $which ) {
+	$theme = orsite_gh_theme_info( $which );
+	$data  = function_exists( 'get_file_data' )
+		? get_file_data( $theme['dir'] . '/style.css', array( 'Version' => 'Version' ) )
+		: array();
+	$new   = ! empty( $data['Version'] ) ? (string) $data['Version'] : $theme['version'];
+
+	$snapshot = get_option( 'orsite_gh_snapshot' );
+	if ( is_array( $snapshot ) && ! empty( $snapshot['time'] ) ) {
+		$latest = isset( $snapshot['latest'][ $which ] ) ? $snapshot['latest'][ $which ] : null;
+		$snapshot['installed'][ $which ] = $new;
+		$snapshot['update'][ $which ]    = $latest ? version_compare( $new, $latest, '<' ) : false;
+		$snapshot['time']                = time();
+		update_option( 'orsite_gh_snapshot', $snapshot, false );
+	}
+
+	delete_site_transient( 'update_themes' );
+
+	return $new;
 }
 
 /* -------------------------------------------------------------------------
@@ -739,6 +947,12 @@ add_action( 'admin_menu', 'orsite_gh_admin_menu' );
  */
 function orsite_gh_admin_notice() {
 	if ( ! current_user_can( 'update_themes' ) ) {
+		return;
+	}
+
+	// The updater page already shows the full state, so skip the duplication.
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	if ( $screen && isset( $screen->id ) && false !== strpos( (string) $screen->id, 'orsite-github-updater' ) ) {
 		return;
 	}
 
@@ -888,23 +1102,37 @@ add_action( 'admin_init', 'orsite_gh_handle_actions' );
  */
 function orsite_gh_build_check_report( $release ) {
 	$versions = orsite_gh_remote_versions( $release );
+	$branch   = orsite_gh_branch_versions();
 	$report   = array(
 		'time'     => time(),
 		'tag'      => $release['tag_name'],
 		'html_url' => $release['html_url'],
 		'body'     => $release['body'],
 		'versions' => $versions,
+		'branch'   => $branch,
 		'themes'   => array(),
 	);
 
 	foreach ( array( 'child', 'parent' ) as $which ) {
 		$theme = orsite_gh_theme_info( $which );
+		$remote = isset( $versions[ $which ] ) ? $versions[ $which ] : null;
+		$branch_v = isset( $branch[ $which ] ) ? $branch[ $which ] : null;
+		$source   = $release;
+
+		// A plain push to `main` (no new release yet) still shows up and can
+		// be applied from the branch ZIP.
+		if ( $branch_v && ( ! $remote || version_compare( $branch_v, $remote, '>' ) ) && version_compare( $branch_v, $theme['version'], '>' ) ) {
+			$source = orsite_gh_branch_source();
+			$remote = $branch_v;
+		}
+
 		$entry = array(
 			'local'  => $theme['version'],
-			'remote' => isset( $versions[ $which ] ) ? $versions[ $which ] : null,
+			'remote' => $remote,
 			'name'   => $theme['name'],
+			'source' => ! empty( $source['branch'] ) ? 'branch' : 'release',
 		);
-		$plan = orsite_gh_plan_update( $which, $release );
+		$plan = orsite_gh_plan_update( $which, $source );
 		if ( is_wp_error( $plan ) ) {
 			$entry['error'] = $plan->get_error_message();
 		} else {
@@ -1014,38 +1242,411 @@ function orsite_gh_auto_apply_updates( $release ) {
  */
 function orsite_gh_current_remote_versions() {
 	$release = orsite_gh_release( false );
-	if ( is_wp_error( $release ) ) {
-		return array( 'child' => null, 'parent' => null );
+	$out     = is_wp_error( $release ) ? array( 'child' => null, 'parent' => null ) : orsite_gh_remote_versions( $release );
+
+	$branch = orsite_gh_branch_versions();
+	foreach ( array( 'child', 'parent' ) as $which ) {
+		$branch_v = isset( $branch[ $which ] ) ? $branch[ $which ] : null;
+		if ( $branch_v && ( empty( $out[ $which ] ) || version_compare( $branch_v, $out[ $which ], '>' ) ) ) {
+			$out[ $which ] = $branch_v;
+		}
 	}
-	return orsite_gh_remote_versions( $release );
+
+	return $out;
 }
 
 /**
- * Auto-check for updates twice a day in the admin (feeds the notice badge and
- * applies higher-version updates automatically when that option is enabled).
+ * One cached, never-slow snapshot of the GitHub ↔ WordPress update state.
+ *
+ * This is the single source the dashboard widget, the admin notice, the admin
+ * bar badge and the native WordPress update list read from, so an administrator
+ * sees a new release (or a plain push to `main`) without opening any page.
+ *
+ * @param bool $force       Bypass the cache and hit GitHub again.
+ * @param bool $allow_fetch When false, only cached data is returned (no HTTP).
+ * @return array {
+ *     time, ok, error, tag, name, html_url, published_at, body, changelog,
+ *     installed[], latest[], source[], update[], packages[], branch[], checked_human
+ * }
+ */
+function orsite_gh_update_snapshot( $force = false, $allow_fetch = true ) {
+	$cache = get_option( 'orsite_gh_snapshot' );
+
+	if ( ! $force && is_array( $cache ) && ! empty( $cache['time'] ) ) {
+		$age   = time() - (int) $cache['time'];
+		$limit = empty( $cache['ok'] ) ? ORSITE_GH_CHECK_RETRY : ORSITE_GH_CHECK_INTERVAL;
+		if ( $age < $limit || ! $allow_fetch ) {
+			$cache['stale'] = ( $age >= $limit );
+			return $cache;
+		}
+	}
+	if ( ! $allow_fetch ) {
+		return array(
+			'time'      => 0,
+			'ok'        => false,
+			'error'     => '',
+			'installed' => array(),
+			'latest'    => array(),
+			'source'    => array(),
+			'update'    => array(),
+			'packages'  => array(),
+			'branch'    => array(),
+			'changelog' => array(),
+			'stale'     => true,
+		);
+	}
+
+	$branch = orsite_gh_branch_versions( $force );
+	$snapshot = array(
+		'time'         => time(),
+		'ok'           => false,
+		'error'        => '',
+		'tag'          => '',
+		'name'         => '',
+		'html_url'     => ORSITE_GH_WEB . '/releases',
+		'published_at' => '',
+		'body'         => '',
+		'changelog'    => array(),
+		'installed'    => array(),
+		'latest'       => array(),
+		'source'       => array(),
+		'update'       => array(),
+		'packages'     => array(),
+		'branch'       => array(
+			'child'  => isset( $branch['child'] ) ? $branch['child'] : null,
+			'parent' => isset( $branch['parent'] ) ? $branch['parent'] : null,
+			'sha'    => isset( $branch['sha'] ) ? $branch['sha'] : '',
+			'time'   => isset( $branch['time'] ) ? (int) $branch['time'] : 0,
+		),
+	);
+
+	$release  = orsite_gh_release( $force );
+	$versions = array( 'child' => null, 'parent' => null );
+
+	if ( is_wp_error( $release ) ) {
+		$snapshot['error'] = $release->get_error_message();
+	} else {
+		$versions          = orsite_gh_remote_versions( $release, $force );
+		$snapshot['ok']    = true;
+		$snapshot['tag']   = (string) $release['tag_name'];
+		$snapshot['name']  = (string) $release['name'];
+		$snapshot['html_url']     = (string) $release['html_url'];
+		$snapshot['published_at'] = (string) $release['published_at'];
+		$snapshot['body']         = (string) $release['body'];
+		$snapshot['changelog']    = isset( $versions['changelog'] ) ? (array) $versions['changelog'] : array();
+	}
+
+	foreach ( array( 'child', 'parent' ) as $which ) {
+		$theme   = orsite_gh_theme_info( $which );
+		$rel_v   = isset( $versions[ $which ] ) ? $versions[ $which ] : null;
+		$br_v    = $snapshot['branch'][ $which ];
+		$latest  = $rel_v;
+		$from    = 'release';
+		if ( $br_v && ( ! $rel_v || version_compare( $br_v, $rel_v, '>' ) ) ) {
+			$latest = $br_v;
+			$from   = 'branch';
+		}
+
+		$snapshot['installed'][ $which ] = $theme['version'];
+		$snapshot['latest'][ $which ]    = $latest;
+		$snapshot['source'][ $which ]    = $from;
+		$snapshot['update'][ $which ]    = $latest ? version_compare( $theme['version'], $latest, '<' ) : false;
+
+		// Native WordPress theme updates can only consume a theme-root ZIP,
+		// which is exactly what a published release asset is.
+		$package = '';
+		if ( ! is_wp_error( $release ) && 'release' === $from ) {
+			$asset = orsite_gh_find_asset( $release, $theme['asset'] );
+			if ( $asset && empty( $asset['kind'] ) && ! empty( $asset['browser_download_url'] ) ) {
+				$package = (string) $asset['browser_download_url'];
+			}
+		}
+		$snapshot['packages'][ $which ] = $package;
+	}
+
+	$snapshot['ok'] = $snapshot['ok'] || ( ! empty( $snapshot['latest']['child'] ) || ! empty( $snapshot['latest']['parent'] ) );
+
+	update_option( 'orsite_gh_snapshot', $snapshot, false );
+
+	// Keep the legacy flag used by the admin notice in sync.
+	$flag = array( 'child' => null, 'parent' => null, 'checked' => time() );
+	foreach ( array( 'child', 'parent' ) as $which ) {
+		if ( ! empty( $snapshot['update'][ $which ] ) ) {
+			$flag[ $which ] = $snapshot['latest'][ $which ];
+		}
+	}
+	update_option( 'orsite_gh_update_flag', $flag, false );
+
+	// Let WordPress rebuild the native theme-update list with these versions.
+	delete_site_transient( 'update_themes' );
+
+	return $snapshot;
+}
+
+/**
+ * Feed the GitHub release into the native WordPress theme update list.
+ *
+ * This is what makes a new GitHub release appear under «پیشخوان → بروزرسانی‌ها»,
+ * in «نمایش → پوسته‌ها» and in the admin menu update bubble. The filter never
+ * performs an HTTP request: it only reads the cached snapshot.
+ *
+ * @param mixed $transient The `update_themes` site transient.
+ * @return mixed
+ */
+function orsite_gh_inject_theme_update( $transient ) {
+	if ( ! is_object( $transient ) || empty( $transient->checked ) || ! is_array( $transient->checked ) ) {
+		return $transient;
+	}
+
+	$snapshot = orsite_gh_update_snapshot( false, false );
+	if ( empty( $snapshot['time'] ) || empty( $snapshot['update'] ) ) {
+		return $transient;
+	}
+
+	if ( ! isset( $transient->response ) || ! is_array( $transient->response ) ) {
+		$transient->response = array();
+	}
+
+	foreach ( array( 'child' => 'lax-theme-child', 'parent' => 'lax-theme' ) as $which => $stylesheet ) {
+		if ( empty( $snapshot['update'][ $which ] ) || 'release' !== $snapshot['source'][ $which ] ) {
+			continue;
+		}
+		$package = isset( $snapshot['packages'][ $which ] ) ? (string) $snapshot['packages'][ $which ] : '';
+		if ( '' === $package ) {
+			// Fall back to the repository copy of the release ZIP.
+			$package = ORSITE_GH_WEB . '/raw/' . rawurlencode( (string) $snapshot['tag'] ) . '/releases/' . rawurlencode( 'lax-theme-child' === $which ? ORSITE_GH_CHILD_ASSET : ORSITE_GH_PARENT_ASSET );
+		}
+		$transient->response[ $stylesheet ] = array(
+			'theme'       => $stylesheet,
+			'new_version' => (string) $snapshot['latest'][ $which ],
+			'url'         => (string) $snapshot['html_url'],
+			'package'     => $package,
+		);
+		if ( isset( $transient->no_update[ $stylesheet ] ) ) {
+			unset( $transient->no_update[ $stylesheet ] );
+		}
+	}
+
+	return $transient;
+}
+add_filter( 'pre_set_site_transient_update_themes', 'orsite_gh_inject_theme_update', 20 );
+
+/**
+ * Background check: refresh the snapshot, feed the notice/badge and apply
+ * higher-version releases when automatic updates are enabled for this site.
  */
 function orsite_gh_auto_check() {
 	if ( ! current_user_can( 'update_themes' ) ) {
 		return;
 	}
+	if ( ! function_exists( 'wp_get_theme' ) ) {
+		return;
+	}
+
 	$last = (int) get_option( 'orsite_gh_auto_check_time', 0 );
-	if ( ( time() - $last ) < ( 12 * HOUR_IN_SECONDS ) ) {
+	if ( ( time() - $last ) < ( 15 * MINUTE_IN_SECONDS ) ) {
 		return;
 	}
 	update_option( 'orsite_gh_auto_check_time', time(), false );
+
+	$snapshot = orsite_gh_update_snapshot( false );
+	if ( empty( $snapshot['ok'] ) ) {
+		update_option( 'orsite_gh_last_check', array( 'time' => time(), 'error' => (string) $snapshot['error'] ), false );
+		return;
+	}
+	update_option( 'orsite_gh_last_check', array( 'time' => time(), 'error' => '' ), false );
 
 	$release = orsite_gh_release( false );
 	if ( is_wp_error( $release ) ) {
 		return;
 	}
-	$report = orsite_gh_build_check_report( $release );
-	update_option( 'orsite_gh_last_diff', $report, false );
-	orsite_gh_refresh_update_flag( $report );
 
-	// Apply higher-version updates automatically (changed files only).
-	orsite_gh_auto_apply_updates( $release );
+	if ( orsite_gh_auto_apply_enabled() ) {
+		orsite_gh_auto_apply_updates( $release );
+	}
 }
-add_action( 'admin_init', 'orsite_gh_auto_check', 20 );
+add_action( 'admin_init', 'orsite_gh_auto_check', 5 );
+
+/**
+ * Register the dashboard widget on /wp-admin/index.php.
+ */
+function orsite_gh_register_dashboard_widget() {
+	if ( ! current_user_can( 'update_themes' ) ) {
+		return;
+	}
+	wp_add_dashboard_widget(
+		'orsite_gh_dashboard_widget',
+		__( 'بروزرسانی قالب از گیت‌هاب', 'lax-theme-child' ),
+		'orsite_gh_render_dashboard_widget'
+	);
+}
+add_action( 'wp_dashboard_setup', 'orsite_gh_register_dashboard_widget' );
+
+/**
+ * Dashboard widget: connection state, installed vs. published versions and
+ * the release changelog written in `releases/orsite-release.json`.
+ */
+function orsite_gh_render_dashboard_widget() {
+	$snapshot  = orsite_gh_update_snapshot( false, false );
+	$page_url  = admin_url( 'admin.php?page=orsite-github-updater' );
+	$installed = array(
+		'child'  => orsite_gh_theme_info( 'child' ),
+		'parent' => orsite_gh_theme_info( 'parent' ),
+	);
+	$has_update = ! empty( $snapshot['update']['child'] ) || ! empty( $snapshot['update']['parent'] );
+	?>
+	<div class="orsite-gh-widget" dir="rtl">
+		<style>
+			.orsite-gh-widget { font-size: 13px; color: #071A33; }
+			.orsite-gh-widget .ogw-row { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px dashed #D6E2EE; }
+			.orsite-gh-widget .ogw-row:last-child { border-bottom: 0; }
+			.orsite-gh-widget .ogw-k { color: #38536E; }
+			.orsite-gh-widget code { direction: ltr; display: inline-block; background: #EEF4FA; border: 1px solid #B9C9D9; border-radius: 6px; padding: 0 6px; }
+			.orsite-gh-widget .ogw-ok { color: #0A2F6B; font-weight: 700; }
+			.orsite-gh-widget .ogw-new { color: #fff; background: #0A2F6B; border-radius: 6px; padding: 1px 8px; font-weight: 700; }
+			.orsite-gh-widget .ogw-bad { color: #7a1220; font-weight: 700; }
+			.orsite-gh-widget .ogw-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+			.orsite-gh-widget .ogw-actions .button { margin: 0; }
+			.orsite-gh-widget ul { margin: 6px 16px 0 0; padding: 0; list-style: disc; }
+			.orsite-gh-widget ul li { margin: 0 0 5px; line-height: 1.8; }
+			.orsite-gh-widget h4 { margin: 14px 0 4px; color: #06265C; }
+		</style>
+
+		<?php if ( empty( $snapshot['time'] ) ) : ?>
+			<p class="ogw-k"><?php esc_html_e( 'هنوز بررسی‌ای انجام نشده است. با دکمه‌ی زیر اتصال به گیت‌هاب را بررسی کنید.', 'lax-theme-child' ); ?></p>
+		<?php else : ?>
+			<div class="ogw-row">
+				<span class="ogw-k"><?php esc_html_e( 'مخزن', 'lax-theme-child' ); ?></span>
+				<a href="<?php echo esc_url( ORSITE_GH_WEB ); ?>" target="_blank" rel="noopener"><code><?php echo esc_html( ORSITE_GH_REPO ); ?></code></a>
+			</div>
+			<div class="ogw-row">
+				<span class="ogw-k"><?php esc_html_e( 'وضعیت اتصال', 'lax-theme-child' ); ?></span>
+				<?php if ( ! empty( $snapshot['ok'] ) ) : ?>
+					<span class="ogw-ok"><?php esc_html_e( 'متصل', 'lax-theme-child' ); ?></span>
+				<?php else : ?>
+					<span class="ogw-bad"><?php echo esc_html( $snapshot['error'] ? $snapshot['error'] : __( 'برقرار نشد', 'lax-theme-child' ) ); ?></span>
+				<?php endif; ?>
+			</div>
+			<div class="ogw-row">
+				<span class="ogw-k"><?php esc_html_e( 'آخرین بررسی', 'lax-theme-child' ); ?></span>
+				<span><?php echo esc_html( sprintf( '%s پیش', human_time_diff( (int) $snapshot['time'] ) ) ); ?></span>
+			</div>
+			<?php if ( ! empty( $snapshot['tag'] ) ) : ?>
+				<div class="ogw-row">
+					<span class="ogw-k"><?php esc_html_e( 'آخرین انتشار گیت‌هاب', 'lax-theme-child' ); ?></span>
+					<a href="<?php echo esc_url( $snapshot['html_url'] ); ?>" target="_blank" rel="noopener"><code><?php echo esc_html( $snapshot['tag'] ); ?></code></a>
+				</div>
+			<?php endif; ?>
+			<?php foreach ( $installed as $which => $theme ) : ?>
+				<?php
+				$latest = isset( $snapshot['latest'][ $which ] ) ? $snapshot['latest'][ $which ] : null;
+				$update = ! empty( $snapshot['update'][ $which ] );
+				$source = isset( $snapshot['source'][ $which ] ) ? $snapshot['source'][ $which ] : '';
+				?>
+				<div class="ogw-row">
+					<span class="ogw-k"><?php echo esc_html( $theme['name'] ); ?></span>
+					<span>
+						<code><?php echo esc_html( $theme['version'] ); ?></code>
+						<?php if ( $latest ) : ?>
+							<?php echo esc_html( ' → ' ); ?><code><?php echo esc_html( $latest ); ?></code>
+						<?php endif; ?>
+						<?php if ( $update ) : ?>
+							<span class="ogw-new"><?php esc_html_e( 'بروزرسانی موجود است', 'lax-theme-child' ); ?></span>
+							<?php if ( 'branch' === $source ) : ?>
+								<span class="ogw-k"><?php esc_html_e( '(از شاخه‌ی main)', 'lax-theme-child' ); ?></span>
+							<?php endif; ?>
+						<?php elseif ( $latest ) : ?>
+							<span class="ogw-ok"><?php esc_html_e( 'به‌روز است', 'lax-theme-child' ); ?></span>
+						<?php endif; ?>
+					</span>
+				</div>
+			<?php endforeach; ?>
+
+			<?php if ( ! empty( $snapshot['branch']['child'] ) || ! empty( $snapshot['branch']['parent'] ) ) : ?>
+				<p class="ogw-k" style="margin:10px 0 0">
+					<?php
+					$branch_parts = array();
+					if ( ! empty( $snapshot['branch']['child'] ) ) {
+						$branch_parts[] = sprintf( 'فرزند %s', $snapshot['branch']['child'] );
+					}
+					if ( ! empty( $snapshot['branch']['parent'] ) ) {
+						$branch_parts[] = sprintf( 'والد %s', $snapshot['branch']['parent'] );
+					}
+					printf(
+						/* translators: 1: branch name, 2: versions list, 3: commit sha */
+						esc_html__( 'نسخه‌ی کد روی شاخه‌ی %1$s: %2$s%3$s', 'lax-theme-child' ),
+						esc_html( ORSITE_GH_BRANCH ),
+						esc_html( implode( ' — ', $branch_parts ) ),
+						! empty( $snapshot['branch']['sha'] ) ? esc_html( ' (' . $snapshot['branch']['sha'] . ')' ) : ''
+					);
+					?>
+				</p>
+			<?php endif; ?>
+
+			<?php if ( $has_update && ! empty( $snapshot['changelog'] ) ) : ?>
+				<h4><?php esc_html_e( 'تغییرات نسخه‌ی تازه', 'lax-theme-child' ); ?></h4>
+				<ul>
+					<?php foreach ( array_slice( (array) $snapshot['changelog'], 0, 3 ) as $line ) : ?>
+						<li><?php echo esc_html( (string) $line ); ?></li>
+					<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
+		<?php endif; ?>
+
+		<div class="ogw-actions">
+			<form method="post" action="<?php echo esc_url( $page_url ); ?>" style="display:inline">
+				<?php wp_nonce_field( 'orsite_gh_admin', 'orsite_gh_nonce' ); ?>
+				<button type="submit" name="orsite_gh_action" value="check" class="button button-primary"><?php esc_html_e( 'بررسی دوباره‌ی گیت‌هاب', 'lax-theme-child' ); ?></button>
+			</form>
+			<a class="button" href="<?php echo esc_url( $page_url ); ?>"><?php esc_html_e( 'صفحه‌ی بروزرسانی', 'lax-theme-child' ); ?></a>
+			<?php if ( $has_update ) : ?>
+				<form method="post" action="<?php echo esc_url( $page_url ); ?>" style="display:inline" onsubmit="return confirm('<?php echo esc_js( __( 'فایل‌های تغییریافته‌ی هر دو قالب از آخرین نسخه جایگزین شوند؟', 'lax-theme-child' ) ); ?>')">
+					<?php wp_nonce_field( 'orsite_gh_admin', 'orsite_gh_nonce' ); ?>
+					<button type="submit" name="orsite_gh_action" value="update_all" class="button"><?php esc_html_e( 'بروزرسانی فوری', 'lax-theme-child' ); ?></button>
+				</form>
+			<?php endif; ?>
+		</div>
+	</div>
+	<?php
+}
+
+/**
+ * Admin-bar badge: the pending GitHub update is visible on every screen.
+ *
+ * @param WP_Admin_Bar $bar Admin bar instance.
+ */
+function orsite_gh_admin_bar_node( $bar ) {
+	if ( ! current_user_can( 'update_themes' ) || ! is_object( $bar ) ) {
+		return;
+	}
+	$snapshot = orsite_gh_update_snapshot( false, false );
+	if ( empty( $snapshot['update'] ) ) {
+		return;
+	}
+	$parts = array();
+	foreach ( array( 'child', 'parent' ) as $which ) {
+		if ( ! empty( $snapshot['update'][ $which ] ) ) {
+			$parts[] = ( 'child' === $which ? __( 'فرزند', 'lax-theme-child' ) : __( 'والد', 'lax-theme-child' ) ) . ' ' . $snapshot['latest'][ $which ];
+		}
+	}
+	if ( ! $parts ) {
+		return;
+	}
+
+	$bar->add_node(
+		array(
+			'id'    => 'orsite-gh-update',
+			'title' => '⤴ ' . sprintf(
+				/* translators: %s: versions list */
+				__( 'بروزرسانی گیت‌هاب: %s', 'lax-theme-child' ),
+				implode( ' | ', $parts )
+			),
+			'href'  => admin_url( 'admin.php?page=orsite-github-updater' ),
+			'meta'  => array( 'title' => __( 'نسخه‌ی تازه‌ای در مخزن گیت‌هاب منتشر شده است', 'lax-theme-child' ) ),
+		)
+	);
+}
+add_action( 'admin_bar_menu', 'orsite_gh_admin_bar_node', 100 );
 
 /**
  * Render file lists for the report cards.
@@ -1110,6 +1711,15 @@ function orsite_gh_render_page() {
 	$release_err  = is_wp_error( $release ) ? $release->get_error_message() : '';
 	$release_data = is_wp_error( $release ) ? null : $release;
 	$remote       = $release_data ? orsite_gh_remote_versions( $release_data ) : array( 'child' => null, 'parent' => null, 'changelog' => array() );
+	$branch       = orsite_gh_branch_versions();
+	$remote_from  = array( 'child' => 'release', 'parent' => 'release' );
+	foreach ( array( 'child', 'parent' ) as $which ) {
+		$branch_v = isset( $branch[ $which ] ) ? $branch[ $which ] : null;
+		if ( $branch_v && ( empty( $remote[ $which ] ) || version_compare( $branch_v, $remote[ $which ], '>' ) ) ) {
+			$remote[ $which ]      = $branch_v;
+			$remote_from[ $which ] = 'branch';
+		}
+	}
 	$diff         = (array) get_option( 'orsite_gh_last_diff', array() );
 	$last_update  = (array) get_option( 'orsite_gh_last_update', array() );
 	$last_run     = (array) get_option( 'orsite_gh_last_run', array() );
@@ -1196,7 +1806,7 @@ function orsite_gh_render_page() {
 				</label>
 			</p>
 			<p class="orsite-meta">
-				<?php esc_html_e( 'دو بار در روز آخرین Release گیت‌هاب بررسی می‌شود؛ اگر نسخه‌ای بالاتر از نصب فعلی منتشر شده باشد، فقط فایل‌های تغییریافته‌ی همان نسخه به‌صورت خودکار جایگزین می‌شوند. هرگز نسخه پایین‌تر نصب نمی‌شود و فایلی حذف نمی‌شود. اگر ترجیح می‌دهید خودتان دکمه را بزنید، تیک را بردارید.', 'lax-theme-child' ); ?>
+				<?php esc_html_e( 'هر ۳ ساعت آخرین Release گیت‌هاب بررسی می‌شود و نسخه‌ی تازه در پیشخوان، نوار مدیریت و صفحه‌ی «بروزرسانی‌ها»ی وردپرس نمایش داده می‌شود؛ اگر این گزینه روشن باشد فقط فایل‌های تغییریافته‌ی همان نسخه به‌صورت خودکار جایگزین می‌شوند. هرگز نسخه پایین‌تر نصب نمی‌شود و فایلی حذف نمی‌شود. اگر ترجیح می‌دهید خودتان دکمه را بزنید، تیک را بردارید.', 'lax-theme-child' ); ?>
 			</p>
 			<p>
 				<button type="submit" name="orsite_gh_action" value="save_settings" class="button orsite-btn"><?php esc_html_e( 'ذخیره‌ی تنظیمات', 'lax-theme-child' ); ?></button>
@@ -1219,13 +1829,19 @@ function orsite_gh_render_page() {
 			<tbody>
 			<?php foreach ( array( 'child' => $child, 'parent' => $parent ) as $key => $theme ) : ?>
 				<?php
-				$remote_v = isset( $remote[ $key ] ) ? $remote[ $key ] : null;
-				$update   = $remote_v && version_compare( $theme['version'], $remote_v, '<' );
+				$remote_v    = isset( $remote[ $key ] ) ? $remote[ $key ] : null;
+				$update      = $remote_v && version_compare( $theme['version'], $remote_v, '<' );
+				$from_branch = isset( $remote_from[ $key ] ) && 'branch' === $remote_from[ $key ];
 				?>
 				<tr>
 					<td><strong><?php echo esc_html( $theme['name'] ); ?></strong><br /><span class="orsite-meta"><code><?php echo esc_html( $key === 'child' ? 'lax-theme-child' : 'lax-theme' ); ?></code></span></td>
 					<td><code><?php echo esc_html( $theme['version'] ); ?></code></td>
-					<td><code><?php echo esc_html( $remote_v ? $remote_v : '—' ); ?></code></td>
+					<td>
+						<code><?php echo esc_html( $remote_v ? $remote_v : '—' ); ?></code>
+						<?php if ( $remote_v && $from_branch ) : ?>
+							<br /><span class="orsite-meta"><?php printf( esc_html__( 'از شاخه‌ی %s (بدون تگ ریلیز)', 'lax-theme-child' ), esc_html( ORSITE_GH_BRANCH ) ); ?></span>
+						<?php endif; ?>
+					</td>
 					<td>
 						<?php if ( $update ) : ?>
 							<span class="orsite-status-new"><?php esc_html_e( 'بروزرسانی موجود است', 'lax-theme-child' ); ?></span>
@@ -1247,6 +1863,30 @@ function orsite_gh_render_page() {
 			<?php endforeach; ?>
 			</tbody>
 		</table>
+		<?php if ( ! empty( $branch['child'] ) || ! empty( $branch['parent'] ) || ! empty( $branch['error'] ) ) : ?>
+			<p class="orsite-meta">
+				<?php
+				if ( ! empty( $branch['error'] ) ) {
+					echo esc_html( $branch['error'] );
+				} else {
+					$branch_parts = array();
+					if ( ! empty( $branch['child'] ) ) {
+						$branch_parts[] = sprintf( 'فرزند %s', $branch['child'] );
+					}
+					if ( ! empty( $branch['parent'] ) ) {
+						$branch_parts[] = sprintf( 'والد %s', $branch['parent'] );
+					}
+					printf(
+						/* translators: 1: branch, 2: versions, 3: sha */
+						esc_html__( 'کد موجود روی شاخه‌ی %1$s: %2$s%3$s — هر کامیت تازه روی این شاخه، بدون نیاز به تگ، در همین صفحه و در پیشخوان دیده می‌شود.', 'lax-theme-child' ),
+						esc_html( ORSITE_GH_BRANCH ),
+						esc_html( implode( ' — ', $branch_parts ) ),
+						! empty( $branch['sha'] ) ? esc_html( ' (' . $branch['sha'] . ')' ) : ''
+					);
+				}
+				?>
+			</p>
+		<?php endif; ?>
 		<p>
 			<form method="post" action="" style="display:inline">
 				<?php echo $nonce; // phpcs:ignore WordPress.Security.EscapeOutput -- nonce field. ?>
