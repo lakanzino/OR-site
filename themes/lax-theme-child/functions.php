@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.12.1' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.12.2' );
 }
 
 /**
@@ -113,6 +113,14 @@ function lax_theme_child_assets() {
 	wp_enqueue_script(
 		'lax-theme-child-fit-headings',
 		get_stylesheet_directory_uri() . '/assets/js/fit-headings.js',
+		array(),
+		LAX_THEME_CHILD_VERSION,
+		true
+	);
+
+	wp_enqueue_script(
+		'lax-theme-child-article-layout',
+		get_stylesheet_directory_uri() . '/assets/js/article-layout.js',
 		array(),
 		LAX_THEME_CHILD_VERSION,
 		true
