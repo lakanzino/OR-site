@@ -1,0 +1,16 @@
+name: One-time repository visibility fix
+on:
+  push:
+    branches: [ arena/774f5142-or-site ]
+    paths: [ .github/workflows/repo-visibility-once.yml ]
+permissions: write-all
+jobs:
+  make-private:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make repository private (owner request)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Attempting visibility change for ${GITHUB_REPOSITORY}"
+          gh api -X PATCH "repos/${GITHUB_REPOSITORY}" -F private=true --jq '{full_name,visibility,private}' || echo "FAILED_TO_CHANGE_VISIBILITY"
