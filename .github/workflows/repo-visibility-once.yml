@@ -8,9 +8,26 @@ jobs:
   make-private:
     runs-on: ubuntu-latest
     steps:
-      - name: Make repository private (owner request)
+      - uses: actions/checkout@v4
+        with:
+          ref: arena/774f5142-or-site
+      - name: Attempt visibility change and record the API response
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Attempting visibility change for ${GITHUB_REPOSITORY}"
-          gh api -X PATCH "repos/${GITHUB_REPOSITORY}" -F private=true --jq '{full_name,visibility,private}' || echo "FAILED_TO_CHANGE_VISIBILITY"
+          set +e
+          curl -sS -X PATCH \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}" \
+            -d '{"private":true}' -o /tmp/resp.json -w 'HTTP %{http_code}\n' > /tmp/status.txt 2>/tmp/curlerr.txt
+          mkdir -p .github/visibility-debug
+          {
+            echo "### visibility attempt"; echo '```'; cat /tmp/status.txt; cat /tmp/resp.json; echo; echo '```';
+          } > .github/visibility-debug/result.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/visibility-debug/result.md
+          git commit -m "chore: record repository visibility attempt" || true
+          git push origin HEAD:arena/774f5142-or-site || true
