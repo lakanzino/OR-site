@@ -77,6 +77,51 @@ if ( ! defined( 'ORSITE_GH_CHECK_RETRY' ) ) {
 if ( ! defined( 'ORSITE_GH_RAW_BRANCH' ) ) {
 	define( 'ORSITE_GH_RAW_BRANCH', 'https://raw.githubusercontent.com/lakanzino/OR-site' );
 }
+if ( ! defined( 'ORSITE_GH_CACHE_SCHEMA' ) ) {
+	/*
+	 * Bump whenever the shape or the meaning of the cached release/snapshot
+	 * changes. Up to 0.12.0 the release cache could hold a stale `child-v0.9.1`
+	 * entry for a full hour after an update, which made the page look "connected"
+	 * to the wrong release; any cache written by an older schema is dropped.
+	 */
+	define( 'ORSITE_GH_CACHE_SCHEMA', 3 );
+}
+
+/* -------------------------------------------------------------------------
+ * Cache schema migration
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Drop every cached GitHub payload written by an older build.
+ *
+ * Runs once per schema bump. Without this, installing a fixed build still shows
+ * the old cached release for up to an hour (that is exactly how the page kept
+ * reporting `child-v0.9.1` right after an update).
+ */
+function orsite_gh_maybe_upgrade_caches() {
+	$schema = (int) get_option( 'orsite_gh_cache_schema', 0 );
+	if ( ORSITE_GH_CACHE_SCHEMA === $schema ) {
+		return;
+	}
+
+	foreach ( array(
+		'orsite_gh_release_cache',
+		'orsite_gh_snapshot',
+		'orsite_gh_manifest_cache',
+		'orsite_gh_branch_cache',
+		'orsite_gh_last_fetch',
+		'orsite_gh_update_flag',
+		'orsite_gh_last_diff',
+		'orsite_gh_last_check',
+		'orsite_gh_versions_cache',
+	) as $option ) {
+		delete_option( $option );
+	}
+
+	update_option( 'orsite_gh_cache_schema', ORSITE_GH_CACHE_SCHEMA, false );
+}
+add_action( 'init', 'orsite_gh_maybe_upgrade_caches', 1 );
+add_action( 'admin_init', 'orsite_gh_maybe_upgrade_caches', 1 );
 
 /* -------------------------------------------------------------------------
  * Token handling
@@ -671,7 +716,18 @@ function orsite_gh_fetch_remote_release() {
  */
 function orsite_gh_release( $force = false ) {
 	$cache = get_option( 'orsite_gh_release_cache' );
-	$valid = is_array( $cache ) && ! empty( $cache['data'] ) && is_array( $cache['data'] ) && ! empty( $cache['time'] );
+	$valid = is_array( $cache )
+		&& ! empty( $cache['data'] )
+		&& is_array( $cache['data'] )
+		&& ! empty( $cache['time'] )
+		&& isset( $cache['schema'] )
+		&& ORSITE_GH_CACHE_SCHEMA === (int) $cache['schema'];
+
+	if ( is_array( $cache ) && ! empty( $cache['time'] ) && ! $valid ) {
+		// Written by an older build: never trust it.
+		delete_option( 'orsite_gh_release_cache' );
+		$cache = null;
+	}
 
 	if ( ! $force && $valid && ( time() - (int) $cache['time'] ) < HOUR_IN_SECONDS ) {
 		$cached                = $cache['data'];
@@ -708,6 +764,7 @@ function orsite_gh_release( $force = false ) {
 			'orsite_gh_release_cache',
 			array(
 				'time'       => time(),
+				'schema'     => ORSITE_GH_CACHE_SCHEMA,
 				'source'     => $attempt['source'],
 				'data'       => $attempt['release'],
 				'candidates' => orsite_gh_public_candidates( $attempt['candidates'] ),
@@ -791,7 +848,7 @@ function orsite_gh_download_asset( $asset, $tag = '' ) {
 			'url'     => $asset['browser_download_url'],
 			'auth'    => false,
 			'accept'  => '*/*',
-			'timeout' => 120,
+			'timeout' => 60,
 		);
 	}
 	if ( '' !== $tag && '' !== $name ) {
@@ -799,7 +856,7 @@ function orsite_gh_download_asset( $asset, $tag = '' ) {
 			'url'     => ORSITE_GH_RAW . '/' . rawurlencode( $tag ) . '/releases/' . rawurlencode( $name ),
 			'auth'    => false,
 			'accept'  => '*/*',
-			'timeout' => 120,
+			'timeout' => 60,
 		);
 	}
 	if ( ! empty( $asset['url'] ) ) {
@@ -807,7 +864,7 @@ function orsite_gh_download_asset( $asset, $tag = '' ) {
 			'url'     => $asset['url'],
 			'auth'    => true,
 			'accept'  => ! empty( $asset['accept'] ) ? (string) $asset['accept'] : 'application/octet-stream',
-			'timeout' => 120,
+			'timeout' => 60,
 		);
 	}
 
@@ -833,7 +890,7 @@ function orsite_gh_download_asset( $asset, $tag = '' ) {
 			ORSITE_GH_CODELOAD . '/zip/refs/tags/' . rawurlencode( $tag ),
 			array(
 				'accept'  => 'application/zip, */*',
-				'timeout' => 180,
+				'timeout' => 120,
 			)
 		);
 		if ( 200 === (int) $res['code'] && '' !== $res['body'] ) {
@@ -896,7 +953,7 @@ function orsite_gh_fetch_manifest( $tag ) {
 			array(
 				'auth'    => $source['auth'],
 				'accept'  => $source['accept'],
-				'timeout' => 20,
+				'timeout' => 10,
 			)
 		);
 		if ( 200 !== (int) $res['code'] || '' === trim( (string) $res['body'] ) ) {
@@ -997,14 +1054,14 @@ function orsite_gh_branch_versions( $bypass_cache = false ) {
 		// Raw first: no API quota, works on hosts that block api.github.com.
 		$raw = orsite_gh_fetch(
 			ORSITE_GH_RAW_BRANCH . '/' . rawurlencode( ORSITE_GH_BRANCH ) . '/themes/' . rawurlencode( $slug ) . '/style.css',
-			array( 'auth' => false, 'accept' => '*/*', 'timeout' => 15 )
+			array( 'auth' => false, 'accept' => '*/*', 'timeout' => 10 )
 		);
 		if ( 200 === (int) $raw['code'] ) {
 			$css = (string) $raw['body'];
 		} else {
 			$api = orsite_gh_fetch(
 				ORSITE_GH_API . '/contents/themes/' . rawurlencode( $slug ) . '/style.css?ref=' . rawurlencode( ORSITE_GH_BRANCH ),
-				array( 'auth' => true, 'timeout' => 15 )
+				array( 'auth' => true, 'timeout' => 10 )
 			);
 			if ( 200 !== (int) $api['code'] ) {
 				$out['error'] = sprintf(
@@ -1531,6 +1588,12 @@ function orsite_gh_update_theme( $which ) {
 function orsite_gh_update_snapshot( $force = false, $allow_fetch = true ) {
 	$cache = get_option( 'orsite_gh_snapshot' );
 
+	if ( is_array( $cache ) && ! empty( $cache['time'] ) && ( ! isset( $cache['schema'] ) || ORSITE_GH_CACHE_SCHEMA !== (int) $cache['schema'] ) ) {
+		// Snapshot written by an older build (wrong release, old wording).
+		delete_option( 'orsite_gh_snapshot' );
+		$cache = null;
+	}
+
 	if ( ! $force && is_array( $cache ) && ! empty( $cache['time'] ) ) {
 		$age   = time() - (int) $cache['time'];
 		$limit = empty( $cache['ok'] ) ? ORSITE_GH_CHECK_RETRY : ORSITE_GH_CHECK_INTERVAL;
@@ -1543,6 +1606,7 @@ function orsite_gh_update_snapshot( $force = false, $allow_fetch = true ) {
 	if ( ! $allow_fetch ) {
 		return array(
 			'time'       => 0,
+			'schema'     => ORSITE_GH_CACHE_SCHEMA,
 			'ok'         => false,
 			'stale'      => true,
 			'error'      => '',
@@ -1561,6 +1625,7 @@ function orsite_gh_update_snapshot( $force = false, $allow_fetch = true ) {
 	$branch   = orsite_gh_branch_versions( $force );
 	$snapshot = array(
 		'time'         => time(),
+		'schema'       => ORSITE_GH_CACHE_SCHEMA,
 		'ok'           => false,
 		'stale'        => false,
 		'error'        => '',
@@ -1684,6 +1749,7 @@ function orsite_gh_sync_snapshot_after_update( $which ) {
 		$snapshot['installed'][ $which ] = $new;
 		$snapshot['update'][ $which ]    = $latest ? version_compare( $new, $latest, '<' ) : false;
 		$snapshot['time']                = time();
+		$snapshot['schema']              = ORSITE_GH_CACHE_SCHEMA;
 		update_option( 'orsite_gh_snapshot', $snapshot, false );
 	}
 
@@ -1824,7 +1890,7 @@ function orsite_gh_diagnostics() {
 		'repo',
 		__( 'مخزن در API گیت‌هاب', 'lax-theme-child' ),
 		ORSITE_GH_API,
-		array( 'auth' => true, 'timeout' => 20 )
+		array( 'auth' => true, 'timeout' => 10 )
 	);
 	$json = json_decode( (string) $repo['body'], true );
 	if ( is_array( $json ) && ! empty( $json['full_name'] ) ) {
@@ -1840,28 +1906,28 @@ function orsite_gh_diagnostics() {
 		'releases',
 		__( 'فهرست انتشارها (API)', 'lax-theme-child' ),
 		ORSITE_GH_API . '/releases?per_page=5',
-		array( 'auth' => true, 'timeout' => 20 )
+		array( 'auth' => true, 'timeout' => 10 )
 	);
 
 	$tests[] = orsite_gh_diag_row(
 		'atom',
 		__( 'خوراک Releases در github.com', 'lax-theme-child' ),
 		ORSITE_GH_WEB . '/releases.atom',
-		array( 'auth' => false, 'accept' => 'application/atom+xml, */*', 'timeout' => 20 )
+		array( 'auth' => false, 'accept' => 'application/atom+xml, */*', 'timeout' => 10 )
 	);
 
 	$tests[] = orsite_gh_diag_row(
 		'raw',
 		__( 'فایل مانیفست (raw.githubusercontent.com)', 'lax-theme-child' ),
 		ORSITE_GH_RAW . '/main/releases/' . ORSITE_GH_MANIFEST_ASSET,
-		array( 'auth' => false, 'accept' => '*/*', 'timeout' => 20 )
+		array( 'auth' => false, 'accept' => '*/*', 'timeout' => 10 )
 	);
 
 	$tests[] = orsite_gh_diag_row(
 		'codeload',
 		__( 'بسته‌ی ZIP مخزن (codeload.github.com)', 'lax-theme-child' ),
 		ORSITE_GH_CODELOAD . '/zip/refs/heads/main',
-		array( 'auth' => false, 'accept' => 'application/zip, */*', 'timeout' => 25, 'limit' => 2048 )
+		array( 'auth' => false, 'accept' => 'application/zip, */*', 'timeout' => 15, 'limit' => 2048 )
 	);
 
 	if ( '' !== $token ) {
@@ -1869,7 +1935,7 @@ function orsite_gh_diagnostics() {
 			'user',
 			__( 'اعتبار توکن (GET /user)', 'lax-theme-child' ),
 			'https://api.github.com/user',
-			array( 'auth' => true, 'timeout' => 20 )
+			array( 'auth' => true, 'timeout' => 10 )
 		);
 		$json = json_decode( (string) $user['body'], true );
 		if ( is_array( $json ) && ! empty( $json['login'] ) ) {
@@ -2009,13 +2075,35 @@ function orsite_gh_handle_actions() {
 	if ( ! isset( $_POST['orsite_gh_action'] ) ) {
 		return;
 	}
+	$page = admin_url( 'admin.php?page=orsite-github-updater' );
+
 	if ( ! current_user_can( 'update_themes' ) ) {
 		wp_die( esc_html__( 'دسترسی غیرمجاز.', 'lax-theme-child' ) );
 	}
-	check_admin_referer( 'orsite_gh_admin' );
+
+	/*
+	 * The forms render `wp_nonce_field( 'orsite_gh_admin', 'orsite_gh_nonce' )`,
+	 * so the nonce arrives as `orsite_gh_nonce` — not as the default `_wpnonce`
+	 * that check_admin_referer() looks for. Passing only the action made every
+	 * button land on WordPress' "the link you followed has expired" page.
+	 * Both names are accepted, and a stale nonce now redirects back with a
+	 * readable message instead of a dead white page.
+	 */
+	$nonce = '';
+	if ( isset( $_POST['orsite_gh_nonce'] ) ) {
+		$nonce = sanitize_text_field( wp_unslash( $_POST['orsite_gh_nonce'] ) );
+	} elseif ( isset( $_POST['_wpnonce'] ) ) {
+		$nonce = sanitize_text_field( wp_unslash( $_POST['_wpnonce'] ) );
+	}
+	if ( ! wp_verify_nonce( $nonce, 'orsite_gh_admin' ) ) {
+		wp_safe_redirect( add_query_arg( 'orsite_msg', 'nonce_fail', $page ) );
+		exit;
+	}
+
+	// Never let a full-page cache serve this screen with an old nonce.
+	nocache_headers();
 
 	$action = sanitize_key( wp_unslash( $_POST['orsite_gh_action'] ) );
-	$page   = admin_url( 'admin.php?page=orsite-github-updater' );
 
 	switch ( $action ) {
 		case 'save_token':
@@ -2034,7 +2122,7 @@ function orsite_gh_handle_actions() {
 			delete_option( 'orsite_gh_manifest_cache' );
 
 			// Validate immediately so a bad paste is visible right away.
-			$check = orsite_gh_fetch( 'https://api.github.com/user', array( 'auth' => true, 'timeout' => 20 ) );
+			$check = orsite_gh_fetch( 'https://api.github.com/user', array( 'auth' => true, 'timeout' => 12 ) );
 			$json  = json_decode( (string) $check['body'], true );
 			update_option(
 				'orsite_gh_token_check',
@@ -2060,7 +2148,7 @@ function orsite_gh_handle_actions() {
 			break;
 
 		case 'diagnose':
-			set_time_limit( 180 );
+			set_time_limit( 240 );
 			$diag = orsite_gh_diagnostics();
 			$ok   = ! empty( $diag['release']['ok'] );
 			foreach ( (array) $diag['tests'] as $test ) {
@@ -2079,6 +2167,7 @@ function orsite_gh_handle_actions() {
 			break;
 
 		case 'check':
+			set_time_limit( 180 );
 			$release = orsite_gh_release( true );
 			if ( is_wp_error( $release ) ) {
 				update_option( 'orsite_gh_last_check', array( 'time' => time(), 'error' => $release->get_error_message() ), false );
@@ -2562,6 +2651,7 @@ function orsite_gh_flash_message() {
 		'check_fail'     => array( 'error', __( 'بررسی ناموفق بود؛ جزئیات در کارت «وضعیت اتصال» است.', 'lax-theme-child' ) ),
 		'update_ok'      => array( 'success', __( 'بروزرسانی انجام شد؛ لاگ در کارت «آخرین بروزرسانی» است.', 'lax-theme-child' ) ),
 		'update_fail'    => array( 'error', __( 'بروزرسانی با خطا همراه بود؛ جزئیات در کارت «آخرین بروزرسانی» است.', 'lax-theme-child' ) ),
+		'nonce_fail'     => array( 'warning', __( 'نشست این صفحه منقضی شده بود و عملیات انجام نشد. صفحه را دوباره بارگذاری کنید (Ctrl+R) و همان دکمه را بزنید؛ اگر تکرار شد، کش مرورگر یا کش مدیر (LiteSpeed) را برای پیشخوان خاموش کنید.', 'lax-theme-child' ) ),
 		'diag_ok'        => array( 'success', __( 'همه‌ی مسیرهای گیت‌هاب پاسخ دادند؛ جدول تست در کارت «تست اتصال» است.', 'lax-theme-child' ) ),
 		'diag_fail'      => array( 'error', __( 'دست‌کم یکی از مسیرهای گیت‌هاب پاسخ نداد؛ جدول تست را ببینید.', 'lax-theme-child' ) ),
 	);
@@ -2581,6 +2671,13 @@ function orsite_gh_flash_message() {
 function orsite_gh_render_page() {
 	if ( ! current_user_can( 'update_themes' ) ) {
 		wp_die( esc_html__( 'دسترسی غیرمجاز.', 'lax-theme-child' ) );
+	}
+
+	// A cached copy of this screen carries an expired nonce with it, and every
+	// button then dies on WordPress' "link expired" page.
+	nocache_headers();
+	if ( function_exists( 'do_action' ) ) {
+		do_action( 'litespeed_control_set_nocache', 'github updater admin screen' );
 	}
 
 	$token        = orsite_gh_token();
