@@ -62,21 +62,6 @@ get_header();
 			<?php endif; ?>
 
 			<div class="orsite-article__layout">
-				<?php if ( count( $toc_items ) >= 2 ) : ?>
-					<aside class="orsite-toc" aria-label="<?php esc_attr_e( 'فهرست مطالب', 'lax-theme-child' ); ?>">
-						<details open>
-							<summary><?php esc_html_e( 'فهرست مطالب', 'lax-theme-child' ); ?></summary>
-							<ol>
-								<?php foreach ( $toc_items as $item ) : ?>
-									<li class="orsite-toc__item orsite-toc__item--level-<?php echo esc_attr( (string) $item['level'] ); ?>">
-										<a href="#<?php echo esc_attr( $item['id'] ); ?>"><?php echo esc_html( $item['text'] ); ?></a>
-									</li>
-								<?php endforeach; ?>
-							</ol>
-						</details>
-					</aside>
-				<?php endif; ?>
-
 				<div class="entry-content orsite-article__content">
 					<?php echo $article_content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered post content. ?>
 					<?php
@@ -88,6 +73,21 @@ get_header();
 					);
 					?>
 				</div>
+
+				<?php if ( count( $toc_items ) >= 2 ) : ?>
+					<aside class="orsite-toc" aria-label="<?php esc_attr_e( 'فهرست مطالب', 'lax-theme-child' ); ?>">
+						<details open data-orsite-toc>
+							<summary><?php esc_html_e( 'فهرست مطالب', 'lax-theme-child' ); ?></summary>
+							<ol>
+								<?php foreach ( $toc_items as $item ) : ?>
+									<li class="orsite-toc__item orsite-toc__item--level-<?php echo esc_attr( (string) $item['level'] ); ?>">
+										<a href="#<?php echo esc_attr( $item['id'] ); ?>"><?php echo esc_html( $item['text'] ); ?></a>
+									</li>
+								<?php endforeach; ?>
+							</ol>
+						</details>
+					</aside>
+				<?php endif; ?>
 			</div>
 		</article>
 
