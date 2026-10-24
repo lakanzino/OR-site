@@ -665,6 +665,13 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 		overflow-y: auto;
 		overscroll-behavior: contain;
 	}
+
+	/* Keep the TOC title visible while its long list scrolls. */
+	.orsite-article__layout > .orsite-toc summary {
+		position: sticky;
+		top: 0;
+		z-index: 1;
+	}
 }
 
 .orsite-toc details {
