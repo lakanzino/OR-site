@@ -1451,7 +1451,7 @@ function orsite_gh_auto_check() {
 
 	$snapshot = orsite_gh_update_snapshot( false );
 	if ( empty( $snapshot['ok'] ) ) {
-		update_option( 'orsite_gh_last_check', array( 'time' => time(), 'error' => (string) $snapshot['error'] ), false );
+		update_option( 'orsite_gh_last_check', array( 'time' => time(), 'error' => isset( $snapshot['error'] ) ? (string) $snapshot['error'] : '' ), false );
 		return;
 	}
 	update_option( 'orsite_gh_last_check', array( 'time' => time(), 'error' => '' ), false );
@@ -1524,7 +1524,7 @@ function orsite_gh_render_dashboard_widget() {
 				<?php if ( ! empty( $snapshot['ok'] ) ) : ?>
 					<span class="ogw-ok"><?php esc_html_e( 'متصل', 'lax-theme-child' ); ?></span>
 				<?php else : ?>
-					<span class="ogw-bad"><?php echo esc_html( $snapshot['error'] ? $snapshot['error'] : __( 'برقرار نشد', 'lax-theme-child' ) ); ?></span>
+					<span class="ogw-bad"><?php echo esc_html( ! empty( $snapshot['error'] ) ? $snapshot['error'] : __( 'برقرار نشد', 'lax-theme-child' ) ); ?></span>
 				<?php endif; ?>
 			</div>
 			<div class="ogw-row">
