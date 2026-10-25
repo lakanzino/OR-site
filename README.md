@@ -7,7 +7,7 @@
 | جزء | نسخه | مسیر |
 |---|---|---|
 | قالب والد `lax-theme` | 1.0.1 | [`themes/lax-theme/`](themes/lax-theme/) |
-| قالب فرزند `lax-theme-child` | 0.12.2 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
+| قالب فرزند `lax-theme-child` | 0.12.3 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
 | ساختار محتوا (`ORSITE_STRUCTURE_VERSION`) | 1.0.0 | `themes/lax-theme-child/inc/content-types.php` |
 
 ## ساختار مخزن
@@ -15,6 +15,10 @@
 - `themes/lax-theme/` — قالب والد (ارائه‌ی عمومی، راست‌چین، فونت وزیرمتن).
 - `themes/lax-theme-child/` — قالب فرزند اختصاصی پروژه: ساختار محتوا (۵ نوع نوشته، ۶ تاکسونومی، ۱۱۲ اصطلاح)، قالب مقاله با فهرست مطالب خودکار، طراحی باکس‌دار تک‌رنگ سرمه‌ای و سایزهای تصویر بدون برش.
 - `docs/` — قوانین فازبندی پروژه، تصمیم‌ها (ADR)، چنج‌لاگ کامل، رودمپ محتوا و گزارش گام‌ها.
+  - `docs/content/PUBLISH-PRIORITY.fa.md` — **مرجع اولویت انتشار**: وضعیت واقعی سایت (بررسی‌شده از نقشه‌ی سایت)، ده مقاله‌ی جاری و پانزده مقاله‌ی بعدی.
+- `content/drafts/<slug>/` — بسته‌های سه‌فایلی پیش‌نویس مقالات (`article.json` + `content.html` + `featured.webp`)؛ وضعیت همه `draft` تا بازبینی پزشکی.
+- `releases/article-packages/` — همان بسته‌ها به شکل ZIP آماده‌ی ایمپورت در پیشخوان.
+- `content/live-mirror/` — آینه‌ی متنی محتوای منتشرشده (اکنون فقط ۵ مقاله‌ی اول؛ شکاف آینه در `content/live-mirror/README.md` ثبت شده است).
 - `design/` — پیش‌نمایش HTML طراحی جاری.
 - `data/` — موجودی دسته‌بندی‌شده‌ی فایل‌های قالب والد.
 
@@ -46,6 +50,6 @@
 3. پیوندهای یکتا را روی «نام نوشته» (`/%postname%/`) بگذارید و یک بار ذخیره کنید.
 4. یک بار وارد پیشخوان شوید تا اصطلاحات ساختار محتوا ساخته شوند.
 
-جزئیات نسخه‌ها و تغییرات: [`docs/PROJECT-CHANGELOG.md`](docs/PROJECT-CHANGELOG.md) — تصمیم‌های معماری: [`docs/DECISIONS.md`](docs/DECISIONS.md) — برنامه‌ی محتوا و لینک‌دهی داخلی: [`docs/CONTENT-ROADMAP.md`](docs/CONTENT-ROADMAP.md)
+جزئیات نسخه‌ها و تغییرات: [`docs/PROJECT-CHANGELOG.md`](docs/PROJECT-CHANGELOG.md) — تصمیم‌های معماری: [`docs/DECISIONS.md`](docs/DECISIONS.md) — اولویت و صف انتشار: [`docs/content/PUBLISH-PRIORITY.fa.md`](docs/content/PUBLISH-PRIORITY.fa.md) — برنامه‌ی محتوا و لینک‌دهی داخلی: [`docs/CONTENT-MAP.md`](docs/CONTENT-MAP.md)
 
 > محتوای پزشکی داخل قالب‌ها ساخته نشده است؛ متن‌ها را تیم محتوا می‌نویسد و بازبینی می‌کند. قالب‌های ZIP آماده‌ی نصب، در بخش Releases هر نسخه منتشر می‌شوند.
