@@ -44,6 +44,9 @@ BATCH = {
     "/patient-guide/discharge-checklist/",
     "/surgery/cataract-overview/", "/surgery/cataract-preparation/",
     "/surgery/cataract-recovery/", "/surgery/cholecystectomy-overview/",
+    "/patient-guide/general-preparation-before-surgery/", "/patient-guide/questions-before-surgery/",
+    "/patient-guide/medical-history-disclosure/", "/patient-guide/smoking-and-surgery/",
+    "/patient-guide/diabetes-and-surgery/", "/patient-guide/obesity-and-anesthesia/",
 }
 ALLOWED = LIVE | BATCH
 

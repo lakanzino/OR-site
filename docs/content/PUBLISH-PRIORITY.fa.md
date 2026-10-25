@@ -136,10 +136,10 @@ featured.webp     ۱۲۰۰×۶۷۵، WebP، زیر ۱۸۰ کیلوبایت
 
 ---
 
-## ۸. دستهٔ سوم — ۲۱ بستهٔ ۱۴۰۵/۰۸/۰۳ (۱۷ آماده، ۴ در انتظار تصویر)
+## ۸. دستهٔ سوم — ۲۷ بستهٔ ۱۴۰۵/۰۸/۰۳ (۲۶ آماده، ۱ در انتظار تصویر)
 
 - **تصویر:** همه‌ی تصاویر شاخص عوض شدند. پنج بسته‌ای که پیش‌تر تصویر تولیدی داشتند (`anesthesia-and-memory`، `intubation-explained`، `home-wound-care`، `dvt-pulmonary-embolism-prevention`، `discharge-checklist`) تصویر خودِ شما را گرفتند. نقشه‌ی کامل در `docs/content/IMAGE-INVENTORY.fa.md`.
-- **گیت:** هر ۲۱ بسته از `tools/content-lint.py` عبور کرد؛ چهار بسته هنوز تصویر شاخص ندارند و به همین دلیل ZIP نشدند (`T-01` در `CONTENT-BACKLOG.fa.md`).
+- **گیت:** ۲۶ بسته از `tools/content-lint.py` عبور کرد و ZIP شد؛ تنها `cholecystectomy-overview` تصویر شاخص ندارد و به همین دلیل ZIP **نشده** است (`T-01` در `CONTENT-BACKLOG.fa.md`).
 - **سئوی دسته:** پرسش‌های متداول صفحه با اسکیمای `article.json` یکی شده است، همه‌ی لینک‌های بیرونی منابع لینک واقعی دارند، و لینک داخلی به صفحه‌ای که قرار است ۳۰۱ شود زده نشده است.
 
 | # | نامک | CPT | وضعیت |
@@ -161,9 +161,15 @@ featured.webp     ۱۲۰۰×۶۷۵، WebP، زیر ۱۸۰ کیلوبایت
 | ۱۵ | `discharge-checklist` | `patient_guide` | ✅ آماده (بازبینی) |
 | ۱۶ | `cesarean-recovery` | `surgery` | ✅ بازبینی محتوای زنده |
 | ۱۷ | `hernia-overview` | `surgery` | ✅ بازبینی محتوای زنده |
-| ۱۸ | `cataract-overview` | `surgery` | ⛔ متن کامل، تصویر در انتظار |
-| ۱۹ | `cataract-preparation` | `surgery` | ⛔ متن کامل، تصویر در انتظار |
-| ۲۰ | `cataract-recovery` | `surgery` | ⛔ متن کامل، تصویر در انتظار |
-| ۲۱ | `cholecystectomy-overview` | `surgery` | ⛔ متن کامل، تصویر در انتظار |
+| ۱۸ | `cataract-overview` | `surgery` | ✅ آماده |
+| ۱۹ | `cataract-preparation` | `surgery` | ✅ آماده |
+| ۲۰ | `cataract-recovery` | `surgery` | ✅ آماده |
+| ۲۱ | `general-preparation-before-surgery` | `patient_guide` | ✅ آماده |
+| ۲۲ | `questions-before-surgery` | `patient_guide` | ✅ آماده |
+| ۲۳ | `medical-history-disclosure` | `patient_guide` | ✅ آماده |
+| ۲۴ | `smoking-and-surgery` | `patient_guide` | ✅ آماده |
+| ۲۵ | `diabetes-and-surgery` | `patient_guide` | ✅ آماده |
+| ۲۶ | `obesity-and-anesthesia` | `patient_guide` | ✅ آماده |
+| ۲۷ | `cholecystectomy-overview` | `surgery` | ⛔ متن کامل، تصویر در انتظار |
 
-**عددهای پس از ایمپورت:** زنده ۳۱ → ۴۶ (۲۵٪) و پس از تکمیل تصاویر → ۵۰ (۲۷٪). این به‌روزرسانی در `T-10` ثبت شده است.
+**عددهای پس از ایمپورت:** زنده ۳۱ → ۵۵ (۲۹٫۹٪) و پس از تکمیل تصویر آخر → ۵۶ (۳۰٫۴٪). این به‌روزرسانی در `T-10` ثبت شده است.

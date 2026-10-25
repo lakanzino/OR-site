@@ -33,16 +33,16 @@ python3 tools/content-lint.py content/drafts/<slug>/
 
 | شناسه | کار | نوع | وضعیت | معیار پذیرش |
 |---|---|---|---|---|
-| `T-01` | تولید تصویر شاخص برای چهار مقاله‌ی `cataract-overview`، `cataract-preparation`، `cataract-recovery`، `cholecystectomy-overview` | بلاکر انتشار | ⛔ باز — سقف تولید تصویر (۱۰ در هر نوبت) پر شده | چهار فایل `1200×675` با نشان فارسی در `content/images/featured/` + سه ردیف متن alt؛ سپس گیت سبز و ZIP |
+| `T-01` | تصویر شاخص برای `cholecystectomy-overview` | بلاکر انتشار | ⛔ باز — سه مقاله‌ی آب مروارید تصویر گرفتند؛ این یکی در دو تلاش رد شد (کنترل محتوا و سپس سقف ۱۰ تصویر در هر نوبت) | یک فایل `1200×675` با نشان فارسی؛ سپس گیت سبز و ZIP. تا آن زمان **ایمپورت نمی‌شود** |
 | `T-02` | ریدایرکت ۳۰۱ از `anesthesia-consultation` به `informed-consent-anesthesia-consult` | بلاکر سئو | 🟡 باز — تصمیم گرفته شده، کد نوشته نشده | `inc/redirects.php` روی `template_redirect` با `wp_safe_redirect(301)`، تحمل اسلش انتهایی و کوئری؛ نسخه‌ی فرزند `0.12.4`؛ هدف نقشه‌راه ۱۸۴ → ۱۸۳ و زنده ۳۱ → ۳۰ |
 | `T-03` | برگه‌ی «عمل سرپایی و بستری» در `guide_stage` | بهبود ساختار | 🟡 باز — مقاله فعلاً روی والد `special-groups` نشسته | افزودن `outpatient-inpatient` به `orsite_content_map()` و بامپ `ORSITE_STRUCTURE_VERSION` به `1.0.1` (بذر اصطلاحات idempotent است و چیزی را پاک نمی‌کند)؛ سپس تغییر `taxonomy` مقاله |
 | `T-04` | اجرای اجباری گیت در ساخت ZIP | فرایند | 🟡 باز | اسکریپت ساخت بسته پیش از zip، `tools/content-lint.py` را صدا بزند و روی خروجی غیرصفر متوقف شود |
 | `T-05` | تکمیل آینه‌ی متنی ۲۶ مقاله‌ی زنده‌ی بدون آینه | مستندسازی | 🟡 باز | `content/live-mirror/` برای همه‌ی ۳۱ مقاله‌ی زنده فایل داشته باشد |
 | `T-06` | تصمیم درباره‌ی دو تصویر ذخیره (`1000104459`، `1000104428`) | محتوا | 🟡 باز | هر دو در مقاله‌ی آینده‌ی مرتبط مصرف شوند یا برای همیشه کنار گذاشته شوند |
 | `T-07` | مقاله‌ی `blood-donation-reserve-before-surgery` | محتوا | ⛔ باز — تصویر رد شد | مقاله با تصویر تازه (تولیدی) ساخته شود، نه با فایل ردشده |
-| `T-08` | صف فاز ۲ و ۳ (بعد از این دسته) | محتوا | 🟡 باز | از `PUBLISH-PRIORITY` به ترتیب: `smoking-and-surgery`، `diabetes-and-surgery`، `obesity-and-anesthesia`، `medical-history-disclosure`، `general-preparation-before-surgery`، `questions-before-surgery` |
+| `T-08` | صف فاز بعدی | محتوا | 🟡 باز | شش مقاله‌ی نخست این صف در همین دسته نوشته شد. برای دسته‌ی بعد از `PUBLISH-PRIORITY` و `content-roadmap-data.php` انتخاب شود؛ پیشنهاد: خوشه‌ی `glossary` (اولین واژه‌نامه) و تکمیل `student_content` که هنوز صفر مقاله دارد |
 | `T-09` | بازبینی پزشکی بسته‌ها | دروازه‌ی انتشار | 🟡 باز | تأیید کارفرما یا کارشناس پزشکی برای هر بسته پیش از `publish` |
-| `T-10` | به‌روزرسانی عددهای زنده بعد از ایمپورت | مستندسازی | 🟡 باز — منتظر ایمپورت | پس از ورود ۱۵ بسته: زنده ۳۱ → ۴۶ و پیشرفت ۱۶٫۸٪ → ۲۵٪؛ پس از `T-01`: ۵۰ و ۲۷٪ — در `PUBLISH-PRIORITY`، چنج‌لاگ و README |
+| `T-10` | به‌روزرسانی عددهای زنده بعد از ایمپورت | مستندسازی | 🟡 باز — منتظر ایمپورت | پس از ورود ۲۴ بسته: زنده ۳۱ → ۵۵ و پیشرفت ۱۶٫۸٪ → ۲۹٫۹٪؛ پس از `T-01`: ۵۶ و ۳۰٫۴٪ — در `PUBLISH-PRIORITY`، چنج‌لاگ و README |
 | `T-11` | خارج کردن `imagetool (25).zip` از مخزن | پاک‌سازی | ✅ بسته شد در همین دسته | فایل از ایندکس git حذف و در `.gitignore` ماند |
 | `T-12` | یکسان‌سازی پرسش‌های متداول صفحه با `article.json` | کیفیت | ✅ بسته شد برای ۲۱ بسته | بازنویسی خودکار از مانیفست + قاعده‌ی دائمی در بخش ۱ |
 
@@ -52,13 +52,13 @@ python3 tools/content-lint.py content/drafts/<slug>/
 
 | گروه | تعداد | وضعیت |
 |---|---:|---|
-| بسته‌ی تازه‌ی آماده‌ی ایمپورت | ۱۵ | ✅ گیت سبز، ZIP ساخته شد |
-| بازبینی محتوای دو مقاله‌ی زنده | ۲ | ✅ لینک و پرسش‌های متداول یکسان شد؛ ZIP تازه جای نسخه‌ی قبلی را گرفت |
-| متن کامل، تصویر در انتظار | ۴ | ⛔ `T-01` |
+| بسته‌ی تازه‌ی آماده‌ی ایمپورت | ۲۴ | ✅ گیت سبز، ZIP ساخته شد |
+| بازبینی محتوای دو مقاله‌ی زنده | ۲ | ✅ پرسش‌های متداول یکسان شد؛ ZIP تازه جای نسخه‌ی قبلی را گرفت |
+| متن کامل، تصویر در انتظار | ۱ | ⛔ `cholecystectomy-overview` — `T-01` |
 
-عددهای واقعی: زنده ۳۱ → **۴۶** پس از ایمپورت این دسته، و **۵۰** پس از تکمیل `T-01`. درصد پیشرفت از ۱۶٫۸٪ به ۲۵٪ و سپس ۲۷٪ می‌رسد.
+عددهای واقعی: زنده ۳۱ → **۵۵** پس از ایمپورت این دسته (۲۹٫۹٪)، و **۵۶** پس از تکمیل `T-01` (۳۰٫۴٪).
 
-## ۴. پانزده بسته‌ی تازه‌ی آماده‌ی ایمپورت
+## ۴. بیست‌وچهار بسته‌ی تازه‌ی آماده‌ی ایمپورت
 
 | # | نامک | CPT | تاکسونومی | کلمه |
 |---:|---|---|---|---:|
@@ -77,10 +77,19 @@ python3 tools/content-lint.py content/drafts/<slug>/
 | 13 | `home-wound-care` | `patient_guide` | `infection-prevention` | 1٫177 |
 | 14 | `dvt-pulmonary-embolism-prevention` | `patient_guide` | `warning-signs` | 1٫141 |
 | 15 | `discharge-checklist` | `patient_guide` | `discharge` | 1٫161 |
+| 16 | `cataract-overview` | `surgery` | `surgery-overview` · `cataract` | 1٫217 |
+| 17 | `cataract-preparation` | `surgery` | `before-surgery` · `cataract` | 1٫168 |
+| 18 | `cataract-recovery` | `surgery` | `after-surgery` · `cataract` | 1٫084 |
+| 19 | `general-preparation-before-surgery` | `patient_guide` | `general-preparation` | 1٫128 |
+| 20 | `questions-before-surgery` | `patient_guide` | `questions-to-ask` | 1٫002 |
+| 21 | `medical-history-disclosure` | `patient_guide` | `questions-to-ask` | 1٫126 |
+| 22 | `smoking-and-surgery` | `patient_guide` | `general-preparation` | 1٫055 |
+| 23 | `diabetes-and-surgery` | `patient_guide` | `general-preparation` | 1٫091 |
+| 24 | `obesity-and-anesthesia` | `patient_guide` | `general-preparation` | 1٫002 |
 
 دو بسته‌ی دیگرِ این دسته، `cesarean-recovery` و `hernia-overview`، از قبل روی سایت زنده‌اند و فقط محتوایشان بازبینی شد؛ ZIP آن‌ها برای جایگزینی نسخه‌ی قبلی ساخته شده است.
 
-چهار مقاله‌ی `cataract-overview`، `cataract-preparation`، `cataract-recovery` و `cholecystectomy-overview` متن‌شان کامل است (۱٫۰۹۱ تا ۱٫۲۲۴ کلمه) و فقط منتظر `T-01` هستند.
+تنها `cholecystectomy-overview` (۱٫۱۵۴ کلمه) بدون تصویر شاخص مانده و منتظر `T-01` است؛ تا آمدن تصویر بسته‌ی ZIP آن ساخته و ایمپورت نمی‌شود.
 
 ## ۵. قاعده‌های ثابتی که در این دسته تثبیت شدند
 
