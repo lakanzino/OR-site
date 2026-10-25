@@ -3,8 +3,8 @@
 - **تاریخ:** ۱۴۰۵/۰۸/۰۳ (۲۰۲۶-۱۰-۲۵)
 - **وضعیت همهٔ بسته‌ها:** پیش‌نویس (`draft`) — پیش از انتشار بازبینی کنید.
 - **مسیر فایل‌ها:** `releases/article-packages/article-package-<slug>.zip`
-- **همه در یک فایل:** `releases/article-packages/BATCH-03-ALL-PACKAGES.zip` (۳۸ بسته)
-- **گیت کیفیت:** `python3 tools/content-lint.py content/drafts/*/` → ۳۸ بسته، صفر ایراد
+- **همه در یک فایل:** `releases/article-packages/BATCH-03-ALL-PACKAGES.zip` (۴۴ بسته)
+- **گیت کیفیت:** `python3 tools/content-lint.py content/drafts/*/` → ۴۴ بسته، صفر ایراد
 
 هر بسته سه فایل دارد: `article.json` (سئو، پرسش‌های متداول، تاکسونومی)، `content.html` و `featured.webp` ۱۲۰۰×۶۷۵.
 
@@ -64,6 +64,17 @@
 | ☐ | `kidney-stone-preparation` | آمادگی قبل از جراحی سنگ کلیه: چه کاری لازم است؟ | `surgery` | ۱٬۰۴۷ |
 | ☐ | `kidney-stone-recovery` | مراقبت بعد از جراحی سنگ کلیه: ادرار، آب و لوله | `surgery` | ۱٬۰۰۴ |
 
+## جراحی — ختنه و هموروئید
+
+| ☐ | نامک | عنوان | CPT | کلمه |
+|---|---|---|---|---:|
+| ☐ | `circumcision-overview` | ختنه‌ی کودکان: چه زمانی، به چه روشی و با چه مراقبتی؟ | `surgery` | ۱۰۵۸ |
+| ☐ | `circumcision-preparation` | آمادگی کودک برای عمل ختنه: راهنمای والدین | `surgery` | ۱۰۰۹ |
+| ☐ | `circumcision-recovery` | مراقبت بعد از ختنه‌ی کودک: چه چیزی طبیعی است؟ | `surgery` | ۱۰۷۰ |
+| ☐ | `hemorrhoid-overview` | هموروئید و درمان آن: از تغییر عادت تا جراحی | `surgery` | ۱۰۸۵ |
+| ☐ | `hemorrhoid-preparation` | آمادگی قبل از جراحی هموروئید: چک‌لیست | `surgery` | ۱۰۵۱ |
+| ☐ | `hemorrhoid-recovery` | مراقبت بعد از جراحی هموروئید: درد، دفع و زخم | `surgery` | ۱۰۱۹ |
+
 ## مسیر بیمار — گروه‌های ویژه
 
 | ☐ | نامک | عنوان | CPT | کلمه |
@@ -107,4 +118,4 @@
 2. اگر ایمپورتر برای مقاله‌ای هشدار داد، آن مقاله را منتشر نکنید؛ اول هشدار را بفرستید تا بررسی شود.
 3. بعد از انتشار: LiteSpeed → Purge All، سپس شمارش نقشهٔ سایت با `?v=<timestamp>` و به‌روزرسانی `T-10`.
 
-**جمع: ۳۸ بستهٔ آمادهٔ ایمپورت.**
+**جمع: ۴۴ بستهٔ آمادهٔ ایمپورت.**

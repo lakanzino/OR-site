@@ -2,7 +2,7 @@
 
 - **تاریخ تدوین:** ۲۰۲۶-۱۰-۲۵ (۳ آبان ۱۴۰۵)
 - **جایگاه این سند:** مرجع واحد تصویر شاخص. جایگزین کامل `IMAGE-MAPPING-REPORT.md` در شاخه‌ی `images` است که **منسوخ** شده: فهرست «مقالات بدون تصویر» آن غلط بود و شماره‌هایش با هم نمی‌خواند. به آن سند استناد نکنید.
-- **وضعیت:** ۶۳ تصویر شاخص آماده در `content/images/featured/`، همه دقیقاً `1200×675` و WebP.
+- **وضعیت:** ۸۴ تصویر شاخص آماده در `content/images/featured/`، همه دقیقاً `1200×675` و WebP.
 
 ---
 
@@ -19,96 +19,96 @@
 
 ---
 
-## ۲. فهرست کامل (۶۳ فایل)
+## ۲. فهرست کامل (84 فایل)
 
 | نامک مقاله/برگه | شناسه‌ی فایل اصلی | عنوان روی تصویر | منبع | حجم WebP |
 |---|---|---|---|---:|
 | `anesthesia-and-memory` | `1000104309` | حافظه و بیهوشی | عکس شما | 78 KB |
 | `anesthesia-consultation` | `1000104428` | مشاوره بیهوشی پیش از عمل | عکس شما | 87 KB |
-| `anesthesia-machine-explained` | `1000104468` | دستگاه بیهوشی به زبان ساده | عکس شما | 113 KB |
+| `anesthesia-machine-explained` | `1000104468` | دستگاه بیهوشی به زبان ساده | عکس شما | 114 KB |
 | `anesthesiologist-and-technician-role` | `1000104454` | متخصص بیهوشی و پایش بیمار | عکس شما | 86 KB |
-| `cast-splint-bandage-drain-guide` | `1000104470` | گچ و بانداژ و درن | عکس شما | 74 KB |
-| `circulating-technician-role` | `1000104456` | تکنسین سیار اتاق عمل | عکس شما | 59 KB |
-| `companion-role-admission-day` | `1000104435` | نقش همراه روز عمل | عکس شما | 59 KB |
-| `cssd-and-support-staff-role` | `1000104458` | استریلیزاسیون و تجهیزات | عکس شما | 111 KB |
-| `diabetes-and-surgery` | `1000104418` | دیابت و جراحی | عکس شما | 66 KB |
+| `appendectomy-overview` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 67 KB |
+| `cast-splint-bandage-drain-guide` | `1000104470` | گچ و بانداژ و درن | عکس شما | 75 KB |
+| `cataract-overview` | — | آب مروارید — و جراحی آن | تولیدی + نشان فارسی | 38 KB |
+| `cataract-preparation` | — | آمادگی قبل از — جراحی آب مروارید | تولیدی + نشان فارسی | 35 KB |
+| `cataract-recovery` | — | مراقبت بعد از — جراحی آب مروارید | تولیدی + نشان فارسی | 76 KB |
+| `children-and-anesthesia` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 71 KB |
+| `cholecystectomy-overview` | — | برداشتن — کیسه صفرا | تولیدی + نشان فارسی | 72 KB |
+| `cholecystectomy-preparation` | — | آمادگی قبل از — برداشتن کیسه صفرا | تولیدی + نشان فارسی | 47 KB |
+| `cholecystectomy-recovery` | — | مراقبت بعد از — برداشتن کیسه صفرا | تولیدی + نشان فارسی | 70 KB |
+| `circulating-technician-role` | `1000104456` | تکنسین سیار اتاق عمل | عکس شما | 60 KB |
+| `circumcision-overview` | — | ختنه‌ی کودکان — و مراحل آن | تولیدی + نشان فارسی | 59 KB |
+| `circumcision-preparation` | — | آمادگی کودک — برای عمل ختنه | تولیدی + نشان فارسی | 100 KB |
+| `circumcision-recovery` | — | مراقبت بعد از — ختنه‌ی کودک | تولیدی + نشان فارسی | 69 KB |
+| `companion-role-admission-day` | `1000104435` | نقش همراه روز عمل | عکس شما | 60 KB |
+| `cssd-and-support-staff-role` | `1000104458` | استریلیزاسیون و تجهیزات | عکس شما | 112 KB |
+| `diabetes-and-surgery` | `1000104418` | دیابت و جراحی | عکس شما | 39 KB |
 | `discharge-checklist` | `1000104446` | ترخیص از بیمارستان | عکس شما | 80 KB |
-| `dvt-pulmonary-embolism-prevention` | `1000104443` | پیشگیری از لخته بعد از عمل | عکس شما | 74 KB |
+| `dvt-pulmonary-embolism-prevention` | `1000104443` | پیشگیری از لخته بعد از عمل | عکس شما | 75 KB |
 | `early-walking-after-surgery` | `1000104437` | راه رفتن بعد از عمل | عکس شما | 62 KB |
+| `elderly-and-surgery` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 78 KB |
 | `electrosurgery-cautery-explained` | `1000104462` | الکتروسرجری یا کوتر | عکس شما | 51 KB |
+| `emergency-vs-elective-surgery` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 55 KB |
 | `exercise-activity-after-surgery` | `1000104450` | فعالیت بدنی بعد از جراحی | عکس شما | 67 KB |
 | `general-post-op-care` | `1000104448` | مراقبت بعد از عمل در بیمارستان | عکس شما | 80 KB |
-| `general-preparation-before-surgery` | `1000104319` | آمادگی قبل از عمل | عکس شما | 83 KB |
-| `home-wound-care` | `1000104442` | مراقبت در خانه از زخم | عکس شما | 52 KB |
-| `informed-consent-anesthesia-consult` | `1000104433` | رضایت آگاهانه جراحی | عکس شما | 49 KB |
-| `intubation-explained` | `1000104307` | بیهوشی و لوله‌گذاری | عکس شما | 81 KB |
-| `medical-history-disclosure` | `1000104415` | سوابق پزشکی و حساسیت‌ها | عکس شما | 58 KB |
-| `medications-before-surgery` | `1000104432` | داروهای قبل از عمل | عکس شما | 55 KB |
+| `general-preparation-before-surgery` | `1000104319` | آمادگی قبل از عمل | عکس شما | 53 KB |
+| `hemorrhoid-overview` | — | هموروئید — و درمان آن | تولیدی + نشان فارسی | 46 KB |
+| `hemorrhoid-preparation` | — | آمادگی قبل از — جراحی هموروئید | تولیدی + نشان فارسی | 53 KB |
+| `hemorrhoid-recovery` | — | مراقبت بعد از — جراحی هموروئید | تولیدی + نشان فارسی | 40 KB |
+| `hernia-preparation` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 61 KB |
+| `hernia-recovery` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 72 KB |
+| `home-wound-care` | `1000104442` | مراقبت در خانه از زخم | عکس شما | 53 KB |
+| `informed-consent-anesthesia-consult` | `1000104433` | رضایت آگاهانه جراحی | عکس شما | 50 KB |
+| `intubation-explained` | `1000104307` | بیهوشی و لوله‌گذاری | عکس شما | 82 KB |
+| `kidney-stone-overview` | — | سنگ کلیه — و روش‌های درمان | تولیدی + نشان فارسی | 54 KB |
+| `kidney-stone-preparation` | — | آمادگی قبل از — جراحی سنگ کلیه | تولیدی + نشان فارسی | 44 KB |
+| `kidney-stone-recovery` | — | مراقبت بعد از — جراحی سنگ کلیه | تولیدی + نشان فارسی | 72 KB |
+| `laparoscopy-overview` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 80 KB |
+| `laparoscopy-preparation` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 52 KB |
+| `laparoscopy-recovery` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 61 KB |
+| `medical-history-disclosure` | `1000104415` | سوابق پزشکی و حساسیت‌ها | عکس شما | 43 KB |
+| `medications-before-surgery` | `1000104432` | داروهای قبل از عمل | عکس شما | 56 KB |
 | `mental-preparation-before-surgery` | `1000104427` | آمادگی روانی قبل از عمل | عکس شما | 80 KB |
-| `monitoring-under-anesthesia-and-family` | `1000104317` | پایش بیمار در طول عمل | عکس شما | 63 KB |
-| `obesity-and-anesthesia` | `1000104426` | چاقی و بیهوشی | عکس شما | 83 KB |
+| `monitoring-under-anesthesia-and-family` | `1000104317` | پایش بیمار در طول عمل | عکس شما | 64 KB |
+| `obesity-and-anesthesia` | `1000104426` | چاقی و بیهوشی | عکس شما | 66 KB |
 | `operating-room-moment-by-moment` | `1000104313` | دید بیمار در اتاق عمل | عکس شما | 63 KB |
-| `patient-site-identification` | `1000104316` | شناسایی بیمار و محل عمل | عکس شما | 62 KB |
+| `outpatient-vs-inpatient-surgery` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 95 KB |
+| `patient-site-identification` | `1000104316` | شناسایی بیمار و محل عمل | عکس شما | 63 KB |
 | `post-surgery-nutrition` | `1000104384` | تغذیه مناسب بعد از جراحی | عکس شما | 83 KB |
 | `post-surgery-pain` | `1000104436` | درد بعد از عمل و کنترل درد | عکس شما | 57 KB |
-| `preoperative-fasting` | `1000104430` | ناشتایی قبل از عمل | عکس شما | 48 KB |
-| `preoperative-tests` | `1000104434` | آزمایش‌های قبل از عمل | عکس شما | 63 KB |
-| `questions-before-surgery` | `1000104414` | سوالات از پزشک | عکس شما | 54 KB |
-| `recovery-and-ward-nurse-role` | `1000104457` | پرستار ریکاوری و هوشیاری | عکس شما | 68 KB |
-| `recovery-to-ward-and-discharge` | `1000104447` | مسیر بهبودی تا ترخیص | عکس شما | 81 KB |
+| `preoperative-fasting` | `1000104430` | ناشتایی قبل از عمل | عکس شما | 49 KB |
+| `preoperative-tests` | `1000104434` | آزمایش‌های قبل از عمل | عکس شما | 64 KB |
+| `questions-before-surgery` | `1000104414` | سوالات از پزشک | عکس شما | 41 KB |
+| `recovery-and-ward-nurse-role` | `1000104457` | پرستار ریکاوری و هوشیاری | عکس شما | 69 KB |
+| `recovery-to-ward-and-discharge` | `1000104447` | مسیر بهبودی تا ترخیص | عکس شما | 82 KB |
 | `return-to-work-after-surgery` | `1000104449` | بازگشت به زندگی بعد از جراحی | عکس شما | 66 KB |
 | `scrub-gown-sterile-field-patient` | `1000104314` | گان استریل و میدان جراحی | عکس شما | 70 KB |
-| `scrub-technician-role` | `1000104455` | تکنسین اسکراب و ابزار جراحی | عکس شما | 94 KB |
-| `smoking-and-surgery` | `1000104417` | ترک سیگار و جراحی | عکس شما | 59 KB |
-| `sponge-and-instrument-count` | `1000104464` | شمارش ابزار جراحی | عکس شما | 83 KB |
-| `surgeon-and-assistant-role` | `1000104453` | جراح و دستیار | عکس شما | 74 KB |
+| `scrub-technician-role` | `1000104455` | تکنسین اسکراب و ابزار جراحی | عکس شما | 95 KB |
+| `smoking-and-surgery` | `1000104417` | ترک سیگار و جراحی | عکس شما | 62 KB |
+| `sponge-and-instrument-count` | `1000104464` | شمارش ابزار جراحی | عکس شما | 84 KB |
+| `surgeon-and-assistant-role` | `1000104453` | جراح و دستیار | عکس شما | 75 KB |
 | `surgical-instrument-set-intro` | `1000104463` | ست ابزار جراحی | عکس شما | 123 KB |
 | `surgical-light-and-table` | `1000104466` | تخت و چراغ جراحی | عکس شما | 56 KB |
 | `surgical-safety-checklist-patient` | `1000104315` | چک‌لیست ایمنی جراحی | عکس شما | 65 KB |
 | `surgical-site-infection` | `1000104439` | عفونت زخم و پیشگیری | عکس شما | 63 KB |
-| `surgical-suction-device` | `1000104461` | دستگاه ساکشن اتاق عمل | عکس شما | 83 KB |
+| `surgical-suction-device` | `1000104461` | دستگاه ساکشن اتاق عمل | عکس شما | 84 KB |
 | `surgical-team-roles` | `1000104452` | تیم جراحی اتاق عمل | عکس شما | 131 KB |
-| `suture-removal` | `1000104440` | کشیدن بخیه بعد از عمل | عکس شما | 65 KB |
-| `tourniquet-pads-body-attachments` | `1000104465` | تورنیکه و وسایل بیمار | عکس شما | 84 KB |
-| `vital-signs-monitor-explained` | `1000104467` | مانیتور علائم حیاتی | عکس شما | 64 KB |
+| `suture-removal` | `1000104440` | کشیدن بخیه بعد از عمل | عکس شما | 66 KB |
+| `thyroidectomy-overview` | — | جراحی تیروئید — و مراحل آن | تولیدی + نشان فارسی | 47 KB |
+| `thyroidectomy-preparation` | — | آمادگی قبل از — جراحی تیروئید | تولیدی + نشان فارسی | 49 KB |
+| `thyroidectomy-recovery` | — | مراقبت بعد از — جراحی تیروئید | تولیدی + نشان فارسی | 72 KB |
+| `tonsillectomy-overview` | — | جراحی لوزه — در کودکان | تولیدی + نشان فارسی | 45 KB |
+| `tonsillectomy-preparation` | — | آمادگی کودک — برای عمل لوزه | تولیدی + نشان فارسی | 58 KB |
+| `tonsillectomy-recovery` | — | مراقبت بعد از — عمل لوزه کودک | تولیدی + نشان فارسی | 50 KB |
+| `tourniquet-pads-body-attachments` | `1000104465` | تورنیکه و وسایل بیمار | عکس شما | 85 KB |
+| `vital-signs-monitor-explained` | `1000104467` | مانیتور علائم حیاتی | عکس شما | 65 KB |
 | `warning-signs-after-surgery` | `1000104441` | علائم خطر بعد از عمل | عکس شما | 47 KB |
 | `what-is-operating-room` | `1000104420` | اتاق عمل واقعی | عکس شما | 138 KB |
 | `what-not-to-eat-before-surgery` | `1000104431` | تغذیه قبل از عمل | عکس شما | 69 KB |
-| `why-operating-room-is-cold` | `1000104312` | هوای خنک اتاق عمل | عکس شما | 69 KB |
-| `why-operating-room-is-sterile` | `1000104311` | اتاق عمل استریل | عکس شما | 146 KB |
-| `appendectomy-overview` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 66 KB |
-| `hernia-preparation` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 60 KB |
-| `hernia-recovery` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 71 KB |
-| `children-and-anesthesia` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 70 KB |
-| `elderly-and-surgery` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 78 KB |
-| `emergency-vs-elective-surgery` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 55 KB |
-| `outpatient-vs-inpatient-surgery` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 95 KB |
-| `laparoscopy-overview` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 80 KB |
-| `laparoscopy-preparation` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 52 KB |
-| `laparoscopy-recovery` | — | عنوان فارسی مقاله (دو خط) | تولیدی + نشان فارسی | 61 KB |
-| `cataract-overview` | — | آب مروارید — و جراحی آن | تولیدی + نشان فارسی | 37 KB |
-| `cataract-preparation` | — | آمادگی قبل از — جراحی آب مروارید | تولیدی + نشان فارسی | 34 KB |
-| `cataract-recovery` | — | مراقبت بعد از — جراحی آب مروارید | تولیدی + نشان فارسی | 76 KB |
-| `general-preparation-before-surgery` | — | آمادگی عمومی — قبل از عمل | تولیدی + نشان فارسی | 53 KB |
-| `questions-before-surgery` | — | سؤال‌هایی که — باید بپرسید | تولیدی + نشان فارسی | 41 KB |
-| `medical-history-disclosure` | — | چه اطلاعاتی را — باید بگوییم | تولیدی + نشان فارسی | 43 KB |
-| `smoking-and-surgery` | — | سیگار — و جراحی | تولیدی + نشان فارسی | 62 KB |
-| `diabetes-and-surgery` | — | دیابت — و جراحی | تولیدی + نشان فارسی | 39 KB |
-| `obesity-and-anesthesia` | — | چاقی — و بیهوشی | تولیدی + نشان فارسی | 66 KB |
-| `cholecystectomy-overview` | — | برداشتن — کیسه صفرا | تولیدی + نشان فارسی | 71 KB |
-| `cholecystectomy-preparation` | — | آمادگی قبل از — برداشتن کیسه صفرا | تولیدی + نشان فارسی | 46 KB |
-| `cholecystectomy-recovery` | — | مراقبت بعد از — برداشتن کیسه صفرا | تولیدی + نشان فارسی | 69 KB |
-| `tonsillectomy-overview` | — | جراحی لوزه — در کودکان | تولیدی + نشان فارسی | 44 KB |
-| `tonsillectomy-preparation` | — | آمادگی کودک — برای عمل لوزه | تولیدی + نشان فارسی | 58 KB |
-| `tonsillectomy-recovery` | — | مراقبت بعد از — عمل لوزه کودک | تولیدی + نشان فارسی | 50 KB |
-| `thyroidectomy-overview` | — | جراحی تیروئید — و مراحل آن | تولیدی + نشان فارسی | 46 KB |
-| `thyroidectomy-preparation` | — | آمادگی قبل از — جراحی تیروئید | تولیدی + نشان فارسی | 48 KB |
-| `thyroidectomy-recovery` | — | مراقبت بعد از — جراحی تیروئید | تولیدی + نشان فارسی | 71 KB |
-| `kidney-stone-overview` | — | سنگ کلیه — و روش‌های درمان | تولیدی + نشان فارسی | 54 KB |
-| `kidney-stone-preparation` | — | آمادگی قبل از — جراحی سنگ کلیه | تولیدی + نشان فارسی | 43 KB |
-| `kidney-stone-recovery` | — | مراقبت بعد از — جراحی سنگ کلیه | تولیدی + نشان فارسی | 71 KB |
+| `why-operating-room-is-cold` | `1000104312` | هوای خنک اتاق عمل | عکس شما | 70 KB |
+| `why-operating-room-is-sterile` | `1000104311` | اتاق عمل استریل | عکس شما | 147 KB |
 
----
+«—» در ستون شناسه یعنی تصویر تولیدی است و فایل اصلی ندارد.
 
 ## ۳. تصاویر ردشده (استفاده نمی‌شوند)
 
@@ -136,18 +136,16 @@
 
 هیچ. `cholecystectomy-overview` با پرامپت اتاق عمل خالی (بدون دست جراح و ابزار در پیش‌زمینه) تولید شد و `T-01` بسته شد.
 
-## ۶. تصاویر تولیدی این دسته (۹ فایل)
+## ۶. تصاویر تولیدی (۳۱ فایل)
 
-| نامک | متن نشان | حجم |
-|---|---|---:|
-| `cataract-overview` | آب مروارید — و جراحی آن | 37 KB |
-| `cataract-preparation` | آمادگی قبل از — جراحی آب مروارید | 34 KB |
-| `cataract-recovery` | مراقبت بعد از — جراحی آب مروارید | 76 KB |
-| `general-preparation-before-surgery` | آمادگی عمومی — قبل از عمل | 53 KB |
-| `questions-before-surgery` | سؤال‌هایی که — باید بپرسید | 41 KB |
-| `medical-history-disclosure` | چه اطلاعاتی را — باید بگوییم | 43 KB |
-| `smoking-and-surgery` | سیگار — و جراحی | 62 KB |
-| `diabetes-and-surgery` | دیابت — و جراحی | 39 KB |
-| `obesity-and-anesthesia` | چاقی — و بیهوشی | 66 KB |
+تصاویر تولیدی با فرمول بند ۱ ساخته و نشان‌گذاری شده‌اند؛ فهرست کامل با حجم در بخش ۲ آمده است («—» در ستون شناسه). دسته‌بندی:
 
-جمع تصاویر شاخص آماده: **۷۸ فایل** (۵۷ تصویر خودِ کارفرما + ۲۱ تصویر تولیدی این دسته).
+| دسته | تعداد | نامک‌ها |
+|---|---:|---|
+| هشت خوشهٔ کامل جراحی | ۲۴ | `cataract-*`، `cholecystectomy-*`، `circumcision-*`، `hemorrhoid-*`، `kidney-stone-*`، `laparoscopy-*`، `thyroidectomy-*`، `tonsillectomy-*` (سه‌تایی) |
+| دو خوشهٔ ناتمام | ۳ | `appendectomy-overview`، `hernia-preparation`، `hernia-recovery` |
+| راهنماهای عمومی | ۴ | `children-and-anesthesia`، `elderly-and-surgery`، `emergency-vs-elective-surgery`، `outpatient-vs-inpatient-surgery` |
+
+> شش مقالهٔ `general-preparation-before-surgery`، `questions-before-surgery`، `medical-history-disclosure`، `smoking-and-surgery`، `diabetes-and-surgery` و `obesity-and-anesthesia` تصویر خودِ کارفرما گرفتند؛ نسخهٔ تولیدی قدیمی‌شان کنار گذاشته شد.
+
+**جمع تصاویر شاخص آماده: ۸۴ فایل** (۵۳ تصویر خودِ کارفرما + ۳۱ تصویر تولیدی).

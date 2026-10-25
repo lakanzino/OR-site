@@ -53,6 +53,9 @@ BATCH = {
     "/surgery/thyroidectomy-overview/", "/surgery/thyroidectomy-preparation/",
     "/surgery/thyroidectomy-recovery/", "/surgery/kidney-stone-overview/",
     "/surgery/kidney-stone-preparation/", "/surgery/kidney-stone-recovery/",
+    "/surgery/circumcision-overview/", "/surgery/circumcision-preparation/",
+    "/surgery/circumcision-recovery/", "/surgery/hemorrhoid-overview/",
+    "/surgery/hemorrhoid-preparation/", "/surgery/hemorrhoid-recovery/",
 }
 ALLOWED = LIVE | BATCH
 
