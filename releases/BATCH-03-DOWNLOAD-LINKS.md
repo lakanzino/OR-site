@@ -31,3 +31,18 @@ https://github.com/lakanzino/OR-site/raw/d96f0c6404afd643773e190a45b296e3f7b61bc
 - `docs/reports/SEO-INDEX-POLICY-2026-10-25.md`
 - `docs/reports/LIVE-SITE-AUDIT-2026-10-25.md`
 - `docs/reports/ARYAN-TRANSPARENCY-KIT.md`
+
+---
+
+# گوگل درایو (بدون نیاز به حساب گیت‌هاب)
+
+**پوشهٔ کامل:** https://drive.google.com/drive/folders/1T41Xx7muMo1wt4X-bFSam5QHdOfYcT6Y
+
+| فایل | لینک مستقیم |
+|---|---|
+| **قالب ۰٫۱۳٫۰ (فایل نصب)** | https://drive.google.com/uc?export=download&id=1ltqGAm0auBfEZnRMaIW0IdyhfULsKVFu |
+| افزونهٔ تصاویر ۱٫۲٫۰ | https://drive.google.com/uc?export=download&id=1-mag7ZjgL-_QvreVUfrclx6yVPJ0_2g9 |
+| ۴۴ بستهٔ مقاله | https://drive.google.com/uc?export=download&id=1M5DA83I-hEB9-a1VuvDAiz7qhu7Wd8Ny |
+| ۸۷ تصویر شاخص | https://drive.google.com/uc?export=download&id=1Zg962Y5aM86Qg8-hkIVC6mJhTPmIjNFr |
+
+مسیر پوشه در درایو: **همیار جراحی — فایل‌های نصب** (ریشهٔ My Drive)
