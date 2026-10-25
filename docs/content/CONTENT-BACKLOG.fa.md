@@ -42,7 +42,8 @@ python3 tools/content-lint.py content/drafts/<slug>/
 | `T-07` | مقاله‌ی `blood-donation-reserve-before-surgery` | محتوا | ⛔ باز — تصویر رد شد | مقاله با تصویر تازه (تولیدی) ساخته شود، نه با فایل ردشده |
 | `T-08` | صف فاز بعدی | محتوا | 🟡 باز | شش مقاله‌ی نخست این صف در همین دسته نوشته شد. برای دسته‌ی بعد از `PUBLISH-PRIORITY` و `content-roadmap-data.php` انتخاب شود؛ پیشنهاد: خوشه‌ی `glossary` (اولین واژه‌نامه) و تکمیل `student_content` که هنوز صفر مقاله دارد |
 | `T-09` | بازبینی پزشکی بسته‌ها | دروازه‌ی انتشار | 🟡 باز | تأیید کارفرما یا کارشناس پزشکی برای هر بسته پیش از `publish` |
-| `T-10` | به‌روزرسانی عددهای زنده بعد از ایمپورت | مستندسازی | 🟡 باز — منتظر ایمپورت | پس از ورود ۳۰ بسته: زنده ۳۱ → ۶۱ و پیشرفت ۱۶٫۸٪ → ۳۳٫۲٪ — در `PUBLISH-PRIORITY`، چنج‌لاگ و README |
+| `T-10` | به‌روزرسانی عددهای زنده بعد از ایمپورت | مستندسازی | 🟡 باز — منتظر ایمپورت | پس از ورود ۳۶ بسته: زنده ۳۱ → ۶۷ و پیشرفت ۱۶٫۸٪ → ۳۶٫۴٪ — در `PUBLISH-PRIORITY`، چنج‌لاگ و README |
+| `T-13` | تکمیل خوشهٔ آپاندیس: `appendectomy-preparation` و `appendectomy-recovery` | محتوا | 🟡 باز | دو مقاله با همان فرمول سه‌گانه، سپس خوشهٔ آپاندیس کامل می‌شود |
 | `T-11` | خارج کردن `imagetool (25).zip` از مخزن | پاک‌سازی | ✅ بسته شد در همین دسته | فایل از ایندکس git حذف و در `.gitignore` ماند |
 | `T-12` | یکسان‌سازی پرسش‌های متداول صفحه با `article.json` | کیفیت | ✅ بسته شد برای ۲۱ بسته | بازنویسی خودکار از مانیفست + قاعده‌ی دائمی در بخش ۱ |
 
@@ -52,13 +53,13 @@ python3 tools/content-lint.py content/drafts/<slug>/
 
 | گروه | تعداد | وضعیت |
 |---|---:|---|
-| بسته‌ی تازه‌ی آماده‌ی ایمپورت | ۳۰ | ✅ گیت سبز، ZIP ساخته شد |
+| بسته‌ی تازه‌ی آماده‌ی ایمپورت | ۳۶ | ✅ گیت سبز، ZIP ساخته شد |
 | بازبینی محتوای دو مقاله‌ی زنده | ۲ | ✅ پرسش‌های متداول یکسان شد؛ ZIP تازه جای نسخه‌ی قبلی را گرفت |
 | متن کامل، تصویر در انتظار | ۰ | ✅ `T-01` بسته شد |
 
-عددهای واقعی: زنده ۳۱ → **۶۱** پس از ایمپورت این دسته (۳۳٫۲٪ از ۱۸۴).
+عددهای واقعی: زنده ۳۱ → **۶۷** پس از ایمپورت این دسته (۳۶٫۴٪ از ۱۸۴).
 
-## ۴. سی بسته‌ی تازه‌ی آماده‌ی ایمپورت
+## ۴. سی‌وشش بسته‌ی تازه‌ی آماده‌ی ایمپورت
 
 | # | نامک | CPT | تاکسونومی | کلمه |
 |---:|---|---|---|---:|
@@ -92,10 +93,16 @@ python3 tools/content-lint.py content/drafts/<slug>/
 | 28 | `tonsillectomy-overview` | `surgery` | `surgery-overview` · `tonsillectomy` | 1٫063 |
 | 29 | `tonsillectomy-preparation` | `surgery` | `before-surgery` · `tonsillectomy` | 1٫002 |
 | 30 | `tonsillectomy-recovery` | `surgery` | `after-surgery` · `tonsillectomy` | 1٫017 |
+| 31 | `thyroidectomy-overview` | `surgery` | `surgery-overview` · `thyroidectomy` | 1٫079 |
+| 32 | `thyroidectomy-preparation` | `surgery` | `before-surgery` · `thyroidectomy` | 1٫088 |
+| 33 | `thyroidectomy-recovery` | `surgery` | `after-surgery` · `thyroidectomy` | 1٫187 |
+| 34 | `kidney-stone-overview` | `surgery` | `surgery-overview` · `kidney-stone` | 1٫195 |
+| 35 | `kidney-stone-preparation` | `surgery` | `before-surgery` · `kidney-stone` | 1٫047 |
+| 36 | `kidney-stone-recovery` | `surgery` | `after-surgery` · `kidney-stone` | 1٫004 |
 
 دو بسته‌ی دیگرِ این دسته، `cesarean-recovery` و `hernia-overview`، از قبل روی سایت زنده‌اند و فقط محتوایشان بازبینی شد؛ ZIP آن‌ها برای جایگزینی نسخه‌ی قبلی ساخته شده است.
 
-خوشه‌ی کیسه صفرا (`overview`/`preparation`/`recovery`) و خوشه‌ی لوزه (`overview`/`preparation`/`recovery`) با این شش مقاله کامل شدند.
+چهار خوشه‌ی کامل: لاپاروسکوپی، کیسه صفرا، لوزه، تیروئید و سنگ کلیه. خوشه‌ی آپاندیس هنوز دو مقاله‌ی «قبل» و «بعد» را کم دارد (`T-13`).
 
 ## ۵. قاعده‌های ثابتی که در این دسته تثبیت شدند
 

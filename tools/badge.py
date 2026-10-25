@@ -19,8 +19,9 @@ W, H = 1200, 675
 NAVY = (0, 45, 95)
 YELLOW = (255, 218, 31)
 WHITE = (255, 255, 255)
-FONT_BOLD = "/tmp/fonts/Vazirmatn-Bold.ttf"
-FONT_MEDIUM = "/tmp/fonts/Vazirmatn-Medium.ttf"
+FONT_DIR = Path(__file__).resolve().parent / "fonts"
+FONT_BOLD = str(FONT_DIR / "Vazirmatn-Bold.ttf")
+FONT_MEDIUM = str(FONT_DIR / "Vazirmatn-Medium.ttf")
 
 
 def fa(text: str) -> str:

@@ -50,6 +50,9 @@ BATCH = {
     "/surgery/cholecystectomy-preparation/", "/surgery/cholecystectomy-recovery/",
     "/surgery/tonsillectomy-overview/", "/surgery/tonsillectomy-preparation/",
     "/surgery/tonsillectomy-recovery/",
+    "/surgery/thyroidectomy-overview/", "/surgery/thyroidectomy-preparation/",
+    "/surgery/thyroidectomy-recovery/", "/surgery/kidney-stone-overview/",
+    "/surgery/kidney-stone-preparation/", "/surgery/kidney-stone-recovery/",
 }
 ALLOWED = LIVE | BATCH
 

@@ -136,10 +136,10 @@ featured.webp     ۱۲۰۰×۶۷۵، WebP، زیر ۱۸۰ کیلوبایت
 
 ---
 
-## ۸. دستهٔ سوم — ۳۲ بستهٔ ۱۴۰۵/۰۸/۰۳ (همه آماده)
+## ۸. دستهٔ سوم — ۳۸ بستهٔ ۱۴۰۵/۰۸/۰۳ (همه آماده)
 
 - **تصویر:** همه‌ی تصاویر شاخص عوض شدند. پنج بسته‌ای که پیش‌تر تصویر تولیدی داشتند (`anesthesia-and-memory`، `intubation-explained`، `home-wound-care`، `dvt-pulmonary-embolism-prevention`، `discharge-checklist`) تصویر خودِ شما را گرفتند. نقشه‌ی کامل در `docs/content/IMAGE-INVENTORY.fa.md`.
-- **گیت:** هر ۳۲ بسته از `tools/content-lint.py` عبور کرد و ZIP شد؛ هیچ بسته‌ای بدون تصویر نماند.
+- **گیت:** هر ۳۸ بسته از `tools/content-lint.py` عبور کرد و ZIP شد؛ هیچ بسته‌ای بدون تصویر نماند.
 - **سئوی دسته:** پرسش‌های متداول صفحه با اسکیمای `article.json` یکی شده است، همه‌ی لینک‌های بیرونی منابع لینک واقعی دارند، و لینک داخلی به صفحه‌ای که قرار است ۳۰۱ شود زده نشده است.
 
 | # | نامک | CPT | وضعیت |
@@ -176,5 +176,11 @@ featured.webp     ۱۲۰۰×۶۷۵، WebP، زیر ۱۸۰ کیلوبایت
 | ۳۰ | `tonsillectomy-overview` | `surgery` | ✅ آماده |
 | ۳۱ | `tonsillectomy-preparation` | `surgery` | ✅ آماده |
 | ۳۲ | `tonsillectomy-recovery` | `surgery` | ✅ آماده |
+| ۳۳ | `thyroidectomy-overview` | `surgery` | ✅ آماده |
+| ۳۴ | `thyroidectomy-preparation` | `surgery` | ✅ آماده |
+| ۳۵ | `thyroidectomy-recovery` | `surgery` | ✅ آماده |
+| ۳۶ | `kidney-stone-overview` | `surgery` | ✅ آماده |
+| ۳۷ | `kidney-stone-preparation` | `surgery` | ✅ آماده |
+| ۳۸ | `kidney-stone-recovery` | `surgery` | ✅ آماده |
 
-**عددهای پس از ایمپورت:** زنده ۳۱ → ۶۱ (۳۳٫۲٪ از ۱۸۴). این به‌روزرسانی در `T-10` ثبت شده است.
+**عددهای پس از ایمپورت:** زنده ۳۱ → ۶۷ (۳۶٫۴٪ از ۱۸۴). این به‌روزرسانی در `T-10` ثبت شده است.
