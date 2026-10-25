@@ -15,7 +15,7 @@
 | ساختار محتوا `ORSITE_STRUCTURE_VERSION` | 1.0.0 | ۵ CPT، ۶ تاکسونومی، ۱۱۲ اصطلاح + ایمپورتر چندبخشی در هر ۵ CPT |
 | داشبورد اهداف و درصد پیشرفت پیشخوان | 0.11.0 | ۱۸۴ مقاله‌ی هدف پایه (۲۱۰ کامل) در ۱۰ بخش رنگی + درصد و نشان پیشرفت |
 | بسته‌های تک‌مقاله‌ای آماده‌ی ایمپورت | ۲۱ ZIP در مخزن | ۵ بسته در `content-imports/` + ۱۶ بسته در `releases/article-packages/` (۶ تحویل قبلی + ۱۰ بسته‌ی تازه‌ی ۱۴۰۵/۰۸/۰۲ با وضعیت `draft`) |
-| مقالات زنده‌ی سایت | **۲۸** | ۲۳ `patient_guide` + ۴ `surgery` + ۱ `or_environment` — بررسی‌شده از نقشه‌ی سایت در ۱۴۰۵/۰۸/۰۲ |
+| مقالات زنده‌ی سایت | **۳۱** | ۲۴ `patient_guide` + ۶ `surgery` + ۱ `or_environment` — بررسی‌شده از نقشه‌ی سایتِ کش‌نشده در ۱۴۰۵/۰۸/۰۳ |
 | اسناد پروژه و آینه‌ی سایت | همگام با 0.12.0 | مخزن GitHub + Google Drive (`Live Mirror` و ریشه‌ی پروژه) |
 
 ---
@@ -23,14 +23,18 @@
 ## [محتوا — نقشه‌ی اولویت انتشار و ده بسته‌ی مقاله‌ی تازه] — 2026-10-24
 
 ### Added
-- **`docs/content/PUBLISH-PRIORITY.fa.md`** — مرجع واحد اولویت انتشار: وضعیت واقعی سایت (۲۸ مقاله از ۱۸۴، برابر ۱۵٪)، قاعده‌ی رتبه‌بندی، ده مقاله‌ی اول، پانزده مقاله‌ی بعدی و دروازه‌ی انتشار.
+- **`docs/content/PUBLISH-PRIORITY.fa.md`** — مرجع واحد اولویت انتشار: وضعیت واقعی سایت (۳۱ مقاله از ۱۸۴، برابر ۱۶٫۸٪)، قاعده‌ی رتبه‌بندی، ده مقاله‌ی اول، پانزده مقاله‌ی بعدی و دروازه‌ی انتشار.
 - **ده بستهٔ مقاله** در `content/drafts/<slug>/` و ZIP آماده‌ی ایمپورت در `releases/article-packages/`: `appendectomy-overview`، `cesarean-recovery`، `hernia-overview`، `hernia-preparation`، `hernia-recovery`، `intubation-explained`، `anesthesia-and-memory`، `home-wound-care`، `dvt-pulmonary-embolism-prevention`، `discharge-checklist` — همه با `post_status: draft`، تصویر `1200×675` WebP و ۱۱۱۰ تا ۱۴۵۵ کلمه متن.
 - **ADR-019** در `docs/DECISIONS.md` — مرجع شمارش، الگوریتم اولویت، حذف ردیف هم‌نیت (`anesthesia-consultation`) و قاعده‌ی «تحویل دسته‌ای در سطح پیش‌نویس».
 
 ### Changed
 - `docs/content/NEXT-ARTICLES-PLAN.md` منسوخ اعلام شد (شمار «۵ مقاله» و صف پنج‌مقاله‌ای با سایت نمی‌خواند).
-- `content/live-mirror/README.md` و `content/live-mirror/governing/00-مانيفست-آینه.md` با عدد واقعی ۲۸ مقاله و شکاف ۲۳ مقاله‌ی بدون آینه اصلاح شدند.
+- `content/live-mirror/README.md` و `content/live-mirror/governing/00-مانيفست-آینه.md` با عدد واقعی ۳۱ مقاله و شکاف ۲۶ مقاله‌ی بدون آینه اصلاح شدند.
 - `docs/CONTENT-MAP.md` و `README.md` بلوک وضعیت جاری گرفتند؛ نسخه‌ی فرزند در README به 0.12.3 اصلاح شد.
+
+### Live
+- در ۱۴۰۵/۰۸/۰۳ دو بسته از همین دسته روی سایت منتشر شد (`cesarean-recovery`، `hernia-overview`) و مقاله‌ی `anesthesia-consultation` هم مستقل از این دسته منتشر شد؛ جمع مقالات زنده ۲۸ → ۳۱.
+- **درس روش‌شناسی:** نقشه‌ی سایت از کش CDN سرو می‌شود و اولین خواندن همان روز عدد قدیمی را داد؛ شمارش باید با `?v=<timestamp>` انجام شود (به ADR-019 اضافه شد).
 
 ### Verified
 - هر ده بسته با قواعد ممیزی خودِ ایمپورتر (`hj_importer_audit_package`) بازبینی شد: امتیاز ۱۰۰، صفر ایراد جدی، ۳ تا ۶ لینک داخلی، بدون لینک شکسته؛ همه بخش ۱۱۵، منابع نام‌دار و سلب مسئولیت دارند.
