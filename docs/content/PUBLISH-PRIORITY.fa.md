@@ -133,3 +133,37 @@ featured.webp     ۱۲۰۰×۶۷۵، WebP، زیر ۱۸۰ کیلوبایت
 4. به‌روزرسانی مانیفست آینه + کپی سه فایل در `content/live-mirror/articles/<slug>/`.
 5. ثبت نشانی‌های تازه در فهرست لینک داخلی همان مانیفست تا دسته‌ی بعدی بتواند به آن‌ها لینک بدهد.
 6. علامت زدن ردیف همان مقاله در جدول بخش ۶ و به‌روزرسانی عدد پیشرفت در بخش ۱ (۳۱ → ۳۲ و …).
+
+---
+
+## ۸. دستهٔ سوم — ۲۱ بستهٔ ۱۴۰۵/۰۸/۰۳ (۱۷ آماده، ۴ در انتظار تصویر)
+
+- **تصویر:** همه‌ی تصاویر شاخص عوض شدند. پنج بسته‌ای که پیش‌تر تصویر تولیدی داشتند (`anesthesia-and-memory`، `intubation-explained`، `home-wound-care`، `dvt-pulmonary-embolism-prevention`، `discharge-checklist`) تصویر خودِ شما را گرفتند. نقشه‌ی کامل در `docs/content/IMAGE-INVENTORY.fa.md`.
+- **گیت:** هر ۲۱ بسته از `tools/content-lint.py` عبور کرد؛ چهار بسته هنوز تصویر شاخص ندارند و به همین دلیل ZIP نشدند (`T-01` در `CONTENT-BACKLOG.fa.md`).
+- **سئوی دسته:** پرسش‌های متداول صفحه با اسکیمای `article.json` یکی شده است، همه‌ی لینک‌های بیرونی منابع لینک واقعی دارند، و لینک داخلی به صفحه‌ای که قرار است ۳۰۱ شود زده نشده است.
+
+| # | نامک | CPT | وضعیت |
+|---:|---|---|---|
+| ۱ | `appendectomy-overview` | `surgery` | ✅ آماده |
+| ۲ | `hernia-preparation` | `surgery` | ✅ آماده |
+| ۳ | `hernia-recovery` | `surgery` | ✅ آماده |
+| ۴ | `laparoscopy-overview` | `surgery` | ✅ آماده |
+| ۵ | `laparoscopy-preparation` | `surgery` | ✅ آماده |
+| ۶ | `laparoscopy-recovery` | `surgery` | ✅ آماده |
+| ۷ | `children-and-anesthesia` | `patient_guide` | ✅ آماده |
+| ۸ | `elderly-and-surgery` | `patient_guide` | ✅ آماده |
+| ۹ | `emergency-vs-elective-surgery` | `patient_guide` | ✅ آماده |
+| ۱۰ | `outpatient-vs-inpatient-surgery` | `patient_guide` | ✅ آماده |
+| ۱۱ | `intubation-explained` | `patient_guide` | ✅ آماده (بازبینی) |
+| ۱۲ | `anesthesia-and-memory` | `patient_guide` | ✅ آماده (بازبینی) |
+| ۱۳ | `home-wound-care` | `patient_guide` | ✅ آماده (بازبینی) |
+| ۱۴ | `dvt-pulmonary-embolism-prevention` | `patient_guide` | ✅ آماده (بازبینی) |
+| ۱۵ | `discharge-checklist` | `patient_guide` | ✅ آماده (بازبینی) |
+| ۱۶ | `cesarean-recovery` | `surgery` | ✅ بازبینی محتوای زنده |
+| ۱۷ | `hernia-overview` | `surgery` | ✅ بازبینی محتوای زنده |
+| ۱۸ | `cataract-overview` | `surgery` | ⛔ متن کامل، تصویر در انتظار |
+| ۱۹ | `cataract-preparation` | `surgery` | ⛔ متن کامل، تصویر در انتظار |
+| ۲۰ | `cataract-recovery` | `surgery` | ⛔ متن کامل، تصویر در انتظار |
+| ۲۱ | `cholecystectomy-overview` | `surgery` | ⛔ متن کامل، تصویر در انتظار |
+
+**عددهای پس از ایمپورت:** زنده ۳۱ → ۴۶ (۲۵٪) و پس از تکمیل تصاویر → ۵۰ (۲۷٪). این به‌روزرسانی در `T-10` ثبت شده است.
