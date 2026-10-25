@@ -33,7 +33,7 @@ python3 tools/content-lint.py content/drafts/<slug>/
 
 | شناسه | کار | نوع | وضعیت | معیار پذیرش |
 |---|---|---|---|---|
-| `T-01` | تصویر شاخص برای `cholecystectomy-overview` | بلاکر انتشار | ⛔ باز — سه مقاله‌ی آب مروارید تصویر گرفتند؛ این یکی در دو تلاش رد شد (کنترل محتوا و سپس سقف ۱۰ تصویر در هر نوبت) | یک فایل `1200×675` با نشان فارسی؛ سپس گیت سبز و ZIP. تا آن زمان **ایمپورت نمی‌شود** |
+| `T-01` | تصویر شاخص برای `cholecystectomy-overview` | بلاکر انتشار | ✅ بسته شد — با پرامپت اتاق عمل خالی (بدون دست جراح و ابزار در پیش‌زمینه) تولید و نشان‌گذاری شد | فایل `1200×675` با نشان فارسی، گیت سبز و ZIP ساخته شد |
 | `T-02` | ریدایرکت ۳۰۱ از `anesthesia-consultation` به `informed-consent-anesthesia-consult` | بلاکر سئو | 🟡 باز — تصمیم گرفته شده، کد نوشته نشده | `inc/redirects.php` روی `template_redirect` با `wp_safe_redirect(301)`، تحمل اسلش انتهایی و کوئری؛ نسخه‌ی فرزند `0.12.4`؛ هدف نقشه‌راه ۱۸۴ → ۱۸۳ و زنده ۳۱ → ۳۰ |
 | `T-03` | برگه‌ی «عمل سرپایی و بستری» در `guide_stage` | بهبود ساختار | 🟡 باز — مقاله فعلاً روی والد `special-groups` نشسته | افزودن `outpatient-inpatient` به `orsite_content_map()` و بامپ `ORSITE_STRUCTURE_VERSION` به `1.0.1` (بذر اصطلاحات idempotent است و چیزی را پاک نمی‌کند)؛ سپس تغییر `taxonomy` مقاله |
 | `T-04` | اجرای اجباری گیت در ساخت ZIP | فرایند | 🟡 باز | اسکریپت ساخت بسته پیش از zip، `tools/content-lint.py` را صدا بزند و روی خروجی غیرصفر متوقف شود |
@@ -42,7 +42,7 @@ python3 tools/content-lint.py content/drafts/<slug>/
 | `T-07` | مقاله‌ی `blood-donation-reserve-before-surgery` | محتوا | ⛔ باز — تصویر رد شد | مقاله با تصویر تازه (تولیدی) ساخته شود، نه با فایل ردشده |
 | `T-08` | صف فاز بعدی | محتوا | 🟡 باز | شش مقاله‌ی نخست این صف در همین دسته نوشته شد. برای دسته‌ی بعد از `PUBLISH-PRIORITY` و `content-roadmap-data.php` انتخاب شود؛ پیشنهاد: خوشه‌ی `glossary` (اولین واژه‌نامه) و تکمیل `student_content` که هنوز صفر مقاله دارد |
 | `T-09` | بازبینی پزشکی بسته‌ها | دروازه‌ی انتشار | 🟡 باز | تأیید کارفرما یا کارشناس پزشکی برای هر بسته پیش از `publish` |
-| `T-10` | به‌روزرسانی عددهای زنده بعد از ایمپورت | مستندسازی | 🟡 باز — منتظر ایمپورت | پس از ورود ۲۴ بسته: زنده ۳۱ → ۵۵ و پیشرفت ۱۶٫۸٪ → ۲۹٫۹٪؛ پس از `T-01`: ۵۶ و ۳۰٫۴٪ — در `PUBLISH-PRIORITY`، چنج‌لاگ و README |
+| `T-10` | به‌روزرسانی عددهای زنده بعد از ایمپورت | مستندسازی | 🟡 باز — منتظر ایمپورت | پس از ورود ۳۰ بسته: زنده ۳۱ → ۶۱ و پیشرفت ۱۶٫۸٪ → ۳۳٫۲٪ — در `PUBLISH-PRIORITY`، چنج‌لاگ و README |
 | `T-11` | خارج کردن `imagetool (25).zip` از مخزن | پاک‌سازی | ✅ بسته شد در همین دسته | فایل از ایندکس git حذف و در `.gitignore` ماند |
 | `T-12` | یکسان‌سازی پرسش‌های متداول صفحه با `article.json` | کیفیت | ✅ بسته شد برای ۲۱ بسته | بازنویسی خودکار از مانیفست + قاعده‌ی دائمی در بخش ۱ |
 
@@ -52,13 +52,13 @@ python3 tools/content-lint.py content/drafts/<slug>/
 
 | گروه | تعداد | وضعیت |
 |---|---:|---|
-| بسته‌ی تازه‌ی آماده‌ی ایمپورت | ۲۴ | ✅ گیت سبز، ZIP ساخته شد |
+| بسته‌ی تازه‌ی آماده‌ی ایمپورت | ۳۰ | ✅ گیت سبز، ZIP ساخته شد |
 | بازبینی محتوای دو مقاله‌ی زنده | ۲ | ✅ پرسش‌های متداول یکسان شد؛ ZIP تازه جای نسخه‌ی قبلی را گرفت |
-| متن کامل، تصویر در انتظار | ۱ | ⛔ `cholecystectomy-overview` — `T-01` |
+| متن کامل، تصویر در انتظار | ۰ | ✅ `T-01` بسته شد |
 
-عددهای واقعی: زنده ۳۱ → **۵۵** پس از ایمپورت این دسته (۲۹٫۹٪)، و **۵۶** پس از تکمیل `T-01` (۳۰٫۴٪).
+عددهای واقعی: زنده ۳۱ → **۶۱** پس از ایمپورت این دسته (۳۳٫۲٪ از ۱۸۴).
 
-## ۴. بیست‌وچهار بسته‌ی تازه‌ی آماده‌ی ایمپورت
+## ۴. سی بسته‌ی تازه‌ی آماده‌ی ایمپورت
 
 | # | نامک | CPT | تاکسونومی | کلمه |
 |---:|---|---|---|---:|
@@ -86,10 +86,16 @@ python3 tools/content-lint.py content/drafts/<slug>/
 | 22 | `smoking-and-surgery` | `patient_guide` | `general-preparation` | 1٫055 |
 | 23 | `diabetes-and-surgery` | `patient_guide` | `general-preparation` | 1٫091 |
 | 24 | `obesity-and-anesthesia` | `patient_guide` | `general-preparation` | 1٫002 |
+| 25 | `cholecystectomy-overview` | `surgery` | `surgery-overview` · `cholecystectomy` | 1٫182 |
+| 26 | `cholecystectomy-preparation` | `surgery` | `before-surgery` · `cholecystectomy` | 1٫133 |
+| 27 | `cholecystectomy-recovery` | `surgery` | `after-surgery` · `cholecystectomy` | 1٫128 |
+| 28 | `tonsillectomy-overview` | `surgery` | `surgery-overview` · `tonsillectomy` | 1٫063 |
+| 29 | `tonsillectomy-preparation` | `surgery` | `before-surgery` · `tonsillectomy` | 1٫002 |
+| 30 | `tonsillectomy-recovery` | `surgery` | `after-surgery` · `tonsillectomy` | 1٫017 |
 
 دو بسته‌ی دیگرِ این دسته، `cesarean-recovery` و `hernia-overview`، از قبل روی سایت زنده‌اند و فقط محتوایشان بازبینی شد؛ ZIP آن‌ها برای جایگزینی نسخه‌ی قبلی ساخته شده است.
 
-تنها `cholecystectomy-overview` (۱٫۱۵۴ کلمه) بدون تصویر شاخص مانده و منتظر `T-01` است؛ تا آمدن تصویر بسته‌ی ZIP آن ساخته و ایمپورت نمی‌شود.
+خوشه‌ی کیسه صفرا (`overview`/`preparation`/`recovery`) و خوشه‌ی لوزه (`overview`/`preparation`/`recovery`) با این شش مقاله کامل شدند.
 
 ## ۵. قاعده‌های ثابتی که در این دسته تثبیت شدند
 

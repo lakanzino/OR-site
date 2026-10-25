@@ -136,10 +136,10 @@ featured.webp     ۱۲۰۰×۶۷۵، WebP، زیر ۱۸۰ کیلوبایت
 
 ---
 
-## ۸. دستهٔ سوم — ۲۷ بستهٔ ۱۴۰۵/۰۸/۰۳ (۲۶ آماده، ۱ در انتظار تصویر)
+## ۸. دستهٔ سوم — ۳۲ بستهٔ ۱۴۰۵/۰۸/۰۳ (همه آماده)
 
 - **تصویر:** همه‌ی تصاویر شاخص عوض شدند. پنج بسته‌ای که پیش‌تر تصویر تولیدی داشتند (`anesthesia-and-memory`، `intubation-explained`، `home-wound-care`، `dvt-pulmonary-embolism-prevention`، `discharge-checklist`) تصویر خودِ شما را گرفتند. نقشه‌ی کامل در `docs/content/IMAGE-INVENTORY.fa.md`.
-- **گیت:** ۲۶ بسته از `tools/content-lint.py` عبور کرد و ZIP شد؛ تنها `cholecystectomy-overview` تصویر شاخص ندارد و به همین دلیل ZIP **نشده** است (`T-01` در `CONTENT-BACKLOG.fa.md`).
+- **گیت:** هر ۳۲ بسته از `tools/content-lint.py` عبور کرد و ZIP شد؛ هیچ بسته‌ای بدون تصویر نماند.
 - **سئوی دسته:** پرسش‌های متداول صفحه با اسکیمای `article.json` یکی شده است، همه‌ی لینک‌های بیرونی منابع لینک واقعی دارند، و لینک داخلی به صفحه‌ای که قرار است ۳۰۱ شود زده نشده است.
 
 | # | نامک | CPT | وضعیت |
@@ -170,6 +170,11 @@ featured.webp     ۱۲۰۰×۶۷۵، WebP، زیر ۱۸۰ کیلوبایت
 | ۲۴ | `smoking-and-surgery` | `patient_guide` | ✅ آماده |
 | ۲۵ | `diabetes-and-surgery` | `patient_guide` | ✅ آماده |
 | ۲۶ | `obesity-and-anesthesia` | `patient_guide` | ✅ آماده |
-| ۲۷ | `cholecystectomy-overview` | `surgery` | ⛔ متن کامل، تصویر در انتظار |
+| ۲۷ | `cholecystectomy-overview` | `surgery` | ✅ آماده |
+| ۲۸ | `cholecystectomy-preparation` | `surgery` | ✅ آماده |
+| ۲۹ | `cholecystectomy-recovery` | `surgery` | ✅ آماده |
+| ۳۰ | `tonsillectomy-overview` | `surgery` | ✅ آماده |
+| ۳۱ | `tonsillectomy-preparation` | `surgery` | ✅ آماده |
+| ۳۲ | `tonsillectomy-recovery` | `surgery` | ✅ آماده |
 
-**عددهای پس از ایمپورت:** زنده ۳۱ → ۵۵ (۲۹٫۹٪) و پس از تکمیل تصویر آخر → ۵۶ (۳۰٫۴٪). این به‌روزرسانی در `T-10` ثبت شده است.
+**عددهای پس از ایمپورت:** زنده ۳۱ → ۶۱ (۳۳٫۲٪ از ۱۸۴). این به‌روزرسانی در `T-10` ثبت شده است.

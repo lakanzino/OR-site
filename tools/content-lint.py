@@ -47,6 +47,9 @@ BATCH = {
     "/patient-guide/general-preparation-before-surgery/", "/patient-guide/questions-before-surgery/",
     "/patient-guide/medical-history-disclosure/", "/patient-guide/smoking-and-surgery/",
     "/patient-guide/diabetes-and-surgery/", "/patient-guide/obesity-and-anesthesia/",
+    "/surgery/cholecystectomy-preparation/", "/surgery/cholecystectomy-recovery/",
+    "/surgery/tonsillectomy-overview/", "/surgery/tonsillectomy-preparation/",
+    "/surgery/tonsillectomy-recovery/",
 }
 ALLOWED = LIVE | BATCH
 
