@@ -8,7 +8,7 @@
 |---|---|---|
 | قالب والد `lax-theme` | 1.0.1 | [`themes/lax-theme/`](themes/lax-theme/) |
 | قالب فرزند `lax-theme-child` | 0.12.8 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
-| افزونهٔ `orsite-media-matcher` | 1.1.0 | [`plugins/orsite-media-matcher/`](plugins/orsite-media-matcher/) |
+| افزونهٔ `orsite-media-matcher` | 1.2.0 | [`plugins/orsite-media-matcher/`](plugins/orsite-media-matcher/) |
 | ساختار محتوا (`ORSITE_STRUCTURE_VERSION`) | 1.0.0 | `themes/lax-theme-child/inc/content-types.php` |
 
 ## وضعیت زندهٔ سایت (بررسی‌شده از REST API — ۲۰۲۶-۱۰-۲۵)
@@ -16,7 +16,7 @@
 | شاخص | عدد |
 |---|---:|
 | مقالهٔ منتشرشده | **۶۴** (۲۴ جراحی + ۳۹ راهنمای بیمار + ۱ اتاق عمل) |
-| تصویر شاخص دارد | **۶۴ / ۶۴** |
+| تصویر شاخص دارد | **۶۴ / ۶۴** (واژه‌نامه از ۱٫۲٫۰ تصویر اختصاصی دارد) |
 | بستهٔ آمادهٔ منتشرنشده | ۹ |
 | پیشرفت از ۱۸۴ مقالهٔ هدف | ۳۴٫۸٪ |
 

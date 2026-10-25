@@ -3,7 +3,7 @@
  * Plugin Name:       ORSite — اتصال تصاویر رسانه به مقاله‌ها
  * Plugin URI:        https://github.com/lakanzino/OR-site
  * Description:       تصاویر آپلودشده در کتابخانه‌ی رسانه را بر اساس نام فایل به مقاله‌ی هم‌نام وصل می‌کند و به‌عنوان «تصویر شاخص» تنظیم می‌کند؛ همراه با گزارش کامل و حالت پیش‌نمایش.
- * Version:           1.1.0
+ * Version:           1.2.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            OR Site
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'OMM_VERSION', '1.1.0' );
+define( 'OMM_VERSION', '1.2.0' );
 define( 'OMM_SLUG', 'orsite-media-matcher' );
 define( 'OMM_CAP', 'manage_options' );
 
@@ -25,7 +25,7 @@ define( 'OMM_CAP', 'manage_options' );
  * Pinned copy of the text-free image pack. Pinned to a commit on purpose: a
  * later commit must never change what an admin button downloads.
  */
-define( 'OMM_PACK_URL', 'https://github.com/lakanzino/OR-site/raw/5cf3df5a10e27964323be1567d6a1d8d89ae8e8f/releases/featured-images-clean.zip' );
+define( 'OMM_PACK_URL', 'https://github.com/lakanzino/OR-site/raw/62204a7b03edf46fe330214ff31f8f844f7508b3/releases/featured-images-clean.zip' );
 
 /**
  * Post types the matcher looks at.
