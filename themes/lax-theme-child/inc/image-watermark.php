@@ -44,7 +44,7 @@ function lax_theme_child_watermark_thumbnail( $html, $post_id = 0, $thumbnail_id
 	}
 
 	return '<span class="orsite-thumb">' . $html
-		. '<span class="orsite-wm" aria-hidden="true" dir="ltr"><b>H</b>anyarJarahi</span>'
+		. '<span class="orsite-wm" aria-hidden="true" dir="ltr"><b>H</b>anyar<i>J</i>arahi</span>'
 		. '</span>';
 }
 add_filter( 'post_thumbnail_html', 'lax_theme_child_watermark_thumbnail', 10, 5 );
