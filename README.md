@@ -7,7 +7,7 @@
 | جزء | نسخه | مسیر |
 |---|---|---|
 | قالب والد `lax-theme` | 1.0.1 | [`themes/lax-theme/`](themes/lax-theme/) |
-| قالب فرزند `lax-theme-child` | 0.13.0 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
+| قالب فرزند `lax-theme-child` | 0.14.0 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
 | افزونهٔ `orsite-media-matcher` | 1.2.0 | [`plugins/orsite-media-matcher/`](plugins/orsite-media-matcher/) |
 | ساختار محتوا (`ORSITE_STRUCTURE_VERSION`) | 1.0.0 | `themes/lax-theme-child/inc/content-types.php` |
 
@@ -28,7 +28,7 @@
 - `themes/lax-theme-child/` — قالب فرزند اختصاصی پروژه: ساختار محتوا (۵ نوع نوشته، ۶ تاکسونومی، ۱۱۲ اصطلاح)، قالب مقاله با فهرست مطالب خودکار، طراحی باکس‌دار تک‌رنگ سرمه‌ای و سایزهای تصویر بدون برش.
 - `docs/` — قوانین فازبندی پروژه، تصمیم‌ها (ADR)، چنج‌لاگ کامل، رودمپ محتوا و گزارش گام‌ها.
   - `docs/content/PUBLISH-PRIORITY.fa.md` — **مرجع اولویت انتشار**: وضعیت واقعی سایت (بررسی‌شده از نقشه‌ی سایت)، ده مقاله‌ی جاری و پانزده مقاله‌ی بعدی.
-- `content/drafts/<slug>/` — بسته‌های سه‌فایلی پیش‌نویس مقالات (`article.json` + `content.html` + `featured.webp`)؛ وضعیت همه `draft` تا بازبینی پزشکی.
+- `content/drafts/<slug>/` — بسته‌های سه‌فایلی پیش‌نویس مقالات (`article.json` + `content.html` + `featured.webp`)؛ وضعیت همه `draft` تا عبور از فیلتر تحریریه و تأیید کارفرما. سازوکار «بازبین پزشکی» از نسخهٔ 0.14.0 قالب به‌طور کامل حذف شده است.
 - `releases/article-packages/` — همان بسته‌ها به شکل ZIP آماده‌ی ایمپورت در پیشخوان.
 - `plugins/orsite-media-matcher/` — افزونهٔ مستقل: تصویرهای رسانه را با نام فایل به مقاله‌ی هم‌نام وصل می‌کند و تصویر شاخص می‌گذارد؛ با پیش‌نمایش، گزارش و تکمیل خودکار از مخزن.
 - `content/live-mirror/` — آینه‌ی متنی محتوای منتشرشده (اکنون فقط ۵ مقاله‌ی اول؛ شکاف آینه در `content/live-mirror/README.md` ثبت شده است).

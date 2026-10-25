@@ -437,23 +437,6 @@ if ( ! hj_seo_plugin_active() ) :
 						'dateModified'     => get_post_modified_time( DATE_W3C, false, $post ),
 					);
 
-					$reviewer = trim( (string) get_post_meta( $post_id, '_hj_medical_reviewer', true ) );
-					if ( '' !== $reviewer && false === strpos( $reviewer, 'در انتظار بازبین' ) ) {
-						$node = array(
-							'@type' => 'Person',
-							'name'  => $reviewer,
-						);
-						$job = trim( (string) get_post_meta( $post_id, '_hj_medical_reviewer_job', true ) );
-						if ( $job ) {
-							$node['jobTitle'] = $job;
-						}
-						$article['reviewedBy'] = $node;
-						$reviewed_at           = trim( (string) get_post_meta( $post_id, '_hj_reviewed_at', true ) );
-						if ( $reviewed_at ) {
-							$article['lastReviewed'] = $reviewed_at;
-						}
-					}
-
 					if ( function_exists( 'orsite_primary_term' ) ) {
 						$term = orsite_primary_term( $post_id, $post_type );
 						if ( $term ) {

@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.13.0' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.14.0' );
 }
 
 /**
@@ -61,11 +61,6 @@ require_once get_stylesheet_directory() . '/inc/seo-index-policy.php';
  * One date format everywhere (0.13.0).
  */
 require_once get_stylesheet_directory() . '/inc/date-consistency.php';
-
-/**
- * Medical reviewer record and screen (0.13.0).
- */
-require_once get_stylesheet_directory() . '/inc/medical-review.php';
 
 /**
  * Load analytics & search-console connections (dashboard codes page,

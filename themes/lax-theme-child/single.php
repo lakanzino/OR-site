@@ -40,9 +40,6 @@ get_header();
 					<?php endif; ?>
 					<span class="orsite-article__reading"><?php echo esc_html( orsite_reading_time( $article_content ) ); ?> <?php esc_html_e( 'دقیقه مطالعه', 'lax-theme-child' ); ?></span>
 				</div>
-				<?php if ( function_exists( 'hj_review_print_byline' ) ) : ?>
-					<?php hj_review_print_byline( get_the_ID() ); ?>
-				<?php endif; ?>
 			</header>
 
 			<?php if ( has_post_thumbnail() ) : ?>

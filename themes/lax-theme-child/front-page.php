@@ -4,8 +4,8 @@
  *
  * One clear job: take a patient or companion from "I have a surgery
  * ahead" to the right guide in seconds — stage first, then sections,
- * then the newest reviewed articles. Empty states stay honest while
- * the first article pillars are in medical review.
+ * then the newest articles. Empty states stay honest while the first
+ * article pillars are still being prepared.
  *
  * 0.9.0: simplified hero (title + search + actions only), image/title
  * article cards, slim section bars, trust and safety bands removed,
@@ -153,14 +153,7 @@ $hj_faqs = array(
 			<div class="hj-home-section__head">
 				<h2 id="hj-latest-title">تازه‌ترین مقاله‌های منتشرشده</h2>
 				<p>
-					<?php
-					$hj_pending_reviews = function_exists( 'hj_review_pending_count' ) ? hj_review_pending_count() : 0;
-					if ( $hj_pending_reviews > 0 ) {
-						echo esc_html( sprintf( /* translators: %d: number of articles */ __( 'هر مقاله پیش از انتشار از گیت محتوا گذشته است. %d مقاله‌ی دارویی یا بیهوشی هنوز بازبین پزشک ندارد و همین را زیر عنوان خودش نوشته‌ایم.', 'lax-theme-child' ), (int) $hj_pending_reviews ) );
-					} else {
-						esc_html_e( 'هر مقاله پیش از انتشار از گیت محتوا گذشته و مقاله‌های دارویی و بیهوشی نام بازبین پزشک را زیر عنوان دارند.', 'lax-theme-child' );
-					}
-					?>
+					<?php esc_html_e( 'هر مقاله پیش از انتشار از گیت تحریریه می‌گذرد: تحقیق از منابع معتبر، ویرایش فارسی، کنترل ساختار و پیوندها.', 'lax-theme-child' ); ?>
 				</p>
 			</div>
 
