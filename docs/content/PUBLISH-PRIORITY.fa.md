@@ -1,26 +1,33 @@
 # اولویت انتشار مقالات — نقشه‌ی ده مقاله‌ی بعدی
 
 - **تاریخ تدوین:** ۲۰۲۶-۱۰-۲۴ (۲ آبان ۱۴۰۵)
-- **آخرین بازبینی:** ۲۰۲۶-۱۰-۲۵ — نقشه‌ی سایت با پارامتر ضدکش دوباره خوانده شد: **۳۱ مقاله**. سه مقاله تازه روی سایت رفت: `anesthesia-consultation`، `cesarean-recovery` و `hernia-overview`.
-- **هشدار روش‌شناسی:** نقشه‌ی سایت وردپرس از کش CDN سرو می‌شود؛ اولین خواندن بدون `?v=` عدد قدیمی ۲۸ را برگرداند. برای شمارش همیشه نسخه‌ی کش‌نشده خوانده شود (`?v=<timestamp>`).
-- **مبنای اولویت:** `themes/lax-theme-child/inc/content-roadmap-data.php` (فاز هر مقاله) + `docs/content/CONTENT-MAP.md` (اول مسیر بیمار، بعد جراحی‌های خاص)
-- **مبنای وضعیت موجود:** نقشه‌ی سایت زنده (`wp-sitemap-posts-*.xml`) که در همین تاریخ بررسی شد — نه تخمین و نه سند قدیمی.
+- **آخرین بازبینی:** ۲۰۲۶-۱۰-۲۵ — این بار نه نقشهٔ سایت، بلکه **REST API خود سایت** خوانده شد (`/wp-json/wp/v2/{surgery,patient_guide,or_environment,media}`). کش CDN ندارد و تعداد دقیق می‌دهد: **۶۴ مقاله**. جزئیات در `docs/reports/LIVE-SITE-AUDIT-2026-10-25.md`.
+- **هشدار روش‌شناسی:** نقشهٔ سایت وردپرس از کش CDN سرو می‌شود؛ اولین خواندن بدون `?v=` عدد قدیمی ۲۸ را برگرداند. از این پس برای شمارش، REST API مبنای کار است.
 
 ---
 
-## ۱. وضعیت واقعی سایت (بررسی‌شده از نقشه‌ی سایتِ کش‌نشده)
+## ۱. وضعیت واقعی سایت (بررسی‌شده از REST API)
 
 | CPT | تعداد زنده | نامک‌ها |
 |---|---:|---|
-| `patient_guide` | ۲۴ | `glossary-surgical-terms`، `what-is-operating-room`، `surgical-care-team`، `patient-journey`، `operating-room-moment-by-moment`، `general-anesthesia`، `preoperative-fasting`، `pacu-recovery`، `fear-of-anesthesia-awareness`، `informed-consent-anesthesia-consult`، `general-vs-spinal-anesthesia`، `preoperative-tests`، `what-not-to-eat-before-surgery`، `post-surgery-pain`، `suture-removal`، `surgical-site-infection`، `post-surgery-nutrition`، `early-walking-after-surgery`، `companion-role-admission-day`، `medications-before-surgery`، `mental-preparation-before-surgery`، `anesthesia-consultation`، `anesthesia-side-effects`، `warning-signs-after-surgery` |
-| `or_environment` | ۱ | `surgical-team-roles` |
-| `surgery` | ۶ | `appendectomy-preparation`، `appendectomy-recovery`، `cesarean-overview`، `cesarean-preparation`، `cesarean-recovery`، `hernia-overview` |
+| `surgery` | **۲۴** | `appendectomy-{overview,preparation,recovery}`، `cesarean-{overview,preparation,recovery}`، `cataract-{overview,preparation,recovery}`، `cholecystectomy-{overview,preparation,recovery}`، `hernia-{overview,preparation,recovery}`، `kidney-stone-{overview,preparation,recovery}`، `thyroidectomy-{overview,preparation,recovery}`، `laparoscopy-recovery`، `tonsillectomy-{preparation,recovery}` |
+| `patient_guide` | **۳۹** | از `glossary-surgical-terms` و `what-is-operating-room` تا `outpatient-vs-inpatient-surgery` و `questions-before-surgery` |
+| `or_environment` | **۱** | `surgical-team-roles` |
 | `student_content` | ۰ | — |
 | `glossary` | ۰ | CPT بدون ردیف |
 
-**جمع: ۳۱ مقاله‌ی زنده از ۱۸۴ مقاله‌ی هدف پایه → ۱۵۳ مقاله باقی مانده (۱۶٫۸٪ پیشرفت).**
+**جمع: ۶۴ مقالهٔ زنده از ۱۸۴ مقالهٔ هدف پایه → ۱۲۰ مقاله باقی مانده (۳۴٫۸٪ پیشرفت).**
 
-> ⚠️ **تصحیح اسناد:** `NEXT-ARTICLES-PLAN.md` می‌گوید «۵ مقاله زنده» و مانیفست آینه می‌گفت «۱۵ مقاله منتشرشده». هیچ‌کدام امروز درست نیست؛ عدد درست **۳۱** است. مانیفست آینه هم فقط ۵ مقاله را در خود دارد، در حالی که ۲۴ مقاله‌ی `patient_guide` زنده است. پیشنهاد: آینه‌ی متنی ۲۶ مقاله‌ی زنده‌ی بدون آینه تکمیل شود (`content/live-mirror/README.md`).
+> ⚠️ **تصحیح اسناد:** عدد ۳۱ در نسخهٔ قبلی این سند درست بود اما دیگر نیست. از آن بازبینی تا امروز **۳۳ مقاله** منتشر شده و هیچ‌کدام در اسناد ثبت نشده بود. `NEXT-ARTICLES-PLAN.md` («۵ مقاله زنده») و مانیفست آینه («۱۵ مقاله») هم منسوخ‌اند. مرجع عدد، این جدول و گزارش بازبینی زنده است.
+
+### شکاف‌های فاز ۱
+
+| دسته | باقی‌ماندهٔ فاز ۱ |
+|---|---|
+| قبل از عمل | — (منتشر شد) |
+| جراحی‌ها، گروه ۱ | — (هر سه منتشر شد) |
+
+**فاز ۱ تمام شد.** ولی ۹ بستهٔ نوشته‌شده و آماده هنوز روی سایت نرفته‌اند: `circumcision-{overview,preparation,recovery}`، `hemorrhoid-{overview,preparation,recovery}`، `laparoscopy-{overview,preparation}`، `tonsillectomy-overview`. با انتشار همین ۹ بسته، سایت به ۷۳ مقاله (**۳۹٫۷٪**) می‌رسد.
 
 ### شکاف‌های فاز ۱ (فقط ۳ مقاله)
 

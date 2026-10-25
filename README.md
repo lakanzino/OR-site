@@ -7,8 +7,20 @@
 | جزء | نسخه | مسیر |
 |---|---|---|
 | قالب والد `lax-theme` | 1.0.1 | [`themes/lax-theme/`](themes/lax-theme/) |
-| قالب فرزند `lax-theme-child` | 0.12.3 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
+| قالب فرزند `lax-theme-child` | 0.12.8 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
+| افزونهٔ `orsite-media-matcher` | 1.1.0 | [`plugins/orsite-media-matcher/`](plugins/orsite-media-matcher/) |
 | ساختار محتوا (`ORSITE_STRUCTURE_VERSION`) | 1.0.0 | `themes/lax-theme-child/inc/content-types.php` |
+
+## وضعیت زندهٔ سایت (بررسی‌شده از REST API — ۲۰۲۶-۱۰-۲۵)
+
+| شاخص | عدد |
+|---|---:|
+| مقالهٔ منتشرشده | **۶۴** (۲۴ جراحی + ۳۹ راهنمای بیمار + ۱ اتاق عمل) |
+| تصویر شاخص دارد | **۶۴ / ۶۴** |
+| بستهٔ آمادهٔ منتشرنشده | ۹ |
+| پیشرفت از ۱۸۴ مقالهٔ هدف | ۳۴٫۸٪ |
+
+گزارش کامل: [`docs/reports/LIVE-SITE-AUDIT-2026-10-25.md`](docs/reports/LIVE-SITE-AUDIT-2026-10-25.md)
 
 ## ساختار مخزن
 
@@ -18,6 +30,7 @@
   - `docs/content/PUBLISH-PRIORITY.fa.md` — **مرجع اولویت انتشار**: وضعیت واقعی سایت (بررسی‌شده از نقشه‌ی سایت)، ده مقاله‌ی جاری و پانزده مقاله‌ی بعدی.
 - `content/drafts/<slug>/` — بسته‌های سه‌فایلی پیش‌نویس مقالات (`article.json` + `content.html` + `featured.webp`)؛ وضعیت همه `draft` تا بازبینی پزشکی.
 - `releases/article-packages/` — همان بسته‌ها به شکل ZIP آماده‌ی ایمپورت در پیشخوان.
+- `plugins/orsite-media-matcher/` — افزونهٔ مستقل: تصویرهای رسانه را با نام فایل به مقاله‌ی هم‌نام وصل می‌کند و تصویر شاخص می‌گذارد؛ با پیش‌نمایش، گزارش و تکمیل خودکار از مخزن.
 - `content/live-mirror/` — آینه‌ی متنی محتوای منتشرشده (اکنون فقط ۵ مقاله‌ی اول؛ شکاف آینه در `content/live-mirror/README.md` ثبت شده است).
 - `design/` — پیش‌نمایش HTML طراحی جاری.
 - `data/` — موجودی دسته‌بندی‌شده‌ی فایل‌های قالب والد.
