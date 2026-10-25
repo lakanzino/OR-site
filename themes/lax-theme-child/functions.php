@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.12.3' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.14.0' );
 }
 
 /**
@@ -35,6 +35,8 @@ require_once get_stylesheet_directory() . '/inc/article-display.php';
 /**
  * Load image sizes and article media block patterns.
  */
+require_once get_stylesheet_directory() . '/inc/image-watermark.php';
+require_once get_stylesheet_directory() . '/inc/image-bulk-replace.php';
 require_once get_stylesheet_directory() . '/inc/image-sizes.php';
 require_once get_stylesheet_directory() . '/inc/media-blocks.php';
 
@@ -51,6 +53,16 @@ require_once get_stylesheet_directory() . '/inc/essential-pages.php';
 require_once get_stylesheet_directory() . '/inc/seo-basics.php';
 
 /**
+ * SEO index policy (0.13.0): empty and thin listings stay out of the index.
+ */
+require_once get_stylesheet_directory() . '/inc/seo-index-policy.php';
+
+/**
+ * One date format everywhere (0.13.0).
+ */
+require_once get_stylesheet_directory() . '/inc/date-consistency.php';
+
+/**
  * Load analytics & search-console connections (dashboard codes page,
  * GA4/Clarity tags, verification metas, dashboard deep links).
  */
@@ -65,6 +77,11 @@ require_once get_stylesheet_directory() . '/inc/github-updater.php';
  * Load high-performance Glossary & Auto-Tooltip Engine (5,000+ terms).
  */
 require_once get_stylesheet_directory() . '/inc/glossary-engine.php';
+
+/**
+ * One-time repair of the numbered glossary import (0.13.0).
+ */
+require_once get_stylesheet_directory() . '/inc/glossary-cleanup.php';
 
 /**
  * Load the multi-group package importer (ZIP -> post + SEO + featured image + audit).

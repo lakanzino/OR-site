@@ -2161,11 +2161,11 @@ function hj_importer_render_page() {
 						<p style="margin:0 0 8px">
 							<label for="hj_target_post_type" style="font-weight:600;display:block;margin-bottom:4px">گروه مقصد مقاله:</label>
 							<select id="hj_target_post_type" name="target_post_type" style="width:100%;max-width:380px">
-								<option value="auto" <?php selected( '' === $current_cpt ); ?>>
+								<option value="auto" <?php selected( true ); ?>>
 									تشخیص خودکار از article.json<?php echo '' !== $current_cpt && isset( $cpt_map[ $current_cpt ] ) ? ' (پیش‌فرض فعلی: ' . esc_html( $cpt_map[ $current_cpt ]['label'] ) . ')' : ''; ?>
 								</option>
 								<?php foreach ( $cpt_map as $cpt_k => $cpt_m ) : ?>
-									<option value="<?php echo esc_attr( $cpt_k ); ?>" <?php selected( $current_cpt, $cpt_k ); ?>>
+									<option value="<?php echo esc_attr( $cpt_k ); ?>">
 										اجبار به قرارگیری در بخش: <?php echo esc_html( $cpt_m['label'] ); ?> (<?php echo esc_html( $cpt_k ); ?>)
 									</option>
 								<?php endforeach; ?>

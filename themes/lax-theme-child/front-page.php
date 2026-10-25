@@ -4,8 +4,8 @@
  *
  * One clear job: take a patient or companion from "I have a surgery
  * ahead" to the right guide in seconds — stage first, then sections,
- * then the newest reviewed articles. Empty states stay honest while
- * the first article pillars are in medical review.
+ * then the newest articles. Empty states stay honest while the first
+ * article pillars are still being prepared.
  *
  * 0.9.0: simplified hero (title + search + actions only), image/title
  * article cards, slim section bars, trust and safety bands removed,
@@ -152,7 +152,9 @@ $hj_faqs = array(
 		<section id="hj-latest" class="hj-home-section" aria-labelledby="hj-latest-title">
 			<div class="hj-home-section__head">
 				<h2 id="hj-latest-title">تازه‌ترین مقاله‌های منتشرشده</h2>
-				<p>فقط متن‌هایی اینجا می‌آیند که از کنترل پیش از انتشار و بازبینی لازم گذشته باشند.</p>
+				<p>
+					<?php esc_html_e( 'هر مقاله پیش از انتشار از گیت تحریریه می‌گذرد: تحقیق از منابع معتبر، ویرایش فارسی، کنترل ساختار و پیوندها.', 'lax-theme-child' ); ?>
+				</p>
 			</div>
 
 			<?php if ( $hj_latest->have_posts() ) : ?>
@@ -168,7 +170,7 @@ $hj_faqs = array(
 			<?php else : ?>
 				<div class="hj-home-empty">
 					<h3>نخستین مقاله‌های ستونی در مسیر انتشارند</h3>
-					<p>ستون‌های «مسیر بیمار»، «اتاق عمل چیست»، «اصطلاحات اتاق عمل» و «تیم جراحی و مراقبت» آماده‌ی تأیید نهایی‌اند و پس از بازبینی پزشکی و رسیدن تصویر شاخص، یکی‌یکی منتشر می‌شوند. ما برای سرعت، متن نیمه‌تمام منتشر نمی‌کنیم.</p>
+					<p>ستون‌های «مسیر بیمار»، «اتاق عمل چیست»، «اصطلاحات اتاق عمل» و «تیم جراحی و مراقبت» یکی‌یکی منتشر می‌شوند. ما برای سرعت، متن نیمه‌تمام منتشر نمی‌کنیم.</p>
 					<p class="hj-home-empty__actions">
 						<a class="hj-button" href="<?php echo esc_url( hj_page_url( 'about' ) ); ?>">همیار جراحی را بشناسید</a>
 					</p>
@@ -228,7 +230,7 @@ $hj_faqs = array(
 			<?php else : ?>
 				<div class="hj-home-empty hj-home-empty--soft">
 					<h3>صفحه‌های جراحی‌ها به‌تدریج کامل می‌شوند</h3>
-					<p>تا وقتی نخستین سه‌گانه‌ی یک جراحی از بازبینی نگذشته باشد، صفحه‌های خالی را به‌عنوان مقاله جا نمی‌زنیم. از راهنمای کلی مسیر بیمار شروع کنید و برای عمل مشخص خودتان از تیم درمان راهنمایی بگیرید.</p>
+					<p>صفحه‌های خالی را به‌عنوان مقاله جا نمی‌زنیم و تا وقتی یک بخش به حد کافی مقاله نداشته باشد، آن را از گوگل بیرون نگه می‌داریم. از راهنمای کلی مسیر بیمار شروع کنید و برای عمل مشخص خودتان از تیم درمان راهنمایی بگیرید.</p>
 					<a class="hj-text-link" href="<?php echo esc_url( hj_archive_url( 'surgery' ) ); ?>">مشاهده‌ی بخش جراحی‌ها</a>
 				</div>
 			<?php endif; ?>

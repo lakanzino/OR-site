@@ -432,6 +432,10 @@ function hj_glossary_upsert_term( array $data, string $duplicate_mode = 'update'
 	$table = hj_glossary_table_name();
 
 	$term = trim( wp_strip_all_tags( (string) ( $data['term'] ?? '' ) ) );
+	if ( function_exists( 'hj_glossary_strip_number_prefix' ) ) {
+		// Import files often number their rows; the number is not part of the term.
+		$term = hj_glossary_strip_number_prefix( $term );
+	}
 	$def  = trim( wp_kses_post( (string) ( $data['definition'] ?? '' ) ) );
 	// Flatten multi-paragraph definitions to clean single-line text for crisp tooltips.
 	$def  = trim( preg_replace( '/\s+/u', ' ', wp_strip_all_tags( $def ) ) ?? $def );

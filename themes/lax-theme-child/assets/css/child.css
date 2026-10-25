@@ -2118,3 +2118,64 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 	}
 }
 
+
+/* ------------------------------------------------------------------
+   WATERMARK — «HamyarJarahi» روی همه‌ی تصاویر شاخص، خودکار با کد.
+   بدون متن فارسی، بدون زمینه، ریز، با فاصله‌ی حروف، سمت چپ و کمی
+   پایین‌تر از نیمه‌ی پایین کادر. حروف سفید، H آبی ناوی و J سبز روشن،
+   هر حرف با یک لبه‌ی نازک متضاد تا روی عکس روشن و تیره خوانا بماند.
+   ------------------------------------------------------------------ */
+.orsite-thumb {
+	position: relative;
+	display: block;
+	line-height: 0;
+}
+
+.orsite-thumb img {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+.orsite-wm {
+	position: absolute;
+	left: 3.2%;
+	bottom: 22%;
+	z-index: 2;
+	direction: ltr;
+	unicode-bidi: isolate;
+	font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+	font-size: clamp(10px, 1.1vw, 14px);
+	font-weight: 600;
+	letter-spacing: 0.26em;
+	line-height: 1;
+	color: #fff;
+	opacity: 0.95;
+	-webkit-text-stroke: 0.5px rgba(0, 45, 95, 0.85);
+	paint-order: stroke fill;
+	white-space: nowrap;
+	pointer-events: none;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.orsite-wm b {
+	font-weight: 700;
+	color: #002d5f;
+	-webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.95);
+}
+
+.orsite-wm i {
+	font-style: normal;
+	font-weight: 700;
+	color: #22c55e;
+	-webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.95);
+}
+
+@media (max-width: 600px) {
+	.orsite-wm {
+		font-size: 9px;
+		letter-spacing: 0.2em;
+		bottom: 18%;
+	}
+}
