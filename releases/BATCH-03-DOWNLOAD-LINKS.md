@@ -1,3 +1,21 @@
+# لینک دانلود — افزونهٔ تصاویر، قالب ۰٫۱۲٫۸، ۴۴ بسته
+
+## افزونهٔ اصلاح تصاویر (تازه)
+- **ORSite Media Matcher:** https://github.com/lakanzino/OR-site/raw/c04dfa76a579d82b02fb3c8689280a65a3ba2e53/releases/orsite-media-matcher.zip
+
+## قالب و محتوا
+- **قالب فرزند ۰٫۱۲٫۸:** https://github.com/lakanzino/OR-site/raw/c04dfa76a579d82b02fb3c8689280a65a3ba2e53/releases/lax-theme-child.zip
+- **همه‌ی ۴۴ بسته:** https://github.com/lakanzino/OR-site/raw/c04dfa76a579d82b02fb3c8689280a65a3ba2e53/releases/article-packages/BATCH-03-ALL-PACKAGES.zip
+- **تصاویر بدون نوشته (یک فایل):** https://github.com/lakanzino/OR-site/raw/c04dfa76a579d82b02fb3c8689280a65a3ba2e53/releases/featured-images-clean.zip
+- **تصاویر — پنج بخش کوچک:** `https://github.com/lakanzino/OR-site/raw/c04dfa76a579d82b02fb3c8689280a65a3ba2e53/releases/featured-images-clean-part1.zip` … `part5.zip`
+
+## روش کار افزونه
+1. نصب: پیشخوان → افزونه‌ها → افزودن → بارگذاری → `orsite-media-matcher.zip` → فعال‌سازی.
+2. ابزارها → **اتصال تصاویر به مقاله‌ها**.
+3. دکمهٔ **پیش‌نمایش** → جدول را ببینید.
+4. دکمهٔ **اجرا کن** → تصویر شاخص همه‌ی مقاله‌های هم‌نام تنظیم می‌شود.
+5. دکمهٔ **«تصاویر را از مخزن بگیر و کامل کن»** → دو تصویر جاافتاده و هر جای خالی دیگر خودکار اضافه می‌شود.
+
 # لینک دانلود — قالب ۰٫۱۲٫۸، ۴۴ بسته، تصاویر بدون نوشته
 
 همه‌ی لینک‌ها به کامیت `5cf3df5` قفل شده‌اند.
