@@ -1,34 +1,35 @@
 # اولویت انتشار مقالات — نقشه‌ی ده مقاله‌ی بعدی
 
 - **تاریخ تدوین:** ۲۰۲۶-۱۰-۲۴ (۲ آبان ۱۴۰۵)
-- **آخرین بازبینی:** همان روز — نقشه‌ی سایت دوباره خوانده شد و اعداد بخش ۱ تأیید شد (هنوز ۲۸ مقاله؛ هیچ‌کدام از ده بستهٔ تازه روی سایت نیست).
+- **آخرین بازبینی:** ۲۰۲۶-۱۰-۲۵ — نقشه‌ی سایت با پارامتر ضدکش دوباره خوانده شد: **۳۱ مقاله**. سه مقاله تازه روی سایت رفت: `anesthesia-consultation`، `cesarean-recovery` و `hernia-overview`.
+- **هشدار روش‌شناسی:** نقشه‌ی سایت وردپرس از کش CDN سرو می‌شود؛ اولین خواندن بدون `?v=` عدد قدیمی ۲۸ را برگرداند. برای شمارش همیشه نسخه‌ی کش‌نشده خوانده شود (`?v=<timestamp>`).
 - **مبنای اولویت:** `themes/lax-theme-child/inc/content-roadmap-data.php` (فاز هر مقاله) + `docs/content/CONTENT-MAP.md` (اول مسیر بیمار، بعد جراحی‌های خاص)
 - **مبنای وضعیت موجود:** نقشه‌ی سایت زنده (`wp-sitemap-posts-*.xml`) که در همین تاریخ بررسی شد — نه تخمین و نه سند قدیمی.
 
 ---
 
-## ۱. وضعیت واقعی سایت (بررسی‌شده از نقشه‌ی سایت)
+## ۱. وضعیت واقعی سایت (بررسی‌شده از نقشه‌ی سایتِ کش‌نشده)
 
 | CPT | تعداد زنده | نامک‌ها |
 |---|---:|---|
-| `patient_guide` | ۲۳ | `glossary-surgical-terms`، `what-is-operating-room`، `surgical-care-team`، `patient-journey`، `operating-room-moment-by-moment`، `general-anesthesia`، `preoperative-fasting`، `pacu-recovery`، `fear-of-anesthesia-awareness`، `informed-consent-anesthesia-consult`، `general-vs-spinal-anesthesia`، `preoperative-tests`، `what-not-to-eat-before-surgery`، `post-surgery-pain`، `suture-removal`، `surgical-site-infection`، `post-surgery-nutrition`، `early-walking-after-surgery`، `companion-role-admission-day`، `medications-before-surgery`، `mental-preparation-before-surgery`، `anesthesia-side-effects`، `warning-signs-after-surgery` |
+| `patient_guide` | ۲۴ | `glossary-surgical-terms`، `what-is-operating-room`، `surgical-care-team`، `patient-journey`، `operating-room-moment-by-moment`، `general-anesthesia`، `preoperative-fasting`، `pacu-recovery`، `fear-of-anesthesia-awareness`، `informed-consent-anesthesia-consult`، `general-vs-spinal-anesthesia`، `preoperative-tests`، `what-not-to-eat-before-surgery`، `post-surgery-pain`، `suture-removal`، `surgical-site-infection`، `post-surgery-nutrition`، `early-walking-after-surgery`، `companion-role-admission-day`، `medications-before-surgery`، `mental-preparation-before-surgery`، `anesthesia-consultation`، `anesthesia-side-effects`، `warning-signs-after-surgery` |
 | `or_environment` | ۱ | `surgical-team-roles` |
-| `surgery` | ۴ | `appendectomy-preparation`، `appendectomy-recovery`، `cesarean-overview`، `cesarean-preparation` |
+| `surgery` | ۶ | `appendectomy-preparation`، `appendectomy-recovery`، `cesarean-overview`، `cesarean-preparation`، `cesarean-recovery`، `hernia-overview` |
 | `student_content` | ۰ | — |
 | `glossary` | ۰ | CPT بدون ردیف |
 
-**جمع: ۲۸ مقاله‌ی زنده از ۱۸۴ مقاله‌ی هدف پایه → ۱۵۶ مقاله باقی مانده (۱۵٪ پیشرفت).**
+**جمع: ۳۱ مقاله‌ی زنده از ۱۸۴ مقاله‌ی هدف پایه → ۱۵۳ مقاله باقی مانده (۱۶٫۸٪ پیشرفت).**
 
-> ⚠️ **تصحیح اسناد:** `NEXT-ARTICLES-PLAN.md` می‌گوید «۵ مقاله زنده» و `content/live-mirror/governing/00-مانيفست-آینه.md` می‌گوید «۱۵ مقاله منتشرشده». هیچ‌کدام امروز درست نیست؛ عدد درست **۲۸** است. مانیفست آینه هم فقط ۵ مقاله را در خود دارد، در حالی که ۲۳ مقاله‌ی `patient_guide` زنده است. پیشنهاد: پس از این دسته، آینه‌ی متنی ۱۰ مقاله‌ی تازه و ۵ مقاله‌ی زنده‌ی بدون آینه تکمیل شود.
+> ⚠️ **تصحیح اسناد:** `NEXT-ARTICLES-PLAN.md` می‌گوید «۵ مقاله زنده» و مانیفست آینه می‌گفت «۱۵ مقاله منتشرشده». هیچ‌کدام امروز درست نیست؛ عدد درست **۳۱** است. مانیفست آینه هم فقط ۵ مقاله را در خود دارد، در حالی که ۲۴ مقاله‌ی `patient_guide` زنده است. پیشنهاد: آینه‌ی متنی ۲۶ مقاله‌ی زنده‌ی بدون آینه تکمیل شود (`content/live-mirror/README.md`).
 
-### شکاف‌های فاز ۱ (فقط ۶ مقاله)
+### شکاف‌های فاز ۱ (فقط ۳ مقاله)
 
 | دسته | باقی‌مانده‌ی فاز ۱ |
 |---|---|
-| قبل از عمل | `anesthesia-consultation` **(هم‌پوشان — پایین را ببینید)** |
-| جراحی‌ها، گروه ۱ | `appendectomy-overview`، `cesarean-recovery`، `hernia-overview`، `hernia-preparation`، `hernia-recovery` |
+| قبل از عمل | — (منتشر شد) |
+| جراحی‌ها، گروه ۱ | `appendectomy-overview`، `hernia-preparation`، `hernia-recovery` — **سه بسته‌ی آماده دارند و منتظر انتشارند** |
 
-یعنی فاز ۱ عملاً تمام شده است و از این به بعد ترتیب، فاز ۲ و تکمیل خوشه‌های نیمه‌کاره است.
+یعنی فاز ۱ با انتشار همان سه بسته‌ی آماده تمام می‌شود؛ بعد از آن ترتیب، فاز ۲ و تکمیل خوشه‌های نیمه‌کاره است.
 
 ---
 
@@ -42,7 +43,7 @@
 
 ### یک هشدار هم‌پوشانی
 
-`anesthesia-consultation` («متخصص بیهوشی دقیقاً چه چیزهایی را بررسی می‌کند؟») با مقاله‌ی زنده‌ی `informed-consent-anesthesia-consult` هم‌تاکسونومی و تقریباً هم‌نیت است. اگر هر دو منتشر شوند، روی هم اثر منفی می‌گذارند. پیشنهاد: این ردیف از نقشه‌راه حذف یا به «بخش پرسش‌های متداول» همان مقاله‌ی زنده تبدیل شود. تا تصمیم شما، از صف خارج می‌ماند و جایش را مقاله‌ی دیگری می‌گیرد.
+`anesthesia-consultation` («مشاوره‌ی بیهوشی پیش از عمل: چه مواردی بررسی می‌شود؟») با مقاله‌ی زنده‌ی `informed-consent-anesthesia-consult` هم‌تاکسونومی و تقریباً هم‌نیت بود و من از صف خارجش کرده بودم. **این مقاله در ۱۴۰۵/۰۸/۰۳ روی سایت منتشر شد** (نه از بسته‌های من). تصمیم با شماست: یا عنوان/محتوا نسبت به مقاله‌ی رضایت آگاهانه متمایزتر شود، یا یکی از دو صفحه با ۳۰۱ به دیگری هدایت شود. تا آن زمان، جدول اولویت هیچ ردیف تازه‌ای در این نیت جستجو نمی‌سازد.
 
 ---
 
@@ -51,8 +52,8 @@
 | # | عنوان | نامک | CPT | بخش / تاکسونومی | فاز | نیت جستجو | ~کلمه |
 |---:|---|---|---|---|---:|---|---:|
 | ۱ | آپاندکتومی (عمل آپاندیس) چیست و چه مراحلی دارد؟ | `appendectomy-overview` | `surgery` | `surgery_stage` → `surgery-overview` · `surgery_specialty` → `appendectomy` | ۱ | «عمل آپاندیس چگونه است» | ۱۳۰۰ |
-| ۲ | بعد از سزارین چه مراقبت‌هایی لازم است؟ | `cesarean-recovery` | `surgery` | `after-surgery` · `cesarean` | ۱ | «مراقبت بعد از سزارین» | ۱۳۰۰ |
-| ۳ | جراحی فتق (هرنی) چیست و چه مراحلی دارد؟ | `hernia-overview` | `surgery` | `surgery-overview` · `hernia-repair` | ۱ | «عمل فتق چیست» | ۱۳۰۰ |
+| ۲ | بعد از سزارین چه مراقبت‌هایی لازم است؟ | `cesarean-recovery` | `surgery` | `after-surgery` · `cesarean` | ۱ | «مراقبت بعد از سزارین» | ۱۳۰۰ · ✅ منتشرشده |
+| ۳ | جراحی فتق (هرنی) چیست و چه مراحلی دارد؟ | `hernia-overview` | `surgery` | `surgery-overview` · `hernia-repair` | ۱ | «عمل فتق چیست» | ۱۳۰۰ · ✅ منتشرشده |
 | ۴ | قبل از جراحی فتق چه آمادگی‌هایی لازم است؟ | `hernia-preparation` | `surgery` | `before-surgery` · `hernia-repair` | ۱ | «آمادگی قبل از عمل فتق» | ۱۳۰۰ |
 | ۵ | بعد از جراحی فتق چه مراقبت‌هایی لازم است؟ | `hernia-recovery` | `surgery` | `after-surgery` · `hernia-repair` | ۱ | «مراقبت بعد از عمل فتق» | ۱۳۰۰ |
 | ۶ | اینتوباسیون (لوله‌گذاری تنفسی) چیست و چرا انجام می‌شود؟ | `intubation-explained` | `patient_guide` | `guide_stage` → `anesthesia-types` | ۲ | «لوله تنفسی در بیهوشی» | ۱۳۰۰ |
@@ -61,9 +62,9 @@
 | ۹ | ترومبوز ورید عمقی و آمبولی ریه بعد از جراحی | `dvt-pulmonary-embolism-prevention` | `patient_guide` | `guide_stage` → `warning-signs` | ۲ | «لخته خون بعد از عمل» | ۱۳۰۰ |
 | ۱۰ | چک‌لیست ترخیص: هنگام خروج از بیمارستان چه سؤال‌هایی بپرسیم؟ | `discharge-checklist` | `patient_guide` | `guide_stage` → `discharge` | ۲ | «ترخیص از بیمارستان» | ۱۳۰۰ |
 
-**چرا ۱ و ۲ اول آمدند؟** `appendectomy` دو مقاله از سه مقاله‌اش زنده است و `cesarean` هم دو تا؛ ولی هر دو هاب («چیست و چه مراحلی دارد؟» / «بعد از سزارین چه مراقبتی؟») را کم دارند. بدون هاب، آن چهار مقاله‌ی زنده به ستون مادر وصل نیستند. این دو مقاله، خوشه را کامل می‌کنند.
+**چرا ۱ و ۲ اول آمدند؟** `appendectomy` دو مقاله از سه مقاله‌اش زنده بود و `cesarean` هم دو تا؛ ولی هر دو هاب («چیست و چه مراحلی دارد؟» / «بعد از سزارین چه مراقبتی؟») را کم داشتند. بدون هاب، آن چهار مقاله‌ی زنده به ستون مادر وصل نبودند. **هاب سزارین منتشر شد؛ هاب آپاندکتومی هنوز نه.**
 
-**چرا ۳ تا ۵؟** `hernia-repair` تنها خوشه‌ی کامل‌نشده‌ی فاز ۱ است. فتق اینگوینال یکی از پرجستجوترین عمل‌های جراحی عمومی است و سه‌گانه‌اش (هاب + قبل + بعد) با هم یک خوشه‌ی کامل می‌سازد.
+**چرا ۳ تا ۵؟** `hernia-repair` تنها خوشه‌ی کامل‌نشده‌ی فاز ۱ است. فتق اینگوینال یکی از پرجستجوترین عمل‌های جراحی عمومی است. **هاب فتق منتشر شد؛ «قبل» و «بعد» هنوز در انتظارند و همین دو، فاز ۱ را می‌بندند.**
 
 **چرا ۶ تا ۱۰؟** فاز ۲ به ترتیب بخش‌های نقشه‌راه: دو مقاله‌ی مانده‌ی بیهوشی، سپس سه مقاله‌ی «بعد از عمل» که به خوشه‌ی قوی و زنده‌ی بعد از عمل (درد، بخیه، عفونت، تغذیه، راه رفتن، علائم خطر) وصل می‌شوند.
 
@@ -112,8 +113,8 @@ featured.webp     ۱۲۰۰×۶۷۵، WebP، زیر ۱۸۰ کیلوبایت
 | # | نامک | بسته | ایمپورت | بازبینی پزشکی | انتشار |
 |---:|---|---|---|---|---|
 | ۱ | `appendectomy-overview` | ✅ `draft` | ⬜ | ⬜ | ⬜ |
-| ۲ | `cesarean-recovery` | ✅ `draft` | ⬜ | ⬜ | ⬜ |
-| ۳ | `hernia-overview` | ✅ `draft` | ⬜ | ⬜ | ⬜ |
+| ۲ | `cesarean-recovery` | ✅ `draft` | ✅ | ✅ | ✅ منتشرشده (۱۴۰۵/۰۸/۰۳) |
+| ۳ | `hernia-overview` | ✅ `draft` | ✅ | ✅ | ✅ منتشرشده (۱۴۰۵/۰۸/۰۳) |
 | ۴ | `hernia-preparation` | ✅ `draft` | ⬜ | ⬜ | ⬜ |
 | ۵ | `hernia-recovery` | ✅ `draft` | ⬜ | ⬜ | ⬜ |
 | ۶ | `intubation-explained` | ✅ `draft` | ⬜ | ⬜ | ⬜ |
@@ -131,4 +132,4 @@ featured.webp     ۱۲۰۰×۶۷۵، WebP، زیر ۱۸۰ کیلوبایت
 3. تغییر وضعیت به «منتشرشده» و LiteSpeed → **Purge All**.
 4. به‌روزرسانی مانیفست آینه + کپی سه فایل در `content/live-mirror/articles/<slug>/`.
 5. ثبت نشانی‌های تازه در فهرست لینک داخلی همان مانیفست تا دسته‌ی بعدی بتواند به آن‌ها لینک بدهد.
-6. علامت زدن ردیف همان مقاله در جدول بخش ۶ و به‌روزرسانی عدد پیشرفت در بخش ۱ (۲۸ → ۲۹ و …).
+6. علامت زدن ردیف همان مقاله در جدول بخش ۶ و به‌روزرسانی عدد پیشرفت در بخش ۱ (۳۱ → ۳۲ و …).
