@@ -268,12 +268,25 @@ function orsite_img_swap_page() {
 
 		if ( ! wp_verify_nonce( $nonce, 'orsite_gh_admin' ) ) {
 			$notice = __( 'نشست منقضی شده است؛ صفحه را دوباره باز کنید.', 'lax-theme-child' );
-		} elseif ( empty( $_FILES['orsite_img_zip']['tmp_name'] ) ) {
-			$notice = __( 'ابتدا فایل ZIP تصاویر را انتخاب کنید.', 'lax-theme-child' );
+		} elseif ( empty( $_FILES['orsite_img_zip']['tmp_name'] ) || ! empty( $_FILES['orsite_img_zip']['error'] ) ) {
+			$err = isset( $_FILES['orsite_img_zip']['error'] ) ? (int) $_FILES['orsite_img_zip']['error'] : 0;
+			if ( UPLOAD_ERR_INI_SIZE === $err || UPLOAD_ERR_FORM_SIZE === $err ) {
+				$notice = sprintf(
+					/* translators: %s: server upload limit */
+					__( 'فایل از سقف آپلود این هاست بزرگ‌تر است (حداکثر %s). از فایل‌های تقسیم‌شده استفاده کنید یا از هاست بخواهید سقف را بالا ببرد.', 'lax-theme-child' ),
+					esc_html( (string) ini_get( 'upload_max_filesize' ) )
+				);
+			} else {
+				$notice = __( 'ابتدا فایل ZIP تصاویر را انتخاب کنید.', 'lax-theme-child' );
+			}
 		} else {
-			$dry     = ! empty( $_POST['orsite_img_dry'] );
-			$checked = wp_check_filetype( sanitize_file_name( wp_unslash( $_FILES['orsite_img_zip']['name'] ) ) );
-			if ( 'zip' !== strtolower( (string) pathinfo( $checked['ext'], PATHINFO_EXTENSION ) ) && 'zip' !== $checked['ext'] ) {
+			$dry = ! empty( $_POST['orsite_img_dry'] );
+
+			// Check the real file name: wp_check_filetype() answers with the
+			// *allowed* mime list, and .zip is not in it on a stock install, so
+			// it would have rejected a perfectly good archive.
+			$orig_name = isset( $_FILES['orsite_img_zip']['name'] ) ? (string) wp_unslash( $_FILES['orsite_img_zip']['name'] ) : '';
+			if ( 'zip' !== strtolower( (string) pathinfo( $orig_name, PATHINFO_EXTENSION ) ) ) {
 				$notice = __( 'فقط فایل ZIP پذیرفته می‌شود.', 'lax-theme-child' );
 			} else {
 				$moved = wp_handle_upload(
