@@ -67,8 +67,23 @@ AI_TELLS = [
     "بسیار مهم است که", "نکته حائز اهمیت", "همه چیز درباره", "راهنمای جامع و کامل",
     "همانطور که می‌دانید", "همان‌طور که می‌دانید", "در این مقاله سعی کرده‌ایم",
     "امیدواریم این مقاله", "با ما همراه باشید", "شگفت‌زده خواهید شد", "رازهایی که",
-    "کلید موفقیت", "سفری هیجان‌انگیز",
+    "کلید موفقیت", "سفری هیجان‌انگیز", "این منابع چارچوب آموزشی", "دسترسی به آن‌ها در",
+    "بررسی شده است", "در این بخش خواهیم", "به شما کمک می‌کند تا", "لازم به تأکید است",
 ]
+
+# Boilerplate that is legally required and therefore exempt from the
+# duplicate-sentence check below (it is meant to read the same everywhere).
+ALLOWED_BOILERPLATE = (
+    "سلب مسئولیت پزشکی",
+    "این مقاله صرفاً جنبه‌ی آموزش و اطلاع‌رسانی دارد",
+    "دستور پزشک و پروتکل مرکز درمانی شما بر هر متن عمومی مقدم است",
+)
+
+# A sentence that repeats across many packages reads machine-made and turns
+# the whole batch into near-duplicate content. This is the check that would
+# have caught the "دسترسی … بررسی شده است" line that shipped in every article.
+DUP_MIN_PACKAGES = 6
+DUP_MIN_CHARS = 45
 # --- YMYL guard rails: numbers we never publish -----------------------------
 FORBIDDEN = [
     (r"\d+\s*(?:میلی‌گرم|میلی گرم|mg\b)", "دوز دارو"),
@@ -212,13 +227,42 @@ def lint(pkg: Path) -> tuple[list[str], list[str]]:
     return errs, warns
 
 
+def sentences_of(pkg: Path) -> set[str]:
+    """Normalised sentences of one package, for boilerplate detection."""
+    f = pkg / "content.html"
+    if not f.exists():
+        return set()
+    txt = re.sub(r"<[^>]+>", " ", f.read_text(encoding="utf-8"))
+    txt = re.sub(r"\s+", " ", txt)
+    out = set()
+    for sent in re.split(r"(?<=[.!؟])\s+", txt):
+        sent = sent.strip()
+        if len(sent) >= DUP_MIN_CHARS and not any(a in sent for a in ALLOWED_BOILERPLATE):
+            out.add(sent)
+    return out
+
+
+def duplicated_sentences(targets: list[Path]) -> dict[Path, list[str]]:
+    """Map each package to the sentences it shares with too many others."""
+    per_pkg = {p: sentences_of(p) for p in targets if p.is_dir()}
+    counts: dict[str, int] = {}
+    for sents in per_pkg.values():
+        for sent in sents:
+            counts[sent] = counts.get(sent, 0) + 1
+    shared = {s for s, n in counts.items() if n >= DUP_MIN_PACKAGES}
+    return {p: sorted(sents & shared) for p, sents in per_pkg.items() if sents & shared}
+
+
 def main() -> int:
     targets = [Path(p) for p in sys.argv[1:]] or sorted(Path("content/drafts").iterdir())
+    dupes = duplicated_sentences(targets)
     failed = 0
     for pkg in targets:
         if not pkg.is_dir():
             continue
         errs, warns = lint(pkg)
+        for sent in dupes.get(pkg, []):
+            errs.append(f"boilerplate shared with {DUP_MIN_PACKAGES}+ packages: «{sent[:70]}…»")
         status = "FAIL" if errs else ("warn" if warns else "ok  ")
         print(f"[{status}] {pkg.name}")
         for e in errs:

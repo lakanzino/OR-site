@@ -6,7 +6,7 @@ centre of the picture. Instead of printing anything on the photo, the script
 cuts the badge band away, crops the frame to 16:9 again (which also makes the
 picture closer-up) and adds a small brightness/contrast lift.
 
-No text is ever drawn on the image: the «HanyarJarahi» mark is applied later by
+No text is ever drawn on the image: the «HamyarJarahi» mark is applied later by
 the child theme (CSS), so it can be changed or removed at any time.
 """
 import argparse

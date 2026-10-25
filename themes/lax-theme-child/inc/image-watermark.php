@@ -1,9 +1,9 @@
 <?php
 /**
- * Automatic image watermark (HanyarJarahi).
+ * Automatic image watermark (HamyarJarahi).
  *
  * Every featured image rendered through the standard WordPress thumbnail
- * functions gets a small, letter-spaced "HanyarJarahi" mark in the lower-left
+ * functions gets a small, letter-spaced "HamyarJarahi" mark in the lower-left
  * area. Because the mark is added by code, it covers existing uploads and any
  * future image automatically — no image files are altered and no Persian text
  * is printed on the photos.
@@ -44,7 +44,7 @@ function lax_theme_child_watermark_thumbnail( $html, $post_id = 0, $thumbnail_id
 	}
 
 	return '<span class="orsite-thumb">' . $html
-		. '<span class="orsite-wm" aria-hidden="true" dir="ltr"><b>H</b>anyar<i>J</i>arahi</span>'
+		. '<span class="orsite-wm" aria-hidden="true" dir="ltr"><b>H</b>amyar<i>J</i>arahi</span>'
 		. '</span>';
 }
 add_filter( 'post_thumbnail_html', 'lax_theme_child_watermark_thumbnail', 10, 5 );

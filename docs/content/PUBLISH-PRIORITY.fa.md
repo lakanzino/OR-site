@@ -138,7 +138,7 @@ featured.webp     ۱۲۰۰×۶۷۵، WebP، زیر ۱۸۰ کیلوبایت
 
 ## ۸. دستهٔ سوم — ۴۴ بستهٔ ۱۴۰۵/۰۸/۰۳ (همه آماده)
 
-- **تصویر (سیاست تازه):** هیچ نوشته‌ی فارسی روی تصویر نیست؛ تصاویر روشن‌تر، ساده‌تر و کلوزآپ‌تر شدند و تنها نشان لاتین «HanyarJarahi» با کد قالب `0.12.6` روی آن‌ها می‌نشیند. پنج بسته‌ای که پیش‌تر تصویر تولیدی داشتند (`anesthesia-and-memory`، `intubation-explained`، `home-wound-care`، `dvt-pulmonary-embolism-prevention`، `discharge-checklist`) تصویر خودِ شما را گرفتند. نقشه‌ی کامل در `docs/content/IMAGE-INVENTORY.fa.md`.
+- **تصویر (سیاست تازه):** هیچ نوشته‌ی فارسی روی تصویر نیست؛ تصاویر روشن‌تر، ساده‌تر و کلوزآپ‌تر شدند و تنها نشان لاتین «HamyarJarahi» با کد قالب `0.12.6` روی آن‌ها می‌نشیند. پنج بسته‌ای که پیش‌تر تصویر تولیدی داشتند (`anesthesia-and-memory`، `intubation-explained`، `home-wound-care`، `dvt-pulmonary-embolism-prevention`، `discharge-checklist`) تصویر خودِ شما را گرفتند. نقشه‌ی کامل در `docs/content/IMAGE-INVENTORY.fa.md`.
 - **بسته‌ی تصویر:** `releases/featured-images-clean.zip` شامل ۸۴ تصویر بدون متن برای جایگزینی تصویر مقاله‌های زنده (`T-15`).
 - **گیت:** هر ۴۴ بسته از `tools/content-lint.py` عبور کرد و ZIP شد؛ هیچ بسته‌ای بدون تصویر نماند.
 - **سئوی دسته:** پرسش‌های متداول صفحه با اسکیمای `article.json` یکی شده است، همه‌ی لینک‌های بیرونی منابع لینک واقعی دارند، و لینک داخلی به صفحه‌ای که قرار است ۳۰۱ شود زده نشده است.

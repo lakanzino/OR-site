@@ -6,7 +6,7 @@
 - **همه در یک فایل:** `releases/article-packages/BATCH-03-ALL-PACKAGES.zip` (۴۴ بسته)
 - **گیت کیفیت:** `python3 tools/content-lint.py content/drafts/*/` → ۴۴ بسته، صفر ایراد
 
-**تصاویر همه بدون متن فارسی‌اند**؛ نشان «HanyarJarahi» از نسخهٔ `0.12.6` به‌صورت لایه‌ی CSS روی تصویر می‌آید.
+**تصاویر همه بدون متن فارسی‌اند**؛ نشان «HamyarJarahi» از نسخهٔ `0.12.6` به‌صورت لایه‌ی CSS روی تصویر می‌آید.
 
 هر بسته سه فایل دارد: `article.json` (سئو، پرسش‌های متداول، تاکسونومی)، `content.html` و `featured.webp` ۱۲۰۰×۶۷۵.
 
