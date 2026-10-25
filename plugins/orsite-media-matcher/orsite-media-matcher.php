@@ -3,7 +3,7 @@
  * Plugin Name:       ORSite — اتصال تصاویر رسانه به مقاله‌ها
  * Plugin URI:        https://github.com/lakanzino/OR-site
  * Description:       تصاویر آپلودشده در کتابخانه‌ی رسانه را بر اساس نام فایل به مقاله‌ی هم‌نام وصل می‌کند و به‌عنوان «تصویر شاخص» تنظیم می‌کند؛ همراه با گزارش کامل و حالت پیش‌نمایش.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            OR Site
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'OMM_VERSION', '1.0.0' );
+define( 'OMM_VERSION', '1.1.0' );
 define( 'OMM_SLUG', 'orsite-media-matcher' );
 define( 'OMM_CAP', 'manage_options' );
 
@@ -43,8 +43,10 @@ function omm_post_types() {
 
 	unset( $types['attachment'] );
 
+	// `page` is deliberately excluded: the About/Contact/FAQ/Privacy/Terms
+	// pages are site chrome, and listing them as «articles without an image»
+	// only produced noise in the report.
 	$types[] = 'post';
-	$types[] = 'page';
 
 	return array_values( array_unique( $types ) );
 }
@@ -63,13 +65,38 @@ function omm_norm( $name ) {
 	$name = str_replace( array( '_', ' ', '%20' ), '-', $name );
 	$name = preg_replace( '/[^a-z0-9-]+/', '-', $name );
 	$name = preg_replace( '/-+/', '-', $name );
-	$name = trim( $name, '-' );
 
-	// WordPress appends -1, -2 … when the same file name is uploaded twice.
-	$name = preg_replace( '/-(\d+)$/', '', $name );
-	$name = preg_replace( '/-(scaled|rotated|copy|e|edited)$/', '', $name );
+	// Repeating suffixes, removing one layer per pass so «-featured-1» and
+	// «-1-featured» both collapse to the real slug.
+	$suffixes = 'featured|image|img|thumb|thumbnail|photo|pic|scaled|rotated|copy|edited|cropped|final|web';
+
+	for ( $pass = 0; $pass < 4; $pass++ ) {
+		$before = $name;
+		$name   = preg_replace( '/-\d+$/', '', $name );            // WordPress duplicate: -1, -2
+		$name   = preg_replace( '/-(' . $suffixes . ')$/', '', $name );
+		$name   = preg_replace( '/^(cropped|scaled|copy)-/', '', $name );
+		if ( $name === $before ) {
+			break;
+		}
+	}
 
 	return trim( $name, '-' );
+}
+
+/**
+ * Names that belong to the site chrome, not to an article.
+ *
+ * @param string $name Raw file name.
+ * @return bool
+ */
+function omm_is_ignorable( $name ) {
+	$name = strtolower( (string) $name );
+	foreach ( array( 'logo', 'favicon', 'cropped-', 'sprite', 'placeholder' ) as $needle ) {
+		if ( false !== strpos( $name, $needle ) ) {
+			return true;
+		}
+	}
+	return false;
 }
 
 /**
@@ -136,6 +163,9 @@ function omm_image_index() {
 	foreach ( $ids as $id ) {
 		$file = get_attached_file( $id );
 		$base = $file ? basename( $file ) : get_the_title( $id );
+		if ( omm_is_ignorable( $base ) ) {
+			continue;
+		}
 		$key  = omm_norm( pathinfo( (string) $base, PATHINFO_FILENAME ) );
 		if ( '' === $key ) {
 			continue;
@@ -521,6 +551,41 @@ function omm_run_pack( $replace = true ) {
 }
 
 /**
+ * Site-wide picture status: how many articles have a featured image.
+ *
+ * @return array{total:int,with:int,without:array<int,WP_Post>}
+ */
+function omm_status() {
+	$posts = get_posts(
+		array(
+			'post_type'              => omm_post_types(),
+			'post_status'            => array( 'publish', 'draft', 'pending', 'future', 'private' ),
+			'posts_per_page'         => -1,
+			'no_found_rows'          => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+		)
+	);
+
+	$with    = 0;
+	$without = array();
+
+	foreach ( $posts as $post ) {
+		if ( get_post_thumbnail_id( $post->ID ) ) {
+			$with++;
+		} else {
+			$without[] = $post;
+		}
+	}
+
+	return array(
+		'total'   => count( $posts ),
+		'with'    => $with,
+		'without' => $without,
+	);
+}
+
+/**
  * Register the screen under the Tools menu.
  */
 function omm_admin_menu() {
@@ -639,6 +704,34 @@ function omm_render_page() {
 		<?php if ( $notice ) : ?>
 			<div class="notice notice-info is-dismissible"><p><?php echo esc_html( $notice ); ?></p></div>
 		<?php endif; ?>
+
+		<?php
+		$status = omm_status();
+		$done   = ( 0 === count( $status['without'] ) );
+		?>
+		<div style="max-width:56em;margin:16px 0;padding:14px 18px;border-radius:10px;border:1px solid <?php echo $done ? '#00a32a' : '#dba617'; ?>;background:<?php echo $done ? '#f0fbf1' : '#fdf9e8'; ?>">
+			<p style="margin:0;font-size:15px">
+				<?php
+				printf(
+					/* translators: 1: with image, 2: total */
+					esc_html__( 'وضعیت سایت: %1$d از %2$d مقاله تصویر شاخص دارند.', 'orsite-media-matcher' ),
+					(int) $status['with'],
+					(int) $status['total']
+				);
+				?>
+				<strong>
+					<?php echo $done
+						? esc_html__( 'کار تمام است ✓', 'orsite-media-matcher' )
+						: esc_html( sprintf( /* translators: %d */ __( '%d مقاله هنوز تصویر ندارد.', 'orsite-media-matcher' ), count( $status['without'] ) ) );
+					?>
+				</strong>
+			</p>
+			<?php if ( ! $done ) : ?>
+				<p style="margin:8px 0 0;color:#50575e">
+					<?php esc_html_e( 'برای پر کردن همه‌ی جای خالی‌ها، دکمه‌ی «تصاویر را از مخزن بگیر و کامل کن» را بزنید.', 'orsite-media-matcher' ); ?>
+				</p>
+			<?php endif; ?>
+		</div>
 
 		<form method="post" style="background:#fff;border:1px solid #dcdcde;border-radius:10px;padding:16px 18px;max-width:56em;margin:18px 0">
 			<?php wp_nonce_field( 'omm_run', 'omm_nonce' ); ?>
