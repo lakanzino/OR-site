@@ -14,10 +14,14 @@
  *     internal links, emergency notice, and quality score 0-100)
  *   - Multi-taxonomy support (including surgery_specialty + surgery_stage)
  *   - Import history log
+ *   - Inline media support (T-32): package-local <img src="assets/..."> files
+ *     are uploaded to the media library, de-duplicated by slug+path+SHA-256,
+ *     attached to the post and their src rewritten to the attachment URL while
+ *     <figure>/<figcaption> and alt attributes are preserved.
  *
  * @package Lax_Theme_Child
  * @since   0.8.0
- * @version 0.11.0
+ * @version 0.12.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -557,6 +561,7 @@ function hj_importer_audit_package( array $manifest, string $html, array $image_
 	$h3_count      = (int) preg_match_all( '/<h3\b[^>]*>/i', $html );
 	$table_count   = (int) preg_match_all( '/<table\b[^>]*>/i', $html );
 	$img_in_body   = (int) preg_match_all( '/<img\b[^>]*>/i', $html );
+	$local_img     = (int) preg_match_all( '/<img\b[^>]*\bsrc\s*=[\'"](?!https?:|data:|\/\/)[^\'"]+[\'"]/is', $html );
 	$internal_lnks = (int) preg_match_all( '/<a\b[^>]*href=["\'](\/[^"\']*|https?:\/\/(?:www\.)?hamyarjarahi\.ir[^"\']*)["\']/i', $html );
 	$external_lnks = max( 0, (int) preg_match_all( '/<a\b[^>]*href=["\']https?:\/\//i', $html ) - (int) preg_match_all( '/<a\b[^>]*href=["\']https?:\/\/(?:www\.)?hamyarjarahi\.ir/i', $html ) );
 	$has_115       = ( false !== strpos( $html, '۱۱۵' ) || false !== strpos( $html, '115' ) );
@@ -731,6 +736,13 @@ function hj_importer_audit_package( array $manifest, string $html, array $image_
 			$warnings[] = 'بخش «سلب مسئولیت پزشکی» در انتهای متن مقاله دیده نشد.';
 			$score     -= 3;
 		}
+
+		if ( $local_img > 0 ) {
+			$passed[] = sprintf(
+				'%s تصویر درون‌متنی (اینفوگرافی) با ارجاع محلی در بسته موجود است؛ هنگام ایمپورت به کتابخانه‌ی رسانه منتقل و src متن بازنویسی می‌شود.',
+				number_format_i18n( $local_img )
+			);
+		}
 	}
 
 	$score = max( 0, min( 100, $score ) );
@@ -747,6 +759,7 @@ function hj_importer_audit_package( array $manifest, string $html, array $image_
 			'h3_count'       => $h3_count,
 			'table_count'    => $table_count,
 			'body_images'    => $img_in_body,
+			'inline_images'  => $local_img,
 			'internal_links' => $internal_lnks,
 			'external_links' => $external_lnks,
 			'faq_count'      => count( $faqs ),
@@ -1081,6 +1094,243 @@ function hj_importer_import_image( $post_id, $dir, array $image, bool $force_rep
 }
 
 /**
+ * Normalize a package-relative image src (strip "./", query strings, slashes).
+ *
+ * @param string $src Raw src attribute value.
+ * @return string
+ */
+function hj_importer_normalize_local_src( string $src ): string {
+	$src = trim( $src );
+	$src = str_replace( '\\', '/', $src );
+	$src = (string) preg_split( '/[?#]/', $src )[0];
+	$src = (string) preg_replace( '#^(?:\./)+#', '', $src );
+	return ltrim( $src, '/' );
+}
+
+/**
+ * Whether an HTML body still contains <img> tags with local (relative) src
+ * values that have not been rewritten to media library URLs yet.
+ *
+ * @param string $html Post HTML.
+ * @return bool
+ */
+function hj_importer_html_has_local_images( string $html ): bool {
+	if ( false === stripos( $html, '<img' ) ) {
+		return false;
+	}
+	return (bool) preg_match( '/<img\b[^>]*\bsrc\s*=\s*([\'"])(?!https?:|data:|\/\/)(.*?)\1/is', $html );
+}
+
+/**
+ * Scan package HTML for <img> tags pointing at files shipped inside the
+ * package (e.g. assets/diagram.webp). Remote/data URIs are ignored.
+ *
+ * Zip-Slip style protection: every resolved path must stay inside $dir.
+ *
+ * @param string $html Package content HTML (post-wp_kses_post is fine).
+ * @param string $dir  Extracted package working directory.
+ * @return array{local:array<int,array<string,string|bool>>,missing:string[],count:int}
+ */
+function hj_importer_scan_inline_images( string $html, string $dir ): array {
+	$local   = array();
+	$missing = array();
+	$seen    = array();
+	if ( false === stripos( $html, '<img' ) || ! preg_match_all( '/<img\b[^>]*>/is', $html, $tags ) ) {
+		return array(
+			'local'   => $local,
+			'missing' => $missing,
+			'count'   => 0,
+		);
+	}
+	$real_dir = realpath( $dir );
+	foreach ( $tags[0] as $tag ) {
+		if ( ! preg_match( '/\bsrc\s*=\s*([\'"])(.*?)\1/is', $tag, $m ) ) {
+			continue;
+		}
+		$src = trim( $m[2] );
+		if ( '' === $src || preg_match( '/^(?:https?:|data:|\/\/)/i', $src ) ) {
+			continue;
+		}
+		$rel = hj_importer_normalize_local_src( $src );
+		if ( '' === $rel || false !== strpos( $rel, '..' ) ) {
+			$missing[] = $src;
+			continue;
+		}
+		$ext = strtolower( pathinfo( $rel, PATHINFO_EXTENSION ) );
+		if ( ! in_array( $ext, hj_importer_allowed_image_ext(), true ) ) {
+			$missing[] = $src;
+			continue;
+		}
+		$abs      = $real_dir . DIRECTORY_SEPARATOR . str_replace( '/', DIRECTORY_SEPARATOR, $rel );
+		$real_abs = realpath( $abs );
+		if ( false === $real_abs
+			|| 0 !== strpos( $real_abs, $real_dir . DIRECTORY_SEPARATOR )
+			|| ! is_file( $real_abs ) ) {
+			$missing[] = $src;
+			continue;
+		}
+		$alt = '';
+		if ( preg_match( '/\balt\s*=\s*([\'"])(.*?)\1/is', $tag, $am ) ) {
+			$alt = trim( wp_strip_all_tags( $am[2] ) );
+		}
+		$local[] = array(
+			'src'       => $src,
+			'rel'       => $rel,
+			'path'      => $real_abs,
+			'alt'       => $alt,
+			'duplicate' => isset( $seen[ $rel ] ),
+		);
+		$seen[ $rel ] = true;
+	}
+	return array(
+		'local'   => $local,
+		'missing' => array_values( array_unique( $missing ) ),
+		'count'   => count( $local ),
+	);
+}
+
+/**
+ * Upload package-local inline images to the media library, attach them to
+ * the post and rewrite the HTML src attributes to the real attachment URLs.
+ *
+ * Attachments are de-duplicated by (_hj_package_slug, _hj_package_image)
+ * meta plus SHA-256, so re-imports reuse media instead of creating orphans.
+ * <figure>/<figcaption>, alt, width/height and all other markup are kept.
+ *
+ * @param int    $post_id Post ID.
+ * @param string $dir     Extracted package working directory.
+ * @param string $html    Package content HTML.
+ * @param string $slug    Package slug (namespacing for media lookups).
+ * @return array{html:string,uploaded:int,reused:int,attachments:array<string,int>,missing:string[]}
+ */
+function hj_importer_import_inline_images( int $post_id, string $dir, string $html, string $slug ): array {
+	$scan   = hj_importer_scan_inline_images( $html, $dir );
+	$result = array(
+		'html'        => $html,
+		'uploaded'    => 0,
+		'reused'      => 0,
+		'attachments' => array(),
+		'missing'     => $scan['missing'],
+	);
+	if ( empty( $scan['local'] ) ) {
+		return $result;
+	}
+
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	$upload_dir = wp_upload_dir();
+	$url_map    = array();
+
+	foreach ( $scan['local'] as $item ) {
+		if ( isset( $url_map[ $item['rel'] ] ) ) {
+			continue; // Same file referenced by several <img> tags.
+		}
+		$src_path = (string) $item['path'];
+		$new_hash = (string) hash_file( 'sha256', $src_path );
+		$ext      = strtolower( pathinfo( $item['rel'], PATHINFO_EXTENSION ) );
+		$base     = sanitize_title( pathinfo( $item['rel'], PATHINFO_FILENAME ) );
+
+		// Reuse an attachment previously imported from the same package path.
+		$existing = get_posts(
+			array(
+				'post_type'      => 'attachment',
+				'post_status'    => 'inherit',
+				'posts_per_page' => 1,
+				'no_found_rows'  => true,
+				'meta_query'     => array(
+					array(
+						'key'   => '_hj_package_slug',
+						'value' => $slug,
+					),
+					array(
+						'key'   => '_hj_package_image',
+						'value' => $item['rel'],
+					),
+				),
+			)
+		);
+		$att_id = 0;
+		if ( ! empty( $existing[0] ) ) {
+			$candidate = (int) $existing[0]->ID;
+			$old_hash  = (string) get_post_meta( $candidate, '_hj_image_sha256', true );
+			if ( '' === $old_hash ) {
+				$old_file = get_attached_file( $candidate );
+				if ( $old_file && is_file( $old_file ) ) {
+					$old_hash = (string) hash_file( 'sha256', $old_file );
+					update_post_meta( $candidate, '_hj_image_sha256', $old_hash );
+				}
+			}
+			if ( '' !== $old_hash && $old_hash === $new_hash ) {
+				$att_id = $candidate;
+				$result['reused']++;
+			}
+		}
+
+		if ( ! $att_id ) {
+			$bits      = file_get_contents( $src_path );
+			$preferred = sanitize_title( $slug ) . '-' . $base . '.' . $ext;
+			$unique    = wp_unique_filename( $upload_dir['path'], $preferred );
+			$upload    = wp_upload_bits( $unique, null, $bits );
+			if ( ! empty( $upload['error'] ) ) {
+				$result['missing'][] = $item['src'] . ' (' . $upload['error'] . ')';
+				continue;
+			}
+			$filetype = wp_check_filetype( $upload['file'], null );
+			$att_id   = wp_insert_attachment(
+				array(
+					'guid'           => $upload['url'],
+					'post_mime_type' => $filetype['type'],
+					'post_title'     => $slug . ' — ' . $base,
+					'post_content'   => '',
+					'post_status'    => 'inherit',
+					'post_parent'    => $post_id,
+				),
+				$upload['file'],
+				$post_id
+			);
+			if ( is_wp_error( $att_id ) || ! $att_id ) {
+				$result['missing'][] = $item['src'] . ' (attachment failed)';
+				continue;
+			}
+			$meta = wp_generate_attachment_metadata( $att_id, $upload['file'] );
+			wp_update_attachment_metadata( $att_id, $meta );
+			update_post_meta( $att_id, '_hj_package_slug', $slug );
+			update_post_meta( $att_id, '_hj_package_image', $item['rel'] );
+			update_post_meta( $att_id, '_hj_image_sha256', $new_hash );
+			$result['uploaded']++;
+		}
+
+		if ( '' !== $item['alt'] ) {
+			update_post_meta( $att_id, '_wp_attachment_image_alt', sanitize_text_field( (string) $item['alt'] ) );
+		}
+		wp_update_post(
+			array(
+				'ID'          => $att_id,
+				'post_parent' => $post_id,
+			)
+		);
+		$url_map[ $item['rel'] ]               = wp_get_attachment_url( $att_id );
+		$result['attachments'][ $item['rel'] ] = (int) $att_id;
+	}
+
+	if ( $url_map ) {
+		$result['html'] = (string) preg_replace_callback(
+			'/(<img\b[^>]*\bsrc\s*=\s*)([\'"])(.*?)\2/is',
+			static function ( $matches ) use ( $url_map ) {
+				$norm = hj_importer_normalize_local_src( $matches[3] );
+				if ( isset( $url_map[ $norm ] ) ) {
+					return $matches[1] . $matches[2] . $url_map[ $norm ] . $matches[2];
+				}
+				return $matches[0];
+			},
+			$html
+		);
+	}
+
+	return $result;
+}
+
+/**
  * Find any existing post matching slug across the target CPT (or across all allowed CPTs).
  *
  * @param string $slug      Sanitized slug.
@@ -1258,6 +1508,16 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 		$image_info = hj_importer_inspect_package_image( $dir, $manifest );
 		$audit      = hj_importer_audit_package( $manifest, $html, $image_info, $post_type, $tax_pairs );
 
+		// T-32: scan <img> tags referencing package-local files (e.g. assets/*.webp).
+		$inline_scan = hj_importer_scan_inline_images( $html, $dir );
+		if ( ! empty( $inline_scan['missing'] ) ) {
+			hj_importer_rmdir( $root_tmp );
+			return new WP_Error(
+				'missing_inline_image',
+				'محتوا به تصویر(های) درون‌متنی ارجاع می‌دهد اما فایل آن داخل بسته‌ی ZIP پیدا نشد: ' . implode( '، ', $inline_scan['missing'] )
+			);
+		}
+
 		// Look up existing post (duplicate check).
 		$existing      = hj_importer_find_existing_post( $slug, $post_type );
 		$is_duplicate  = ( $existing instanceof WP_Post );
@@ -1323,6 +1583,7 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 				'diffs'               => $diffs,
 				'audit'               => $audit,
 				'image_info'          => $image_info,
+				'inline_images'       => $inline_scan,
 				'tax_pairs'           => $tax_pairs,
 				'dates'               => isset( $manifest['dates'] ) && is_array( $manifest['dates'] ) ? $manifest['dates'] : array(),
 				'forced_draft_reason' => $forced_draft_reason,
@@ -1348,6 +1609,7 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 				'diffs'               => $diffs,
 				'audit'               => $audit,
 				'image_info'          => $image_info,
+				'inline_images'       => $inline_scan,
 				'tax_pairs'           => $tax_pairs,
 				'dates'               => isset( $manifest['dates'] ) && is_array( $manifest['dates'] ) ? $manifest['dates'] : array(),
 				'forced_draft_reason' => '',
@@ -1358,6 +1620,17 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 			);
 			hj_importer_record_history( $res );
 			return $res;
+		}
+
+		// T-32: byte-identical text can still carry broken local <img src="assets/...">
+		// refs that only the inline-media pass repairs — count that as a real change.
+		if ( $is_duplicate && empty( $diffs ) && ! empty( $inline_scan['local'] )
+			&& hj_importer_html_has_local_images( (string) $old_snapshot['content'] ) ) {
+			$diffs[] = array(
+				'field'  => 'تصاویر درون‌متنی (اینفوگرافی)',
+				'before' => 'تصاویر داخل متن هنوز در کتابخانه‌ی رسانه آپلود نشده‌اند و ارجاع محلی آن‌ها روی سایت شکسته است.',
+				'after'  => count( $inline_scan['local'] ) . ' تصویر درون‌متنی به کتابخانه‌ی رسانه منتقل و src متن به URL رسانه بازنویسی می‌شود.',
+			);
 		}
 
 		// DUPLICATE MODE 2 (smart_update) when ZERO changes exist: warn identical & skip redundant DB write!
@@ -1376,6 +1649,7 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 				'diffs'               => array(),
 				'audit'               => $audit,
 				'image_info'          => $image_info,
+				'inline_images'       => $inline_scan,
 				'tax_pairs'           => $tax_pairs,
 				'dates'               => isset( $manifest['dates'] ) && is_array( $manifest['dates'] ) ? $manifest['dates'] : array(),
 				'forced_draft_reason' => '',
@@ -1467,6 +1741,40 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 			}
 		}
 
+		// T-32: upload package-local inline images (assets/*) and rewrite body srcs.
+		$inline_status = 'بدون تصویر درون‌متنی';
+		$inline_result = array(
+			'uploaded'    => 0,
+			'reused'      => 0,
+			'attachments' => array(),
+			'missing'     => array(),
+		);
+		if ( ! empty( $inline_scan['local'] ) ) {
+			$inline_result = hj_importer_import_inline_images( $post_id, $dir, $html, $slug );
+			if ( $inline_result['html'] !== $html ) {
+				wp_update_post(
+					wp_slash(
+						array(
+							'ID'           => $post_id,
+							'post_content' => $inline_result['html'],
+						)
+					)
+				);
+				$html = $inline_result['html'];
+			}
+			$parts = array();
+			if ( $inline_result['uploaded'] > 0 ) {
+				$parts[] = number_format_i18n( $inline_result['uploaded'] ) . ' تصویر جدید آپلود شد';
+			}
+			if ( $inline_result['reused'] > 0 ) {
+				$parts[] = number_format_i18n( $inline_result['reused'] ) . ' تصویر موجود بازاستفاده شد';
+			}
+			$inline_status = $parts ? implode( '، ', $parts ) : 'بدون تغییر';
+			if ( ! empty( $inline_result['missing'] ) ) {
+				$inline_status .= '؛ خطا در: ' . implode( '، ', $inline_result['missing'] );
+			}
+		}
+
 		// Provenance metadata.
 		update_post_meta( $post_id, '_hj_import_source', sanitize_text_field( $source ) );
 		update_post_meta( $post_id, '_hj_import_package', $slug );
@@ -1503,6 +1811,9 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 			'diffs'               => $diffs,
 			'audit'               => $audit,
 			'image_info'          => $image_info,
+			'inline_images'       => $inline_scan,
+			'inline_image_status' => $inline_status,
+			'inline_attachments'  => $inline_result['attachments'],
 			'tax_pairs'           => $tax_pairs,
 			'dates'               => isset( $manifest['dates'] ) && is_array( $manifest['dates'] ) ? $manifest['dates'] : array(),
 			'forced_draft_reason' => $forced_draft_reason,
@@ -1867,6 +2178,30 @@ function hj_importer_render_result_card( $res ): void {
 			</div>
 		<?php endif; ?>
 
+		<?php if ( ! empty( $res['inline_images']['count'] ) ) : ?>
+			<div class="hj-imp-section">
+				<h4>🖼️ تصاویر درون‌متنی (اینفوگرافی‌های داخل متن — <?php echo esc_html( number_format_i18n( (int) $res['inline_images']['count'] ) ); ?> مورد)</h4>
+				<ul class="hj-imp-audit-list">
+					<?php foreach ( $res['inline_images']['local'] as $inline_item ) : ?>
+						<li class="hj-audit-item hj-audit-item--warn">
+							<code><?php echo esc_html( $inline_item['rel'] ); ?></code>
+							<?php if ( ! empty( $inline_item['alt'] ) ) : ?>
+								— alt: «<?php echo esc_html( hj_importer_utf8_preview( $inline_item['alt'], 70 ) ); ?>»
+							<?php endif; ?>
+						</li>
+					<?php endforeach; ?>
+					<?php if ( ! empty( $res['inline_images']['missing'] ) ) : ?>
+						<li class="hj-audit-item hj-audit-item--crit">❌ فایل(های) گمشده داخل بسته: <?php echo esc_html( implode( '، ', $res['inline_images']['missing'] ) ); ?></li>
+					<?php endif; ?>
+				</ul>
+				<?php if ( ! empty( $res['inline_image_status'] ) ) : ?>
+					<p style="margin:8px 0 0;font-size:12.5px"><strong>نتیجهٔ انتقال به کتابخانهٔ رسانه:</strong> <?php echo esc_html( $res['inline_image_status'] ); ?></p>
+				<?php elseif ( ! empty( $res['dry_run'] ) ) : ?>
+					<p style="margin:8px 0 0;font-size:12.5px">در حالت پیش‌نمایش هیچ فایلی آپلود نمی‌شود؛ هنگام ایمپورت واقعی، این تصاویر به کتابخانهٔ رسانه منتقل و src متن بازنویسی می‌شود.</p>
+				<?php endif; ?>
+			</div>
+		<?php endif; ?>
+
 		<?php if ( ! empty( $audit['critical'] ) || ! empty( $audit['warnings'] ) ) : ?>
 			<div class="hj-imp-section">
 				<h4>🔎 اعلام کمبودها و نکات بهبود تصویر و سئو</h4>
@@ -1893,8 +2228,9 @@ function hj_importer_render_result_card( $res ): void {
 					<ul>
 						<li><strong>شمار کلمات:</strong> <?php echo esc_html( number_format_i18n( $metrics['word_count'] ) ); ?> کلمه (~<?php echo esc_html( number_format_i18n( $metrics['read_minutes'] ) ); ?> دقیقه مطالعه)</li>
 						<li><strong>تیترها:</strong> <?php echo (int) $metrics['h2_count']; ?> زیرتیتر H2 · <?php echo (int) $metrics['h3_count']; ?> زیرتیتر H3</li>
-						<li><strong>جدول‌های HTML:</strong> <?php echo (int) $metrics['table_count']; ?> جدول</li>
-						<li><strong>لینک‌ها:</strong> <?php echo (int) $metrics['internal_links']; ?> لینک داخلی · <?php echo (int) $metrics['external_links']; ?> لینک خارجی</li>
+							<li><strong>جدول‌های HTML:</strong> <?php echo (int) $metrics['table_count']; ?> جدول</li>
+							<li><strong>تصاویر درون‌متنی:</strong> <?php echo (int) ( $metrics['inline_images'] ?? 0 ); ?> مورد (ارجاع محلی <code>assets/</code>)</li>
+							<li><strong>لینک‌ها:</strong> <?php echo (int) $metrics['internal_links']; ?> لینک داخلی · <?php echo (int) $metrics['external_links']; ?> لینک خارجی</li>
 						<li><strong>پرسش‌های متداول (FAQ):</strong> <?php echo (int) $metrics['faq_count']; ?> پرسش</li>
 						<li><strong>دسته‌بندی‌ها:</strong>
 							<?php

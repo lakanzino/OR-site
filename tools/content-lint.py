@@ -190,6 +190,34 @@ def lint(pkg: Path) -> tuple[list[str], list[str]]:
         if kb > 180:
             errs.append(f"featured image {kb} KB (max 180)")
 
+    # ---- inline infographics (T-32): alt, shipped file and Persian caption
+    figure_blocks = re.findall(r"<figure\b.*?</figure>", html, re.S | re.I)
+    inline_imgs = re.findall(r"<img\b[^>]*>", html, re.I)
+    for tag in inline_imgs:
+        alt_m = re.search(r"""alt\s*=\s*['"]([^'"]*)['"]""", tag, re.I)
+        if not alt_m or not alt_m.group(1).strip():
+            errs.append("inline <img> without non-empty alt text")
+        src_m = re.search(r"""src\s*=\s*['"]([^'"]+)['"]""", tag, re.I)
+        if src_m:
+            src = src_m.group(1)
+            if re.match(r"^(https?:|data:|//)", src, re.I):
+                warns.append(f"inline img uses non-local src (portability risk): {src}")
+            else:
+                rel = re.sub(r"^(?:\./)+", "", src).split("?")[0].split("#")[0].lstrip("/")
+                if not (pkg / rel).is_file():
+                    errs.append(f"inline img file missing in package: {src}")
+    for fig in figure_blocks:
+        cap = re.search(r"<figcaption\b[^>]*>(.*?)</figcaption>", fig, re.S | re.I)
+        if not cap or not cap.group(1).strip():
+            errs.append("<figure> without non-empty <figcaption>")
+        elif not re.search(r"[\u0600-\u06FF]", cap.group(1)):  # Arabic block (covers Persian letters)
+            errs.append("figure <figcaption> must contain Persian text")
+    if inline_imgs and len(inline_imgs) != len(figure_blocks):
+        errs.append(
+            f"{len(inline_imgs)} inline <img> but {len(figure_blocks)} <figure> "
+            "blocks (each infographic must be wrapped in a figure)"
+        )
+
     # ---- AI tells
     for phrase in AI_TELLS:
         if phrase in html:
