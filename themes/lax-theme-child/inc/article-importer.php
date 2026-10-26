@@ -21,7 +21,7 @@
  *
  * @package Lax_Theme_Child
  * @since   0.8.0
- * @version 0.12.0
+ * @version 0.12.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -1118,7 +1118,7 @@ function hj_importer_html_has_local_images( string $html ): bool {
 	if ( false === stripos( $html, '<img' ) ) {
 		return false;
 	}
-	return (bool) preg_match( '/<img\b[^>]*\bsrc\s*=\s*([\'"])(?!https?:|data:|\/\/)(.*?)\1/is', $html );
+	return (bool) preg_match( '/<img\b[^>]*(?<=\s)src\s*=\s*([\'"])(?!https?:|data:|\/\/)(.*?)\1/is', $html );
 }
 
 /**
@@ -1144,7 +1144,7 @@ function hj_importer_scan_inline_images( string $html, string $dir ): array {
 	}
 	$real_dir = realpath( $dir );
 	foreach ( $tags[0] as $tag ) {
-		if ( ! preg_match( '/\bsrc\s*=\s*([\'"])(.*?)\1/is', $tag, $m ) ) {
+		if ( ! preg_match( '/(?<=\s)src\s*=\s*([\'"])(.*?)\1/is', $tag, $m ) ) {
 			continue;
 		}
 		$src = trim( $m[2] );
@@ -1161,6 +1161,10 @@ function hj_importer_scan_inline_images( string $html, string $dir ): array {
 			$missing[] = $src;
 			continue;
 		}
+		if ( false === $real_dir ) {
+			$missing[] = $src;
+			continue;
+		}
 		$abs      = $real_dir . DIRECTORY_SEPARATOR . str_replace( '/', DIRECTORY_SEPARATOR, $rel );
 		$real_abs = realpath( $abs );
 		if ( false === $real_abs
@@ -1170,7 +1174,7 @@ function hj_importer_scan_inline_images( string $html, string $dir ): array {
 			continue;
 		}
 		$alt = '';
-		if ( preg_match( '/\balt\s*=\s*([\'"])(.*?)\1/is', $tag, $am ) ) {
+		if ( preg_match( '/(?<=\s)alt\s*=\s*([\'"])(.*?)\1/is', $tag, $am ) ) {
 			$alt = trim( wp_strip_all_tags( $am[2] ) );
 		}
 		$local[] = array(
@@ -1219,6 +1223,10 @@ function hj_importer_import_inline_images( int $post_id, string $dir, string $ht
 	require_once ABSPATH . 'wp-admin/includes/file.php';
 	require_once ABSPATH . 'wp-admin/includes/image.php';
 	$upload_dir = wp_upload_dir();
+	if ( ! empty( $upload_dir['error'] ) ) {
+		$result['missing'][] = (string) $upload_dir['error'];
+		return $result;
+	}
 	$url_map    = array();
 
 	foreach ( $scan['local'] as $item ) {
@@ -1236,6 +1244,8 @@ function hj_importer_import_inline_images( int $post_id, string $dir, string $ht
 				'post_type'      => 'attachment',
 				'post_status'    => 'inherit',
 				'posts_per_page' => 1,
+				'orderby'        => 'ID',
+				'order'          => 'DESC',
 				'no_found_rows'  => true,
 				'meta_query'     => array(
 					array(
@@ -1252,14 +1262,9 @@ function hj_importer_import_inline_images( int $post_id, string $dir, string $ht
 		$att_id = 0;
 		if ( ! empty( $existing[0] ) ) {
 			$candidate = (int) $existing[0]->ID;
-			$old_hash  = (string) get_post_meta( $candidate, '_hj_image_sha256', true );
-			if ( '' === $old_hash ) {
-				$old_file = get_attached_file( $candidate );
-				if ( $old_file && is_file( $old_file ) ) {
-					$old_hash = (string) hash_file( 'sha256', $old_file );
-					update_post_meta( $candidate, '_hj_image_sha256', $old_hash );
-				}
-			}
+			// Metadata alone does not prove the file still exists on disk.
+			$old_file = get_attached_file( $candidate );
+			$old_hash = ( $old_file && is_readable( $old_file ) ) ? (string) hash_file( 'sha256', $old_file ) : '';
 			if ( '' !== $old_hash && $old_hash === $new_hash ) {
 				$att_id = $candidate;
 				$result['reused']++;
@@ -1267,7 +1272,11 @@ function hj_importer_import_inline_images( int $post_id, string $dir, string $ht
 		}
 
 		if ( ! $att_id ) {
-			$bits      = file_get_contents( $src_path );
+			$bits = file_get_contents( $src_path );
+			if ( false === $bits ) {
+				$result['missing'][] = $item['src'] . ' (read failed)';
+				continue;
+			}
 			$preferred = sanitize_title( $slug ) . '-' . $base . '.' . $ext;
 			$unique    = wp_unique_filename( $upload_dir['path'], $preferred );
 			$upload    = wp_upload_bits( $unique, null, $bits );
@@ -1309,13 +1318,18 @@ function hj_importer_import_inline_images( int $post_id, string $dir, string $ht
 				'post_parent' => $post_id,
 			)
 		);
-		$url_map[ $item['rel'] ]               = wp_get_attachment_url( $att_id );
+		$url = esc_url_raw( (string) wp_get_attachment_url( $att_id ) );
+		if ( ! $url ) {
+			$result['missing'][] = $item['src'] . ' (attachment URL missing)';
+			continue;
+		}
+		$url_map[ $item['rel'] ]               = $url;
 		$result['attachments'][ $item['rel'] ] = (int) $att_id;
 	}
 
 	if ( $url_map ) {
 		$result['html'] = (string) preg_replace_callback(
-			'/(<img\b[^>]*\bsrc\s*=\s*)([\'"])(.*?)\2/is',
+			'/(<img\b[^>]*(?<=\s)src\s*=\s*)([\'"])(.*?)\2/is',
 			static function ( $matches ) use ( $url_map ) {
 				$norm = hj_importer_normalize_local_src( $matches[3] );
 				if ( isset( $url_map[ $norm ] ) ) {
@@ -1668,8 +1682,9 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 			'post_type'    => $post_type,
 			'post_name'    => $slug,
 			'post_title'   => $title,
-			'post_content' => $html,
-			'post_status'  => $desired_status,
+			// Do not publish temporary package paths if a media upload fails.
+			'post_content' => ! empty( $inline_scan['local'] ) ? ( $updating_existing ? $existing->post_content : '' ) : $html,
+			'post_status'  => ( ! empty( $inline_scan['local'] ) && ! $updating_existing ) ? 'draft' : $desired_status,
 			'post_excerpt' => $meta_desc,
 		);
 		if ( $updating_existing ) {
@@ -1751,17 +1766,20 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 		);
 		if ( ! empty( $inline_scan['local'] ) ) {
 			$inline_result = hj_importer_import_inline_images( $post_id, $dir, $html, $slug );
-			if ( $inline_result['html'] !== $html ) {
-				wp_update_post(
-					wp_slash(
-						array(
-							'ID'           => $post_id,
-							'post_content' => $inline_result['html'],
-						)
-					)
-				);
-				$html = $inline_result['html'];
+			if ( $inline_result['missing'] || hj_importer_html_has_local_images( $inline_result['html'] ) ) {
+				hj_importer_rmdir( $root_tmp );
+				return new WP_Error( 'inline_upload_failed', 'انتقال تصاویر داخل متن کامل نشد؛ متن قبلی حفظ شد و مقالهٔ تازه پیش‌نویس می‌ماند. ' . implode( '، ', $inline_result['missing'] ) );
 			}
+			$body_update = array( 'ID' => $post_id, 'post_content' => $inline_result['html'] );
+			if ( ! $updating_existing ) {
+				$body_update['post_status'] = $desired_status;
+			}
+			$body_saved = wp_update_post( wp_slash( $body_update ), true );
+			if ( is_wp_error( $body_saved ) || ! $body_saved ) {
+				hj_importer_rmdir( $root_tmp );
+				return is_wp_error( $body_saved ) ? $body_saved : new WP_Error( 'inline_save_failed', 'ذخیرهٔ آدرس تصاویر شکست خورد.' );
+			}
+			$html = $inline_result['html'];
 			$parts = array();
 			if ( $inline_result['uploaded'] > 0 ) {
 				$parts[] = number_format_i18n( $inline_result['uploaded'] ) . ' تصویر جدید آپلود شد';

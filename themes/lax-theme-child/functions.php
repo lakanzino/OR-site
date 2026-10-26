@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.15.0' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.15.1' );
 }
 
 /**
@@ -87,6 +87,7 @@ require_once get_stylesheet_directory() . '/inc/glossary-cleanup.php';
  * Load the multi-group package importer (ZIP -> post + SEO + featured image + audit).
  */
 require_once get_stylesheet_directory() . '/inc/article-importer.php';
+require_once get_stylesheet_directory() . '/inc/inline-image-repair.php';
 
 /**
  * Load the editorial roadmap catalog, admin publishing progress dashboard, and Glossary Admin.

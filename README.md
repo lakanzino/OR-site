@@ -7,9 +7,14 @@
 | جزء | نسخه | مسیر |
 |---|---|---|
 | قالب والد `lax-theme` | 1.0.1 | [`themes/lax-theme/`](themes/lax-theme/) |
-| قالب فرزند `lax-theme-child` | 0.14.0 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
+| قالب فرزند `lax-theme-child` | 0.15.1 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
 | افزونهٔ `orsite-media-matcher` | 1.2.0 | [`plugins/orsite-media-matcher/`](plugins/orsite-media-matcher/) |
 | ساختار محتوا (`ORSITE_STRUCTURE_VERSION`) | 1.0.0 | `themes/lax-theme-child/inc/content-types.php` |
+
+## اصلاح فوری تصاویر داخل مقالات جراحی — 0.15.1
+
+بستهٔ جاری `releases/lax-theme-child.zip` شامل ابزار **جراحی‌ها ← ترمیم تصاویر داخل مقاله** و هر ۱۸ تصویر لازم است؛ بدون ایمپورت مجدد متن یا تغییر تصویر شاخص. [راهنمای نصب و اجرا](docs/INLINE-IMAGE-REPAIR.fa.md).
+این نسخه در این نشست روی سایت زنده نصب نشده و هنوز GitHub Release رسمی ندارد. آمار زیر، شاهد تاریخی ثبت‌شده در مخزن است، نه بازبینی زندهٔ همین نشست.
 
 ## وضعیت زندهٔ سایت (به‌روزرسانی ۲۰۲۶-۱۰-۲۵ — تأیید کارفرما پس از ایمپورت بستهٔ انتشار ۰۴)
 
