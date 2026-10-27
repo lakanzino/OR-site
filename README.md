@@ -7,7 +7,7 @@
 | جزء | نسخه | مسیر |
 |---|---|---|
 | قالب والد `lax-theme` | 1.0.1 | [`themes/lax-theme/`](themes/lax-theme/) |
-| قالب فرزند `lax-theme-child` | 0.14.0 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
+| قالب فرزند `lax-theme-child` | 0.14.1 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
 | افزونهٔ `orsite-media-matcher` | 1.2.0 | [`plugins/orsite-media-matcher/`](plugins/orsite-media-matcher/) |
 | ساختار محتوا (`ORSITE_STRUCTURE_VERSION`) | 1.0.0 | `themes/lax-theme-child/inc/content-types.php` |
 
@@ -30,6 +30,7 @@
   - `docs/content/PUBLISH-PRIORITY.fa.md` — **مرجع اولویت انتشار**: وضعیت واقعی سایت (بررسی‌شده از نقشه‌ی سایت)، ده مقاله‌ی جاری و پانزده مقاله‌ی بعدی.
 - `content/drafts/<slug>/` — بسته‌های سه‌فایلی پیش‌نویس مقالات (`article.json` + `content.html` + `featured.webp`)؛ وضعیت همه `draft` تا عبور از فیلتر تحریریه و تأیید کارفرما. سازوکار «بازبین پزشکی» از نسخهٔ 0.14.0 قالب به‌طور کامل حذف شده است.
 - `releases/article-packages/` — همان بسته‌ها به شکل ZIP آماده‌ی ایمپورت در پیشخوان.
+- `releases/featured-images-batch-2026-10.zip` — بسته‌ی جایگزینی تصاویر شاخص (۲۸ تصویر `{slug}.webp` روی بوم سفید ۱۲۰۰×۶۷۵ + `alt-manifest.json`)؛ از پیشخوان → جراحی‌ها → جایگزینی تصویر شاخص ایمپورت می‌شود. نسخه‌های جایگزین در `featured-images-batch-2026-10-extras.zip` و داده‌ی مرجع نگاشت در `data/featured-images-2026-10.json` است.
 - `plugins/orsite-media-matcher/` — افزونهٔ مستقل: تصویرهای رسانه را با نام فایل به مقاله‌ی هم‌نام وصل می‌کند و تصویر شاخص می‌گذارد؛ با پیش‌نمایش، گزارش و تکمیل خودکار از مخزن.
 - `content/live-mirror/` — آینه‌ی متنی محتوای منتشرشده (اکنون فقط ۵ مقاله‌ی اول؛ شکاف آینه در `content/live-mirror/README.md` ثبت شده است).
 - `design/` — پیش‌نمایش HTML طراحی جاری.
