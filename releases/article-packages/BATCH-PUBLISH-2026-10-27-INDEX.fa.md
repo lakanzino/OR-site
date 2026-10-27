@@ -3,7 +3,33 @@
 - **وضعیت:** همه `draft` در مانیفست؛ فیلتر فنی `content-lint.py` با صفر خطا، فیلتر تحریریه انسانی انجام شد.
 - **ساختار هر ZIP:** پوشه‌ی ریشه `<slug>/` شامل `article.json` + `content.html` + `featured.webp` (۱۲۰۰×۶۷۵، زیر ۱۸۰KB)؛ دو بسته‌ی overview دارای پوشه‌ی `assets/` با دو تصویر درون‌متنی.
 - **بسته‌ی ترکیبی:** `BATCH-PUBLISH-2026-10-27-9packages.zip` (هر ۹ ZIP یک‌جا).
-- **مقصد Google Drive:** پوشه «4 — بسته‌های انتشار ۲۰۲۶-۱۰-۲۷ (۹ مقاله آماده ایمپورت)» داخل «OR-SITE — بسته‌های مقالات جراحی».
+- **مقصد Google Drive:** پوشه «4 — بسته‌های انتشار ۲۰۲۶-۱۰-۲۷ (۹ مقاله آماده ایمپورت)» داخل «OR-SITE — بسته‌های مقالات جراحی» — شناسه `17IYJBIfxV5W-vBu2-2PGskslw-TOcxuH` (دسترسی: هر کس با لینک، خواننده).
+- **محدودیت نرخ آپلود ۲۰۲۶-۱۰-۲۷:** سه فایل (`laparoscopy-preparation`، `tonsillectomy-overview` و بسته‌ی ترکیبی) در نوبت اول آپلود Drive نرفتند؛ تا تکمیل آپلود، لینک گیت‌هاب معادل رسمی تحویل است. هر ۱۰ فایل روی گیت‌هاب پوش شده‌اند.
+
+## لینک‌های دانلود
+
+### Google Drive (۷ فایل)
+| نامک | لینک مستقیم |
+|---|---|
+| `circumcision-overview` | https://drive.google.com/uc?id=1e8GgjsNj_EDKhmX_HOf0_pUZeLm1yozL&export=download |
+| `circumcision-preparation` | https://drive.google.com/uc?id=1CuXA8UcfWUQTGnWfPLNX8UPAP3yBSxSN&export=download |
+| `circumcision-recovery` | https://drive.google.com/uc?id=13Ur7qU190cx2_NkCtL5hbY6xcnHhQlhM&export=download |
+| `hemorrhoid-overview` | https://drive.google.com/uc?id=14xHkzKzAYZTtDnAy4aMQz8gC8JiBJE53&export=download |
+| `hemorrhoid-preparation` | https://drive.google.com/uc?id=1IEhndmZLNyz237NGuBl4IV8qyGQE51jS&export=download |
+| `hemorrhoid-recovery` | https://drive.google.com/uc?id=1dwN034jwkvozjje7Xf9iQFkYnB6Xvxef&export=download |
+| `laparoscopy-overview` | https://drive.google.com/uc?id=1jXK_HxHOdKSUCBJSlm32at6I7Gn5kgCU&export=download |
+| `laparoscopy-preparation` | ⏳ در صف آپلود (لینک گیت‌هاب پایین) |
+| `tonsillectomy-overview` | ⏳ در صف آپلود (لینک گیت‌هاب پایین) |
+| بسته‌ی ترکیبی ۹تایی | ⏳ در صف آپلود (لینک گیت‌هاب پایین) |
+
+### گیت‌هاب (همه‌ی ۱۰ فایل، فعال و راستی‌آزمایی‌شده)
+الگو: `https://github.com/lakanzino/OR-site/raw/arena/95bf3749-or-site/releases/article-packages/<file>`
+
+- `article-package-circumcision-{overview,preparation,recovery}.zip`
+- `article-package-hemorrhoid-{overview,preparation,recovery}.zip`
+- `article-package-laparoscopy-{overview,preparation}.zip`
+- `article-package-tonsillectomy-overview.zip`
+- `BATCH-PUBLISH-2026-10-27-9packages.zip` (هر ۹ بسته یک‌جا)
 
 ## فهرست و وضعیت فیلترها
 
