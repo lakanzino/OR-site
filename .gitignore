@@ -1,8 +1,16 @@
 # خروجی‌های ساخته‌شده و فایل‌های موقت — سورس و اسناد در مخزن می‌مانند
 *.zip
 !releases/*.zip
+!releases/backup/*.zip
 !releases/article-packages/*.zip
 !themes/lax-theme-child/content-imports/*.zip
 .DS_Store
 Thumbs.db
 *.log
+.cache/
+
+# Python virtualenv
+.venv/
+
+# contact sheets (scratch)
+tmp-img/contact/

@@ -76,14 +76,100 @@ function orsite_img_swap_find_post( $slug ) {
 }
 
 /**
+ * Normalise a file name to the article slug.
+ *
+ * Mirrors the media matcher's rules: lower-case, dashes, and the common
+ * WordPress/design suffixes (`-featured`, `-image`, `-1`, ...) are stripped so
+ * both `hernia-overview.webp` and `hernia-overview-featured.webp` resolve to
+ * the `hernia-overview` post.
+ *
+ * @param string $name Raw file name without extension.
+ * @return string
+ */
+function orsite_img_swap_normalize( $name ) {
+	$name = strtolower( (string) $name );
+	$name = str_replace( array( '_', ' ' ), '-', $name );
+	$name = preg_replace( '/[^a-z0-9-]+/', '-', $name );
+	$name = preg_replace( '/-+/', '-', $name );
+
+	$suffixes = 'featured|image|img|thumb|thumbnail|photo|pic|scaled|rotated|copy|edited|cropped|final|web';
+
+	for ( $pass = 0; $pass < 4; $pass++ ) {
+		$before = $name;
+		$name   = preg_replace( '/-\d+$/', '', $name ); // WordPress duplicate: -1, -2.
+		$name   = preg_replace( '/-(' . $suffixes . ')$/', '', $name );
+		if ( $name === $before ) {
+			break;
+		}
+	}
+
+	return trim( (string) $name, '-' );
+}
+
+/**
+ * Read the optional alt-text manifest bundled next to the images.
+ *
+ * Accepted shapes (keys may use the raw file name or the normalised slug):
+ *   {"alt": {"slug": "متن alt"}}
+ *   {"images": {"slug": {"alt": "متن alt"}}}
+ *   {"slug": "متن alt"}
+ *
+ * @param ZipArchive $zip Open archive.
+ * @return array<string,string> Normalised slug => alt text.
+ */
+function orsite_img_swap_read_manifest( $zip ) {
+	$map = array();
+
+	$json = $zip->getFromName( 'alt-manifest.json' );
+	if ( false === $json || '' === trim( (string) $json ) ) {
+		return $map;
+	}
+
+	$data = json_decode( (string) $json, true );
+	if ( ! is_array( $data ) ) {
+		return $map;
+	}
+
+	if ( isset( $data['alt'] ) && is_array( $data['alt'] ) ) {
+		$raw = $data['alt'];
+	} elseif ( isset( $data['images'] ) && is_array( $data['images'] ) ) {
+		$raw = array();
+		foreach ( $data['images'] as $key => $value ) {
+			if ( is_array( $value ) && isset( $value['alt'] ) ) {
+				$raw[ $key ] = $value['alt'];
+			}
+		}
+	} else {
+		$raw = $data;
+	}
+
+	foreach ( $raw as $key => $alt ) {
+		if ( ! is_scalar( $alt ) ) {
+			continue;
+		}
+		$alt = trim( sanitize_text_field( (string) $alt ) );
+		if ( '' === $alt ) {
+			continue;
+		}
+		$slug = orsite_img_swap_normalize( (string) $key );
+		if ( '' !== $slug ) {
+			$map[ $slug ] = $alt;
+		}
+	}
+
+	return $map;
+}
+
+/**
  * Import one file into the media library and set it as the post thumbnail.
  *
  * @param WP_Post $post     Target post.
  * @param string  $tmp_file Local path of the file just extracted.
  * @param string  $name     Desired file name.
+ * @param string  $alt      Optional descriptive alt text; falls back to title.
  * @return array{status:string,message:string}
  */
-function orsite_img_swap_attach( $post, $tmp_file, $name ) {
+function orsite_img_swap_attach( $post, $tmp_file, $name, $alt = '' ) {
 	$dest = wp_upload_dir();
 	if ( ! empty( $dest['error'] ) ) {
 		return array( 'status' => 'error', 'message' => $dest['error'] );
@@ -116,7 +202,11 @@ function orsite_img_swap_attach( $post, $tmp_file, $name ) {
 
 	require_once ABSPATH . 'wp-admin/includes/image.php';
 	wp_update_attachment_metadata( $attach_id, wp_generate_attachment_metadata( $attach_id, $copy ) );
-	update_post_meta( $attach_id, '_wp_attachment_image_alt', $post->post_title );
+
+	// A descriptive Persian alt from the bundled manifest wins; otherwise keep
+	// the historical fallback (the article title) so SEO fields are never empty.
+	$alt_text = '' !== $alt ? sanitize_text_field( $alt ) : $post->post_title;
+	update_post_meta( $attach_id, '_wp_attachment_image_alt', $alt_text );
 
 	$previous = (int) get_post_thumbnail_id( $post->ID );
 	if ( $previous === (int) $attach_id ) {
@@ -163,6 +253,9 @@ function orsite_img_swap_run( $zip_path, $dry_run = false ) {
 	$tmp_dir = trailingslashit( get_temp_dir() ) . 'orsite-img-swap-' . wp_generate_password( 8, false ) . '/';
 	wp_mkdir_p( $tmp_dir );
 
+	// Optional slug => Persian alt map shipped as alt-manifest.json.
+	$alt_map = orsite_img_swap_read_manifest( $zip );
+
 	for ( $i = 0; $i < $zip->numFiles; $i++ ) {
 		$entry = $zip->getNameIndex( $i );
 		if ( ! $entry || '/' === substr( $entry, -1 ) ) {
@@ -178,7 +271,7 @@ function orsite_img_swap_run( $zip_path, $dry_run = false ) {
 			continue;
 		}
 
-		$slug = sanitize_title( pathinfo( $base, PATHINFO_FILENAME ) );
+		$slug = orsite_img_swap_normalize( pathinfo( $base, PATHINFO_FILENAME ) );
 		if ( '' === $slug ) {
 			continue;
 		}
@@ -218,7 +311,8 @@ function orsite_img_swap_run( $zip_path, $dry_run = false ) {
 			continue;
 		}
 
-		$res    = orsite_img_swap_attach( $post, $tmp_file, $slug . '.' . $ext );
+		$alt    = isset( $alt_map[ $slug ] ) ? $alt_map[ $slug ] : '';
+		$res    = orsite_img_swap_attach( $post, $tmp_file, $slug . '.' . $ext, $alt );
 		$rows[] = array( 'slug' => $slug, 'status' => $res['status'], 'message' => $res['message'], 'post' => $post->post_title );
 		$totals[ $res['status'] ] = ( isset( $totals[ $res['status'] ] ) ? $totals[ $res['status'] ] : 0 ) + 1;
 		@unlink( $tmp_file ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
@@ -317,7 +411,7 @@ function orsite_img_swap_page() {
 		<h1><?php esc_html_e( 'جایگزینی گروهی تصویر شاخص', 'lax-theme-child' ); ?></h1>
 
 		<p style="max-width:52em;line-height:1.9">
-			<?php esc_html_e( 'فایل ZIP تصاویر را انتخاب کنید؛ هر فایل باید نامش دقیقاً نامک انگلیسی مقاله باشد (مثلاً cataract-overview.webp). هر تصویر به مقاله‌ی هم‌نام وصل و به‌عنوان تصویر شاخص تنظیم می‌شود. اگر مقاله‌ای پیدا نشود فقط در گزارش می‌آید و چیزی خراب نمی‌شود.', 'lax-theme-child' ); ?>
+			<?php esc_html_e( 'فایل ZIP تصاویر را انتخاب کنید؛ نام هر فایل باید نامک انگلیسی مقاله باشد (مثلاً cataract-overview.webp یا cataract-overview-featured.webp — پسوندهای featured و شماره‌ی تکراری وردپرس خودکار حذف می‌شوند). هر تصویر به مقاله‌ی هم‌نام وصل و به‌عنوان تصویر شاخص تنظیم می‌شود. اگر فایل alt-manifest.json کنار تصاویر باشد، متن alt فارسی هر تصویر از همان‌جا ثبت می‌شود؛ وگرنه عنوان مقاله به‌عنوان alt به کار می‌رود. اگر مقاله‌ای پیدا نشود فقط در گزارش می‌آید و چیزی خراب نمی‌شود.', 'lax-theme-child' ); ?>
 		</p>
 
 		<?php if ( $notice ) : ?>

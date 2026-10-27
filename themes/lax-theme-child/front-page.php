@@ -45,11 +45,31 @@ $hj_surgery_groups = get_terms(
 		'taxonomy'   => 'surgery_specialty',
 		'parent'     => 0,
 		'hide_empty' => true,
+		// 0.14.2: posts are assigned to child terms (e.g. hernia-repair), so
+		// parent counts must include their children or the block looks empty
+		// even with dozens of live surgeries.
+		'pad_counts' => true,
 		'orderby'    => 'name',
 	)
 );
 if ( is_wp_error( $hj_surgery_groups ) ) {
 	$hj_surgery_groups = array();
+}
+
+// 0.14.2: never show a text-only dead end while surgery articles exist.
+// If no specialty term can be rendered, link the latest surgeries directly.
+$hj_surgery_fallback = null;
+if ( empty( $hj_surgery_groups ) ) {
+	$hj_surgery_fallback = new WP_Query(
+		array(
+			'post_type'      => 'surgery',
+			'post_status'    => 'publish',
+			'posts_per_page' => 6,
+			'no_found_rows'  => true,
+			'orderby'        => 'date',
+			'order'          => 'DESC',
+		)
+	);
 }
 
 $hj_journey = array(
@@ -227,13 +247,26 @@ $hj_faqs = array(
 						</article>
 					<?php endforeach; ?>
 				</div>
-			<?php else : ?>
-				<div class="hj-home-empty hj-home-empty--soft">
-					<h3>صفحه‌های جراحی‌ها به‌تدریج کامل می‌شوند</h3>
-					<p>صفحه‌های خالی را به‌عنوان مقاله جا نمی‌زنیم و تا وقتی یک بخش به حد کافی مقاله نداشته باشد، آن را از گوگل بیرون نگه می‌داریم. از راهنمای کلی مسیر بیمار شروع کنید و برای عمل مشخص خودتان از تیم درمان راهنمایی بگیرید.</p>
-					<a class="hj-text-link" href="<?php echo esc_url( hj_archive_url( 'surgery' ) ); ?>">مشاهده‌ی بخش جراحی‌ها</a>
-				</div>
-			<?php endif; ?>
+		<?php elseif ( $hj_surgery_fallback && $hj_surgery_fallback->have_posts() ) : ?>
+			<div class="orsite-card-grid hj-home-card-grid">
+				<?php
+				while ( $hj_surgery_fallback->have_posts() ) :
+					$hj_surgery_fallback->the_post();
+					get_template_part( 'template-parts/article', 'card', array( 'heading_level' => 'h3' ) );
+				endwhile;
+				wp_reset_postdata();
+				?>
+			</div>
+			<p>
+				<a class="hj-text-link" href="<?php echo esc_url( hj_archive_url( 'surgery' ) ); ?>">مشاهده‌ی همه‌ی جراحی‌ها</a>
+			</p>
+		<?php else : ?>
+			<div class="hj-home-empty hj-home-empty--soft">
+				<h3>نخستین مقاله‌های بخش جراحی‌ها در راه انتشارند</h3>
+				<p>صفحه‌های خالی را به‌عنوان مقاله جا نمی‌زنیم؛ به‌محض انتشار اولین جراحی، همین‌جا لینک مستقیمش ظاهر می‌شود. تا آن زمان از راهنمای کلی مسیر بیمار شروع کنید.</p>
+				<a class="hj-text-link" href="<?php echo esc_url( hj_archive_url( 'surgery' ) ); ?>">مشاهده‌ی بخش جراحی‌ها</a>
+			</div>
+		<?php endif; ?>
 
 			<?php if ( ! empty( $hj_glossary_fast_terms ) ) : ?>
 				<div class="hj-glossary-strip">

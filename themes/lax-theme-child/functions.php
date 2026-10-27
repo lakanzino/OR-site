@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.14.0' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.15.3' );
 }
 
 /**
@@ -33,9 +33,8 @@ require_once get_stylesheet_directory() . '/inc/content-types.php';
 require_once get_stylesheet_directory() . '/inc/article-display.php';
 
 /**
- * Load image sizes and article media block patterns.
+ * Load image sizes, bulk featured-image replacer, and article media block patterns.
  */
-require_once get_stylesheet_directory() . '/inc/image-watermark.php';
 require_once get_stylesheet_directory() . '/inc/image-bulk-replace.php';
 require_once get_stylesheet_directory() . '/inc/image-sizes.php';
 require_once get_stylesheet_directory() . '/inc/media-blocks.php';
@@ -56,6 +55,11 @@ require_once get_stylesheet_directory() . '/inc/seo-basics.php';
  * SEO index policy (0.13.0): empty and thin listings stay out of the index.
  */
 require_once get_stylesheet_directory() . '/inc/seo-index-policy.php';
+
+/**
+ * Indexation health screen (0.14.2): live, read-only root-cause diagnostics.
+ */
+require_once get_stylesheet_directory() . '/inc/seo-health-check.php';
 
 /**
  * One date format everywhere (0.13.0).
@@ -87,6 +91,7 @@ require_once get_stylesheet_directory() . '/inc/glossary-cleanup.php';
  * Load the multi-group package importer (ZIP -> post + SEO + featured image + audit).
  */
 require_once get_stylesheet_directory() . '/inc/article-importer.php';
+require_once get_stylesheet_directory() . '/inc/inline-image-repair.php';
 
 /**
  * Load the editorial roadmap catalog, admin publishing progress dashboard, and Glossary Admin.
