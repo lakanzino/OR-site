@@ -2936,3 +2936,137 @@ textarea:focus-visible {
 		display: none !important;
 	}
 }
+
+/* ==========================================================================
+   مقاله: پیوند آبی، کادر عنوان سرمه‌ای با سایهٔ عمیق، جدول کامل بدون اسکرول،
+   زیرنویس ریز و طوسی، و متن هم‌تراز — قالب ۰٫۲۱٫۱
+   ========================================================================== */
+
+/* ---------- ۱) پیوندهای متن مقاله: آبی ---------- */
+
+.orsite-article__content a {
+	color: #1d4ed8;
+	text-decoration-color: rgba(29, 78, 216, 0.45);
+}
+
+.orsite-article__content a:hover,
+.orsite-article__content a:focus {
+	color: #1e40af;
+	text-decoration-color: currentColor;
+}
+
+.orsite-article__content a:visited {
+	color: #4338ca;
+}
+
+/* ---------- ۲) کادر عنوان (H2): سرمه‌ای، متن سفید، سایهٔ عمیق ---------- */
+
+.orsite-article__content h2 {
+	background: var(--bx-navy);
+	border-color: var(--bx-navy-deep);
+	border-inline-start-color: #1d4ed8;
+	color: #fff;
+	box-shadow: 0 18px 34px rgba(4, 26, 63, 0.28), 0 5px 12px rgba(4, 26, 63, 0.22);
+}
+
+.orsite-article__content h2 *,
+.orsite-article__content h2 a {
+	color: #fff;
+	text-decoration-color: rgba(255, 255, 255, 0.5);
+}
+
+.orsite-article__content h2 a:hover,
+.orsite-article__content h2 a:focus {
+	color: #dbeafe;
+}
+
+/* ---------- ۳) جدول‌ها: کامل، بدون اسکرول افقی ---------- */
+
+.orsite-article__content .hj-table-scroll {
+	overflow: visible;
+	margin: 1.2rem 0;
+	border-radius: 0;
+}
+
+.orsite-article__content .hj-table-scroll > table {
+	table-layout: fixed;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+	margin: 0;
+}
+
+.orsite-article__content .hj-table-scroll > table th,
+.orsite-article__content .hj-table-scroll > table td {
+	overflow-wrap: anywhere;
+	word-break: break-word;
+	hyphens: auto;
+	text-align: start;
+}
+
+@media (max-width: 782px) {
+	.orsite-article__content .hj-table-scroll > table {
+		min-width: 0;
+		font-size: 0.8rem;
+	}
+
+	.orsite-article__content .hj-table-scroll > table th,
+	.orsite-article__content .hj-table-scroll > table td {
+		padding: 0.42rem 0.5rem;
+		line-height: 1.7;
+	}
+}
+
+/* ---------- ۴) زیرنویس تصویر: ریز و طوسی تیره ---------- */
+
+.orsite-article__media figcaption,
+.orsite-article__content figcaption,
+.orsite-caption {
+	background: #f1f5f9;
+	border: 1px solid #d7dee7;
+	border-radius: 8px;
+	box-shadow: none;
+	color: #374151;
+	font-size: 0.78rem;
+	font-weight: 500;
+	line-height: 1.75;
+	padding: 0.4rem 0.65rem;
+	margin-top: 0.5rem;
+}
+
+.orsite-article__media figcaption *,
+.orsite-article__content figcaption *,
+.orsite-caption * {
+	color: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+}
+
+@media (max-width: 480px) {
+	.orsite-article__media figcaption,
+	.orsite-article__content figcaption,
+	.orsite-caption {
+		font-size: 0.74rem;
+		padding: 0.35rem 0.55rem;
+	}
+}
+
+/* ---------- ۵) هم‌ترازی دوطرفهٔ متن ---------- */
+
+.orsite-article__content p,
+.orsite-article__content li,
+.orsite-article__content blockquote,
+.hj-box__body p {
+	text-align: justify;
+	text-justify: inter-word;
+	-webkit-hyphens: none;
+	hyphens: none;
+}
+
+.orsite-article__content table p,
+.orsite-article__content table li,
+.orsite-article__content table td,
+.orsite-article__content table th {
+	text-align: start;
+	text-justify: auto;
+}
