@@ -277,23 +277,18 @@ function orsite_pn_render_faq( int $post_id, string $content ): void {
 		return;
 	}
 
-	$faq = get_post_meta( $post_id, '_hj_faq', true );
-	if ( ! is_array( $faq ) || ! $faq ) {
+	// One resolver for both editor sources (ACF repeater, then `_hj_faq`),
+	// shared with the FAQPage JSON-LD so schema and page never disagree.
+	$rows = function_exists( 'hj_faq_entry_rows' )
+		? hj_faq_entry_rows( $post_id )
+		: array();
+
+	if ( ! $rows ) {
 		return;
 	}
 
-	$rows = array();
-	foreach ( $faq as $row ) {
-		if ( empty( $row['q'] ) || empty( $row['a'] ) ) {
-			continue;
-		}
-		$rows[] = array(
-			'q' => (string) $row['q'],
-			'a' => (string) $row['a'],
-		);
-	}
-
-	if ( ! $rows ) {
+	if ( function_exists( 'hj_faq_render_section' ) ) {
+		echo hj_faq_render_section( 'پرسش‌های متداول', $rows, $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside the renderer.
 		return;
 	}
 	?>

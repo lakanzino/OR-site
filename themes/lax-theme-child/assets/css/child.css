@@ -2971,3 +2971,209 @@ html.hj-refs-dark .hj-refs__badge--other {
 		break-inside: avoid;
 	}
 }
+
+/* ==========================================================================
+   آکاردئون پرسش‌های متداول — بومی، بدون جاوااسکریپت (قالب ۰٫۱۹٫۰)
+   فقط ناحیهٔ مقاله (`.orsite-faq`) را بازطراحی می‌کند؛ آکاردئون صفحهٔ اصلی
+   (`.hj-home .hj-faq-list`) دست‌نخورده می‌ماند تا قاعدهٔ «تیتر تک‌خطی» نشکند.
+   ========================================================================== */
+
+/* خودِ باکس بخش از کارت‌های درونی سبک‌تر می‌شود تا دو کادر تودرتو سنگین نشود */
+.orsite-faq {
+	border: 1px solid var(--bx-line);
+	border-radius: 18px;
+	background: var(--bx-soft);
+	padding: 1.05rem 1.1rem 1.15rem;
+	box-shadow: none;
+}
+
+.orsite-faq .orsite-faq__title {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem;
+	margin: 0 0 0.8rem;
+}
+
+.orsite-faq__count {
+	display: inline-block;
+	margin-inline-start: 0.1rem;
+	padding: 0.1rem 0.5rem;
+	border-radius: 999px;
+	background: var(--bx-soft);
+	color: var(--bx-muted);
+	font-size: 0.72rem;
+	font-weight: 600;
+	line-height: 1.9;
+	vertical-align: middle;
+	white-space: nowrap;
+}
+
+.orsite-faq .hj-faq-list {
+	gap: 0.6rem;
+}
+
+.orsite-faq .hj-faq-list details {
+	background: var(--bx-box);
+	border: 1px solid var(--bx-line);
+	border-radius: 12px;
+	box-shadow: none;
+	overflow: hidden;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.orsite-faq .hj-faq-list details:hover {
+	border-color: var(--bx-navy-mid);
+}
+
+.orsite-faq .hj-faq-list details[open] {
+	border-color: var(--bx-navy-mid);
+	box-shadow: 0 2px 10px rgba(4, 26, 63, 0.08);
+}
+
+.orsite-faq .hj-faq-list summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	padding: 0.9rem 1.05rem;
+	font-size: 0.96rem;
+	font-weight: 700;
+	line-height: 1.8;
+	color: var(--bx-navy-deep);
+	cursor: pointer;
+	user-select: none;
+	list-style: none;
+	outline-offset: 2px;
+}
+
+.orsite-faq .hj-faq-list summary::-webkit-details-marker {
+	display: none;
+}
+
+.orsite-faq .hj-faq-list summary::marker {
+	content: "";
+	font-size: 0;
+}
+
+/* نشانگر + / − بدون آیکون اضافه و بدون درخواست شبکه */
+.orsite-faq .hj-faq-list summary::after {
+	content: "+";
+	flex: 0 0 auto;
+	width: 1.45rem;
+	height: 1.45rem;
+	display: grid;
+	place-items: center;
+	border: 1px solid var(--bx-line);
+	border-radius: 50%;
+	color: var(--bx-navy);
+	font-size: 1.05rem;
+	font-weight: 700;
+	line-height: 1;
+	background: var(--bx-soft);
+	transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.orsite-faq .hj-faq-list details[open] summary::after {
+	content: "−";
+	background: var(--bx-navy);
+	border-color: var(--bx-navy);
+	color: #fff;
+}
+
+.orsite-faq .hj-faq-list summary:hover::after {
+	border-color: var(--bx-navy-mid);
+}
+
+.orsite-faq .hj-faq-list summary:focus-visible {
+	outline: 2px solid var(--bx-navy-mid);
+	outline-offset: -2px;
+	border-radius: 12px;
+}
+
+.orsite-faq .hj-faq-list details[open] summary {
+	background: var(--bx-soft);
+	border-bottom: 1px solid var(--bx-line);
+}
+
+.orsite-faq .hj-faq-list details .orsite-faq__answer {
+	padding: 0.85rem 1.05rem 1rem;
+	font-size: 0.93rem;
+	line-height: 1.9;
+	color: var(--bx-muted);
+	border-top: 1px dashed var(--bx-line);
+	overflow-wrap: break-word;
+}
+
+.orsite-faq .hj-faq-list details .orsite-faq__answer p {
+	padding: 0;
+	margin: 0 0 0.55rem;
+	font-size: inherit;
+	line-height: inherit;
+	color: inherit;
+}
+
+.orsite-faq .hj-faq-list details .orsite-faq__answer p:last-child {
+	margin-bottom: 0;
+}
+
+@media (max-width: 480px) {
+	.orsite-faq__count {
+		font-size: 0.68rem;
+		margin-inline-start: 0.4rem;
+	}
+
+	.orsite-faq .hj-faq-list summary {
+		padding: 0.75rem 0.85rem;
+		font-size: 0.93rem;
+		line-height: 1.75;
+		gap: 0.5rem;
+	}
+
+	.orsite-faq .hj-faq-list summary::after {
+		width: 1.3rem;
+		height: 1.3rem;
+		font-size: 0.95rem;
+	}
+
+	.orsite-faq .hj-faq-list details .orsite-faq__answer {
+		padding: 0.7rem 0.85rem 0.85rem;
+		font-size: 0.91rem;
+	}
+}
+
+@media (max-width: 360px) {
+	.orsite-faq .hj-faq-list summary {
+		padding: 0.7rem 0.75rem;
+		font-size: 0.9rem;
+	}
+}
+
+/* دارک‌مود فقط با کلاس صریح — سایت روشن است */
+html.hj-faq-dark .orsite-faq .hj-faq-list details {
+	background: #101f33;
+	border-color: rgba(255, 255, 255, 0.14);
+}
+
+html.hj-faq-dark .orsite-faq .hj-faq-list details[open] {
+	border-color: #6f9bd0;
+}
+
+html.hj-faq-dark .orsite-faq .hj-faq-list summary {
+	color: #eef4fb;
+}
+
+html.hj-faq-dark .orsite-faq .hj-faq-list details[open] summary {
+	background: rgba(255, 255, 255, 0.06);
+	border-bottom-color: rgba(255, 255, 255, 0.14);
+}
+
+html.hj-faq-dark .orsite-faq .hj-faq-list details .orsite-faq__answer {
+	color: #c7d6e6;
+	border-top-color: rgba(255, 255, 255, 0.14);
+}
+
+html.hj-faq-dark .orsite-faq__count {
+	background: rgba(255, 255, 255, 0.1);
+	color: #d7e4f2;
+}

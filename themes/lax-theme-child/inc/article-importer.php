@@ -1599,7 +1599,12 @@ function hj_importer_faq_schema() {
 	if ( ! is_singular() ) {
 		return;
 	}
-	$faq = get_post_meta( get_queried_object_id(), '_hj_faq', true );
+	// Only describe questions a visitor can actually read: the body section
+	// when it exists, otherwise the editor rows (ACF repeater or `_hj_faq`).
+	$post_id = (int) get_queried_object_id();
+	$faq     = function_exists( 'hj_faq_visible_rows' )
+		? hj_faq_visible_rows( $post_id )
+		: get_post_meta( $post_id, '_hj_faq', true );
 	if ( ! is_array( $faq ) || empty( $faq ) ) {
 		return;
 	}
