@@ -69,9 +69,16 @@ function orsite_archive_title( $title ) {
 add_filter( 'get_the_archive_title', 'orsite_archive_title' );
 
 if ( ! defined( 'ORSITE_CANONICAL_DISCLAIMER_HTML' ) ) {
+	/*
+	 * One disclaimer per article, and only this one (child 0.21.0): a single
+	 * compact warning box instead of an <h2> section. The live site had two
+	 * (one in the body, one appended) and they pushed normal content around.
+	 */
 	define(
 		'ORSITE_CANONICAL_DISCLAIMER_HTML',
-		"<h2>سلب مسئولیت پزشکی</h2>\n<p>این مقاله صرفاً جنبه‌ی آموزش و اطلاع‌رسانی دارد و جایگزین تشخیص، مشاوره یا درمان پزشکی نیست.</p>"
+		'<aside class="hj-box hj-box--warning hj-disclaimer-box" role="note">'
+		. '<p><strong>یادآوری:</strong> این مقاله آموزش عمومی است و جایگزین معاینه و تصمیم پزشک نیست؛ تشخیص و درمان فقط با تیم درمانی است که شما را معاینه کرده است.</p>'
+		. '</aside>'
 	);
 }
 
@@ -124,6 +131,30 @@ function orsite_clean_content_disclaimers_and_tables( $content, $append_canonica
 		$cleaned = preg_replace(
 			'/\s*<hr\b[^>]*>\s*<p[^>]*>\s*<em>[^<]*ویرایش\s+و\s+انتشار[^<]*<\/em>\s*<\/p>\s*$/isu',
 			'',
+			$content
+		);
+		if ( is_string( $cleaned ) ) {
+			$content = $cleaned;
+		}
+	}
+
+	// 2b. Strip paragraph-form disclaimers that were pasted into the body.
+	if ( false !== strpos( $content, 'جایگزین' ) ) {
+		$cleaned = preg_replace(
+			'/\s*<p\b[^>]*>(?:(?!<\/p>).)*?جایگزین(?:\s|&nbsp;)*(?:تشخیص|مشاوره|درمان|معاینه)(?:(?!<\/p>).)*?<\/p>\s*/isu',
+			"\n",
+			$content
+		);
+		if ( is_string( $cleaned ) ) {
+			$content = $cleaned;
+		}
+	}
+
+	// 2c. Strip an already-rendered box from an earlier render pass.
+	if ( false !== strpos( $content, 'hj-disclaimer-box' ) ) {
+		$cleaned = preg_replace(
+			'/\s*<aside\b[^>]*\bhj-disclaimer-box\b[^>]*>.*?<\/aside>\s*/isu',
+			"\n",
 			$content
 		);
 		if ( is_string( $cleaned ) ) {
@@ -195,10 +226,41 @@ function orsite_clean_content_disclaimers_and_tables( $content, $append_canonica
 	}
 
 	if ( $append_canonical ) {
-		$content = rtrim( $content ) . "\n" . ORSITE_CANONICAL_DISCLAIMER_HTML . "\n";
+		$content = orsite_insert_disclaimer_box( $content );
 	}
 
 	return $content;
+}
+
+/**
+ * Place the single disclaimer box before a trailing sources list.
+ *
+ * The patient asked for the references to be the last block of an article, so
+ * the disclaimer goes right before the «منابع/مراجع/شواهد» heading when the
+ * body ends with one; otherwise it is simply appended.
+ *
+ * @param string $content Cleaned article HTML.
+ * @return string
+ */
+function orsite_insert_disclaimer_box( $content ) {
+	$content = rtrim( (string) $content );
+	$box     = ORSITE_CANONICAL_DISCLAIMER_HTML;
+
+	$offset = 0;
+	$found  = -1;
+	while ( preg_match( '/<h2\\b[^>]*>(.*?)<\\/h2>/isu', $content, $m, PREG_OFFSET_CAPTURE, $offset ) ) {
+		$text = wp_strip_all_tags( $m[1][0] );
+		if ( preg_match( '/منابع|مراجع|شواهد|کتاب‌شناسی/u', $text ) ) {
+			$found = (int) $m[0][1];
+		}
+		$offset = (int) $m[0][1] + strlen( $m[0][0] );
+	}
+
+	if ( $found > 0 ) {
+		return rtrim( substr( $content, 0, $found ) ) . "\n" . $box . "\n" . substr( $content, $found );
+	}
+
+	return $content . "\n" . $box . "\n";
 }
 
 /**

@@ -84,7 +84,7 @@ if ( ! defined( 'ORSITE_GH_CACHE_SCHEMA' ) ) {
 	 * entry for a full hour after an update, which made the page look "connected"
 	 * to the wrong release; any cache written by an older schema is dropped.
 	 */
-	define( 'ORSITE_GH_CACHE_SCHEMA', 3 );
+	define( 'ORSITE_GH_CACHE_SCHEMA', 4 );
 }
 
 /* -------------------------------------------------------------------------
@@ -968,6 +968,87 @@ function orsite_gh_fetch_manifest( $tag ) {
 }
 
 /**
+ * Normalize the manifest changelog into one shape the admin can render.
+ *
+ * Three shapes exist in the wild and all of them are accepted:
+ *
+ *   1. `changelog_sections`: list of `{ version, title, items[] }` — the
+ *      canonical form written by 0.20.3 and later;
+ *   2. an associative `{ "0.20.2 — title": [ "bullet", … ] }` map — what the
+ *      update page used to assume;
+ *   3. `changelog`: a flat list of long strings, one per release — the shape
+ *      up to 0.20.2, where the update page printed an empty heading and the
+ *      whole paragraph as a single bullet.
+ *
+ * Every input becomes `[ [ 'version' => '0.20.2', 'title' => '…', 'items' => [ … ] ], … ]`.
+ *
+ * @param mixed $raw Raw manifest value.
+ * @return array<int,array{version:string,title:string,items:array<int,string>}>
+ */
+function orsite_gh_normalize_changelog( $raw ) {
+	$out = array();
+
+	foreach ( (array) $raw as $key => $entry ) {
+		$version = '';
+		$title   = '';
+		$items   = array();
+
+		if ( is_array( $entry ) ) {
+			$has_meta = isset( $entry['version'] ) || isset( $entry['title'] ) || isset( $entry['items'] ) || isset( $entry['bullets'] );
+			$version  = isset( $entry['version'] ) ? (string) $entry['version'] : '';
+			$title    = isset( $entry['title'] ) ? (string) $entry['title'] : '';
+			$list     = $has_meta
+				? ( isset( $entry['items'] ) ? $entry['items'] : ( isset( $entry['bullets'] ) ? $entry['bullets'] : array() ) )
+				: $entry;
+
+			foreach ( (array) $list as $bullet ) {
+				if ( is_string( $bullet ) && '' !== trim( $bullet ) ) {
+					$items[] = trim( $bullet );
+				}
+			}
+
+			if ( '' === $version && is_string( $key ) ) {
+				if ( preg_match( '/^v?(\d+(?:\.\d+)+)\s*(?:[\x{2014}\x{2013}-]|:)?\s*(.*)$/u', $key, $m ) ) {
+					$version = $m[1];
+					if ( '' === $title ) {
+						$title = trim( $m[2] );
+					}
+				}
+			}
+		} elseif ( is_string( $entry ) && '' !== trim( $entry ) ) {
+			$line = trim( $entry );
+			if ( preg_match( '/^v?(\d+(?:\.\d+)+)\s*(?:[\x{2014}\x{2013}-]|:)?\s*(.*)$/u', $line, $m ) ) {
+				$version = $m[1];
+				$title   = trim( $m[2] );
+				$items   = array( $title );
+			} else {
+				$items = array( $line );
+			}
+		}
+
+		// Keep the admin screens readable: at most 8 bullets of 400 characters.
+		$items = array_slice( $items, 0, 8 );
+		foreach ( $items as $i => $item ) {
+			if ( function_exists( 'mb_strlen' ) && mb_strlen( $item ) > 400 ) {
+				$items[ $i ] = mb_substr( $item, 0, 400 ) . '…';
+			}
+		}
+
+		if ( '' === $version && ! $items ) {
+			continue;
+		}
+
+		$out[] = array(
+			'version' => $version,
+			'title'   => $title,
+			'items'   => $items,
+		);
+	}
+
+	return $out;
+}
+
+/**
  * Remote versions from the release manifest, falling back to tag parsing.
  *
  * The manifest is cached per tag for an hour so opening the dashboard does not
@@ -992,7 +1073,9 @@ function orsite_gh_remote_versions( $release ) {
 
 	$cache = (array) get_option( 'orsite_gh_manifest_cache', array() );
 	if ( isset( $cache[ $tag ]['time'], $cache[ $tag ]['data'] ) && ( time() - (int) $cache[ $tag ]['time'] ) < HOUR_IN_SECONDS ) {
-		return (array) $cache[ $tag ]['data'];
+		$cached              = (array) $cache[ $tag ]['data'];
+		$cached['changelog'] = orsite_gh_normalize_changelog( isset( $cached['changelog'] ) ? $cached['changelog'] : array() );
+		return $cached;
 	}
 
 	$json = orsite_gh_fetch_manifest( $tag );
@@ -1003,8 +1086,10 @@ function orsite_gh_remote_versions( $release ) {
 		if ( isset( $json['parent']['version'] ) ) {
 			$out['parent'] = (string) $json['parent']['version'];
 		}
-		if ( isset( $json['changelog'] ) && is_array( $json['changelog'] ) ) {
-			$out['changelog'] = $json['changelog'];
+		if ( isset( $json['changelog_sections'] ) && is_array( $json['changelog_sections'] ) ) {
+			$out['changelog'] = orsite_gh_normalize_changelog( $json['changelog_sections'] );
+		} elseif ( isset( $json['changelog'] ) && is_array( $json['changelog'] ) ) {
+			$out['changelog'] = orsite_gh_normalize_changelog( $json['changelog'] );
 		}
 		$out['source'] = 'manifest';
 	} else {
@@ -1200,13 +1285,61 @@ function orsite_gh_theme_info( $which ) {
 		$asset = ORSITE_GH_CHILD_ASSET;
 	}
 
+	// Always read the version from the file on disk: WP_Theme data can survive
+	// a file update in the object cache, and a stale version is exactly what
+	// makes the dashboard claim «بروزرسانی انجام شد» while nothing changed.
+	$disk = orsite_gh_disk_version( $dir );
+
 	return array(
 		'key'     => $which,
 		'name'    => $theme->get( 'Name' ),
-		'version' => (string) $theme->get( 'Version' ),
+		'version' => '' !== $disk ? $disk : (string) $theme->get( 'Version' ),
 		'dir'     => $dir,
 		'asset'   => $asset,
 	);
+}
+
+/**
+ * Version written in a theme's `style.css` right now, read from disk.
+ *
+ * `wp_get_theme()` answers from the object cache and can lag one update
+ * behind; this helper opens the file, so the answer matches what a browser
+ * (and the reader) actually gets.
+ *
+ * @param string $dir Theme directory (absolute).
+ * @return string Version or an empty string.
+ */
+function orsite_gh_disk_version( $dir ) {
+	$file = rtrim( (string) $dir, '/' ) . '/style.css';
+	if ( ! is_readable( $file ) ) {
+		return '';
+	}
+	$data = get_file_data( $file, array( 'Version' => 'Version' ) );
+	return ! empty( $data['Version'] ) ? trim( (string) $data['Version'] ) : '';
+}
+
+/**
+ * Drop every front-end cache that can keep an old stylesheet alive.
+ *
+ * Copying `child.css` is not enough: LiteSpeed / object caches / WordPress'
+ * theme cache all answer with yesterday's file. Runs only after a real write.
+ *
+ * @return void
+ */
+function orsite_gh_purge_caches() {
+	wp_clean_themes_cache();
+	delete_site_transient( 'update_themes' );
+	wp_cache_delete( 'theme-' . get_stylesheet(), 'themes' );
+
+	if ( function_exists( 'do_action' ) && has_action( 'litespeed_purge_all' ) ) {
+		do_action( 'litespeed_purge_all' );
+	}
+	if ( function_exists( 'wpfc_clear_all_cache' ) ) {
+		wpfc_clear_all_cache( true );
+	}
+	if ( function_exists( 'w3tc_flush_all' ) ) {
+		w3tc_flush_all();
+	}
 }
 
 /* -------------------------------------------------------------------------
@@ -1536,6 +1669,10 @@ function orsite_gh_update_theme( $which ) {
 		return $plan;
 	}
 
+	$package_data    = get_file_data( rtrim( $plan['root'], '/' ) . '/style.css', array( 'Version' => 'Version' ) );
+	$package_version = ! empty( $package_data['Version'] ) ? trim( (string) $package_data['Version'] ) : '';
+	$before_version  = orsite_gh_disk_version( $plan['theme']['dir'] );
+
 	$apply = orsite_updater_apply( $plan['plan'] );
 	orsite_updater_rrmdir( $plan['tmpdir'] );
 
@@ -1548,6 +1685,25 @@ function orsite_gh_update_theme( $which ) {
 		) );
 	}
 
+	orsite_gh_purge_caches();
+	$after_version = orsite_gh_disk_version( $plan['theme']['dir'] );
+
+	// Hard proof: the file on disk must now say what the package says. Without
+	// this check a write to a read-only folder, a skipped file or a cached
+	// package all look like «بروزرسانی انجام شد».
+	if ( '' !== $package_version && '' !== $after_version && version_compare( $after_version, $package_version, '!=' ) ) {
+		return new WP_Error(
+			'orsite_version_mismatch',
+			sprintf(
+				/* translators: 1: version on disk, 2: version in the package, 3: copied file count */
+				__( 'بروزرسانی نوشته شد ولی نسخهٔ روی سرور عوض نشد: فایل style.css هنوز %1$s است و بستهٔ دانلودشده %2$s بود (%3$d فایل کپی شد). یعنی فایل‌ها روی سرور قابل نوشتن نیستند یا مسیر پوسته اشتباه است.', 'lax-theme-child' ),
+				$after_version,
+				$package_version,
+				count( $apply['updated'] )
+			)
+		);
+	}
+
 	$summary = array(
 		'which'       => $which,
 		'theme'       => $plan['theme'],
@@ -1555,6 +1711,10 @@ function orsite_gh_update_theme( $which ) {
 		'updated'     => $apply['updated'],
 		'unchanged'   => $plan['plan']['unchanged'],
 		'stale'       => $plan['plan']['stale'],
+		'version_from' => $before_version,
+		'version_to'   => $after_version,
+		'package_version' => $package_version,
+		'stale_source' => ! empty( $release['_stale'] ),
 		'time'        => time(),
 	);
 
@@ -1598,7 +1758,8 @@ function orsite_gh_update_snapshot( $force = false, $allow_fetch = true ) {
 		$age   = time() - (int) $cache['time'];
 		$limit = empty( $cache['ok'] ) ? ORSITE_GH_CHECK_RETRY : ORSITE_GH_CHECK_INTERVAL;
 		if ( $age < $limit || ! $allow_fetch ) {
-			$cache['stale'] = ( $age >= $limit );
+			$cache['stale']     = ( $age >= $limit );
+			$cache['changelog'] = orsite_gh_normalize_changelog( isset( $cache['changelog'] ) ? $cache['changelog'] : array() );
 			return $cache;
 		}
 	}
@@ -2193,16 +2354,47 @@ function orsite_gh_handle_actions() {
 		case 'update_parent':
 		case 'update_all':
 			set_time_limit( 300 );
+
+			/*
+			 * Never answer «همین حالا آخرین نسخه را داری» from the cache.
+			 *
+			 * This branch used to compare the installed version with the cached
+			 * snapshot (3 hours) and skip the download when they matched. Publishing
+			 * a release right after an update therefore did nothing at all: the
+			 * button reported success, no HTTP request was made and not one byte
+			 * changed on disk. Pressing update is an explicit «check now», so the
+			 * snapshot is refreshed first and the package is applied whenever the
+			 * released version is higher than the file on disk.
+			 */
+			$fresh    = orsite_gh_update_snapshot( true );
+			$remote   = array(
+				'child'  => isset( $fresh['latest']['child'] ) ? $fresh['latest']['child'] : null,
+				'parent' => isset( $fresh['latest']['parent'] ) ? $fresh['latest']['parent'] : null,
+			);
+			$verified = ! empty( $fresh['ok'] );
+
+			if ( ! $verified || ( empty( $remote['child'] ) && empty( $remote['parent'] ) ) ) {
+				$forced_release = orsite_gh_release( true );
+				if ( ! is_wp_error( $forced_release ) ) {
+					$remote   = orsite_gh_remote_versions( $forced_release );
+					$verified = empty( $forced_release['_stale'] );
+				}
+			}
+
 			$targets = 'update_child' === $action ? array( 'child' )
 				: ( 'update_parent' === $action ? array( 'parent' ) : array( 'child', 'parent' ) );
 			$done    = array();
 			$errors  = array();
 			foreach ( $targets as $which ) {
-				$theme  = orsite_gh_theme_info( $which );
-				$remote = orsite_gh_current_remote_versions();
+				$theme    = orsite_gh_theme_info( $which );
 				$remote_v = isset( $remote[ $which ] ) ? $remote[ $which ] : null;
 				if ( $remote_v && version_compare( $theme['version'], $remote_v, '>=' ) ) {
-					$done[ $which ] = 'up-to-date';
+					$done[ $which ] = array(
+						'skipped'    => 'up-to-date',
+						'version'    => $theme['version'],
+						'remote'     => $remote_v,
+						'verified'   => $verified,
+					);
 					continue;
 				}
 				$result = orsite_gh_update_theme( $which );
@@ -2545,11 +2737,21 @@ function orsite_gh_render_dashboard_widget() {
 
 			<?php if ( $has_update && ! empty( $snapshot['changelog'] ) ) : ?>
 				<h4><?php esc_html_e( 'تغییرات نسخه‌ی تازه', 'lax-theme-child' ); ?></h4>
-				<ul>
-					<?php foreach ( array_slice( (array) $snapshot['changelog'], 0, 3 ) as $line ) : ?>
-						<li><?php echo esc_html( (string) $line ); ?></li>
-					<?php endforeach; ?>
-				</ul>
+				<?php foreach ( array_slice( (array) $snapshot['changelog'], 0, 2 ) as $entry ) : ?>
+					<p class="orsite-changelog__head">
+						<strong><?php echo esc_html( 'نسخهٔ ' . $entry['version'] ); ?></strong>
+						<?php if ( $entry['title'] ) : ?>
+							<span class="orsite-meta"> — <?php echo esc_html( $entry['title'] ); ?></span>
+						<?php endif; ?>
+					</p>
+					<?php if ( ! empty( $entry['items'] ) ) : ?>
+						<ul>
+							<?php foreach ( array_slice( $entry['items'], 0, 4 ) as $line ) : ?>
+								<li><?php echo esc_html( (string) $line ); ?></li>
+							<?php endforeach; ?>
+						</ul>
+					<?php endif; ?>
+				<?php endforeach; ?>
 			<?php endif; ?>
 		<?php endif; ?>
 
@@ -2649,7 +2851,7 @@ function orsite_gh_flash_message() {
 		'check_ok'       => array( 'success', __( 'بررسی انجام شد؛ نتیجه در کارت «فایل‌های تغییریافته» آمده است.', 'lax-theme-child' ) ),
 		'check_stale'    => array( 'error', __( 'اتصال به گیت‌هاب برقرار نشد و داده‌ی ذخیره‌شده نمایش داده می‌شود؛ جزئیات در کارت «وضعیت اتصال» است.', 'lax-theme-child' ) ),
 		'check_fail'     => array( 'error', __( 'بررسی ناموفق بود؛ جزئیات در کارت «وضعیت اتصال» است.', 'lax-theme-child' ) ),
-		'update_ok'      => array( 'success', __( 'بروزرسانی انجام شد؛ لاگ در کارت «آخرین بروزرسانی» است.', 'lax-theme-child' ) ),
+		'update_ok'      => array( 'success', __( 'بروزرسانی انجام شد و نسخهٔ فایل روی سرور تأیید شد؛ لاگ در کارت «آخرین بروزرسانی» است.', 'lax-theme-child' ) ),
 		'update_fail'    => array( 'error', __( 'بروزرسانی با خطا همراه بود؛ جزئیات در کارت «آخرین بروزرسانی» است.', 'lax-theme-child' ) ),
 		'nonce_fail'     => array( 'warning', __( 'نشست این صفحه منقضی شده بود و عملیات انجام نشد. صفحه را دوباره بارگذاری کنید (Ctrl+R) و همان دکمه را بزنید؛ اگر تکرار شد، کش مرورگر یا کش مدیر (LiteSpeed) را برای پیشخوان خاموش کنید.', 'lax-theme-child' ) ),
 		'diag_ok'        => array( 'success', __( 'همه‌ی مسیرهای گیت‌هاب پاسخ دادند؛ جدول تست در کارت «تست اتصال» است.', 'lax-theme-child' ) ),
@@ -3105,9 +3307,16 @@ function orsite_gh_render_page() {
 				</span>
 			</p>
 			<?php if ( ! empty( $remote['changelog'] ) && is_array( $remote['changelog'] ) ) : ?>
-				<?php foreach ( $remote['changelog'] as $section => $bullets ) : ?>
-					<p><strong><?php echo esc_html( is_string( $section ) ? $section : '' ); ?></strong></p>
-					<ul><?php foreach ( (array) $bullets as $b ) : ?><li><?php echo esc_html( $b ); ?></li><?php endforeach; ?></ul>
+				<?php foreach ( array_slice( (array) $remote['changelog'], 0, 6 ) as $entry ) : ?>
+					<p class="orsite-changelog__head">
+						<strong><?php echo esc_html( $entry['version'] ? 'نسخهٔ ' . $entry['version'] : 'نسخهٔ تازه' ); ?></strong>
+						<?php if ( $entry['title'] ) : ?>
+							<span class="orsite-meta"> — <?php echo esc_html( $entry['title'] ); ?></span>
+						<?php endif; ?>
+					</p>
+					<?php if ( ! empty( $entry['items'] ) ) : ?>
+						<ul><?php foreach ( $entry['items'] as $b ) : ?><li><?php echo esc_html( (string) $b ); ?></li><?php endforeach; ?></ul>
+					<?php endif; ?>
 				<?php endforeach; ?>
 			<?php elseif ( $release_data['body'] ) : ?>
 				<p class="orsite-meta"><?php echo esc_html( wp_html_excerpt( $release_data['body'], 600, '…' ) ); ?></p>
@@ -3115,6 +3324,57 @@ function orsite_gh_render_page() {
 		<?php else : ?>
 			<p class="orsite-status-bad"><?php echo esc_html( $release_err ? $release_err : __( 'هنوز انتشاری دریافت نشده است.', 'lax-theme-child' ) ); ?></p>
 		<?php endif; ?>
+	</div>
+
+	<?php
+	// Server truth: what the files say right now, not what a cache remembers.
+	$hj_server = array();
+	foreach ( array( 'child' => get_stylesheet_directory(), 'parent' => get_template_directory() ) as $hj_key => $hj_dir ) {
+		$hj_css  = $hj_dir . '/assets/css/child.css';
+		$hj_disk = orsite_gh_disk_version( $hj_dir );
+		$hj_server[ $hj_key ] = array(
+			'version' => '' !== $hj_disk ? $hj_disk : '—',
+			'style'   => is_readable( $hj_dir . '/style.css' ) ? (int) filemtime( $hj_dir . '/style.css' ) : 0,
+			'css'     => is_readable( $hj_css ) ? (int) filemtime( $hj_css ) : 0,
+			'css_kb'  => is_readable( $hj_css ) ? round( filesize( $hj_css ) / 1024, 1 ) : 0,
+			'writable' => is_writable( $hj_dir ),
+		);
+	}
+	?>
+	<div class="orsite-card">
+		<h2><?php esc_html_e( 'نسخهٔ واقعی فایل‌های روی سرور', 'lax-theme-child' ); ?></h2>
+		<p class="orsite-meta"><?php esc_html_e( 'این جدول فایل‌ها را از دیسک می‌خواند؛ کش وردپرس، LiteSpeed یا مرورگر در آن اثری ندارد. اگر «نسخهٔ فایل» با نسخهٔ نصب‌شده یکی نیست، بروزرسانی واقعاً روی سرور ننشسته است.', 'lax-theme-child' ); ?></p>
+		<table class="widefat striped" style="max-width:720px">
+			<thead>
+				<tr>
+					<th><?php esc_html_e( 'پوسته', 'lax-theme-child' ); ?></th>
+					<th><?php esc_html_e( 'نسخهٔ فایل', 'lax-theme-child' ); ?></th>
+					<th><?php esc_html_e( 'آخرین تغییر style.css', 'lax-theme-child' ); ?></th>
+					<th><?php esc_html_e( 'child.css', 'lax-theme-child' ); ?></th>
+					<th><?php esc_html_e( 'قابل نوشتن', 'lax-theme-child' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ( $hj_server as $hj_key => $hj_row ) : ?>
+					<tr>
+						<td><?php echo esc_html( 'child' === $hj_key ? 'lax-theme-child' : 'lax-theme' ); ?></td>
+						<td><strong><?php echo esc_html( $hj_row['version'] ); ?></strong></td>
+						<td><?php echo esc_html( $hj_row['style'] ? wp_date( 'Y-m-d H:i', $hj_row['style'] ) : '—' ); ?></td>
+						<td><?php echo esc_html( $hj_row['css'] ? wp_date( 'Y-m-d H:i', $hj_row['css'] ) . ' · ' . $hj_row['css_kb'] . ' KB' : '—' ); ?></td>
+						<td><?php echo $hj_row['writable'] ? '✅' : '⛔'; ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<p class="orsite-meta">
+			<?php
+			printf(
+				/* translators: %s: URL of the stylesheet in the browser */
+				esc_html__( 'برای تأیید از بیرون: نشانی %s را باز کنید؛ اگر بلوک «پیوندهای مقاله آبی، کادر عنوان سرمه‌ای» را ندارد، فایل قدیمی است.', 'lax-theme-child' ),
+				'<code>' . esc_html( get_stylesheet_directory_uri() . '/assets/css/child.css' ) . '</code>'
+			);
+			?>
+		</p>
 	</div>
 
 	<div class="orsite-card">
@@ -3166,6 +3426,25 @@ function orsite_gh_render_page() {
 				<p class="orsite-status-bad"><?php echo esc_html( $which . ': ' . $msg ); ?></p>
 			<?php endforeach; ?>
 		<?php endif; ?>
+		<?php if ( ! empty( $last_run['done'] ) ) : ?>
+			<?php foreach ( (array) $last_run['done'] as $which => $entry ) : ?>
+				<?php if ( ! is_array( $entry ) || empty( $entry['skipped'] ) ) { continue; } ?>
+				<p class="orsite-meta">
+					<?php
+					printf(
+						/* translators: 1: theme key, 2: installed version, 3: released version */
+						esc_html__( '%1$s: نسخهٔ روی سرور %2$s است و گیت‌هاب %3$s می‌گوید؛ تغییری لازم نبود.', 'lax-theme-child' ),
+						esc_html( $which ),
+						esc_html( (string) $entry['version'] ),
+						esc_html( (string) $entry['remote'] )
+					);
+					?>
+					<?php if ( empty( $entry['verified'] ) ) : ?>
+						<br /><strong><?php esc_html_e( 'هشدار: این پاسخ از کش آمده و تأیید تازه نشده است؛ یک‌بار «تست اتصال» را بزنید.', 'lax-theme-child' ); ?></strong>
+					<?php endif; ?>
+				</p>
+			<?php endforeach; ?>
+		<?php endif; ?>
 		<?php if ( empty( $last_update ) ) : ?>
 			<p class="orsite-meta"><?php esc_html_e( 'هنوز بروزرسانی‌ای از این صفحه انجام نشده است.', 'lax-theme-child' ); ?></p>
 		<?php else : ?>
@@ -3180,7 +3459,11 @@ function orsite_gh_render_page() {
 				</h3>
 				<p class="orsite-meta">
 					<?php
-					$ver = ! empty( $log['to'] ) ? sprintf( '%s → %s', $log['from'], $log['to'] ) : $log['release_tag'];
+					$from_v = ! empty( $log['version_from'] ) ? $log['version_from'] : ( ! empty( $log['from'] ) ? $log['from'] : '' );
+					$to_v   = ! empty( $log['version_to'] ) ? $log['version_to'] : ( ! empty( $log['to'] ) ? $log['to'] : '' );
+					$ver    = ( '' !== $from_v || '' !== $to_v )
+						? sprintf( '%s → %s', '' !== $from_v ? $from_v : '?', '' !== $to_v ? $to_v : '?' )
+						: $log['release_tag'];
 					printf(
 						/* translators: 1: version or tag 2: time */
 						esc_html__( 'از انتشار %1$s — %2$s پیش', 'lax-theme-child' ),

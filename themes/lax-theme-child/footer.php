@@ -56,6 +56,10 @@ $hj_footer_pages = array(
 );
 ?>
 
+<aside class="hj-emergency hj-emergency--above-footer" aria-label="دسترسی اورژانسی">
+	<p>علائم خطر مثل تنگی نفس، درد قفسهٔ سینه یا خون‌ریزی شدید؟ منتظر خواندن مقاله نمانید — <a href="tel:115">اورژانس ۱۱۵</a></p>
+</aside>
+
 <footer id="colophon" class="site-footer hj-footer">
 	<div class="container">
 
