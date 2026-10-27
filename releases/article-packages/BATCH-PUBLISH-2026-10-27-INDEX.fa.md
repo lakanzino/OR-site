@@ -4,7 +4,7 @@
 - **ساختار هر ZIP:** پوشه‌ی ریشه `<slug>/` شامل `article.json` + `content.html` + `featured.webp` (۱۲۰۰×۶۷۵، زیر ۱۸۰KB)؛ دو بسته‌ی overview دارای پوشه‌ی `assets/` با دو تصویر درون‌متنی.
 - **بسته‌ی ترکیبی:** `BATCH-PUBLISH-2026-10-27-9packages.zip` (هر ۹ ZIP یک‌جا).
 - **مقصد Google Drive:** پوشه «4 — بسته‌های انتشار ۲۰۲۶-۱۰-۲۷ (۹ مقاله آماده ایمپورت)» داخل «OR-SITE — بسته‌های مقالات جراحی» — شناسه `17IYJBIfxV5W-vBu2-2PGskslw-TOcxuH` (دسترسی: هر کس با لینک، خواننده).
-- **محدودیت نرخ آپلود ۲۰۲۶-۱۰-۲۷:** سه فایل (`laparoscopy-preparation`، `tonsillectomy-overview` و بسته‌ی ترکیبی) در نوبت اول آپلود Drive نرفتند؛ تا تکمیل آپلود، لینک گیت‌هاب معادل رسمی تحویل است. هر ۱۰ فایل روی گیت‌هاب پوش شده‌اند.
+- **به‌روزرسانی ۲۰۲۶-۱۰-۲۷ (نوبت دوم):** هر سه فایل معوق (`laparoscopy-preparation`، `tonsillectomy-overview` و بسته‌ی ترکیبی) با موفقیت در همان پوشه آپلود شدند؛ اکنون هر ۱۰ فایل هم روی Drive و هم روی گیت‌هاب موجودند.
 
 ## لینک‌های دانلود
 
@@ -18,9 +18,9 @@
 | `hemorrhoid-preparation` | https://drive.google.com/uc?id=1IEhndmZLNyz237NGuBl4IV8qyGQE51jS&export=download |
 | `hemorrhoid-recovery` | https://drive.google.com/uc?id=1dwN034jwkvozjje7Xf9iQFkYnB6Xvxef&export=download |
 | `laparoscopy-overview` | https://drive.google.com/uc?id=1jXK_HxHOdKSUCBJSlm32at6I7Gn5kgCU&export=download |
-| `laparoscopy-preparation` | ⏳ در صف آپلود (لینک گیت‌هاب پایین) |
-| `tonsillectomy-overview` | ⏳ در صف آپلود (لینک گیت‌هاب پایین) |
-| بسته‌ی ترکیبی ۹تایی | ⏳ در صف آپلود (لینک گیت‌هاب پایین) |
+| `laparoscopy-preparation` | https://drive.google.com/uc?id=12QWDgEugl3naVSLZtY41eFMN5jhbAJl-&export=download |
+| `tonsillectomy-overview` | https://drive.google.com/uc?id=16I9XhrAeQkr-ncW8WzY7XF1eGgSETTyV&export=download |
+| بسته‌ی ترکیبی ۹تایی | https://drive.google.com/uc?id=1xHtJPc3Vn6rBU6xvpP32jXMAejfcVCU0&export=download |
 
 ### گیت‌هاب (همه‌ی ۱۰ فایل، فعال و راستی‌آزمایی‌شده)
 الگو: `https://github.com/lakanzino/OR-site/raw/arena/95bf3749-or-site/releases/article-packages/<file>`

@@ -30,32 +30,42 @@ LIVE = {
     "/patient-guide/mental-preparation-before-surgery/", "/patient-guide/anesthesia-consultation/",
     "/patient-guide/anesthesia-side-effects/", "/patient-guide/warning-signs-after-surgery/",
     "/or-environment/surgical-team-roles/",
-    "/surgery/appendectomy-preparation/", "/surgery/appendectomy-recovery/",
-    "/surgery/cesarean-overview/", "/surgery/cesarean-preparation/",
-    "/surgery/cesarean-recovery/", "/surgery/hernia-overview/",
-}
-BATCH = {
-    "/surgery/appendectomy-overview/", "/surgery/hernia-preparation/", "/surgery/hernia-recovery/",
-    "/surgery/laparoscopy-overview/", "/surgery/laparoscopy-preparation/", "/surgery/laparoscopy-recovery/",
-    "/patient-guide/children-and-anesthesia/", "/patient-guide/elderly-and-surgery/",
-    "/patient-guide/emergency-vs-elective-surgery/", "/patient-guide/outpatient-vs-inpatient-surgery/",
-    "/patient-guide/intubation-explained/", "/patient-guide/anesthesia-and-memory/",
-    "/patient-guide/home-wound-care/", "/patient-guide/dvt-pulmonary-embolism-prevention/",
-    "/patient-guide/discharge-checklist/",
-    "/surgery/cataract-overview/", "/surgery/cataract-preparation/",
-    "/surgery/cataract-recovery/", "/surgery/cholecystectomy-overview/",
-    "/patient-guide/general-preparation-before-surgery/", "/patient-guide/questions-before-surgery/",
-    "/patient-guide/medical-history-disclosure/", "/patient-guide/smoking-and-surgery/",
-    "/patient-guide/diabetes-and-surgery/", "/patient-guide/obesity-and-anesthesia/",
-    "/surgery/cholecystectomy-preparation/", "/surgery/cholecystectomy-recovery/",
-    "/surgery/tonsillectomy-overview/", "/surgery/tonsillectomy-preparation/",
-    "/surgery/tonsillectomy-recovery/",
-    "/surgery/thyroidectomy-overview/", "/surgery/thyroidectomy-preparation/",
-    "/surgery/thyroidectomy-recovery/", "/surgery/kidney-stone-overview/",
-    "/surgery/kidney-stone-preparation/", "/surgery/kidney-stone-recovery/",
+    # ۲۴ جراحی زنده (REST API ۲۰۲۶-۱۰-۲۵).
+    "/surgery/appendectomy-overview/", "/surgery/appendectomy-preparation/",
+    "/surgery/appendectomy-recovery/", "/surgery/cesarean-overview/",
+    "/surgery/cesarean-preparation/", "/surgery/cesarean-recovery/",
+    "/surgery/hernia-overview/", "/surgery/hernia-preparation/", "/surgery/hernia-recovery/",
+    "/surgery/cataract-overview/", "/surgery/cataract-preparation/", "/surgery/cataract-recovery/",
+    "/surgery/cholecystectomy-overview/", "/surgery/cholecystectomy-preparation/",
+    "/surgery/cholecystectomy-recovery/", "/surgery/thyroidectomy-overview/",
+    "/surgery/thyroidectomy-preparation/", "/surgery/thyroidectomy-recovery/",
+    "/surgery/kidney-stone-overview/", "/surgery/kidney-stone-preparation/",
+    "/surgery/kidney-stone-recovery/", "/surgery/laparoscopy-recovery/",
+    "/surgery/tonsillectomy-preparation/", "/surgery/tonsillectomy-recovery/",
+    # دسته‌ی انتشار ۲۰۲۶-۱۰-۲۷: نه بسته‌ی آماده به‌دستور کارفرما در ردیف منتشرشده‌ها ثبت شد
+    # (ایمپورت وردپرس از پیشخوان کارفرما انجام می‌شود؛ post_status بسته‌ها draft می‌ماند).
     "/surgery/circumcision-overview/", "/surgery/circumcision-preparation/",
     "/surgery/circumcision-recovery/", "/surgery/hemorrhoid-overview/",
     "/surgery/hemorrhoid-preparation/", "/surgery/hemorrhoid-recovery/",
+    "/surgery/laparoscopy-overview/", "/surgery/laparoscopy-preparation/",
+    "/surgery/tonsillectomy-overview/",
+    # دوازده راهنمای بیمارِ منتشرشده‌ی پس از بازبینی ۲۰۲۶-۱۰-۲۵.
+    "/patient-guide/elderly-and-surgery/", "/patient-guide/emergency-vs-elective-surgery/",
+    "/patient-guide/outpatient-vs-inpatient-surgery/", "/patient-guide/anesthesia-and-memory/",
+    "/patient-guide/dvt-pulmonary-embolism-prevention/", "/patient-guide/discharge-checklist/",
+    "/patient-guide/general-preparation-before-surgery/", "/patient-guide/questions-before-surgery/",
+    "/patient-guide/medical-history-disclosure/", "/patient-guide/smoking-and-surgery/",
+    "/patient-guide/diabetes-and-surgery/", "/patient-guide/obesity-and-anesthesia/",
+}
+# بسته‌های آماده‌ای که هنوز روی سایت زنده نیستند: سه راهنمای بیمارِ وابسته‌ی دسته‌ی پیشین
+# (بسته‌های سبز در content/drafts) به‌علاوه‌ی دسته‌ی تازه‌ی ۲۰۲۶-۱۰-۲۷ (پنج مقاله).
+BATCH = {
+    "/patient-guide/children-and-anesthesia/", "/patient-guide/home-wound-care/",
+    "/patient-guide/intubation-explained/",
+    "/surgery/septoplasty-overview/", "/surgery/septoplasty-preparation/",
+    "/surgery/septoplasty-recovery/",
+    "/patient-guide/why-operating-room-is-sterile/",
+    "/patient-guide/blood-donation-reserve-before-surgery/",
 }
 ALLOWED = LIVE | BATCH
 
