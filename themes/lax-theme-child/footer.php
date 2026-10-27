@@ -56,6 +56,10 @@ $hj_footer_pages = array(
 );
 ?>
 
+<aside class="hj-emergency hj-emergency--above-footer" aria-label="دسترسی اورژانسی">
+	<p>علائم خطر مثل تنگی نفس، درد قفسهٔ سینه یا خون‌ریزی شدید؟ منتظر خواندن مقاله نمانید — <a href="tel:115">اورژانس ۱۱۵</a></p>
+</aside>
+
 <footer id="colophon" class="site-footer hj-footer">
 	<div class="container">
 
@@ -95,20 +99,12 @@ $hj_footer_pages = array(
 
 		</div>
 
-		<aside class="hj-emergency" aria-label="شماره‌های اورژانسی">
-			<p><strong>وضعیت اورژانسی؟</strong> این مجله آموزش عمومی است و جایگزین پزشک نیست. در علائم خطر مانند تنگی نفس، درد قفسهٔ سینه، خون‌ریزی شدید یا افت هوشیاری، منتظر خواندن مقاله نمانید.</p>
-			<ul class="hj-emergency__numbers">
-				<li><a href="tel:115">اورژانس ۱۱۵</a></li>
-			</ul>
-		</aside>
-
 		<div class="hj-footer__bottom">
 			<p class="hj-footer__copyright">
 				&copy; <?php echo esc_html( wp_date( 'Y' ) ); ?>
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a>
 				— همه‌ی حقوق محفوظ است.
 			</p>
-			<p class="hj-footer__legal">محتوای همیار جراحی آموزش عمومی برای بیمار و همراه است و رابطهٔ پزشک و بیمار ایجاد نمی‌کند؛ تشخیص، نسخه و تصمیم درمانی فقط با تیم درمانی است که پروندهٔ شما را دیده است. برای دیدن شرایط کامل، <a href="<?php echo esc_url( hj_page_url( 'terms' ) ); ?>">شرایط استفاده</a> و <a href="<?php echo esc_url( hj_page_url( 'privacy' ) ); ?>">حریم خصوصی</a> را بخوانید.</p>
 		</div>
 
 	</div>

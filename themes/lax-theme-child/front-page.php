@@ -235,7 +235,6 @@ $hj_faqs = array(
 					<div class="hj-care-tool__result" id="hj-care-result" aria-live="polite" hidden></div>
 
 					<div class="hj-care-tool__fallback">
-						<p><strong>بدون جاوااسکریپت هم می‌شود:</strong> مراحل جراحی را مستقیم بخوانید — <a href="<?php echo esc_url( hj_archive_url( 'surgery' ) ); ?>">همهٔ جراحی‌ها</a> · <a href="<?php echo esc_url( hj_archive_url( 'patient_guide' ) ); ?>">راهنمای بیمار</a> · <a href="<?php echo esc_url( hj_page_url( 'faq' ) ); ?>">پرسش‌های متداول</a></p>
 					</div>
 
 					<script type="application/json" id="hj-care-data"><?php echo wp_json_encode( $hj_care_stages, JSON_UNESCAPED_UNICODE ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON data. ?></script>

@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.20.3' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.21.0' );
 }
 
 /**
@@ -31,12 +31,12 @@ require_once get_stylesheet_directory() . '/inc/content-types.php';
  * Load article display helpers (TOC, badges, related articles).
  */
 require_once get_stylesheet_directory() . '/inc/article-display.php';
+require_once get_stylesheet_directory() . '/inc/article-tables.php';
 
 /**
  * Load patient-need sections for article templates (scope note, ask-before
  * checklist, plain-words glossary, visible FAQ) — child 0.15.0.
  */
-require_once get_stylesheet_directory() . '/inc/patient-needs.php';
 
 /**
  * Load the editorial quality layer (child 0.16.0):
@@ -45,16 +45,34 @@ require_once get_stylesheet_directory() . '/inc/patient-needs.php';
  */
 require_once get_stylesheet_directory() . '/inc/persian-normalize.php';
 require_once get_stylesheet_directory() . '/inc/source-whitelist.php';
+/*
+ * Not loaded on purpose (child 0.21.0):
+ *  - inc/patient-needs.php and inc/quick-facts.php only rendered the
+ *    patient-need boxes and the clinical summary that 0.15–0.20 injected into
+ *    every article (even guides with no surgery). Their meta boxes would now
+ *    collect text that never reaches the page, so they are out of the include
+ *    chain until the article layout supports them again.
+ */
 require_once get_stylesheet_directory() . '/inc/references-box.php';
 require_once get_stylesheet_directory() . '/inc/faq-accordion.php';
-require_once get_stylesheet_directory() . '/inc/quick-facts.php';
 require_once get_stylesheet_directory() . '/inc/nav-menus.php';
-require_once get_stylesheet_directory() . '/inc/emergency-bar.php';
 require_once get_stylesheet_directory() . '/inc/publish-gate.php';
 require_once get_stylesheet_directory() . '/inc/content-freshness.php';
 require_once get_stylesheet_directory() . '/inc/medical-boxes.php';
 require_once get_stylesheet_directory() . '/inc/schema-procedure.php';
 require_once get_stylesheet_directory() . '/inc/performance.php';
+
+/**
+ * Article body is left exactly as the editor wrote it (child 0.21.0).
+ *
+ * 0.15–0.20 injected patient-need boxes, a references box and an FAQ
+ * accordion into `the_content`. On the live site that produced two sources
+ * lists, two FAQs and two disclaimers per article, and pushed the table of
+ * contents to the bottom of the page. The injectors stay in the codebase for
+ * later reuse but are unhooked here: one switch, not a rewrite.
+ */
+remove_filter( 'the_content', 'hj_refs_upgrade_content', 7 );
+remove_filter( 'the_content', 'hj_faq_upgrade_content', 7 );
 
 /**
  * Load image sizes and article media block patterns.

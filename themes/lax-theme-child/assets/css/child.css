@@ -2195,173 +2195,6 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 	}
 }
 
-/* ---------- Patient-need sections (child 0.15.0) ---------- */
-/*
- * Four blocks built from real patient search demand: scope note under the
- * title, printable questions for the doctor visit, plain-words glossary and
- * a visible FAQ list. All boxes follow the navy boxed palette.
- */
-
-.orsite-scope {
-	background: var(--bx-soft);
-	border: 2px solid var(--bx-line);
-	border-inline-start: 6px solid var(--bx-navy);
-	border-radius: 16px;
-	box-shadow: var(--bx-inset);
-	margin: 1.1rem 0 0;
-	padding: 0.9rem 1.15rem;
-}
-
-.orsite-scope__title {
-	margin: 0 0 0.35rem;
-	color: var(--bx-navy-deep);
-	font-weight: 800;
-	font-size: 0.95rem;
-	line-height: 1.7;
-}
-
-.orsite-scope__body {
-	margin: 0;
-	color: var(--bx-muted);
-	font-size: 0.92rem;
-	line-height: 1.95;
-}
-
-.orsite-ask,
-.orsite-terms,
-.orsite-faq {
-	margin: 2rem 0 0;
-	background: var(--bx-box);
-	border: 3px solid var(--bx-navy);
-	border-radius: 22px;
-	box-shadow: var(--bx-shadow);
-	padding: 1.25rem 1.35rem 1.35rem;
-}
-
-.orsite-ask__title,
-.orsite-terms__title,
-.orsite-faq__title {
-	margin: 0 0 0.7rem;
-	color: var(--bx-navy-deep);
-	font-size: 1.12rem;
-	line-height: 1.7;
-}
-
-.orsite-ask__hint,
-.orsite-ask__note {
-	margin: 0 0 0.9rem;
-	color: var(--bx-muted);
-	font-size: 0.92rem;
-	line-height: 1.95;
-}
-
-.orsite-ask__note {
-	margin: 0.9rem 0 0;
-	padding-top: 0.8rem;
-	border-top: 1px dashed var(--bx-line);
-}
-
-.orsite-ask__list {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	display: grid;
-	gap: 0.55rem;
-}
-
-.orsite-ask__list li {
-	position: relative;
-	background: var(--bx-soft);
-	border: 1px solid var(--bx-line);
-	border-radius: 12px;
-	color: var(--bx-ink);
-	line-height: 1.9;
-	padding: 0.6rem 2.35rem 0.6rem 0.9rem;
-}
-
-.orsite-ask__list li::before {
-	content: "";
-	position: absolute;
-	inset-inline-start: 0.85rem;
-	top: 1.05rem;
-	width: 0.95rem;
-	height: 0.95rem;
-	border: 2px solid var(--bx-navy);
-	border-radius: 4px;
-	background: var(--bx-box);
-}
-
-.orsite-terms__list {
-	margin: 0;
-	display: grid;
-	gap: 0.6rem;
-}
-
-.orsite-terms__row {
-	display: grid;
-	grid-template-columns: minmax(8rem, 0.42fr) minmax(0, 1fr);
-	gap: 0.75rem;
-	align-items: start;
-	background: var(--bx-soft);
-	border: 1px solid var(--bx-line);
-	border-radius: 12px;
-	padding: 0.6rem 0.9rem;
-}
-
-.orsite-terms__row dt {
-	color: var(--bx-navy-deep);
-	font-weight: 800;
-	line-height: 1.9;
-}
-
-.orsite-terms__row dd {
-	margin: 0;
-	color: var(--bx-muted);
-	line-height: 1.9;
-}
-
-@media (max-width: 640px) {
-	.orsite-terms__row {
-		grid-template-columns: 1fr;
-		gap: 0.2rem;
-	}
-
-	.orsite-ask,
-	.orsite-terms,
-	.orsite-faq {
-		padding: 1rem 1rem 1.1rem;
-		border-width: 2px;
-	}
-}
-
-@media print {
-	.orsite-toc,
-	.orsite-related,
-	.hj-faq-list,
-	.orsite-article__media {
-		display: none !important;
-	}
-
-	.orsite-ask {
-		box-shadow: none;
-		break-inside: avoid;
-	}
-}
-
-.orsite-faq .hj-faq-list details .orsite-faq__answer {
-	color: var(--bx-muted);
-	line-height: 2;
-	padding: 1rem 1.25rem 1.2rem;
-}
-
-.orsite-faq .hj-faq-list details .orsite-faq__answer > * {
-	margin: 0 0 0.6rem;
-}
-
-.orsite-faq .hj-faq-list details .orsite-faq__answer > *:last-child {
-	margin-bottom: 0;
-}
-
 /* ---------- Medical callout boxes (child 0.16.1) ---------- */
 /*
  * One markup, four tones: `[hjbox type="danger|warning|info|success"]`.
@@ -2574,625 +2407,6 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 	}
 }
 
-/* ---------- Patient-need blocks on small phones (≤480 / ≤360) ---------- */
-/*
- * Reading after surgery happens on a phone, often one-handed and in a hurry.
- * These rules keep the blocks narrow, stop long Latin terms from forcing a
- * horizontal scroll, and give the printable question list back its width.
- */
-
-.orsite-article__content,
-.orsite-ask__list li,
-.orsite-terms__row dd,
-.orsite-faq__answer {
-	overflow-wrap: break-word;
-}
-
-.orsite-article__content table {
-	display: block;
-	max-width: 100%;
-	overflow-x: auto;
-	-webkit-overflow-scrolling: touch;
-}
-
-@media (max-width: 480px) {
-	.orsite-scope {
-		padding: 0.8rem 0.95rem;
-		margin: 0.9rem 0 0;
-		border-inline-start-width: 5px;
-	}
-
-	.orsite-scope__body {
-		font-size: 0.9rem;
-		line-height: 1.9;
-	}
-
-	.orsite-ask,
-	.orsite-terms,
-	.orsite-faq {
-		padding: 0.95rem 0.95rem 1rem;
-		border-width: 2px;
-		border-radius: 16px;
-		margin: 1.5rem 0 0;
-	}
-
-	.orsite-ask__title,
-	.orsite-terms__title,
-	.orsite-faq__title {
-		font-size: 1rem;
-		line-height: 1.7;
-	}
-
-	.orsite-ask__list li {
-		padding: 0.55rem 2.1rem 0.55rem 0.75rem;
-		font-size: 0.93rem;
-		line-height: 1.85;
-	}
-
-	.orsite-ask__list li::before {
-		inset-inline-start: 0.7rem;
-		top: 0.95rem;
-		width: 0.85rem;
-		height: 0.85rem;
-	}
-
-	.orsite-terms__row {
-		padding: 0.55rem 0.75rem;
-	}
-
-	.orsite-terms__row dt,
-	.orsite-terms__row dd {
-		font-size: 0.93rem;
-	}
-
-	.hj-faq-list summary {
-		padding: 0.75rem 0.9rem;
-		font-size: 0.94rem;
-		line-height: 1.75;
-	}
-
-	.hj-faq-list details .orsite-faq__answer {
-		padding: 0.75rem 0.9rem 0.85rem;
-		font-size: 0.93rem;
-	}
-}
-
-@media (max-width: 360px) {
-	.orsite-ask__list li {
-		padding: 0.5rem 1.9rem 0.5rem 0.7rem;
-	}
-
-	.orsite-ask__title,
-	.orsite-terms__title,
-	.orsite-faq__title {
-		font-size: 0.96rem;
-	}
-}
-
-/* ==========================================================================
-   منابع و شواهد بالینی — باکس پایان مقاله (قالب ۰٫۱۸٫۰)
-   همان فهرست منابع مقاله، در قالب یک کتاب‌شناسی شماره‌دار:
-   شماره با شمارندهٔ CSS، نشان ردهٔ اعتبار از فهرست سفید گیت،
-   و دامنه به‌عنوان متن پیوند (نشانی خام در جمله خوانا نیست).
-   ========================================================================== */
-
-.hj-refs {
-	--ref-accent: var(--bx-navy-mid, #0a2f6b);
-	--ref-accent-deep: var(--bx-navy-deep, #041a3f);
-	--ref-ink: var(--bx-ink, #071a33);
-	--ref-muted: var(--bx-muted, #38536e);
-	--ref-line: rgba(4, 26, 63, 0.14);
-	--ref-title-size: 1.05rem;
-	margin: 2.5rem 0 1.5rem;
-	padding: 1.5rem 1.65rem 1.25rem;
-	background: #ffffff;
-	border: 1px solid var(--ref-line);
-	border-radius: 14px;
-	box-shadow: 0 1px 2px rgba(4, 26, 63, 0.05), 0 10px 26px -20px rgba(4, 26, 63, 0.55);
-	direction: rtl;
-	text-align: start;
-}
-
-.hj-refs__head {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 0.45rem 0.6rem;
-	margin: 0 0 0.55rem;
-	padding: 0 0 0.7rem;
-	border-bottom: 1px dashed rgba(4, 26, 63, 0.22);
-}
-
-.hj-refs__icon {
-	flex: 0 0 auto;
-	width: 22px;
-	height: 22px;
-	background-color: transparent;
-	background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230a2f6b'%3E%3Cpath d='M19 2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2h2a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Zm-4 18H5V8h10v12Zm4-4h-2V6a1 1 0 0 0-1-1H9V4h10v12ZM7 10h6v2H7v-2Zm0 3h6v2H7v-2Zm0 3h4v2H7v-2Z'/%3E%3C/svg%3E");
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: 22px 22px;
-}
-
-.hj-refs__title {
-	flex: 1 1 auto;
-	margin: 0;
-	font-size: var(--ref-title-size);
-	font-weight: 700;
-	line-height: 1.6;
-	color: var(--ref-ink);
-}
-
-/* خنثی‌کردن کارت سراسری H2 مقاله: عنوان این باکس باید درون سربرگ بنشیند،
-   نه اینکه خودش یک کارت سرمه‌ای با تیتر بریده‌شده بشود. */
-.orsite-article__content .hj-refs .hj-refs__title,
-.hj-refs .hj-refs__title {
-	display: block;
-	width: auto;
-	max-width: 100%;
-	margin: 0;
-	padding: 0;
-	background: none;
-	border: 0;
-	border-radius: 0;
-	box-shadow: none;
-	color: var(--ref-ink);
-	font-size: var(--ref-title-size);
-	line-height: 1.6;
-	white-space: normal;
-	overflow: visible;
-	text-overflow: clip;
-	scroll-margin-top: 7rem;
-}
-
-.hj-refs .hj-refs__list,
-.orsite-article__content .hj-refs .hj-refs__list {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-	background: none;
-	border: 0;
-	border-radius: 0;
-	box-shadow: none;
-}
-
-.hj-refs .hj-refs__item {
-	margin: 0;
-	padding-inline: 0;
-}
-
-.hj-refs .hj-refs__meta-line,
-.hj-refs .hj-refs__note {
-	margin-inline: 0;
-	max-width: 100%;
-}
-
-.hj-refs__kicker {
-	flex: 0 0 auto;
-	font-size: 0.66rem;
-	font-weight: 600;
-	letter-spacing: 0.14em;
-	text-transform: uppercase;
-	color: var(--ref-muted);
-	opacity: 0.75;
-}
-
-.hj-refs__meta-line {
-	margin: 0 0 1rem;
-	font-size: 0.82rem;
-	color: var(--ref-muted);
-}
-
-.hj-refs__list {
-	counter-reset: hjref;
-	display: grid;
-	gap: 0.85rem;
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-
-.hj-refs__item {
-	display: grid;
-	grid-template-columns: 2.1rem 1fr;
-	gap: 0.1rem 0.45rem;
-	padding-block: 0.1rem;
-	break-inside: avoid;
-}
-
-.hj-refs__num {
-	grid-column: 1;
-	font-size: 0.82rem;
-	font-weight: 700;
-	font-variant-numeric: tabular-nums;
-	line-height: 1.9;
-	color: var(--ref-accent);
-}
-
-.hj-refs__num::before {
-	counter-increment: hjref;
-	content: "[" counter(hjref) "]";
-}
-
-.hj-refs__body {
-	grid-column: 2;
-	min-width: 0;
-}
-
-.hj-refs__text {
-	display: block;
-	font-size: 0.93rem;
-	line-height: 1.85;
-	color: var(--ref-muted);
-	overflow-wrap: break-word;
-}
-
-.hj-refs__row {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 0.4rem;
-	margin-top: 0.3rem;
-}
-
-.hj-refs__badge {
-	display: inline-block;
-	padding: 0.1rem 0.45rem;
-	border-radius: 999px;
-	font-size: 0.7rem;
-	font-weight: 600;
-	line-height: 1.7;
-	white-space: nowrap;
-}
-
-.hj-refs__badge--tier1 {
-	background-color: #e4edf9;
-	color: #082a5e;
-}
-
-.hj-refs__badge--tier2 {
-	background-color: #eef4fa;
-	color: #2f4a66;
-}
-
-.hj-refs__badge--other {
-	background-color: #f1f3f6;
-	color: #44536b;
-}
-
-.hj-refs__link {
-	font-size: 0.82rem;
-	font-weight: 600;
-	color: var(--ref-accent);
-	text-decoration: underline;
-	text-decoration-thickness: 1px;
-	text-underline-offset: 3px;
-	overflow-wrap: anywhere;
-	word-break: break-word;
-	transition: color 0.15s ease;
-}
-
-.hj-refs__link:hover,
-.hj-refs__link:focus {
-	color: var(--ref-accent-deep);
-}
-
-.hj-refs__note {
-	margin: 1rem 0 0;
-	padding-top: 0.75rem;
-	border-top: 1px dashed rgba(4, 26, 63, 0.18);
-	font-size: 0.84rem;
-	line-height: 1.8;
-	color: var(--ref-muted);
-}
-
-/* موبایل — همان منطق باکس‌های ۰٫۱۶.۱: عرض متن اولویت دارد */
-@media (max-width: 768px) {
-	.hj-refs {
-		margin: 2rem 0 1.25rem;
-		padding: 1.25rem 1.1rem 1.1rem;
-	}
-
-	.hj-refs {
-		--ref-title-size: 1rem;
-	}
-}
-
-@media (max-width: 480px) {
-	.hj-refs {
-		padding: 1.05rem 0.95rem 1rem;
-		border-radius: 12px;
-	}
-
-	.hj-refs__item {
-		grid-template-columns: 1.85rem 1fr;
-	}
-
-	.hj-refs__text {
-		font-size: 0.9rem;
-		line-height: 1.8;
-	}
-
-	.hj-refs__kicker {
-		display: none;
-	}
-
-	.hj-refs__note {
-		font-size: 0.8rem;
-	}
-}
-
-@media (max-width: 360px) {
-	.hj-refs {
-		padding: 0.95rem 0.85rem 0.9rem;
-	}
-
-	.hj-refs__item {
-		grid-template-columns: 1.7rem 1fr;
-	}
-
-	.hj-refs__text {
-		font-size: 0.88rem;
-	}
-
-	.hj-refs__badge {
-		font-size: 0.66rem;
-	}
-}
-
-/* دارک‌مود فقط با کلاس صریح روی html (سایت روشن است؛ media query خام،
-   برای کاربرانی که سیستم‌شان دارک است، باکس سیاه روی صفحهٔ روشن می‌ساخت) */
-html.hj-refs-dark .hj-refs {
-	background: #0f1c30;
-	border-color: rgba(255, 255, 255, 0.12);
-	--ref-ink: #f1f5f9;
-	--ref-muted: #c3d2e3;
-	--ref-accent: #93bdf0;
-	--ref-accent-deep: #c7dcf8;
-}
-
-html.hj-refs-dark .hj-refs__head,
-html.hj-refs-dark .hj-refs__note {
-	border-color: rgba(255, 255, 255, 0.16);
-}
-
-html.hj-refs-dark .hj-refs__icon {
-	background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2393bdf0'%3E%3Cpath d='M19 2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2h2a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Zm-4 18H5V8h10v12Zm4-4h-2V6a1 1 0 0 0-1-1H9V4h10v12ZM7 10h6v2H7v-2Zm0 3h6v2H7v-2Zm0 3h4v2H7v-2Z'/%3E%3C/svg%3E");
-}
-
-html.hj-refs-dark .hj-refs__badge--tier1 {
-	background-color: rgba(147, 189, 240, 0.18);
-	color: #cfe2fa;
-}
-
-html.hj-refs-dark .hj-refs__badge--tier2,
-html.hj-refs-dark .hj-refs__badge--other {
-	background-color: rgba(255, 255, 255, 0.1);
-	color: #d7e2ee;
-}
-
-@media print {
-	.hj-refs {
-		margin: 1rem 0;
-		padding: 0.8rem 1rem;
-		border: 1px solid #9aa7b6;
-		border-radius: 0;
-		box-shadow: none;
-		break-inside: avoid;
-	}
-
-	.hj-refs__item,
-	.hj-refs__note {
-		break-inside: avoid;
-	}
-}
-
-/* ==========================================================================
-   آکاردئون پرسش‌های متداول — بومی، بدون جاوااسکریپت (قالب ۰٫۱۹٫۰)
-   فقط ناحیهٔ مقاله (`.orsite-faq`) را بازطراحی می‌کند؛ آکاردئون صفحهٔ اصلی
-   (`.hj-home .hj-faq-list`) دست‌نخورده می‌ماند تا قاعدهٔ «تیتر تک‌خطی» نشکند.
-   ========================================================================== */
-
-/* خودِ باکس بخش از کارت‌های درونی سبک‌تر می‌شود تا دو کادر تودرتو سنگین نشود */
-.orsite-faq {
-	border: 1px solid var(--bx-line);
-	border-radius: 18px;
-	background: var(--bx-soft);
-	padding: 1.05rem 1.1rem 1.15rem;
-	box-shadow: none;
-}
-
-.orsite-faq .orsite-faq__title {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 0.5rem;
-	margin: 0 0 0.8rem;
-}
-
-.orsite-faq__count {
-	display: inline-block;
-	margin-inline-start: 0.1rem;
-	padding: 0.1rem 0.5rem;
-	border-radius: 999px;
-	background: var(--bx-soft);
-	color: var(--bx-muted);
-	font-size: 0.72rem;
-	font-weight: 600;
-	line-height: 1.9;
-	vertical-align: middle;
-	white-space: nowrap;
-}
-
-.orsite-faq .hj-faq-list {
-	gap: 0.6rem;
-}
-
-.orsite-faq .hj-faq-list details {
-	background: var(--bx-box);
-	border: 1px solid var(--bx-line);
-	border-radius: 12px;
-	box-shadow: none;
-	overflow: hidden;
-	transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-}
-
-.orsite-faq .hj-faq-list details:hover {
-	border-color: var(--bx-navy-mid);
-}
-
-.orsite-faq .hj-faq-list details[open] {
-	border-color: var(--bx-navy-mid);
-	box-shadow: 0 2px 10px rgba(4, 26, 63, 0.08);
-}
-
-.orsite-faq .hj-faq-list summary {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 0.75rem;
-	padding: 0.9rem 1.05rem;
-	font-size: 0.96rem;
-	font-weight: 700;
-	line-height: 1.8;
-	color: var(--bx-navy-deep);
-	cursor: pointer;
-	user-select: none;
-	list-style: none;
-	outline-offset: 2px;
-}
-
-.orsite-faq .hj-faq-list summary::-webkit-details-marker {
-	display: none;
-}
-
-.orsite-faq .hj-faq-list summary::marker {
-	content: "";
-	font-size: 0;
-}
-
-/* نشانگر + / − بدون آیکون اضافه و بدون درخواست شبکه */
-.orsite-faq .hj-faq-list summary::after {
-	content: "+";
-	flex: 0 0 auto;
-	width: 1.45rem;
-	height: 1.45rem;
-	display: grid;
-	place-items: center;
-	border: 1px solid var(--bx-line);
-	border-radius: 50%;
-	color: var(--bx-navy);
-	font-size: 1.05rem;
-	font-weight: 700;
-	line-height: 1;
-	background: var(--bx-soft);
-	transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-
-.orsite-faq .hj-faq-list details[open] summary::after {
-	content: "−";
-	background: var(--bx-navy);
-	border-color: var(--bx-navy);
-	color: #fff;
-}
-
-.orsite-faq .hj-faq-list summary:hover::after {
-	border-color: var(--bx-navy-mid);
-}
-
-.orsite-faq .hj-faq-list summary:focus-visible {
-	outline: 2px solid var(--bx-navy-mid);
-	outline-offset: -2px;
-	border-radius: 12px;
-}
-
-.orsite-faq .hj-faq-list details[open] summary {
-	background: var(--bx-soft);
-	border-bottom: 1px solid var(--bx-line);
-}
-
-.orsite-faq .hj-faq-list details .orsite-faq__answer {
-	padding: 0.85rem 1.05rem 1rem;
-	font-size: 0.93rem;
-	line-height: 1.9;
-	color: var(--bx-muted);
-	border-top: 1px dashed var(--bx-line);
-	overflow-wrap: break-word;
-}
-
-.orsite-faq .hj-faq-list details .orsite-faq__answer p {
-	padding: 0;
-	margin: 0 0 0.55rem;
-	font-size: inherit;
-	line-height: inherit;
-	color: inherit;
-}
-
-.orsite-faq .hj-faq-list details .orsite-faq__answer p:last-child {
-	margin-bottom: 0;
-}
-
-@media (max-width: 480px) {
-	.orsite-faq__count {
-		font-size: 0.68rem;
-		margin-inline-start: 0.4rem;
-	}
-
-	.orsite-faq .hj-faq-list summary {
-		padding: 0.75rem 0.85rem;
-		font-size: 0.93rem;
-		line-height: 1.75;
-		gap: 0.5rem;
-	}
-
-	.orsite-faq .hj-faq-list summary::after {
-		width: 1.3rem;
-		height: 1.3rem;
-		font-size: 0.95rem;
-	}
-
-	.orsite-faq .hj-faq-list details .orsite-faq__answer {
-		padding: 0.7rem 0.85rem 0.85rem;
-		font-size: 0.91rem;
-	}
-}
-
-@media (max-width: 360px) {
-	.orsite-faq .hj-faq-list summary {
-		padding: 0.7rem 0.75rem;
-		font-size: 0.9rem;
-	}
-}
-
-/* دارک‌مود فقط با کلاس صریح — سایت روشن است */
-html.hj-faq-dark .orsite-faq .hj-faq-list details {
-	background: #101f33;
-	border-color: rgba(255, 255, 255, 0.14);
-}
-
-html.hj-faq-dark .orsite-faq .hj-faq-list details[open] {
-	border-color: #6f9bd0;
-}
-
-html.hj-faq-dark .orsite-faq .hj-faq-list summary {
-	color: #eef4fb;
-}
-
-html.hj-faq-dark .orsite-faq .hj-faq-list details[open] summary {
-	background: rgba(255, 255, 255, 0.06);
-	border-bottom-color: rgba(255, 255, 255, 0.14);
-}
-
-html.hj-faq-dark .orsite-faq .hj-faq-list details .orsite-faq__answer {
-	color: #c7d6e6;
-	border-top-color: rgba(255, 255, 255, 0.14);
-}
-
-html.hj-faq-dark .orsite-faq__count {
-	background: rgba(255, 255, 255, 0.1);
-	color: #d7e4f2;
-}
-
 /* ==========================================================================
    هویت بصری «آرامش بالینی» — قالب ۰٫۲۰٫۰ (ADR-026)
    توکن‌های بالای فایل رنگ‌ها را عوض کرده‌اند؛ این بلوک فقط سه چیز را کامل
@@ -3209,61 +2423,7 @@ html.hj-faq-dark .orsite-faq__count {
 	}
 }
 
-.orsite-article__layout > .orsite-article__content {
-	max-width: var(--hj-read);
-}
-
-/* ---------- ۲) مقیاس تایپوگرافی ---------- */
-
-.orsite-article__title {
-	font-size: 2.1rem;
-	line-height: 1.4;
-}
-
-.orsite-article__content {
-	font-size: 1.05rem;
-	line-height: 1.85;
-}
-
-.orsite-article__content h2 {
-	font-size: 1.45rem;
-	line-height: 1.5;
-}
-
-.orsite-article__content h3 {
-	font-size: 1.16rem;
-	line-height: 1.6;
-}
-
-.orsite-article__lead {
-	font-size: 1.05rem;
-	line-height: 1.85;
-}
-
-@media (max-width: 768px) {
-	.orsite-article__title {
-		font-size: 1.6rem;
-	}
-
-	.orsite-article__content {
-		font-size: 1rem;
-		line-height: 1.8;
-	}
-}
-
-/* ---------- ۳) لهجهٔ فیروزه‌ای: پیوند، دکمه، فوکوس ---------- */
-
-.orsite-article__content a {
-	color: var(--color-link);
-	text-decoration-color: rgba(14, 116, 144, 0.35);
-	text-underline-offset: 0.2em;
-}
-
-.orsite-article__content a:hover,
-.orsite-article__content a:focus {
-	color: var(--color-link-hover);
-	text-decoration-color: currentColor;
-}
+/* ---------- ۳) لهجهٔ فیروزه‌ای: دکمه و فوکوس ---------- */
 
 .hj-button {
 	background: var(--hj-teal-deep);
@@ -3488,82 +2648,7 @@ textarea:focus-visible {
 	}
 }
 
-/* ---------- ۵) مقاله: جعبهٔ «خلاصهٔ بالینی» و بَج بازبینی ---------- */
-
-.hj-quickfacts {
-	margin: 1.4rem 0 0;
-	background: var(--bx-soft);
-	border: 1px solid var(--bx-line);
-	border-radius: 18px;
-	padding: 1.05rem 1.15rem 1.15rem;
-}
-
-.hj-quickfacts__title {
-	margin: 0 0 0.75rem;
-	font-size: 0.95rem;
-	font-weight: 800;
-	color: var(--bx-navy-deep);
-}
-
-.hj-quickfacts__grid {
-	display: grid;
-	gap: 0.7rem;
-	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-
-.hj-quickfacts__item {
-	display: flex;
-	align-items: flex-start;
-	gap: 0.55rem;
-	background: var(--bx-box);
-	border: 1px solid var(--bx-line);
-	border-radius: 12px;
-	padding: 0.6rem 0.7rem;
-	margin: 0;
-}
-
-.hj-quickfacts__icon {
-	flex: 0 0 auto;
-	width: 1.35rem;
-	height: 1.35rem;
-	margin-top: 0.15rem;
-	color: var(--hj-teal-deep);
-}
-
-.hj-quickfacts__icon svg {
-	display: block;
-	width: 100%;
-	height: 100%;
-}
-
-.hj-quickfacts__text {
-	display: grid;
-	gap: 0.1rem;
-	min-width: 0;
-}
-
-.hj-quickfacts__note {
-	margin: 0.7rem 0 0;
-	color: var(--bx-muted);
-	font-size: 0.8rem;
-	line-height: 1.75;
-}
-
-.hj-quickfacts__label {
-	color: var(--bx-muted);
-	font-size: 0.78rem;
-	line-height: 1.6;
-}
-
-.hj-quickfacts__value {
-	color: var(--bx-navy-deep);
-	font-size: 0.93rem;
-	font-weight: 700;
-	line-height: 1.65;
-}
+/* ---------- ۵) بَج بازبینی کارت‌ها ---------- */
 
 .hj-review-badge {
 	display: inline-flex;
@@ -3659,82 +2744,195 @@ textarea:focus-visible {
 }
 
 /* ==========================================================================
-   نوار اورژانس بالای صفحه — قالب ۰٫۲۰٫۲
-   یک خط ثابت، بدون JS، بدون تصویر و بدون فونت تازه؛ پس هیچ جهش چیدمانی
-   (CLS) اضافه نمی‌کند. هدرِ چسبانِ قالب والد دست‌نخورده می‌ماند.
+   بازگشت مقاله به چیدمان ۰٫۱۴ + اصلاح‌های درخواستی — قالب ۰٫۲۱٫۰
+   ۱) باکس‌های پزشکی (سبز/زرد/قرمز) ظریف و کوچک‌تر از قبل، فقط خوانا.
+   ۲) تنها سلب مسئولیتِ مقاله: یک باکس زرد کوچک.
+   ۳) جدول مقاله: در دسکتاپ وسط‌چین و بدون فشردگی؛ در موبایل اسکرول افقی.
+   ۴) نوار اورژانس بالای فوتر: یک خط کوچک، بی‌تکرار.
    ========================================================================== */
 
-.hj-emergency-bar {
+/* ---------- ۱) باکس‌های پزشکی، ظریف ---------- */
+
+.hj-box {
+	border-width: 1px;
+	border-inline-start-width: 4px;
+	border-radius: 10px;
+	box-shadow: none;
+	margin: 0.9rem 0;
+	padding: 0.55rem 0.75rem 0.6rem;
+	font-size: 0.9rem;
+}
+
+.hj-box__head {
+	gap: 0.4rem;
+	margin: 0 0 0.25rem;
+}
+
+.hj-box__icon {
+	width: 16px;
+	height: 16px;
+	margin-block-start: 0.3rem;
+}
+
+.hj-box__title {
+	font-size: 0.9rem;
+	font-weight: 800;
+	line-height: 1.7;
+}
+
+.hj-box__body {
+	font-size: 0.9rem;
+	line-height: 1.85;
+}
+
+.hj-box__body p {
+	margin: 0 0 0.4rem;
+}
+
+.hj-box__body p:last-child {
+	margin-bottom: 0;
+}
+
+.hj-box--danger {
 	background: var(--hj-danger-soft);
-	border-bottom: 1px solid rgba(220, 38, 38, 0.35);
+	border-color: var(--hj-danger);
 	color: #7f1d1d;
+}
+
+.hj-box--warning {
+	background: var(--hj-warn-soft);
+	border-color: var(--hj-warn);
+	color: #78350f;
+}
+
+.hj-box--success {
+	background: var(--hj-ok-soft);
+	border-color: var(--hj-ok);
+	color: #14532d;
+}
+
+.hj-box--info {
+	background: var(--hj-teal-soft);
+	border-color: var(--hj-teal-deep);
+	color: #164e63;
+}
+
+.hj-box--danger .hj-box__title,
+.hj-box--warning .hj-box__title,
+.hj-box--success .hj-box__title,
+.hj-box--info .hj-box__title {
+	color: inherit;
+}
+
+@media (max-width: 480px) {
+	.hj-box {
+		margin: 0.75rem 0;
+		padding: 0.5rem 0.6rem;
+		font-size: 0.88rem;
+	}
+
+	.hj-box__title,
+	.hj-box__body {
+		font-size: 0.88rem;
+	}
+}
+
+/* ---------- ۲) تنها سلب مسئولیت مقاله ---------- */
+
+.hj-disclaimer-box {
+	margin: 1.4rem 0 0.6rem;
+	border-radius: 8px;
 	font-size: 0.82rem;
-	line-height: 1.6;
+	line-height: 1.8;
+	padding: 0.5rem 0.7rem;
 }
 
-.hj-emergency-bar__inner {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 0.6rem 1rem;
-	flex-wrap: wrap;
-	min-height: 2.25rem;
-	padding-block: 0.3rem;
-}
-
-.hj-emergency-bar__text {
+.hj-disclaimer-box p {
 	margin: 0;
-	min-width: 0;
+	color: #78350f;
 }
 
-.hj-emergency-bar__text strong {
+.hj-disclaimer-box strong {
 	font-weight: 800;
 }
 
-.hj-emergency-bar__call {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.35rem;
-	flex: 0 0 auto;
-	background: var(--hj-danger);
-	border: 1px solid #b91c1c;
-	border-radius: 999px;
-	color: #fff;
-	font-size: 0.8rem;
+/* ---------- ۳) جدول مقاله ---------- */
+
+.orsite-article__content .hj-table-scroll {
+	margin: 1.2rem 0;
+	max-width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.orsite-article__content .hj-table-scroll > table {
+	margin: 0 auto;
+	table-layout: auto;
+	width: auto;
+	min-width: 100%;
+	max-width: none;
+	box-shadow: none;
+}
+
+@media (max-width: 782px) {
+	.orsite-article__content .hj-table-scroll > table {
+		min-width: 34rem;
+		border-radius: 10px;
+	}
+
+	.orsite-article__content .hj-table-scroll {
+		border-radius: 10px;
+	}
+}
+
+/* ---------- ۴) نوار اورژانس بالای فوتر ---------- */
+
+.hj-emergency--above-footer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: center;
+	gap: 0.25rem 0.6rem;
+	max-width: var(--hj-container, 1200px);
+	margin: 1.6rem auto 0;
+	padding: 0.4rem 1rem;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	background: var(--hj-danger-soft);
+	border-top: 1px solid rgba(220, 38, 38, 0.25);
+	border-bottom: 1px solid rgba(220, 38, 38, 0.25);
+	color: #7f1d1d;
+	font-size: 0.78rem;
+	line-height: 1.75;
+	text-align: center;
+}
+
+.hj-emergency--above-footer p {
+	margin: 0;
+}
+
+.hj-emergency--above-footer a {
+	color: #b91c1c;
 	font-weight: 800;
-	padding: 0.15rem 0.7rem;
 	text-decoration: none;
 	white-space: nowrap;
 }
 
-.hj-emergency-bar__call:hover,
-.hj-emergency-bar__call:focus {
-	background: #b91c1c;
-	color: #fff;
-	text-decoration: none;
+.hj-emergency--above-footer a:hover,
+.hj-emergency--above-footer a:focus {
+	text-decoration: underline;
 }
 
-.hj-emergency-bar__number {
-	font-variant-numeric: tabular-nums;
-}
-
-@media (max-width: 560px) {
-	.hj-emergency-bar {
-		font-size: 0.78rem;
-	}
-
-	.hj-emergency-bar__text strong {
-		display: block;
-	}
-
-	.hj-emergency-bar__call {
-		width: 100%;
-		justify-content: center;
+@media (max-width: 600px) {
+	.hj-emergency--above-footer {
+		font-size: 0.75rem;
+		padding: 0.35rem 0.75rem;
 	}
 }
 
 @media print {
-	.hj-emergency-bar {
+	.hj-emergency--above-footer {
 		display: none !important;
 	}
 }
