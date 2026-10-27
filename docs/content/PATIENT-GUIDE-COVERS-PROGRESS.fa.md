@@ -3,8 +3,15 @@
 - **دامنه‌ی تغییر:** صرفاً ۳۹ مقاله‌ی منتشرشده‌ی بخش **راهنمای بیمار (`patient_guide`)** روی سایت زنده (`hamyarjarahi.ir`). مقالات بخش جراحی (`surgery`) بدون تغییر می‌مانند.
 - **مشخصات فنی هر تصویر:** نسبت `16:9`، ابعاد دقیق `1200 × 675` پیکسل، فرمت `WebP` (حدود ۹۵ تا ۱۱۵ کیلوبایت)، پس‌زمینه‌ی روشن، دیاگرام‌های فنی رنگی مرتبط با موضوع هر مقاله در حاشیه‌ی کادر، تیتر فارسی سرمه‌ای (`#1F2A6B`) در مرکز و نشان `HAMYARJARAHI` زیر آن.
 - **پیشرفت فعلی:** **۳۹ از ۳۹ مقاله تکمیل شد (`✅ ۱۰۰٪`)**.
-- **بسته‌های جایگزینی گروهی وردپرس (`releases/`):**
-  - یک‌جا (۳۹ فایل، حدود ۴٫۱ مگابایت): `releases/featured-images-patient-guide.zip`
+- **بروزرسانی قالب فرزند (`0.15.3` / `child-v0.15.3`):** حذف کامل لوگو/واترمارک کدنویسی‌شده‌ی تصاویر شاخص (`inc/image-watermark.php` و `.orsite-wm`).
+- **پوشه‌ی گوگل درایو (لینک عمومی):** https://drive.google.com/drive/folders/19xmyF9qpdj0CT2eFzhFzZFWm1wiilTov
+  - فایل یک‌جا (۳۹ تصویر + `alt-manifest.json`): https://drive.google.com/uc?id=17ZwaaOrOzIsAbHncec4XKBqs-Qm5GTXL&export=download
+  - بخش ۱ از ۳ (مقالات ۱ تا ۱۳): https://drive.google.com/uc?id=1Qw3LpYIuStArgGGL3Wa56l8s-DMRlze9&export=download
+  - بخش ۲ از ۳ (مقالات ۱۴ تا ۲۶): https://drive.google.com/uc?id=1vrRPMCpXON1ee1OqiExzjDIbxDUKnlS7&export=download
+  - بخش ۳ از ۳ (مقالات ۲۷ تا ۳۹): https://drive.google.com/uc?id=1Afsjn0ctkzHcYltVGRQzRFk7IeFyRU3J&export=download
+  - قالب فرزند `lax-theme-child-0.15.3.zip`: https://drive.google.com/uc?id=18uO5NO31eXLOqnMuJK0w_xgVvMGAVXfu&export=download
+- **بسته‌های محلی در مخزن (`releases/`):**
+  - یک‌جا (۳۹ فایل، حدود ۴٫۲ مگابایت): `releases/featured-images-patient-guide.zip`
   - سه‌بخشی (برای هاست‌هایی با سقف آپلود ۲ مگابایت، هر بخش ۱۳ فایل و حدود ۱٫۴ مگابایت):
     - `releases/featured-images-patient-guide-part1.zip`
     - `releases/featured-images-patient-guide-part2.zip`
