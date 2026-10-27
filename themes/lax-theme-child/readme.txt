@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.14.0
+Stable tag: 0.14.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.14.1 =
+* **صفحه‌ی «جایگزینی گروهی تصویر شاخص» فایل `alt-manifest.json` داخل ZIP را می‌خواند:** متن alt فارسی هر تصویر بر اساس نامک از مانیفست ثبت می‌شود؛ اگر مانیفست نباشد، مثل قبل عنوان مقاله به‌عنوان alt به کار می‌رود.
+* نام فایل‌ها حالا با نرمال‌سازی تطبیق می‌یابد: پسوندهای `-featured`، `-image`، `-scaled` و شماره‌ی تکراری وردپرس (`-1`, `-2`) حذف می‌شوند تا `cataract-overview-featured.webp` هم به مقاله‌ی `cataract-overview` وصل شود.
 
 = 0.14.0 =
 * **حذف کامل سازوکار «بازبین پزشکی» به تصمیم صاحب سایت:** حذف فایل `inc/medical-review.php` و صفحه‌ی پیشخوان «ابزارها → بازبین پزشکی»، حذف بایلاین بازبین از زیر عنوان مقاله‌ها، حذف فیلدهای `reviewedBy`/`lastReviewed` از JSON-LD و استایل‌های `.hj-review`. اعتبار مقاله فقط با نام تیم تحریریه نمایش داده می‌شود. جزئیات کامل در `CHANGELOG.md` و ADR-020.

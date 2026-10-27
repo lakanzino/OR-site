@@ -1,0 +1,284 @@
+{
+  "_comment": "منبع رسمی نگاشت بسته تصاویر شاخص ۲۰۲۶-۱۰-۲۷ — شناسه فایل گوگل درایو به اسلاگ مقاله، متن alt فارسی و نقش primary/extra. فایل‌های با نقش primary وارد بسته اصلی ZIP می‌شوند؛ extra‌ها نسخه‌های جایگزین‌اند.",
+  "batch_date": "2026-10-27",
+  "drive_folder": "https://drive.google.com/drive/folders/1x1tNMZ_Qh9SSOZ0ql-5ngKPU5DpMLo2b",
+  "source_dimensions": "1200x800",
+  "processing": {
+    "method": "contain-fit on white canvas, no crop",
+    "output_dimensions": "1200x675",
+    "content_area": "1012x675 centered, 94px white margin per side",
+    "background": "#ffffff",
+    "webp_quality": 85,
+    "size_limit_kb": 180
+  },
+  "images": [
+    {
+      "source_id": "1000105121",
+      "slug": "hernia-overview",
+      "stage": "overview",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "تصویر شماتیک فتق اینگوینال روی مانیتور اتاق عمل توسط تیم جراحی در حال مشاهده است."
+    },
+    {
+      "source_id": "1000105122",
+      "slug": "hernia-preparation",
+      "stage": "preparation",
+      "role": "primary",
+      "alt_source": "team",
+      "alt": "بیمار زن در مطب محل درد ناحیه کشاله ران را به پزشک نشان می‌دهد، پیش از جراحی فتق."
+    },
+    {
+      "source_id": "1000105123",
+      "slug": "hernia-recovery",
+      "stage": "recovery",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "مراحل بهبودی بیمار پس از جراحی فتق شامل بررسی زخم در آینه، ایستادن کنار پنجره و استراحت در تخت بیمارستان."
+    },
+    {
+      "source_id": "1000105124",
+      "slug": "thyroidectomy-overview",
+      "stage": "overview",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "نمای شماتیک غده تیروئید روی مانیتور اتاق عمل و تیم جراحی در حال مشاهده آن."
+    },
+    {
+      "source_id": "1000105125",
+      "slug": "thyroidectomy-recovery",
+      "stage": "recovery",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "بیمار مرد پس از جراحی تیروئید در حال استراحت و نوشیدن مایعات کنار پنجره اتاق بیمارستان."
+    },
+    {
+      "source_id": "1000105143",
+      "slug": "thyroidectomy-recovery",
+      "stage": "recovery",
+      "role": "extra",
+      "alt_source": "client",
+      "alt": "بیمار خانم با موهای بلوند در تخت بیمارستان و پرستار در حال بررسی مانیتور علائم حیاتی او."
+    },
+    {
+      "source_id": "1000105126",
+      "slug": "cataract-overview",
+      "stage": "overview",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "جراح در حال انجام عمل آب مروارید روی چشم بیمار با استفاده از میکروسکوپ و تجهیزات پیشرفته اتاق عمل."
+    },
+    {
+      "source_id": "1000105127",
+      "slug": "cataract-preparation",
+      "stage": "preparation",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "معاینه چشم بیمار توسط پزشک با دستگاه اسلیت لامپ پیش از عمل آب مروارید."
+    },
+    {
+      "source_id": "1000105128",
+      "slug": "cataract-recovery",
+      "stage": "recovery",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "بیمار پس از جراحی آب مروارید با پانسمان روی چشم در حال استراحت روی تخت با همراهی و مراقبت."
+    },
+    {
+      "source_id": "1000105130",
+      "slug": "cholecystectomy-overview",
+      "stage": "overview",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "نمای از بالای اتاق عمل، جراحان در حال انجام عمل لاپاراسکوپی کیسه صفرا با ابزارهای پیشرفته و مشاهده تصویر کیسه صفرا روی مانیتور بزرگ هستند."
+    },
+    {
+      "source_id": "1000105129",
+      "slug": "cholecystectomy-preparation",
+      "stage": "preparation",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "بیمار زن با حجاب در حال نشان دادن محل درد کیسه صفرا به پزشک در مطب."
+    },
+    {
+      "source_id": "1000105131",
+      "slug": "cholecystectomy-recovery",
+      "stage": "recovery",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "بیمار زن با لبخند آرام در حال استراحت روی تخت بیمارستان پس از عمل، متصل به سرم و دستگاه پایش علائم حیاتی."
+    },
+    {
+      "source_id": "1000105133",
+      "slug": "kidney-stone-overview",
+      "stage": "overview",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "نمای از بالای اتاق عمل، تیم جراحی در حال انجام عمل لاپاراسکوپی روی پهلو و ناحیه کلیه بیمار با استفاده از تجهیزات و مانیتورهای پیشرفته هستند."
+    },
+    {
+      "source_id": "1000105132",
+      "slug": "kidney-stone-preparation",
+      "stage": "preparation",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "بیمار مرد در حالی که از شدت درد سنگ کلیه خم شده و دست خود را روی پهلو گرفته است، در حال معاینه توسط پزشک در مطب."
+    },
+    {
+      "source_id": "1000105134",
+      "slug": "kidney-stone-recovery",
+      "stage": "recovery",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "بیمار مرد پس از عمل جراحی در حال استراحت روی تخت است و پرستار خانم در حال تنظیم سرم متصل به دست او است."
+    },
+    {
+      "source_id": "1000105151",
+      "slug": "hemorrhoid-overview",
+      "stage": "overview",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "نمای از بالای اتاق عمل، تیم جراحی در حال انجام عمل و میز بزرگ ابزارهای استریل در پیش‌زمینه."
+    },
+    {
+      "source_id": "1000105135",
+      "slug": "hemorrhoid-preparation",
+      "stage": "preparation",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "بیمار زن در حال نشان دادن درد در ناحیه شکم و دستگاه گوارش به پزشک در مطب، پیش از عمل جراحی."
+    },
+    {
+      "source_id": "1000105150",
+      "slug": "hemorrhoid-preparation",
+      "stage": "preparation",
+      "role": "extra",
+      "alt_source": "client",
+      "alt": "بیمار مرد در حالی که از درد خم شده و به شکم خود اشاره می‌کند، در حال معاینه توسط پزشک مرد مسن در مطب."
+    },
+    {
+      "source_id": "1000105152",
+      "slug": "hemorrhoid-recovery",
+      "stage": "recovery",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "بیمار مرد در حال استراحت در تخت بیمارستان و پرستار خانم در حال اشاره و چک کردن علائم حیاتی او از روی مانیتور."
+    },
+    {
+      "source_id": "1000105136",
+      "slug": "appendectomy-overview",
+      "stage": "overview",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "نمای از بالای اتاق عمل، تیم جراحی در حال انجام عمل لاپاراسکوپی شکم (آپاندیس) با دستگاه‌های پیشرفته و مانیتور نمایش بافت‌های داخلی هستند."
+    },
+    {
+      "source_id": "1000105139",
+      "slug": "appendectomy-overview",
+      "stage": "overview",
+      "role": "extra",
+      "alt_source": "client",
+      "alt": "نمای نزدیک از اتاق عمل، جراح در حال آماده شدن برای برش شکم بیمار با چاقوی جراحی است و متخصص بیهوشی ماسک اکسیژن را روی صورت بیمار قرار داده است."
+    },
+    {
+      "source_id": "1000105138",
+      "slug": "appendectomy-preparation",
+      "stage": "preparation",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "دختر نوجوان در حالی که از درد آپاندیس خم شده و دست خود را روی شکم گرفته است، در حال معاینه توسط خانم دکتر در مطب."
+    },
+    {
+      "source_id": "1000105137",
+      "slug": "appendectomy-recovery",
+      "stage": "recovery",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "بیمار زن پس از عمل در رختخواب در حال استراحت است و پرستار خانم با حجاب در حال بررسی پرونده و چک کردن علائم حیاتی او است."
+    },
+    {
+      "source_id": "1000105140",
+      "slug": "appendectomy-recovery",
+      "stage": "recovery",
+      "role": "extra",
+      "alt_source": "team",
+      "alt": "بیمار جوان در تخت بیمارستان با سرم متصل در حال استراحت است و پرستار تزریق را تنظیم و پزشک او را معاینه می‌کند."
+    },
+    {
+      "source_id": "1000105147",
+      "slug": "circumcision-overview",
+      "stage": "overview",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "متخصص بیهوشی در حال گذاشتن ماسک اکسیژن روی صورت کودک در اتاق عمل."
+    },
+    {
+      "source_id": "1000105148",
+      "slug": "circumcision-preparation",
+      "stage": "preparation",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "پزشک مرد مسن در حال صحبت و معاینه پسر بچه ۴ ساله با شلوارک در حضور پدر و مادرش در مطب."
+    },
+    {
+      "source_id": "1000105149",
+      "slug": "circumcision-recovery",
+      "stage": "recovery",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "پسر بچه در حال استراحت و لبخند در تخت بیمارستان با همراهی و نوازش پدر و مادرش پس از عمل."
+    },
+    {
+      "source_id": "1000105145",
+      "slug": "cesarean-overview",
+      "stage": "overview",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "جراح زن با چاقوی جراحی در حال آماده شدن برای برش شکم مادر برای عمل سزارین، در حالی که تیم جراحی در پس‌زمینه مشغول هستند."
+    },
+    {
+      "source_id": "1000105144",
+      "slug": "cesarean-preparation",
+      "stage": "preparation",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "خانم باردار در حال صحبت با خانم دکتر در مطب و قرار دادن دستانش روی شکم خود."
+    },
+    {
+      "source_id": "1000105146",
+      "slug": "cesarean-recovery",
+      "stage": "recovery",
+      "role": "primary",
+      "alt_source": "client",
+      "alt": "مادر در حال در آغوش گرفتن نوزاد قنداق‌شده در تخت بیمارستان و پرستار خانم با موهای کوتاه در حال لبخند زدن به آن‌ها."
+    },
+    {
+      "source_id": "1000105142",
+      "slug": "tonsillectomy-overview",
+      "stage": "overview",
+      "role": "primary",
+      "alt_source": "team",
+      "alt": "تیم جراحی در اتاق عمل در حال انجام عمل تانسیلکتومی روی بیمار با ابزارهای دهانی و تجهیزات استریل."
+    },
+    {
+      "source_id": "1000105141",
+      "slug": "tonsillectomy-preparation",
+      "stage": "preparation",
+      "role": "primary",
+      "alt_source": "team",
+      "alt": "پزشک متخصص گوش و حلق و بینی در حال معاینه گلوی بیمار با چراغ‌قوه و آبسلانگ در مطب، پیش از عمل لوزه."
+    },
+    {
+      "source_id": "1000105153",
+      "slug": "tonsillectomy-preparation",
+      "stage": "preparation",
+      "role": "extra",
+      "alt_source": "team",
+      "alt": "بیمار مرد در مطب متخصص گوش و حلق و بینی با اشاره به گلو و گردن دردناک خود در حال معاینه پیش از عمل لوزه."
+    }
+  ],
+  "missing_slugs_without_image": [
+    "thyroidectomy-preparation",
+    "tonsillectomy-recovery"
+  ]
+}

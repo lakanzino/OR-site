@@ -6,3 +6,9 @@
 .DS_Store
 Thumbs.db
 *.log
+
+# Python virtualenv
+.venv/
+
+# contact sheets (scratch)
+tmp-img/contact/
