@@ -1,7 +1,22 @@
 # چنج‌لاگ کامل پروژه — قالب والد و فرزند سایت آموزشی اتاق عمل (همیار جراحی)
 
 همه‌ی کارهای انجام‌شده از شروع پروژه تا امروز، به ترتیب معکوس زمانی. قالب‌بندی بر پایه‌ی Keep a Changelog است.
-آخرین به‌روزرسانی: **۲۰۲۶-۱۰-۲۷ (۵ آبان ۱۴۰۵)**. وضعیت کلی: والد `lax-theme` نسخه‌ی **1.0.1**، فرزند `lax-theme-child` نسخه‌ی **0.15.2** (انتشار رسمی گیت‌هاب `child-v0.15.2`)، افزونهٔ `orsite-media-matcher` نسخه‌ی **1.2.0**، تحویل هم‌زمان روی GitHub (`lakanzino/OR-site`) و پشتیبان رسمی روی Google Drive.
+آخرین به‌روزرسانی: **۲۰۲۶-۱۰-۲۷ (۵ آبان ۱۴۰۵)**. وضعیت کلی: والد `lax-theme` نسخه‌ی **1.0.1**، فرزند `lax-theme-child` نسخه‌ی **0.15.3** (انتشار رسمی گیت‌هاب `child-v0.15.3`)، افزونهٔ `orsite-media-matcher` نسخه‌ی **1.2.0**، تحویل هم‌زمان روی GitHub (`lakanzino/OR-site`) و پشتیبان رسمی روی Google Drive.
+
+---
+
+## [قالب ۰٫۱۵٫۳ + ۳۹ تصویر شاخص راهنمای بیمار — حذف کامل واترمارک کدنویسی‌شده‌ی تصاویر شاخص] — 2026-10-27
+
+به دستور صاحب سایت، لوگو/واترمارک متنی خودکار `HamyarJarahi` که از نسخه‌ی ۰٫۱۲٫۵ با کد روی همه‌ی تصاویر شاخص می‌نشست به‌طور کامل حذف شد (رکورد تصمیم: **ADR-022** در `docs/DECISIONS.md`) و هم‌زمان مجموعه‌ی کامل ۳۹ تصویر شاخص اختصاصی بخش «راهنمای بیمار» (`patient_guide`) تحویل گردید.
+
+### Removed — قالب فرزند ۰٫۱۵٫۳
+- حذف کامل فایل `themes/lax-theme-child/inc/image-watermark.php` و فراخوانی آن از `functions.php` (فیلتر `post_thumbnail_html`).
+- حذف بلوک استایل `.orsite-thumb` و `.orsite-wm` از `themes/lax-theme-child/assets/css/child.css`.
+- ساخت بسته‌ی نصب `releases/lax-theme-child.zip` نسخه‌ی **0.15.3** با اسکریپت `tools/build-theme-release.py` (همراه با نگهداری بکاپ `releases/backup/lax-theme-child-0.15.2-backup.zip`).
+
+### Added — ۳۹ تصویر شاخص بخش «راهنمای بیمار» (`patient_guide`)
+- طراحی و تولید اختصاصی هر ۳۹ مقاله‌ی منتشرشده‌ی `patient_guide` با ابعاد دقیق `1200×675` WebP در `content/images/featured/`، همگام‌سازی کامل با `content/drafts/`، `content/live-mirror/` و `releases/article-packages/`.
+- بسته‌ی جایگزینی گروهی یک‌جا (`releases/featured-images-patient-guide.zip`) و نسخه‌ی سه‌بخشی زیر ۲ مگابایت (`part1.zip` تا `part3.zip`) همراه با `alt-manifest.json` فارسی برای ثبت خودکار متای `alt` در وردپرس و بارگذاری مستقیم در Google Drive.
 
 ---
 

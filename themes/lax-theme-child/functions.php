@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.15.2' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.15.3' );
 }
 
 /**
@@ -33,9 +33,8 @@ require_once get_stylesheet_directory() . '/inc/content-types.php';
 require_once get_stylesheet_directory() . '/inc/article-display.php';
 
 /**
- * Load image sizes and article media block patterns.
+ * Load image sizes, bulk featured-image replacer, and article media block patterns.
  */
-require_once get_stylesheet_directory() . '/inc/image-watermark.php';
 require_once get_stylesheet_directory() . '/inc/image-bulk-replace.php';
 require_once get_stylesheet_directory() . '/inc/image-sizes.php';
 require_once get_stylesheet_directory() . '/inc/media-blocks.php';

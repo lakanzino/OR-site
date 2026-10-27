@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.15.2
+Stable tag: 0.15.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.15.3 =
+* **حذف کامل واترمارک خودکار `HamyarJarahi` از روی همه‌ی تصاویر شاخص (ADR-022):** فایل `inc/image-watermark.php`، فیلتر `post_thumbnail_html` و استایل‌های `.orsite-thumb` و `.orsite-wm` در `assets/css/child.css` به‌طور کامل حذف شدند تا روی تصاویر شاخص جدید هیچ لوگو یا واترمارک کدنویسی‌شده‌ای اضافه نشود.
 
 = 0.15.2 =
 * **صفحه‌ی پیشخوان «آمار و اتصال‌ها → سلامت ایندکس» اضافه شد** (`inc/seo-health-check.php`): دوازده آزمون زنده و فقط‌خواندنی برای ریشه‌یابی ایندکس‌نشدن — وضعیت `blog_public`، پیوندهای یکتا، تسخیر robots توسط افزونه‌ی سئو، باز شدن واقعی `wp-sitemap.xml`، محتوای robots.txt، مقایسه‌ی پاسخ سرور با User-Agent گوگل‌بات روی صفحه‌ی اصلی و تازه‌ترین مقاله، شمارش متای صریح `_hj_noindex`، تازگی نسخه‌ی مستقرشده و لینک‌های مستقیم سرچ‌کنسول.

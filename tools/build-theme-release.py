@@ -32,7 +32,7 @@ def build():
     manifest["child"]["version"] = version
     manifest["published_at"] = None  # A build is not evidence of a GitHub Release.
     manifest["built_at"] = datetime.now(timezone.utc).isoformat()
-    note = f"{version} — تجمیع خط 0.15.x (ترمیم تصاویر درون‌متنی و ۱۸ تصویر همراه قالب) با کارهای سئو: صفحه‌ی پیشخوان «سلامت ایندکس» با دوازده آزمون زنده‌ی ریشه‌یابی ایندکس‌نشدن و رفع بلوک خالی جراحی‌های صفحه‌ی اصلی (pad_counts و فهرست جایگزین)."
+    note = f"{version} — حذف کامل لوگو/واترمارک خودکار کدنویسی‌شده («HamyarJarahi») از روی همه‌ی تصاویر شاخص سایت (ADR-022): حذف inc/image-watermark.php، فیلتر post_thumbnail_html و استایل‌های .orsite-wm در child.css (با حفظ همه‌ی قابلیت‌های 0.15.2 شامل سلامت ایندکس گوگل و ترمیم تصاویر درون‌متنی)."
     if note not in manifest["changelog"]:
         manifest["changelog"].insert(0, note)
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
