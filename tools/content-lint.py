@@ -169,6 +169,20 @@ def lint(pkg: Path) -> tuple[list[str], list[str]]:
         if not item.get("q") or not item.get("a"):
             errs.append("FAQ entry with empty q or a")
 
+    # ---- patient-need lists (template 0.15.0)
+    ask = man.get("ask_doctor") or []
+    if len(ask) < 4:
+        warns.append(f"{len(ask)} ask_doctor questions (template 0.15 wants >= 4)")
+    for q in ask:
+        if not isinstance(q, str) or len(q.strip()) < 10:
+            errs.append("ask_doctor entry too short or not a string")
+    plain_terms = man.get("terms") or []
+    if not plain_terms:
+        warns.append("terms list is empty (plain-words box will be hidden)")
+    for row in plain_terms:
+        if not isinstance(row, str) or "|" not in row:
+            errs.append("terms entry must look like «term | explanation»")
+
     if not focus:
         errs.append("seo.focus_keyword is empty")
     elif focus not in title and focus not in meta:

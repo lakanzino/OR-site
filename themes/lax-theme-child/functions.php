@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.14.0' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.15.0' );
 }
 
 /**
@@ -31,6 +31,12 @@ require_once get_stylesheet_directory() . '/inc/content-types.php';
  * Load article display helpers (TOC, badges, related articles).
  */
 require_once get_stylesheet_directory() . '/inc/article-display.php';
+
+/**
+ * Load patient-need sections for article templates (scope note, ask-before
+ * checklist, plain-words glossary, visible FAQ) — child 0.15.0.
+ */
+require_once get_stylesheet_directory() . '/inc/patient-needs.php';
 
 /**
  * Load image sizes and article media block patterns.

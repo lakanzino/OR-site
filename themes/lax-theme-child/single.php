@@ -17,6 +17,16 @@ get_header();
 		the_post();
 		$article_content = orsite_render_content_buffered();
 		$toc_items       = orsite_get_toc_items();
+		$reading_basis   = $article_content;
+
+		// Patient-need blocks (child 0.15.0): printable questions, plain words
+		// and a visible FAQ. They are injected before the closing disclaimer.
+		ob_start();
+		orsite_pn_render_ask_doctor( get_the_ID() );
+		orsite_pn_render_terms( get_the_ID() );
+		orsite_pn_render_faq( get_the_ID(), $article_content );
+		$patient_sections = (string) ob_get_clean();
+		$article_content  = orsite_pn_inject_sections( $article_content, $patient_sections );
 		?>
 		<article id="post-<?php the_ID(); ?>" <?php post_class( 'orsite-article' ); ?>>
 			<?php orsite_article_breadcrumb(); ?>
@@ -38,9 +48,11 @@ get_header();
 					<?php if ( get_the_modified_time( 'U' ) > get_the_time( 'U' ) && $hj_mod_jalali !== $hj_pub_jalali ) : ?>
 						<time datetime="<?php echo esc_attr( get_the_modified_date( DATE_W3C ) ); ?>"><?php echo esc_html( 'به‌روزرسانی: ' . $hj_mod_jalali ); ?></time>
 					<?php endif; ?>
-					<span class="orsite-article__reading"><?php echo esc_html( orsite_reading_time( $article_content ) ); ?> <?php esc_html_e( 'دقیقه مطالعه', 'lax-theme-child' ); ?></span>
+					<span class="orsite-article__reading"><?php echo esc_html( orsite_reading_time( $reading_basis ) ); ?> <?php esc_html_e( 'دقیقه مطالعه', 'lax-theme-child' ); ?></span>
 				</div>
 			</header>
+
+			<?php orsite_pn_render_scope_note( get_the_ID() ); ?>
 
 			<?php if ( has_post_thumbnail() ) : ?>
 				<figure class="orsite-article__media">

@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.14.0
+Stable tag: 0.15.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.15.0 =
+* **بخش‌های «نیاز بیمار» در قالب مقاله (ADR-021):** کادر دامنه زیر تیتر («این صفحه چه چیزی هست و چه چیزی نیست»)، فهرست چاپ‌شدنی «سؤال‌هایی که پیش از عمل بپرسید» (`_hj_ask_doctor`)، «واژه‌های این صفحه به زبان ساده» (`_hj_terms`) و نمایش مرئی پرسش‌های متداول از همان داده‌ی اسکیمای FAQPage. باکس ویرایش در پیشخوان، خواندن دو فیلد از `article.json` در ایمپورتر و بررسی تازه در `content-lint`. جزئیات: `CHANGELOG.md` و `docs/content/TEMPLATE-V2-SECTIONS.fa.md`.
 
 = 0.14.0 =
 * **حذف کامل سازوکار «بازبین پزشکی» به تصمیم صاحب سایت:** حذف فایل `inc/medical-review.php` و صفحه‌ی پیشخوان «ابزارها → بازبین پزشکی»، حذف بایلاین بازبین از زیر عنوان مقاله‌ها، حذف فیلدهای `reviewedBy`/`lastReviewed` از JSON-LD و استایل‌های `.hj-review`. اعتبار مقاله فقط با نام تیم تحریریه نمایش داده می‌شود. جزئیات کامل در `CHANGELOG.md` و ADR-020.

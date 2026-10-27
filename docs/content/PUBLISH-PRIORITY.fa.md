@@ -2,6 +2,7 @@
 
 - **تاریخ تدوین:** ۲۰۲۶-۱۰-۲۴ (۲ آبان ۱۴۰۵)
 - **آخرین بازبینی:** ۲۰۲۶-۱۰-۲۵ — این بار نه نقشهٔ سایت، بلکه **REST API خود سایت** خوانده شد (`/wp-json/wp/v2/{surgery,patient_guide,or_environment,media}`). کش CDN ندارد و تعداد دقیق می‌دهد: **۶۴ مقاله**. جزئیات در `docs/reports/LIVE-SITE-AUDIT-2026-10-25.md`.
+- **سقف هدف از ۱۸۴ به ۱۹۲ رسید (۲۰۲۶-۱۰-۲۸):** ۶ مقالهٔ net-new + ۲ مقالهٔ تکمیلی خوشهٔ هیسترکتومی، بر پایهٔ `CROWD-SEARCH-NINISITE.fa.md` ۱٫۱ و ADR-021. باقی‌ماندهٔ نانوشته: ۱۱۹.
 - **هشدار روش‌شناسی:** نقشهٔ سایت وردپرس از کش CDN سرو می‌شود؛ اولین خواندن بدون `?v=` عدد قدیمی ۲۸ را برگرداند. از این پس برای شمارش، REST API مبنای کار است.
 
 ---
@@ -16,7 +17,7 @@
 | `student_content` | ۰ | — |
 | `glossary` | ۰ | CPT بدون ردیف |
 
-**جمع: ۶۴ مقالهٔ زنده از ۱۸۴ مقالهٔ هدف پایه → ۱۲۰ مقاله باقی مانده (۳۴٫۸٪ پیشرفت).**
+**جمع: ۶۴ مقالهٔ زنده از ۱۹۲ مقالهٔ هدف (۱۸۴ نقشه + ۸ مقالهٔ برخاسته از تحلیل جستجوی مردمی) → ۱۲۸ مقاله باقی مانده (۳۳٫۳٪ پیشرفت).**
 
 > ⚠️ **تصحیح اسناد:** عدد ۳۱ در نسخهٔ قبلی این سند درست بود اما دیگر نیست. از آن بازبینی تا امروز **۳۳ مقاله** منتشر شده و هیچ‌کدام در اسناد ثبت نشده بود. `NEXT-ARTICLES-PLAN.md` («۵ مقاله زنده») و مانیفست آینه («۱۵ مقاله») هم منسوخ‌اند. مرجع عدد، این جدول و گزارش بازبینی زنده است.
 
@@ -27,7 +28,7 @@
 | قبل از عمل | — (منتشر شد) |
 | جراحی‌ها، گروه ۱ | — (هر سه منتشر شد) |
 
-**فاز ۱ تمام شد.** ولی ۹ بستهٔ نوشته‌شده و آماده هنوز روی سایت نرفته‌اند: `circumcision-{overview,preparation,recovery}`، `hemorrhoid-{overview,preparation,recovery}`، `laparoscopy-{overview,preparation}`، `tonsillectomy-overview`. با انتشار همین ۹ بسته، سایت به ۷۳ مقاله (**۳۹٫۷٪**) می‌رسد.
+**فاز ۱ تمام شد.** ولی ۹ بستهٔ نوشته‌شده و آماده هنوز روی سایت نرفته‌اند: `circumcision-{overview,preparation,recovery}`، `hemorrhoid-{overview,preparation,recovery}`، `laparoscopy-{overview,preparation}`، `tonsillectomy-overview`. با انتشار همین ۹ بسته، سایت به ۷۳ مقاله (**۳۸٫۰٪ از سقف تازهٔ ۱۹۲**) می‌رسد.
 
 ### شکاف‌های فاز ۱ (فقط ۳ مقاله)
 
@@ -37,6 +38,31 @@
 | جراحی‌ها، گروه ۱ | `appendectomy-overview`، `hernia-preparation`، `hernia-recovery` — **سه بسته‌ی آماده دارند و منتظر انتشارند** |
 
 یعنی فاز ۱ با انتشار همان سه بسته‌ی آماده تمام می‌شود؛ بعد از آن ترتیب، فاز ۲ و تکمیل خوشه‌های نیمه‌کاره است.
+
+---
+
+## ۱-۵. صف برخاسته از تحلیل جستجوی مردمی (افزودهٔ ۲۰۲۶-۱۰-۲۸)
+
+منبع: `docs/content/CROWD-SEARCH-NINISITE.fa.md` نسخهٔ ۱٫۱. این صف **جای** جدول‌های بخش ۳ و ۴ را نمی‌گیرد؛ ردیف‌هایی است که از دادهٔ تقاضا اولویت گرفتند و هم‌پوشانی‌شان با محتوای زنده بررسی شده است.
+
+| # | نامک | CPT | چرا از داده آمد | در نقشهٔ ۱۸۴؟ |
+|---:|---|---|---|---|
+| ۱ | `hysterectomy-overview` | `surgery` | جراحی زنان، تقاضای مکرر | بله (#۳۹) |
+| ۲ | `hysterectomy-preparation` | `surgery` | «چه آمادگی‌ای لازم است» | net-new |
+| ۳ | `hysterectomy-recovery` | `surgery` | عوارض و بازگشت به زندگی | net-new |
+| ۴ | `myomectomy-ovarian-cyst-overview` | `surgery` | «کیست/فیبروم» پرتکرار | بله (گروه ۲) |
+| ۵ | `myomectomy-ovarian-cyst-preparation` | `surgery` | پیش‌اقدام | بله (گروه ۲) |
+| ۶ | `myomectomy-ovarian-cyst-recovery` | `surgery` | درد و لکه‌بینی بعد از عمل | بله (گروه ۲) |
+| ۷ | `tubal-ligation-overview` | `surgery` | پیش‌اقدام باروری | بله (گروه ۲) |
+| ۸ | `varicocele-surgery-overview` | `surgery` | پرسش مردانهٔ پرتکرار | بله (گروه ۲) |
+| ۹ | `post-surgery-adhesions` | `patient_guide` | «چسبندگی بعد از عمل» | net-new |
+| ۱۰ | `pelvic-pain-after-gynecologic-surgery` | `patient_guide` | درد لگن و نیاز به اطمینان | net-new |
+| ۱۱ | `return-to-sex-after-surgery` | `patient_guide` | پرسش تابو، با لحن بالینی | net-new |
+| ۱۲ | `cosmetic-surgery-safety-basics` | `patient_guide` | دستهٔ ۱۵٪ زیبایی | net-new |
+
+**پنج پیشنهاد که حذف یا ادغام شد:** `imaging-before-surgery` (بخش تازه در `preoperative-tests`) · `anesthesia-in-pregnancy-and-breastfeeding` (ادغام در نقشه #۴۶) · `preparing-for-second-opinion` (همان #۵۰) · `how-to-ask-questions-before-surgery` (همان `questions-before-surgery` زنده) · `common-tests-before-surgery` (همان `preoperative-tests`).
+
+**دروازهٔ تازهٔ بسته‌ها (از ۰٫۱۵٫۰):** هر بستهٔ `surgery`/`patient_guide` باید در `article.json` دو فیلد `ask_doctor` (≥۴ سؤال فرایندی) و `terms` (≥۴ جفت `اصطلاح | توضیح`) داشته باشد؛ `tools/content-lint.py` و ممیزی ایمپورتر هر دو این را می‌سنجند. جزئیات: `docs/content/TEMPLATE-V2-SECTIONS.fa.md`.
 
 ---
 

@@ -514,6 +514,38 @@ function hj_importer_inspect_package_image( string $dir, array $manifest ): arra
 }
 
 /**
+ * Read a list field (`ask_doctor`, `terms`) from a manifest.
+ *
+ * Accepts an array (one entry per line, or `term | explanation` pairs) or a
+ * single string with newlines. Values are sanitised as plain text.
+ *
+ * @param array  $manifest Decoded manifest.
+ * @param string $key      Manifest key.
+ * @return array<int,string>
+ */
+function hj_importer_list_field( array $manifest, string $key ): array {
+	if ( empty( $manifest[ $key ] ) ) {
+		return array();
+	}
+
+	$raw   = $manifest[ $key ];
+	$lines = is_array( $raw ) ? $raw : preg_split( '/\r\n|\r|\n/', (string) $raw );
+	$out   = array();
+
+	foreach ( (array) $lines as $line ) {
+		if ( is_array( $line ) ) {
+			continue;
+		}
+		$line = trim( sanitize_text_field( (string) $line ) );
+		if ( '' !== $line ) {
+			$out[] = $line;
+		}
+	}
+
+	return array_values( array_unique( $out ) );
+}
+
+/**
  * Audit SEO, Featured Image, and Content structure of a package and return
  * deficiencies, warnings, passed checks, metrics, and a 0-100 quality score.
  *
@@ -682,6 +714,26 @@ function hj_importer_audit_package( array $manifest, string $html, array $image_
 			$score     -= 2;
 		} else {
 			$passed[] = 'اسکیمای FAQPage فعال است (' . count( $faqs ) . ' پرسش و پاسخ).';
+		}
+	}
+
+	// --- Patient-need lists (child 0.15.0) ---
+	if ( in_array( $post_type, array( 'surgery', 'patient_guide' ), true ) ) {
+		$ask_count   = count( hj_importer_list_field( $manifest, 'ask_doctor' ) );
+		$terms_count = count( hj_importer_list_field( $manifest, 'terms' ) );
+
+		if ( $ask_count >= 4 ) {
+			$passed[] = 'فهرست سؤال‌های پیش از عمل ثبت شده است (' . $ask_count . ' سؤال).';
+		} else {
+			$warnings[] = 'فهرست «سؤال‌هایی که بیمار قبل از عمل بپرسید» (ask_doctor) کمتر از ۴ مورد است؛ قالب ۰٫۱۵ فهرست عمومی پیش‌فرض را نشان می‌دهد.';
+			$score     -= 3;
+		}
+
+		if ( $terms_count ) {
+			$passed[] = 'واژه‌های ساده‌شده ثبت شده است (' . $terms_count . ' واژه).';
+		} else {
+			$warnings[] = 'واژه‌های ساده‌شده (terms) خالی است؛ بخش «واژه‌های این صفحه» در این مقاله نمایش داده نمی‌شود.';
+			$score     -= 2;
 		}
 	}
 
@@ -1254,6 +1306,10 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 			}
 		}
 
+		// Patient-need lists (child 0.15.0): printable questions and plain words.
+		$ask_doctor  = hj_importer_list_field( $manifest, 'ask_doctor' );
+		$plain_terms = hj_importer_list_field( $manifest, 'terms' );
+
 		$tax_pairs  = hj_importer_collect_taxonomies( $manifest, $post_type, is_array( $opts['manual_tax'] ) ? $opts['manual_tax'] : array() );
 		$image_info = hj_importer_inspect_package_image( $dir, $manifest );
 		$audit      = hj_importer_audit_package( $manifest, $html, $image_info, $post_type, $tax_pairs );
@@ -1423,6 +1479,12 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 		}
 		if ( ! empty( $faq ) ) {
 			update_post_meta( $post_id, '_hj_faq', $faq );
+		}
+		if ( ! empty( $ask_doctor ) ) {
+			update_post_meta( $post_id, '_hj_ask_doctor', $ask_doctor );
+		}
+		if ( ! empty( $plain_terms ) ) {
+			update_post_meta( $post_id, '_hj_terms', $plain_terms );
 		}
 		if ( ! empty( $manifest['roadmap_id'] ) ) {
 			update_post_meta( $post_id, '_hj_roadmap_id', sanitize_text_field( (string) $manifest['roadmap_id'] ) );
