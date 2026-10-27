@@ -2347,34 +2347,66 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 	margin-bottom: 0;
 }
 
-/* ---------- Medical callout boxes (child 0.16.0) ---------- */
+/* ---------- Medical callout boxes (child 0.16.1) ---------- */
 /*
- * Four tones, one markup: `[hjbox type="danger|warning|info|success"]`.
- * Only the accent border and the title bar change; the box itself stays in
- * the navy palette so an article never turns into a colour chart.
+ * One markup, four tones: `[hjbox type="danger|warning|info|success"]`.
+ * The icon is an inline SVG data-URI inside the class (no extra request, no
+ * layout shift) and it lives in the same flex row as the title, so a long
+ * Persian title can never slide under it — that was the failure mode when the
+ * icon was positioned absolutely.
+ *
+ * Sizes, by breakpoint:
+ *   >768px  icon 24px · border 5px · padding 1.15rem 1.25rem
+ *   481–768 icon 22px · border 4px · padding 1rem
+ *   ≤480    icon 20px · border 4px · padding 1rem (single column, no overlap)
+ *   ≤360    icon 18px · title 0.92rem · margins tightest
  */
 
 .hj-box {
+	--hj-box-accent: var(--bx-navy);
+	--hj-box-tint: var(--bx-soft);
 	background: var(--bx-box);
-	border: 3px solid var(--bx-navy);
-	border-inline-start-width: 10px;
+	border: 3px solid var(--hj-box-accent);
+	border-inline-start-width: 8px;
 	border-radius: 18px;
 	box-shadow: var(--bx-shadow-small);
-	margin: 1.50rem 0;
-	padding: 1rem 1.15rem 1.1rem;
+	margin: 1.5rem 0;
+	padding: 1.15rem 1.25rem 1.2rem;
+	overflow-wrap: break-word;
+}
+
+.hj-box__head {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.6rem;
+	margin: 0 0 0.55rem;
+}
+
+.hj-box__icon {
+	flex: 0 0 auto;
+	width: 24px;
+	height: 24px;
+	margin-block-start: 0.2rem;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
 }
 
 .hj-box__title {
-	margin: 0 0 0.5rem;
-	color: var(--bx-navy-deep);
+	flex: 1 1 auto;
+	min-width: 0;
+	margin: 0;
+	color: var(--hj-box-accent);
 	font-weight: 900;
 	font-size: 1rem;
 	line-height: 1.8;
+	overflow-wrap: break-word;
 }
 
 .hj-box__body {
 	color: var(--bx-ink);
 	line-height: 2;
+	overflow-wrap: break-word;
 }
 
 .hj-box__body > * {
@@ -2385,7 +2417,23 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 	margin-bottom: 0;
 }
 
+/* Tables and long words inside a box scroll instead of breaking the page. */
+.hj-box__body table {
+	display: block;
+	max-width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.hj-box__body a,
+.hj-box__body code {
+	overflow-wrap: anywhere;
+}
+
+/* --- tones ------------------------------------------------------------- */
+
 .hj-box--danger {
+	--hj-box-accent: #8a1f1f;
 	background: #fdf0ef;
 	border-color: #8a1f1f;
 }
@@ -2394,7 +2442,12 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 	color: #7a1616;
 }
 
+.hj-box--danger .hj-box__icon {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a1f1f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l9 16H3z'/%3E%3Cpath d='M12 9v4'/%3E%3Cpath d='M12 16.5h.01'/%3E%3C/svg%3E");
+}
+
 .hj-box--warning {
+	--hj-box-accent: #8a5a00;
 	background: #fbf4e6;
 	border-color: #8a5a00;
 }
@@ -2403,12 +2456,22 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 	color: #7a4f00;
 }
 
+.hj-box--warning .hj-box__icon {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a5a00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7.5v5'/%3E%3Cpath d='M12 16h.01'/%3E%3C/svg%3E");
+}
+
 .hj-box--info {
+	--hj-box-accent: var(--bx-navy);
 	background: var(--bx-soft);
 	border-color: var(--bx-navy);
 }
 
+.hj-box--info .hj-box__icon {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2306265c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5.5'/%3E%3Cpath d='M12 7.5h.01'/%3E%3C/svg%3E");
+}
+
 .hj-box--success {
+	--hj-box-accent: #1f6b3a;
 	background: #eef7f1;
 	border-color: #1f6b3a;
 }
@@ -2417,9 +2480,176 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 	color: #1a5a31;
 }
 
+.hj-box--success .hj-box__icon {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f6b3a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12.5l2.5 2.5L16 9.5'/%3E%3C/svg%3E");
+}
+
+/* --- responsive -------------------------------------------------------- */
+
+@media screen and (max-width: 768px) {
+	.hj-box {
+		margin: 1.25rem 0;
+		padding: 1rem 1.1rem;
+		border-inline-start-width: 6px;
+		border-radius: 14px;
+		font-size: 0.94rem;
+	}
+
+	.hj-box__head {
+		gap: 0.5rem;
+	}
+
+	.hj-box__icon {
+		width: 22px;
+		height: 22px;
+	}
+
+	.hj-box__title {
+		font-size: 0.98rem;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.hj-box {
+		padding: 0.95rem 1rem 1rem;
+		border-width: 2px;
+		border-inline-start-width: 5px;
+		margin: 1.1rem 0;
+		line-height: 1.85;
+	}
+
+	.hj-box__icon {
+		width: 20px;
+		height: 20px;
+		margin-block-start: 0.15rem;
+	}
+
+	.hj-box__title {
+		font-size: 0.96rem;
+		line-height: 1.7;
+	}
+
+	.hj-box__body {
+		line-height: 1.95;
+		font-size: 0.94rem;
+	}
+}
+
+@media screen and (max-width: 360px) {
+	.hj-box {
+		padding: 0.85rem 0.85rem 0.9rem;
+		border-radius: 12px;
+	}
+
+	.hj-box__icon {
+		width: 18px;
+		height: 18px;
+	}
+
+	.hj-box__title {
+		font-size: 0.92rem;
+	}
+}
+
+/* Print: keep the box intact on one page. */
 @media print {
 	.hj-box {
 		box-shadow: none;
 		break-inside: avoid;
+	}
+}
+
+/* ---------- Patient-need blocks on small phones (≤480 / ≤360) ---------- */
+/*
+ * Reading after surgery happens on a phone, often one-handed and in a hurry.
+ * These rules keep the blocks narrow, stop long Latin terms from forcing a
+ * horizontal scroll, and give the printable question list back its width.
+ */
+
+.orsite-article__content,
+.orsite-ask__list li,
+.orsite-terms__row dd,
+.orsite-faq__answer {
+	overflow-wrap: break-word;
+}
+
+.orsite-article__content table {
+	display: block;
+	max-width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 480px) {
+	.orsite-scope {
+		padding: 0.8rem 0.95rem;
+		margin: 0.9rem 0 0;
+		border-inline-start-width: 5px;
+	}
+
+	.orsite-scope__body {
+		font-size: 0.9rem;
+		line-height: 1.9;
+	}
+
+	.orsite-ask,
+	.orsite-terms,
+	.orsite-faq {
+		padding: 0.95rem 0.95rem 1rem;
+		border-width: 2px;
+		border-radius: 16px;
+		margin: 1.5rem 0 0;
+	}
+
+	.orsite-ask__title,
+	.orsite-terms__title,
+	.orsite-faq__title {
+		font-size: 1rem;
+		line-height: 1.7;
+	}
+
+	.orsite-ask__list li {
+		padding: 0.55rem 2.1rem 0.55rem 0.75rem;
+		font-size: 0.93rem;
+		line-height: 1.85;
+	}
+
+	.orsite-ask__list li::before {
+		inset-inline-start: 0.7rem;
+		top: 0.95rem;
+		width: 0.85rem;
+		height: 0.85rem;
+	}
+
+	.orsite-terms__row {
+		padding: 0.55rem 0.75rem;
+	}
+
+	.orsite-terms__row dt,
+	.orsite-terms__row dd {
+		font-size: 0.93rem;
+	}
+
+	.hj-faq-list summary {
+		padding: 0.75rem 0.9rem;
+		font-size: 0.94rem;
+		line-height: 1.75;
+	}
+
+	.hj-faq-list details .orsite-faq__answer {
+		padding: 0.75rem 0.9rem 0.85rem;
+		font-size: 0.93rem;
+	}
+}
+
+@media (max-width: 360px) {
+	.orsite-ask__list li {
+		padding: 0.5rem 1.9rem 0.5rem 0.7rem;
+	}
+
+	.orsite-ask__title,
+	.orsite-terms__title,
+	.orsite-faq__title {
+		font-size: 0.96rem;
 	}
 }

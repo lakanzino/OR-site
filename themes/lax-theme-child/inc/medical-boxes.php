@@ -68,10 +68,17 @@ function hj_medical_box_shortcode( $atts, $content = null ): string {
 		return '';
 	}
 
-	$out  = '<aside class="hj-box hj-box--' . esc_attr( $type ) . '" role="' . esc_attr( $role ) . '">';
+	$out = '<aside class="hj-box hj-box--' . esc_attr( $type ) . '" role="' . esc_attr( $role ) . '">';
+
+	// Icon and title share one flex row: the icon is a background image (no
+	// extra request, no layout shift) and the title can never slide under it.
 	if ( '' !== $title ) {
+		$out .= '<div class="hj-box__head">';
+		$out .= '<span class="hj-box__icon" aria-hidden="true"></span>';
 		$out .= '<p class="hj-box__title">' . esc_html( $title ) . '</p>';
+		$out .= '</div>';
 	}
+
 	$out .= '<div class="hj-box__body">' . $body . '</div>';
 	$out .= '</aside>';
 
