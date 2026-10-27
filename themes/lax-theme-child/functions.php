@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.14.1' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.14.2' );
 }
 
 /**
@@ -56,6 +56,11 @@ require_once get_stylesheet_directory() . '/inc/seo-basics.php';
  * SEO index policy (0.13.0): empty and thin listings stay out of the index.
  */
 require_once get_stylesheet_directory() . '/inc/seo-index-policy.php';
+
+/**
+ * Indexation health screen (0.14.2): live, read-only root-cause diagnostics.
+ */
+require_once get_stylesheet_directory() . '/inc/seo-health-check.php';
 
 /**
  * One date format everywhere (0.13.0).
