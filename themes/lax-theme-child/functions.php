@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.15.0' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.16.0' );
 }
 
 /**
@@ -37,6 +37,18 @@ require_once get_stylesheet_directory() . '/inc/article-display.php';
  * checklist, plain-words glossary, visible FAQ) — child 0.15.0.
  */
 require_once get_stylesheet_directory() . '/inc/patient-needs.php';
+
+/**
+ * Load the editorial quality layer (child 0.16.0):
+ * Persian typography on save, pre-publish gate, freshness watch,
+ * medical callout shortcode, SurgicalProcedure schema and front-end hygiene.
+ */
+require_once get_stylesheet_directory() . '/inc/persian-normalize.php';
+require_once get_stylesheet_directory() . '/inc/publish-gate.php';
+require_once get_stylesheet_directory() . '/inc/content-freshness.php';
+require_once get_stylesheet_directory() . '/inc/medical-boxes.php';
+require_once get_stylesheet_directory() . '/inc/schema-procedure.php';
+require_once get_stylesheet_directory() . '/inc/performance.php';
 
 /**
  * Load image sizes and article media block patterns.

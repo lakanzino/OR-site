@@ -2346,3 +2346,80 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 .orsite-faq .hj-faq-list details .orsite-faq__answer > *:last-child {
 	margin-bottom: 0;
 }
+
+/* ---------- Medical callout boxes (child 0.16.0) ---------- */
+/*
+ * Four tones, one markup: `[hjbox type="danger|warning|info|success"]`.
+ * Only the accent border and the title bar change; the box itself stays in
+ * the navy palette so an article never turns into a colour chart.
+ */
+
+.hj-box {
+	background: var(--bx-box);
+	border: 3px solid var(--bx-navy);
+	border-inline-start-width: 10px;
+	border-radius: 18px;
+	box-shadow: var(--bx-shadow-small);
+	margin: 1.50rem 0;
+	padding: 1rem 1.15rem 1.1rem;
+}
+
+.hj-box__title {
+	margin: 0 0 0.5rem;
+	color: var(--bx-navy-deep);
+	font-weight: 900;
+	font-size: 1rem;
+	line-height: 1.8;
+}
+
+.hj-box__body {
+	color: var(--bx-ink);
+	line-height: 2;
+}
+
+.hj-box__body > * {
+	margin: 0 0 0.6rem;
+}
+
+.hj-box__body > *:last-child {
+	margin-bottom: 0;
+}
+
+.hj-box--danger {
+	background: #fdf0ef;
+	border-color: #8a1f1f;
+}
+
+.hj-box--danger .hj-box__title {
+	color: #7a1616;
+}
+
+.hj-box--warning {
+	background: #fbf4e6;
+	border-color: #8a5a00;
+}
+
+.hj-box--warning .hj-box__title {
+	color: #7a4f00;
+}
+
+.hj-box--info {
+	background: var(--bx-soft);
+	border-color: var(--bx-navy);
+}
+
+.hj-box--success {
+	background: #eef7f1;
+	border-color: #1f6b3a;
+}
+
+.hj-box--success .hj-box__title {
+	color: #1a5a31;
+}
+
+@media print {
+	.hj-box {
+		box-shadow: none;
+		break-inside: avoid;
+	}
+}

@@ -1551,6 +1551,17 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 		}
 
 		$action_code = $updating_existing ? 'updated' : ( $is_duplicate ? 'created_copy' : 'created' );
+
+		// The publish gate (child 0.16.0) may have demoted a new publish to
+		// draft; report what the database actually holds, not what we asked for.
+		$actual_status = (string) get_post_status( $post_id );
+		if ( '' !== $actual_status && $actual_status !== $desired_status ) {
+			$forced_draft_reason = trim(
+				$forced_draft_reason . ' دروازهٔ انتشار (قالب ۰٫۱۶) انتشار را نپذیرفت و مقاله پیش‌نویس ماند؛ باکس «دروازهٔ انتشار» در ویرایشگر دلیل را نشان می‌دهد.'
+			);
+			$desired_status      = $actual_status;
+		}
+
 		$res         = array(
 			'dry_run'             => false,
 			'file_label'          => $opts['file_label'],
