@@ -1285,13 +1285,61 @@ function orsite_gh_theme_info( $which ) {
 		$asset = ORSITE_GH_CHILD_ASSET;
 	}
 
+	// Always read the version from the file on disk: WP_Theme data can survive
+	// a file update in the object cache, and a stale version is exactly what
+	// makes the dashboard claim «بروزرسانی انجام شد» while nothing changed.
+	$disk = orsite_gh_disk_version( $dir );
+
 	return array(
 		'key'     => $which,
 		'name'    => $theme->get( 'Name' ),
-		'version' => (string) $theme->get( 'Version' ),
+		'version' => '' !== $disk ? $disk : (string) $theme->get( 'Version' ),
 		'dir'     => $dir,
 		'asset'   => $asset,
 	);
+}
+
+/**
+ * Version written in a theme's `style.css` right now, read from disk.
+ *
+ * `wp_get_theme()` answers from the object cache and can lag one update
+ * behind; this helper opens the file, so the answer matches what a browser
+ * (and the reader) actually gets.
+ *
+ * @param string $dir Theme directory (absolute).
+ * @return string Version or an empty string.
+ */
+function orsite_gh_disk_version( $dir ) {
+	$file = rtrim( (string) $dir, '/' ) . '/style.css';
+	if ( ! is_readable( $file ) ) {
+		return '';
+	}
+	$data = get_file_data( $file, array( 'Version' => 'Version' ) );
+	return ! empty( $data['Version'] ) ? trim( (string) $data['Version'] ) : '';
+}
+
+/**
+ * Drop every front-end cache that can keep an old stylesheet alive.
+ *
+ * Copying `child.css` is not enough: LiteSpeed / object caches / WordPress'
+ * theme cache all answer with yesterday's file. Runs only after a real write.
+ *
+ * @return void
+ */
+function orsite_gh_purge_caches() {
+	wp_clean_themes_cache();
+	delete_site_transient( 'update_themes' );
+	wp_cache_delete( 'theme-' . get_stylesheet(), 'themes' );
+
+	if ( function_exists( 'do_action' ) && has_action( 'litespeed_purge_all' ) ) {
+		do_action( 'litespeed_purge_all' );
+	}
+	if ( function_exists( 'wpfc_clear_all_cache' ) ) {
+		wpfc_clear_all_cache( true );
+	}
+	if ( function_exists( 'w3tc_flush_all' ) ) {
+		w3tc_flush_all();
+	}
 }
 
 /* -------------------------------------------------------------------------
@@ -1621,6 +1669,10 @@ function orsite_gh_update_theme( $which ) {
 		return $plan;
 	}
 
+	$package_data    = get_file_data( rtrim( $plan['root'], '/' ) . '/style.css', array( 'Version' => 'Version' ) );
+	$package_version = ! empty( $package_data['Version'] ) ? trim( (string) $package_data['Version'] ) : '';
+	$before_version  = orsite_gh_disk_version( $plan['theme']['dir'] );
+
 	$apply = orsite_updater_apply( $plan['plan'] );
 	orsite_updater_rrmdir( $plan['tmpdir'] );
 
@@ -1633,6 +1685,25 @@ function orsite_gh_update_theme( $which ) {
 		) );
 	}
 
+	orsite_gh_purge_caches();
+	$after_version = orsite_gh_disk_version( $plan['theme']['dir'] );
+
+	// Hard proof: the file on disk must now say what the package says. Without
+	// this check a write to a read-only folder, a skipped file or a cached
+	// package all look like «بروزرسانی انجام شد».
+	if ( '' !== $package_version && '' !== $after_version && version_compare( $after_version, $package_version, '!=' ) ) {
+		return new WP_Error(
+			'orsite_version_mismatch',
+			sprintf(
+				/* translators: 1: version on disk, 2: version in the package, 3: copied file count */
+				__( 'بروزرسانی نوشته شد ولی نسخهٔ روی سرور عوض نشد: فایل style.css هنوز %1$s است و بستهٔ دانلودشده %2$s بود (%3$d فایل کپی شد). یعنی فایل‌ها روی سرور قابل نوشتن نیستند یا مسیر پوسته اشتباه است.', 'lax-theme-child' ),
+				$after_version,
+				$package_version,
+				count( $apply['updated'] )
+			)
+		);
+	}
+
 	$summary = array(
 		'which'       => $which,
 		'theme'       => $plan['theme'],
@@ -1640,6 +1711,10 @@ function orsite_gh_update_theme( $which ) {
 		'updated'     => $apply['updated'],
 		'unchanged'   => $plan['plan']['unchanged'],
 		'stale'       => $plan['plan']['stale'],
+		'version_from' => $before_version,
+		'version_to'   => $after_version,
+		'package_version' => $package_version,
+		'stale_source' => ! empty( $release['_stale'] ),
 		'time'        => time(),
 	);
 
@@ -2279,16 +2354,47 @@ function orsite_gh_handle_actions() {
 		case 'update_parent':
 		case 'update_all':
 			set_time_limit( 300 );
+
+			/*
+			 * Never answer «همین حالا آخرین نسخه را داری» from the cache.
+			 *
+			 * This branch used to compare the installed version with the cached
+			 * snapshot (3 hours) and skip the download when they matched. Publishing
+			 * a release right after an update therefore did nothing at all: the
+			 * button reported success, no HTTP request was made and not one byte
+			 * changed on disk. Pressing update is an explicit «check now», so the
+			 * snapshot is refreshed first and the package is applied whenever the
+			 * released version is higher than the file on disk.
+			 */
+			$fresh    = orsite_gh_update_snapshot( true );
+			$remote   = array(
+				'child'  => isset( $fresh['latest']['child'] ) ? $fresh['latest']['child'] : null,
+				'parent' => isset( $fresh['latest']['parent'] ) ? $fresh['latest']['parent'] : null,
+			);
+			$verified = ! empty( $fresh['ok'] );
+
+			if ( ! $verified || ( empty( $remote['child'] ) && empty( $remote['parent'] ) ) ) {
+				$forced_release = orsite_gh_release( true );
+				if ( ! is_wp_error( $forced_release ) ) {
+					$remote   = orsite_gh_remote_versions( $forced_release );
+					$verified = empty( $forced_release['_stale'] );
+				}
+			}
+
 			$targets = 'update_child' === $action ? array( 'child' )
 				: ( 'update_parent' === $action ? array( 'parent' ) : array( 'child', 'parent' ) );
 			$done    = array();
 			$errors  = array();
 			foreach ( $targets as $which ) {
-				$theme  = orsite_gh_theme_info( $which );
-				$remote = orsite_gh_current_remote_versions();
+				$theme    = orsite_gh_theme_info( $which );
 				$remote_v = isset( $remote[ $which ] ) ? $remote[ $which ] : null;
 				if ( $remote_v && version_compare( $theme['version'], $remote_v, '>=' ) ) {
-					$done[ $which ] = 'up-to-date';
+					$done[ $which ] = array(
+						'skipped'    => 'up-to-date',
+						'version'    => $theme['version'],
+						'remote'     => $remote_v,
+						'verified'   => $verified,
+					);
 					continue;
 				}
 				$result = orsite_gh_update_theme( $which );
@@ -2745,7 +2851,7 @@ function orsite_gh_flash_message() {
 		'check_ok'       => array( 'success', __( 'بررسی انجام شد؛ نتیجه در کارت «فایل‌های تغییریافته» آمده است.', 'lax-theme-child' ) ),
 		'check_stale'    => array( 'error', __( 'اتصال به گیت‌هاب برقرار نشد و داده‌ی ذخیره‌شده نمایش داده می‌شود؛ جزئیات در کارت «وضعیت اتصال» است.', 'lax-theme-child' ) ),
 		'check_fail'     => array( 'error', __( 'بررسی ناموفق بود؛ جزئیات در کارت «وضعیت اتصال» است.', 'lax-theme-child' ) ),
-		'update_ok'      => array( 'success', __( 'بروزرسانی انجام شد؛ لاگ در کارت «آخرین بروزرسانی» است.', 'lax-theme-child' ) ),
+		'update_ok'      => array( 'success', __( 'بروزرسانی انجام شد و نسخهٔ فایل روی سرور تأیید شد؛ لاگ در کارت «آخرین بروزرسانی» است.', 'lax-theme-child' ) ),
 		'update_fail'    => array( 'error', __( 'بروزرسانی با خطا همراه بود؛ جزئیات در کارت «آخرین بروزرسانی» است.', 'lax-theme-child' ) ),
 		'nonce_fail'     => array( 'warning', __( 'نشست این صفحه منقضی شده بود و عملیات انجام نشد. صفحه را دوباره بارگذاری کنید (Ctrl+R) و همان دکمه را بزنید؛ اگر تکرار شد، کش مرورگر یا کش مدیر (LiteSpeed) را برای پیشخوان خاموش کنید.', 'lax-theme-child' ) ),
 		'diag_ok'        => array( 'success', __( 'همه‌ی مسیرهای گیت‌هاب پاسخ دادند؛ جدول تست در کارت «تست اتصال» است.', 'lax-theme-child' ) ),
@@ -3220,6 +3326,57 @@ function orsite_gh_render_page() {
 		<?php endif; ?>
 	</div>
 
+	<?php
+	// Server truth: what the files say right now, not what a cache remembers.
+	$hj_server = array();
+	foreach ( array( 'child' => get_stylesheet_directory(), 'parent' => get_template_directory() ) as $hj_key => $hj_dir ) {
+		$hj_css  = $hj_dir . '/assets/css/child.css';
+		$hj_disk = orsite_gh_disk_version( $hj_dir );
+		$hj_server[ $hj_key ] = array(
+			'version' => '' !== $hj_disk ? $hj_disk : '—',
+			'style'   => is_readable( $hj_dir . '/style.css' ) ? (int) filemtime( $hj_dir . '/style.css' ) : 0,
+			'css'     => is_readable( $hj_css ) ? (int) filemtime( $hj_css ) : 0,
+			'css_kb'  => is_readable( $hj_css ) ? round( filesize( $hj_css ) / 1024, 1 ) : 0,
+			'writable' => is_writable( $hj_dir ),
+		);
+	}
+	?>
+	<div class="orsite-card">
+		<h2><?php esc_html_e( 'نسخهٔ واقعی فایل‌های روی سرور', 'lax-theme-child' ); ?></h2>
+		<p class="orsite-meta"><?php esc_html_e( 'این جدول فایل‌ها را از دیسک می‌خواند؛ کش وردپرس، LiteSpeed یا مرورگر در آن اثری ندارد. اگر «نسخهٔ فایل» با نسخهٔ نصب‌شده یکی نیست، بروزرسانی واقعاً روی سرور ننشسته است.', 'lax-theme-child' ); ?></p>
+		<table class="widefat striped" style="max-width:720px">
+			<thead>
+				<tr>
+					<th><?php esc_html_e( 'پوسته', 'lax-theme-child' ); ?></th>
+					<th><?php esc_html_e( 'نسخهٔ فایل', 'lax-theme-child' ); ?></th>
+					<th><?php esc_html_e( 'آخرین تغییر style.css', 'lax-theme-child' ); ?></th>
+					<th><?php esc_html_e( 'child.css', 'lax-theme-child' ); ?></th>
+					<th><?php esc_html_e( 'قابل نوشتن', 'lax-theme-child' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ( $hj_server as $hj_key => $hj_row ) : ?>
+					<tr>
+						<td><?php echo esc_html( 'child' === $hj_key ? 'lax-theme-child' : 'lax-theme' ); ?></td>
+						<td><strong><?php echo esc_html( $hj_row['version'] ); ?></strong></td>
+						<td><?php echo esc_html( $hj_row['style'] ? wp_date( 'Y-m-d H:i', $hj_row['style'] ) : '—' ); ?></td>
+						<td><?php echo esc_html( $hj_row['css'] ? wp_date( 'Y-m-d H:i', $hj_row['css'] ) . ' · ' . $hj_row['css_kb'] . ' KB' : '—' ); ?></td>
+						<td><?php echo $hj_row['writable'] ? '✅' : '⛔'; ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<p class="orsite-meta">
+			<?php
+			printf(
+				/* translators: %s: URL of the stylesheet in the browser */
+				esc_html__( 'برای تأیید از بیرون: نشانی %s را باز کنید؛ اگر بلوک «پیوندهای مقاله آبی، کادر عنوان سرمه‌ای» را ندارد، فایل قدیمی است.', 'lax-theme-child' ),
+				'<code>' . esc_html( get_stylesheet_directory_uri() . '/assets/css/child.css' ) . '</code>'
+			);
+			?>
+		</p>
+	</div>
+
 	<div class="orsite-card">
 		<h2><?php esc_html_e( 'فایل‌های تغییریافته (پیش‌نمایش)', 'lax-theme-child' ); ?></h2>
 		<?php if ( empty( $diff['themes'] ) ) : ?>
@@ -3269,6 +3426,25 @@ function orsite_gh_render_page() {
 				<p class="orsite-status-bad"><?php echo esc_html( $which . ': ' . $msg ); ?></p>
 			<?php endforeach; ?>
 		<?php endif; ?>
+		<?php if ( ! empty( $last_run['done'] ) ) : ?>
+			<?php foreach ( (array) $last_run['done'] as $which => $entry ) : ?>
+				<?php if ( ! is_array( $entry ) || empty( $entry['skipped'] ) ) { continue; } ?>
+				<p class="orsite-meta">
+					<?php
+					printf(
+						/* translators: 1: theme key, 2: installed version, 3: released version */
+						esc_html__( '%1$s: نسخهٔ روی سرور %2$s است و گیت‌هاب %3$s می‌گوید؛ تغییری لازم نبود.', 'lax-theme-child' ),
+						esc_html( $which ),
+						esc_html( (string) $entry['version'] ),
+						esc_html( (string) $entry['remote'] )
+					);
+					?>
+					<?php if ( empty( $entry['verified'] ) ) : ?>
+						<br /><strong><?php esc_html_e( 'هشدار: این پاسخ از کش آمده و تأیید تازه نشده است؛ یک‌بار «تست اتصال» را بزنید.', 'lax-theme-child' ); ?></strong>
+					<?php endif; ?>
+				</p>
+			<?php endforeach; ?>
+		<?php endif; ?>
 		<?php if ( empty( $last_update ) ) : ?>
 			<p class="orsite-meta"><?php esc_html_e( 'هنوز بروزرسانی‌ای از این صفحه انجام نشده است.', 'lax-theme-child' ); ?></p>
 		<?php else : ?>
@@ -3283,7 +3459,11 @@ function orsite_gh_render_page() {
 				</h3>
 				<p class="orsite-meta">
 					<?php
-					$ver = ! empty( $log['to'] ) ? sprintf( '%s → %s', $log['from'], $log['to'] ) : $log['release_tag'];
+					$from_v = ! empty( $log['version_from'] ) ? $log['version_from'] : ( ! empty( $log['from'] ) ? $log['from'] : '' );
+					$to_v   = ! empty( $log['version_to'] ) ? $log['version_to'] : ( ! empty( $log['to'] ) ? $log['to'] : '' );
+					$ver    = ( '' !== $from_v || '' !== $to_v )
+						? sprintf( '%s → %s', '' !== $from_v ? $from_v : '?', '' !== $to_v ? $to_v : '?' )
+						: $log['release_tag'];
 					printf(
 						/* translators: 1: version or tag 2: time */
 						esc_html__( 'از انتشار %1$s — %2$s پیش', 'lax-theme-child' ),

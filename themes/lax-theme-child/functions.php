@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.21.1' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.21.2' );
 }
 
 /**
@@ -148,6 +148,23 @@ function lax_theme_child_setup() {
 add_action( 'after_setup_theme', 'lax_theme_child_setup', 11 );
 
 /**
+ * Cache-busting version for a child asset.
+ *
+ * The theme version alone is not enough: after an in-place update the file
+ * changes while the version string can lag (theme cache, stale package), and
+ * the browser keeps the old stylesheet. The file's own mtime is the truth, so
+ * the query string always moves when the bytes move.
+ *
+ * @param string $relative Path inside the child theme.
+ * @return string
+ */
+function lax_theme_child_asset_ver( $relative ) {
+	$file = get_stylesheet_directory() . '/' . ltrim( (string) $relative, '/' );
+	$time = is_readable( $file ) ? (int) filemtime( $file ) : 0;
+	return $time > 0 ? LAX_THEME_CHILD_VERSION . '.' . $time : LAX_THEME_CHILD_VERSION;
+}
+
+/**
  * Enqueue child assets after the parent styles.
  *
  * The parent already enqueues the child `style.css` through its
@@ -159,14 +176,14 @@ function lax_theme_child_assets() {
 		'lax-theme-child',
 		get_stylesheet_directory_uri() . '/assets/css/child.css',
 		array( 'lax-theme-style' ),
-		LAX_THEME_CHILD_VERSION
+		lax_theme_child_asset_ver( 'assets/css/child.css' )
 	);
 
 	wp_enqueue_style(
 		'lax-theme-child-glossary',
 		get_stylesheet_directory_uri() . '/assets/css/glossary.css',
 		array( 'lax-theme-child' ),
-		LAX_THEME_CHILD_VERSION
+		lax_theme_child_asset_ver( 'assets/css/glossary.css' )
 	);
 
 	wp_enqueue_script(
