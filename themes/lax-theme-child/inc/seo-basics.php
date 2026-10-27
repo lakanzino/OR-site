@@ -456,7 +456,14 @@ if ( ! hj_seo_plugin_active() ) :
 							);
 						}
 					}
-					$graph[] = $article;
+					/**
+					 * Filter the Article node before it enters the graph
+					 * (the references box adds `citation` URLs here).
+					 *
+					 * @param array $article Article node.
+					 * @param int   $post_id Current post ID.
+					 */
+					$graph[] = apply_filters( 'hj_seo_article_node', $article, $post_id );
 				}
 			}
 		}

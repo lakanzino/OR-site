@@ -7,7 +7,7 @@
 | جزء | نسخه | مسیر |
 |---|---|---|
 | قالب والد `lax-theme` | 1.0.1 | [`themes/lax-theme/`](themes/lax-theme/) |
-| قالب فرزند `lax-theme-child` | 0.17.0 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
+| قالب فرزند `lax-theme-child` | 0.18.0 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
 | افزونهٔ `orsite-media-matcher` | 1.2.0 | [`plugins/orsite-media-matcher/`](plugins/orsite-media-matcher/) |
 | ساختار محتوا (`ORSITE_STRUCTURE_VERSION`) | 1.0.0 | `themes/lax-theme-child/inc/content-types.php` |
 
@@ -32,6 +32,7 @@
   - `docs/reports/SITE-HARDENING-2026-10-28.md` — **ارزش‌سنجی پیشنهادهای فنی**: دروازهٔ انتشار، نرمال‌سازی فارسی، بازبینی محتوا، باکس‌های پزشکی و آنچه آگاهانه رد شد.
   - `docs/content/TEMPLATE-V2-SECTIONS.fa.md` — **قالب مقالهٔ نسخهٔ ۲**: چهار بخش تازه (کادر دامنه، فهرست سؤال، واژه‌های ساده، FAQ مرئی)، فیلدهای مانیفست و روش ویرایش در پیشخوان.
   - `docs/NOTES-FROM-USER.fa.md` — **دفتر ثبت نکات صاحب سایت**: هر نکته با تصمیم، دلیل حفظ، دلیل رد و جای اجرا (قاعده: هر پیام تازه یک ردیف، هیچ ردیفی حذف نمی‌شود).
+  - `design/preview-references-box.html` — **پیش‌نمایش باکس منابع** (۰٫۱۸٫۰) در سه عرض، با CSS واقعی قالب.
   - `themes/lax-theme-child/data/source-whitelist.json` — **فهرست سفید منابع معتبر** (ردهٔ ۱ و ۲) که هم دروازهٔ انتشار و هم `tools/content-lint.py` آن را می‌خوانند؛ گیت ۰٫۱۷٫۰: ۳ دامنهٔ متفاوت + دست‌کم ۱ منبع ردهٔ ۱.
 - `content/drafts/<slug>/` — بسته‌های سه‌فایلی پیش‌نویس مقالات (`article.json` + `content.html` + `featured.webp`)؛ وضعیت همه `draft` تا عبور از فیلتر تحریریه و تأیید کارفرما. سازوکار «بازبین پزشکی» از نسخهٔ 0.14.0 قالب به‌طور کامل حذف شده است.
 - `releases/article-packages/` — همان بسته‌ها به شکل ZIP آماده‌ی ایمپورت در پیشخوان.

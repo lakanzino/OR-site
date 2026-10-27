@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.17.0' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.18.0' );
 }
 
 /**
@@ -45,6 +45,7 @@ require_once get_stylesheet_directory() . '/inc/patient-needs.php';
  */
 require_once get_stylesheet_directory() . '/inc/persian-normalize.php';
 require_once get_stylesheet_directory() . '/inc/source-whitelist.php';
+require_once get_stylesheet_directory() . '/inc/references-box.php';
 require_once get_stylesheet_directory() . '/inc/publish-gate.php';
 require_once get_stylesheet_directory() . '/inc/content-freshness.php';
 require_once get_stylesheet_directory() . '/inc/medical-boxes.php';

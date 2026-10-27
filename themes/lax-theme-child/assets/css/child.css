@@ -2653,3 +2653,321 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 		font-size: 0.96rem;
 	}
 }
+
+/* ==========================================================================
+   منابع و شواهد بالینی — باکس پایان مقاله (قالب ۰٫۱۸٫۰)
+   همان فهرست منابع مقاله، در قالب یک کتاب‌شناسی شماره‌دار:
+   شماره با شمارندهٔ CSS، نشان ردهٔ اعتبار از فهرست سفید گیت،
+   و دامنه به‌عنوان متن پیوند (نشانی خام در جمله خوانا نیست).
+   ========================================================================== */
+
+.hj-refs {
+	--ref-accent: var(--bx-navy-mid, #0a2f6b);
+	--ref-accent-deep: var(--bx-navy-deep, #041a3f);
+	--ref-ink: var(--bx-ink, #071a33);
+	--ref-muted: var(--bx-muted, #38536e);
+	--ref-line: rgba(4, 26, 63, 0.14);
+	--ref-title-size: 1.05rem;
+	margin: 2.5rem 0 1.5rem;
+	padding: 1.5rem 1.65rem 1.25rem;
+	background: #ffffff;
+	border: 1px solid var(--ref-line);
+	border-radius: 14px;
+	box-shadow: 0 1px 2px rgba(4, 26, 63, 0.05), 0 10px 26px -20px rgba(4, 26, 63, 0.55);
+	direction: rtl;
+	text-align: start;
+}
+
+.hj-refs__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.45rem 0.6rem;
+	margin: 0 0 0.55rem;
+	padding: 0 0 0.7rem;
+	border-bottom: 1px dashed rgba(4, 26, 63, 0.22);
+}
+
+.hj-refs__icon {
+	flex: 0 0 auto;
+	width: 22px;
+	height: 22px;
+	background-color: transparent;
+	background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230a2f6b'%3E%3Cpath d='M19 2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2h2a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Zm-4 18H5V8h10v12Zm4-4h-2V6a1 1 0 0 0-1-1H9V4h10v12ZM7 10h6v2H7v-2Zm0 3h6v2H7v-2Zm0 3h4v2H7v-2Z'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 22px 22px;
+}
+
+.hj-refs__title {
+	flex: 1 1 auto;
+	margin: 0;
+	font-size: var(--ref-title-size);
+	font-weight: 700;
+	line-height: 1.6;
+	color: var(--ref-ink);
+}
+
+/* خنثی‌کردن کارت سراسری H2 مقاله: عنوان این باکس باید درون سربرگ بنشیند،
+   نه اینکه خودش یک کارت سرمه‌ای با تیتر بریده‌شده بشود. */
+.orsite-article__content .hj-refs .hj-refs__title,
+.hj-refs .hj-refs__title {
+	display: block;
+	width: auto;
+	max-width: 100%;
+	margin: 0;
+	padding: 0;
+	background: none;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	color: var(--ref-ink);
+	font-size: var(--ref-title-size);
+	line-height: 1.6;
+	white-space: normal;
+	overflow: visible;
+	text-overflow: clip;
+	scroll-margin-top: 7rem;
+}
+
+.hj-refs .hj-refs__list,
+.orsite-article__content .hj-refs .hj-refs__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	background: none;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+.hj-refs .hj-refs__item {
+	margin: 0;
+	padding-inline: 0;
+}
+
+.hj-refs .hj-refs__meta-line,
+.hj-refs .hj-refs__note {
+	margin-inline: 0;
+	max-width: 100%;
+}
+
+.hj-refs__kicker {
+	flex: 0 0 auto;
+	font-size: 0.66rem;
+	font-weight: 600;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--ref-muted);
+	opacity: 0.75;
+}
+
+.hj-refs__meta-line {
+	margin: 0 0 1rem;
+	font-size: 0.82rem;
+	color: var(--ref-muted);
+}
+
+.hj-refs__list {
+	counter-reset: hjref;
+	display: grid;
+	gap: 0.85rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.hj-refs__item {
+	display: grid;
+	grid-template-columns: 2.1rem 1fr;
+	gap: 0.1rem 0.45rem;
+	padding-block: 0.1rem;
+	break-inside: avoid;
+}
+
+.hj-refs__num {
+	grid-column: 1;
+	font-size: 0.82rem;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+	line-height: 1.9;
+	color: var(--ref-accent);
+}
+
+.hj-refs__num::before {
+	counter-increment: hjref;
+	content: "[" counter(hjref) "]";
+}
+
+.hj-refs__body {
+	grid-column: 2;
+	min-width: 0;
+}
+
+.hj-refs__text {
+	display: block;
+	font-size: 0.93rem;
+	line-height: 1.85;
+	color: var(--ref-muted);
+	overflow-wrap: break-word;
+}
+
+.hj-refs__row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.4rem;
+	margin-top: 0.3rem;
+}
+
+.hj-refs__badge {
+	display: inline-block;
+	padding: 0.1rem 0.45rem;
+	border-radius: 999px;
+	font-size: 0.7rem;
+	font-weight: 600;
+	line-height: 1.7;
+	white-space: nowrap;
+}
+
+.hj-refs__badge--tier1 {
+	background-color: #e4edf9;
+	color: #082a5e;
+}
+
+.hj-refs__badge--tier2 {
+	background-color: #eef4fa;
+	color: #2f4a66;
+}
+
+.hj-refs__badge--other {
+	background-color: #f1f3f6;
+	color: #44536b;
+}
+
+.hj-refs__link {
+	font-size: 0.82rem;
+	font-weight: 600;
+	color: var(--ref-accent);
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
+	overflow-wrap: anywhere;
+	word-break: break-word;
+	transition: color 0.15s ease;
+}
+
+.hj-refs__link:hover,
+.hj-refs__link:focus {
+	color: var(--ref-accent-deep);
+}
+
+.hj-refs__note {
+	margin: 1rem 0 0;
+	padding-top: 0.75rem;
+	border-top: 1px dashed rgba(4, 26, 63, 0.18);
+	font-size: 0.84rem;
+	line-height: 1.8;
+	color: var(--ref-muted);
+}
+
+/* موبایل — همان منطق باکس‌های ۰٫۱۶.۱: عرض متن اولویت دارد */
+@media (max-width: 768px) {
+	.hj-refs {
+		margin: 2rem 0 1.25rem;
+		padding: 1.25rem 1.1rem 1.1rem;
+	}
+
+	.hj-refs {
+		--ref-title-size: 1rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.hj-refs {
+		padding: 1.05rem 0.95rem 1rem;
+		border-radius: 12px;
+	}
+
+	.hj-refs__item {
+		grid-template-columns: 1.85rem 1fr;
+	}
+
+	.hj-refs__text {
+		font-size: 0.9rem;
+		line-height: 1.8;
+	}
+
+	.hj-refs__kicker {
+		display: none;
+	}
+
+	.hj-refs__note {
+		font-size: 0.8rem;
+	}
+}
+
+@media (max-width: 360px) {
+	.hj-refs {
+		padding: 0.95rem 0.85rem 0.9rem;
+	}
+
+	.hj-refs__item {
+		grid-template-columns: 1.7rem 1fr;
+	}
+
+	.hj-refs__text {
+		font-size: 0.88rem;
+	}
+
+	.hj-refs__badge {
+		font-size: 0.66rem;
+	}
+}
+
+/* دارک‌مود فقط با کلاس صریح روی html (سایت روشن است؛ media query خام،
+   برای کاربرانی که سیستم‌شان دارک است، باکس سیاه روی صفحهٔ روشن می‌ساخت) */
+html.hj-refs-dark .hj-refs {
+	background: #0f1c30;
+	border-color: rgba(255, 255, 255, 0.12);
+	--ref-ink: #f1f5f9;
+	--ref-muted: #c3d2e3;
+	--ref-accent: #93bdf0;
+	--ref-accent-deep: #c7dcf8;
+}
+
+html.hj-refs-dark .hj-refs__head,
+html.hj-refs-dark .hj-refs__note {
+	border-color: rgba(255, 255, 255, 0.16);
+}
+
+html.hj-refs-dark .hj-refs__icon {
+	background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2393bdf0'%3E%3Cpath d='M19 2H9a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2h2a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Zm-4 18H5V8h10v12Zm4-4h-2V6a1 1 0 0 0-1-1H9V4h10v12ZM7 10h6v2H7v-2Zm0 3h6v2H7v-2Zm0 3h4v2H7v-2Z'/%3E%3C/svg%3E");
+}
+
+html.hj-refs-dark .hj-refs__badge--tier1 {
+	background-color: rgba(147, 189, 240, 0.18);
+	color: #cfe2fa;
+}
+
+html.hj-refs-dark .hj-refs__badge--tier2,
+html.hj-refs-dark .hj-refs__badge--other {
+	background-color: rgba(255, 255, 255, 0.1);
+	color: #d7e2ee;
+}
+
+@media print {
+	.hj-refs {
+		margin: 1rem 0;
+		padding: 0.8rem 1rem;
+		border: 1px solid #9aa7b6;
+		border-radius: 0;
+		box-shadow: none;
+		break-inside: avoid;
+	}
+
+	.hj-refs__item,
+	.hj-refs__note {
+		break-inside: avoid;
+	}
+}
