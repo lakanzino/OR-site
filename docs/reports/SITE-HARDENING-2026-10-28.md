@@ -527,3 +527,14 @@ MD5 فایل‌های کلیدی بستهٔ قالب با درخت کاری بر
 | `content-lint` | ✅ ۴۴ بسته · ۰ خطا |
 | هدر/منو/اسکریپت والد | ✅ دست‌نخورده |
 | آزمون واقعی در مرورگر و پیشخوان | ⏳ `T-49` (مرورگر و وردپرس در این محیط نیستند) |
+
+### ۱۲-۵. انتشار و آرشیو
+
+| مورد | شناسه |
+|---|---|
+| تگ و Release | `child-v0.20.2` — https://github.com/lakanzino/OR-site/releases/tag/child-v0.20.2 |
+| پوشهٔ Drive | `Hamyar Jarahi — Release child-v0.20.2 (2026-10-28)` — `1MWc5cuXrSaZljnXwORtOSJT0HBmoakFn` |
+| بستهٔ قالب | `lax-theme-child-0.20.2.zip` — `18ieycK6edygnweMuZaWcHIQUtiWdzj37` (۶۹ ورودی) |
+| بستهٔ اسناد | `orsite-docs-0.20.2.zip` (۵۷ ورودی) — در همان پوشهٔ Drive؛ شناسهٔ فایل در گزارش تحویل ثبت شده و چون این بسته خودش همین سند را در بر دارد، شناسه‌اش داخل سند تکرار نمی‌شود |
+| یادداشت انتشار | `releases/RELEASE-NOTE-0.20.2.fa.md` (در بستهٔ اسناد) |
+| بدون تغییر | افزونهٔ `hamyar-sentinel-agent` 1.0.0 و قالب والد 1.0.1 |
