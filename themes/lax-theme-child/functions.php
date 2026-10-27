@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.20.1' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.20.2' );
 }
 
 /**
@@ -48,6 +48,8 @@ require_once get_stylesheet_directory() . '/inc/source-whitelist.php';
 require_once get_stylesheet_directory() . '/inc/references-box.php';
 require_once get_stylesheet_directory() . '/inc/faq-accordion.php';
 require_once get_stylesheet_directory() . '/inc/quick-facts.php';
+require_once get_stylesheet_directory() . '/inc/nav-menus.php';
+require_once get_stylesheet_directory() . '/inc/emergency-bar.php';
 require_once get_stylesheet_directory() . '/inc/publish-gate.php';
 require_once get_stylesheet_directory() . '/inc/content-freshness.php';
 require_once get_stylesheet_directory() . '/inc/medical-boxes.php';

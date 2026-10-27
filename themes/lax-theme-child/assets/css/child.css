@@ -3657,3 +3657,84 @@ textarea:focus-visible {
 		display: none !important;
 	}
 }
+
+/* ==========================================================================
+   نوار اورژانس بالای صفحه — قالب ۰٫۲۰٫۲
+   یک خط ثابت، بدون JS، بدون تصویر و بدون فونت تازه؛ پس هیچ جهش چیدمانی
+   (CLS) اضافه نمی‌کند. هدرِ چسبانِ قالب والد دست‌نخورده می‌ماند.
+   ========================================================================== */
+
+.hj-emergency-bar {
+	background: var(--hj-danger-soft);
+	border-bottom: 1px solid rgba(220, 38, 38, 0.35);
+	color: #7f1d1d;
+	font-size: 0.82rem;
+	line-height: 1.6;
+}
+
+.hj-emergency-bar__inner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.6rem 1rem;
+	flex-wrap: wrap;
+	min-height: 2.25rem;
+	padding-block: 0.3rem;
+}
+
+.hj-emergency-bar__text {
+	margin: 0;
+	min-width: 0;
+}
+
+.hj-emergency-bar__text strong {
+	font-weight: 800;
+}
+
+.hj-emergency-bar__call {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+	flex: 0 0 auto;
+	background: var(--hj-danger);
+	border: 1px solid #b91c1c;
+	border-radius: 999px;
+	color: #fff;
+	font-size: 0.8rem;
+	font-weight: 800;
+	padding: 0.15rem 0.7rem;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.hj-emergency-bar__call:hover,
+.hj-emergency-bar__call:focus {
+	background: #b91c1c;
+	color: #fff;
+	text-decoration: none;
+}
+
+.hj-emergency-bar__number {
+	font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 560px) {
+	.hj-emergency-bar {
+		font-size: 0.78rem;
+	}
+
+	.hj-emergency-bar__text strong {
+		display: block;
+	}
+
+	.hj-emergency-bar__call {
+		width: 100%;
+		justify-content: center;
+	}
+}
+
+@media print {
+	.hj-emergency-bar {
+		display: none !important;
+	}
+}

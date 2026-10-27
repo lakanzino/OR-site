@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.20.1
+Stable tag: 0.20.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,12 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.20.2 =
+* **برچسب فارسی موقعیت‌های منو:** `primary` → «منوی اصلی سربرگ (دسکتاپ و موبایل)» و `footer` → «منوی پابرگ»، با `register_nav_menus` روی `after_setup_theme` اولویت ۲۰؛ فهرست‌های قبلی سر جایشان می‌مانند. یادداشت کوتاه در صفحهٔ «فهرست‌ها» توضیح می‌دهد منوی سربرگ و موبایل یکی است.
+* **نوار اورژانس بالای صفحه:** یک خط با لینک `tel:115` که با `wp_body_open` تزریق می‌شود؛ بدون JS، تصویر و فونت تازه (بدون CLS)، خاموش‌شدنی با فیلتر `hj_emergency_bar_enabled`، پنهان در چاپ و ۴۰۴.
+* **راه سازگاری `menu-1`:** فیلتر `hj_nav_menu_location_alias` فهرستی که به نام قدیمی وصل شده را روی `primary` نشان می‌دهد.
+* **رد‌شده‌ها:** ساخت `header.php` فرزند، موقعیت‌های بی‌رندر `menu-1`/`mobile-menu`، کشوی دوم + `hamyar-menu.js`، جستجوی تکراری، پیش‌بارگذاری فونت با مسیر اشتباه، بَج «پزشکان ناظر».
 
 = 0.20.1 =
 * **پل ACF برای «خلاصهٔ بالینی»:** اگر فیلدهای `surgery_stay_duration`، `surgery_shower_time` و `surgery_recovery_time` در ACF پر باشند، جعبهٔ خلاصهٔ بالینی همان‌ها را نشان می‌دهد؛ فیلد خالی نادیده گرفته می‌شود و هیچ مقدار پیش‌فرضی ساخته نمی‌شود. نقشه با فیلتر `hj_quick_facts_acf_map` قابل تغییر است.
