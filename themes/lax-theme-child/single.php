@@ -73,6 +73,10 @@ get_header();
 				</figure>
 			<?php endif; ?>
 
+			<?php if ( function_exists( 'hj_quick_facts_render' ) ) : ?>
+				<?php hj_quick_facts_render( get_the_ID() ); ?>
+			<?php endif; ?>
+
 			<div class="orsite-article__layout">
 				<div class="entry-content orsite-article__content">
 					<?php echo $article_content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered post content. ?>

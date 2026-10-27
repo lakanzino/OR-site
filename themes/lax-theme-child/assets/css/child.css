@@ -15,32 +15,47 @@
 :root {
 	--color-primary: #0a2f6b;
 	--color-primary-dark: #041a3f;
-	--color-accent: #06265c;
-	--color-secondary: #38536e;
-	--color-bg: #f4f8fc;
-	--color-surface: #eef4fa;
-	--color-text: #071a33;
-	--color-link: #0a2f6b;
-	--color-link-hover: #041a3f;
-	--color-border: #b9c9d9;
+	/* Clinical Calmness palette (child 0.20.0) — see ADR-026. */
+	--color-accent: #0891b2;
+	--color-secondary: #475569;
+	--color-bg: #f8fafc;
+	--color-surface: #f1f5f9;
+	--color-text: #0f172a;
+	--color-link: #0e7490;
+	--color-link-hover: #155e75;
+	--color-border: #e2e8f0;
 	--radius: 18px;
 
-	--bx-bg: #f4f8fc;
+	/* Teal = trust + action, navy = text + structure, alerts = clinical status. */
+	--hj-teal: #0891b2;
+	--hj-teal-deep: #0e7490;
+	--hj-teal-darker: #155e75;
+	--hj-teal-soft: #e0f2fe;
+	--hj-danger: #dc2626;
+	--hj-danger-soft: #fef2f2;
+	--hj-ok: #16a34a;
+	--hj-ok-soft: #f0fdf4;
+	--hj-warn: #d97706;
+	--hj-warn-soft: #fffbeb;
+	--hj-container: 1200px;
+	--hj-read: 780px;
+
+	--bx-bg: #f8fafc;
 	--bx-box: #ffffff;
-	--bx-soft: #eef4fa;
-	--bx-navy: #06265c;
-	--bx-navy-deep: #041a3f;
-	--bx-navy-mid: #0a2f6b;
-	--bx-highlight: #06265c;
-	--bx-highlight-deep: #041a3f;
-	--bx-ink: #071a33;
-	--bx-muted: #38536e;
-	--bx-line: #b9c9d9;
-	--bx-shadow-deep: 0 24px 48px rgba(4, 26, 63, 0.25), 0 5px 14px rgba(4, 26, 63, 0.18);
-	--bx-shadow: 0 14px 30px rgba(4, 26, 63, 0.18), 0 3px 8px rgba(4, 26, 63, 0.12);
-	--bx-shadow-small: 0 8px 18px rgba(4, 26, 63, 0.16);
-	--bx-inset: inset 4px 4px 10px rgba(4, 26, 63, 0.14), inset -4px -4px 10px rgba(255, 255, 255, 0.95);
-	--bx-raise: 7px 7px 16px rgba(4, 26, 63, 0.18), -5px -5px 12px rgba(255, 255, 255, 0.95);
+	--bx-soft: #f1f5f9;
+	--bx-navy: #0f172a;
+	--bx-navy-deep: #0f172a;
+	--bx-navy-mid: #1e293b;
+	--bx-highlight: #0e7490;
+	--bx-highlight-deep: #155e75;
+	--bx-ink: #0f172a;
+	--bx-muted: #475569;
+	--bx-line: #e2e8f0;
+	--bx-shadow-deep: 0 22px 44px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(15, 23, 42, 0.10);
+	--bx-shadow: 0 12px 26px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+	--bx-shadow-small: 0 6px 14px rgba(15, 23, 42, 0.09);
+	--bx-inset: inset 3px 3px 8px rgba(15, 23, 42, 0.07), inset -3px -3px 8px rgba(255, 255, 255, 0.9);
+	--bx-raise: 6px 6px 14px rgba(15, 23, 42, 0.10), -4px -4px 10px rgba(255, 255, 255, 0.9);
 }
 
 html {
@@ -3176,4 +3191,469 @@ html.hj-faq-dark .orsite-faq .hj-faq-list details .orsite-faq__answer {
 html.hj-faq-dark .orsite-faq__count {
 	background: rgba(255, 255, 255, 0.1);
 	color: #d7e4f2;
+}
+
+/* ==========================================================================
+   هویت بصری «آرامش بالینی» — قالب ۰٫۲۰٫۰ (ADR-026)
+   توکن‌های بالای فایل رنگ‌ها را عوض کرده‌اند؛ این بلوک فقط سه چیز را کامل
+   می‌کند: مقیاس تایپوگرافی و عرض‌های استاندارد، لهجهٔ فیروزه‌ای روی عناصر
+   تعاملی، و اجزای تازهٔ صفحهٔ اصلی و مقاله.
+   ========================================================================== */
+
+/* ---------- ۱) عرض کانتینر و ستون مطالعه ---------- */
+
+@media (min-width: 769px) {
+	.container {
+		max-width: var(--hj-container);
+		padding-inline: 1.25rem;
+	}
+}
+
+.orsite-article__layout > .orsite-article__content {
+	max-width: var(--hj-read);
+}
+
+/* ---------- ۲) مقیاس تایپوگرافی ---------- */
+
+.orsite-article__title {
+	font-size: 2.1rem;
+	line-height: 1.4;
+}
+
+.orsite-article__content {
+	font-size: 1.05rem;
+	line-height: 1.85;
+}
+
+.orsite-article__content h2 {
+	font-size: 1.45rem;
+	line-height: 1.5;
+}
+
+.orsite-article__content h3 {
+	font-size: 1.16rem;
+	line-height: 1.6;
+}
+
+.orsite-article__lead {
+	font-size: 1.05rem;
+	line-height: 1.85;
+}
+
+@media (max-width: 768px) {
+	.orsite-article__title {
+		font-size: 1.6rem;
+	}
+
+	.orsite-article__content {
+		font-size: 1rem;
+		line-height: 1.8;
+	}
+}
+
+/* ---------- ۳) لهجهٔ فیروزه‌ای: پیوند، دکمه، فوکوس ---------- */
+
+.orsite-article__content a {
+	color: var(--color-link);
+	text-decoration-color: rgba(14, 116, 144, 0.35);
+	text-underline-offset: 0.2em;
+}
+
+.orsite-article__content a:hover,
+.orsite-article__content a:focus {
+	color: var(--color-link-hover);
+	text-decoration-color: currentColor;
+}
+
+.hj-button {
+	background: var(--hj-teal-deep);
+	border-color: var(--hj-teal-darker);
+}
+
+.hj-button:hover {
+	background: var(--hj-teal-darker);
+	border-color: var(--hj-teal-darker);
+}
+
+.hj-button--ghost {
+	background: var(--bx-box);
+	border-color: var(--hj-teal-deep);
+	color: var(--hj-teal-darker);
+}
+
+.hj-button--ghost:hover {
+	background: var(--hj-teal-soft);
+	color: var(--hj-teal-darker);
+}
+
+.hj-text-link {
+	color: var(--color-link);
+}
+
+.hj-text-link:hover {
+	color: var(--color-link-hover);
+}
+
+.hj-home-hero .hj-button--light:hover {
+	background: var(--hj-teal-soft);
+	color: var(--hj-teal-darker);
+}
+
+/* فوکوس یکدست و دیدنی برای صفحه‌کلید — روی هر دو پوسته */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+	outline: 2px solid var(--hj-teal);
+	outline-offset: 2px;
+}
+
+/* نشان‌های وضعیت بالینی با پالت تازه */
+.hj-box--danger {
+	background: var(--hj-danger-soft);
+	border-color: var(--hj-danger);
+	color: #7f1d1d;
+}
+
+.hj-box--success {
+	background: var(--hj-ok-soft);
+	border-color: var(--hj-ok);
+	color: #14532d;
+}
+
+.hj-box--warning {
+	background: var(--hj-warn-soft);
+	border-color: var(--hj-warn);
+	color: #78350f;
+}
+
+.hj-box--info {
+	background: var(--hj-teal-soft);
+	border-color: var(--hj-teal);
+	color: #164e63;
+}
+
+/* ---------- ۴) صفحهٔ اصلی: تگ‌های پرجستجو و دستیار مسیر ---------- */
+
+.hj-home-hero__chips {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 0.5rem;
+	margin: 1.1rem 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.hj-home-hero__chips li {
+	margin: 0;
+}
+
+.hj-home-hero__chips a {
+	display: inline-block;
+	background: rgba(255, 255, 255, 0.12);
+	border: 1px solid rgba(255, 255, 255, 0.38);
+	border-radius: 999px;
+	color: #fff;
+	font-size: 0.86rem;
+	font-weight: 600;
+	line-height: 1.9;
+	padding: 0.18rem 0.85rem;
+	text-decoration: none;
+	transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.hj-home-hero__chips a:hover,
+.hj-home-hero__chips a:focus {
+	background: rgba(255, 255, 255, 0.24);
+	border-color: #fff;
+	color: #fff;
+}
+
+.hj-care-tool {
+	background: var(--bx-box);
+	border: 1px solid var(--bx-line);
+	border-left: 6px solid var(--hj-teal);
+	border-radius: 20px;
+	box-shadow: var(--bx-shadow);
+	padding: 1.35rem 1.45rem 1.5rem;
+}
+
+.hj-care-tool__head h2 {
+	margin: 0 0 0.35rem;
+	font-size: 1.25rem;
+	line-height: 1.6;
+	color: var(--bx-navy-deep);
+}
+
+.hj-care-tool__head p {
+	margin: 0 0 1rem;
+	color: var(--bx-muted);
+	font-size: 0.93rem;
+}
+
+.hj-care-tool__form {
+	display: grid;
+	gap: 0.75rem;
+	grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+	align-items: end;
+}
+
+.hj-care-tool__field {
+	display: grid;
+	gap: 0.3rem;
+	min-width: 0;
+}
+
+.hj-care-tool__field label {
+	color: var(--bx-navy-deep);
+	font-size: 0.86rem;
+	font-weight: 700;
+}
+
+.hj-care-tool__field select {
+	width: 100%;
+	min-height: 2.9rem;
+	background: var(--bx-bg);
+	border: 1px solid var(--bx-line);
+	border-radius: 12px;
+	color: var(--bx-ink);
+	font-family: inherit;
+	font-size: 0.95rem;
+	padding: 0.5rem 0.7rem;
+}
+
+.hj-care-tool__result {
+	margin: 1.1rem 0 0;
+	background: var(--hj-teal-soft);
+	border: 1px solid rgba(8, 145, 178, 0.35);
+	border-radius: 14px;
+	padding: 0.9rem 1rem;
+	color: #164e63;
+}
+
+.hj-care-tool__result h3 {
+	margin: 0 0 0.4rem;
+	font-size: 1rem;
+	color: #0e4a5c;
+}
+
+.hj-care-tool__result ul {
+	margin: 0;
+	padding-inline-start: 1.1rem;
+}
+
+.hj-care-tool__result li {
+	margin: 0.2rem 0;
+	font-size: 0.94rem;
+	line-height: 1.8;
+}
+
+.hj-care-tool__flag {
+	margin: 0.75rem 0 0;
+	background: var(--hj-danger-soft);
+	border: 1px solid rgba(220, 38, 38, 0.35);
+	border-radius: 12px;
+	color: #7f1d1d;
+	font-size: 0.9rem;
+	padding: 0.6rem 0.85rem;
+}
+
+.hj-care-tool__links {
+	margin: 0.9rem 0 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1rem;
+	font-size: 0.92rem;
+}
+
+.hj-care-tool__fallback {
+	margin: 1rem 0 0;
+	padding: 0.85rem 1rem;
+	background: var(--bx-soft);
+	border: 1px solid var(--bx-line);
+	border-radius: 12px;
+	font-size: 0.92rem;
+}
+
+@media (max-width: 860px) {
+	.hj-care-tool__form {
+		grid-template-columns: 1fr;
+	}
+
+	.hj-care-tool__form .hj-button {
+		width: 100%;
+	}
+}
+
+/* ---------- ۵) مقاله: جعبهٔ «خلاصهٔ بالینی» و بَج بازبینی ---------- */
+
+.hj-quickfacts {
+	margin: 1.4rem 0 0;
+	background: var(--bx-soft);
+	border: 1px solid var(--bx-line);
+	border-radius: 18px;
+	padding: 1.05rem 1.15rem 1.15rem;
+}
+
+.hj-quickfacts__title {
+	margin: 0 0 0.75rem;
+	font-size: 0.95rem;
+	font-weight: 800;
+	color: var(--bx-navy-deep);
+}
+
+.hj-quickfacts__grid {
+	display: grid;
+	gap: 0.7rem;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.hj-quickfacts__item {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.55rem;
+	background: var(--bx-box);
+	border: 1px solid var(--bx-line);
+	border-radius: 12px;
+	padding: 0.6rem 0.7rem;
+	margin: 0;
+}
+
+.hj-quickfacts__icon {
+	flex: 0 0 auto;
+	width: 1.35rem;
+	height: 1.35rem;
+	margin-top: 0.15rem;
+	color: var(--hj-teal-deep);
+}
+
+.hj-quickfacts__icon svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.hj-quickfacts__text {
+	display: grid;
+	gap: 0.1rem;
+	min-width: 0;
+}
+
+.hj-quickfacts__note {
+	margin: 0.7rem 0 0;
+	color: var(--bx-muted);
+	font-size: 0.8rem;
+	line-height: 1.75;
+}
+
+.hj-quickfacts__label {
+	color: var(--bx-muted);
+	font-size: 0.78rem;
+	line-height: 1.6;
+}
+
+.hj-quickfacts__value {
+	color: var(--bx-navy-deep);
+	font-size: 0.93rem;
+	font-weight: 700;
+	line-height: 1.65;
+}
+
+.hj-review-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	background: var(--hj-teal-soft);
+	border: 1px solid rgba(8, 145, 178, 0.35);
+	border-radius: 999px;
+	color: #0e4a5c;
+	font-size: 0.72rem;
+	font-weight: 700;
+	line-height: 1.9;
+	padding: 0.05rem 0.6rem;
+}
+
+.orsite-card-article__review {
+	margin: 0.4rem 0 0;
+}
+
+/* ---------- ۶) فوتر: نوار اورژانس ---------- */
+
+.hj-emergency {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem 1.25rem;
+	margin: 1.5rem 0 0;
+	background: var(--hj-danger-soft);
+	border: 1px solid rgba(220, 38, 38, 0.35);
+	border-inline-start: 6px solid var(--hj-danger);
+	border-radius: 14px;
+	color: #7f1d1d;
+	padding: 0.85rem 1rem;
+}
+
+.hj-footer__bottom {
+	align-items: flex-start;
+}
+
+.hj-footer__legal {
+	max-width: 62ch;
+	font-size: 0.76rem;
+	line-height: 1.9;
+	color: rgba(255, 255, 255, 0.78);
+}
+
+.hj-footer__legal a {
+	color: #fff;
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+}
+
+.hj-emergency p {
+	margin: 0;
+	font-size: 0.92rem;
+	line-height: 1.85;
+}
+
+.hj-emergency__numbers {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.hj-emergency__numbers a {
+	display: inline-block;
+	background: var(--hj-danger);
+	border: 1px solid #b91c1c;
+	border-radius: 10px;
+	color: #fff;
+	font-size: 0.9rem;
+	font-weight: 800;
+	padding: 0.25rem 0.8rem;
+	text-decoration: none;
+}
+
+.hj-emergency__numbers a:hover,
+.hj-emergency__numbers a:focus {
+	background: #b91c1c;
+	color: #fff;
+}
+
+@media print {
+	.hj-emergency,
+	.hj-care-tool,
+	.hj-home-hero__chips {
+		display: none !important;
+	}
 }
