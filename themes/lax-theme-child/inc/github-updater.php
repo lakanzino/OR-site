@@ -84,7 +84,7 @@ if ( ! defined( 'ORSITE_GH_CACHE_SCHEMA' ) ) {
 	 * entry for a full hour after an update, which made the page look "connected"
 	 * to the wrong release; any cache written by an older schema is dropped.
 	 */
-	define( 'ORSITE_GH_CACHE_SCHEMA', 3 );
+	define( 'ORSITE_GH_CACHE_SCHEMA', 4 );
 }
 
 /* -------------------------------------------------------------------------
@@ -968,6 +968,87 @@ function orsite_gh_fetch_manifest( $tag ) {
 }
 
 /**
+ * Normalize the manifest changelog into one shape the admin can render.
+ *
+ * Three shapes exist in the wild and all of them are accepted:
+ *
+ *   1. `changelog_sections`: list of `{ version, title, items[] }` — the
+ *      canonical form written by 0.20.3 and later;
+ *   2. an associative `{ "0.20.2 — title": [ "bullet", … ] }` map — what the
+ *      update page used to assume;
+ *   3. `changelog`: a flat list of long strings, one per release — the shape
+ *      up to 0.20.2, where the update page printed an empty heading and the
+ *      whole paragraph as a single bullet.
+ *
+ * Every input becomes `[ [ 'version' => '0.20.2', 'title' => '…', 'items' => [ … ] ], … ]`.
+ *
+ * @param mixed $raw Raw manifest value.
+ * @return array<int,array{version:string,title:string,items:array<int,string>}>
+ */
+function orsite_gh_normalize_changelog( $raw ) {
+	$out = array();
+
+	foreach ( (array) $raw as $key => $entry ) {
+		$version = '';
+		$title   = '';
+		$items   = array();
+
+		if ( is_array( $entry ) ) {
+			$has_meta = isset( $entry['version'] ) || isset( $entry['title'] ) || isset( $entry['items'] ) || isset( $entry['bullets'] );
+			$version  = isset( $entry['version'] ) ? (string) $entry['version'] : '';
+			$title    = isset( $entry['title'] ) ? (string) $entry['title'] : '';
+			$list     = $has_meta
+				? ( isset( $entry['items'] ) ? $entry['items'] : ( isset( $entry['bullets'] ) ? $entry['bullets'] : array() ) )
+				: $entry;
+
+			foreach ( (array) $list as $bullet ) {
+				if ( is_string( $bullet ) && '' !== trim( $bullet ) ) {
+					$items[] = trim( $bullet );
+				}
+			}
+
+			if ( '' === $version && is_string( $key ) ) {
+				if ( preg_match( '/^v?(\d+(?:\.\d+)+)\s*(?:[\x{2014}\x{2013}-]|:)?\s*(.*)$/u', $key, $m ) ) {
+					$version = $m[1];
+					if ( '' === $title ) {
+						$title = trim( $m[2] );
+					}
+				}
+			}
+		} elseif ( is_string( $entry ) && '' !== trim( $entry ) ) {
+			$line = trim( $entry );
+			if ( preg_match( '/^v?(\d+(?:\.\d+)+)\s*(?:[\x{2014}\x{2013}-]|:)?\s*(.*)$/u', $line, $m ) ) {
+				$version = $m[1];
+				$title   = trim( $m[2] );
+				$items   = array( $title );
+			} else {
+				$items = array( $line );
+			}
+		}
+
+		// Keep the admin screens readable: at most 8 bullets of 400 characters.
+		$items = array_slice( $items, 0, 8 );
+		foreach ( $items as $i => $item ) {
+			if ( function_exists( 'mb_strlen' ) && mb_strlen( $item ) > 400 ) {
+				$items[ $i ] = mb_substr( $item, 0, 400 ) . '…';
+			}
+		}
+
+		if ( '' === $version && ! $items ) {
+			continue;
+		}
+
+		$out[] = array(
+			'version' => $version,
+			'title'   => $title,
+			'items'   => $items,
+		);
+	}
+
+	return $out;
+}
+
+/**
  * Remote versions from the release manifest, falling back to tag parsing.
  *
  * The manifest is cached per tag for an hour so opening the dashboard does not
@@ -992,7 +1073,9 @@ function orsite_gh_remote_versions( $release ) {
 
 	$cache = (array) get_option( 'orsite_gh_manifest_cache', array() );
 	if ( isset( $cache[ $tag ]['time'], $cache[ $tag ]['data'] ) && ( time() - (int) $cache[ $tag ]['time'] ) < HOUR_IN_SECONDS ) {
-		return (array) $cache[ $tag ]['data'];
+		$cached              = (array) $cache[ $tag ]['data'];
+		$cached['changelog'] = orsite_gh_normalize_changelog( isset( $cached['changelog'] ) ? $cached['changelog'] : array() );
+		return $cached;
 	}
 
 	$json = orsite_gh_fetch_manifest( $tag );
@@ -1003,8 +1086,10 @@ function orsite_gh_remote_versions( $release ) {
 		if ( isset( $json['parent']['version'] ) ) {
 			$out['parent'] = (string) $json['parent']['version'];
 		}
-		if ( isset( $json['changelog'] ) && is_array( $json['changelog'] ) ) {
-			$out['changelog'] = $json['changelog'];
+		if ( isset( $json['changelog_sections'] ) && is_array( $json['changelog_sections'] ) ) {
+			$out['changelog'] = orsite_gh_normalize_changelog( $json['changelog_sections'] );
+		} elseif ( isset( $json['changelog'] ) && is_array( $json['changelog'] ) ) {
+			$out['changelog'] = orsite_gh_normalize_changelog( $json['changelog'] );
 		}
 		$out['source'] = 'manifest';
 	} else {
@@ -1598,7 +1683,8 @@ function orsite_gh_update_snapshot( $force = false, $allow_fetch = true ) {
 		$age   = time() - (int) $cache['time'];
 		$limit = empty( $cache['ok'] ) ? ORSITE_GH_CHECK_RETRY : ORSITE_GH_CHECK_INTERVAL;
 		if ( $age < $limit || ! $allow_fetch ) {
-			$cache['stale'] = ( $age >= $limit );
+			$cache['stale']     = ( $age >= $limit );
+			$cache['changelog'] = orsite_gh_normalize_changelog( isset( $cache['changelog'] ) ? $cache['changelog'] : array() );
 			return $cache;
 		}
 	}
@@ -2545,11 +2631,21 @@ function orsite_gh_render_dashboard_widget() {
 
 			<?php if ( $has_update && ! empty( $snapshot['changelog'] ) ) : ?>
 				<h4><?php esc_html_e( 'تغییرات نسخه‌ی تازه', 'lax-theme-child' ); ?></h4>
-				<ul>
-					<?php foreach ( array_slice( (array) $snapshot['changelog'], 0, 3 ) as $line ) : ?>
-						<li><?php echo esc_html( (string) $line ); ?></li>
-					<?php endforeach; ?>
-				</ul>
+				<?php foreach ( array_slice( (array) $snapshot['changelog'], 0, 2 ) as $entry ) : ?>
+					<p class="orsite-changelog__head">
+						<strong><?php echo esc_html( 'نسخهٔ ' . $entry['version'] ); ?></strong>
+						<?php if ( $entry['title'] ) : ?>
+							<span class="orsite-meta"> — <?php echo esc_html( $entry['title'] ); ?></span>
+						<?php endif; ?>
+					</p>
+					<?php if ( ! empty( $entry['items'] ) ) : ?>
+						<ul>
+							<?php foreach ( array_slice( $entry['items'], 0, 4 ) as $line ) : ?>
+								<li><?php echo esc_html( (string) $line ); ?></li>
+							<?php endforeach; ?>
+						</ul>
+					<?php endif; ?>
+				<?php endforeach; ?>
 			<?php endif; ?>
 		<?php endif; ?>
 
@@ -3105,9 +3201,16 @@ function orsite_gh_render_page() {
 				</span>
 			</p>
 			<?php if ( ! empty( $remote['changelog'] ) && is_array( $remote['changelog'] ) ) : ?>
-				<?php foreach ( $remote['changelog'] as $section => $bullets ) : ?>
-					<p><strong><?php echo esc_html( is_string( $section ) ? $section : '' ); ?></strong></p>
-					<ul><?php foreach ( (array) $bullets as $b ) : ?><li><?php echo esc_html( $b ); ?></li><?php endforeach; ?></ul>
+				<?php foreach ( array_slice( (array) $remote['changelog'], 0, 6 ) as $entry ) : ?>
+					<p class="orsite-changelog__head">
+						<strong><?php echo esc_html( $entry['version'] ? 'نسخهٔ ' . $entry['version'] : 'نسخهٔ تازه' ); ?></strong>
+						<?php if ( $entry['title'] ) : ?>
+							<span class="orsite-meta"> — <?php echo esc_html( $entry['title'] ); ?></span>
+						<?php endif; ?>
+					</p>
+					<?php if ( ! empty( $entry['items'] ) ) : ?>
+						<ul><?php foreach ( $entry['items'] as $b ) : ?><li><?php echo esc_html( (string) $b ); ?></li><?php endforeach; ?></ul>
+					<?php endif; ?>
 				<?php endforeach; ?>
 			<?php elseif ( $release_data['body'] ) : ?>
 				<p class="orsite-meta"><?php echo esc_html( wp_html_excerpt( $release_data['body'], 600, '…' ) ); ?></p>
