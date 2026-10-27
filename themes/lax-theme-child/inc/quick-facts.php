@@ -9,8 +9,10 @@
  *
  * Nothing is derived, guessed or generated here: the box renders only from
  * the `_hj_quick_facts` post meta (label + value rows written by a human in
- * the editor meta box). No meta, no box. That keeps the template honest and
- * keeps ADR-019 (no invented clinical detail) intact.
+ * the editor meta box), or — 0.20.1 — from the three classic ACF surgery
+ * fields when those are filled. No data, no box, and never a fallback value.
+ * That keeps the template honest and keeps ADR-019 (no invented clinical
+ * detail) intact.
  *
  * @package Lax_Theme_Child
  * @since   0.20.0
@@ -97,7 +99,68 @@ function hj_quick_facts_rows( int $post_id ): array {
 		}
 	}
 
+	// ACF bridge (0.20.1): if the editors already keep the three classic
+	// surgery fields in ACF, the box uses them instead of asking for a second
+	// list. Only non-empty values, never a default — an empty field means
+	// "not verified yet", not "one day in hospital".
+	if ( ! $out ) {
+		$out = hj_quick_facts_acf_rows( $post_id );
+	}
+
 	return (array) apply_filters( 'hj_quick_facts_rows', $out, $post_id );
+}
+
+/**
+ * Map the ACF field names suggested by the editorial request onto the box.
+ *
+ * Accepted: `surgery_stay_duration`, `surgery_shower_time`,
+ * `surgery_recovery_time` (any of them, in that order). Fields that are
+ * empty or missing are skipped — the box never invents a value.
+ *
+ * @param int $post_id Post ID.
+ * @return array<int,array{label:string,value:string}>
+ */
+function hj_quick_facts_acf_rows( int $post_id ): array {
+	if ( ! function_exists( 'get_field' ) ) {
+		return array();
+	}
+
+	$map = array(
+		'surgery_stay_duration' => 'مدت بستری',
+		'surgery_shower_time'   => 'شروع دوش گرفتن',
+		'surgery_recovery_time' => 'بازگشت به کار',
+	);
+
+	/**
+	 * Filters the ACF field map, so a renamed field needs no code change.
+	 *
+	 * @param array<string,string> $map Field name => Persian label.
+	 */
+	$map = (array) apply_filters( 'hj_quick_facts_acf_map', $map );
+	$out = array();
+
+	foreach ( $map as $field => $label ) {
+		$value = get_field( $field, $post_id );
+		if ( is_array( $value ) ) {
+			$value = reset( $value );
+		}
+		if ( ! is_scalar( $value ) ) {
+			continue;
+		}
+		$value = trim( wp_strip_all_tags( (string) $value ) );
+		if ( '' === $value ) {
+			continue;
+		}
+		$out[] = array(
+			'label' => (string) $label,
+			'value' => $value,
+		);
+		if ( count( $out ) >= HJ_QUICK_FACTS_MAX ) {
+			break;
+		}
+	}
+
+	return $out;
 }
 
 /**

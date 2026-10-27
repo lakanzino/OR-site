@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.20.0
+Stable tag: 0.20.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.20.1 =
+* **پل ACF برای «خلاصهٔ بالینی»:** اگر فیلدهای `surgery_stay_duration`، `surgery_shower_time` و `surgery_recovery_time` در ACF پر باشند، جعبهٔ خلاصهٔ بالینی همان‌ها را نشان می‌دهد؛ فیلد خالی نادیده گرفته می‌شود و هیچ مقدار پیش‌فرضی ساخته نمی‌شود. نقشه با فیلتر `hj_quick_facts_acf_map` قابل تغییر است.
+* قالب `single.php` بازنویسی نشد: نسخهٔ پیشنهادی، فهرست مطالب، باکس منابع، آکاردئون پرسش‌ها، سلب مسئولیت و اسکیما را حذف می‌کرد و مقادیر بالینی پیش‌فرض می‌ساخت (ADR-028).
 
 = 0.20.0 =
 * **هویت بصری «آرامش بالینی»:** پالت فیروزه‌ای/سرمه‌ای با توکن‌های تازه (`--hj-teal*`، رنگ‌های وضعیت بالینی، `--hj-container: 1200px`، `--hj-read: 780px`)، نگاشت کامل `--color-*` و `--bx-*`؛ همهٔ کامپوننت‌ها یک‌جا همراستا شدند و هیچ مارک‌آپ مقاله‌ای تغییر نکرد.
