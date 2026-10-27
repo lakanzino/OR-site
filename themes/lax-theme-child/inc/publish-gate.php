@@ -14,8 +14,13 @@
  *    shows the checklist so live pages cannot disappear by accident.
  *  - A site administrator can force a publish with the override checkbox.
  *
- * No medical judgement happens here: the gate counts sources, links, the
- * warning block, the featured image and forbidden numeric patterns.
+ * No medical judgement happens here: the gate counts approved sources, links,
+ * the warning block, the featured image and forbidden numeric patterns.
+ *
+ * Since 0.17.0 the source check is tiered: three distinct domains from
+ * `data/source-whitelist.json` and at least one from tier 1 (see
+ * inc/source-whitelist.php). A single publisher repeating its own pages no
+ * longer satisfies the gate.
  *
  * @package Lax_Theme_Child
  * @since   0.16.0
@@ -23,6 +28,10 @@
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
+}
+
+if ( ! function_exists( 'hj_source_summary' ) ) {
+	require_once __DIR__ . '/source-whitelist.php';
 }
 
 /**
@@ -76,22 +85,32 @@ function hj_gate_checks( string $content, int $post_id, string $post_type ): arr
 		sprintf( '%d کلمه (حداقل %d)', $words, $min_words )
 	);
 
-	// 2. External sources.
-	$external = array();
-	if ( preg_match_all( '/href=["\'](https?:\/\/[^"\']+)["\']/i', $content, $m ) ) {
-		foreach ( $m[1] as $url ) {
-			if ( false === strpos( $url, 'hamyarjarahi.ir' ) ) {
-				$external[] = $url;
-			}
+	// 2. Approved medical sources (tiered whitelist, 0.17.0).
+	$sources = hj_source_summary( $content );
+	if ( ! $sources['loaded'] ) {
+		$add(
+			'sources',
+			'منابع علمی معتبر',
+			'warn',
+			'فهرست دامنه‌های معتبر (data/source-whitelist.json) خوانده نشد؛ شمارش منابع انجام نشد.'
+		);
+	} else {
+		$source_hint = sprintf( 'منابع معتبر: %1$d از %2$d دامنه', $sources['approved_count'], $sources['min'] );
+		if ( $sources['approved'] ) {
+			$source_hint .= ' — ' . implode( '، ', $sources['approved'] );
 		}
+		if ( $sources['approved_count'] >= $sources['min'] && $sources['tier1_count'] < 1 ) {
+			$source_hint .= ' · دست‌کم یک منبع ردهٔ یک (WHO/NIH/CDC/NICE/Cochrane/بیمارستان معتبر) لازم است';
+		} elseif ( $sources['approved_count'] < $sources['min'] ) {
+			$source_hint .= ' · دامنه‌های دیگری از ردهٔ یک یا انجمن‌های تخصصی افزوده شود';
+		}
+		$add(
+			'sources',
+			'منابع علمی معتبر (۳ دامنه)',
+			$sources['ok'] ? 'ok' : 'fail',
+			$source_hint
+		);
 	}
-	$min_sources = (int) apply_filters( 'hj_gate_min_sources', 2 );
-	$add(
-		'sources',
-		'منابع بیرونی معتبر',
-		count( $external ) >= $min_sources ? 'ok' : 'fail',
-		sprintf( '%d لینک بیرونی (حداقل %d)', count( $external ), $min_sources )
-	);
 
 	// 3. Internal links (keep the cluster connected).
 	$internal = preg_match_all( '/href=["\']\/[^"\']*["\']/i', $content, $m2 );
@@ -295,7 +314,7 @@ function hj_gate_add_meta_box(): void {
 	foreach ( hj_gate_post_types() as $type ) {
 		add_meta_box(
 			'hj-publish-gate',
-			'دروازهٔ انتشار (قالب ۰٫۱۶)',
+			'دروازهٔ انتشار (قالب ۰٫۱۷)',
 			'hj_gate_render_meta_box',
 			$type,
 			'side',

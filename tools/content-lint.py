@@ -113,6 +113,62 @@ REQUIRED = [
 ]
 
 
+# --- approved medical sources (same list as the WordPress gate) --------------
+WHITELIST_PATH = Path(__file__).resolve().parent.parent / "themes/lax-theme-child/data/source-whitelist.json"
+
+
+def _load_whitelist() -> dict:
+    try:
+        return json.loads(WHITELIST_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+WHITELIST = _load_whitelist()
+TIER1 = [d.strip(".").lower() for d in WHITELIST.get("tier1", [])]
+TIER2 = [d.strip(".").lower() for d in WHITELIST.get("tier2", [])]
+MIN_DOMAINS = int(WHITELIST.get("min_domains", 3) or 3)
+MIN_TIER1 = int(WHITELIST.get("min_tier1", 1) or 1)
+
+
+def host_of(url: str) -> str:
+    m = re.match(r"^https?://([^/?#]+)", url, re.I)
+    if not m:
+        return ""
+    host = m.group(1).split("@")[-1].split(":")[0].lower()
+    return host[4:] if host.startswith("www.") else host
+
+
+def tier_of(host: str) -> int:
+    """1 or 2 for an approved host, 0 otherwise. Suffix match, never substring."""
+    if not host:
+        return 0
+    for tier, domains in ((1, TIER1), (2, TIER2)):
+        for d in domains:
+            if host == d or host.endswith("." + d):
+                return tier
+    return 0
+
+
+def approved_sources(html: str) -> tuple[set[str], set[str], set[str]]:
+    links = re.findall(r'<a\b[^>]*href="([^"]+)"', html, re.I)
+    t1: set[str] = set()
+    t2: set[str] = set()
+    other: set[str] = set()
+    for url in links:
+        if not url.lower().startswith(("http://", "https://")):
+            continue
+        host = host_of(url)
+        tier = tier_of(host)
+        if tier == 1:
+            t1.add(host)
+        elif tier == 2:
+            t2.add(host)
+        elif host:
+            other.add(host)
+    return t1, t2, other
+
+
 def words(html: str) -> int:
     text = re.sub(r"<[^>]+>", " ", html)
     text = re.sub(r"&[a-zA-Z]+;", " ", text)
@@ -159,8 +215,21 @@ def lint(pkg: Path) -> tuple[list[str], list[str]]:
     dead = [l for l in internal if l not in ALLOWED]
     if dead:
         errs.append("link target not live and not in this batch: " + ", ".join(sorted(set(dead))))
-    if len(external) < 2:
-        errs.append(f"{len(external)} source links (want >= 2)")
+    t1, t2, other = approved_sources(html)
+    approved = t1 | t2
+    if not TIER1:
+        warns.append("source whitelist not loaded (themes/lax-theme-child/data/source-whitelist.json)")
+    else:
+        if len(approved) < MIN_DOMAINS:
+            missing = ", ".join(sorted(approved)) or "none"
+            errs.append(
+                f"{len(approved)}/{MIN_DOMAINS} approved source domains (have: {missing}; "
+                f"unapproved: {', '.join(sorted(other)) or 'none'})"
+            )
+        if len(t1) < MIN_TIER1:
+            errs.append(f"{len(t1)} tier-1 source (want >= {MIN_TIER1}: WHO/NIH/CDC/NICE/Cochrane/hospital)")
+        if len(external) < MIN_DOMAINS:
+            errs.append(f"{len(external)} external links (want >= {MIN_DOMAINS})")
 
     faq = man.get("faq") or []
     if len(faq) < 3:

@@ -3,6 +3,18 @@
 همه‌ی تغییرات مهم این قالب فرزند اینجا ثبت می‌شود. قالب‌بندی بر پایه‌ی
 Keep a Changelog و نسخه‌گذاری معنایی است.
 
+## [0.17.0] — 2026-10-28
+
+### Added — گیت «دست‌کم ۳ منبع علمی معتبر» با فهرست سفید رده‌بندی‌شده
+- **`data/source-whitelist.json`** تنها منبع حقیقت فهرست دامنه‌های معتبر است (`version`, `min_domains`, `min_tier1`, `tier1`, `tier2`) و **هم** دروازهٔ انتشار وردپرس **هم** `tools/content-lint.py` آن را می‌خوانند؛ دو فهرست موازی ساخته نشد تا گیت و لینتر هرگز اختلاف پیدا نکنند.
+- **`inc/source-whitelist.php`**: `hj_source_whitelist()` (بارگذاری + حافظهٔ استاتیک + فیلتر `hj_source_whitelist`)، `hj_source_normalize_host()`، `hj_source_host_tier()`، `hj_source_links()` و `hj_source_summary()`.
+- **رده‌بندی:** ردهٔ ۱ = نهادهای ملی/بین‌المللی و بیمارستان‌های مرجع (NIH و MedlinePlus/NLM، CDC، FDA، WHO، Cochrane، Mayo Clinic، UpToDate، Johns Hopkins، Cleveland Clinic، MSD Manuals، NHS، NICE، وزارت بهداشت `behdasht.gov.ir`، `irimc.org`، `ac.ir`، `gov.ir`) · ردهٔ ۲ = انجمن‌های تخصصی و بازوی آموزش بیمارشان (ACS/FACS، SAGES، ASA، ACOG، AAO، ATA، AUA، AAO-HNS/Entnet، AAP/HealthyChildren، AANS، AAOS، ASGE، FASCRS، SGO، Endocrine Society و…).
+- **قاعده:** ۳ دامنهٔ **متفاوت** و **دست‌کم ۱ منبع ردهٔ ۱**؛ سه صفحهٔ یک ناشر یک دامنه شمرده می‌شود. آستانه با فیلتر `hj_gate_min_sources` (پیش‌فرض ۳، قبلاً ۲ بود) قابل تغییر است.
+- **تطبیق میزبان پسوندی است، نه جست‌وجوی زیررشته:** `strpos()` که `notnih.gov` یا `evil-who.int.example` را قبول می‌کند کنار گذاشته شد؛ میزبان پس از حذف `www.` و پورت، یا برابر دامنه است یا با `.` + دامنه تمام می‌شود. لینک نسبی شمرده نمی‌شود.
+- **باکس دروازهٔ انتشار** عدد را صریح نشان می‌دهد: «منابع معتبر: ۲ از ۳ — medlineplus.gov، www.sages.org» و اگر شمارش به آستانه رسیده باشد ولی منبع ردهٔ ۱ نباشد، همان‌جا می‌گوید. اگر `data/source-whitelist.json` خوانده نشود، بررسی به **هشدار** تنزل می‌کند (fail-open) تا ویرایشگر بی‌دلیل قفل نشود.
+- **`tools/content-lint.py`**: همان قاعده با همان JSON؛ خروجی خطا حالا دامنه‌های شمرده‌شده و دامنه‌های تأییدنشده را نام می‌برد.
+- **۱۲ بستهٔ محتوا** که با قاعدهٔ تازه ۲ دامنه داشتند، یک منبع مستند Mayo Clinic گرفتند (cholecystectomy، circumcision ×۲، hemorrhoid ×۲، kidney-stone ×۲، thyroidectomy ×۳، tonsillectomy ×۲)؛ نتیجهٔ لینتر: **۴۴ از ۴۴ بسته پاس**.
+
 ## [0.16.1] — 2026-10-28
 
 ### Fixed / Changed — ریسپانسیو موبایل باکس‌های پزشکی
