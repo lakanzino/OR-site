@@ -1,0 +1,26 @@
+/* The three Group block styles in the editor. Tokens come from style.css. */
+.editor-styles-wrapper .wp-block-group.is-style-hj-alert-success,
+.editor-styles-wrapper .wp-block-group.is-style-hj-alert-warning,
+.editor-styles-wrapper .wp-block-group.is-style-hj-alert-error {
+	border: 1px solid currentColor;
+	border-radius: var(--hj-r-lg, 20px);
+	box-shadow: var(--hj-e1, 3px 3px 8px rgba(0, 0, 0, .06), -3px -3px 8px rgba(255, 255, 255, .9));
+	font-weight: 500;
+	padding-block: var(--hj-s4, 16px);
+	padding-inline: var(--hj-s5, 24px);
+}
+.editor-styles-wrapper .wp-block-group.is-style-hj-alert-success {
+	background: var(--hj-success, #BDEFD9);
+	color: var(--hj-success-ink, #0F5132);
+}
+.editor-styles-wrapper .wp-block-group.is-style-hj-alert-warning {
+	background: var(--hj-warning, #F7E7A6);
+	color: var(--hj-warning-ink, #6B4E00);
+}
+.editor-styles-wrapper .wp-block-group.is-style-hj-alert-error {
+	background: var(--hj-error, #F4B4B4);
+	color: var(--hj-error-ink, #7A1C1C);
+}
+.editor-styles-wrapper .wp-block-group.is-style-hj-alert-success :where(p, li, h2, h3, h4, a, strong),
+.editor-styles-wrapper .wp-block-group.is-style-hj-alert-warning :where(p, li, h2, h3, h4, a, strong),
+.editor-styles-wrapper .wp-block-group.is-style-hj-alert-error :where(p, li, h2, h3, h4, a, strong) { color: inherit; }

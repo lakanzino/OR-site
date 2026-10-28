@@ -5,7 +5,7 @@ Author: محمدرضا لک
 Author URI:
 Description: قالب فرزند اختصاصی سایت آموزشی اتاق عمل بر پایه‌ی قالب والد Lax Theme: ساختار محتوای راهنمای بیمار، محیط اتاق عمل، جراحی‌ها، محتوای دانشجویی و واژه‌نامه. متن‌های پزشکی فقط توسط تیم محتوا نوشته و بازبینی می‌شوند.
 Template: lax-theme
-Version: 0.21.5
+Version: 0.22.0
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
@@ -16,4 +16,81 @@ Domain Path: /languages
 Tags: rtl-language-support, education, custom-post-types
 */
 
-/* استایل‌های فرزند در assets/css/child.css است؛ این فایل فقط هدر قالب را نگه می‌دارد. */
+/* Soft UI design tokens. Theme metadata must stay first for WordPress. */
+:root {
+	/* Colors */
+	--hj-primary: #A8E6CF;
+	--hj-primary-strong: #5CC9A7;
+	--hj-primary-ink: #0F4D3C;
+	--hj-surface: #F3F2EF;
+	--hj-surface-raised: #FAFAF8;
+	--hj-border: #E2E0DC;
+	--hj-disabled: #D9D7D3;
+	--hj-text: #2A2A2A;
+	--hj-text-muted: #666;
+	--hj-focus: #3DDBB4;
+	--hj-success: #BDEFD9;
+	--hj-success-ink: #0F5132;
+	--hj-warning: #F7E7A6;
+	--hj-warning-ink: #6B4E00;
+	--hj-error: #F4B4B4;
+	--hj-error-ink: #7A1C1C;
+
+	/* Spacing */
+	--hj-s1: 4px;
+	--hj-s2: 8px;
+	--hj-s3: 12px;
+	--hj-s4: 16px;
+	--hj-s5: 24px;
+	--hj-s6: 32px;
+	--hj-s7: 48px;
+	--hj-s8: 64px;
+
+	/* Radius */
+	--hj-r-sm: 8px;
+	--hj-r-md: 14px;
+	--hj-r-lg: 20px;
+	--hj-r-pill: 999px;
+
+	/* Elevation */
+	--hj-e1: 3px 3px 8px rgba(0, 0, 0, .06), -3px -3px 8px rgba(255, 255, 255, .9);
+	--hj-e2: 6px 6px 14px rgba(0, 0, 0, .08), -6px -6px 14px rgba(255, 255, 255, .9);
+	--hj-e3: 10px 10px 24px rgba(0, 0, 0, .10), -8px -8px 20px rgba(255, 255, 255, .9);
+	--hj-inset: inset 3px 3px 7px rgba(0, 0, 0, .08), inset -3px -3px 7px rgba(255, 255, 255, .95);
+	--hj-glow: 0 0 0 3px rgba(61, 219, 180, .35), 0 0 16px rgba(61, 219, 180, .35);
+
+	/* Typography */
+	--hj-font: "Vazirmatn", Tahoma, sans-serif;
+	--hj-fs-display: clamp(32px, 5vw, 48px);
+	--hj-fs-h1: clamp(28px, 4vw, 40px);
+	--hj-fs-h2: clamp(24px, 3vw, 32px);
+	--hj-fs-h3: 22px;
+	--hj-fs-body: 17px;
+	--hj-fs-caption: 14px;
+	--hj-ease: .2s ease;
+}
+
+/* Local copies of Vazirmatn are distributed under SIL OFL 1.1; see fonts/OFL.txt. */
+@font-face {
+	font-family: "Vazirmatn";
+	src: url("fonts/Vazirmatn-Regular.woff2") format("woff2");
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Vazirmatn";
+	src: url("fonts/Vazirmatn-Medium.woff2") format("woff2");
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Vazirmatn";
+	src: url("fonts/Vazirmatn-Bold.woff2") format("woff2");
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+}

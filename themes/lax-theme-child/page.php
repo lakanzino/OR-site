@@ -11,7 +11,7 @@
 get_header();
 ?>
 
-<div class="container orsite-article-wrap">
+<main id="primary" class="container orsite-article-wrap" tabindex="-1">
 	<?php
 	while ( have_posts() ) :
 		the_post();
@@ -78,7 +78,7 @@ get_header();
 		}
 		?>
 	<?php endwhile; ?>
-</div><!-- .orsite-article-wrap -->
+</main><!-- .orsite-article-wrap -->
 
 <?php
 get_footer();

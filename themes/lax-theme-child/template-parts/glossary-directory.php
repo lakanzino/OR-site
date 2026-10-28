@@ -94,6 +94,7 @@ $hj_subdesc = ( $hj_active_group_obj && '' !== trim( $hj_active_group_obj['descr
 			<?php if ( '' !== $hj_init_cat ) : ?>
 				<input type="hidden" name="gcat" value="<?php echo esc_attr( $hj_init_cat ); ?>" />
 			<?php endif; ?>
+			<label class="screen-reader-text" for="hj-glossary-search-input">جستجو در واژه‌نامه</label>
 			<input
 				type="search"
 				id="hj-glossary-search-input"
