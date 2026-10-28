@@ -43,7 +43,7 @@ $review_date    = $show_review && function_exists( 'hj_get_jalali_post_modified_
 	<?php endif; ?>
 
 	<div class="orsite-card-article__body">
-		<?php the_title( '<' . $heading_level . ' class="orsite-card-article__title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></' . $heading_level . '>' ); ?>
+		<?php the_title( '<' . $heading_level . ' class="orsite-card-article__title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark" title="' . esc_attr( wp_strip_all_tags( get_the_title() ) ) . '">', '</a></' . $heading_level . '>' ); ?>
 		<?php if ( $review_date ) : ?>
 			<p class="orsite-card-article__review"><span class="hj-review-badge">آخرین بازبینی علمی: <?php echo esc_html( $review_date ); ?></span></p>
 		<?php endif; ?>

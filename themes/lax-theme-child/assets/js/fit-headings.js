@@ -1,15 +1,14 @@
 /**
  * Single-line heading auto-fitter for Hamyar Jarahi (lax-theme-child 0.10.1).
  *
- * Ensures every heading across desktop and mobile stays on one line and
- * scales its font-size down smoothly only when needed so 100% of the heading
- * text fits inside its container box without "..." truncation or overflow.
+ * Fits legacy headings where necessary. The homepage hero and article-card
+ * titles intentionally use CSS instead: the hero can wrap legibly and mobile
+ * cards use a single line with an ellipsis without shrinking the text.
  */
 (function () {
 	'use strict';
 
 	var SELECTOR = [
-		'.hj-home-hero__title',
 		'.hj-home .hj-home-section__head h2',
 		'.hj-journey-card h3',
 		'.hj-surgery-card h3',
@@ -18,7 +17,6 @@
 		'.hj-home-empty h3',
 		'.hj-faq-list summary',
 		'.hj-section-bar__title',
-		'.orsite-card-article__title',
 		'.orsite-article__title',
 		'.orsite-archive__title',
 		'.orsite-hero__title',
