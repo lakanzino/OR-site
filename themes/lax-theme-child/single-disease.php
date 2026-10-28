@@ -8,23 +8,23 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 ?>
 <style>
-.hj-disease-navy{--navy:#1b2a4a;--navy-2:#2c3e66;--navy-soft:#eef2f9;--ink:#1f2937;--line:#d5deef;color:var(--ink);line-height:1.9}
+.hj-disease-navy{--navy:#0a2f6b;--navy-deep:#041a3f;--navy-soft:#e8eef8;--ok:#16a34a;--ok-soft:#f0fdf4;--warn:#d97706;--warn-soft:#fffbeb;--danger:#dc2626;--danger-soft:#fef2f2;--ink:#0f172a;--line:#e2e8f0;color:var(--ink);line-height:1.9}
 .hj-disease-navy .hj-dn-hero{background:var(--navy);color:#fff;border-radius:14px;padding:1.6rem 1.5rem;margin-bottom:1.25rem}
 .hj-disease-navy .hj-dn-hero h1{color:#fff;margin:0 0 .35rem;font-size:1.9rem;line-height:1.5}
 .hj-disease-navy .hj-dn-en{direction:ltr;text-align:left;opacity:.9;margin:0}
 .hj-disease-navy .hj-dn-meta{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem}
-.hj-disease-navy .hj-dn-chip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:.2rem .75rem;font-size:.9rem}
+.hj-disease-navy .hj-dn-chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:.2rem .75rem;font-size:.9rem}
 .hj-disease-navy .hj-dn-box{border-radius:12px;padding:1rem 1.2rem;margin:0 0 1rem;border:1px solid var(--line);background:#fff}
-.hj-disease-navy .hj-dn-box h2{color:var(--navy);font-size:1.2rem;margin:0 0 .5rem;padding-bottom:.35rem;border-bottom:2px solid var(--navy-soft)}
+.hj-disease-navy .hj-dn-box h2{color:var(--navy-deep);font-size:1.2rem;margin:0 0 .5rem;padding-bottom:.35rem;border-bottom:2px solid var(--navy-soft)}
 .hj-disease-navy .hj-dn-box p{margin:.25rem 0}
 .hj-disease-navy .hj-dn-box ul{margin:.25rem 0 0;padding-right:1.25rem;list-style:disc}
-.hj-disease-navy .hj-dn-warn-yellow{background:#fef9c3;border-color:#eab308;color:#713f12}
-.hj-disease-navy .hj-dn-warn-yellow h2{color:#713f12;border-bottom-color:#fde68a}
-.hj-disease-navy .hj-dn-warn-orange{background:#fff7ed;border-color:#f97316}
-.hj-disease-navy .hj-dn-warn-orange h2{color:#9a3412;border-bottom-color:#fed7aa}
-.hj-disease-navy .hj-dn-warn-red{background:#fef2f2;border-color:#dc2626}
-.hj-disease-navy .hj-dn-warn-red h2{color:#991b1b;border-bottom-color:#fecaca}
-.hj-disease-navy .hj-dn-pending{color:#4b5563;font-style:italic}
+.hj-disease-navy .hj-dn-warn-yellow{background:var(--warn-soft);border-color:var(--warn)}
+.hj-disease-navy .hj-dn-warn-yellow h2{border-bottom-color:#fde68a}
+.hj-disease-navy .hj-dn-warn-red{background:var(--danger-soft);border-color:var(--danger)}
+.hj-disease-navy .hj-dn-warn-red h2{color:var(--danger);border-bottom-color:#fecaca}
+.hj-disease-navy .hj-dn-ok{background:var(--ok-soft);border-color:var(--ok)}
+.hj-disease-navy .hj-dn-ok h2{border-bottom-color:#bbf7d0}
+.hj-disease-navy .hj-dn-pending{color:#475569;font-style:italic}
 </style>
 <div class="container orsite-article-wrap" style="padding-top:1.75rem;padding-bottom:3rem"><main id="primary">
 <?php while ( have_posts() ) : the_post();
@@ -69,9 +69,9 @@ get_header();
 	echo $hj_section( '', 'روش‌های تشخیص', $hj_list( 'diagnosis' ) );
 	echo $hj_section( '', 'درمان‌های رایج', $hj_list( 'treatment' ) );
 	echo $hj_section( '', 'پیشگیری', $hj_list( 'prevention' ) );
-	echo $hj_section( 'hj-dn-warn-orange', 'عوارض', $hj_list( 'complications' ) );
+	echo $hj_section( 'hj-dn-warn-yellow', 'عوارض', $hj_list( 'complications' ) );
 	echo $hj_section( 'hj-dn-warn-red', 'چه زمانی به پزشک مراجعه کنیم؟', $hj_list( 'whenToSeeDoctor' ) );
-	echo $hj_section( '', 'منابع پزشکی معتبر', $hj_list( 'sources' ) );
+	echo $hj_section( 'hj-dn-ok', 'منابع پزشکی معتبر', $hj_list( 'sources' ) );
 	?>
 <?php else : ?>
 	<section class="hj-dn-box"><p class="hj-dn-pending">اطلاعات این بیماری در حال تکمیل و بازبینی پزشکی است.</p></section>
