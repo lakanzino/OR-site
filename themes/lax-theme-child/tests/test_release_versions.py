@@ -98,6 +98,27 @@ class ReleaseVersionsTest(unittest.TestCase):
                         archive.read(f"lax-theme-child/{relative.as_posix()}"), (CHILD / relative).read_bytes()
                     )
 
+    def test_removed_overlay_and_legacy_tools_are_not_packaged_or_loaded(self):
+        obsolete = ("image-watermark.php", "inline-image-repair.php", "seo-health-check.php")
+        functions = (CHILD / "functions.php").read_text(encoding="utf-8")
+        with ZipFile(RELEASES / "lax-theme-child.zip") as archive:
+            names = set(archive.namelist())
+            for filename in obsolete:
+                with self.subTest(filename=filename):
+                    self.assertNotIn(filename, functions)
+                    self.assertNotIn(f"lax-theme-child/inc/{filename}", names)
+            # Removing the obsolete diagnostic must not remove the actual policy.
+            self.assertIn("inc/seo-index-policy.php", functions)
+            self.assertIn("lax-theme-child/inc/seo-index-policy.php", names)
+            for style in ("assets/css/child.css", "assets/css/soft-ui.css"):
+                self.assertNotIn(".orsite-wm", archive.read(f"lax-theme-child/{style}").decode("utf-8"))
+
+    def test_partial_file_update_has_care_helper_fallback(self):
+        functions = (CHILD / "functions.php").read_text(encoding="utf-8")
+        front_page = (CHILD / "front-page.php").read_text(encoding="utf-8")
+        self.assertIn("is_readable( get_stylesheet_directory() . '/inc/care-tool.php' )", functions)
+        self.assertGreaterEqual(front_page.count("function_exists( 'hj_care_option_label' )"), 2)
+
     def test_theme_histories_are_complete_unique_and_ordered(self):
         changelog = re.findall(rf"^## \[({VERSION})\]", self.child_changelog, re.MULTILINE)
         readme = re.findall(rf"^= ({VERSION}) =", self.child_readme, re.MULTILINE)

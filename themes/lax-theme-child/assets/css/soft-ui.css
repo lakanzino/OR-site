@@ -421,7 +421,6 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 	background: var(--hj-primary);
 	color: var(--hj-primary-ink);
 }
-.orsite-card-article__media .orsite-thumb { inline-size: 100%; block-size: 100%; }
 .orsite-card-article__media img, .hj-card > img, .wp-block-post-featured-image img {
 	inline-size: 100%;
 	block-size: 100%;
@@ -637,3 +636,153 @@ button:disabled, input:disabled, input[type]:disabled, select:disabled, textarea
 	*, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 	.hj-card:hover, .wp-block-post:hover, .orsite-card-article:hover, .hj-section-bar:hover { transform: none; }
 }
+
+/* Responsive header: the same primary menu is used on phones and tablets. */
+@media (min-width: 1025px) {
+	.site-header .main-navigation { flex: 1 1 auto; min-inline-size: 0; }
+	.site-header .main-navigation > #primary-menu {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		overflow: visible;
+	}
+	.main-navigation #primary-menu li { position: relative; }
+	.main-navigation #primary-menu .sub-menu {
+		position: absolute;
+		inset-block-start: 100%;
+		inset-inline-start: 0;
+		z-index: 50;
+		display: none;
+		flex-direction: column;
+		gap: 0;
+		min-inline-size: 13rem;
+		max-inline-size: min(22rem, 85vw);
+		padding: var(--hj-s2);
+		background: var(--hj-surface-raised);
+		border: 1px solid var(--hj-border);
+		border-radius: var(--hj-r-md);
+		box-shadow: var(--hj-e2);
+	}
+	.main-navigation #primary-menu li:hover > .sub-menu,
+	.main-navigation #primary-menu li:focus-within > .sub-menu { display: flex; }
+	.main-navigation #primary-menu .sub-menu .sub-menu {
+		position: static;
+		display: flex;
+		min-inline-size: 0;
+		border: 0;
+		box-shadow: none;
+		padding-inline-start: var(--hj-s4);
+	}
+}
+
+@media (max-width: 1024px) {
+	.site-header__inner { flex-wrap: nowrap; gap: 0.5rem; }
+	.site-header .site-branding { flex: 1 1 0; min-inline-size: 0; }
+	.site-header .custom-logo { max-inline-size: 100%; max-block-size: 48px; object-fit: contain; }
+	.site-header .main-navigation, .site-header__actions { flex: 0 0 auto; }
+	.site-header .menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
+	.site-header .main-navigation > #primary-menu {
+		position: absolute;
+		inset-block-start: 100%;
+		inset-inline: 0.75rem;
+		z-index: 50;
+		display: none;
+		flex-direction: column;
+		gap: 0;
+		max-inline-size: none;
+		max-block-size: min(65vh, 28rem);
+		overflow-x: hidden;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		padding: var(--hj-s2);
+		background: var(--hj-surface-raised);
+		border: 1px solid var(--hj-border);
+		border-radius: var(--hj-r-md);
+		box-shadow: var(--hj-e2);
+	}
+	.site-header .main-navigation.toggled > #primary-menu { display: flex; }
+	.site-header .main-navigation #primary-menu li a { display: block; min-block-size: 44px; }
+	.site-header .main-navigation #primary-menu .sub-menu {
+		position: static;
+		display: block;
+		max-inline-size: none;
+		max-block-size: none;
+		overflow: visible;
+		margin-inline-start: var(--hj-s4);
+		padding: 0;
+		border: 0;
+		background: transparent;
+		box-shadow: none;
+	}
+}
+
+/* Small, readable care choices with 44px touch targets. The enhanced list is
+   made from the original select; without JS, the native control stays usable. */
+.hj-care-tool__field select,
+.hj-care-select__button {
+	min-block-size: 48px;
+	font-size: 0.9rem;
+	font-weight: 400;
+}
+.hj-care-tool__field select option { font-size: 0.9rem; font-weight: 400; }
+.hj-care-select { position: relative; min-inline-size: 0; }
+.hj-care-select__button {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--hj-s2);
+	inline-size: 100%;
+	background: var(--hj-surface);
+	border: 2px solid var(--hj-border);
+	border-radius: var(--hj-r-pill);
+	box-shadow: var(--hj-inset);
+	color: var(--hj-text);
+	font-family: inherit;
+	line-height: 1.6;
+	padding-block: var(--hj-s2);
+	padding-inline: var(--hj-s5);
+	text-align: start;
+}
+.hj-care-select__button::after { content: '⌄'; flex: 0 0 auto; font-size: 1.1rem; }
+.hj-care-select__button:hover { background: var(--hj-surface-raised); color: var(--hj-text); }
+.hj-care-select__value { min-inline-size: 0; overflow-wrap: anywhere; }
+.hj-care-select__list {
+	position: absolute;
+	inset-block-start: calc(100% + 0.25rem);
+	inset-inline: 0;
+	z-index: 60;
+	max-block-size: min(15rem, 45vh);
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	margin: 0;
+	padding: var(--hj-s1);
+	list-style: none;
+	background: var(--hj-surface-raised);
+	border: 1px solid var(--hj-border);
+	border-radius: var(--hj-r-md);
+	box-shadow: var(--hj-e3);
+}
+.hj-care-select__list[hidden] { display: none; }
+.hj-care-select--above .hj-care-select__list {
+	inset-block-start: auto;
+	inset-block-end: calc(100% + 0.25rem);
+}
+.hj-care-select__option {
+	display: flex;
+	align-items: center;
+	min-block-size: 44px;
+	padding-block: var(--hj-s2);
+	padding-inline: var(--hj-s3);
+	border-radius: var(--hj-r-sm);
+	color: var(--hj-text);
+	font-size: 0.875rem;
+	font-weight: 400;
+	line-height: 1.6;
+	overflow-wrap: anywhere;
+	cursor: pointer;
+}
+.hj-care-select__option.is-active, .hj-care-select__option:hover {
+	background: var(--hj-primary);
+	color: var(--hj-primary-ink);
+}
+.hj-care-select__option[aria-disabled="true"] { opacity: 0.7; cursor: not-allowed; }

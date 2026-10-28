@@ -167,9 +167,7 @@ function hj_seed_menus( $page_ids ) {
 		'primary' => array(
 			'name'  => 'منوی اصلی همیار جراحی',
 			'items' => array(
-				array( 'title' => 'خانه', 'url' => home_url( '/' ) ),
 				array( 'title' => 'راهنمای بیمار', 'url' => hj_archive_url( 'patient_guide' ) ),
-				array( 'title' => 'اتاق عمل و تیم', 'url' => hj_archive_url( 'or_environment' ) ),
 				array( 'title' => 'جراحی‌ها', 'url' => hj_archive_url( 'surgery' ) ),
 				array( 'title' => 'واژه‌نامه', 'url' => hj_archive_url( 'glossary' ) ),
 				array( 'title' => 'درباره ما', 'page' => 'about' ),

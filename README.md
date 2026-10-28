@@ -7,12 +7,12 @@
 | جزء | نسخه | مسیر |
 |---|---|---|
 | قالب والد `lax-theme` | 1.0.1 | [`themes/lax-theme/`](themes/lax-theme/) |
-| قالب فرزند `lax-theme-child` | 0.22.0 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
+| قالب فرزند `lax-theme-child` | 0.22.1 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
 | افزونهٔ `orsite-media-matcher` | 1.2.0 | [`plugins/orsite-media-matcher/`](plugins/orsite-media-matcher/) |
 | افزونهٔ `hamyar-symptom-guide` | 0.5.0 | [`plugins/hamyar-symptom-guide/`](plugins/hamyar-symptom-guide/) |
 | ساختار محتوا (`ORSITE_STRUCTURE_VERSION`) | 1.0.0 | `themes/lax-theme-child/inc/content-types.php` |
 
-این شماره‌ها نسخه‌های موجود در مخزن هستند؛ وضعیت نصب افزونه‌ها روی سایت مستقلاً بررسی نشده است. ریلیز فرزند [`child-v0.22.0`](https://github.com/lakanzino/OR-site/releases/tag/child-v0.22.0) منتشر شده و صاحب سایت نصب آن را گزارش کرده است. آزمون‌های واقعی پس از نصب هنوز ثبت نشده‌اند؛ جزئیات و اختلاف‌های شناخته‌شدهٔ نسخه‌ها در [چنج‌لاگ پروژه](docs/PROJECT-CHANGELOG.md) آمده است.
+این شماره‌ها نسخه‌های موجود در مخزن هستند؛ وضعیت نصب افزونه‌ها روی سایت مستقلاً بررسی نشده است. ریلیز فرزند [`child-v0.22.1`](https://github.com/lakanzino/OR-site/releases/tag/child-v0.22.1) منتشر شده است؛ صاحب سایت پیش‌تر نصب 0.22.0 را گزارش کرده بود. نصب و عملکرد 0.22.1 در سایت واقعی هنوز مستقلاً بررسی نشده‌اند؛ جزئیات در [چنج‌لاگ پروژه](docs/PROJECT-CHANGELOG.md) آمده است.
 
 ## وضعیت زندهٔ سایت (بررسی‌شده از REST API — ۲۰۲۶-۱۰-۲۵)
 
@@ -73,7 +73,7 @@
 python3 themes/lax-theme-child/tests/test_release_versions.py
 ```
 
-اصلاحات مستندات پس از انتشار در سورس ثبت می‌شوند؛ بسته و تگ منتشرشدهٔ 0.22.0 ثابت می‌مانند و این اصلاحات تا انتشار بعدی الزاماً به فایل‌های قالب روی سایت منتقل نمی‌شوند.
+اصلاحات مستندات بعد از انتشار 0.22.0 در سورس ثبت شدند؛ بسته و تگ قدیمی ثابت مانده‌اند و بستهٔ 0.22.1 متن به‌روز را دربر دارد.
 
 ## نصب
 
