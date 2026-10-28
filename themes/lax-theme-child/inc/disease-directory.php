@@ -19,7 +19,7 @@ add_action( 'init', 'hj_register_disease_directory' );
 
 /** Import new batches only; never recreate old deleted entries or overwrite edits. */
 function hj_seed_disease_directory() {
-	if ( ! current_user_can( 'manage_options' ) || version_compare( (string) get_option( 'hj_disease_seed_version', '0' ), '2', '>=' ) || get_transient( 'hj_disease_seed_lock' ) ) {
+	if ( ! current_user_can( 'manage_options' ) || version_compare( (string) get_option( 'hj_disease_seed_version', '0' ), '3', '>=' ) || get_transient( 'hj_disease_seed_lock' ) ) {
 		return;
 	}
 	set_transient( 'hj_disease_seed_lock', 1, 60 );
@@ -58,7 +58,7 @@ function hj_seed_disease_directory() {
 			} else { $complete = false; }
 		}
 	}
-	if ( $complete ) { update_option( 'hj_disease_seed_version', '2', false ); }
+	if ( $complete ) { update_option( 'hj_disease_seed_version', '3', false ); }
 	delete_transient( 'hj_disease_seed_lock' );
 }
 add_action( 'admin_init', 'hj_seed_disease_directory' );
