@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.21.4
+Stable tag: 0.21.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.21.5 =
+* افزودن شش مدخل فارسی پیش‌نویس به دانشنامه بیماری‌ها، از جمله سینوزیت.
 
 = 0.21.4 =
 * افزودن پیوند صفحه اول به اپ و دو مقاله پیش‌نویس بیماری.
