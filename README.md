@@ -7,7 +7,7 @@
 | جزء | نسخه | مسیر |
 |---|---|---|
 | قالب والد `lax-theme` | 1.0.1 | [`themes/lax-theme/`](themes/lax-theme/) |
-| قالب فرزند `lax-theme-child` | 0.14.0 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
+| قالب فرزند `lax-theme-child` | 0.15.0 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
 | افزونهٔ `orsite-media-matcher` | 1.2.0 | [`plugins/orsite-media-matcher/`](plugins/orsite-media-matcher/) |
 | ساختار محتوا (`ORSITE_STRUCTURE_VERSION`) | 1.0.0 | `themes/lax-theme-child/inc/content-types.php` |
 
@@ -21,6 +21,14 @@
 | پیشرفت از ۱۸۴ مقالهٔ هدف | ۳۴٫۸٪ |
 
 گزارش کامل: [`docs/reports/LIVE-SITE-AUDIT-2026-10-25.md`](docs/reports/LIVE-SITE-AUDIT-2026-10-25.md)
+
+## افزونهٔ راهنمای علائم
+
+افزونهٔ وردپرس [`plugins/hamyar-symptom-guide/`](plugins/hamyar-symptom-guide/) برگه‌ای مستقل و پیش‌نویس بدون شورت‌کد برای بررسی و انتشار می‌سازد. راهنمای نصب و محدودیت‌ها در README افزونه است.
+
+## نمونهٔ راهنمای علائم
+
+نمونهٔ مستقل آموزشی در [`hamyarjarahi-frontend/`](hamyarjarahi-frontend/) قرار دارد. این ابزار تشخیصی یا اعتبارسنجی‌شده نیست. راه‌اندازی، منابع و محدودیت‌ها در [`docs/resources.md`](hamyarjarahi-frontend/docs/resources.md) آن آمده است.
 
 ## ساختار مخزن
 

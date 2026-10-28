@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.14.0' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.15.0' );
 }
 
 /**
@@ -26,6 +26,9 @@ require_once get_stylesheet_directory() . '/inc/jalali-date.php';
  * Load content architecture (post types and taxonomies).
  */
 require_once get_stylesheet_directory() . '/inc/content-types.php';
+
+/** Disease directory and editable starter drafts. */
+require_once get_stylesheet_directory() . '/inc/disease-directory.php';
 
 /**
  * Load article display helpers (TOC, badges, related articles).

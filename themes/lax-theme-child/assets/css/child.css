@@ -2179,3 +2179,6 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 		bottom: 18%;
 	}
 }
+
+/* Disease directory */
+.hj-disease-search{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center;margin:1.5rem 0}.hj-disease-search label{width:100%;font-weight:700}.hj-disease-search input{flex:1;min-width:180px;border:1px solid #cad8e2;border-radius:10px;padding:.75rem;font:inherit}.hj-disease-search button{border:0;border-radius:10px;background:#123a61;color:#fff;padding:.75rem 1.25rem;font:inherit;cursor:pointer}.hj-disease-groups{display:flex;flex-wrap:wrap;gap:.6rem;margin:1.5rem 0}.hj-disease-groups a{background:#edf4f7;border:1px solid #d5e5e9;border-radius:99px;padding:.4rem .9rem;text-decoration:none}.hj-disease-groups a[aria-current=page]{background:#123a61;color:#fff}.hj-disease-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}.hj-disease-card,.hj-disease-entry{background:#fff;border:1px solid #dce8ed;border-radius:16px;padding:1.25rem}.hj-disease-card h2{font-size:1.05rem;margin:0 0 .5rem}.hj-disease-card p{text-align:right;color:#627789}.hj-disease-entry{margin-top:1rem}.hj-disease-notice{background:#fff7eb;border-right:4px solid #d88a27;border-radius:8px;padding:1rem;line-height:1.8}.hj-disease-entry .entry-content{line-height:2}
