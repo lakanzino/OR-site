@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.24.0
+Stable tag: 0.25.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.25.0 =
+
+* ساختار ۱۵ بخشی شناسنامه بیماری، قالب سرمه‌ای با هشدارهای زرد، قرمز و سبز؛ نسخهٔ پروفایل ۱.
 
 = 0.24.0 =
 * ۱۰۰ مدخل پژوهشی بیماری به‌صورت پیش‌نویس به دانشنامه اضافه شد؛ تا تأیید پزشک منتشر نمی‌شوند.

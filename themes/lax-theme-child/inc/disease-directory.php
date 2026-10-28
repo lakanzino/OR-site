@@ -98,3 +98,70 @@ function hj_disease_save_english( $post_id ) {
 	update_post_meta( $post_id, '_hj_disease_en', sanitize_text_field( wp_unslash( $_POST['hj_disease_en'] ) ) );
 }
 add_action( 'save_post_disease', 'hj_disease_save_english' );
+
+/** Structured 15-field disease profile (data/disease-profiles.json). Stored as post meta; never changes post status or editor content. */
+function hj_disease_profile_keys() {
+	return array( 'nameFa', 'nameEn', 'otherNames', 'icd10', 'specialty', 'intro', 'cause', 'riskFactors', 'symptoms', 'diagnosis', 'treatment', 'prevention', 'complications', 'whenToSeeDoctor', 'sources' );
+}
+
+/** Sync profiles: create missing drafts, update profile meta on existing posts. Runs once per profile version. */
+function hj_sync_disease_profiles() {
+	if ( ! current_user_can( 'manage_options' ) || '1' === (string) get_option( 'hj_disease_profile_version', '0' ) || get_transient( 'hj_disease_profile_lock' ) ) {
+		return;
+	}
+	set_transient( 'hj_disease_profile_lock', 1, 120 );
+	$path = get_stylesheet_directory() . '/data/disease-profiles.json';
+	$raw = is_readable( $path ) ? file_get_contents( $path ) : false;
+	$items = $raw ? json_decode( $raw, true ) : null;
+	if ( ! is_array( $items ) || ! $items ) { delete_transient( 'hj_disease_profile_lock' ); return; }
+	$complete = true;
+	$keys = hj_disease_profile_keys();
+	foreach ( $items as $entry ) {
+		if ( empty( $entry['diseaseId'] ) || empty( $entry['profile']['nameFa'] ) ) { $complete = false; continue; }
+		$id = sanitize_key( $entry['diseaseId'] );
+		$profile = array();
+		foreach ( $keys as $key ) { $profile[ $key ] = isset( $entry['profile'][ $key ] ) ? (string) $entry['profile'][ $key ] : ''; }
+		$found = get_posts( array( 'post_type' => 'disease', 'post_status' => array( 'publish', 'draft', 'pending', 'private', 'future' ), 'posts_per_page' => 1, 'fields' => 'ids', 'meta_key' => '_hj_disease_seed_id', 'meta_value' => $id ) );
+		$trashed = get_posts( array( 'post_type' => 'disease', 'post_status' => 'trash', 'posts_per_page' => 1, 'fields' => 'ids', 'meta_key' => '_hj_disease_seed_id', 'meta_value' => $id ) );
+		if ( $found ) {
+			$post_id = (int) $found[0];
+		} elseif ( $trashed ) {
+			continue; // Respect deleted entries.
+		} else {
+			$post_id = wp_insert_post( array( 'post_type' => 'disease', 'post_status' => 'draft', 'post_title' => $profile['nameFa'], 'post_name' => $id, 'post_content' => '', 'meta_input' => array( '_hj_disease_seed_id' => $id, '_hj_disease_en' => sanitize_text_field( $profile['nameEn'] ) ) ), true );
+			if ( is_wp_error( $post_id ) || ! $post_id ) { $complete = false; continue; }
+		}
+		update_post_meta( $post_id, '_hj_disease_profile', wp_json_encode( $profile, JSON_UNESCAPED_UNICODE ) );
+		if ( '' === (string) get_post_meta( $post_id, '_hj_disease_en', true ) && '' !== $profile['nameEn'] ) {
+			update_post_meta( $post_id, '_hj_disease_en', sanitize_text_field( $profile['nameEn'] ) );
+		}
+		if ( ! empty( $entry['category'] ) ) {
+			$term = term_exists( $entry['category'], 'disease_group' );
+			if ( ! $term ) { $term = wp_insert_term( $entry['category'], 'disease_group' ); }
+			if ( ! is_wp_error( $term ) && $term ) {
+				$term_id = is_array( $term ) ? (int) $term['term_id'] : (int) $term;
+				wp_set_object_terms( $post_id, array( $term_id ), 'disease_group', true );
+			}
+		}
+	}
+	if ( $complete ) { update_option( 'hj_disease_profile_version', '1', false ); }
+	delete_transient( 'hj_disease_profile_lock' );
+}
+add_action( 'admin_init', 'hj_sync_disease_profiles', 20 );
+
+/** Returns the profile array for a disease post, or an empty array. */
+function hj_disease_profile_for( $post_id ) {
+	$raw = get_post_meta( $post_id, '_hj_disease_profile', true );
+	$data = $raw ? json_decode( $raw, true ) : null;
+	return is_array( $data ) ? $data : array();
+}
+
+/** Split a profile text into clean lines (bullets removed). */
+function hj_disease_profile_lines( $text ) {
+	$lines = array();
+	foreach ( preg_split( '/\r\n|\r|\n/', (string) $text ) as $line ) {
+		$line = trim( preg_replace( '/^\s*[•\-\*]\s*/u', '', $line ) );
+		if ( '' !== $line ) { $lines[] = $line; }
+	}
+	return $lines;
+}
