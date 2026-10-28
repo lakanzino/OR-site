@@ -1,0 +1,639 @@
+/*
+ * Soft UI presentation layer for the existing classic Lax child theme.
+ * Loaded after child.css and glossary.css; no post content or URLs are changed.
+ */
+
+:root {
+	/* Bridge legacy components to the new surfaces without making their white
+	   text sit on mint. Explicit component rules below use the mint token. */
+	--color-primary: var(--hj-primary-ink);
+	--color-primary-dark: var(--hj-primary-ink);
+	--color-accent: var(--hj-primary-ink);
+	--color-bg: var(--hj-surface);
+	--color-surface: var(--hj-surface-raised);
+	--color-text: var(--hj-text);
+	--color-link: var(--hj-primary-ink);
+	--color-link-hover: var(--hj-primary-ink);
+	--color-border: var(--hj-border);
+	--font-family-body: var(--hj-font);
+	--hj-read: 720px;
+	--hj-teal: var(--hj-primary-ink);
+	--hj-teal-deep: var(--hj-primary-ink);
+	--hj-teal-darker: var(--hj-primary-ink);
+	--hj-teal-soft: var(--hj-primary);
+	--bx-bg: var(--hj-surface);
+	--bx-box: var(--hj-surface-raised);
+	--bx-soft: var(--hj-surface);
+	--bx-navy: var(--hj-primary-ink);
+	--bx-navy-deep: var(--hj-primary-ink);
+	--bx-navy-mid: var(--hj-primary-ink);
+	--bx-highlight: var(--hj-primary-ink);
+	--bx-highlight-deep: var(--hj-primary-ink);
+	--bx-ink: var(--hj-text);
+	--bx-muted: var(--hj-text-muted);
+	--bx-line: var(--hj-border);
+	--bx-shadow-small: var(--hj-e1);
+	--bx-shadow: var(--hj-e2);
+	--bx-shadow-deep: var(--hj-e2);
+	--bx-inset: var(--hj-inset);
+	--bx-raise: var(--hj-e1);
+}
+
+body {
+	background: var(--hj-surface);
+	color: var(--hj-text);
+	font-family: var(--hj-font);
+	font-size: var(--hj-fs-body);
+	line-height: 1.9;
+}
+
+h1, h2, h3, h4 {
+	color: var(--hj-text);
+	font-weight: 700;
+	line-height: 1.4;
+}
+
+h1 { font-size: var(--hj-fs-h1); }
+h2 { font-size: var(--hj-fs-h2); }
+h3 { font-size: var(--hj-fs-h3); }
+
+small, .wp-caption-text, figcaption {
+	color: var(--hj-text-muted);
+	font-size: var(--hj-fs-caption);
+}
+
+a, a:visited {
+	color: var(--hj-primary-ink);
+	text-underline-offset: 3px;
+}
+
+a:hover { color: var(--hj-primary-ink); }
+
+/* A mint glow alone is too pale to indicate focus on these light surfaces.
+   The dark outline provides a high-contrast keyboard focus indicator. */
+body :focus-visible {
+	outline: 3px solid var(--hj-primary-ink);
+	outline-offset: 3px;
+	box-shadow: var(--hj-glow);
+}
+.hj-home-hero :focus-visible, .orsite-empty--navy :focus-visible {
+	outline-color: var(--hj-primary-ink);
+}
+.hj-safety-band :focus-visible { outline-color: #fff; }
+
+::selection {
+	background: var(--hj-primary);
+	color: var(--hj-primary-ink);
+}
+
+/* Do not clip or dynamically shrink headings: real text can wrap at 360px. */
+.orsite-article__title,
+.orsite-archive__title,
+.orsite-card-article__title,
+.orsite-card-article__title a,
+.orsite-card-article__meta,
+.main-navigation a,
+.orsite-hero__title,
+.orsite-article__content h1,
+.orsite-article__content h2,
+.orsite-article__content h3,
+.orsite-article__content h4,
+.orsite-related__title,
+.hj-page-links__title,
+.orsite-empty h1,
+.orsite-empty h2,
+.hj-home .hj-home-section__head h2,
+.hj-home .hj-journey-card h3,
+.hj-home .hj-surgery-card h3,
+.hj-home .hj-glossary-strip h3,
+.hj-home .hj-contact-band h2,
+.hj-home .hj-home-empty h3,
+.hj-home .hj-faq-list summary,
+.hj-home-hero__title,
+.hj-section-bar__title,
+.widget-title {
+	white-space: normal;
+	overflow: visible;
+	overflow-wrap: anywhere;
+	text-overflow: clip;
+}
+
+/* Buttons, including the site's existing classes and Elementor's links. */
+.hj-btn,
+.hj-button,
+.wp-block-button__link,
+.elementor .elementor-button,
+input[type="submit"],
+button:where(:not(.menu-toggle):not(.search-toggle):not(.hj-glossary-search__clear):not(.hj-glossary-popover__close)) {
+	align-items: center;
+	justify-content: center;
+	min-block-size: 44px;
+	background: var(--hj-primary);
+	border: 0;
+	border-radius: var(--hj-r-pill);
+	box-shadow: var(--hj-e1);
+	color: var(--hj-primary-ink);
+	cursor: pointer;
+	font-family: inherit;
+	font-weight: 500;
+	line-height: 1.6;
+	padding-block: var(--hj-s3);
+	padding-inline: var(--hj-s5);
+	text-decoration: none;
+	transition: background-color var(--hj-ease), box-shadow var(--hj-ease), transform var(--hj-ease);
+}
+
+.hj-btn:hover,
+.hj-button:hover,
+.wp-block-button__link:hover,
+.elementor .elementor-button:hover,
+input[type="submit"]:hover,
+button:where(:not(.menu-toggle):not(.search-toggle):not(.hj-glossary-search__clear):not(.hj-glossary-popover__close)):hover {
+	background: var(--hj-primary-strong);
+	box-shadow: var(--hj-e1), var(--hj-glow);
+	color: var(--hj-primary-ink);
+	text-decoration: none;
+}
+
+.hj-btn:active, .hj-button:active, .wp-block-button__link:active,
+.elementor .elementor-button:active, input[type="submit"]:active,
+button:where(:not(.menu-toggle):not(.search-toggle):not(.hj-glossary-search__clear):not(.hj-glossary-popover__close)):active {
+	box-shadow: var(--hj-inset);
+}
+
+/* Inputs and search controls. Placeholder contrast is >= 4.5:1. */
+input[type="text"], input[type="search"], input[type="email"],
+input[type="url"], input[type="tel"], input[type="number"],
+textarea, select,
+.search-form .search-field,
+.comment-form input[type="text"], .comment-form input[type="email"],
+.comment-form input[type="url"], .comment-form textarea,
+.hj-care-tool__field select, .hj-glossary-search__input, .hj-disease-search input {
+	max-inline-size: 100%;
+	min-inline-size: 0;
+	background: var(--hj-surface);
+	border: 2px solid var(--hj-border);
+	border-radius: var(--hj-r-pill);
+	box-shadow: var(--hj-inset);
+	color: var(--hj-text);
+	font-family: inherit;
+	font-size: inherit;
+	line-height: 1.6;
+	padding-block: var(--hj-s3);
+	padding-inline: var(--hj-s5);
+}
+
+textarea, .comment-form textarea { border-radius: var(--hj-r-lg); }
+input::placeholder, textarea::placeholder { color: var(--hj-text-muted); opacity: 1; }
+
+input:focus, textarea:focus, select:focus,
+.search-form .search-field:focus, .hj-glossary-search__input:focus {
+	border-color: var(--hj-primary-ink);
+	box-shadow: var(--hj-inset), var(--hj-glow);
+}
+
+.search-form {
+	align-items: stretch;
+	gap: var(--hj-s2);
+	min-inline-size: 0;
+}
+
+.search-form label { min-inline-size: 0; }
+.search-form .search-field { inline-size: 100%; min-block-size: 52px; }
+.search-form .search-submit, .comment-form .submit, .hj-disease-search button {
+	flex: 0 0 auto;
+	background: var(--hj-primary);
+	border: 0;
+	border-radius: var(--hj-r-pill);
+	box-shadow: var(--hj-e1);
+	color: var(--hj-primary-ink);
+	font-weight: 700;
+	padding-block: var(--hj-s3);
+	padding-inline: var(--hj-s5);
+}
+.search-form .search-submit:hover, .comment-form .submit:hover, .hj-disease-search button:hover {
+	background: var(--hj-primary-strong);
+	color: var(--hj-primary-ink);
+}
+
+/* Header and primary navigation. */
+.site-header {
+	background: var(--hj-surface);
+	border-block-end: 1px solid var(--hj-border);
+	box-shadow: var(--hj-e1);
+}
+.site-header__inner { padding-block: var(--hj-s3); padding-inline: var(--hj-s4); }
+.brand__mark { background: var(--hj-primary); color: var(--hj-primary-ink); box-shadow: var(--hj-e1); }
+.site-title, .site-description { color: var(--hj-text); }
+.main-navigation a, .main-navigation a:visited {
+	max-inline-size: 100%;
+	border-radius: var(--hj-r-pill);
+	color: var(--hj-text);
+	padding-block: var(--hj-s2);
+	padding-inline: var(--hj-s4);
+}
+.main-navigation a:hover,
+.main-navigation .current-menu-item > a,
+.main-navigation .current-menu-ancestor > a {
+	background: var(--hj-primary);
+	color: var(--hj-primary-ink);
+}
+.search-toggle, .menu-toggle {
+	min-inline-size: 44px;
+	min-block-size: 44px;
+	background: var(--hj-surface-raised);
+	border: 1px solid var(--hj-border);
+	border-radius: var(--hj-r-md);
+	box-shadow: var(--hj-e1);
+	color: var(--hj-primary-ink);
+}
+.menu-toggle__icon span { background: var(--hj-primary-ink); }
+.header-search { background: var(--hj-surface); border-color: var(--hj-border); }
+
+/* Chips: surgery links, existing taxonomy badges, and glossary terms. */
+.hj-chip, .tag-cloud-link, .cat-links a, .tags-links a,
+.hj-home-hero__chips a, .orsite-badge, .hj-glossary-strip li a,
+.hj-glossary-topic-chip, .hj-glossary-item__cat, .hj-glossary-hub__count-pill,
+.hj-disease-groups a, .hj-page-links a {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	max-inline-size: 100%;
+	background: var(--hj-primary);
+	border: 1px solid transparent;
+	border-radius: var(--hj-r-pill);
+	box-shadow: var(--hj-e1);
+	color: var(--hj-primary-ink);
+	font-size: var(--hj-fs-caption);
+	font-weight: 500;
+	line-height: 1.7;
+	padding-block: 6px;
+	padding-inline: var(--hj-s4);
+	text-decoration: none;
+	white-space: normal;
+	overflow-wrap: anywhere;
+}
+.hj-chip:hover, .tag-cloud-link:hover, .cat-links a:hover, .tags-links a:hover,
+.hj-home-hero__chips a:hover, .hj-home-hero__chips a:focus,
+.orsite-badge:hover, .hj-glossary-strip li a:hover, .hj-glossary-topic-chip:hover,
+.hj-glossary-item__cat:hover, .hj-disease-groups a:hover, .hj-page-links a:hover {
+	background: var(--hj-primary-strong);
+	border-color: transparent;
+	color: var(--hj-primary-ink);
+	text-decoration: none;
+}
+.hj-chip.is-selected, .hj-glossary-topic-chip.is-active, .hj-disease-groups a[aria-current="page"] {
+	background: var(--hj-primary-strong);
+	border-color: var(--hj-primary-ink);
+	color: var(--hj-primary-ink);
+}
+.hj-glossary-topic-chip__num, .hj-glossary-topic-chip.is-active .hj-glossary-topic-chip__num {
+	background: var(--hj-surface-raised);
+	color: var(--hj-primary-ink);
+}
+
+/* Segmented and underline tabs. The optional JS uses ARIA and roving focus. */
+[role="tabpanel"][hidden] { display: none !important; }
+.hj-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--hj-s1);
+	max-inline-size: 100%;
+	background: var(--hj-border);
+	border: 0;
+	border-radius: var(--hj-r-lg);
+	box-shadow: var(--hj-inset);
+	padding: var(--hj-s1);
+}
+.hj-tabs [role="tab"], .hj-tabs button, .hj-glossary-alpha__btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-inline-size: 44px;
+	min-block-size: 44px;
+	block-size: auto;
+	background: transparent;
+	border: 0;
+	border-radius: var(--hj-r-pill);
+	box-shadow: none;
+	color: var(--hj-text);
+	font-family: inherit;
+	font-size: var(--hj-fs-caption);
+	font-weight: 500;
+	line-height: 1.5;
+	padding-block: var(--hj-s2);
+	padding-inline: var(--hj-s3);
+	text-decoration: none;
+}
+.hj-tabs [role="tab"]:hover, .hj-tabs button:hover, .hj-glossary-alpha__btn:hover {
+	background: var(--hj-surface-raised);
+	box-shadow: none;
+	color: var(--hj-primary-ink);
+}
+.hj-tabs [role="tab"][aria-selected="true"], .hj-tabs button[aria-selected="true"],
+.hj-glossary-alpha__btn.is-active {
+	background: var(--hj-primary);
+	box-shadow: var(--hj-e1);
+	color: var(--hj-primary-ink);
+}
+.hj-glossary-alpha__btn.is-empty { opacity: 1; }
+.hj-tabs--line {
+	background: none;
+	border-block-end: 4px solid var(--hj-border);
+	border-radius: 0;
+	box-shadow: none;
+}
+.hj-tabs--line [role="tab"][aria-selected="true"],
+.hj-tabs--line button[aria-selected="true"] {
+	background: transparent;
+	border-radius: 0;
+	box-shadow: inset 0 -4px 0 var(--hj-primary-ink);
+	color: var(--hj-primary-ink);
+}
+
+/* Alerts: reusable classes, Group block styles, and existing [hjbox] tones. */
+.hj-alert, .wp-block-group.is-style-hj-alert-success,
+.wp-block-group.is-style-hj-alert-warning, .wp-block-group.is-style-hj-alert-error,
+.hj-box {
+	border: 1px solid transparent;
+	border-radius: var(--hj-r-lg);
+	box-shadow: var(--hj-e1);
+	font-weight: 500;
+	padding-block: var(--hj-s4);
+	padding-inline: var(--hj-s5);
+}
+.hj-alert { display: flex; align-items: flex-start; gap: var(--hj-s3); }
+.hj-alert--success, .wp-block-group.is-style-hj-alert-success, .hj-box--success {
+	background: var(--hj-success);
+	border-color: var(--hj-success-ink);
+	color: var(--hj-success-ink);
+}
+.hj-alert--warning, .wp-block-group.is-style-hj-alert-warning, .hj-box--warning {
+	background: var(--hj-warning);
+	border-color: var(--hj-warning-ink);
+	color: var(--hj-warning-ink);
+}
+.hj-alert--error, .wp-block-group.is-style-hj-alert-error, .hj-box--danger {
+	background: var(--hj-error);
+	border-color: var(--hj-error-ink);
+	color: var(--hj-error-ink);
+}
+.hj-box--info { background: var(--hj-primary); border-color: var(--hj-primary-ink); color: var(--hj-primary-ink); }
+.hj-box .hj-box__title, .hj-box .hj-box__body,
+.hj-alert :where(p, li, h2, h3, h4, a, strong),
+.wp-block-group.is-style-hj-alert-success :where(p, li, h2, h3, h4, a, strong),
+.wp-block-group.is-style-hj-alert-warning :where(p, li, h2, h3, h4, a, strong),
+.wp-block-group.is-style-hj-alert-error :where(p, li, h2, h3, h4, a, strong),
+.hj-box :where(p, li, a, strong) { color: inherit; }
+.hj-alert a, .hj-box a,
+.wp-block-group.is-style-hj-alert-success a, .wp-block-group.is-style-hj-alert-warning a,
+.wp-block-group.is-style-hj-alert-error a { text-decoration: underline; }
+
+/* Cards used in the home, archives, related articles and block editor. */
+.hj-card, .wp-block-post,
+.orsite-card-article, article.hentry.orsite-card-article,
+article.hentry.orsite-card-article + article.hentry.orsite-card-article,
+.hj-journey-card, .hj-surgery-card, .hj-section-bar, .hj-home-empty,
+.hj-glossary-strip, .hj-contact-band, .hj-care-tool, .hj-disease-card,
+.hj-disease-entry, .hj-glossary-item, .hj-glossary-hub__hero {
+	min-inline-size: 0;
+	background: var(--hj-surface-raised);
+	border: 1px solid var(--hj-border);
+	border-radius: var(--hj-r-lg);
+	box-shadow: var(--hj-e2);
+	color: var(--hj-text);
+}
+.hj-card, .wp-block-post { padding: var(--hj-s5); }
+.orsite-card-article, article.hentry.orsite-card-article,
+article.hentry.orsite-card-article + article.hentry.orsite-card-article {
+	padding: var(--hj-s4);
+	transition: box-shadow var(--hj-ease), transform var(--hj-ease);
+}
+.hj-card:hover, .wp-block-post:hover, .orsite-card-article:hover {
+	box-shadow: var(--hj-e3);
+	transform: translateY(-2px);
+}
+.orsite-card-article__media, .orsite-card-article__media--placeholder {
+	aspect-ratio: 16 / 10;
+	margin: 0;
+	border: 0;
+	border-radius: var(--hj-r-md);
+	background: var(--hj-primary);
+	color: var(--hj-primary-ink);
+}
+.orsite-card-article__media .orsite-thumb { inline-size: 100%; block-size: 100%; }
+.orsite-card-article__media img, .hj-card > img, .wp-block-post-featured-image img {
+	inline-size: 100%;
+	block-size: 100%;
+	aspect-ratio: 16 / 10;
+	border-radius: var(--hj-r-md);
+	object-fit: cover;
+}
+.orsite-card-article__body { padding: var(--hj-s4) var(--hj-s1) var(--hj-s1); }
+.orsite-card-article__title { font-size: 18px; line-height: 1.6; }
+.orsite-card-article__title a, .orsite-card-article__title a:visited { color: var(--hj-text); }
+.hj-review-badge { background: var(--hj-surface); border-color: var(--hj-border); color: var(--hj-primary-ink); box-shadow: var(--hj-e1); }
+
+/* Homepage: retain the existing copy, search and published-content links. */
+.hj-home-hero, .orsite-hero {
+	background: radial-gradient(circle at 10% 10%, rgba(168, 230, 207, .35), transparent 35%), var(--hj-surface-raised);
+	border: 1px solid var(--hj-border);
+	border-radius: var(--hj-r-lg);
+	box-shadow: var(--hj-e2);
+	color: var(--hj-text);
+	padding: clamp(24px, 5vw, 64px);
+	text-align: start;
+}
+.hj-home-hero::before, .hj-home-hero::after { display: none; }
+/* These legacy heroes used white text on a dark background. */
+.orsite-hero__title, .orsite-hero__text { color: var(--hj-text); }
+.hj-home-hero__title {
+	max-inline-size: 900px;
+	margin: 0 0 var(--hj-s6);
+	color: var(--hj-text);
+	font-size: var(--hj-fs-display);
+	line-height: 1.45;
+	text-wrap: balance;
+}
+.hj-home-hero__search { max-inline-size: 680px; margin: 0; }
+.hj-home-hero__search .search-form .search-field { border-color: var(--hj-border); }
+.hj-home-hero__chips, .hj-home-hero__actions { justify-content: flex-start; }
+.hj-home-hero__chips { gap: var(--hj-s2); margin-block-start: var(--hj-s5); }
+.hj-home-hero__actions { gap: var(--hj-s2); margin-block-start: var(--hj-s5); }
+.hj-home-hero .hj-button, .hj-home-hero .hj-button:hover {
+	background: var(--hj-primary);
+	border: 0;
+	color: var(--hj-primary-ink);
+}
+.hj-home-hero .hj-button:hover { background: var(--hj-primary-strong); }
+.hj-home-section__head h2, .hj-home .hj-home-section__head h2 {
+	color: var(--hj-text);
+	font-size: var(--hj-fs-h2);
+}
+.hj-home-section__head p, .hj-journey-card p, .hj-surgery-card p,
+.hj-home-empty p, .hj-care-tool__head p, .hj-contact-band p { color: var(--hj-text-muted); }
+.hj-journey-card { border-block-start: 1px solid var(--hj-border); }
+.hj-journey-card::before, .hj-section-bar__arrow { background: var(--hj-primary); color: var(--hj-primary-ink); }
+.hj-section-bar { border-inline-start: 1px solid var(--hj-border); }
+.hj-section-bar:hover { background: var(--hj-surface-raised); color: var(--hj-text); box-shadow: var(--hj-e3); }
+.hj-care-tool { border-inline-start: 4px solid var(--hj-primary-strong); }
+.hj-care-tool__result { background: var(--hj-success); border-color: var(--hj-success-ink); color: var(--hj-success-ink); }
+.hj-care-tool__result h3 { color: var(--hj-success-ink); }
+.hj-care-tool__flag, .hj-emergency, .hj-emergency--above-footer {
+	background: var(--hj-error);
+	border-color: var(--hj-error-ink);
+	color: var(--hj-error-ink);
+}
+.hj-emergency--above-footer a, .hj-emergency--above-footer a:hover { color: var(--hj-error-ink); text-decoration: underline; }
+
+/* Article / static pages. Keep existing review information only if present. */
+.orsite-article, .orsite-title-box, .orsite-archive__header, .orsite-empty,
+.widget-area .widget, .comment-list .comment {
+	background: var(--hj-surface-raised);
+	border: 1px solid var(--hj-border);
+	border-radius: var(--hj-r-lg);
+	box-shadow: var(--hj-e2);
+	color: var(--hj-text);
+}
+.orsite-empty--navy h1, .orsite-empty--navy h2, .orsite-empty--navy p { color: var(--hj-text); }
+.orsite-title-box .orsite-article__title, .orsite-article__title, .orsite-archive__title {
+	color: var(--hj-text);
+	font-size: var(--hj-fs-h1);
+}
+.orsite-article__layout > .orsite-article__content, .orsite-article > .orsite-article__content {
+	max-inline-size: 720px;
+}
+.orsite-article__content { font-size: var(--hj-fs-body); line-height: 1.9; }
+.orsite-article__content h2, .orsite-article__content h3, .orsite-article__content h4 {
+	background: transparent;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	color: var(--hj-text);
+	padding: 0;
+}
+.orsite-article__content h2 { font-size: var(--hj-fs-h2); }
+.orsite-article__content h3 { font-size: var(--hj-fs-h3); }
+.orsite-article__content h2 *, .orsite-article__content h2 a,
+.orsite-article__content h2 a:hover, .orsite-article__content h2 a:focus { color: inherit; }
+.orsite-article__content a, .orsite-article__content a:visited,
+.orsite-article__content a:hover, .orsite-article__content a:focus {
+	color: var(--hj-primary-ink);
+	text-decoration-color: currentColor;
+}
+.orsite-article__lead, .orsite-article__content blockquote, .orsite-media__text {
+	background: var(--hj-primary);
+	border: 1px solid var(--hj-primary-strong);
+	color: var(--hj-primary-ink);
+}
+.orsite-article__lead p, .orsite-article__lead *,
+.orsite-article__content blockquote *, .orsite-media__text * { color: var(--hj-primary-ink); }
+.orsite-article__meta > *, .hj-review-badge {
+	border-radius: var(--hj-r-md);
+	padding-block: var(--hj-s1);
+	padding-inline: var(--hj-s3);
+}
+.orsite-article__meta > * { background: var(--hj-surface); color: var(--hj-text); box-shadow: var(--hj-e1); }
+.orsite-toc details { border-color: var(--hj-border); box-shadow: var(--hj-e1); }
+.orsite-toc summary { background: var(--hj-primary); color: var(--hj-primary-ink); white-space: normal; }
+.orsite-article__media { border-color: var(--hj-border); box-shadow: var(--hj-e1); }
+.orsite-article__media figcaption, .orsite-article__content figcaption, .orsite-caption {
+	background: var(--hj-surface);
+	border-color: var(--hj-border);
+	color: var(--hj-text-muted);
+	font-size: var(--hj-fs-caption);
+}
+.orsite-article__content thead th, .orsite-article__content thead th:first-child,
+.orsite-article__content thead th * { background: var(--hj-primary); color: var(--hj-primary-ink); }
+.orsite-article__content table { border-color: var(--hj-border); }
+.orsite-article__content .hj-table-scroll > table th,
+.orsite-article__content .hj-table-scroll > table td { overflow-wrap: anywhere; }
+
+/* Glossary controls preserve their original links and AJAX behavior. */
+.hj-glossary-hub__title, .hj-glossary-item__term { color: var(--hj-text); }
+.hj-glossary-hub__desc, .hj-glossary-status, .hj-glossary-item__def,
+.hj-glossary-item__en, .hj-glossary-empty { color: var(--hj-text); }
+.hj-glossary-search__input { padding-inline-end: 52px; }
+.hj-glossary-search__clear { inset-inline-end: 12px; inset-inline-start: auto; color: var(--hj-primary-ink); }
+.hj-glossary-alpha { margin-block-end: var(--hj-s5); }
+.hj-glossary-grid[hidden], .hj-glossary-pagination[hidden] { display: none; }
+.hj-glossary-item { border-inline-start: 4px solid var(--hj-primary); }
+.hj-glossary-item__term {
+	display: inline-flex;
+	background: var(--hj-primary);
+	border-radius: var(--hj-r-pill);
+	color: var(--hj-primary-ink);
+	font-size: 16px;
+	padding-block: var(--hj-s1);
+	padding-inline: var(--hj-s3);
+}
+.hj-glossary-page-btn, .hj-glossary-page-btn:visited { color: var(--hj-primary-ink); }
+.hj-glossary-page-btn.is-active, .hj-glossary-page-btn:hover { background: var(--hj-primary); border-color: var(--hj-primary-ink); color: var(--hj-primary-ink); }
+.hj-disease-card p { color: var(--hj-text-muted); text-align: start; }
+.hj-disease-notice { background: var(--hj-warning); border-inline-start: 4px solid var(--hj-warning-ink); color: var(--hj-warning-ink); }
+
+/* The requested #666 on #E2E0DC is 4.36:1, so use #5E5E5E in the footer. */
+.hj-footer, .site-footer {
+	background: var(--hj-border);
+	border: 0;
+	box-shadow: none;
+	color: #5e5e5e;
+}
+.hj-footer__tagline, .hj-footer__bottom, .hj-footer__legal,
+.site-footer__bottom { color: #5e5e5e; }
+.hj-footer__heading, .hj-footer__name, .hj-footer__email,
+.hj-footer__col a, .hj-footer__col a:hover, .hj-footer__copyright a,
+.hj-footer__legal a, .site-footer a, .site-footer .site-title {
+	color: var(--hj-primary-ink);
+}
+.hj-footer__bottom { border-color: #b7b5b0; }
+
+/* Keep disabled controls readable and neutral even when hovered or selected. */
+button:disabled, input:disabled, input[type]:disabled, select:disabled, textarea:disabled,
+.hj-btn:disabled, .hj-button:disabled, .hj-home-hero .hj-button:disabled,
+.search-form .search-submit:disabled, .comment-form .submit:disabled,
+.hj-tabs [role="tab"]:disabled, .hj-tabs [role="tab"][aria-disabled="true"],
+.hj-btn[aria-disabled="true"], .hj-button[aria-disabled="true"],
+.wp-block-button__link[aria-disabled="true"], .elementor .elementor-button[aria-disabled="true"],
+.hj-chip.is-disabled {
+	background: var(--hj-disabled);
+	box-shadow: none;
+	color: #555;
+	cursor: not-allowed;
+	opacity: 1;
+}
+
+@media (max-width: 768px) {
+	.main-navigation ul { background: var(--hj-surface-raised); border-color: var(--hj-border); }
+	.main-navigation ul li a { max-inline-size: 100%; }
+	.hj-home-hero { padding: var(--hj-s5); }
+	.hj-home-hero__actions .hj-button { inline-size: 100%; }
+	.hj-tabs { gap: var(--hj-s1); }
+	.hj-glossary-alpha__btn { min-inline-size: 44px; min-block-size: 44px; }
+	.orsite-card-grid { gap: var(--hj-s4); }
+}
+
+@media (max-width: 782px) {
+	.orsite-article__content .hj-table-scroll > table { font-size: var(--hj-fs-caption); }
+}
+
+@media (max-width: 600px) {
+	/* Fixed columns keep category chips from jumping between rows when fonts swap. */
+	.hj-glossary-topics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.hj-glossary-topic-chip { justify-content: space-between; min-inline-size: 0; min-block-size: 64px; }
+}
+
+@media (max-width: 400px) {
+	.container { padding-inline: var(--hj-s3); }
+	.hj-home-hero { padding: var(--hj-s4); }
+	.search-form .search-submit { padding-inline: var(--hj-s4); }
+	.hj-alert, .wp-block-group.is-style-hj-alert-success,
+	.wp-block-group.is-style-hj-alert-warning, .wp-block-group.is-style-hj-alert-error,
+	.hj-box { padding-inline: var(--hj-s4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html { scroll-behavior: auto; }
+	*, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+	.hj-card:hover, .wp-block-post:hover, .orsite-card-article:hover, .hj-section-bar:hover { transform: none; }
+}

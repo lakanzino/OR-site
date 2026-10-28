@@ -382,6 +382,51 @@
 
 		var debounceTimer = null;
 		var activeController = null;
+		var alphaList = hub.querySelector('.hj-glossary-alpha');
+
+		// An unknown query value has no matching tab: keep the alphabet as
+		// ordinary links rather than creating a tablist with no keyboard entry.
+		if (alphaList && !Array.prototype.some.call(alphaList.querySelectorAll('[data-gletter]'), function (tab) {
+			return (tab.getAttribute('data-gletter') || '') === state.gletter;
+		})) {
+			alphaList = null;
+		}
+
+		// The server-rendered alphabet remains ordinary navigation when JS is
+		// unavailable. Once filtering is active, expose it as an RTL tablist.
+		if (alphaList) {
+			alphaList.classList.add('hj-tabs');
+			alphaList.setAttribute('role', 'tablist');
+			alphaList.querySelectorAll('[data-gletter]').forEach(function (tab, index) {
+				tab.id = 'hj-glossary-letter-' + index;
+				tab.setAttribute('role', 'tab');
+				tab.setAttribute('aria-controls', gridEl.id);
+			});
+			gridEl.setAttribute('role', 'tabpanel');
+			gridEl.setAttribute('tabindex', '0');
+			alphaList.addEventListener('keydown', function (event) {
+				var tabs = Array.prototype.slice.call(alphaList.querySelectorAll('[role="tab"]'));
+				var index = tabs.indexOf(event.target);
+				if (index < 0 || !tabs.length) return;
+				// Alphabet tabs are links without JS; Space must activate them once enhanced.
+				if (event.key === ' ' || event.key === 'Spacebar') {
+					event.preventDefault();
+					tabs[index].click();
+					return;
+				}
+				var rtl = window.getComputedStyle(alphaList).direction === 'rtl';
+				var next = index;
+				if (event.key === 'Home') next = 0;
+				else if (event.key === 'End') next = tabs.length - 1;
+				else if (event.key === 'ArrowLeft') next = (index + (rtl ? 1 : -1) + tabs.length) % tabs.length;
+				else if (event.key === 'ArrowRight') next = (index + (rtl ? -1 : 1) + tabs.length) % tabs.length;
+				else return;
+				event.preventDefault();
+				tabs[next].focus();
+				tabs[next].click();
+			});
+		}
+		if (statusEl) statusEl.setAttribute('role', 'status');
 
 		function toFaDigits(val) {
 			return String(val).replace(/\d/g, function (d) {
@@ -405,7 +450,13 @@
 				btn.classList.toggle('is-active', (btn.getAttribute('data-gcat') || '') === state.gcat);
 			});
 			hub.querySelectorAll('[data-gletter]').forEach(function (btn) {
-				btn.classList.toggle('is-active', (btn.getAttribute('data-gletter') || '') === state.gletter);
+				var selected = (btn.getAttribute('data-gletter') || '') === state.gletter;
+				btn.classList.toggle('is-active', selected);
+				if (alphaList) {
+					btn.setAttribute('aria-selected', selected ? 'true' : 'false');
+					btn.setAttribute('tabindex', selected ? '0' : '-1');
+					if (selected) gridEl.setAttribute('aria-labelledby', btn.id);
+				}
 			});
 		}
 
@@ -493,6 +544,7 @@
 			activeController = typeof AbortController !== 'undefined' ? new AbortController() : null;
 
 			gridEl.classList.add('is-loading');
+			gridEl.setAttribute('aria-busy', 'true');
 
 			var params = new URLSearchParams({
 				action:  'hj_glossary_filter',
@@ -503,20 +555,32 @@
 			});
 
 			fetch(ajaxUrl + '?' + params.toString(), activeController ? { signal: activeController.signal } : {})
-				.then(function (r) { return r.json(); })
+				.then(function (r) {
+					if (!r.ok) throw new Error('Glossary request failed');
+					return r.json();
+				})
 				.then(function (res) {
+					if (!res || !res.success || !res.data) throw new Error('Invalid glossary response');
+					renderResults(res.data);
+					gridEl.hidden = false;
+					if (pagEl) pagEl.hidden = false;
 					gridEl.classList.remove('is-loading');
-					if (res && res.success && res.data) {
-						renderResults(res.data);
-					}
+					gridEl.removeAttribute('aria-busy');
 				})
 				.catch(function (err) {
 					if (err && err.name === 'AbortError') {
 						return;
 					}
+					// Do not present stale definitions as if they matched the new filter.
+					gridEl.hidden = true;
+					if (pagEl) pagEl.hidden = true;
 					gridEl.classList.remove('is-loading');
+					gridEl.removeAttribute('aria-busy');
+					if (statusEl) statusEl.textContent = 'به‌روزرسانی نتایج انجام نشد؛ دوباره تلاش کنید یا صفحه را بازخوانی کنید.';
 				});
 		}
+
+		syncActiveControls();
 
 		if (searchInput) {
 			searchInput.addEventListener('input', function () {
@@ -567,7 +631,7 @@
 			if (letBtn) {
 				e.preventDefault();
 				var clicked = letBtn.getAttribute('data-gletter') || '';
-				state.gletter = (state.gletter === clicked) ? '' : clicked;
+				state.gletter = clicked;
 				state.gpage = 1;
 				fetchFiltered();
 				return;

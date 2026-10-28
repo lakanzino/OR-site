@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.21.5' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.22.0' );
 }
 
 /**
@@ -64,6 +64,9 @@ require_once get_stylesheet_directory() . '/inc/content-freshness.php';
 require_once get_stylesheet_directory() . '/inc/medical-boxes.php';
 require_once get_stylesheet_directory() . '/inc/schema-procedure.php';
 require_once get_stylesheet_directory() . '/inc/performance.php';
+
+/** Presentation-only Soft UI tokens, editor styles and local-font preload. */
+require_once get_stylesheet_directory() . '/inc/soft-ui.php';
 
 /**
  * Article body is left exactly as the editor wrote it (child 0.21.0).
@@ -170,11 +173,36 @@ function lax_theme_child_asset_ver( $relative ) {
 /**
  * Enqueue child assets after the parent styles.
  *
- * The parent already enqueues the child `style.css` through its
- * `lax-theme-style` handle (via get_stylesheet_uri()); this function only
- * adds the child's component stylesheet, so nothing is loaded twice.
+ * Keep the parent's font dependency as a source-less handle: the identical
+ * local faces are declared in the child style.css instead. This prevents both
+ * a duplicate font stylesheet and a duplicate regular-weight download.
  */
 function lax_theme_child_assets() {
+	$styles = wp_styles();
+	if ( isset( $styles->registered['lax-theme-fonts'] ) ) {
+		$parent_fonts = get_template_directory_uri() . '/assets/css/fonts.css';
+		if ( $parent_fonts === $styles->registered['lax-theme-fonts']->src ) {
+			// Preserve dependencies and any inline CSS attached by other code.
+			$styles->registered['lax-theme-fonts']->src = false;
+		}
+	} else {
+		wp_register_style( 'lax-theme-fonts', false, array(), null );
+	}
+
+	// The parent points this handle at the child stylesheet but versions it
+	// with the parent version. Keep its dependencies/inline CSS and update only
+	// the version, so third-party additions are not lost on re-registration.
+	if ( isset( $styles->registered['lax-theme-style'] ) ) {
+		$styles->registered['lax-theme-style']->ver = lax_theme_child_asset_ver( 'style.css' );
+	} else {
+		wp_enqueue_style(
+			'lax-theme-style',
+			get_stylesheet_uri(),
+			array( 'lax-theme-main' ),
+			lax_theme_child_asset_ver( 'style.css' )
+		);
+	}
+
 	wp_enqueue_style(
 		'lax-theme-child',
 		get_stylesheet_directory_uri() . '/assets/css/child.css',
@@ -189,11 +217,20 @@ function lax_theme_child_assets() {
 		lax_theme_child_asset_ver( 'assets/css/glossary.css' )
 	);
 
+	// Load the design layer last, after both legacy child stylesheets.
+	wp_enqueue_style(
+		'lax-theme-child-soft-ui',
+		get_stylesheet_directory_uri() . '/assets/css/soft-ui.css',
+		array( 'lax-theme-child-glossary' ),
+		lax_theme_child_asset_ver( 'assets/css/soft-ui.css' )
+	);
+
+	// Let headings wrap at readable sizes instead of shrinking them on load.
 	wp_enqueue_script(
-		'lax-theme-child-fit-headings',
-		get_stylesheet_directory_uri() . '/assets/js/fit-headings.js',
+		'lax-theme-child-soft-tabs',
+		get_stylesheet_directory_uri() . '/assets/js/soft-tabs.js',
 		array(),
-		LAX_THEME_CHILD_VERSION,
+		lax_theme_child_asset_ver( 'assets/js/soft-tabs.js' ),
 		true
 	);
 

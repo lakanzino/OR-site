@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.21.5
+Stable tag: 0.22.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,11 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.22.0 =
+* لایهٔ ظاهری فارسی RTL و Soft UI با فونت محلی، حالت فوکوس و کاهش حرکت.
+* سه ظاهر هشدار برای بلاک Group و کنترل‌های واژه‌نامه با پشتیبانی صفحه‌کلید.
+* راهنمای کامپوننت‌ها و چک‌لیست پیش از استقرار در SOFT-UI.md؛ نیازمند آزمون استیجینگ واقعی.
 
 = 0.21.5 =
 * افزودن شش مدخل فارسی پیش‌نویس به دانشنامه بیماری‌ها، از جمله سینوزیت.
