@@ -1911,12 +1911,12 @@
  {
   "diseaseId": "research_056",
   "category": "دانشنامه بیماری‌ها",
-  "profileStatus": "pending",
+  "profileStatus": "partial",
   "profile": {
    "nameFa": "سیروز کبدی",
    "nameEn": "Cirrhosis",
    "otherNames": "",
-   "icd10": "",
+   "icd10": "K74.6",
    "specialty": "",
    "intro": "",
    "cause": "",
@@ -1980,12 +1980,12 @@
  {
   "diseaseId": "research_060",
   "category": "دانشنامه بیماری‌ها",
-  "profileStatus": "pending",
+  "profileStatus": "partial",
   "profile": {
    "nameFa": "هپاتیت ای",
    "nameEn": "Hepatitis E",
    "otherNames": "",
-   "icd10": "",
+   "icd10": "B17.2",
    "specialty": "",
    "intro": "",
    "cause": "",
