@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.21.3
+Stable tag: 0.21.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,7 +25,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 == Changelog ==
 
-= 0.21.3 =
+= 0.21.4 =
+* افزودن پیوند صفحه اول به اپ و دو مقاله پیش‌نویس بیماری.
+
+= 0.21.4 =
 * افزودن دانشنامه بیماری‌ها با ۱۲ مدخل پیش‌نویس قابل ویرایش بر پایهٔ نسخه ۰.۲۱.۲.
 
 = 0.21.2 =

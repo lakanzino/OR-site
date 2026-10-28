@@ -37,9 +37,15 @@ function render() {
   document.getElementById('next').onclick=()=>{state.step++;state.search='';render();};
   const back=document.getElementById('back');if(back)back.onclick=()=>{state.step--;state.search='';render();};
 }
+function diseaseArticleLink(d) {
+  if (typeof window.hamyarDiseaseLinks === 'undefined') return db.encyclopedia.some(e=>e.diseaseId===d.id) ? `<button class="entry-link" data-entry="${escapeText(d.id)}">مشاهده معرفی بیماری</button>` : '';
+  const value = window.hamyarDiseaseLinks[d.id];
+  try { const url = new URL(value, location.href); if (value && url.origin === location.origin && ['http:', 'https:'].includes(url.protocol)) return `<a class="entry-link" href="${escapeText(url.href)}">مطالعه مقاله بیماری ←</a>`; } catch (_) {}
+  return '<span class="muted">مقاله این بیماری هنوز منتشر نشده است.</span>';
+}
 function renderFinalResult() {
   const result=engine.getFinalResult(state);
-  const cards=result.resources.map(d=>`<article class="result"><div class="result-label">منبع آموزشی مرتبط</div><h3>${escapeText(d.name)}</h3>${db.encyclopedia.some(e=>e.diseaseId===d.id)?`<button class="entry-link" data-entry="${escapeText(d.id)}">مشاهده معرفی بیماری</button>`:''}<p>علائم مشترک: ${d.matchedSymptoms.map(escapeText).join('، ')}</p>${d.sources.filter(s=>{try{return new URL(s.url).protocol==='https:'}catch{return false}}).map(s=>`<a href="${escapeText(s.url)}" target="_blank" rel="noopener noreferrer">📖 ${escapeText(s.text)} ↗</a>`).join('<br>')}</article>`).join('');
+  const cards=result.resources.map(d=>`<article class="result"><div class="result-label">منبع آموزشی مرتبط</div><h3>${escapeText(d.name)}</h3>${diseaseArticleLink(d)}<p>علائم مشترک: ${d.matchedSymptoms.map(escapeText).join('، ')}</p>${d.sources.filter(s=>{try{return new URL(s.url).protocol==='https:'}catch{return false}}).map(s=>`<a href="${escapeText(s.url)}" target="_blank" rel="noopener noreferrer">📖 ${escapeText(s.text)} ↗</a>`).join('<br>')}</article>`).join('');
   content.innerHTML=`<h2>موضوعات احتمالی مرتبط با علائم شما</h2>${warning()}<p>این موارد با تطبیق علائم انتخاب شده‌اند؛ تشخیص قطعی یا احتمال عددی نیستند و ممکن است علت‌های دیگر وجود داشته باشند. برای بررسی به پزشک مراجعه کنید. نبود هشدار به معنی بی‌خطر بودن نیست.</p>${cards||'<p class="result">برای علائم انتخاب‌شده منبع مرتبطی پیدا نشد؛ این نتیجه وضعیت شما را رد نمی‌کند.</p>'}<div class="actions"><button class="secondary" id="back">بازگشت</button><button class="primary" id="restart">شروع دوباره</button></div>`;
   content.querySelectorAll('[data-entry]').forEach(button=>button.onclick=()=>showEntry(button.dataset.entry));
   document.getElementById('back').onclick=()=>{state.step=3;render();};

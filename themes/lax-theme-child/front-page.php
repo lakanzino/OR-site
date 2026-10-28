@@ -203,7 +203,12 @@ $hj_faqs = array(
 				</ul>
 			<?php endif; ?>
 
+			<?php
+			$hj_app_page_id = (int) get_option( 'hamyar_symptom_guide_page_id' );
+			$hj_app_url = $hj_app_page_id && function_exists( 'hamyar_symptom_guide_template' ) && 'publish' === get_post_status( $hj_app_page_id ) ? get_permalink( $hj_app_page_id ) : '';
+			?>
 			<div class="hj-home-hero__actions">
+				<?php if ( $hj_app_url ) : ?><a class="hj-button hj-button--light" href="<?php echo esc_url( $hj_app_url ); ?>">تشخیص احتمالی بیماری | راهنمای هوشمند علائم</a><?php endif; ?>
 				<a class="hj-button hj-button--light" href="<?php echo esc_url( hj_archive_url( 'patient_guide' ) ); ?>">شروع از راهنمای بیمار</a>
 				<a class="hj-button hj-button--outline-light" href="<?php echo esc_url( hj_archive_url( 'or_environment' ) ); ?>">شناخت اتاق عمل و تیم</a>
 			</div>

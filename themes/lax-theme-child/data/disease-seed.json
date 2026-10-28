@@ -298,5 +298,55 @@
     "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
     "sourceCheckedAt": "2026-10-28",
     "seedBatch": 2
+  },
+  {
+    "diseaseId": "pancreatitis",
+    "category": "گوارش",
+    "nameFa": "پانکراتیت حاد",
+    "nameEn": "Acute pancreatitis",
+    "cause": "سنگ صفرا و مصرف زیاد الکل از علت‌های شایع‌اند؛ علل دیگری نیز وجود دارند.",
+    "history": "رجینالد فیتز در سال ۱۸۸۹ در شناخت و توصیف پانکراتیت حاد نقش داشت.",
+    "mainSymptoms": "درد ناگهانی و مداوم قسمت بالای شکم، گاهی با انتشار به پشت، تهوع، استفراغ و تب ممکن است رخ دهند.",
+    "commonTreatment": "پانکراتیت حاد یک بیماری جدی است و معمولاً به ارزیابی و درمان فوری در بیمارستان، از جمله مایعات و کنترل درد، نیاز دارد.",
+    "clinicalSources": [
+      {
+        "text": "NHS — Acute pancreatitis",
+        "url": "https://www.nhs.uk/conditions/acute-pancreatitis/"
+      }
+    ],
+    "historySources": [
+      {
+        "text": "PubMed — تاریخچه پانکراتیت حاد",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/2194439/"
+      }
+    ],
+    "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
+    "sourceCheckedAt": "2026-10-28",
+    "seedBatch": 3
+  },
+  {
+    "diseaseId": "peptic_ulcer",
+    "category": "گوارش",
+    "nameFa": "زخم معده",
+    "nameEn": "Stomach ulcer",
+    "cause": "عفونت هلیکوباکتر پیلوری و مصرف داروهای ضدالتهاب غیراستروئیدی از علت‌های اصلی زخم معده هستند.",
+    "history": "پژوهش‌های رابین وارن و بری مارشال در دهه ۱۹۸۰ به شناخت نقش هلیکوباکتر پیلوری در التهاب معده و زخم کمک کرد.",
+    "mainSymptoms": "درد یا سوزش قسمت بالای شکم، سوءهاضمه، نفخ و تهوع ممکن است دیده شوند؛ برخی زخم‌ها بدون درد هستند.",
+    "commonTreatment": "درمان بسته به علت ممکن است شامل داروهای کاهش اسید و برای عفونت هلیکوباکتر، آنتی‌بیوتیک تجویزشده باشد.",
+    "clinicalSources": [
+      {
+        "text": "NHS — Stomach ulcer",
+        "url": "https://www.nhs.uk/conditions/stomach-ulcer/"
+      }
+    ],
+    "historySources": [
+      {
+        "text": "PubMed — تاریخچه زخم معده",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/17094726/"
+      }
+    ],
+    "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
+    "sourceCheckedAt": "2026-10-28",
+    "seedBatch": 3
   }
 ]
