@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.15.0' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.21.3' );
 }
 
 /**
@@ -34,6 +34,48 @@ require_once get_stylesheet_directory() . '/inc/disease-directory.php';
  * Load article display helpers (TOC, badges, related articles).
  */
 require_once get_stylesheet_directory() . '/inc/article-display.php';
+require_once get_stylesheet_directory() . '/inc/article-tables.php';
+
+/**
+ * Load patient-need sections for article templates (scope note, ask-before
+ * checklist, plain-words glossary, visible FAQ) — child 0.15.0.
+ */
+
+/**
+ * Load the editorial quality layer (child 0.16.0):
+ * Persian typography on save, pre-publish gate, freshness watch,
+ * medical callout shortcode, SurgicalProcedure schema and front-end hygiene.
+ */
+require_once get_stylesheet_directory() . '/inc/persian-normalize.php';
+require_once get_stylesheet_directory() . '/inc/source-whitelist.php';
+/*
+ * Not loaded on purpose (child 0.21.0):
+ *  - inc/patient-needs.php and inc/quick-facts.php only rendered the
+ *    patient-need boxes and the clinical summary that 0.15–0.20 injected into
+ *    every article (even guides with no surgery). Their meta boxes would now
+ *    collect text that never reaches the page, so they are out of the include
+ *    chain until the article layout supports them again.
+ */
+require_once get_stylesheet_directory() . '/inc/references-box.php';
+require_once get_stylesheet_directory() . '/inc/faq-accordion.php';
+require_once get_stylesheet_directory() . '/inc/nav-menus.php';
+require_once get_stylesheet_directory() . '/inc/publish-gate.php';
+require_once get_stylesheet_directory() . '/inc/content-freshness.php';
+require_once get_stylesheet_directory() . '/inc/medical-boxes.php';
+require_once get_stylesheet_directory() . '/inc/schema-procedure.php';
+require_once get_stylesheet_directory() . '/inc/performance.php';
+
+/**
+ * Article body is left exactly as the editor wrote it (child 0.21.0).
+ *
+ * 0.15–0.20 injected patient-need boxes, a references box and an FAQ
+ * accordion into `the_content`. On the live site that produced two sources
+ * lists, two FAQs and two disclaimers per article, and pushed the table of
+ * contents to the bottom of the page. The injectors stay in the codebase for
+ * later reuse but are unhooked here: one switch, not a rewrite.
+ */
+remove_filter( 'the_content', 'hj_refs_upgrade_content', 7 );
+remove_filter( 'the_content', 'hj_faq_upgrade_content', 7 );
 
 /**
  * Load image sizes and article media block patterns.
@@ -109,6 +151,23 @@ function lax_theme_child_setup() {
 add_action( 'after_setup_theme', 'lax_theme_child_setup', 11 );
 
 /**
+ * Cache-busting version for a child asset.
+ *
+ * The theme version alone is not enough: after an in-place update the file
+ * changes while the version string can lag (theme cache, stale package), and
+ * the browser keeps the old stylesheet. The file's own mtime is the truth, so
+ * the query string always moves when the bytes move.
+ *
+ * @param string $relative Path inside the child theme.
+ * @return string
+ */
+function lax_theme_child_asset_ver( $relative ) {
+	$file = get_stylesheet_directory() . '/' . ltrim( (string) $relative, '/' );
+	$time = is_readable( $file ) ? (int) filemtime( $file ) : 0;
+	return $time > 0 ? LAX_THEME_CHILD_VERSION . '.' . $time : LAX_THEME_CHILD_VERSION;
+}
+
+/**
  * Enqueue child assets after the parent styles.
  *
  * The parent already enqueues the child `style.css` through its
@@ -120,14 +179,14 @@ function lax_theme_child_assets() {
 		'lax-theme-child',
 		get_stylesheet_directory_uri() . '/assets/css/child.css',
 		array( 'lax-theme-style' ),
-		LAX_THEME_CHILD_VERSION
+		lax_theme_child_asset_ver( 'assets/css/child.css' )
 	);
 
 	wp_enqueue_style(
 		'lax-theme-child-glossary',
 		get_stylesheet_directory_uri() . '/assets/css/glossary.css',
 		array( 'lax-theme-child' ),
-		LAX_THEME_CHILD_VERSION
+		lax_theme_child_asset_ver( 'assets/css/glossary.css' )
 	);
 
 	wp_enqueue_script(

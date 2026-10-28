@@ -75,6 +75,69 @@ $hj_journey = array(
 	),
 );
 
+// Popular-search chips and the care assistant both read from real, published
+// surgery articles so a chip can never point at an empty archive.
+$hj_popular = get_posts(
+	array(
+		'post_type'      => 'surgery',
+		'post_status'    => 'publish',
+		'posts_per_page' => 5,
+		'orderby'        => 'modified',
+		'order'          => 'DESC',
+		'no_found_rows'  => true,
+	)
+);
+
+$hj_care_surgeries = get_posts(
+	array(
+		'post_type'      => 'surgery',
+		'post_status'    => 'publish',
+		'posts_per_page' => 40,
+		'orderby'        => 'title',
+		'order'          => 'ASC',
+		'no_found_rows'  => true,
+	)
+);
+
+$hj_care_stages = array(
+	'day0' => array(
+		'title'  => 'روزهای ۰ تا ۲ — ترخیص و روزهای اول',
+		'points' => array(
+			'استراحت و حرکت سبک داخل تخت، طبق دستوری که تیم درمان می‌دهد.',
+			'مسکن را فقط همان‌طور که نسخه شده مصرف کنید؛ مصرف خودسرانه یا قطع خودسرانه هر دو مشکل‌ساز است.',
+			'زخم را خشک و پوشیده نگه دارید؛ تا اجازهٔ صریح تیم درمان دوش نگیرید.',
+			'مایعات کافی و غذای سبک؛ اگر تهوع یا استفراغ پایدار دارید با مرکز جراحی تماس بگیرید.',
+		),
+	),
+	'day3' => array(
+		'title'  => 'روزهای ۳ تا ۷ — راه‌افتادن و پیگیری',
+		'points' => array(
+			'پیاده‌روی کوتاه و مکرر بهتر از یک فعالیت سنگین است.',
+			'دوش گرفتن فقط با اجازهٔ پزشک و طبق توضیح مرکز جراحی؛ زخم را بعد از آن خشک کنید.',
+			'ویزیت یا تماس پیگیری را جا نیندازید و فهرست پرسش‌هایتان را از قبل بنویسید.',
+			'درد باید روند کاهشی داشته باشد؛ اگر بیشتر شد، گزارش کنید.',
+		),
+	),
+	'day8' => array(
+		'title'  => 'روزهای ۸ تا ۱۴ — بازگشت تدریجی',
+		'points' => array(
+			'فعالیت روزمره را پله‌پله اضافه کنید و بین کارها استراحت بگذارید.',
+			'زمان بازگشت به کار به نوع عمل و نظر جراح بستگی دارد؛ خودتان برای خودتان تصمیم نگیرید.',
+			'مراقبت زخم را ادامه دهید و تغییر رنگ، تورم یا ترشح تازه را گزارش کنید.',
+			'رانندگی و بلند کردن اجسام سنگین را با تیم درمان هماهنگ کنید.',
+		),
+	),
+	'day15' => array(
+		'title'  => 'بیش از دو هفته — تثبیت و بازگشت به روال',
+		'points' => array(
+			'اگر هنوز درد، تورم یا محدودیت حرکت دارید، طبیعی فرض نکنید و با تیم درمان تماس بگیرید.',
+			'ورزش و باشگاه را با اجازهٔ پزشک شروع کنید، نه بر اساس احساس بهبودی.',
+			'چکاپ و آزمایش‌های پیگیری را طبق برنامه انجام دهید.',
+			'هر علامت تازه‌ای که شما را نگران می‌کند ارزش یک تماس دارد.',
+		),
+	),
+);
+
 $hj_sections = array(
 	array(
 		'post_type' => 'patient_guide',
@@ -128,13 +191,102 @@ $hj_faqs = array(
 	<main id="primary" class="hj-home">
 
 		<section class="hj-home-hero" aria-labelledby="hj-home-title">
-			<h1 id="hj-home-title" class="hj-home-hero__title">مسیر جراحی را قدم‌به‌قدم بشناسید</h1>
+			<h1 id="hj-home-title" class="hj-home-hero__title">مرجع جامع و موثق مراقبت‌های قبل و بعد از عمل‌های جراحی در ایران</h1>
 
 			<div class="hj-home-hero__search"><?php get_search_form(); ?></div>
+
+			<?php if ( $hj_popular ) : ?>
+				<ul class="hj-home-hero__chips" aria-label="پرجستجوترین جراحی‌ها">
+					<?php foreach ( $hj_popular as $hj_popular_post ) : ?>
+						<li><a href="<?php echo esc_url( get_permalink( $hj_popular_post ) ); ?>"><?php echo esc_html( get_the_title( $hj_popular_post ) ); ?></a></li>
+					<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
 
 			<div class="hj-home-hero__actions">
 				<a class="hj-button hj-button--light" href="<?php echo esc_url( hj_archive_url( 'patient_guide' ) ); ?>">شروع از راهنمای بیمار</a>
 				<a class="hj-button hj-button--outline-light" href="<?php echo esc_url( hj_archive_url( 'or_environment' ) ); ?>">شناخت اتاق عمل و تیم</a>
+			</div>
+		</section>
+
+		<section id="hj-care-tool" class="hj-home-section" aria-labelledby="hj-care-tool-title">
+			<div class="hj-care-tool">
+				<div class="hj-care-tool__head">
+					<h2 id="hj-care-tool-title">دستیار مراقبت: امروز روز چندم بعد از عمل است؟</h2>
+					<p>نام عمل و روزی که در آن هستید را انتخاب کنید؛ چک‌لیست کوتاه همان مرحله و علائم هشدار را می‌بینید. این ابزار آموزش عمومی است، نه جایگزین دستور تیم درمان.</p>
+				</div>
+
+				<?php if ( $hj_care_surgeries ) : ?>
+					<div class="hj-care-tool__form">
+						<div class="hj-care-tool__field">
+							<label for="hj-care-surgery">نوع جراحی</label>
+							<select id="hj-care-surgery">
+								<?php foreach ( $hj_care_surgeries as $hj_care_post ) : ?>
+									<option value="<?php echo esc_attr( (string) $hj_care_post->ID ); ?>" data-url="<?php echo esc_url( get_permalink( $hj_care_post ) ); ?>"><?php echo esc_html( get_the_title( $hj_care_post ) ); ?></option>
+								<?php endforeach; ?>
+							</select>
+						</div>
+						<div class="hj-care-tool__field">
+							<label for="hj-care-stage">روز بعد از عمل</label>
+							<select id="hj-care-stage">
+								<?php foreach ( $hj_care_stages as $hj_stage_key => $hj_stage ) : ?>
+									<option value="<?php echo esc_attr( $hj_stage_key ); ?>"><?php echo esc_html( $hj_stage['title'] ); ?></option>
+								<?php endforeach; ?>
+							</select>
+						</div>
+						<button type="button" class="hj-button" id="hj-care-run">نمایش راهنمای این مرحله</button>
+					</div>
+
+					<div class="hj-care-tool__result" id="hj-care-result" aria-live="polite" hidden></div>
+
+					<div class="hj-care-tool__fallback">
+					</div>
+
+					<script type="application/json" id="hj-care-data"><?php echo wp_json_encode( $hj_care_stages, JSON_UNESCAPED_UNICODE ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON data. ?></script>
+					<script>
+					(function () {
+						var data = document.getElementById('hj-care-data');
+						var run = document.getElementById('hj-care-run');
+						var box = document.getElementById('hj-care-result');
+						var surgery = document.getElementById('hj-care-surgery');
+						var stage = document.getElementById('hj-care-stage');
+						if (!data || !run || !box || !surgery || !stage) { return; }
+						var stages = {};
+						try { stages = JSON.parse(data.textContent); } catch (e) { return; }
+						run.addEventListener('click', function () {
+							var chosen = stages[stage.value];
+							if (!chosen) { return; }
+							box.textContent = '';
+							var h = document.createElement('h3');
+							h.textContent = chosen.title;
+							box.appendChild(h);
+							var ul = document.createElement('ul');
+							chosen.points.forEach(function (point) {
+								var li = document.createElement('li');
+								li.textContent = point;
+								ul.appendChild(li);
+							});
+							box.appendChild(ul);
+							var flag = document.createElement('p');
+							flag.className = 'hj-care-tool__flag';
+							flag.textContent = 'علائم هشدار: تب، تنگی نفس، درد شدید و فزاینده، خون‌ریزی یا ترشح چرکی — با مرکز جراحی تماس بگیرید و در وضعیت اورژانسی با ۱۱۵.';
+							box.appendChild(flag);
+							var link = document.createElement('p');
+							link.className = 'hj-care-tool__links';
+							var a = document.createElement('a');
+							a.href = surgery.options[surgery.selectedIndex].getAttribute('data-url') || '';
+							a.textContent = 'راهنمای کامل ' + surgery.options[surgery.selectedIndex].textContent;
+							link.appendChild(a);
+							box.appendChild(link);
+							box.hidden = false;
+						});
+					})();
+					</script>
+				<?php else : ?>
+					<div class="hj-care-tool__fallback">
+						<p>به‌محض انتشار نخستین راهنماهای جراحی، انتخاب عمل در همین ابزار فعال می‌شود. فعلاً از <a href="<?php echo esc_url( hj_archive_url( 'patient_guide' ) ); ?>">راهنمای بیمار</a> شروع کنید.</p>
+					</div>
+				<?php endif; ?>
 			</div>
 		</section>
 
@@ -167,7 +319,14 @@ $hj_faqs = array(
 					<?php
 					while ( $hj_latest->have_posts() ) :
 						$hj_latest->the_post();
-						get_template_part( 'template-parts/article', 'card', array( 'heading_level' => 'h3' ) );
+						get_template_part(
+							'template-parts/article',
+							'card',
+							array(
+								'heading_level' => 'h3',
+								'show_review'   => true,
+							)
+						);
 					endwhile;
 					wp_reset_postdata();
 					?>

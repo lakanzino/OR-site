@@ -21,7 +21,8 @@
       }
     ],
     "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
-    "sourceCheckedAt": "2026-10-28"
+    "sourceCheckedAt": "2026-10-28",
+    "seedBatch": 1
   },
   {
     "diseaseId": "mi",
@@ -45,7 +46,8 @@
       }
     ],
     "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
-    "sourceCheckedAt": "2026-10-28"
+    "sourceCheckedAt": "2026-10-28",
+    "seedBatch": 1
   },
   {
     "diseaseId": "stroke",
@@ -69,7 +71,8 @@
       }
     ],
     "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
-    "sourceCheckedAt": "2026-10-28"
+    "sourceCheckedAt": "2026-10-28",
+    "seedBatch": 1
   },
   {
     "diseaseId": "migraine",
@@ -93,7 +96,8 @@
       }
     ],
     "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
-    "sourceCheckedAt": "2026-10-28"
+    "sourceCheckedAt": "2026-10-28",
+    "seedBatch": 1
   },
   {
     "diseaseId": "asthma",
@@ -117,7 +121,8 @@
       }
     ],
     "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
-    "sourceCheckedAt": "2026-10-28"
+    "sourceCheckedAt": "2026-10-28",
+    "seedBatch": 1
   },
   {
     "diseaseId": "pneumonia",
@@ -141,6 +146,157 @@
       }
     ],
     "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
-    "sourceCheckedAt": "2026-10-28"
+    "sourceCheckedAt": "2026-10-28",
+    "seedBatch": 1
+  },
+  {
+    "diseaseId": "diabetes",
+    "category": "غدد و متابولیسم",
+    "nameFa": "دیابت نوع ۲",
+    "nameEn": "Type 2 diabetes",
+    "cause": "در دیابت نوع ۲، بدن به اندازه کافی انسولین نمی‌سازد یا به انسولین به‌درستی پاسخ نمی‌دهد؛ در نتیجه قند خون بالا می‌رود.",
+    "history": "در سال‌های ۱۹۲۱ تا ۱۹۲۲، گروهی از پژوهشگران در تورنتو انسولین را جدا و خالص کردند و کاربرد درمانی آن آغاز شد؛ این تاریخچه مربوط به درمان دیابت به‌طور کلی است.",
+    "mainSymptoms": "تشنگی، تکرر ادرار، خستگی، کاهش وزن ناخواسته و تاری دید ممکن است دیده شوند؛ بعضی افراد علائم آشکاری ندارند.",
+    "commonTreatment": "تغییرات سبک زندگی و در صورت نیاز دارو، و گاهی انسولین، طبق شرایط فرد و نظر پزشک استفاده می‌شوند.",
+    "clinicalSources": [
+      {
+        "text": "NHS: Type 2 diabetes",
+        "url": "https://www.nhs.uk/conditions/type-2-diabetes/"
+      }
+    ],
+    "historySources": [
+      {
+        "text": "PubMed: تاریخچه انسولین",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/34708913/"
+      }
+    ],
+    "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
+    "sourceCheckedAt": "2026-10-28",
+    "seedBatch": 2
+  },
+  {
+    "diseaseId": "kidney_stone",
+    "category": "کلیه و ادرار",
+    "nameFa": "سنگ کلیه",
+    "nameEn": "Kidney stones",
+    "cause": "مواد موجود در ادرار ممکن است متبلور و به سنگ تبدیل شوند؛ نوع سنگ و عوامل زمینه‌ساز در افراد متفاوت است.",
+    "history": "شواهد باستان‌شناسی نشان می‌دهد انسان‌ها از قرن‌ها پیش با سنگ‌های کلیه و مثانه مواجه بوده‌اند.",
+    "mainSymptoms": "درد پهلو یا کمر که ممکن است به کشاله ران انتشار یابد، خون در ادرار، تهوع یا استفراغ ممکن است رخ دهد؛ سنگ کوچک گاهی بی‌علامت است.",
+    "commonTreatment": "بسته به اندازه و محل، درمان ممکن است شامل کنترل درد و انتظار برای دفع، سنگ‌شکنی یا اقدامات دیگر باشد. درد شدید یا همراه تب نیازمند ارزیابی فوری است.",
+    "clinicalSources": [
+      {
+        "text": "NHS: Kidney stones",
+        "url": "https://www.nhs.uk/conditions/kidney-stones/"
+      }
+    ],
+    "historySources": [
+      {
+        "text": "PubMed: تاریخچه سنگ‌های ادراری",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/21476230/"
+      }
+    ],
+    "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
+    "sourceCheckedAt": "2026-10-28",
+    "seedBatch": 2
+  },
+  {
+    "diseaseId": "gallbladder",
+    "category": "گوارش",
+    "nameFa": "سنگ کیسه صفرا",
+    "nameEn": "Gallstones",
+    "cause": "سنگ‌های صفراوی در کیسه صفرا تشکیل می‌شوند؛ بسته‌شدن مجرای صفراوی به‌وسیله سنگ می‌تواند باعث درد و عوارض شود.",
+    "history": "کارل لانگنبوخ در سال ۱۸۸۲ نخستین عمل موفق برداشتن کیسه صفرا را انجام داد.",
+    "mainSymptoms": "سنگ صفرا اغلب بی‌علامت است؛ در صورت انسداد ممکن است درد قسمت بالای شکم، به‌ویژه سمت راست، تهوع یا استفراغ ایجاد شود.",
+    "commonTreatment": "سنگ بی‌علامت معمولاً فوراً درمان نمی‌شود؛ برای موارد علامت‌دار یا دارای عارضه ممکن است برداشتن کیسه صفرا یا اقدام روی مجرای صفراوی پیشنهاد شود.",
+    "clinicalSources": [
+      {
+        "text": "NHS: Gallstones",
+        "url": "https://www.nhs.uk/conditions/gallstones/"
+      }
+    ],
+    "historySources": [
+      {
+        "text": "PubMed: تاریخچه جراحی کیسه صفرا",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/3534625/"
+      }
+    ],
+    "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
+    "sourceCheckedAt": "2026-10-28",
+    "seedBatch": 2
+  },
+  {
+    "diseaseId": "hypothyroidism",
+    "category": "غدد و متابولیسم",
+    "nameFa": "کم‌کاری تیروئید",
+    "nameEn": "Hypothyroidism",
+    "cause": "کم‌کاری تیروئید زمانی رخ می‌دهد که غده تیروئید به اندازه کافی هورمون نسازد؛ بیماری خودایمنی هاشیموتو از علت‌های شایع است.",
+    "history": "در پایان قرن نوزدهم از عصاره بافت تیروئید برای درمان میگزدم، شکل شدید کم‌کاری تیروئید، استفاده شد.",
+    "mainSymptoms": "خستگی، احساس سرما، یبوست، خشکی پوست و افزایش وزن ممکن‌اند و به‌تنهایی برای تشخیص کافی نیستند.",
+    "commonTreatment": "درمان معمول جایگزینی هورمون تیروئید با دارو و تنظیم آن بر اساس آزمایش و نظر پزشک است.",
+    "clinicalSources": [
+      {
+        "text": "MedlinePlus: Hypothyroidism",
+        "url": "https://medlineplus.gov/hypothyroidism.html"
+      }
+    ],
+    "historySources": [
+      {
+        "text": "PubMed: تاریخچه درمان کم‌کاری تیروئید",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/31321670/"
+      }
+    ],
+    "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
+    "sourceCheckedAt": "2026-10-28",
+    "seedBatch": 2
+  },
+  {
+    "diseaseId": "flu",
+    "category": "عفونی",
+    "nameFa": "آنفولانزا",
+    "nameEn": "Influenza / Flu",
+    "cause": "آنفولانزا یک عفونت تنفسی ناشی از ویروس‌های آنفولانزاست و می‌تواند از فردی به فرد دیگر منتقل شود.",
+    "history": "ویروس آنفولانزای انسانی در سال ۱۹۳۳ جدا شد؛ این کشف به پژوهش درباره بیماری و واکسن‌ها کمک کرد.",
+    "mainSymptoms": "شروع سریع تب، بدن‌درد، خستگی، سرفه خشک، سردرد و گلودرد ممکن است دیده شود.",
+    "commonTreatment": "درمان اغلب شامل استراحت، مایعات و تسکین علائم است؛ پزشک در برخی شرایط داروی ضدویروس تجویز می‌کند.",
+    "clinicalSources": [
+      {
+        "text": "NHS: Flu",
+        "url": "https://www.nhs.uk/conditions/flu/"
+      }
+    ],
+    "historySources": [
+      {
+        "text": "PubMed: تاریخچه پژوهش ویروس آنفولانزا",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/17037348/"
+      }
+    ],
+    "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
+    "sourceCheckedAt": "2026-10-28",
+    "seedBatch": 2
+  },
+  {
+    "diseaseId": "urinary_tract",
+    "category": "کلیه و ادرار",
+    "nameFa": "عفونت مجاری ادراری",
+    "nameEn": "Urinary tract infection (UTI)",
+    "cause": "این عفونت معمولاً در اثر ورود باکتری‌ها به دستگاه ادراری رخ می‌دهد؛ اشریشیا کلی از عوامل رایج است.",
+    "history": "تئودور اشریش در سال ۱۸۸۵ باکتری‌ای را توصیف کرد که بعدها اشریشیا کلی نام گرفت؛ برخی سویه‌های آن در عفونت ادراری نقش دارند.",
+    "mainSymptoms": "سوزش ادرار، تکرر، فشار پایین شکم و ادرار کدر یا خونی ممکن است دیده شود؛ تب و درد پهلو می‌تواند نشانه درگیری کلیه باشد.",
+    "commonTreatment": "عفونت باکتریایی معمولاً با آنتی‌بیوتیک تجویزشده درمان می‌شود؛ انتخاب درمان به شرایط بیمار و ارزیابی پزشک بستگی دارد.",
+    "clinicalSources": [
+      {
+        "text": "MedlinePlus: Urinary tract infections",
+        "url": "https://medlineplus.gov/urinarytractinfections.html"
+      }
+    ],
+    "historySources": [
+      {
+        "text": "PubMed: تاریخچه اشریشیا کلی",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/28663823/"
+      }
+    ],
+    "reviewStatus": "پیش‌نویس؛ نیازمند بازبینی بالینی",
+    "sourceCheckedAt": "2026-10-28",
+    "seedBatch": 2
   }
 ]
