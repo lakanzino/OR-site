@@ -19,7 +19,8 @@
    "complications": "• واکسن هپاتیت B (ایمن و مؤثر؛ نوبت اول برای نوزاد در ۲۴ ساعت اول تولد)\n• غربالگری بارداران و اقدام برای پیشگیری از انتقال به نوزاد\n• استفاده از وسایل یک‌بار مصرف، عدم استفاده مشترک از تیغ، مسواک و سوزن\n• رابطه جنسی ایمن\n• اطمینان از ایمنی خون و فرآورده‌های خونی",
    "whenToSeeDoctor": "• سیروز (جای‌گرفتن بافت اسکار به‌جای بافت سالم کبد)\n• نارسایی کبد\n• سرطان کبد (کارسینوم هپاتوسلولار)\n• حامل مزمن ویروس و امکان انتقال به دیگران",
    "sources": "• زردی پوست یا چشم\n• ادرار بسیار تیره\n• درد مداوم شکم\n• تماس با خون یا ترشحات فرد مبتلا (هرچه زودتر، ترجیحاً ظرف ۲۴ ساعت)\n• نتیجه آزمایش مثبت هپاتیت B\n• اورژانس: گیجی، خواب‌آلودگی شدید، استفراغ خونی"
-  }
+  },
+  "rowNo": 1
  },
  {
   "diseaseId": "app",
@@ -41,7 +42,8 @@
    "complications": "• راه قطعی پیشگیری شناخته‌شده نیست\n• تغذیه پرفیبر ممکن است خطر را کمی کم کند، اما اثر آن قطعی نیست",
    "whenToSeeDoctor": "• پارگی آپاندیس\n• پریتونیت (عفونت و التهاب پرده داخلی شکم)\n• آبسه\n• سپسیس (عفونت خون و پاسخ شدید بدن)",
    "sources": "• درد ناگهانی شکم که به‌ویژه در پایین سمت راست بدتر می‌شود\n• درد همراه با تب، تهوع و استفراغ\n• این وضعیت اورژانسی است؛ از مصرف خودسرانه مسکن و داروی ملین بپرهیزید"
-  }
+  },
+  "rowNo": 2
  },
  {
   "diseaseId": "gallbladder",
@@ -63,7 +65,8 @@
    "complications": "• حفظ وزن مناسب\n• کاهش وزن تدریجی، نه سریع\n• پرهیز از حذف وعده‌های غذایی\n• رژیم غنی از فیبر (میوه، سبزی، غلات کامل)\n• فعالیت بدنی منظم",
    "whenToSeeDoctor": "• کوله‌سیستیت (التهاب کیسه صفرا)\n• سنگ مجرای صفراوی اصلی و یرقان\n• کلانژیت (عفونت مجاری صفراوی)\n• پانکراتیت (التهاب لوزالمعده) ناشی از سنگ\n• سرطان کیسه صفرا (نادر)",
    "sources": "• درد شدید شکم که اجازه نشستن راحت نمی‌دهد\n• درد همراه با تب و لرز\n• زردی پوست و چشم\n• ادرار تیره و مدفوع کم‌رنگ\n• درد که بیش از چند ساعت ادامه می‌یابد"
-  }
+  },
+  "rowNo": 3
  },
  {
   "diseaseId": "research_059",
@@ -85,7 +88,8 @@
    "complications": "• حفظ وزن مناسب\n• مصرف فیبر کافی و پرهیز از زور زدن\n• ترک سیگار و درمان سرفه مزمن\n• استفاده از روش صحیح بلند کردن اجسام سنگین\n• پیشگیری کامل همیشه ممکن نیست",
    "whenToSeeDoctor": "• گیرکردن فتق (Incarceration)\n• خفه‌شدگی فتق (Strangulation؛ قطع خون‌رسانی به روده)\n• انسداد روده\n• عود فتق پس از جراحی",
    "sources": "• هر برآمدگی جدید در کشاله ران\n• درد یا ناراحتی مداوم\n• اورژانس: درد ناگهانی و شدید با برآمدگی سفت، تغییر رنگ، تهوع، استفراغ یا ناتوانی در دفع"
-  }
+  },
+  "rowNo": 4
  },
  {
   "diseaseId": "research_051",
@@ -107,7 +111,8 @@
    "complications": "• حفظ وزن مناسب\n• ترک سیگار\n• پرهیز از غذاهای محرک شخصی\n• عدم دراز کشیدن تا ۲ تا ۳ ساعت پس از غذا\n• بالا نگه داشتن سر هنگام خواب",
    "whenToSeeDoctor": "• التهاب مری (ازوفاژیت)\n• تنگی مری\n• مری بارت (تغییر سلول‌های پوشاننده مری)\n• سرطان مری (آدنوکارسینوم)\n• مشکلات تنفسی و فرسایش مینای دندان",
    "sources": "• علائم بیش از دو بار در هفته یا عدم پاسخ به درمان\n• دشواری یا درد هنگام بلع\n• کاهش وزن ناخواسته\n• استفراغ مکرر\n• مدفوع سیاه یا استفراغ خونی\n• اورژانس: درد قفسه سینه با تنگی نفس یا انتشار به بازو و فک"
-  }
+  },
+  "rowNo": 5
  },
  {
   "diseaseId": "peptic_ulcer",
@@ -129,7 +134,8 @@
    "complications": "• پرهیز از مصرف بی‌رویه مسکن‌های NSAID\n• رعایت بهداشت دست و غذا\n• ترک سیگار\n• محدود کردن الکل\n• درمان عفونت هلیکوباکتر در صورت مثبت‌بودن",
    "whenToSeeDoctor": "• خونریزی گوارشی\n• سوراخ‌شدگی دیواره معده یا روده (پرفوراسیون)\n• انسداد خروجی معده\n• ارتباط عفونت هلیکوباکتر با افزایش خطر سرطان معده",
    "sources": "• درد مداوم سردل بیش از چند هفته\n• کاهش وزن ناخواسته\n• مدفوع سیاه، استفراغ خونی\n• اورژانس: درد ناگهانی و شدید شکم، سرگیجه و ضعف شدید"
-  }
+  },
+  "rowNo": 6
  },
  {
   "diseaseId": "research_054",
@@ -151,7 +157,8 @@
    "complications": "• مصرف فیبر و آب کافی\n• پرهیز از زور زدن و نشستن طولانی روی توالت\n• فعالیت بدنی منظم\n• کنترل وزن",
    "whenToSeeDoctor": "• لخته‌شدن خون در هموروئید خارجی\n• خونریزی مکرر و در موارد نادر کم‌خونی\n• گیرکردن هموروئید بیرون‌زده و خفه‌شدگی آن",
    "sources": "• هرگونه خونریزی از مقعد باید توسط پزشک بررسی شود، چون سرطان روده نیز می‌تواند علائم مشابه داشته باشد\n• درد شدید یا توده سفت و دردناک\n• اورژانس: خونریزی شدید، سرگیجه یا غش"
-  }
+  },
+  "rowNo": 7
  },
  {
   "diseaseId": "research_055",
@@ -173,7 +180,8 @@
    "complications": "• پیشگیری از یبوست\n• مصرف فیبر و مایعات\n• عدم زور زدن\n• درمان سریع اسهال",
    "whenToSeeDoctor": "• شقاق مزمن\n• اسپاسم عضله اسفنکتر و چرخه درد\n• عفونت و ایجاد آبسه یا فیستول (مجرای غیرطبیعی) در موارد نادر",
    "sources": "• درد یا خونریزی هنگام دفع که بیش از چند هفته ادامه دارد\n• خونریزی شدید یا مکرر\n• درد شدید که مانع دفع می‌شود"
-  }
+  },
+  "rowNo": 8
  },
  {
   "diseaseId": "research_053",
@@ -195,7 +203,8 @@
    "complications": "• رژیم غنی از فیبر\n• فعالیت بدنی منظم\n• کنترل وزن\n• ترک سیگار\n• پرهیز از مصرف بی‌مورد NSAID",
    "whenToSeeDoctor": "• آبسه\n• سوراخ‌شدگی روده و پریتونیت\n• فیستول (ارتباط غیرطبیعی بین اعضا)\n• تنگی یا انسداد روده\n• خونریزی",
    "sources": "• درد شکم همراه با تب\n• اورژانس: درد شدید و ناگهانی، استفراغ مداوم، تب بالا، ناتوانی در دفع گاز یا مدفوع"
-  }
+  },
+  "rowNo": 9
  },
  {
   "diseaseId": "pancreatitis",
@@ -217,7 +226,8 @@
    "complications": "• ترک الکل\n• درمان سنگ کیسه صفرا\n• کنترل چربی خون\n• وزن مناسب\n• ترک سیگار",
    "whenToSeeDoctor": "• نکروز لوزالمعده (مرگ بافت) و عفونت آن\n• کیست کاذب (کیسه مایع)\n• نارسایی اعضا مانند کلیه و ریه\n• دیابت\n• پانکراتیت مزمن\n• سوءتغذیه",
    "sources": "• درد شدید و مداوم بالای شکم، به‌ویژه با تهوع و استفراغ؛ نیاز به مراجعه فوری\n• اورژانس: تب، تنگی نفس، گیجی، افت فشار یا زردی"
-  }
+  },
+  "rowNo": 10
  },
  {
   "diseaseId": "intestinal_obstruction",
@@ -239,7 +249,8 @@
    "complications": "• ترمیم به‌موقع فتق\n• درمان بیماری‌های التهابی روده\n• پیگیری پس از جراحی‌های شکمی\n• غربالگری سرطان روده",
    "whenToSeeDoctor": "• خفه‌شدگی روده (Strangulation؛ قطع خون‌رسانی)\n• مرگ بافت (گانگرن) و پارگی روده\n• پریتونیت\n• سپسیس\n• کم‌آبی و اختلال الکترولیت",
    "sources": "• این وضعیت اورژانسی است: درد شدید شکم، استفراغ مکرر، نفخ و نبود دفع مدفوع و گاز\n• مراجعه فوری به اورژانس بدون انتظار"
-  }
+  },
+  "rowNo": 11
  },
  {
   "diseaseId": "colorectal_cancer",
@@ -261,7 +272,8 @@
    "complications": "• غربالگری منظم و برداشتن پولیپ‌ها\n• رژیم پرفیبر با گوشت قرمز و فرآوری‌شده کم\n• وزن سالم و فعالیت بدنی\n• ترک سیگار و محدودیت الکل\n• مشاوره ژنتیک در سابقه خانوادگی قوی",
    "whenToSeeDoctor": "• انسداد روده\n• خونریزی\n• پارگی روده\n• متاستاز (انتشار به کبد، ریه و سایر اعضا)\n• عود بیماری\n• عوارض درمان",
    "sources": "• خون در مدفوع یا تغییر مداوم عادت دفع\n• درد شکم و کاهش وزن بدون دلیل\n• سابقه فامیلی: مشورت درباره شروع زودتر غربالگری"
-  }
+  },
+  "rowNo": 12
  },
  {
   "diseaseId": "breast_cancer",
@@ -283,7 +295,8 @@
    "complications": "• وزن سالم و فعالیت بدنی منظم\n• محدود کردن الکل\n• شیردهی\n• پرهیز از هورمون‌درمانی غیرضروری و طولانی\n• غربالگری منظم با ماموگرافی طبق سن و ریسک\n• در افراد پرخطر: مشاوره ژنتیک و گزینه‌های کاهش خطر",
    "whenToSeeDoctor": "• انتشار به استخوان، کبد، ریه و مغز (متاستاز)\n• عود بیماری\n• لنف‌ادم (تورم بازو به‌دلیل اختلال تخلیه لنف)\n• عوارض شیمی‌درمانی و پرتودرمانی",
    "sources": "• هر توده یا تغییر جدید در پستان\n• ترشح خونی نوک پستان\n• تغییر پوست پستان\n• انجام غربالگری طبق توصیه پزشک حتی بدون علامت"
-  }
+  },
+  "rowNo": 13
  },
  {
   "diseaseId": "hyperthyroidism",
@@ -305,7 +318,8 @@
    "complications": "• پیشگیری کامل همیشه ممکن نیست\n• ترک سیگار\n• پرهیز از مصرف بی‌رویه ید یا مکمل‌های حاوی ید\n• مصرف صحیح داروهای تیروئید",
    "whenToSeeDoctor": "• اختلال ریتم قلب (فیبریلاسیون دهلیزی)\n• نارسایی قلبی\n• پوکی استخوان\n• درگیری چشم\n• طوفان تیروئیدی (حالت نادر و تهدیدکننده)\n• عوارض بارداری",
    "sources": "• تپش قلب، کاهش وزن بی‌دلیل، لرزش یا تعریق مداوم\n• اورژانس: تب بالا، ضربان بسیار سریع، گیجی و بی‌قراری شدید (طوفان تیروئیدی)"
-  }
+  },
+  "rowNo": 14
  },
  {
   "diseaseId": "varicose_veins",
@@ -327,7 +341,8 @@
    "complications": "• حرکت و پیاده‌روی منظم\n• بالا نگه داشتن پاها هنگام استراحت\n• کنترل وزن\n• پرهیز از ایستادن یا نشستن طولانی\n• استفاده از جوراب واریس در افراد در معرض خطر",
    "whenToSeeDoctor": "• زخم پا\n• خونریزی از رگ واریسی\n• ترومبوفلبیت سطحی (التهاب و لخته در رگ سطحی)\n• لخته‌شدن در رگ‌های عمقی (DVT)\n• نارسایی مزمن وریدی\n• تغییرات پوستی مزمن",
    "sources": "• تورم ناگهانی، درد، قرمزی یا گرمی پا (احتمال لخته)\n• زخم یا خونریزی\n• اورژانس: تنگی نفس یا درد قفسه سینه همراه با تورم پا"
-  }
+  },
+  "rowNo": 15
  },
  {
   "diseaseId": "kidney_stone",
@@ -349,7 +364,8 @@
    "complications": "• نوشیدن آب کافی تا حجم ادرار روزانه حدود ۲٫۵ لیتر\n• مصرف کلسیم غذایی طبیعی (نه کاهش شدید)\n• کاهش نمک\n• کاهش مصرف پروتئین حیوانی\n• کاهش وزن\n• دارو یا مکمل مناسب بر اساس نوع سنگ و آزمایش ۲۴ ساعته",
    "whenToSeeDoctor": "• انسداد مسیر ادرار و تورم کلیه (هیدرونفروز)\n• عفونت کلیه و عفونت خون\n• آسیب کلیه\n• عود سنگ (حدود نیمی از مبتلایان طی سال‌های بعد)",
    "sources": "• درد شدید پهلو\n• خون در ادرار\n• اورژانس: تب و لرز با درد، ناتوانی در ادرار، استفراغ مداوم یا درد غیرقابل تحمل"
-  }
+  },
+  "rowNo": 16
  },
  {
   "diseaseId": "research_093",
@@ -371,7 +387,8 @@
    "complications": "• پیشگیری قطعی وجود ندارد\n• وزن سالم و ورزش\n• کاهش مصرف کافئین و الکل به‌ویژه شب‌ها\n• احتیاط با داروهای سرماخوردگی حاوی دکونژستان بدون مشورت",
    "whenToSeeDoctor": "• احتباس ادرار حاد\n• عفونت ادراری مکرر\n• سنگ مثانه\n• آسیب مثانه و کلیه در موارد پیشرفته",
    "sources": "• بروز علائم ادراری مزاحم\n• خون در ادرار\n• تب یا درد هنگام ادرار\n• اورژانس: ناتوانی کامل در ادرار کردن"
-  }
+  },
+  "rowNo": 17
  },
  {
   "diseaseId": "diabetes",
@@ -393,7 +410,8 @@
    "complications": "• کاهش حدود ۵ تا ۷ درصد وزن بدن در افراد پرخطر\n• حداقل ۱۵۰ دقیقه فعالیت بدنی متوسط در هفته\n• تغذیه سالم کم‌قند و پرفیبر\n• غربالگری دوره‌ای قند در افراد در معرض خطر",
    "whenToSeeDoctor": "• بیماری قلبی و سکته مغزی\n• آسیب عصب (نوروپاتی)\n• آسیب کلیه (نفروپاتی)\n• آسیب شبکیه (رتینوپاتی) و نابینایی\n• زخم پای دیابتی\n• عفونت‌ها\n• عوارض حاد: قند بسیار بالا (HHS) و کتواسیدوز دیابتی\n• افت قند خون ناشی از دارو",
    "sources": "• علائم دیابت یا نتیجه آزمایش غیرطبیعی\n• اورژانس: گیجی، استفراغ، تنفس عمیق و تند، بوی میوه‌ای دهان، قند بسیار بالا یا افت قند با غش"
-  }
+  },
+  "rowNo": 18
  },
  {
   "diseaseId": "research_036",
@@ -415,7 +433,8 @@
    "complications": "• کاهش نمک\n• رژیم سرشار از میوه و سبزی\n• فعالیت بدنی منظم\n• وزن سالم\n• پرهیز از دخانیات و کنترل الکل\n• اندازه‌گیری دوره‌ای فشار خون",
    "whenToSeeDoctor": "• سکته قلبی و نارسایی قلبی\n• سکته مغزی\n• نارسایی کلیه\n• آنوریسم و دیسکسیون آئورت\n• آسیب شبکیه چشم\n• فیبریلاسیون دهلیزی\n• زوال عقل عروقی",
    "sources": "• فشار خون مکرر بالاتر از حد طبیعی\n• اورژانس: فشار بسیار بالا با درد قفسه سینه، تنگی نفس، ضعف یک‌طرفه، اختلال گفتار یا بینایی"
-  }
+  },
+  "rowNo": 19
  },
  {
   "diseaseId": "obesity",
@@ -437,7 +456,8 @@
    "complications": "• رژیم متعادل و کم‌فرآوری\n• فعالیت بدنی منظم\n• خواب کافی\n• محدود کردن نوشیدنی‌های شیرین\n• پایش وزن و دور کمر",
    "whenToSeeDoctor": "• دیابت نوع ۲\n• فشار خون بالا\n• بیماری قلبی و سکته\n• چربی خون بالا\n• کبد چرب\n• سنگ کیسه صفرا\n• آپنه خواب\n• آرتروز\n• افزایش خطر برخی سرطان‌ها\n• ناباروری و افسردگی",
    "sources": "• BMI برابر یا بالاتر از ۳۰\n• نگرانی درباره وزن همراه با بیماری‌های دیگر\n• مشاوره برای جراحی چاقی در صورت داشتن شرایط"
-  }
+  },
+  "rowNo": 20
  },
  {
   "diseaseId": "mi",
@@ -459,51 +479,54 @@
    "complications": "• آسیب دائمی عضله قلب\n• توقف ناگهانی قلب؛ حمله قلبی می‌تواند آن را ایجاد کند\n• خطر بالاتر برای حمله قلبی دوباره پس از یک حمله",
    "whenToSeeDoctor": "• اگر علائم بالا را دارید، حتی اگر مطمئن نیستید که حمله قلبی است، فوراً با اورژانس ۱۱۵ تماس بگیرید. منتظر بمانید تا علائم خود به خود برطرف شود، توصیه نمی‌شود.\n• برای ارزیابی خطر و پیگیری پس از حمله قلبی، با پزشک قلب مشورت کنید.",
    "sources": "MedlinePlus: Heart Attack | https://medlineplus.gov/heartattack.html\nNHLBI: What Is a Heart Attack? | https://www.nhlbi.nih.gov/health/heart-attack\nMayo Clinic: Heart Attack — First Aid | https://www.mayoclinic.org/first-aid/first-aid-heart-attack/basics/art-20056679"
-  }
+  },
+  "rowNo": 21
  },
  {
   "diseaseId": "stroke",
   "category": "مغز و اعصاب",
-  "profileStatus": "pending",
+  "profileStatus": "partial",
   "profile": {
    "nameFa": "سکته مغزی",
    "nameEn": "Stroke",
-   "otherNames": "",
+   "otherNames": "حملهٔ مغزی؛ Brain attack؛ CVA",
    "icd10": "",
-   "specialty": "",
-   "intro": "",
-   "cause": "",
-   "riskFactors": "",
-   "symptoms": "",
-   "diagnosis": "",
+   "specialty": "مغز و اعصاب — متخصص مغز و اعصاب",
+   "intro": "سکته مغزی زمانی رخ می‌دهد که جریان خون به بخشی از مغز قطع می‌شود. سلول‌های مغز اکسیژن و مواد مغذی لازم را از خون نمی‌گیرند و در عرض چند دقیقه شروع به مردن می‌کنند. این بیماری می‌تواند آسیب ماندگار مغزی، ناتوانی بلندمدت یا مرگ ایجاد کند.",
+   "cause": "دو نوع اصلی دارد:\n• سکته ایسکمیک (حدود ۸۰٪ موارد): لختهٔ خون یک رگ مغزی را می‌بندد.\n• سکته هموراژیک: رگ مغزی پاره می‌شود و خون به درون مغز می‌ریزد.\nحملهٔ ایسکمیک گذرا (TIA) یا «سکتهٔ کوچک» انسداد کوتاه‌مدت دارد و آسیب دائمی ایجاد نمی‌کند، اما خطر سکتهٔ واقعی را بسیار بالا می‌برد.",
+   "riskFactors": "• فشار خون بالا (مهم‌ترین عامل خطر)\n• دیابت\n• بیماری‌های قلبی، از جمله فیبریلاسیون دهلیزی\n• سیگار کشیدن\n• سابقهٔ شخصی یا خانوادگی سکته یا TIA\n• افزایش سن\n• نژاد و قومیت: افراد آفریقایی‌تبار و اسپانیایی‌تبار خطر بیشتری دارند\n• کلسترول بالا، چاقی، بی‌تحرکی، رژیم غذایی ناسالم\n• مصرف الکل و مواد مخدر",
+   "symptoms": "• بی‌حسی یا ضعف ناگهانی صورت، بازو یا پا، معمولاً در یک سمت بدن\n• گیجی ناگهانی، مشکل در صحبت کردن یا فهمیدن گفتار\n• اختلال ناگهانی بینایی در یک یا دو چشم\n• مشکل ناگهانی در راه رفتن، سرگیجه، از دست دادن تعادل یا هماهنگی\n• سردرد شدید و ناگهانی بدون علت شناخته‌شده\n• آزمون FAST: F = کج شدن صورت هنگام لبخند؛ A = ضعف یک بازو هنگام بالا بردن هر دو؛ S = گفتار کشدار یا نامفهوم؛ T = زمان تماس با اورژانس",
+   "diagnosis": "• پرسش دربارهٔ علائم و سابقهٔ پزشکی، معاینهٔ عصبی (هوشیاری، تعادل، بی‌حسی و ضعف، تکلم و بینایی)\n• تصویربرداری مغز: سی‌تی‌اسکن (CT) یا ام‌آرآی (MRI)\n• آزمایش‌های قلب، از جمله نوار قلب (EKG) و اکوکاردیوگرافی",
    "treatment": "",
    "prevention": "",
    "complications": "",
-   "whenToSeeDoctor": "",
-   "sources": ""
-  }
+   "whenToSeeDoctor": "• اگر علائم سکته مغزی را در خود یا دیگری می‌بینید، فوراً با اورژانس ۱۱۵ تماس بگیرید. هر دقیقه مهم است و درمان سریع می‌تواند جان را نجات دهد.",
+   "sources": "MedlinePlus: Stroke | https://medlineplus.gov/stroke.html\nNINDS: Assess and Treat (Stroke) | https://www.ninds.nih.gov/health-information/stroke/assess-and-treat"
+  },
+  "rowNo": 22
  },
  {
   "diseaseId": "migraine",
   "category": "مغز و اعصاب",
-  "profileStatus": "pending",
+  "profileStatus": "partial",
   "profile": {
    "nameFa": "میگرن",
    "nameEn": "Migraine",
-   "otherNames": "",
+   "otherNames": "سردرد میگرنی",
    "icd10": "",
-   "specialty": "",
-   "intro": "",
-   "cause": "",
-   "riskFactors": "",
-   "symptoms": "",
-   "diagnosis": "",
-   "treatment": "",
-   "prevention": "",
+   "specialty": "مغز و اعصاب — متخصص مغز و اعصاب",
+   "intro": "میگرن نوعی سردرد تکرارشونده است که درد متوسط تا شدید، ضربان‌دار یا تپنده دارد و اغلب در یک سمت سر است. ممکن است با تهوع و ضعف همراه باشد و حساسیت به نور و صدا ایجاد کند.",
+   "cause": "پزشکان معتقدند میگرن علت ژنتیکی دارد. عوامل متعددی می‌توانند حمله را آغاز کنند و این عوامل از فرد به فرد فرق دارند.",
+   "riskFactors": "• زن بودن: زنان حدود سه برابر بیشتر از مردان به میگرن مبتلا می‌شوند\n• سابقهٔ خانوادگی میگرن\n• بیماری‌های دیگر مانند افسردگی، اضطراب، اختلال دوقطبی، اختلال خواب و صرع\n• عوامل محرک: استرس، اضطراب، تغییرات هورمونی در زنان، نور شدید یا چشمک‌زن، صدای بلند، بوهای قوی، برخی داروها، خواب بیش‌ازحد یا کم‌تر از حد، تغییرات ناگهانی آب‌وهوا، فعالیت بدنی زیاد، دخانیات، کافئین یا قطع ناگهانی آن، وعدهٔ غذایی حذف‌شده، و مصرف بیش‌ازحد داروی میگرن\n• برخی غذاها در ترکیب با سایر محرک‌ها: الکل، شکلات، پنیر کهنه، منوسدیم‌گلوتامات (MSG)، گوشت فرآوری‌شده",
+   "symptoms": "میگرن معمولاً چهار مرحله دارد؛ همهٔ مراحل همیشه رخ نمی‌دهند:\n• پیش‌درد (Prodrome): تا ۲۴ ساعت قبل از حمله؛ اشتهای شدید به غذا، تغییر خلق بی‌دلیل، خمیازهٔ مکرر، احتباس مایعات و ادرار بیشتر\n• اورا (Aura): چشمک زدن یا نور روشن یا خطوط زیگزاگ، ضعف عضلانی یا احساس لمس شدن؛ قبل یا حین حمله\n• حملهٔ سردرد: شروع تدریجی و سپس شدیدتر شدن؛ درد ضربان‌دار، معمولاً یک‌طرفه؛ حساسیت به نور، صدا و بو؛ تهوع و استفراغ؛ بدتر شدن درد با حرکت، سرفه یا عطسه. گاهی میگرن بدون سردرد هم رخ می‌دهد.\n• پس‌درد (Postdrome): خستگی، ضعف و گیجی تا حدود یک روز پس از حمله",
+   "diagnosis": "• گرفتن سابقهٔ پزشکی و پرسش دربارهٔ علائم\n• معاینهٔ بالینی و عصبی\n• در صورت نیاز: آزمایش خون، ام‌آرآی (MRI) یا سی‌تی‌اسکن (CT) برای رد سایر بیماری‌هایی که ممکن است علائم مشابه داشته باشند",
+   "treatment": "• درمان قطعی ندارد؛ هدف، تسکین علائم و پیشگیری از حملات بعدی است\n• داروهای تسکین: تریپتان‌ها، ارگوتامین‌ها و مسکن‌ها؛ هرچه زودتر مصرف شوند مؤثرترند\n• دوز و نوع دارو باید توسط پزشک تعیین شود",
+   "prevention": "• شناسایی و پرهیز از محرک‌های شخصی",
    "complications": "",
    "whenToSeeDoctor": "",
-   "sources": ""
-  }
+   "sources": "MedlinePlus: Migraine | https://medlineplus.gov/migraine.html\nNINDS: Migraine Information | https://www.ninds.nih.gov/health-information/disorders/migraine"
+  },
+  "rowNo": 23
  },
  {
   "diseaseId": "asthma",
@@ -525,7 +548,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 24
  },
  {
   "diseaseId": "pneumonia",
@@ -547,7 +571,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 25
  },
  {
   "diseaseId": "hypothyroidism",
@@ -569,7 +594,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 26
  },
  {
   "diseaseId": "flu",
@@ -591,7 +617,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 27
  },
  {
   "diseaseId": "urinary_tract",
@@ -613,7 +640,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 28
  },
  {
   "diseaseId": "sinusitis",
@@ -635,7 +663,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 29
  },
  {
   "diseaseId": "acne",
@@ -657,7 +686,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 30
  },
  {
   "diseaseId": "shingles",
@@ -679,7 +709,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 31
  },
  {
   "diseaseId": "gastroenteritis",
@@ -701,7 +732,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 32
  },
  {
   "diseaseId": "pulmonary_embolism",
@@ -723,7 +755,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 33
  },
  {
   "diseaseId": "kidney_infection",
@@ -745,7 +778,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 34
  },
  {
   "diseaseId": "type1_diabetes",
@@ -767,7 +801,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 35
  },
  {
   "diseaseId": "parkinson",
@@ -789,7 +824,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 36
  },
  {
   "diseaseId": "epilepsy",
@@ -811,7 +847,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 37
  },
  {
   "diseaseId": "research_004",
@@ -833,7 +870,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 38
  },
  {
   "diseaseId": "research_005",
@@ -855,7 +893,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 39
  },
  {
   "diseaseId": "research_006",
@@ -877,7 +916,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 40
  },
  {
   "diseaseId": "research_007",
@@ -899,7 +939,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 41
  },
  {
   "diseaseId": "research_008",
@@ -921,7 +962,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 42
  },
  {
   "diseaseId": "research_009",
@@ -943,7 +985,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 43
  },
  {
   "diseaseId": "research_011",
@@ -965,7 +1008,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 44
  },
  {
   "diseaseId": "research_012",
@@ -987,7 +1031,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 45
  },
  {
   "diseaseId": "research_013",
@@ -1009,7 +1054,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 46
  },
  {
   "diseaseId": "research_014",
@@ -1031,7 +1077,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 47
  },
  {
   "diseaseId": "research_015",
@@ -1053,7 +1100,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 48
  },
  {
   "diseaseId": "research_016",
@@ -1075,7 +1123,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 49
  },
  {
   "diseaseId": "research_017",
@@ -1097,7 +1146,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 50
  },
  {
   "diseaseId": "research_018",
@@ -1119,7 +1169,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 51
  },
  {
   "diseaseId": "research_019",
@@ -1141,7 +1192,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 52
  },
  {
   "diseaseId": "research_020",
@@ -1163,7 +1215,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 53
  },
  {
   "diseaseId": "research_021",
@@ -1185,7 +1238,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 54
  },
  {
   "diseaseId": "research_022",
@@ -1207,7 +1261,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 55
  },
  {
   "diseaseId": "research_023",
@@ -1229,7 +1284,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 56
  },
  {
   "diseaseId": "research_024",
@@ -1251,7 +1307,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 57
  },
  {
   "diseaseId": "research_025",
@@ -1273,7 +1330,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 58
  },
  {
   "diseaseId": "research_026",
@@ -1295,7 +1353,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 59
  },
  {
   "diseaseId": "research_027",
@@ -1317,7 +1376,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 60
  },
  {
   "diseaseId": "research_028",
@@ -1339,7 +1399,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 61
  },
  {
   "diseaseId": "research_029",
@@ -1361,7 +1422,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 62
  },
  {
   "diseaseId": "research_030",
@@ -1383,7 +1445,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 63
  },
  {
   "diseaseId": "research_031",
@@ -1405,7 +1468,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 64
  },
  {
   "diseaseId": "research_032",
@@ -1427,7 +1491,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 65
  },
  {
   "diseaseId": "research_033",
@@ -1449,7 +1514,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 66
  },
  {
   "diseaseId": "research_034",
@@ -1471,7 +1537,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 67
  },
  {
   "diseaseId": "research_035",
@@ -1493,7 +1560,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 68
  },
  {
   "diseaseId": "research_037",
@@ -1515,7 +1583,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 69
  },
  {
   "diseaseId": "research_038",
@@ -1537,7 +1606,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 70
  },
  {
   "diseaseId": "research_039",
@@ -1559,7 +1629,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 71
  },
  {
   "diseaseId": "research_040",
@@ -1581,7 +1652,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 72
  },
  {
   "diseaseId": "research_041",
@@ -1603,7 +1675,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 73
  },
  {
   "diseaseId": "research_042",
@@ -1625,7 +1698,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 74
  },
  {
   "diseaseId": "research_043",
@@ -1647,7 +1721,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 75
  },
  {
   "diseaseId": "research_044",
@@ -1669,7 +1744,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 76
  },
  {
   "diseaseId": "research_045",
@@ -1691,7 +1767,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 77
  },
  {
   "diseaseId": "research_046",
@@ -1713,7 +1790,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 78
  },
  {
   "diseaseId": "research_047",
@@ -1735,7 +1813,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 79
  },
  {
   "diseaseId": "research_048",
@@ -1757,7 +1836,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 80
  },
  {
   "diseaseId": "research_049",
@@ -1779,7 +1859,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 81
  },
  {
   "diseaseId": "research_050",
@@ -1801,7 +1882,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 82
  },
  {
   "diseaseId": "research_052",
@@ -1823,7 +1905,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 83
  },
  {
   "diseaseId": "research_056",
@@ -1845,7 +1928,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 84
  },
  {
   "diseaseId": "research_057",
@@ -1867,7 +1951,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 85
  },
  {
   "diseaseId": "research_058",
@@ -1889,7 +1974,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 86
  },
  {
   "diseaseId": "research_060",
@@ -1911,7 +1997,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 87
  },
  {
   "diseaseId": "research_061",
@@ -1933,7 +2020,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 88
  },
  {
   "diseaseId": "research_062",
@@ -1955,7 +2043,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 89
  },
  {
   "diseaseId": "research_063",
@@ -1977,7 +2066,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 90
  },
  {
   "diseaseId": "research_064",
@@ -1999,7 +2089,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 91
  },
  {
   "diseaseId": "research_065",
@@ -2021,7 +2112,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 92
  },
  {
   "diseaseId": "research_066",
@@ -2043,7 +2135,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 93
  },
  {
   "diseaseId": "research_067",
@@ -2065,7 +2158,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 94
  },
  {
   "diseaseId": "research_068",
@@ -2087,7 +2181,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 95
  },
  {
   "diseaseId": "research_069",
@@ -2109,7 +2204,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 96
  },
  {
   "diseaseId": "research_070",
@@ -2131,7 +2227,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 97
  },
  {
   "diseaseId": "research_071",
@@ -2153,7 +2250,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 98
  },
  {
   "diseaseId": "research_072",
@@ -2175,7 +2273,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 99
  },
  {
   "diseaseId": "research_073",
@@ -2197,7 +2296,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 100
  },
  {
   "diseaseId": "research_074",
@@ -2219,7 +2319,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 101
  },
  {
   "diseaseId": "research_075",
@@ -2241,7 +2342,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 102
  },
  {
   "diseaseId": "research_076",
@@ -2263,7 +2365,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 103
  },
  {
   "diseaseId": "research_077",
@@ -2285,7 +2388,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 104
  },
  {
   "diseaseId": "research_078",
@@ -2307,7 +2411,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 105
  },
  {
   "diseaseId": "research_079",
@@ -2329,7 +2434,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 106
  },
  {
   "diseaseId": "research_080",
@@ -2351,7 +2457,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 107
  },
  {
   "diseaseId": "research_081",
@@ -2373,7 +2480,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 108
  },
  {
   "diseaseId": "research_082",
@@ -2395,7 +2503,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 109
  },
  {
   "diseaseId": "research_083",
@@ -2417,7 +2526,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 110
  },
  {
   "diseaseId": "research_084",
@@ -2439,7 +2549,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 111
  },
  {
   "diseaseId": "research_085",
@@ -2461,7 +2572,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 112
  },
  {
   "diseaseId": "research_086",
@@ -2483,7 +2595,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 113
  },
  {
   "diseaseId": "research_087",
@@ -2505,7 +2618,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 114
  },
  {
   "diseaseId": "research_088",
@@ -2527,7 +2641,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 115
  },
  {
   "diseaseId": "research_089",
@@ -2549,7 +2664,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 116
  },
  {
   "diseaseId": "research_090",
@@ -2571,7 +2687,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 117
  },
  {
   "diseaseId": "research_091",
@@ -2593,7 +2710,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 118
  },
  {
   "diseaseId": "research_092",
@@ -2615,7 +2733,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 119
  },
  {
   "diseaseId": "research_094",
@@ -2637,7 +2756,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 120
  },
  {
   "diseaseId": "research_095",
@@ -2659,7 +2779,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 121
  },
  {
   "diseaseId": "research_096",
@@ -2681,7 +2802,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 122
  },
  {
   "diseaseId": "research_097",
@@ -2703,7 +2825,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 123
  },
  {
   "diseaseId": "research_098",
@@ -2725,7 +2848,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 124
  },
  {
   "diseaseId": "research_099",
@@ -2747,7 +2871,8 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 125
  },
  {
   "diseaseId": "research_100",
@@ -2769,6 +2894,7 @@
    "complications": "",
    "whenToSeeDoctor": "",
    "sources": ""
-  }
+  },
+  "rowNo": 126
  }
 ]
