@@ -86,7 +86,8 @@ body :focus-visible {
 	color: var(--hj-primary-ink);
 }
 
-/* Do not clip or dynamically shrink headings: real text can wrap at 360px. */
+/* Headings wrap instead of shrinking; mobile article-card titles are the
+   explicit single-line exception at the end of this stylesheet. */
 .orsite-article__title,
 .orsite-archive__title,
 .orsite-card-article__title,
@@ -786,3 +787,46 @@ button:disabled, input:disabled, input[type]:disabled, select:disabled, textarea
 	color: var(--hj-primary-ink);
 }
 .hj-care-select__option[aria-disabled="true"] { opacity: 0.7; cursor: not-allowed; }
+
+/* Homepage glossary: one real topic per full-width row at every viewport. */
+.hj-glossary-strip .hj-glossary-topic-list {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: var(--hj-s2);
+}
+.hj-glossary-strip .hj-glossary-topic-list li { min-inline-size: 0; }
+.hj-glossary-strip .hj-glossary-topic-list__link {
+	display: flex;
+	justify-content: space-between;
+	box-sizing: border-box;
+	inline-size: 100%;
+	min-block-size: 44px;
+	border-radius: var(--hj-r-md);
+	font-size: var(--hj-fs-body);
+	font-weight: 600;
+}
+.hj-glossary-topic-list__label {
+	min-inline-size: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.hj-glossary-topic-list__arrow { flex: none; margin-inline-start: var(--hj-s3); }
+
+/* Keep card titles readable instead of shrinking them to fit a narrow screen.
+   The entire title remains in the link, including for assistive technology. */
+@media (max-width: 768px), (max-width: 1024px) and (max-height: 600px) and (orientation: landscape) {
+	.orsite-card-article__body { min-inline-size: 0; }
+	.orsite-card-article__title,
+	.orsite-card-article__title a {
+		display: block;
+		min-inline-size: 0;
+		max-inline-size: 100%;
+		overflow: hidden;
+		overflow-wrap: normal;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	/* Keep the keyboard focus ring inside the clipped title box. */
+	.orsite-card-article__title a:focus-visible { outline-offset: -3px; }
+}

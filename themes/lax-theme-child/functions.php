@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.22.1' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.22.2' );
 }
 
 /**
@@ -63,6 +63,14 @@ require_once get_stylesheet_directory() . '/inc/nav-menus.php';
 // if this optional display helper has not been copied yet.
 if ( is_readable( get_stylesheet_directory() . '/inc/care-tool.php' ) ) {
 	require_once get_stylesheet_directory() . '/inc/care-tool.php';
+}
+// This helper is also optional during a file-by-file update. Clear the stat
+// cache in persistent workers; include (rather than require) avoids a fatal
+// error if a file changes between the readability check and the include.
+$hj_homepage_ui_path = get_stylesheet_directory() . '/inc/homepage-ui.php';
+clearstatcache( true, $hj_homepage_ui_path );
+if ( is_readable( $hj_homepage_ui_path ) ) {
+	@include_once $hj_homepage_ui_path; // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- Optional during an in-place update.
 }
 require_once get_stylesheet_directory() . '/inc/publish-gate.php';
 require_once get_stylesheet_directory() . '/inc/content-freshness.php';

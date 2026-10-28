@@ -29,16 +29,7 @@ $hj_latest = new WP_Query(
 	)
 );
 
-$hj_glossary_fast_terms = function_exists( 'hj_glossary_get_featured_terms' ) ? hj_glossary_get_featured_terms( 10 ) : array();
-$hj_glossary_terms      = empty( $hj_glossary_fast_terms ) ? get_posts(
-	array(
-		'post_type'      => 'glossary',
-		'post_status'    => 'publish',
-		'posts_per_page' => 8,
-		'orderby'        => 'title',
-		'order'          => 'ASC',
-	)
-) : array();
+$hj_glossary_topics = function_exists( 'hj_home_glossary_topics' ) ? hj_home_glossary_topics() : array();
 
 $hj_surgery_groups = get_terms(
 	array(
@@ -75,19 +66,7 @@ $hj_journey = array(
 	),
 );
 
-// Popular-search chips and the care assistant both read from real, published
-// surgery articles so a chip can never point at an empty archive.
-$hj_popular = get_posts(
-	array(
-		'post_type'      => 'surgery',
-		'post_status'    => 'publish',
-		'posts_per_page' => 5,
-		'orderby'        => 'modified',
-		'order'          => 'DESC',
-		'no_found_rows'  => true,
-	)
-);
-
+// The care assistant reads from real, published surgery articles.
 $hj_care_surgeries = get_posts(
 	array(
 		'post_type'      => 'surgery',
@@ -191,24 +170,16 @@ $hj_faqs = array(
 	<main id="primary" class="hj-home">
 
 		<section class="hj-home-hero" aria-labelledby="hj-home-title">
-			<h1 id="hj-home-title" class="hj-home-hero__title">مرجع جامع و موثق مراقبت‌های قبل و بعد از عمل‌های جراحی در ایران</h1>
+			<h1 id="hj-home-title" class="hj-home-hero__title">آنچه برای مراقبت‌های قبل و بعد از جراحی باید بدانید</h1>
 
 			<div class="hj-home-hero__search"><?php get_search_form(); ?></div>
-
-			<?php if ( $hj_popular ) : ?>
-				<ul class="hj-home-hero__chips" aria-label="پرجستجوترین جراحی‌ها">
-					<?php foreach ( $hj_popular as $hj_popular_post ) : ?>
-						<li><a href="<?php echo esc_url( get_permalink( $hj_popular_post ) ); ?>"><?php echo esc_html( get_the_title( $hj_popular_post ) ); ?></a></li>
-					<?php endforeach; ?>
-				</ul>
-			<?php endif; ?>
 
 			<?php
 			$hj_app_page_id = (int) get_option( 'hamyar_symptom_guide_page_id' );
 			$hj_app_url = $hj_app_page_id && function_exists( 'hamyar_symptom_guide_template' ) && 'publish' === get_post_status( $hj_app_page_id ) ? get_permalink( $hj_app_page_id ) : '';
 			?>
 			<div class="hj-home-hero__actions">
-				<?php if ( $hj_app_url ) : ?><a class="hj-button hj-button--light" href="<?php echo esc_url( $hj_app_url ); ?>">تشخیص احتمالی بیماری | راهنمای هوشمند علائم</a><?php endif; ?>
+				<?php if ( $hj_app_url ) : ?><a class="hj-button hj-button--light" href="<?php echo esc_url( $hj_app_url ); ?>">ابزار هوشمند ارزیابی علائم بیماری</a><?php endif; ?>
 				<a class="hj-button hj-button--light" href="<?php echo esc_url( hj_archive_url( 'patient_guide' ) ); ?>">شروع از راهنمای بیمار</a>
 				<a class="hj-button hj-button--outline-light" href="<?php echo esc_url( hj_archive_url( 'or_environment' ) ); ?>">شناخت اتاق عمل و تیم</a>
 			</div>
@@ -380,13 +351,16 @@ $hj_faqs = array(
 			<?php if ( $hj_surgery_groups ) : ?>
 				<div class="hj-surgery-grid">
 					<?php foreach ( $hj_surgery_groups as $hj_group ) : ?>
-						<?php $hj_group_link = get_term_link( $hj_group ); ?>
+						<?php
+						$hj_group_link  = get_term_link( $hj_group );
+						$hj_group_label = function_exists( 'hj_home_specialty_label' ) ? hj_home_specialty_label( $hj_group->name, $hj_group->slug ) : $hj_group->name;
+						?>
 						<article class="hj-surgery-card">
 							<h3>
 								<?php if ( ! is_wp_error( $hj_group_link ) ) : ?>
-									<a href="<?php echo esc_url( $hj_group_link ); ?>"><?php echo esc_html( $hj_group->name ); ?></a>
+									<a href="<?php echo esc_url( $hj_group_link ); ?>"><?php echo esc_html( $hj_group_label ); ?></a>
 								<?php else : ?>
-									<?php echo esc_html( $hj_group->name ); ?>
+									<?php echo esc_html( $hj_group_label ); ?>
 								<?php endif; ?>
 							</h3>
 							<p><?php echo esc_html( $hj_group->description ? wp_trim_words( wp_strip_all_tags( $hj_group->description ), 22, '…' ) : 'راهنماهای منتشرشده‌ی این تخصص را با الگوی ثابت پیش، حین و پس از عمل بخوانید.' ); ?></p>
@@ -404,26 +378,21 @@ $hj_faqs = array(
 				</div>
 			<?php endif; ?>
 
-			<?php if ( ! empty( $hj_glossary_fast_terms ) ) : ?>
+			<?php if ( $hj_glossary_topics ) : ?>
 				<div class="hj-glossary-strip">
-					<h3>از واژه‌نامه شروع کنید</h3>
-					<ul>
-						<?php foreach ( $hj_glossary_fast_terms as $hj_gitem ) : ?>
-							<li><a href="<?php echo esc_url( $hj_gitem['url'] ); ?>" title="<?php echo esc_attr( $hj_gitem['definition'] ); ?>"><?php echo esc_html( $hj_gitem['term'] ); ?></a></li>
-						<?php endforeach; ?>
-					</ul>
-					<a class="hj-text-link" href="<?php echo esc_url( hj_archive_url( 'glossary' ) ); ?>">همه‌ی اصطلاحات اتاق عمل</a>
-				</div>
-			<?php elseif ( $hj_glossary_terms ) : ?>
-				<div class="hj-glossary-strip">
-					<h3>از واژه‌نامه شروع کنید</h3>
-					<ul>
-						<?php foreach ( $hj_glossary_terms as $post ) : // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited ?>
-							<?php setup_postdata( $post ); ?>
-							<li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
-						<?php endforeach; ?>
-						<?php wp_reset_postdata(); ?>
-					</ul>
+					<h3 id="hj-glossary-topics-title">از واژه‌نامه شروع کنید</h3>
+					<nav aria-labelledby="hj-glossary-topics-title">
+						<ul class="hj-glossary-topic-list">
+							<?php foreach ( $hj_glossary_topics as $hj_topic ) : ?>
+								<li>
+									<a class="hj-glossary-topic-list__link" href="<?php echo esc_url( $hj_topic['url'] ); ?>" title="<?php echo esc_attr( $hj_topic['name'] ); ?>">
+										<span class="hj-glossary-topic-list__label"><?php echo esc_html( $hj_topic['name'] ); ?></span>
+										<span class="hj-glossary-topic-list__arrow" aria-hidden="true">‹</span>
+									</a>
+								</li>
+							<?php endforeach; ?>
+						</ul>
+					</nav>
 					<a class="hj-text-link" href="<?php echo esc_url( hj_archive_url( 'glossary' ) ); ?>">همه‌ی اصطلاحات اتاق عمل</a>
 				</div>
 			<?php endif; ?>
