@@ -17,9 +17,9 @@ function hj_register_disease_directory() {
 }
 add_action( 'init', 'hj_register_disease_directory' );
 
-/** Import six initial entries only once; never overwrite a post or publish a draft. */
+/** Import new batches only; never recreate old deleted entries or overwrite edits. */
 function hj_seed_disease_directory() {
-	if ( ! current_user_can( 'manage_options' ) || get_option( 'hj_disease_seed_version' ) === '1' || get_transient( 'hj_disease_seed_lock' ) ) {
+	if ( ! current_user_can( 'manage_options' ) || version_compare( (string) get_option( 'hj_disease_seed_version', '0' ), '2', '>=' ) || get_transient( 'hj_disease_seed_lock' ) ) {
 		return;
 	}
 	set_transient( 'hj_disease_seed_lock', 1, 60 );
@@ -28,7 +28,9 @@ function hj_seed_disease_directory() {
 	$items = $raw ? json_decode( $raw, true ) : null;
 	if ( ! is_array( $items ) || ! $items ) { delete_transient( 'hj_disease_seed_lock' ); return; }
 	$complete = true;
+	$previous_batch = (int) get_option( 'hj_disease_seed_version', '0' );
 	foreach ( $items as $entry ) {
+		if ( (int) ( $entry['seedBatch'] ?? 1 ) <= $previous_batch ) { continue; }
 		if ( empty( $entry['diseaseId'] ) || empty( $entry['nameFa'] ) ) { $complete = false; continue; }
 		$id = sanitize_key( $entry['diseaseId'] );
 		$existing = get_posts( array( 'post_type' => 'disease', 'post_status' => 'any', 'posts_per_page' => 1, 'fields' => 'ids', 'meta_key' => '_hj_disease_seed_id', 'meta_value' => $id ) );
@@ -56,7 +58,7 @@ function hj_seed_disease_directory() {
 			} else { $complete = false; }
 		}
 	}
-	if ( $complete ) { update_option( 'hj_disease_seed_version', '1', false ); }
+	if ( $complete ) { update_option( 'hj_disease_seed_version', '2', false ); }
 	delete_transient( 'hj_disease_seed_lock' );
 }
 add_action( 'admin_init', 'hj_seed_disease_directory' );

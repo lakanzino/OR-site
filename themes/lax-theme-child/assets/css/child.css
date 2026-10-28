@@ -15,32 +15,47 @@
 :root {
 	--color-primary: #0a2f6b;
 	--color-primary-dark: #041a3f;
-	--color-accent: #06265c;
-	--color-secondary: #38536e;
-	--color-bg: #f4f8fc;
-	--color-surface: #eef4fa;
-	--color-text: #071a33;
-	--color-link: #0a2f6b;
-	--color-link-hover: #041a3f;
-	--color-border: #b9c9d9;
+	/* Clinical Calmness palette (child 0.20.0) — see ADR-026. */
+	--color-accent: #0891b2;
+	--color-secondary: #475569;
+	--color-bg: #f8fafc;
+	--color-surface: #f1f5f9;
+	--color-text: #0f172a;
+	--color-link: #0e7490;
+	--color-link-hover: #155e75;
+	--color-border: #e2e8f0;
 	--radius: 18px;
 
-	--bx-bg: #f4f8fc;
+	/* Teal = trust + action, navy = text + structure, alerts = clinical status. */
+	--hj-teal: #0891b2;
+	--hj-teal-deep: #0e7490;
+	--hj-teal-darker: #155e75;
+	--hj-teal-soft: #e0f2fe;
+	--hj-danger: #dc2626;
+	--hj-danger-soft: #fef2f2;
+	--hj-ok: #16a34a;
+	--hj-ok-soft: #f0fdf4;
+	--hj-warn: #d97706;
+	--hj-warn-soft: #fffbeb;
+	--hj-container: 1200px;
+	--hj-read: 780px;
+
+	--bx-bg: #f8fafc;
 	--bx-box: #ffffff;
-	--bx-soft: #eef4fa;
-	--bx-navy: #06265c;
-	--bx-navy-deep: #041a3f;
-	--bx-navy-mid: #0a2f6b;
-	--bx-highlight: #06265c;
-	--bx-highlight-deep: #041a3f;
-	--bx-ink: #071a33;
-	--bx-muted: #38536e;
-	--bx-line: #b9c9d9;
-	--bx-shadow-deep: 0 24px 48px rgba(4, 26, 63, 0.25), 0 5px 14px rgba(4, 26, 63, 0.18);
-	--bx-shadow: 0 14px 30px rgba(4, 26, 63, 0.18), 0 3px 8px rgba(4, 26, 63, 0.12);
-	--bx-shadow-small: 0 8px 18px rgba(4, 26, 63, 0.16);
-	--bx-inset: inset 4px 4px 10px rgba(4, 26, 63, 0.14), inset -4px -4px 10px rgba(255, 255, 255, 0.95);
-	--bx-raise: 7px 7px 16px rgba(4, 26, 63, 0.18), -5px -5px 12px rgba(255, 255, 255, 0.95);
+	--bx-soft: #f1f5f9;
+	--bx-navy: #0f172a;
+	--bx-navy-deep: #0f172a;
+	--bx-navy-mid: #1e293b;
+	--bx-highlight: #0e7490;
+	--bx-highlight-deep: #155e75;
+	--bx-ink: #0f172a;
+	--bx-muted: #475569;
+	--bx-line: #e2e8f0;
+	--bx-shadow-deep: 0 22px 44px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(15, 23, 42, 0.10);
+	--bx-shadow: 0 12px 26px rgba(15, 23, 42, 0.10), 0 2px 6px rgba(15, 23, 42, 0.06);
+	--bx-shadow-small: 0 6px 14px rgba(15, 23, 42, 0.09);
+	--bx-inset: inset 3px 3px 8px rgba(15, 23, 42, 0.07), inset -3px -3px 8px rgba(255, 255, 255, 0.9);
+	--bx-raise: 6px 6px 14px rgba(15, 23, 42, 0.10), -4px -4px 10px rgba(255, 255, 255, 0.9);
 }
 
 html {
@@ -2178,6 +2193,882 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 		letter-spacing: 0.2em;
 		bottom: 18%;
 	}
+}
+
+/* ---------- Medical callout boxes (child 0.16.1) ---------- */
+/*
+ * One markup, four tones: `[hjbox type="danger|warning|info|success"]`.
+ * The icon is an inline SVG data-URI inside the class (no extra request, no
+ * layout shift) and it lives in the same flex row as the title, so a long
+ * Persian title can never slide under it — that was the failure mode when the
+ * icon was positioned absolutely.
+ *
+ * Sizes, by breakpoint:
+ *   >768px  icon 24px · border 5px · padding 1.15rem 1.25rem
+ *   481–768 icon 22px · border 4px · padding 1rem
+ *   ≤480    icon 20px · border 4px · padding 1rem (single column, no overlap)
+ *   ≤360    icon 18px · title 0.92rem · margins tightest
+ */
+
+.hj-box {
+	--hj-box-accent: var(--bx-navy);
+	--hj-box-tint: var(--bx-soft);
+	background: var(--bx-box);
+	border: 3px solid var(--hj-box-accent);
+	border-inline-start-width: 8px;
+	border-radius: 18px;
+	box-shadow: var(--bx-shadow-small);
+	margin: 1.5rem 0;
+	padding: 1.15rem 1.25rem 1.2rem;
+	overflow-wrap: break-word;
+}
+
+.hj-box__head {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.6rem;
+	margin: 0 0 0.55rem;
+}
+
+.hj-box__icon {
+	flex: 0 0 auto;
+	width: 24px;
+	height: 24px;
+	margin-block-start: 0.2rem;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+}
+
+.hj-box__title {
+	flex: 1 1 auto;
+	min-width: 0;
+	margin: 0;
+	color: var(--hj-box-accent);
+	font-weight: 900;
+	font-size: 1rem;
+	line-height: 1.8;
+	overflow-wrap: break-word;
+}
+
+.hj-box__body {
+	color: var(--bx-ink);
+	line-height: 2;
+	overflow-wrap: break-word;
+}
+
+.hj-box__body > * {
+	margin: 0 0 0.6rem;
+}
+
+.hj-box__body > *:last-child {
+	margin-bottom: 0;
+}
+
+/* Tables and long words inside a box scroll instead of breaking the page. */
+.hj-box__body table {
+	display: block;
+	max-width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.hj-box__body a,
+.hj-box__body code {
+	overflow-wrap: anywhere;
+}
+
+/* --- tones ------------------------------------------------------------- */
+
+.hj-box--danger {
+	--hj-box-accent: #8a1f1f;
+	background: #fdf0ef;
+	border-color: #8a1f1f;
+}
+
+.hj-box--danger .hj-box__title {
+	color: #7a1616;
+}
+
+.hj-box--danger .hj-box__icon {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a1f1f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l9 16H3z'/%3E%3Cpath d='M12 9v4'/%3E%3Cpath d='M12 16.5h.01'/%3E%3C/svg%3E");
+}
+
+.hj-box--warning {
+	--hj-box-accent: #8a5a00;
+	background: #fbf4e6;
+	border-color: #8a5a00;
+}
+
+.hj-box--warning .hj-box__title {
+	color: #7a4f00;
+}
+
+.hj-box--warning .hj-box__icon {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a5a00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7.5v5'/%3E%3Cpath d='M12 16h.01'/%3E%3C/svg%3E");
+}
+
+.hj-box--info {
+	--hj-box-accent: var(--bx-navy);
+	background: var(--bx-soft);
+	border-color: var(--bx-navy);
+}
+
+.hj-box--info .hj-box__icon {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2306265c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v5.5'/%3E%3Cpath d='M12 7.5h.01'/%3E%3C/svg%3E");
+}
+
+.hj-box--success {
+	--hj-box-accent: #1f6b3a;
+	background: #eef7f1;
+	border-color: #1f6b3a;
+}
+
+.hj-box--success .hj-box__title {
+	color: #1a5a31;
+}
+
+.hj-box--success .hj-box__icon {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f6b3a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12.5l2.5 2.5L16 9.5'/%3E%3C/svg%3E");
+}
+
+/* --- responsive -------------------------------------------------------- */
+
+@media screen and (max-width: 768px) {
+	.hj-box {
+		margin: 1.25rem 0;
+		padding: 1rem 1.1rem;
+		border-inline-start-width: 6px;
+		border-radius: 14px;
+		font-size: 0.94rem;
+	}
+
+	.hj-box__head {
+		gap: 0.5rem;
+	}
+
+	.hj-box__icon {
+		width: 22px;
+		height: 22px;
+	}
+
+	.hj-box__title {
+		font-size: 0.98rem;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.hj-box {
+		padding: 0.95rem 1rem 1rem;
+		border-width: 2px;
+		border-inline-start-width: 5px;
+		margin: 1.1rem 0;
+		line-height: 1.85;
+	}
+
+	.hj-box__icon {
+		width: 20px;
+		height: 20px;
+		margin-block-start: 0.15rem;
+	}
+
+	.hj-box__title {
+		font-size: 0.96rem;
+		line-height: 1.7;
+	}
+
+	.hj-box__body {
+		line-height: 1.95;
+		font-size: 0.94rem;
+	}
+}
+
+@media screen and (max-width: 360px) {
+	.hj-box {
+		padding: 0.85rem 0.85rem 0.9rem;
+		border-radius: 12px;
+	}
+
+	.hj-box__icon {
+		width: 18px;
+		height: 18px;
+	}
+
+	.hj-box__title {
+		font-size: 0.92rem;
+	}
+}
+
+/* Print: keep the box intact on one page. */
+@media print {
+	.hj-box {
+		box-shadow: none;
+		break-inside: avoid;
+	}
+}
+
+/* ==========================================================================
+   هویت بصری «آرامش بالینی» — قالب ۰٫۲۰٫۰ (ADR-026)
+   توکن‌های بالای فایل رنگ‌ها را عوض کرده‌اند؛ این بلوک فقط سه چیز را کامل
+   می‌کند: مقیاس تایپوگرافی و عرض‌های استاندارد، لهجهٔ فیروزه‌ای روی عناصر
+   تعاملی، و اجزای تازهٔ صفحهٔ اصلی و مقاله.
+   ========================================================================== */
+
+/* ---------- ۱) عرض کانتینر و ستون مطالعه ---------- */
+
+@media (min-width: 769px) {
+	.container {
+		max-width: var(--hj-container);
+		padding-inline: 1.25rem;
+	}
+}
+
+/* ---------- ۳) لهجهٔ فیروزه‌ای: دکمه و فوکوس ---------- */
+
+.hj-button {
+	background: var(--hj-teal-deep);
+	border-color: var(--hj-teal-darker);
+}
+
+.hj-button:hover {
+	background: var(--hj-teal-darker);
+	border-color: var(--hj-teal-darker);
+}
+
+.hj-button--ghost {
+	background: var(--bx-box);
+	border-color: var(--hj-teal-deep);
+	color: var(--hj-teal-darker);
+}
+
+.hj-button--ghost:hover {
+	background: var(--hj-teal-soft);
+	color: var(--hj-teal-darker);
+}
+
+.hj-text-link {
+	color: var(--color-link);
+}
+
+.hj-text-link:hover {
+	color: var(--color-link-hover);
+}
+
+.hj-home-hero .hj-button--light:hover {
+	background: var(--hj-teal-soft);
+	color: var(--hj-teal-darker);
+}
+
+/* فوکوس یکدست و دیدنی برای صفحه‌کلید — روی هر دو پوسته */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+	outline: 2px solid var(--hj-teal);
+	outline-offset: 2px;
+}
+
+/* نشان‌های وضعیت بالینی با پالت تازه */
+.hj-box--danger {
+	background: var(--hj-danger-soft);
+	border-color: var(--hj-danger);
+	color: #7f1d1d;
+}
+
+.hj-box--success {
+	background: var(--hj-ok-soft);
+	border-color: var(--hj-ok);
+	color: #14532d;
+}
+
+.hj-box--warning {
+	background: var(--hj-warn-soft);
+	border-color: var(--hj-warn);
+	color: #78350f;
+}
+
+.hj-box--info {
+	background: var(--hj-teal-soft);
+	border-color: var(--hj-teal);
+	color: #164e63;
+}
+
+/* ---------- ۴) صفحهٔ اصلی: تگ‌های پرجستجو و دستیار مسیر ---------- */
+
+.hj-home-hero__chips {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 0.5rem;
+	margin: 1.1rem 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.hj-home-hero__chips li {
+	margin: 0;
+}
+
+.hj-home-hero__chips a {
+	display: inline-block;
+	background: rgba(255, 255, 255, 0.12);
+	border: 1px solid rgba(255, 255, 255, 0.38);
+	border-radius: 999px;
+	color: #fff;
+	font-size: 0.86rem;
+	font-weight: 600;
+	line-height: 1.9;
+	padding: 0.18rem 0.85rem;
+	text-decoration: none;
+	transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.hj-home-hero__chips a:hover,
+.hj-home-hero__chips a:focus {
+	background: rgba(255, 255, 255, 0.24);
+	border-color: #fff;
+	color: #fff;
+}
+
+.hj-care-tool {
+	background: var(--bx-box);
+	border: 1px solid var(--bx-line);
+	border-left: 6px solid var(--hj-teal);
+	border-radius: 20px;
+	box-shadow: var(--bx-shadow);
+	padding: 1.35rem 1.45rem 1.5rem;
+}
+
+.hj-care-tool__head h2 {
+	margin: 0 0 0.35rem;
+	font-size: 1.25rem;
+	line-height: 1.6;
+	color: var(--bx-navy-deep);
+}
+
+.hj-care-tool__head p {
+	margin: 0 0 1rem;
+	color: var(--bx-muted);
+	font-size: 0.93rem;
+}
+
+.hj-care-tool__form {
+	display: grid;
+	gap: 0.75rem;
+	grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+	align-items: end;
+}
+
+.hj-care-tool__field {
+	display: grid;
+	gap: 0.3rem;
+	min-width: 0;
+}
+
+.hj-care-tool__field label {
+	color: var(--bx-navy-deep);
+	font-size: 0.86rem;
+	font-weight: 700;
+}
+
+.hj-care-tool__field select {
+	width: 100%;
+	min-height: 2.9rem;
+	background: var(--bx-bg);
+	border: 1px solid var(--bx-line);
+	border-radius: 12px;
+	color: var(--bx-ink);
+	font-family: inherit;
+	font-size: 0.95rem;
+	padding: 0.5rem 0.7rem;
+}
+
+.hj-care-tool__result {
+	margin: 1.1rem 0 0;
+	background: var(--hj-teal-soft);
+	border: 1px solid rgba(8, 145, 178, 0.35);
+	border-radius: 14px;
+	padding: 0.9rem 1rem;
+	color: #164e63;
+}
+
+.hj-care-tool__result h3 {
+	margin: 0 0 0.4rem;
+	font-size: 1rem;
+	color: #0e4a5c;
+}
+
+.hj-care-tool__result ul {
+	margin: 0;
+	padding-inline-start: 1.1rem;
+}
+
+.hj-care-tool__result li {
+	margin: 0.2rem 0;
+	font-size: 0.94rem;
+	line-height: 1.8;
+}
+
+.hj-care-tool__flag {
+	margin: 0.75rem 0 0;
+	background: var(--hj-danger-soft);
+	border: 1px solid rgba(220, 38, 38, 0.35);
+	border-radius: 12px;
+	color: #7f1d1d;
+	font-size: 0.9rem;
+	padding: 0.6rem 0.85rem;
+}
+
+.hj-care-tool__links {
+	margin: 0.9rem 0 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1rem;
+	font-size: 0.92rem;
+}
+
+.hj-care-tool__fallback {
+	margin: 1rem 0 0;
+	padding: 0.85rem 1rem;
+	background: var(--bx-soft);
+	border: 1px solid var(--bx-line);
+	border-radius: 12px;
+	font-size: 0.92rem;
+}
+
+@media (max-width: 860px) {
+	.hj-care-tool__form {
+		grid-template-columns: 1fr;
+	}
+
+	.hj-care-tool__form .hj-button {
+		width: 100%;
+	}
+}
+
+/* ---------- ۵) بَج بازبینی کارت‌ها ---------- */
+
+.hj-review-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	background: var(--hj-teal-soft);
+	border: 1px solid rgba(8, 145, 178, 0.35);
+	border-radius: 999px;
+	color: #0e4a5c;
+	font-size: 0.72rem;
+	font-weight: 700;
+	line-height: 1.9;
+	padding: 0.05rem 0.6rem;
+}
+
+.orsite-card-article__review {
+	margin: 0.4rem 0 0;
+}
+
+/* ---------- ۶) فوتر: نوار اورژانس ---------- */
+
+.hj-emergency {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem 1.25rem;
+	margin: 1.5rem 0 0;
+	background: var(--hj-danger-soft);
+	border: 1px solid rgba(220, 38, 38, 0.35);
+	border-inline-start: 6px solid var(--hj-danger);
+	border-radius: 14px;
+	color: #7f1d1d;
+	padding: 0.85rem 1rem;
+}
+
+.hj-footer__bottom {
+	align-items: flex-start;
+}
+
+.hj-footer__legal {
+	max-width: 62ch;
+	font-size: 0.76rem;
+	line-height: 1.9;
+	color: rgba(255, 255, 255, 0.78);
+}
+
+.hj-footer__legal a {
+	color: #fff;
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+}
+
+.hj-emergency p {
+	margin: 0;
+	font-size: 0.92rem;
+	line-height: 1.85;
+}
+
+.hj-emergency__numbers {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.hj-emergency__numbers a {
+	display: inline-block;
+	background: var(--hj-danger);
+	border: 1px solid #b91c1c;
+	border-radius: 10px;
+	color: #fff;
+	font-size: 0.9rem;
+	font-weight: 800;
+	padding: 0.25rem 0.8rem;
+	text-decoration: none;
+}
+
+.hj-emergency__numbers a:hover,
+.hj-emergency__numbers a:focus {
+	background: #b91c1c;
+	color: #fff;
+}
+
+@media print {
+	.hj-emergency,
+	.hj-care-tool,
+	.hj-home-hero__chips {
+		display: none !important;
+	}
+}
+
+/* ==========================================================================
+   بازگشت مقاله به چیدمان ۰٫۱۴ + اصلاح‌های درخواستی — قالب ۰٫۲۱٫۰
+   ۱) باکس‌های پزشکی (سبز/زرد/قرمز) ظریف و کوچک‌تر از قبل، فقط خوانا.
+   ۲) تنها سلب مسئولیتِ مقاله: یک باکس زرد کوچک.
+   ۳) جدول مقاله: در دسکتاپ وسط‌چین و بدون فشردگی؛ در موبایل اسکرول افقی.
+   ۴) نوار اورژانس بالای فوتر: یک خط کوچک، بی‌تکرار.
+   ========================================================================== */
+
+/* ---------- ۱) باکس‌های پزشکی، ظریف ---------- */
+
+.hj-box {
+	border-width: 1px;
+	border-inline-start-width: 4px;
+	border-radius: 10px;
+	box-shadow: none;
+	margin: 0.9rem 0;
+	padding: 0.55rem 0.75rem 0.6rem;
+	font-size: 0.9rem;
+}
+
+.hj-box__head {
+	gap: 0.4rem;
+	margin: 0 0 0.25rem;
+}
+
+.hj-box__icon {
+	width: 16px;
+	height: 16px;
+	margin-block-start: 0.3rem;
+}
+
+.hj-box__title {
+	font-size: 0.9rem;
+	font-weight: 800;
+	line-height: 1.7;
+}
+
+.hj-box__body {
+	font-size: 0.9rem;
+	line-height: 1.85;
+}
+
+.hj-box__body p {
+	margin: 0 0 0.4rem;
+}
+
+.hj-box__body p:last-child {
+	margin-bottom: 0;
+}
+
+.hj-box--danger {
+	background: var(--hj-danger-soft);
+	border-color: var(--hj-danger);
+	color: #7f1d1d;
+}
+
+.hj-box--warning {
+	background: var(--hj-warn-soft);
+	border-color: var(--hj-warn);
+	color: #78350f;
+}
+
+.hj-box--success {
+	background: var(--hj-ok-soft);
+	border-color: var(--hj-ok);
+	color: #14532d;
+}
+
+.hj-box--info {
+	background: var(--hj-teal-soft);
+	border-color: var(--hj-teal-deep);
+	color: #164e63;
+}
+
+.hj-box--danger .hj-box__title,
+.hj-box--warning .hj-box__title,
+.hj-box--success .hj-box__title,
+.hj-box--info .hj-box__title {
+	color: inherit;
+}
+
+@media (max-width: 480px) {
+	.hj-box {
+		margin: 0.75rem 0;
+		padding: 0.5rem 0.6rem;
+		font-size: 0.88rem;
+	}
+
+	.hj-box__title,
+	.hj-box__body {
+		font-size: 0.88rem;
+	}
+}
+
+/* ---------- ۲) تنها سلب مسئولیت مقاله ---------- */
+
+.hj-disclaimer-box {
+	margin: 1.4rem 0 0.6rem;
+	border-radius: 8px;
+	font-size: 0.82rem;
+	line-height: 1.8;
+	padding: 0.5rem 0.7rem;
+}
+
+.hj-disclaimer-box p {
+	margin: 0;
+	color: #78350f;
+}
+
+.hj-disclaimer-box strong {
+	font-weight: 800;
+}
+
+/* ---------- ۳) جدول مقاله ---------- */
+
+.orsite-article__content .hj-table-scroll {
+	margin: 1.2rem 0;
+	max-width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.orsite-article__content .hj-table-scroll > table {
+	margin: 0 auto;
+	table-layout: auto;
+	width: auto;
+	min-width: 100%;
+	max-width: none;
+	box-shadow: none;
+}
+
+@media (max-width: 782px) {
+	.orsite-article__content .hj-table-scroll > table {
+		min-width: 34rem;
+		border-radius: 10px;
+	}
+
+	.orsite-article__content .hj-table-scroll {
+		border-radius: 10px;
+	}
+}
+
+/* ---------- ۴) نوار اورژانس بالای فوتر ---------- */
+
+.hj-emergency--above-footer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: center;
+	gap: 0.25rem 0.6rem;
+	max-width: var(--hj-container, 1200px);
+	margin: 1.6rem auto 0;
+	padding: 0.4rem 1rem;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	background: var(--hj-danger-soft);
+	border-top: 1px solid rgba(220, 38, 38, 0.25);
+	border-bottom: 1px solid rgba(220, 38, 38, 0.25);
+	color: #7f1d1d;
+	font-size: 0.78rem;
+	line-height: 1.75;
+	text-align: center;
+}
+
+.hj-emergency--above-footer p {
+	margin: 0;
+}
+
+.hj-emergency--above-footer a {
+	color: #b91c1c;
+	font-weight: 800;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.hj-emergency--above-footer a:hover,
+.hj-emergency--above-footer a:focus {
+	text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+	.hj-emergency--above-footer {
+		font-size: 0.75rem;
+		padding: 0.35rem 0.75rem;
+	}
+}
+
+@media print {
+	.hj-emergency--above-footer {
+		display: none !important;
+	}
+}
+
+/* ==========================================================================
+   مقاله: پیوند آبی، کادر عنوان سرمه‌ای با سایهٔ عمیق، جدول کامل بدون اسکرول،
+   زیرنویس ریز و طوسی، و متن هم‌تراز — قالب ۰٫۲۱٫۱
+   ========================================================================== */
+
+/* ---------- ۱) پیوندهای متن مقاله: آبی ---------- */
+
+.orsite-article__content a {
+	color: #1d4ed8;
+	text-decoration-color: rgba(29, 78, 216, 0.45);
+}
+
+.orsite-article__content a:hover,
+.orsite-article__content a:focus {
+	color: #1e40af;
+	text-decoration-color: currentColor;
+}
+
+.orsite-article__content a:visited {
+	color: #4338ca;
+}
+
+/* ---------- ۲) کادر عنوان (H2): سرمه‌ای، متن سفید، سایهٔ عمیق ---------- */
+
+.orsite-article__content h2 {
+	background: var(--bx-navy);
+	border-color: var(--bx-navy-deep);
+	border-inline-start-color: #1d4ed8;
+	color: #fff;
+	box-shadow: 0 18px 34px rgba(4, 26, 63, 0.28), 0 5px 12px rgba(4, 26, 63, 0.22);
+}
+
+.orsite-article__content h2 *,
+.orsite-article__content h2 a {
+	color: #fff;
+	text-decoration-color: rgba(255, 255, 255, 0.5);
+}
+
+.orsite-article__content h2 a:hover,
+.orsite-article__content h2 a:focus {
+	color: #dbeafe;
+}
+
+/* ---------- ۳) جدول‌ها: کامل، بدون اسکرول افقی ---------- */
+
+.orsite-article__content .hj-table-scroll {
+	overflow: visible;
+	margin: 1.2rem 0;
+	border-radius: 0;
+}
+
+.orsite-article__content .hj-table-scroll > table {
+	table-layout: fixed;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+	margin: 0;
+}
+
+.orsite-article__content .hj-table-scroll > table th,
+.orsite-article__content .hj-table-scroll > table td {
+	overflow-wrap: anywhere;
+	word-break: break-word;
+	hyphens: auto;
+	text-align: start;
+}
+
+@media (max-width: 782px) {
+	.orsite-article__content .hj-table-scroll > table {
+		min-width: 0;
+		font-size: 0.8rem;
+	}
+
+	.orsite-article__content .hj-table-scroll > table th,
+	.orsite-article__content .hj-table-scroll > table td {
+		padding: 0.42rem 0.5rem;
+		line-height: 1.7;
+	}
+}
+
+/* ---------- ۴) زیرنویس تصویر: ریز و طوسی تیره ---------- */
+
+.orsite-article__media figcaption,
+.orsite-article__content figcaption,
+.orsite-caption {
+	background: #f1f5f9;
+	border: 1px solid #d7dee7;
+	border-radius: 8px;
+	box-shadow: none;
+	color: #374151;
+	font-size: 0.78rem;
+	font-weight: 500;
+	line-height: 1.75;
+	padding: 0.4rem 0.65rem;
+	margin-top: 0.5rem;
+}
+
+.orsite-article__media figcaption *,
+.orsite-article__content figcaption *,
+.orsite-caption * {
+	color: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+}
+
+@media (max-width: 480px) {
+	.orsite-article__media figcaption,
+	.orsite-article__content figcaption,
+	.orsite-caption {
+		font-size: 0.74rem;
+		padding: 0.35rem 0.55rem;
+	}
+}
+
+/* ---------- ۵) هم‌ترازی دوطرفهٔ متن ---------- */
+
+.orsite-article__content p,
+.orsite-article__content li,
+.orsite-article__content blockquote,
+.hj-box__body p {
+	text-align: justify;
+	text-justify: inter-word;
+	-webkit-hyphens: none;
+	hyphens: none;
+}
+
+.orsite-article__content table p,
+.orsite-article__content table li,
+.orsite-article__content table td,
+.orsite-article__content table th {
+	text-align: start;
+	text-justify: auto;
 }
 
 /* Disease directory */
