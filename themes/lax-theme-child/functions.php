@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.22.0' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.22.1' );
 }
 
 /**
@@ -59,6 +59,11 @@ require_once get_stylesheet_directory() . '/inc/source-whitelist.php';
 require_once get_stylesheet_directory() . '/inc/references-box.php';
 require_once get_stylesheet_directory() . '/inc/faq-accordion.php';
 require_once get_stylesheet_directory() . '/inc/nav-menus.php';
+// In-place updates copy files individually: do not break a concurrent request
+// if this optional display helper has not been copied yet.
+if ( is_readable( get_stylesheet_directory() . '/inc/care-tool.php' ) ) {
+	require_once get_stylesheet_directory() . '/inc/care-tool.php';
+}
 require_once get_stylesheet_directory() . '/inc/publish-gate.php';
 require_once get_stylesheet_directory() . '/inc/content-freshness.php';
 require_once get_stylesheet_directory() . '/inc/medical-boxes.php';
@@ -83,7 +88,6 @@ remove_filter( 'the_content', 'hj_faq_upgrade_content', 7 );
 /**
  * Load image sizes and article media block patterns.
  */
-require_once get_stylesheet_directory() . '/inc/image-watermark.php';
 require_once get_stylesheet_directory() . '/inc/image-bulk-replace.php';
 require_once get_stylesheet_directory() . '/inc/image-sizes.php';
 require_once get_stylesheet_directory() . '/inc/media-blocks.php';
@@ -224,6 +228,18 @@ function lax_theme_child_assets() {
 		array( 'lax-theme-child-glossary' ),
 		lax_theme_child_asset_ver( 'assets/css/soft-ui.css' )
 	);
+
+	// Enhance the two care selectors only on the homepage. Native selects remain
+	// usable if the script cannot run; the clinical data and result stay intact.
+	if ( is_front_page() ) {
+		wp_enqueue_script(
+			'lax-theme-child-care-select',
+			get_stylesheet_directory_uri() . '/assets/js/care-select.js',
+			array(),
+			lax_theme_child_asset_ver( 'assets/js/care-select.js' ),
+			true
+		);
+	}
 
 	// Let headings wrap at readable sizes instead of shrinking them on load.
 	wp_enqueue_script(

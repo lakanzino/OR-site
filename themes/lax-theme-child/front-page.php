@@ -227,7 +227,7 @@ $hj_faqs = array(
 							<label for="hj-care-surgery">نوع جراحی</label>
 							<select id="hj-care-surgery">
 								<?php foreach ( $hj_care_surgeries as $hj_care_post ) : ?>
-									<option value="<?php echo esc_attr( (string) $hj_care_post->ID ); ?>" data-url="<?php echo esc_url( get_permalink( $hj_care_post ) ); ?>"><?php echo esc_html( get_the_title( $hj_care_post ) ); ?></option>
+									<option value="<?php echo esc_attr( (string) $hj_care_post->ID ); ?>" data-url="<?php echo esc_url( get_permalink( $hj_care_post ) ); ?>" data-title="<?php echo esc_attr( get_the_title( $hj_care_post ) ); ?>"><?php echo esc_html( function_exists( 'hj_care_option_label' ) ? hj_care_option_label( get_the_title( $hj_care_post ) ) : get_the_title( $hj_care_post ) ); ?></option>
 								<?php endforeach; ?>
 							</select>
 						</div>
@@ -235,7 +235,7 @@ $hj_faqs = array(
 							<label for="hj-care-stage">روز بعد از عمل</label>
 							<select id="hj-care-stage">
 								<?php foreach ( $hj_care_stages as $hj_stage_key => $hj_stage ) : ?>
-									<option value="<?php echo esc_attr( $hj_stage_key ); ?>"><?php echo esc_html( $hj_stage['title'] ); ?></option>
+									<option value="<?php echo esc_attr( $hj_stage_key ); ?>"><?php echo esc_html( function_exists( 'hj_care_option_label' ) ? hj_care_option_label( $hj_stage['title'] ) : $hj_stage['title'] ); ?></option>
 								<?php endforeach; ?>
 							</select>
 						</div>
@@ -280,7 +280,7 @@ $hj_faqs = array(
 							link.className = 'hj-care-tool__links';
 							var a = document.createElement('a');
 							a.href = surgery.options[surgery.selectedIndex].getAttribute('data-url') || '';
-							a.textContent = 'راهنمای کامل ' + surgery.options[surgery.selectedIndex].textContent;
+							a.textContent = 'راهنمای کامل ' + (surgery.options[surgery.selectedIndex].getAttribute('data-title') || surgery.options[surgery.selectedIndex].textContent);
 							link.appendChild(a);
 							box.appendChild(link);
 							box.hidden = false;
