@@ -7,9 +7,12 @@
 | جزء | نسخه | مسیر |
 |---|---|---|
 | قالب والد `lax-theme` | 1.0.1 | [`themes/lax-theme/`](themes/lax-theme/) |
-| قالب فرزند `lax-theme-child` | 0.21.5 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
+| قالب فرزند `lax-theme-child` | 0.22.0 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
 | افزونهٔ `orsite-media-matcher` | 1.2.0 | [`plugins/orsite-media-matcher/`](plugins/orsite-media-matcher/) |
+| افزونهٔ `hamyar-symptom-guide` | 0.5.0 | [`plugins/hamyar-symptom-guide/`](plugins/hamyar-symptom-guide/) |
 | ساختار محتوا (`ORSITE_STRUCTURE_VERSION`) | 1.0.0 | `themes/lax-theme-child/inc/content-types.php` |
+
+این شماره‌ها نسخه‌های موجود در مخزن هستند؛ وضعیت نصب افزونه‌ها روی سایت مستقلاً بررسی نشده است. ریلیز فرزند [`child-v0.22.0`](https://github.com/lakanzino/OR-site/releases/tag/child-v0.22.0) منتشر شده و صاحب سایت نصب آن را گزارش کرده است. آزمون‌های واقعی پس از نصب هنوز ثبت نشده‌اند؛ جزئیات و اختلاف‌های شناخته‌شدهٔ نسخه‌ها در [چنج‌لاگ پروژه](docs/PROJECT-CHANGELOG.md) آمده است.
 
 ## وضعیت زندهٔ سایت (بررسی‌شده از REST API — ۲۰۲۶-۱۰-۲۵)
 
@@ -33,7 +36,7 @@
 ## ساختار مخزن
 
 - `themes/lax-theme/` — قالب والد (ارائه‌ی عمومی، راست‌چین، فونت وزیرمتن).
-- `themes/lax-theme-child/` — قالب فرزند اختصاصی پروژه: ساختار محتوا (۵ نوع نوشته، ۶ تاکسونومی، ۱۱۲ اصطلاح)، قالب مقاله با فهرست مطالب خودکار، طراحی باکس‌دار تک‌رنگ سرمه‌ای و سایزهای تصویر بدون برش.
+- `themes/lax-theme-child/` — قالب فرزند اختصاصی پروژه: ساختار محتوا، قالب مقاله با فهرست مطالب، طراحی راست‌به‌چپ Soft UI، فونت محلی و سایزهای تصویر بدون برش.
 - `docs/` — قوانین فازبندی پروژه، تصمیم‌ها (ADR)، چنج‌لاگ کامل، رودمپ محتوا و گزارش گام‌ها.
   - `docs/content/PUBLISH-PRIORITY.fa.md` — **مرجع اولویت انتشار**: وضعیت واقعی سایت (بررسی‌شده از نقشه‌ی سایت)، ده مقاله‌ی جاری و پانزده مقاله‌ی بعدی.
 - `content/drafts/<slug>/` — بسته‌های سه‌فایلی پیش‌نویس مقالات (`article.json` + `content.html` + `featured.webp`)؛ وضعیت همه `draft` تا عبور از فیلتر تحریریه و تأیید کارفرما. سازوکار «بازبین پزشکی» از نسخهٔ 0.14.0 قالب به‌طور کامل حذف شده است.
@@ -60,9 +63,17 @@
 «قطع — دادهٔ ذخیره‌شده» را با خطای واقعی نشان می‌دهد و دکمهٔ **«تست کامل اتصال»** وضعیت API،
 `releases.atom`، `raw.githubusercontent.com`، `codeload` و اعتبار توکن را می‌سنجد.
 
-**قرارداد ریلیز:** تگ `child-vX.Y.Z` + سه فایل در Assets:
-`lax-theme-child.zip`، `lax-theme.zip`، `orsite-release.json`.
-این سه فایل در [`releases/`](releases/) ساخته و نگه‌داری می‌شوند و باید در صفحهٔ هر ریلیز آپلود شوند.
+**قرارداد ریلیز:** تگ `child-vX.Y.Z` و سه فایل `lax-theme-child.zip`، `lax-theme.zip` و `orsite-release.json` در مسیر [`releases/`](releases/) همان تگ. به‌روزرسان در صورت وجود از فایل‌های پیوست Release استفاده می‌کند و در نبود آن‌ها نسخه‌های داخل مخزن را از مسیرهای جایگزین دریافت می‌کند. ریلیز 0.22.0 فایل‌ها را داخل تگ دارد، نه به‌صورت پیوست Assets؛ ZIP خودکار «Source code» بستهٔ نصب قالب نیست.
+
+## کنترل نسخه و بسته‌ها
+
+برای بررسی همخوانی نسخهٔ قالب‌ها، افزونه‌های موجود، مانیفست، ZIPها و تاریخچهٔ چنج‌لاگ، از ریشهٔ مخزن اجرا کنید:
+
+```sh
+python3 themes/lax-theme-child/tests/test_release_versions.py
+```
+
+اصلاحات مستندات پس از انتشار در سورس ثبت می‌شوند؛ بسته و تگ منتشرشدهٔ 0.22.0 ثابت می‌مانند و این اصلاحات تا انتشار بعدی الزاماً به فایل‌های قالب روی سایت منتقل نمی‌شوند.
 
 ## نصب
 
@@ -73,4 +84,4 @@
 
 جزئیات نسخه‌ها و تغییرات: [`docs/PROJECT-CHANGELOG.md`](docs/PROJECT-CHANGELOG.md) — تصمیم‌های معماری: [`docs/DECISIONS.md`](docs/DECISIONS.md) — اولویت و صف انتشار: [`docs/content/PUBLISH-PRIORITY.fa.md`](docs/content/PUBLISH-PRIORITY.fa.md) — برنامه‌ی محتوا و لینک‌دهی داخلی: [`docs/CONTENT-MAP.md`](docs/CONTENT-MAP.md)
 
-> محتوای پزشکی داخل قالب‌ها ساخته نشده است؛ متن‌ها را تیم محتوا می‌نویسد و بازبینی می‌کند. قالب‌های ZIP آماده‌ی نصب، در بخش Releases هر نسخه منتشر می‌شوند.
+> متن‌های پزشکی را تیم محتوا می‌نویسد و بازبینی می‌کند. بسته‌های ZIP آمادهٔ نصب در مسیر `releases/` هر تگ نگه‌داری می‌شوند و ممکن است به ریلیز نیز پیوست شده باشند.
