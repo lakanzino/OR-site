@@ -165,3 +165,29 @@ function hj_disease_profile_lines( $text ) {
 	}
 	return $lines;
 }
+
+/**
+ * Sources list: each line is "Title | https://url". Only https links on approved domains are linked;
+ * other lines show as plain text. Duplicate URLs are removed.
+ */
+function hj_disease_sources_html( $text ) {
+	$items = array();
+	$seen = array();
+	foreach ( hj_disease_profile_lines( $text ) as $line ) {
+		$label = $line;
+		$url = '';
+		if ( preg_match( '#^(.*?)\s*\|\s*(https://\S+)\s*$#u', $line, $m ) ) {
+			$label = trim( $m[1] );
+			$url = $m[2];
+		}
+		if ( '' === $label ) { continue; }
+		$host = $url ? wp_parse_url( $url, PHP_URL_HOST ) : '';
+		if ( $url && $host && '' !== hj_source_host_tier( $host ) && ! isset( $seen[ $url ] ) ) {
+			$seen[ $url ] = true;
+			$items[] = '<li><a href="' . esc_url( $url ) . '" target="_blank" rel="noopener noreferrer">' . esc_html( $label ) . '</a></li>';
+		} elseif ( ! $url ) {
+			$items[] = '<li>' . esc_html( $label ) . '</li>';
+		}
+	}
+	return $items ? '<ul>' . implode( '', $items ) . '</ul>' : '';
+}
