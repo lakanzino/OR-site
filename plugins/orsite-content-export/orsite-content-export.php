@@ -3,7 +3,7 @@
  * Plugin Name:       ORSite — خروجی کامل مقاله‌ها
  * Plugin URI:        https://github.com/lakanzino/OR-site
  * Description:       همهٔ مقاله‌ها، برگه‌ها و پیش‌نویس‌های سایت را با عنوان، نامک، لینک، تاریخ، دسته‌ها، برچسب‌ها، تعداد کلمه، متن، تصویر شاخص و متادیتا در یک فایل JSON یا CSV دانلود می‌کند. فقط برای مدیر سایت.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            OR Site
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'OCE_VERSION', '1.0.0' );
+define( 'OCE_VERSION', '1.0.1' );
 define( 'OCE_CAP', 'manage_options' );
 define( 'OCE_ACTION', 'oce_export' );
 define( 'OCE_PAGE', 'orsite-content-export' );
@@ -203,7 +203,7 @@ function oce_handle_export() {
 		header( 'Content-Disposition: attachment; filename="orsite-articles-' . $stamp . '.csv"' );
 		$out = fopen( 'php://output', 'w' );
 		fwrite( $out, "\xEF\xBB\xBF" ); // UTF-8 BOM so Excel shows Persian correctly.
-		fputcsv( $out, array( 'id', 'post_type', 'status', 'title', 'slug', 'url', 'date', 'modified', 'author', 'word_count', 'featured_image', 'taxonomies', 'excerpt' ) );
+		fputcsv( $out, array( 'id', 'post_type', 'status', 'title', 'slug', 'url', 'date', 'modified', 'author', 'word_count', 'featured_image', 'taxonomies', 'excerpt' ), ',', '"', '\\' );
 		foreach ( $records as $r ) {
 			$tax_flat = array();
 			foreach ( $r['taxonomies'] as $tax => $list ) {
@@ -227,7 +227,10 @@ function oce_handle_export() {
 					$r['featured_image'],
 					implode( ' | ', $tax_flat ),
 					$r['excerpt'],
-				)
+				),
+				',',
+				'"',
+				'\\'
 			);
 		}
 		fclose( $out );
