@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.26.1
+Stable tag: 0.26.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.26.2 =
+* عوامل خطر برای ردیف‌های ۲۱ تا ۱۲۶ (۱۰۶ بیماری) اضافه شد؛ همهٔ ۱۲۶ مدخل عوامل خطر دارند.
+* نسخهٔ داده به ۴ رسید.
 
 = 0.26.1 =
 * اصلاح کد ICD-10 سیروز (K74.6) و آپاندیسیت (K35 (حاد))، پیوند اشتباه منبع تونسیلیت و حذف منبع تکراری لاکتوز.
