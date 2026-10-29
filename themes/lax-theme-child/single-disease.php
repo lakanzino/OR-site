@@ -74,7 +74,7 @@ get_header();
 	echo $hj_section( 'hj-dn-ok', 'منابع پزشکی معتبر', hj_disease_sources_html( $hj_p['sources'] ?? '' ) );
 	?>
 <?php else : ?>
-	<section class="hj-dn-box"><p class="hj-dn-pending">اطلاعات این بیماری در حال تکمیل و بازبینی پزشکی است.</p></section>
+	<section class="hj-dn-box"><p class="hj-dn-pending">اطلاعات این بیماری در حال تکمیل است.</p></section>
 	<div class="entry-content"><?php the_content(); ?></div>
 <?php endif; ?>
 </article>

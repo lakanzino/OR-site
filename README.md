@@ -84,4 +84,4 @@ python3 themes/lax-theme-child/tests/test_release_versions.py
 
 جزئیات نسخه‌ها و تغییرات: [`docs/PROJECT-CHANGELOG.md`](docs/PROJECT-CHANGELOG.md) — تصمیم‌های معماری: [`docs/DECISIONS.md`](docs/DECISIONS.md) — اولویت و صف انتشار: [`docs/content/PUBLISH-PRIORITY.fa.md`](docs/content/PUBLISH-PRIORITY.fa.md) — برنامه‌ی محتوا و لینک‌دهی داخلی: [`docs/CONTENT-MAP.md`](docs/CONTENT-MAP.md)
 
-> متن‌های پزشکی را تیم محتوا می‌نویسد و بازبینی می‌کند. بسته‌های ZIP آمادهٔ نصب در مسیر `releases/` هر تگ نگه‌داری می‌شوند و ممکن است به ریلیز نیز پیوست شده باشند.
+> متن‌های پزشکی را تیم محتوا می‌نویسد. بازبینی پزشکی در این سیستم انجام و الزامی نمی‌شود. بسته‌های ZIP آمادهٔ نصب در مسیر `releases/` هر تگ نگه‌داری می‌شوند و ممکن است به ریلیز نیز پیوست شده باشند.
