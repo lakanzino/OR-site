@@ -30,7 +30,7 @@
       "nameFa": "آپاندیسیت",
       "nameEn": "Appendicitis",
       "otherNames": "التهاب آپاندیس؛ آپاندیس حاد",
-      "icd10": "K35",
+      "icd10": "K35 (حاد)",
       "specialty": "بیماری‌های گوارشی و جراحی عمومی — متخصص جراحی عمومی",
       "intro": "آپاندیسیت التهاب و عفونت آپاندیس است؛ یک زائده کوچک انگشتی‌شکل که به ابتدای روده بزرگ متصل است. این بیماری از شایع‌ترین علل جراحی اورژانسی شکم است و در صورت تأخیر درمان می‌تواند خطرناک شود.",
       "cause": "معمولاً انسداد (بسته شدن مسیر) داخل آپاندیس باعث رشد باکتری‌ها و التهاب می‌شود. انسداد می‌تواند ناشی از مدفوع سفت‌شده (فکالیت)، بزرگ‌شدن بافت لنفاوی در اثر عفونت یا به‌ندرت تومور باشد. در صورت ادامه، آپاندیس ممکن است پاره شود.",
@@ -1283,7 +1283,7 @@
       "prevention": "• شستشوی دست‌ها\n• پرهیز از استفاده مشترک ظروف\n• درمان عفونت استرپتوکوکی\n• پرهیز از سیگار",
       "complications": "• آبسه (کیسه چرکی) پریلوزهای\n• انسداد (بسته شدن مسیر) راه هوایی\n• تب روماتیسمی و بیماری قلبی روماتیسمی (در عفونت استرپتوکوکی)\n• گلومرولونفریت",
       "whenToSeeDoctor": "• گلودرد، تب یا دشواری بلع\n• اورژانس: آبریزش، عدم توانایی بلع، تنگی نفس یا سفتی گردن",
-      "sources": "• NHS: Tonsillitis (https://www.nhs.uk/conditions/tonsillitis/)\n• Mayo Clinic: Tonsillitis (https://www.mayoclinic.org/diseases-conditions/tonsillitis/symptoms-causes/syc-20351719)\n• AAO-HNS: Tonsillitis (https://www.entnet.org/health-information/tonsillitis/)\n• CDC: Tonsillitis (https://www.cdc.gov/group-a-strep/about/tonsillitis.html)"
+      "sources": "• NHS: Tonsillitis (https://www.nhs.uk/conditions/tonsillitis/)\n• Mayo Clinic: Tonsillitis (https://www.mayoclinic.org/diseases-conditions/tonsillitis/symptoms-causes/syc-20378479)\n• AAO-HNS: Tonsillitis (https://www.entnet.org/health-information/tonsillitis/)\n• CDC: Tonsillitis (https://www.cdc.gov/group-a-strep/about/tonsillitis.html)"
     },
     "rowNo": 56
   },
@@ -1916,7 +1916,7 @@
       "nameFa": "سیروز کبدی",
       "nameEn": "Cirrhosis",
       "otherNames": "سیروز کبدی؛ cirrhosis",
-      "icd10": "K74",
+      "icd10": "K74.6",
       "specialty": "دانشنامه بیماری‌ها — گوارش و کبد",
       "intro": "سیروز کبدی مرحله پیشرفته فیبروز (سخت شدن و زخمی شدن بافت) کبد است که با تشکیل بافت اسکار و ندول‌های بازساختی، عملکرد کبد مختل می‌شود. از علل مهم آن هپاتیت مزمن، الکل و کبد چرب است.",
       "cause": "سیروز کبدی مرحله نهایی زخم شدن (فیبروز) کبد است که می‌تواند ناشی از مصرف طولانی‌مدت الکل، هپاتیت مزمن B یا C، کبد چرب غیرالکلی و بیماری‌های خودایمنی (حمله اشتباه سیستم ایمنی به بدن) کبد باشد.",
@@ -1973,7 +1973,7 @@
       "prevention": "• محدود کردن لاکتوز\n• مکمل آنزیم لاکتاز (آنزیم هضم‌کننده قند شیر)\n• منابع کلسیم جایگزین",
       "complications": "• سوءتغذیه و کمبود کلسیم\n• کاهش کیفیت زندگی",
       "whenToSeeDoctor": "• نفخ، اسهال یا درد پس از لبنیات\n• اورژانس: کم‌آبی شدید یا کاهش وزن",
-      "sources": "• NIDDK: Lactose Intolerance (https://www.niddk.nih.gov/health-information/digestive-diseases/lactose-intolerance)\n• NHS: Lactose intolerance (https://www.nhs.uk/conditions/lactose-intolerance/)\n• Mayo Clinic: Lactose intolerance (https://www.mayoclinic.org/diseases-conditions/lactose-intolerance/symptoms-causes/syc-20374224)\n• NIH: Lactose Intolerance (https://www.niddk.nih.gov/health-information/digestive-diseases/lactose-intolerance)"
+      "sources": "• NIDDK: Lactose Intolerance (https://www.niddk.nih.gov/health-information/digestive-diseases/lactose-intolerance)\n• NHS: Lactose intolerance (https://www.nhs.uk/conditions/lactose-intolerance/)\n• Mayo Clinic: Lactose intolerance (https://www.mayoclinic.org/diseases-conditions/lactose-intolerance/symptoms-causes/syc-20374224)"
     },
     "rowNo": 86
   },
