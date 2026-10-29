@@ -61,7 +61,8 @@ get_header();
 				</figure>
 			<?php endif; ?>
 
-			<div class="orsite-article__layout">
+			<?php $orsite_layout_class = count( $toc_items ) >= 2 ? '' : ' orsite-article__layout--no-toc'; ?>
+			<div class="orsite-article__layout<?php echo esc_attr( $orsite_layout_class ); ?>">
 				<div class="entry-content orsite-article__content">
 					<?php echo $article_content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered post content. ?>
 					<?php

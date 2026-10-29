@@ -978,6 +978,23 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 	box-shadow: var(--bx-shadow-small);
 }
 
+/* ---------- Article without TOC ----------
+ * The desktop grid reserves a 19rem TOC column. When the article has fewer
+ * than two headings there is no TOC, so the empty column pushed the article
+ * to the reading-start side (right in RTL). Use one centred column instead. */
+@media (min-width: 992px) {
+	.orsite-article__layout.orsite-article__layout--no-toc {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.orsite-article__layout.orsite-article__layout--no-toc > .orsite-article__content {
+		grid-column: 1;
+		grid-row: 1;
+		margin-inline: auto;
+		width: 100%;
+	}
+}
+
 /* ---------- Responsive ---------- */
 
 @media (max-width: 991px) {
