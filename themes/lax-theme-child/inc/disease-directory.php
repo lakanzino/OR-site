@@ -104,9 +104,9 @@ function hj_disease_profile_keys() {
 	return array( 'nameFa', 'nameEn', 'otherNames', 'icd10', 'specialty', 'intro', 'cause', 'riskFactors', 'symptoms', 'diagnosis', 'treatment', 'prevention', 'complications', 'whenToSeeDoctor', 'sources' );
 }
 
-/** Sync profiles: create missing drafts, update profile meta on existing posts. Runs once per profile version. */
+/** Sync profiles: create missing drafts, update profile meta on existing posts. Runs once per profile data version (2 = 0.26.0 full Excel content). */
 function hj_sync_disease_profiles() {
-	if ( ! current_user_can( 'manage_options' ) || '1' === (string) get_option( 'hj_disease_profile_version', '0' ) || get_transient( 'hj_disease_profile_lock' ) ) {
+	if ( ! current_user_can( 'manage_options' ) || '2' === (string) get_option( 'hj_disease_profile_version', '0' ) || get_transient( 'hj_disease_profile_lock' ) ) {
 		return;
 	}
 	set_transient( 'hj_disease_profile_lock', 1, 120 );
@@ -144,7 +144,7 @@ function hj_sync_disease_profiles() {
 			}
 		}
 	}
-	if ( $complete ) { update_option( 'hj_disease_profile_version', '1', false ); }
+	if ( $complete ) { update_option( 'hj_disease_profile_version', '2', false ); }
 	delete_transient( 'hj_disease_profile_lock' );
 }
 add_action( 'admin_init', 'hj_sync_disease_profiles', 20 );
