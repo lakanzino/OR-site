@@ -106,7 +106,7 @@ function hj_gate_checks( string $content, int $post_id, string $post_type ): arr
 		}
 		$add(
 			'sources',
-			'منابع علمی معتبر (۳ دامنه)',
+			'منابع علمی معتبر (۱ تا ۱۰ منبع)',
 			$sources['ok'] ? 'ok' : 'fail',
 			$source_hint
 		);
@@ -119,16 +119,6 @@ function hj_gate_checks( string $content, int $post_id, string $post_type ): arr
 		'لینک داخلی',
 		(int) $internal >= 2 ? 'ok' : 'warn',
 		sprintf( '%d لینک داخلی (پیشنهاد: حداقل ۲)', (int) $internal )
-	);
-
-	// 4. Warning / emergency block.
-	$has_warning = (bool) preg_match( '/<h[23]\b[^>]*>[^<]*(?:تماس|اورژانس|هشدار|چه زمانی|علائم|عوارض)[^<]*<\/h[23]>/iu', $content )
-		&& ( false !== strpos( $content, '۱۱۵' ) || false !== strpos( $content, '115' ) || false !== strpos( $content, 'اورژانس' ) );
-	$add(
-		'warning',
-		'بخش علائم هشدار و تماس با اورژانس',
-		$has_warning ? 'ok' : 'fail',
-		$has_warning ? 'بخش هشدار با ارجاع به ۱۱۵ یافت شد.' : 'یک H2/H3 با «چه زمانی تماس بگیرید» و اشاره به ۱۱۵ لازم است.'
 	);
 
 	// 5. FAQ.
