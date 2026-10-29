@@ -122,7 +122,7 @@ function hj_gate_checks( string $content, int $post_id, string $post_type ): arr
 	);
 
 	// 4. Warning / emergency block.
-	$has_warning = (bool) preg_match( '/<h[23]\b[^>]*>[^<]*(?:تماس|اورژانس|هشدار)[^<]*<\/h[23]>/iu', $content )
+	$has_warning = (bool) preg_match( '/<h[23]\b[^>]*>[^<]*(?:تماس|اورژانس|هشدار|چه زمانی|علائم|عوارض)[^<]*<\/h[23]>/iu', $content )
 		&& ( false !== strpos( $content, '۱۱۵' ) || false !== strpos( $content, '115' ) || false !== strpos( $content, 'اورژانس' ) );
 	$add(
 		'warning',
@@ -226,6 +226,107 @@ function hj_gate_checks( string $content, int $post_id, string $post_type ): arr
 }
 
 /**
+ * Meta key that stores the administrator's override (block editor sidebar).
+ */
+const HJ_GATE_OVERRIDE_META = '_hj_gate_override';
+
+/**
+ * Whether an administrator asked to publish despite gate failures.
+ *
+ * Two routes: the classic meta-box checkbox (form POST with nonce) and the
+ * block-editor sidebar checkbox, which is saved as post meta through REST.
+ *
+ * @param int $post_id Post ID; 0 for a new post.
+ * @return bool
+ */
+function hj_gate_override_requested( int $post_id ): bool {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return false;
+	}
+	if ( ! empty( $_POST['hj_gate_override'] ) && isset( $_POST['hj_gate_nonce'] )
+		&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['hj_gate_nonce'] ) ), 'hj_gate_save' ) ) {
+		return true;
+	}
+	return $post_id > 0 && '1' === (string) get_post_meta( $post_id, HJ_GATE_OVERRIDE_META, true );
+}
+
+/**
+ * Register the override flag so the block editor can save it through REST.
+ *
+ * @return void
+ */
+function hj_gate_register_meta(): void {
+	foreach ( hj_gate_post_types() as $type ) {
+		register_post_meta(
+			$type,
+			HJ_GATE_OVERRIDE_META,
+			array(
+				'type'          => 'boolean',
+				'single'        => true,
+				'default'       => false,
+				'show_in_rest'  => true,
+				'auth_callback' => static function () {
+					return current_user_can( 'manage_options' );
+				},
+			)
+		);
+	}
+}
+add_action( 'init', 'hj_gate_register_meta' );
+
+/**
+ * Publish after REST save when the administrator set the override.
+ *
+ * The gate demotes the post inside wp_insert_post_data, before REST meta is
+ * written. This runs afterwards, so the meta flag is available.
+ *
+ * @param WP_Post         $post     Saved post.
+ * @param WP_REST_Request $request  REST request.
+ * @param bool            $creating Whether the post was created.
+ * @return void
+ */
+function hj_gate_rest_override( $post, $request, $creating ) {
+	if ( ! $post instanceof WP_Post || ! $request || 'publish' !== $request->get_param( 'status' ) ) {
+		return;
+	}
+	if ( 'publish' === $post->post_status || ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+	if ( '1' !== (string) get_post_meta( $post->ID, HJ_GATE_OVERRIDE_META, true ) ) {
+		return;
+	}
+	wp_update_post(
+		array(
+			'ID'          => $post->ID,
+			'post_status' => 'publish',
+		)
+	);
+	delete_post_meta( $post->ID, HJ_GATE_OVERRIDE_META );
+}
+foreach ( array( 'surgery', 'patient_guide' ) as $hj_gate_type ) {
+	add_action( "rest_after_insert_{$hj_gate_type}", 'hj_gate_rest_override', 10, 3 );
+}
+
+/**
+ * Load the sidebar checkbox in the block editor (administrators only).
+ *
+ * @return void
+ */
+function hj_gate_enqueue_override_panel(): void {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+	wp_enqueue_script(
+		'hj-gate-override',
+		get_stylesheet_directory_uri() . '/assets/js/publish-gate-override.js',
+		array( 'wp-plugins', 'wp-edit-post', 'wp-element', 'wp-components', 'wp-data', 'wp-compose' ),
+		LAX_THEME_CHILD_VERSION,
+		true
+	);
+}
+add_action( 'enqueue_block_editor_assets', 'hj_gate_enqueue_override_panel' );
+
+/**
  * Enforce the gate on a new publish.
  *
  * @param array $data    Slashed post data.
@@ -245,14 +346,7 @@ function hj_gate_enforce_on_publish( $data, $postarr ) {
 		return $data; // Never demote a live article while editing it.
 	}
 
-	$override = false;
-	if ( ! empty( $_POST['hj_gate_override'] ) && isset( $_POST['hj_gate_nonce'] )
-		&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['hj_gate_nonce'] ) ), 'hj_gate_save' )
-		&& current_user_can( 'manage_options' ) ) {
-		$override = true;
-	}
-
-	if ( $override ) {
+	if ( hj_gate_override_requested( $post_id ) ) {
 		return $data;
 	}
 
