@@ -106,7 +106,7 @@ function hj_disease_profile_keys() {
 
 /** Sync profiles: create missing drafts, update profile meta on existing posts. Runs once per profile data version (3 = 0.26.1 source and ICD fixes). */
 function hj_sync_disease_profiles() {
-	if ( ! current_user_can( 'manage_options' ) || '3' === (string) get_option( 'hj_disease_profile_version', '0' ) || get_transient( 'hj_disease_profile_lock' ) ) {
+	if ( ! current_user_can( 'manage_options' ) || '4' === (string) get_option( 'hj_disease_profile_version', '0' ) || get_transient( 'hj_disease_profile_lock' ) ) {
 		return;
 	}
 	set_transient( 'hj_disease_profile_lock', 1, 120 );
@@ -144,7 +144,7 @@ function hj_sync_disease_profiles() {
 			}
 		}
 	}
-	if ( $complete ) { update_option( 'hj_disease_profile_version', '3', false ); }
+	if ( $complete ) { update_option( 'hj_disease_profile_version', '4', false ); }
 	delete_transient( 'hj_disease_profile_lock' );
 }
 add_action( 'admin_init', 'hj_sync_disease_profiles', 20 );
