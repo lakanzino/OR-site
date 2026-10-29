@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.26.3
+Stable tag: 0.26.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.26.4 =
+* مقاله‌های بدون فهرست مطالب در نمای دسکتاپ وسط‌چین می‌شوند (به‌جای چسبیدن به سمت راست).
 
 = 0.26.3 =
 * الزام بازبینی پزشکی از قواعد و متن‌ها حذف شد (ADR-022).
