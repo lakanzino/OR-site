@@ -104,9 +104,9 @@ function hj_disease_profile_keys() {
 	return array( 'nameFa', 'nameEn', 'otherNames', 'icd10', 'specialty', 'intro', 'cause', 'riskFactors', 'symptoms', 'diagnosis', 'treatment', 'prevention', 'complications', 'whenToSeeDoctor', 'sources' );
 }
 
-/** Sync profiles: create missing drafts, update profile meta on existing posts. Runs once per profile version. */
+/** Sync profiles: create missing drafts, update profile meta on existing posts. Runs once per profile data version (2 = 0.26.0 full Excel content). */
 function hj_sync_disease_profiles() {
-	if ( ! current_user_can( 'manage_options' ) || '1' === (string) get_option( 'hj_disease_profile_version', '0' ) || get_transient( 'hj_disease_profile_lock' ) ) {
+	if ( ! current_user_can( 'manage_options' ) || '2' === (string) get_option( 'hj_disease_profile_version', '0' ) || get_transient( 'hj_disease_profile_lock' ) ) {
 		return;
 	}
 	set_transient( 'hj_disease_profile_lock', 1, 120 );
@@ -144,7 +144,7 @@ function hj_sync_disease_profiles() {
 			}
 		}
 	}
-	if ( $complete ) { update_option( 'hj_disease_profile_version', '1', false ); }
+	if ( $complete ) { update_option( 'hj_disease_profile_version', '2', false ); }
 	delete_transient( 'hj_disease_profile_lock' );
 }
 add_action( 'admin_init', 'hj_sync_disease_profiles', 20 );
@@ -164,4 +164,30 @@ function hj_disease_profile_lines( $text ) {
 		if ( '' !== $line ) { $lines[] = $line; }
 	}
 	return $lines;
+}
+
+/**
+ * Sources list: each line is "Title | https://url". Only https links on approved domains are linked;
+ * other lines show as plain text. Duplicate URLs are removed.
+ */
+function hj_disease_sources_html( $text ) {
+	$items = array();
+	$seen = array();
+	foreach ( hj_disease_profile_lines( $text ) as $line ) {
+		$label = $line;
+		$url = '';
+		if ( preg_match( '#^(.*?)\s*\|\s*(https://\S+)\s*$#u', $line, $m ) ) {
+			$label = trim( $m[1] );
+			$url = $m[2];
+		}
+		if ( '' === $label ) { continue; }
+		$host = $url ? wp_parse_url( $url, PHP_URL_HOST ) : '';
+		if ( $url && $host && '' !== hj_source_host_tier( $host ) && ! isset( $seen[ $url ] ) ) {
+			$seen[ $url ] = true;
+			$items[] = '<li><a href="' . esc_url( $url ) . '" target="_blank" rel="noopener noreferrer">' . esc_html( $label ) . '</a></li>';
+		} elseif ( ! $url ) {
+			$items[] = '<li>' . esc_html( $label ) . '</li>';
+		}
+	}
+	return $items ? '<ul>' . implode( '', $items ) . '</ul>' : '';
 }

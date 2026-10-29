@@ -71,7 +71,7 @@ get_header();
 	echo $hj_section( '', 'پیشگیری', $hj_list( 'prevention' ) );
 	echo $hj_section( 'hj-dn-warn-yellow', 'عوارض', $hj_list( 'complications' ) );
 	echo $hj_section( 'hj-dn-warn-red', 'چه زمانی به پزشک مراجعه کنیم؟', $hj_list( 'whenToSeeDoctor' ) );
-	echo $hj_section( 'hj-dn-ok', 'منابع پزشکی معتبر', $hj_list( 'sources' ) );
+	echo $hj_section( 'hj-dn-ok', 'منابع پزشکی معتبر', hj_disease_sources_html( $hj_p['sources'] ?? '' ) );
 	?>
 <?php else : ?>
 	<section class="hj-dn-box"><p class="hj-dn-pending">اطلاعات این بیماری در حال تکمیل و بازبینی پزشکی است.</p></section>
