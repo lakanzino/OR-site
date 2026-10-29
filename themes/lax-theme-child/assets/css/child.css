@@ -987,6 +987,13 @@ article.hentry.orsite-card-article + article.hentry.orsite-card-article {
 		grid-template-columns: minmax(0, 1fr);
 	}
 
+	/* Independent of the PHP class: if no TOC element is rendered (fewer than two
+	   headings, or the TOC was not printed for any reason), drop the TOC column.
+	   :has() is supported in Chrome/Edge 105+, Safari 15.4+, Firefox 121+. */
+	.orsite-article__layout:not(:has(> .orsite-toc)) {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
 	.orsite-article__layout.orsite-article__layout--no-toc > .orsite-article__content {
 		grid-column: 1;
 		grid-row: 1;
