@@ -26,7 +26,10 @@
 ### مرحلهٔ ۱ — پیش‌نویس باقی‌مانده‌ی نیمه‌کاره
 4. **`why-operating-room-is-sterile`** (راهنمای بیمار): ✅ بازنویسی شد (پیش‌نویس قبلی روی سایت خالی بود). گیت `content-lint` پاس شد. بسته‌ی ایمپورت: `releases/article-import-why-operating-room-is-sterile.zip`. منتظر ایمپورت و تأیید شما.
 
-### مرحلهٔ ۲ — فاز ۲ (۸ مقاله)
+### مرحلهٔ ۲ — فاز ۲ (۸ مقاله) — ✅ شش مقاله‌ی جراحی نوشته و گیت پاس شد؛ منتظر ایمپورت و تأیید
+- `prostate-turp-overview` / `-preparation` / `-recovery`: ZIP در `releases/article-import-prostate-turp-*.zip`.
+- `rhinoplasty-overview` / `-preparation` / `-recovery`: ZIP در `releases/article-import-rhinoplasty-*.zip`.
+- هر شش بسته با `tools/content-lint.py` پاس شده‌اند. متن پزشکی باید توسط تیم محتوا بازبینی شود.
 5. **جراحی پروستات TURP**: `prostate-turp-overview` → `-preparation` → `-recovery`.
 6. **رینوپلاستی**: `rhinoplasty-overview` → `-preparation` → `-recovery`.
 
