@@ -443,5 +443,10 @@
   "fa": "تیم درمان",
   "en": "The Surgical Team",
   "bg": "#e5f3f8"
+ },
+ "blood-donation-reserve-before-surgery": {
+  "fa": "اهدای خون قبل از عمل",
+  "en": "Blood Donation Before Surgery",
+  "bg": "#f3e9f9"
  }
 }
