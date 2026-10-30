@@ -16,6 +16,7 @@ from pathlib import Path
 
 # --- URLs that exist on the live site or inside the current batch -------------
 LIVE = {
+    "/patient-guide/",  # راهنمای بیمار (صفحهٔ ستون، زنده)
     "/patient-guide/glossary-surgical-terms/", "/patient-guide/what-is-operating-room/",
     "/patient-guide/surgical-care-team/", "/patient-guide/patient-journey/",
     "/patient-guide/operating-room-moment-by-moment/", "/patient-guide/general-anesthesia/",
