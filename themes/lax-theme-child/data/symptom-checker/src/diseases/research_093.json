@@ -1,0 +1,78 @@
+{
+  "id": "research_093",
+  "name_fa": "بزرگی خوش‌خیم پروستات",
+  "name_en": "Benign Prostatic Hyperplasia (BPH)",
+  "category": "بیماری‌های مجاری ادراری مردان",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "frequent_urine",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "تکرر ادرار",
+    "فوریت ادرار",
+    "بیدار شدن شبانه برای ادرار (نیکتوری)",
+    "جریان ضعیف ادرار",
+    "تأخیر در شروع ادرار",
+    "قطع و وصل شدن جریان",
+    "چکه‌کردن در پایان ادرار",
+    "احساس تخلیه ناقص مثانه",
+    "نیاز به زور زدن",
+    "احتباس ادرار ناگهانی"
+  ],
+  "when_to_see_doctor_fa": [
+    "بروز علائم ادراری مزاحم",
+    "خون در ادرار",
+    "تب یا درد هنگام ادرار",
+    "اورژانس: ناتوانی کامل در ادرار کردن"
+  ],
+  "summary_fa": "بزرگی خوش‌خیم پروستات (تخصص: اورولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Prostate Enlargement (BPH)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: BPH",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "MedlinePlus: BPH",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AUA Guideline: Management of BPH/LUTS",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

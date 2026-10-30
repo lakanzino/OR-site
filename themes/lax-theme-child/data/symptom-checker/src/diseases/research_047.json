@@ -1,0 +1,59 @@
+{
+  "id": "research_047",
+  "name_fa": "فلج اطفال",
+  "name_en": "Poliomyelitis / Polio",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [],
+  "symptoms_fa": [
+    "اغلب بدون علامت یا علائم خفیف گوارشی",
+    "مننژیت آسپتیک",
+    "فلج شل نامتقارن",
+    "در موارد شدید: نارسایی تنفسی (ناتوانی ریه در رساندن اکسیژن کافی)"
+  ],
+  "when_to_see_doctor_fa": [
+    "ضعف یا فلج اندام",
+    "اورژانس: علائم عصبی حاد (کوتاه‌مدت و ناگهانی)"
+  ],
+  "summary_fa": "فلج اطفال (تخصص: عفونی، اطفال). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Poliomyelitis (https://www.who.int/news-room/fact-sheets/detail/poliomyelitis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Polio (https://www.cdc.gov/polio/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Polio (https://www.nhs.uk/conditions/polio/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Polio (https://www.mayoclinic.org/diseases-conditions/polio/symptoms-causes/syc-20376567)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

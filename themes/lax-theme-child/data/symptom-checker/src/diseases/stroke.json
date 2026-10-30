@@ -1,0 +1,86 @@
+{
+  "id": "stroke",
+  "name_fa": "سکته مغزی",
+  "name_en": "Stroke",
+  "category": "مغز و اعصاب",
+  "prevalence": "common",
+  "urgency": "urgent",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "arm_jaw_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dizziness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "ضعف یا بی‌حسی ناگهانی صورت، بازو یا پا، اغلب یک‌طرفه",
+    "اختلال ناگهانی در تکلم یا درک کلام",
+    "تاری یا از دست رفتن ناگهانی بینایی، اغلب یک چشم",
+    "سردرد شدید و ناگهانی",
+    "سرگیجه، عدم تعادل یا اختلال راه رفتن",
+    "افتادگی صورت",
+    "گیجی یا کاهش هوشیاری"
+  ],
+  "when_to_see_doctor_fa": [
+    "ضعف یا بی‌حسی ناگهانی صورت، بازو یا پا، اغلب یک‌طرفه",
+    "اختلال ناگهانی تکلم یا درک کلام",
+    "تاری یا از دست رفتن ناگهانی بینایی",
+    "سردرد شدید و ناگهانی، سرگیجه یا عدم تعادل",
+    "اورژانس: علائم FAST؛ زمان طلایی را از دست ندهید"
+  ],
+  "summary_fa": "سکته مغزی (تخصص: متخصص مغز و اعصاب (نورولوژی)). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Stroke (https://www.who.int/news-room/fact-sheets/detail/stroke)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Stroke (https://www.cdc.gov/stroke/about/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Stroke (https://www.nhs.uk/conditions/stroke/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Stroke (https://www.mayoclinic.org/diseases-conditions/stroke/symptoms-causes/syc-20350113)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

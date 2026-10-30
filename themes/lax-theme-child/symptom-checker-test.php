@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 get_header();
 $hj_sc_base = get_stylesheet_directory_uri() . '/data/symptom-checker';
+$hj_sc_emergency = hj_sc_emergency_number();
 ?>
 <main id="primary" class="hj-sc-test">
 	<section class="hj-sc-hero">
@@ -18,10 +19,10 @@ $hj_sc_base = get_stylesheet_directory_uri() . '/data/symptom-checker';
 		<h1>چک‌کنندهٔ علائم</h1>
 		<p class="hj-sc-lead">با چند پرسش ساده، علائمتان را با بیماری‌های این مجموعه مقایسه می‌کنیم. این ابزار تشخیص نمی‌دهد.</p>
 		<div class="hj-sc-warning" role="note">
-			<strong>هشدار مهم:</strong> اگر علائم شدید یا ناگهانی است، همین حالا با اورژانس ۱۱۵ تماس بگیرید یا به نزدیک‌ترین اورژانس بروید. این ابزار جای مراجعه‌ی فوری را نمی‌گیرد.
+			<strong>هشدار مهم:</strong> اگر علائم شدید یا ناگهانی است، همین حالا با اورژانس <?php echo esc_html( $hj_sc_emergency ); ?> تماس بگیرید یا به نزدیک‌ترین اورژانس بروید. این ابزار جای مراجعه‌ی فوری را نمی‌گیرد.
 		</div>
 	</section>
-	<section id="hj-sc-app" class="hj-sc-app" data-base="<?php echo esc_attr( $hj_sc_base ); ?>" aria-live="polite">
+	<section id="hj-sc-app" class="hj-sc-app" data-base="<?php echo esc_attr( $hj_sc_base ); ?>" data-emergency="<?php echo esc_attr( $hj_sc_emergency ); ?>" aria-live="polite">
 		<noscript>برای استفاده از این ابزار، جاوااسکریپت باید فعال باشد.</noscript>
 	</section>
 </main>

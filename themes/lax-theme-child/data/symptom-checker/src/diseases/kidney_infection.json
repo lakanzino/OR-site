@@ -1,0 +1,98 @@
+{
+  "id": "kidney_infection",
+  "name_fa": "عفونت کلیه (پیلونفریت)",
+  "name_en": "Kidney infection / Pyelonephritis",
+  "category": "کلیه و ادرار",
+  "prevalence": "common",
+  "urgency": "soon",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "chills",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "flank_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "frequent_urine",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تب و لرز",
+    "درد پهلو",
+    "سوزش یا تکرر ادرار",
+    "تهوع و استفراغ",
+    "حساسیت در ناحیه پهلو هنگام لمس",
+    "خستگی"
+  ],
+  "when_to_see_doctor_fa": [
+    "تب و لرز، درد پهلو یا استفراغ",
+    "بارداری، نقص ایمنی یا گیجی",
+    "اورژانس: سپسیس یا افت فشار"
+  ],
+  "summary_fa": "عفونت کلیه (پیلونفریت) (تخصص: نفرولوژی، اورولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Kidney Infection (Pyelonephritis) (https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-infection-pyelonephritis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Kidney infection (https://www.nhs.uk/conditions/kidney-infection/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Kidney infection (https://www.mayoclinic.org/diseases-conditions/kidney-infection/symptoms-causes/syc-20353387)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Kidney Infection (https://www.cdc.gov/uti/about/kidney-infection.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

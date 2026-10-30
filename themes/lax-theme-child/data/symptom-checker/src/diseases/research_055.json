@@ -1,0 +1,67 @@
+{
+  "id": "research_055",
+  "name_fa": "شقاق مقعد",
+  "name_en": "Anal Fissure",
+  "category": "بیماری‌های مقعد و راست‌روده",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "درد تیز هنگام دفع که ممکن است دقایق تا ساعت‌ها پس از آن ادامه یابد",
+    "خون قرمز روشن روی مدفوع یا دستمال",
+    "ترک قابل مشاهده در پوست اطراف مقعد",
+    "خارش یا سوزش",
+    "برآمدگی کوچک پوست کنار ترک (تگ پوستی)"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد یا خونریزی هنگام دفع که بیش از چند هفته ادامه دارد",
+    "خونریزی شدید یا مکرر",
+    "درد شدید که مانع دفع می‌شود"
+  ],
+  "summary_fa": "شقاق مقعد (تخصص: جراحی عمومی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Anal Fissure",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Anal fissure",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "MedlinePlus: Anal fissure",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ASCRS Clinical Practice Guidelines: Anal Fissures",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

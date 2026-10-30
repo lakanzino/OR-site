@@ -1,0 +1,78 @@
+{
+  "id": "research_060",
+  "name_fa": "هپاتیت ای",
+  "name_en": "Hepatitis E",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "appetite",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "مشابه هپاتیت حاد (کوتاه‌مدت و ناگهانی): زردی، خستگی، تهوع، بی‌اشتهایی و ادرار تیره",
+    "در بارداری ممکن است شدید و خطرناک باشد"
+  ],
+  "when_to_see_doctor_fa": [
+    "زردی، خستگی یا تهوع",
+    "اورژانس: بارداری با علائم شدید یا گیجی"
+  ],
+  "summary_fa": "هپاتیت ای (تخصص: گوارش و کبد، عفونی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Hepatitis E (https://www.who.int/news-room/fact-sheets/detail/hepatitis-e)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Hepatitis E (https://www.cdc.gov/hepatitis-e/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NIDDK: Hepatitis E (https://www.niddk.nih.gov/health-information/liver-disease/viral-hepatitis/hepatitis-e)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Hepatitis E (https://www.nhs.uk/conditions/hepatitis-e/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

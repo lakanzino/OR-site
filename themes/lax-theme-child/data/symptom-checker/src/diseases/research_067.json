@@ -1,0 +1,73 @@
+{
+  "id": "research_067",
+  "name_fa": "کم‌خونی پرنیشیوز",
+  "name_en": "Pernicious anemia",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "خستگی",
+    "رنگ‌پریدگی",
+    "التهاب و قرمزی زبان",
+    "گزگز دست و پا",
+    "اختلال تعادل",
+    "کاهش تمرکز",
+    "زردی خفیف"
+  ],
+  "when_to_see_doctor_fa": [
+    "خستگی، رنگ‌پریدگی، گزگز یا اختلال تعادل",
+    "اورژانس: علائم عصبی پیش‌رونده"
+  ],
+  "summary_fa": "کم‌خونی پرنیشیوز (تخصص: خون (هماتولوژی)، گوارش و کبد). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Pernicious Anemia (https://www.niddk.nih.gov/health-information/blood-diseases/pernicious-anemia)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Vitamin B12 or folate deficiency anaemia (https://www.nhs.uk/conditions/vitamin-b12-or-folate-deficiency-anaemia/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Vitamin deficiency anemia (https://www.mayoclinic.org/diseases-conditions/vitamin-deficiency-anemia/symptoms-causes/syc-20355025)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "B12 Deficiency.org (https://www.b12deficiency.info/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

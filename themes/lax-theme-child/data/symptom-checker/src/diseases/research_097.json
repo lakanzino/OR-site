@@ -1,0 +1,65 @@
+{
+  "id": "research_097",
+  "name_fa": "واژینوز باکتریایی (به‌هم‌خوردن تعادل باکتری‌های واژن)",
+  "name_en": "Bacterial vaginosis (BV)",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "ترشح نازک و خاکستری",
+    "بوی ماهی‌مانند، به‌ویژه پس از رابطه جنسی",
+    "معمولاً خارش یا سوزش شدید ندارد",
+    "ممکن است بدون علامت باشد"
+  ],
+  "when_to_see_doctor_fa": [
+    "ترشح خاکستری با بوی ماهی",
+    "اورژانس: تب، درد لگنی یا بارداری"
+  ],
+  "summary_fa": "واژینوز باکتریایی (به‌هم‌خوردن تعادل باکتری‌های واژن) (تخصص: زنان و زایمان). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "CDC: Bacterial Vaginosis (https://www.cdc.gov/bacterial-vaginosis/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Bacterial vaginosis (https://www.nhs.uk/conditions/bacterial-vaginosis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Bacterial vaginosis (https://www.mayoclinic.org/diseases-conditions/bacterial-vaginosis/symptoms-causes/syc-20352211)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ACOG: Vaginitis (https://www.acog.org/womens-health/faqs/vaginitis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "id": "research_081",
+  "name_fa": "سرماخوردگی معمولی (سرماخوردگی)",
+  "name_en": "Common cold",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "cough",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "ear_nose",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "sore_throat",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "آبریزش بینی",
+    "گرفتگی بینی",
+    "گلودرد",
+    "عطسه",
+    "سرفه خفیف",
+    "تب خفیف",
+    "بی‌حالی"
+  ],
+  "when_to_see_doctor_fa": [
+    "آبریزش بینی، گلودرد، عطسه یا سرفه خفیف",
+    "اورژانس: تنگی نفس، تب بالا یا تشدید علائم"
+  ],
+  "summary_fa": "سرماخوردگی معمولی (سرماخوردگی) (تخصص: عفونی، پزشک عمومی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "CDC: Common Cold (https://www.cdc.gov/common-cold/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Common cold (https://www.nhs.uk/conditions/common-cold/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Common cold (https://www.mayoclinic.org/diseases-conditions/common-cold/symptoms-causes/syc-20351605)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAFP: Common Cold (https://www.aafp.org/pubs/afp/issues/2019/0815/p215.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

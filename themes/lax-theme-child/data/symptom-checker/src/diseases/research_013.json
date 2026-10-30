@@ -1,0 +1,75 @@
+{
+  "id": "research_013",
+  "name_fa": "نقرس",
+  "name_en": "Gout",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "flank_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "joint_pain",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "حمله ناگهانی درد شدید، قرمزی، گرمی و تورم یک مفصل، اغلب شست پا",
+    "درد بسیار شدید حتی با لمس ملافه",
+    "تب خفیف",
+    "در بیماری مزمن: توفی (رسوب اورات) و سنگ کلیه"
+  ],
+  "when_to_see_doctor_fa": [
+    "حمله درد شدید مفصل، اغلب شست پا",
+    "اورژانس: مفصل داغ با تب (رد عفونت)"
+  ],
+  "summary_fa": "نقرس (تخصص: روماتولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Gout (https://www.nhs.uk/conditions/gout/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Gout (https://www.mayoclinic.org/diseases-conditions/gout/symptoms-causes/syc-20372897)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ACR: Gout Guidelines (https://rheumatology.org/gout-guideline)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NIDDK: Gout (https://www.niddk.nih.gov/health-information/digestive-diseases/gout)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

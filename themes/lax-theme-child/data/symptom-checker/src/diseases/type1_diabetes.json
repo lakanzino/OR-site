@@ -1,0 +1,104 @@
+{
+  "id": "type1_diabetes",
+  "name_fa": "دیابت نوع ۱ (دیابت وابسته به انسولین)",
+  "name_en": "Type 1 diabetes",
+  "category": "غدد و متابولیسم",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "frequent_urine",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "thirst",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تشنگی شدید",
+    "تکرر ادرار",
+    "گرسنگی زیاد",
+    "کاهش وزن",
+    "خستگی",
+    "تاری دید",
+    "در موارد شدید: تهوع، استفراغ، درد شکم، تنفس عمیق و سریع و بوی میوه‌ای دهان (کتواسیدوز)"
+  ],
+  "when_to_see_doctor_fa": [
+    "تهوع، استفراغ، درد شکم، تنفس (دم و بازدم) عمیق و سریع یا بوی میوه‌ای دهان",
+    "گیجی، تشنج یا کاهش هوشیاری",
+    "اورژانس: کتواسیدوز (تجمع اسید در خون به علت کمبود انسولین) دیابتی"
+  ],
+  "summary_fa": "دیابت نوع ۱ (دیابت وابسته به انسولین) (تخصص: متخصص غدد درون‌ریز و متابولیسم). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Diabetes (https://www.who.int/news-room/fact-sheets/detail/diabetes)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NIDDK: Type 1 Diabetes (https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/type-1-diabetes)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Type 1 Diabetes (https://www.cdc.gov/diabetes/about/type-1-diabetes.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ADA: Standards of Care in Diabetes (https://diabetesjournals.org/care/issue/47/Supplement_1)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

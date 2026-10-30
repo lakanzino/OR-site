@@ -1,0 +1,65 @@
+{
+  "id": "research_089",
+  "name_fa": "زگیل پوستی معمولی (زگیل)",
+  "name_en": "Common cutaneous wart",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "برجستگی سخت و زبر پوستی",
+    "سطح کراتینه‌شده",
+    "در کف پا ممکن است دردناک باشد",
+    "گاهی چند زگیل کنار هم"
+  ],
+  "when_to_see_doctor_fa": [
+    "برجستگی سخت و زبر پوستی",
+    "اورژانس: تغییر رنگ، خونریزی یا درد"
+  ],
+  "summary_fa": "زگیل پوستی معمولی (زگیل) (تخصص: پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Warts and verrucas (https://www.nhs.uk/conditions/warts-and-verrucas/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Common warts (https://www.mayoclinic.org/diseases-conditions/common-warts/symptoms-causes/syc-20371125)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAD: Warts (https://www.aad.org/public/diseases/a-z/warts)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: HPV and Warts (https://www.cdc.gov/hpv/about/cancers-caused-by-hpv.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

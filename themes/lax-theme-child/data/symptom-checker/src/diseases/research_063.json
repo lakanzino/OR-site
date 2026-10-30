@@ -1,0 +1,72 @@
+{
+  "id": "research_063",
+  "name_fa": "گلومرولونفریت (التهاب گلومرول‌های کلیه)",
+  "name_en": "Glomerulonephritis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "blood_urine",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "خون در ادرار",
+    "پروتئین در ادرار",
+    "ورم، به‌ویژه صورت و پا",
+    "فشار خون بالا",
+    "کاهش ادرار",
+    "خستگی"
+  ],
+  "when_to_see_doctor_fa": [
+    "خون در ادرار، ورم یا فشار خون بالا",
+    "اورژانس: تنگی نفس، کاهش ادرار یا گیجی"
+  ],
+  "summary_fa": "گلومرولونفریت (التهاب گلومرول‌های کلیه) (تخصص: نفرولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Glomerulonephritis (https://www.niddk.nih.gov/health-information/kidney-disease/glomerulonephritis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Glomerulonephritis (https://www.nhs.uk/conditions/glomerulonephritis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Glomerulonephritis (https://www.mayoclinic.org/diseases-conditions/glomerulonephritis/symptoms-causes/syc-20355705)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "KDIGO Guidelines: Glomerulonephritis (https://kdigo.org/guidelines/glomerular-diseases/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

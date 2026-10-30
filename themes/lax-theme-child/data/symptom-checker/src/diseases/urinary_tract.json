@@ -1,0 +1,95 @@
+{
+  "id": "urinary_tract",
+  "name_fa": "عفونت مجاری ادراری",
+  "name_en": "Urinary tract infection (UTI)",
+  "category": "کلیه و ادرار",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "burning_urine",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "blood_urine",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "chills",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "flank_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "frequent_urine",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "سوزش یا درد هنگام ادرار",
+    "تکرر ادرار",
+    "فوریت ادرار",
+    "درد یا فشار در ناحیه مثانه",
+    "ادرار کدر یا بدبو",
+    "وجود خون در ادرار",
+    "در عفونت کلیه: تب، لرز و درد پهلو"
+  ],
+  "when_to_see_doctor_fa": [
+    "سوزش ادرار، تکرر یا خون در ادرار",
+    "تب و لرز، درد پهلو یا استفراغ",
+    "بارداری یا نقص ایمنی",
+    "اورژانس: تب بالا، گیجی یا افت فشار"
+  ],
+  "summary_fa": "عفونت مجاری ادراری (تخصص: اورولوژی، نفرولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Bladder Infection (UTI) in Adults (https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Urinary Tract Infection (https://www.cdc.gov/uti/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Urinary tract infections (UTIs) (https://www.nhs.uk/conditions/urinary-tract-infections-utis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Urinary tract infection (UTI) (https://www.mayoclinic.org/diseases-conditions/urinary-tract-infection/symptoms-causes/syc-20353447)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

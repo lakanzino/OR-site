@@ -1,0 +1,78 @@
+{
+  "id": "research_070",
+  "name_fa": "لوپوس اریتماتوی سیستمیک",
+  "name_en": "Systemic lupus erythematosus (SLE)",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "flank_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "خستگی",
+    "راش گونه‌ای (پروانه‌ای)",
+    "حساسیت به نور",
+    "آرتریت",
+    "التهاب پرده‌های ریه یا قلب",
+    "درگیری کلیه",
+    "کاهش سلول‌های خونی"
+  ],
+  "when_to_see_doctor_fa": [
+    "خستگی، راش، حساسیت به نور یا درد مفاصل",
+    "اورژانس: درگیری کلیه، تنگی نفس یا علائم عصبی"
+  ],
+  "summary_fa": "لوپوس اریتماتوی سیستمیک (تخصص: روماتولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Lupus (https://www.nhs.uk/conditions/lupus/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Lupus (https://www.mayoclinic.org/diseases-conditions/lupus/symptoms-causes/syc-20365789)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Lupus Foundation of America (https://www.lupus.org/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ACR Guidelines: Lupus (https://rheumatology.org/lupus-guideline)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

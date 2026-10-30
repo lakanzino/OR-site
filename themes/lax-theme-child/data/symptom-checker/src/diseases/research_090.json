@@ -1,0 +1,65 @@
+{
+  "id": "research_090",
+  "name_fa": "کهیر (کهیر پوستی)",
+  "name_en": "Urticaria / Hives",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "ورم‌های قرمز، برجسته و خارش‌دار (ویل)",
+    "ممکن است اندازه و محل آن‌ها تغییر کند",
+    "آنژیوادم (ورم عمقی پوست) در برخی موارد",
+    "خارش شدید"
+  ],
+  "when_to_see_doctor_fa": [
+    "کهیر خارش‌دار یا آنژیوادم (ورم عمقی پوست)",
+    "اورژانس: تنگی نفس، تورم صورت/گلو یا غش"
+  ],
+  "summary_fa": "کهیر (کهیر پوستی) (تخصص: پوست، آلرژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Urticaria (hives) (https://www.nhs.uk/conditions/urticaria/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Hives and angioedema (https://www.mayoclinic.org/diseases-conditions/hives-and-angioedema/symptoms-causes/syc-20355527)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAAAI: Urticaria (https://www.aaaai.org/conditions-treatments/allergies/urticaria-hives)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "EAACI/GA²LEN: Urticaria (https://www.eaaci.org/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

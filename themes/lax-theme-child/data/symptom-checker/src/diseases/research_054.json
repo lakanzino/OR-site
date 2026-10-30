@@ -1,0 +1,68 @@
+{
+  "id": "research_054",
+  "name_fa": "هموروئید (بواسیر)",
+  "name_en": "Hemorrhoids",
+  "category": "بیماری‌های گوارشی و مقعد",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "خون قرمز روشن و بدون درد هنگام دفع (روی دستمال یا داخل توالت)",
+    "خارش یا تحریک اطراف مقعد",
+    "درد یا ناراحتی، به‌ویژه هنگام نشستن",
+    "توده یا تورم اطراف مقعد",
+    "بیرون‌زدگی هموروئید داخلی (پرولاپس)",
+    "درد ناگهانی و شدید در هموروئید خارجی لخته‌شده (ترومبوزه)"
+  ],
+  "when_to_see_doctor_fa": [
+    "هرگونه خونریزی از مقعد باید توسط پزشک بررسی شود، چون سرطان روده نیز می‌تواند علائم مشابه داشته باشد",
+    "درد شدید یا توده سفت و دردناک",
+    "اورژانس: خونریزی شدید، سرگیجه یا غش"
+  ],
+  "summary_fa": "هموروئید (بواسیر) (تخصص: جراحی عمومی و کولوپروکتولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Hemorrhoids",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Hemorrhoids",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "MedlinePlus: Hemorrhoids",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ASCRS Clinical Practice Guidelines: Hemorrhoids",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

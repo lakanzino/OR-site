@@ -1,0 +1,100 @@
+{
+  "id": "kidney_stone",
+  "name_fa": "سنگ کلیه",
+  "name_en": "Kidney Stones (Nephrolithiasis)",
+  "category": "بیماری‌های کلیه و مجاری ادراری",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "chills",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "flank_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "frequent_urine",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "درد شدید در پهلو و پشت زیر دنده‌ها که به شکم پایین و کشاله ران کشیده می‌شود و موج‌وار است",
+    "درد یا سوزش هنگام ادرار",
+    "ادرار صورتی، قرمز یا قهوه‌ای",
+    "ادرار کدر یا بدبو",
+    "تکرر و فوریت ادرار",
+    "تهوع و استفراغ",
+    "تب و لرز در صورت عفونت",
+    "برخی سنگ‌ها بدون علامت‌اند"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد شدید پهلو",
+    "خون در ادرار",
+    "اورژانس: تب و لرز با درد، ناتوانی در ادرار، استفراغ مداوم یا درد غیرقابل تحمل"
+  ],
+  "summary_fa": "سنگ کلیه (تخصص: اورولوژی، نفرولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Kidney Stones",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Kidney stones",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "MedlinePlus: Kidney Stones",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AUA Guideline: Surgical Management of Stones",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

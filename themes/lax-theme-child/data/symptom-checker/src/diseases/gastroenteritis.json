@@ -1,0 +1,88 @@
+{
+  "id": "gastroenteritis",
+  "name_fa": "التهاب معده و روده (گاستروانتریت)",
+  "name_en": "Gastroenteritis",
+  "category": "گوارش و کبد",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "اسهال",
+    "استفراغ",
+    "تهوع",
+    "درد یا کرامپ شکم",
+    "تب",
+    "نشانه‌های کم‌آبی مانند خشکی دهان، کاهش ادرار و ضعف"
+  ],
+  "when_to_see_doctor_fa": [
+    "اسهال خونی، تب بالا یا استفراغ مداوم",
+    "کم‌آبی شدید، خشکی دهان، کاهش ادرار یا گیجی",
+    "اورژانس: عدم توانایی نوشیدن یا ضعف شدید"
+  ],
+  "summary_fa": "التهاب معده و روده (گاستروانتریت) (تخصص: متخصص گوارش و کبد). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Gastroenteritis (https://www.niddk.nih.gov/health-information/digestive-diseases/gastroenteritis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Norovirus (https://www.cdc.gov/norovirus/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Diarrhoea and vomiting (https://www.nhs.uk/conditions/diarrhoea-and-vomiting/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Gastroenteritis (https://www.mayoclinic.org/diseases-conditions/gastroenteritis/symptoms-causes/syc-20353041)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

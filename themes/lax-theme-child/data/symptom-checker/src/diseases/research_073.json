@@ -1,0 +1,60 @@
+{
+  "id": "research_073",
+  "name_fa": "اسکیزوفرنی (شیزوفرنی)",
+  "name_en": "Schizophrenia",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [],
+  "symptoms_fa": [
+    "هذیان",
+    "توهم",
+    "گفتار یا رفتار آشفته",
+    "علائم منفی مانند بی‌انگیزگی و کناره‌گیری",
+    "اختلال در عملکرد اجتماعی و شغلی"
+  ],
+  "when_to_see_doctor_fa": [
+    "هذیان، توهم، گفتار آشفته یا کناره‌گیری",
+    "اورژانس: خطر خودکشی، پرخاشگری یا بی‌خانمانی"
+  ],
+  "summary_fa": "اسکیزوفرنی (شیزوفرنی) (تخصص: روان‌پزشکی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Schizophrenia (https://www.who.int/news-room/fact-sheets/detail/schizophrenia)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NIMH: Schizophrenia (https://www.nimh.nih.gov/health/topics/schizophrenia)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Schizophrenia (https://www.nhs.uk/mental-health/conditions/schizophrenia/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Schizophrenia (https://www.mayoclinic.org/diseases-conditions/schizophrenia/symptoms-causes/syc-20354443)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

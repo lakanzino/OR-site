@@ -1,0 +1,60 @@
+{
+  "id": "research_014",
+  "name_fa": "پوکی استخوان",
+  "name_en": "Osteoporosis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [],
+  "symptoms_fa": [
+    "معمولاً بدون علامت تا زمان شکستگی",
+    "کاهش قد",
+    "قوز پشتی",
+    "شکستگی‌های fragility در مچ، ستون فقرات یا لگن",
+    "درد پشت فقط در صورت شکستگی مهره‌ای"
+  ],
+  "when_to_see_doctor_fa": [
+    "شکستگی، درد پشت یا کاهش قد",
+    "اورژانس: پس از زمین‌خوردن یا شکستگی"
+  ],
+  "summary_fa": "پوکی استخوان (تخصص: روماتولوژی، غدد). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Osteoporosis (https://www.who.int/news-room/fact-sheets/detail/osteoporosis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Osteoporosis (https://www.nhs.uk/conditions/osteoporosis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Osteoporosis (https://www.mayoclinic.org/diseases-conditions/osteoporosis/symptoms-causes/syc-20351968)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NOF: Osteoporosis (https://www.nof.org/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

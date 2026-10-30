@@ -1,0 +1,95 @@
+{
+  "id": "research_021",
+  "name_fa": "مننژیت (التهاب پرده‌های مغز)",
+  "name_en": "Meningitis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "urgent",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "neck_stiff",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تب",
+    "سردرد شدید",
+    "سفتی گردن",
+    "حساسیت به نور",
+    "تهوع و استفراغ",
+    "کاهش هوشیاری یا گیجی",
+    "در مننژیت مننگوکوکی: بثورات پوستی",
+    "تشنج"
+  ],
+  "when_to_see_doctor_fa": [
+    "تب، سردرد شدید، سفتی گردن یا حساسیت به نور",
+    "گیجی، تشنج یا بثورات",
+    "اورژانس: مننژیت"
+  ],
+  "summary_fa": "مننژیت (التهاب پرده‌های مغز) (تخصص: عفونی، مغز و اعصاب). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Meningitis (https://www.who.int/news-room/fact-sheets/detail/meningitis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Meningitis (https://www.cdc.gov/meningitis/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Meningitis (https://www.nhs.uk/conditions/meningitis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Meningitis (https://www.mayoclinic.org/diseases-conditions/meningitis/symptoms-causes/syc-20350508)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

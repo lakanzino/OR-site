@@ -1,0 +1,71 @@
+{
+  "id": "research_046",
+  "name_fa": "سرخجه",
+  "name_en": "Rubella",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "تب خفیف",
+    "بثورات ماکولوپاپولار (بثورات تخت و برجسته)",
+    "بزرگ‌شدن غدد لنفاوی",
+    "درد مفاصل",
+    "در عفونت مادرزادی: ناهنجاری‌های چشمی، شنوایی و قلبی"
+  ],
+  "when_to_see_doctor_fa": [
+    "بثورات و تب، به‌ویژه در بارداری",
+    "اورژانس: مواجهه بارداری با فرد مبتلا"
+  ],
+  "summary_fa": "سرخجه (تخصص: عفونی، اطفال). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Rubella (https://www.who.int/news-room/fact-sheets/detail/rubella)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Rubella (https://www.cdc.gov/rubella/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Rubella (https://www.nhs.uk/conditions/rubella/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Rubella (https://www.mayoclinic.org/diseases-conditions/rubella/symptoms-causes/syc-20377335)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "id": "research_026",
+  "name_fa": "درماتیت آتوپیک (اگزمای آتوپیک)",
+  "name_en": "Atopic dermatitis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "خارش شدید",
+    "خشکی پوست",
+    "قرمزی و بثورات",
+    "ضخیم‌شدن پوست در اثر خارش مزمن (طولانی‌مدت)",
+    "درگیری نواحی تاشو مانند آرنج و زانو"
+  ],
+  "when_to_see_doctor_fa": [
+    "خارش شدید، عفونت یا اختلال خواب",
+    "اورژانس: تب، قرمزی گسترده یا تاول"
+  ],
+  "summary_fa": "درماتیت آتوپیک (اگزمای آتوپیک) (تخصص: پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Atopic eczema (https://www.nhs.uk/conditions/atopic-eczema/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Atopic dermatitis (eczema) (https://www.mayoclinic.org/diseases-conditions/atopic-dermatitis-eczema/symptoms-causes/syc-20353273)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NIAID: Atopic Dermatitis (https://www.niaid.nih.gov/diseases-conditions/atopic-dermatitis-eczema)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAD: Eczema (https://www.aad.org/public/diseases/eczema)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

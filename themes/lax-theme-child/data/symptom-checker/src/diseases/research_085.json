@@ -1,0 +1,66 @@
+{
+  "id": "research_085",
+  "name_fa": "عفونت قارچی پوست پا (قارچ پا، پای ورزشکار)",
+  "name_en": "Tinea pedis / Athlete’s foot",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "خارش بین انگشتان پا",
+    "پوسته‌ریزی",
+    "ترک و پوسته‌شدن بین انگشتان",
+    "تاول",
+    "در موارد شدید: درد یا عفونت ثانویه"
+  ],
+  "when_to_see_doctor_fa": [
+    "خارش، پوسته‌ریزی یا ترک بین انگشتان پا",
+    "اورژانس: قرمزی گسترده، تب یا دیابت"
+  ],
+  "summary_fa": "عفونت قارچی پوست پا (قارچ پا، پای ورزشکار) (تخصص: پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "CDC: Ringworm (Tinea) (https://www.cdc.gov/ringworm/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Athlete's foot (https://www.nhs.uk/conditions/athletes-foot/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Athlete's foot (https://www.mayoclinic.org/diseases-conditions/athletes-foot/symptoms-causes/syc-20353864)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAD: Athlete's Foot (https://www.aad.org/public/diseases/a-z/athletes-foot)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "id": "research_019",
+  "name_fa": "عفونت اچ‌آی‌وی",
+  "name_en": "HIV infection",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sore_throat",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "در عفونت حاد (کوتاه‌مدت و ناگهانی): علائم شبیه آنفولانزا، تب، گلودرد، بثورات و بزرگ‌شدن غدد لنفاوی",
+    "در مرحله مزمن (طولانی‌مدت) ممکن است سال‌ها بدون علامت باشد",
+    "در ایدز (مرحله پیشرفته عفونت HIV): عفونت‌های فرصت‌طلب، کاهش وزن و خستگی شدید"
+  ],
+  "when_to_see_doctor_fa": [
+    "مواجهه پرخطر، تب، بثورات یا گلودرد",
+    "اورژانس: علائم عفونت فرصت‌طلب یا تنگی نفس"
+  ],
+  "summary_fa": "عفونت اچ‌آی‌وی (تخصص: عفونی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: HIV/AIDS (https://www.who.int/news-room/fact-sheets/detail/hiv-aids)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: HIV Basics (https://www.cdc.gov/hiv/basics/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: HIV and AIDS (https://www.nhs.uk/conditions/hiv-and-aids/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: HIV/AIDS (https://www.mayoclinic.org/diseases-conditions/hiv-aids/symptoms-causes/syc-20373524)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

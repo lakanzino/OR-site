@@ -1,0 +1,67 @@
+{
+  "id": "research_012",
+  "name_fa": "استئوآرتریت (آرتروز)",
+  "name_en": "Osteoarthritis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "joint_pain",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "درد مفصل که با فعالیت بدتر و با استراحت بهتر می‌شود",
+    "خشکی کوتاه‌مدت پس از بیدار شدن",
+    "صدای ساییدگی مفصل",
+    "محدودیت حرکت",
+    "بزرگ‌شدن استخوانی مفصل",
+    "تورم خفیف"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد مفصل محدودکننده فعالیت",
+    "اورژانس: مفصل داغ و متورم با تب یا پس از ضربه"
+  ],
+  "summary_fa": "استئوآرتریت (آرتروز) (تخصص: ارتوپدی، روماتولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Osteoarthritis (https://www.nhs.uk/conditions/osteoarthritis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Osteoarthritis (https://www.mayoclinic.org/diseases-conditions/osteoarthritis/symptoms-causes/syc-20351925)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Osteoarthritis (https://www.cdc.gov/arthritis/about/osteoarthritis.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "OARSI Guidelines: Osteoarthritis (https://oarsi.org/guidelines)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

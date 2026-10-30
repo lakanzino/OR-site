@@ -1,0 +1,98 @@
+{
+  "id": "research_048",
+  "name_fa": "هپاتیت آ",
+  "name_en": "Hepatitis A",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "appetite",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تب",
+    "خستگی",
+    "تهوع و استفراغ",
+    "زردی",
+    "ادرار تیره",
+    "درد سمت راست بالای شکم",
+    "بی‌اشتهایی"
+  ],
+  "when_to_see_doctor_fa": [
+    "زردی، خستگی، تهوع یا ادرار تیره",
+    "اورژانس: گیجی، استفراغ مداوم یا اختلال انعقاد"
+  ],
+  "summary_fa": "هپاتیت آ (تخصص: گوارش و کبد، عفونی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Hepatitis A (https://www.who.int/news-room/fact-sheets/detail/hepatitis-a)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Hepatitis A (https://www.cdc.gov/hepatitis-a/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NIDDK: Hepatitis A (https://www.niddk.nih.gov/health-information/liver-disease/viral-hepatitis/hepatitis-a)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Hepatitis A (https://www.nhs.uk/conditions/hepatitis-a/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

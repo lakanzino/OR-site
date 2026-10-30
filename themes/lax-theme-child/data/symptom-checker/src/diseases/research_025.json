@@ -1,0 +1,73 @@
+{
+  "id": "research_025",
+  "name_fa": "التهاب ملتحمه چشم",
+  "name_en": "Conjunctivitis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "قرمزی چشم",
+    "ترشح چشم",
+    "احساس سوزش یا شن در چشم",
+    "آبریزش",
+    "حساسیت به نور",
+    "در نوع آلرژیک: خارش شدید"
+  ],
+  "when_to_see_doctor_fa": [
+    "قرمزی چشم با درد شدید، کاهش بینایی یا حساسیت به نور",
+    "استفاده از لنز تماسی",
+    "اورژانس: علائم قرنیه"
+  ],
+  "summary_fa": "التهاب ملتحمه چشم (تخصص: چشم‌پزشکی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Conjunctivitis (https://www.nhs.uk/conditions/conjunctivitis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Conjunctivitis (https://www.mayoclinic.org/diseases-conditions/pink-eye/symptoms-causes/syc-20376355)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Conjunctivitis (Pink Eye) (https://www.cdc.gov/conjunctivitis/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAO: Conjunctivitis (https://www.aao.org/eye-health/diseases/pink-eye-conjunctivitis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

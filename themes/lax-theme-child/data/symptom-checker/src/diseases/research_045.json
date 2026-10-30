@@ -1,0 +1,72 @@
+{
+  "id": "research_045",
+  "name_fa": "اوریون",
+  "name_en": "Mumps",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "تورم دردناک غدد بزاقی، به‌ویژه پاروتید",
+    "تب",
+    "سردرد",
+    "درد عضلانی",
+    "در پسران نوجوان: ارکیت",
+    "در برخی موارد: مننژیت"
+  ],
+  "when_to_see_doctor_fa": [
+    "تورم غدد بزاقی، تب یا درد بیضه",
+    "اورژانس: سردرد شدید، سفتی گردن یا درد شدید بیضه"
+  ],
+  "summary_fa": "اوریون (تخصص: عفونی، اطفال). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Mumps (https://www.who.int/news-room/fact-sheets/detail/mumps)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Mumps (https://www.cdc.gov/mumps/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Mumps (https://www.nhs.uk/conditions/mumps/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Mumps (https://www.mayoclinic.org/diseases-conditions/mumps/symptoms-causes/syc-20375361)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

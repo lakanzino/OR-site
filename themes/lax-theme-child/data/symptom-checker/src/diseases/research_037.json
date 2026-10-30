@@ -1,0 +1,74 @@
+{
+  "id": "research_037",
+  "name_fa": "سندرم کوشینگ",
+  "name_en": "Cushing syndrome",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sore_throat",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "چاقی مرکزی",
+    "صورت گرد (ماه‌صورت)",
+    "قوز پشت گردن",
+    "خطوط پوستی بنفش",
+    "ضعف عضلانی",
+    "فشار خون بالا",
+    "افزایش قند خون (میزان گلوکز در خون)",
+    "نازک‌شدن پوست و کبودی آسان"
+  ],
+  "when_to_see_doctor_fa": [
+    "چاقی مرکزی، ضعف عضلانی یا فشار خون بالا",
+    "اورژانس: عفونت، شکستگی یا ضعف شدید"
+  ],
+  "summary_fa": "سندرم کوشینگ (تخصص: غدد درون‌ریز و متابولیسم). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Cushing's Syndrome (https://www.niddk.nih.gov/health-information/endocrine-diseases/cushings-syndrome)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Cushing's syndrome (https://www.nhs.uk/conditions/cushings-syndrome/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Cushing syndrome (https://www.mayoclinic.org/diseases-conditions/cushing-syndrome/symptoms-causes/syc-20351310)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Endocrine Society: Cushing's Syndrome (https://www.endocrine.org/patient-engagement/endocrine-library/cushings-syndrome)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

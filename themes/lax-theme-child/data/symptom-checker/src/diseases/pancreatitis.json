@@ -1,0 +1,89 @@
+{
+  "id": "pancreatitis",
+  "name_fa": "پانکراتیت حاد",
+  "name_en": "Acute Pancreatitis",
+  "category": "بیماری‌های گوارشی",
+  "prevalence": "common",
+  "urgency": "soon",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "درد ناگهانی در بالای شکم که اغلب به پشت کشیده می‌شود",
+    "تشدید درد پس از غذا",
+    "تهوع و استفراغ",
+    "تب",
+    "ضربان قلب سریع",
+    "حساسیت شکم",
+    "نفخ",
+    "در موارد شدید: تنگی نفس، افت فشار خون، کم‌آبی"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد شدید و مداوم بالای شکم، به‌ویژه با تهوع و استفراغ؛ نیاز به مراجعه فوری",
+    "اورژانس: تب، تنگی نفس، گیجی، افت فشار یا زردی"
+  ],
+  "summary_fa": "پانکراتیت حاد (تخصص: گوارش و کبد، جراحی عمومی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Acute Pancreatitis",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Pancreatitis",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "MedlinePlus: Pancreatitis",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ACG Guideline: Acute Pancreatitis",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

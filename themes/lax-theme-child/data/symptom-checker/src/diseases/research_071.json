@@ -1,0 +1,74 @@
+{
+  "id": "research_071",
+  "name_fa": "اختلال افسردگی اساسی (افسردگی)",
+  "name_en": "Major depressive disorder",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "arm_jaw_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "خلق افسرده",
+    "از دست رفتن لذت",
+    "اختلال خواب",
+    "تغییر اشتها",
+    "خستگی",
+    "کاهش تمرکز",
+    "احساس گناه یا بی‌ارزشی",
+    "افکار خودکشی"
+  ],
+  "when_to_see_doctor_fa": [
+    "خلق افسرده، بی‌لذتی یا اختلال خواب",
+    "اورژانس: افکار خودکشی، روان‌پریشی یا ناتوانی در مراقبت از خود"
+  ],
+  "summary_fa": "اختلال افسردگی اساسی (افسردگی) (تخصص: روان‌پزشکی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Depression (https://www.who.int/news-room/fact-sheets/detail/depression)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NIMH: Depression (https://www.nimh.nih.gov/health/topics/depression)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Depression (https://www.nhs.uk/mental-health/conditions/depression-in-adults/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Depression (major depressive disorder) (https://www.mayoclinic.org/diseases-conditions/depression/symptoms-causes/syc-20356007)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

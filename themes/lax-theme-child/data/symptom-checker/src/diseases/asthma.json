@@ -1,0 +1,79 @@
+{
+  "id": "asthma",
+  "name_fa": "آسم",
+  "name_en": "Asthma",
+  "category": "ریه و تنفس",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "chest_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "cough",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "خس‌خس سینه",
+    "سرفه، به‌ویژه شب‌ها یا صبح زود",
+    "تنگی نفس",
+    "احساس فشار یا سفتی قفسه سینه",
+    "علائم متغیر و دوره‌ای",
+    "تشدید با ورزش، آلرژن، عفونت ویروسی یا هوای سرد"
+  ],
+  "when_to_see_doctor_fa": [
+    "تنگی نفس شدید، ناتوانی در صحبت کردن، خس‌خس شدید یا سیانوز",
+    "عدم پاسخ به اسپری تسکین‌دهنده",
+    "خواب‌آلودگی، گیجی یا خستگی شدید",
+    "اورژانس: حملات شدید یا وضعیت آسم"
+  ],
+  "summary_fa": "آسم (تخصص: متخصص ریه (پولمونولوژی)). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Asthma (https://www.who.int/news-room/fact-sheets/detail/asthma)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Asthma (https://www.mayoclinic.org/diseases-conditions/asthma/symptoms-causes/syc-20369653)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Asthma (https://www.nhs.uk/conditions/asthma/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "GINA Guidelines: Asthma (https://ginasthma.org/reports/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

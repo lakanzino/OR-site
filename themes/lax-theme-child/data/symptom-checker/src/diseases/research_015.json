@@ -1,0 +1,69 @@
+{
+  "id": "research_015",
+  "name_fa": "ام‌اس (اسکلروز چندگانه)",
+  "name_en": "Multiple sclerosis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "خستگی",
+    "اختلال حسی یا گزگز",
+    "نوریت بینایی (التهاب عصب بینایی)",
+    "ضعف عضلانی",
+    "سفتی و اسپاسم (انقباض ناگهانی عضله)",
+    "اختلال تعادل و راه رفتن",
+    "اختلال مثانه یا روده",
+    "مشکلات شناختی"
+  ],
+  "when_to_see_doctor_fa": [
+    "اختلال حسی، ضعف، تاری دید یا اختلال مثانه/روده",
+    "اورژانس: علائم عصبی جدید یا تشدید سریع"
+  ],
+  "summary_fa": "ام‌اس (اسکلروز چندگانه) (تخصص: مغز و اعصاب). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Multiple sclerosis (https://www.who.int/news-room/fact-sheets/detail/multiple-sclerosis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Multiple sclerosis (https://www.nhs.uk/conditions/multiple-sclerosis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Multiple sclerosis (https://www.mayoclinic.org/diseases-conditions/multiple-sclerosis/symptoms-causes/syc-20354022)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NMSS: Multiple Sclerosis (https://www.nationalmssociety.org/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

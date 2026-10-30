@@ -1,0 +1,81 @@
+{
+  "id": "hypothyroidism",
+  "name_fa": "کم‌کاری تیروئید",
+  "name_en": "Hypothyroidism",
+  "category": "غدد و متابولیسم",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "constipation",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "خستگی و بی‌حالی",
+    "افزایش وزن",
+    "عدم تحمل سرما",
+    "یبوست",
+    "خشکی پوست و مو",
+    "ریزش مو",
+    "کندی ضربان قلب",
+    "افسردگی یا کاهش تمرکز",
+    "اختلالات قاعدگی",
+    "تورم صورت یا پف‌کردگی"
+  ],
+  "when_to_see_doctor_fa": [
+    "خستگی شدید، افزایش وزن، یبوست یا عدم تحمل سرما",
+    "اورژانس: گیجی، کاهش دمای بدن، تنفس کند، افت فشار (کمای میکسدم)"
+  ],
+  "summary_fa": "کم‌کاری تیروئید (تخصص: متخصص غدد درون‌ریز و متابولیسم). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Hypothyroidism (https://www.niddk.nih.gov/health-information/endocrine-diseases/hypothyroidism)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Hypothyroidism (https://www.mayoclinic.org/diseases-conditions/hypothyroidism/symptoms-causes/syc-20350284)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Underactive thyroid (https://www.nhs.uk/conditions/underactive-thyroid-hypothyroidism/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ATA Guidelines: Hypothyroidism (https://www.thyroid.org/hypothyroidism/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

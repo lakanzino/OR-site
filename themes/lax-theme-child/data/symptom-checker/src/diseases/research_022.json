@@ -1,0 +1,72 @@
+{
+  "id": "research_022",
+  "name_fa": "عفونت حاد گوش میانی",
+  "name_en": "Acute otitis media",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "ear_nose",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "درد گوش",
+    "تب",
+    "بی‌قراری یا گریه در کودکان",
+    "کاهش شنوایی",
+    "ترشح از گوش",
+    "برجستگی پرده صماخ (پرده گوش میانی) در معاینه"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد گوش، تب یا کاهش شنوایی",
+    "اورژانس: تورم پشت گوش، ضعف صورت یا گیجی"
+  ],
+  "summary_fa": "عفونت حاد گوش میانی (تخصص: گوش، حلق و بینی، اطفال). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Ear infection (middle ear) (https://www.nhs.uk/conditions/ear-infections/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Ear infection (middle ear) (https://www.mayoclinic.org/diseases-conditions/ear-infections/symptoms-causes/syc-20351616)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAP: Acute Otitis Media (https://publications.aap.org/pediatrics/article/131/3/e964/30912/The-Diagnosis-and-Management-of-Acute-Otitis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Ear Infection (https://www.cdc.gov/antibiotic-use/ear-infection.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

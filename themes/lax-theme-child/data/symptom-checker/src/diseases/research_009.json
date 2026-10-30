@@ -1,0 +1,104 @@
+{
+  "id": "research_009",
+  "name_fa": "مالاریا",
+  "name_en": "Malaria",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "chills",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "sweating",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تب دوره‌ای با لرز و تعریق",
+    "سردرد",
+    "درد عضلانی",
+    "تهوع و استفراغ",
+    "کم‌خونی",
+    "زردی",
+    "در مالاریا شدید: گیجی، تشنج، تنگی نفس و نارسایی اندام"
+  ],
+  "when_to_see_doctor_fa": [
+    "تب پس از سفر به منطقه مالاریاخیز",
+    "گیجی، تشنج، تنگی نفس یا ادرار تیره",
+    "اورژانس: مالاریای شدید"
+  ],
+  "summary_fa": "مالاریا (تخصص: عفونی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Malaria (https://www.who.int/news-room/fact-sheets/detail/malaria)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Malaria (https://www.cdc.gov/malaria/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Malaria (https://www.nhs.uk/conditions/malaria/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Malaria (https://www.mayoclinic.org/diseases-conditions/malaria/symptoms-causes/syc-20351184)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": "research_008",
+  "name_fa": "آبله‌مرغان",
+  "name_en": "Chickenpox / Varicella",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "بثورات خارش‌دار تاولی که در چند مرحله ظاهر می‌شوند",
+    "تب",
+    "بی‌حالی",
+    "سردرد",
+    "کاهش اشتها"
+  ],
+  "when_to_see_doctor_fa": [
+    "بثورات تاولی با تنگی نفس، درد قفسه سینه یا گیجی",
+    "بارداری، نقص ایمنی یا کم‌آبی شدید",
+    "اورژانس: عفونت ثانویه یا علائم عصبی"
+  ],
+  "summary_fa": "آبله‌مرغان (تخصص: عفونی، پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "CDC: Chickenpox (Varicella) (https://www.cdc.gov/chickenpox/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Chickenpox (https://www.nhs.uk/conditions/chickenpox/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Chickenpox (https://www.mayoclinic.org/diseases-conditions/chickenpox/symptoms-causes/syc-20351282)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "WHO: Varicella (https://www.who.int/teams/health-product-policy-and-standards/standards-and-specifications/vaccine-standardization/varicella)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

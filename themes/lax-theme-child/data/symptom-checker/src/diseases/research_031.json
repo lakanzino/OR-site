@@ -1,0 +1,60 @@
+{
+  "id": "research_031",
+  "name_fa": "آب‌مروارید",
+  "name_en": "Cataract",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [],
+  "symptoms_fa": [
+    "تاری تدریجی و بدون درد بینایی",
+    "حساسیت به نور و پخش شدن نور",
+    "هاله دور نور",
+    "رنگ‌ها کم‌رنگ به نظر می‌رسند",
+    "مشکل در دید شب"
+  ],
+  "when_to_see_doctor_fa": [
+    "تاری تدریجی بینایی، حساسیت به نور یا هاله",
+    "اورژانس: کاهش ناگهانی بینایی"
+  ],
+  "summary_fa": "آب‌مروارید (تخصص: چشم‌پزشکی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Cataract (https://www.who.int/news-room/fact-sheets/detail/cataract)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Cataracts (https://www.nhs.uk/conditions/cataracts/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Cataracts (https://www.mayoclinic.org/diseases-conditions/cataracts/symptoms-causes/syc-20353790)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAO: Cataract (https://www.aao.org/eye-health/diseases/what-are-cataracts)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

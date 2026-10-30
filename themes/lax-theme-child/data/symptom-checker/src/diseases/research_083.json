@@ -1,0 +1,76 @@
+{
+  "id": "research_083",
+  "name_fa": "التهاب حاد نایژه‌ها (برونشیت حاد)",
+  "name_en": "Acute bronchitis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "chest_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "cough",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "سرفه، با یا بدون خلط",
+    "ناراحتی قفسه سینه",
+    "خس‌خس سینه",
+    "تب خفیف",
+    "معمولاً خودمحدود و کوتاه‌مدت است"
+  ],
+  "when_to_see_doctor_fa": [
+    "سرفه، خلط یا ناراحتی قفسه سینه",
+    "اورژانس: تنگی نفس، تب بالا یا گیجی"
+  ],
+  "summary_fa": "التهاب حاد نایژه‌ها (برونشیت حاد) (تخصص: ریه و تنفس، عفونی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Bronchitis (https://www.nhs.uk/conditions/bronchitis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Bronchitis (https://www.mayoclinic.org/diseases-conditions/bronchitis/symptoms-causes/syc-20355566)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Bronchitis (https://www.cdc.gov/bronchitis/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAFP: Acute Bronchitis (https://www.aafp.org/pubs/afp/issues/2016/0415/p560.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

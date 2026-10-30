@@ -1,0 +1,74 @@
+{
+  "id": "research_056",
+  "name_fa": "سیروز کبدی",
+  "name_en": "Cirrhosis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "در مراحل اولیه ممکن است بدون علامت باشد",
+    "خستگی",
+    "در مراحل پیشرفته: زردی، آسیت (تجمع مایع شکم)، ورم پا، کبودی آسان، گیجی و اختلال هوشیاری (انسفالوپاتی)، خونریزی از وریدهای مری"
+  ],
+  "when_to_see_doctor_fa": [
+    "زردی، آسیت، ورم پا یا گیجی",
+    "اورژانس: استفراغ خونی یا مدفوع سیاه"
+  ],
+  "summary_fa": "سیروز کبدی (تخصص: گوارش و کبد). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Cirrhosis (https://www.who.int/news-room/fact-sheets/detail/cirrhosis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NIDDK: Cirrhosis (https://www.niddk.nih.gov/health-information/liver-disease/cirrhosis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Cirrhosis (https://www.nhs.uk/conditions/cirrhosis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Cirrhosis (https://www.mayoclinic.org/diseases-conditions/cirrhosis/symptoms-causes/syc-20351487)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

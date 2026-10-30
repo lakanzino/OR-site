@@ -1,0 +1,77 @@
+{
+  "id": "research_024",
+  "name_fa": "التهاب حنجره",
+  "name_en": "Laryngitis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "cough",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sore_throat",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "گرفتگی یا خش‌دار شدن صدا",
+    "از دست رفتن موقت صدا",
+    "گلودرد",
+    "سرفه خشک",
+    "تب خفیف",
+    "تحریک گلو"
+  ],
+  "when_to_see_doctor_fa": [
+    "گرفتگی صدا بیش از ۳ هفته",
+    "اورژانس: تنگی نفس، آبریزش یا اختلال بلع"
+  ],
+  "summary_fa": "التهاب حنجره (تخصص: گوش، حلق و بینی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Laryngitis (https://www.nhs.uk/conditions/laryngitis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Laryngitis (https://www.mayoclinic.org/diseases-conditions/laryngitis/symptoms-causes/syc-20374262)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAO-HNS: Laryngitis (https://www.entnet.org/health-information/laryngitis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NIDCD: Laryngitis (https://www.nidcd.nih.gov/health/laryngitis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

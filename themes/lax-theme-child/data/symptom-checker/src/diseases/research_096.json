@@ -1,0 +1,66 @@
+{
+  "id": "research_096",
+  "name_fa": "عفونت قارچی واژن و فرج (قارچ واژن)",
+  "name_en": "Vulvovaginal candidiasis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "خارش ناحیه واژن",
+    "ترشح غلیظ و سفید",
+    "سوزش",
+    "درد هنگام ادرار",
+    "قرمزی و تورم فرج"
+  ],
+  "when_to_see_doctor_fa": [
+    "خارش، ترشح غلیظ یا سوزش واژن",
+    "اورژانس: تب، درد لگنی یا بارداری"
+  ],
+  "summary_fa": "عفونت قارچی واژن و فرج (قارچ واژن) (تخصص: زنان و زایمان). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "CDC: Vaginal Candidiasis (https://www.cdc.gov/candidiasis/vaginal/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Thrush in men and women (https://www.nhs.uk/conditions/thrush-in-men-and-women/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Vaginal yeast infection (https://www.mayoclinic.org/diseases-conditions/vaginal-yeast-infection/symptoms-causes/syc-20369634)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ACOG: Vaginitis (https://www.acog.org/womens-health/faqs/vaginitis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

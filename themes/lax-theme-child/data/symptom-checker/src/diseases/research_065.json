@@ -1,0 +1,88 @@
+{
+  "id": "research_065",
+  "name_fa": "بیماری آدیسون",
+  "name_en": "Addison disease",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "dizziness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "خستگی و ضعف",
+    "کاهش وزن",
+    "افت فشار خون",
+    "تاریک‌شدن پوست و مخاط",
+    "میل شدید به نمک",
+    "تهوع",
+    "سرگیجه"
+  ],
+  "when_to_see_doctor_fa": [
+    "خستگی، افت فشار، تاریک‌شدن پوست یا میل به نمک",
+    "اورژانس: بحران آدرنال (استفراغ، گیجی، افت فشار)"
+  ],
+  "summary_fa": "بیماری آدیسون (تخصص: غدد درون‌ریز و متابولیسم). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Addison's Disease (https://www.niddk.nih.gov/health-information/endocrine-diseases/adrenal-insufficiency-addisons-disease)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Addison's disease (https://www.nhs.uk/conditions/addisons-disease/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Addison's disease (https://www.mayoclinic.org/diseases-conditions/addisons-disease/symptoms-causes/syc-20350293)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Endocrine Society: Adrenal Insufficiency (https://www.endocrine.org/patient-engagement/endocrine-library/adrenal-insufficiency)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

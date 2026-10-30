@@ -1,0 +1,61 @@
+{
+  "id": "research_077",
+  "name_fa": "اختلال استرس پس از سانحه (استرس پس از سانحه، PTSD)",
+  "name_en": "Post-traumatic stress disorder",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [],
+  "symptoms_fa": [
+    "تجربه مجدد رویداد آسیب‌زا",
+    "کابوس",
+    "اجتناب از یادآورها",
+    "برانگیختگی بیش از حد",
+    "اختلال خواب",
+    "تغییرات منفی خلق و شناخت"
+  ],
+  "when_to_see_doctor_fa": [
+    "تجربه مجدد تروما، کابوس یا اجتناب",
+    "اورژانس: افکار خودکشی یا dissociation شدید"
+  ],
+  "summary_fa": "اختلال استرس پس از سانحه (استرس پس از سانحه، PTSD) (تخصص: روان‌پزشکی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIMH: Post-Traumatic Stress Disorder (PTSD) (https://www.nimh.nih.gov/health/topics/post-traumatic-stress-disorder-ptsd)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Post-traumatic stress disorder (PTSD) (https://www.nhs.uk/mental-health/conditions/post-traumatic-stress-disorder-ptsd/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: PTSD (https://www.mayoclinic.org/diseases-conditions/post-traumatic-stress-disorder/symptoms-causes/syc-20355967)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "VA: PTSD (https://www.ptsd.va.gov/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

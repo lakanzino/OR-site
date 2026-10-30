@@ -1,0 +1,66 @@
+{
+  "id": "research_091",
+  "name_fa": "درماتیت سبورئیک پوست (شوره سر، اگزمای چرب)",
+  "name_en": "Seborrheic dermatitis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "پوسته‌ریزی چرب",
+    "قرمزی پوست سر، صورت یا تنه",
+    "شوره سر",
+    "خارش",
+    "در نوزادان: کلاه گهواره"
+  ],
+  "when_to_see_doctor_fa": [
+    "پوسته‌ریزی چرب، قرمزی یا شوره",
+    "اورژانس: عفونت ثانویه یا گسترش شدید"
+  ],
+  "summary_fa": "درماتیت سبورئیک پوست (شوره سر، اگزمای چرب) (تخصص: پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Seborrhoeic dermatitis (https://www.nhs.uk/conditions/seborrhoeic-dermatitis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Seborrheic dermatitis (https://www.mayoclinic.org/diseases-conditions/seborrheic-dermatitis/symptoms-causes/syc-20352745)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAD: Seborrheic Dermatitis (https://www.aad.org/public/diseases/a-z/seborrheic-dermatitis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NICE CKS: Seborrhoeic dermatitis (https://cks.nice.org.uk/topics/seborrhoeic-dermatitis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

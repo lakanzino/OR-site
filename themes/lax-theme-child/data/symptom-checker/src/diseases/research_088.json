@@ -1,0 +1,65 @@
+{
+  "id": "research_088",
+  "name_fa": "آلودگی به شپش سر (شپش سر)",
+  "name_en": "Head lice / Pediculosis capitis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "خارش پوست سر",
+    "مشاهده شپش یا رشک (تخم)",
+    "خراشیدگی پوست",
+    "در موارد شدید: بزرگ‌شدن غدد لنفاوی گردن"
+  ],
+  "when_to_see_doctor_fa": [
+    "خارش سر، شپش یا رشک",
+    "اورژانس: عفونت ثانویه یا شکست درمان"
+  ],
+  "summary_fa": "آلودگی به شپش سر (شپش سر) (تخصص: پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "CDC: Head Lice (https://www.cdc.gov/head-lice/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Head lice and nits (https://www.nhs.uk/conditions/head-lice-and-nits/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Head lice (https://www.mayoclinic.org/diseases-conditions/head-lice/symptoms-causes/syc-20356180)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAP: Head Lice (https://publications.aap.org/pediatrics/article/135/5/e1355/33216/Head-Lice)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

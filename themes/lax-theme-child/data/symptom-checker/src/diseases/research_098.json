@@ -1,0 +1,66 @@
+{
+  "id": "research_098",
+  "name_fa": "سندرم تونل مچ دست (گرفتگی عصب مچ دست)",
+  "name_en": "Carpal tunnel syndrome",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "body_ache",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "بی‌حسی و گزگز در انگشتان، به‌ویژه شست، اشاره و وسط",
+    "درد شبانه",
+    "ضعف عضلات دست",
+    "تحلیل عضله تنار",
+    "افتادن اشیا"
+  ],
+  "when_to_see_doctor_fa": [
+    "بی‌حسی، گزگز یا ضعف دست",
+    "اورژانس: ضعف شدید یا آتروفی (کوچک شدن بافت) عضلانی"
+  ],
+  "summary_fa": "سندرم تونل مچ دست (گرفتگی عصب مچ دست) (تخصص: ارتوپدی، مغز و اعصاب). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Carpal tunnel syndrome (https://www.nhs.uk/conditions/carpal-tunnel-syndrome/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Carpal tunnel syndrome (https://www.mayoclinic.org/diseases-conditions/carpal-tunnel-syndrome/symptoms-causes/syc-20355603)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NINDS: Carpal Tunnel Syndrome (https://www.ninds.nih.gov/health-information/disorders/carpal-tunnel-syndrome)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAOS: Carpal Tunnel Syndrome (https://orthoinfo.aaos.org/en/diseases--conditions/carpal-tunnel-syndrome/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

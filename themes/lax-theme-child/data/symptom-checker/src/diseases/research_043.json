@@ -1,0 +1,77 @@
+{
+  "id": "research_043",
+  "name_fa": "دیفتری",
+  "name_en": "Diphtheria",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sore_throat",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "گلودرد",
+    "تب",
+    "لایه خاکستری روی لوزه‌ها و گلو",
+    "تورم گردن",
+    "تنگی نفس",
+    "در موارد شدید: میوکاردیت و نوروپاتی"
+  ],
+  "when_to_see_doctor_fa": [
+    "گلودرد، تب یا لایه خاکستری گلو",
+    "اورژانس: تنگی نفس یا تورم گردن"
+  ],
+  "summary_fa": "دیفتری (تخصص: عفونی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Diphtheria (https://www.who.int/news-room/fact-sheets/detail/diphtheria)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Diphtheria (https://www.cdc.gov/diphtheria/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Diphtheria (https://www.nhs.uk/conditions/diphtheria/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Diphtheria (https://www.mayoclinic.org/diseases-conditions/diphtheria/symptoms-causes/syc-20351897)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

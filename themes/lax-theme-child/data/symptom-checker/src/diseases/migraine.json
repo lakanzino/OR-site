@@ -1,0 +1,85 @@
+{
+  "id": "migraine",
+  "name_fa": "میگرن",
+  "name_en": "Migraine",
+  "category": "مغز و اعصاب",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "سردرد ضربان‌دار، اغلب یک‌طرفه",
+    "تهوع و استفراغ",
+    "حساسیت به نور و صدا",
+    "تشدید با فعالیت بدنی",
+    "احساس ضعف یا خستگی",
+    "در برخی افراد، علائم پیش‌درآمد (اورا) مانند جرقه‌های بینایی یا اختلال حسی"
+  ],
+  "when_to_see_doctor_fa": [
+    "سردرد ناگهانی و شدید («بدترین سردرد عمر»)",
+    "سردرد با تب، سفتی گردن، ضعف، گیجی یا تشنج",
+    "سردرد پس از ضربه به سر",
+    "سردرد جدید بعد از ۵۰ سالگی یا در بارداری",
+    "اورژانس: علائم عصبی جدید"
+  ],
+  "summary_fa": "میگرن (تخصص: متخصص مغز و اعصاب (نورولوژی)). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Migraine (https://www.nhs.uk/conditions/migraine/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Migraine (https://www.mayoclinic.org/diseases-conditions/migraine/symptoms-causes/syc-20360201)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NICE CKS: Migraine (https://cks.nice.org.uk/topics/migraine/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "WHO: Headache disorders (https://www.who.int/news-room/fact-sheets/detail/headache-disorders)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

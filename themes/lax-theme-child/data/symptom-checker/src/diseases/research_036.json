@@ -1,0 +1,90 @@
+{
+  "id": "research_036",
+  "name_fa": "فشار خون بالا",
+  "name_en": "Hypertension (High Blood Pressure)",
+  "category": "بیماری‌های قلب و عروق",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "chest_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "ear_nose",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "معمولاً بدون علامت است و تنها با اندازه‌گیری فشار خون تشخیص داده می‌شود",
+    "سردرد، تنگی نفس یا خونریزی بینی علائم قابل اعتماد نیستند",
+    "بحران فشار خون (معمولاً ≥ ۱۸۰/۱۲۰): سردرد شدید، درد قفسه سینه، تنگی نفس، تاری دید، گیجی، ضعف یا بی‌حسی"
+  ],
+  "when_to_see_doctor_fa": [
+    "فشار خون مکرر بالاتر از حد طبیعی",
+    "اورژانس: فشار بسیار بالا با درد قفسه سینه، تنگی نفس، ضعف یک‌طرفه، اختلال گفتار یا بینایی"
+  ],
+  "summary_fa": "فشار خون بالا (تخصص: متخصص قلب، داخلی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Hypertension Fact Sheet",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ACC/AHA Guideline: High Blood Pressure",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ESC/ESH Guidelines: Arterial Hypertension",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHLBI: High Blood Pressure",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: High blood pressure",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

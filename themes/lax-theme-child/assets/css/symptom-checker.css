@@ -113,3 +113,11 @@
 @media (prefers-reduced-motion: reduce) {
 	.hj-sc-btn { transition: none; }
 }
+
+.hj-sc-test .hj-sc-draft {
+	margin: 0 0 .5rem;
+	padding: .35rem .6rem;
+	border-inline-start: 3px solid #f5b400;
+	background: rgba(245, 180, 0, .08);
+	font-size: .9rem;
+}

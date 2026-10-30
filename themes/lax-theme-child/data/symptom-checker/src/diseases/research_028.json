@@ -1,0 +1,65 @@
+{
+  "id": "research_028",
+  "name_fa": "ویتیلیگو (برص)",
+  "name_en": "Vitiligo",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "لکه‌های سفید یا بی‌رنگ پوست",
+    "معمولاً بدون خارش یا پوسته‌ریزی",
+    "الگوی قرینه در دو طرف بدن",
+    "درگیری دست، صورت، گردن و نواحی تناسلی"
+  ],
+  "when_to_see_doctor_fa": [
+    "لکه‌های سفید جدید یا گسترده",
+    "اورژانس: علائم همراه خودایمنی (حمله اشتباه سیستم ایمنی به بدن)"
+  ],
+  "summary_fa": "ویتیلیگو (برص) (تخصص: پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Vitiligo (https://www.nhs.uk/conditions/vitiligo/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Vitiligo (https://www.mayoclinic.org/diseases-conditions/vitiligo/symptoms-causes/syc-20355912)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAD: Vitiligo (https://www.aad.org/public/diseases/a-z/vitiligo-overview)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Vitiligo Research Foundation (https://vrfoundation.org/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

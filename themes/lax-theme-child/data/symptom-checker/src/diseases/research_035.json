@@ -1,0 +1,77 @@
+{
+  "id": "research_035",
+  "name_fa": "فیبروم رحم",
+  "name_en": "Uterine fibroids",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "constipation",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "frequent_urine",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "خونریزی شدید یا طولانی قاعدگی",
+    "درد یا فشار لگنی",
+    "تکرر ادرار",
+    "یبوست",
+    "بزرگ‌شدن شکم",
+    "ناباروری در برخی موارد"
+  ],
+  "when_to_see_doctor_fa": [
+    "خونریزی شدید قاعدگی، درد یا فشار لگنی",
+    "اورژانس: خونریزی شدید با سرگیجه"
+  ],
+  "summary_fa": "فیبروم رحم (تخصص: زنان و زایمان). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Fibroids (https://www.nhs.uk/conditions/fibroids/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Uterine fibroids (https://www.mayoclinic.org/diseases-conditions/uterine-fibroids/symptoms-causes/syc-20354288)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ACOG: Uterine Fibroids (https://www.acog.org/womens-health/faqs/uterine-fibroids)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NICE: Fibroids (https://cks.nice.org.uk/topics/fibroids/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

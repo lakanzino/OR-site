@@ -1,0 +1,65 @@
+{
+  "id": "research_076",
+  "name_fa": "اختلال وسواس فکری‌ـ‌عملی (وسواس)",
+  "name_en": "Obsessive-compulsive disorder (OCD)",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "arm_jaw_pain",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "افکار مزاحم و ناخواسته (وسواس فکری)",
+    "رفتارهای تکراری برای کاهش اضطراب (وسواس عملی)",
+    "صرف زمان زیاد برای این افکار و رفتارها",
+    "اختلال در عملکرد روزمره"
+  ],
+  "when_to_see_doctor_fa": [
+    "افکار مزاحم یا رفتارهای تکراری وقت‌گیر",
+    "اورژانس: اختلال شدید عملکرد یا افکار خودکشی"
+  ],
+  "summary_fa": "اختلال وسواس فکری‌ـ‌عملی (وسواس) (تخصص: روان‌پزشکی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIMH: Obsessive-Compulsive Disorder (OCD) (https://www.nimh.nih.gov/health/topics/obsessive-compulsive-disorder-ocd)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Obsessive compulsive disorder (OCD) (https://www.nhs.uk/mental-health/conditions/obsessive-compulsive-disorder-ocd/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: OCD (https://www.mayoclinic.org/diseases-conditions/obsessive-compulsive-disorder/symptoms-causes/syc-20354432)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "IOCDF: OCD (https://iocdf.org/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

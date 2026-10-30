@@ -1,74 +1,37 @@
 #!/usr/bin/env python3
-"""Build the symptom-checker data for the child theme (test space).
+"""Build the symptom-checker runtime data from the reviewed source files.
 
-Input : themes/lax-theme-child/data/disease-seed.json (120 ids)
-        themes/lax-theme-child/data/disease-profiles.json (profile text per id)
-Output: themes/lax-theme-child/data/symptom-checker/diseases.json
-        themes/lax-theme-child/data/symptom-checker/vocab.json
+Input  (source of truth, edit these):
+  themes/lax-theme-child/data/symptom-checker/src/diseases/<id>.json
+  themes/lax-theme-child/data/symptom-checker/src/tags.json
+  themes/lax-theme-child/data/symptom-checker/src/red-flags.json
 
-Symptom bullets are free Persian text. Each bullet is mapped to controlled
-tags by keyword. The engine reasons only over these tags.
+Output (generated, do not edit by hand):
+  themes/lax-theme-child/data/symptom-checker/diseases.json
+  themes/lax-theme-child/data/symptom-checker/vocab.json
+
+Usage:
+  python3 tools/build-symptom-db.py                 # include draft profiles
+  python3 tools/build-symptom-db.py --published-only # only review.status == "published"
+
+Drafts are included by default so the test space can be exercised before
+physician review. Each disease carries reviewStatus, and the UI must show it.
+A disease with fewer than MIN_TAGS tags is marked rankable=false: the engine
+will not rank it and will say the data is insufficient instead of guessing.
 """
 import json
+import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "themes/lax-theme-child/data"
-OUT = DATA / "symptom-checker"
+ROOT = Path(__file__).resolve().parent.parent
+SRC = ROOT / "themes/lax-theme-child/data/symptom-checker/src"
+OUT = ROOT / "themes/lax-theme-child/data/symptom-checker"
 
-# tag -> (Persian label, yes/no question, region group, keywords)
-TAGS = {
-    "fever": ("تب", "آیا تب دارید یا گرمای بدن را حس کرده‌اید؟", "general", ["تب"]),
-    "fatigue": ("خستگی", "آیا خستگی یا بی‌حالی غیرعادی دارید؟", "general", ["خستگی", "بی‌حالی"]),
-    "chills": ("لرز", "آیا لرز یا تکان‌های ناگهانی دارید؟", "general", ["لرز"]),
-    "weight_loss": ("کاهش وزن", "آیا بدون دلیل وزنتان کم شده است؟", "general", ["کاهش وزن"]),
-    "thirst": ("تشنگی زیاد", "آیا تشنگی زیاد دارید؟", "general", ["تشنگی"]),
-    "sweating": ("تعریق یا عرق سرد", "آیا عرق سرد یا تعریق غیرعادی دارید؟", "general", ["عرق", "تعریق"]),
-    "headache": ("سردرد", "آیا سردرد دارید؟", "head", ["سردرد"]),
-    "dizziness": ("سرگیجه", "آیا سرگیجه دارید؟", "head", ["سرگیجه"]),
-    "vision": ("تاری دید", "آیا دیدتان تار شده یا درد چشم دارید؟", "head", ["تاری دید", "چشم"]),
-    "ear_nose": ("گوش یا بینی", "آیا درد گوش، گرفتگی یا آبریزش بینی دارید؟", "head", ["گوش", "بینی"]),
-    "sore_throat": ("گلودرد", "آیا گلودرد دارید؟", "head", ["گلو"]),
-    "neck_stiff": ("سفتی گردن", "آیا گردنتان سفت شده و خم کردنش سخت است؟", "head", ["سفتی گردن"]),
-    "cough": ("سرفه", "آیا سرفه دارید؟", "chest", ["سرفه"]),
-    "chest_pain": ("درد قفسه سینه", "آیا درد یا فشار در قفسه سینه دارید؟", "chest", ["قفسه سینه", "قفسه‌ی سینه", "درد سینه"]),
-    "dyspnea": ("تنگی نفس", "آیا نفستان تنگ شده است؟", "chest", ["تنگی نفس"]),
-    "palpitation": ("تپش قلب", "آیا تپش قلب دارید؟", "chest", ["تپش"]),
-    "arm_jaw_pain": ("درد بازو یا فک", "آیا درد به بازو، فک یا پشت منتشر می‌شود؟", "chest", ["بازو", "فک"]),
-    "abd_pain": ("درد شکم", "آیا درد شکم دارید؟", "abdomen", ["درد شکم", "شکم"]),
-    "right_lower": ("درد پایین سمت راست شکم", "آیا درد بیشتر در پایین سمت راست شکم است؟", "abdomen", ["پایین سمت راست", "راست پایین"]),
-    "nausea": ("تهوع", "آیا تهوع دارید؟", "abdomen", ["تهوع"]),
-    "vomiting": ("استفراغ", "آیا استفراغ کرده‌اید؟", "abdomen", ["استفراغ"]),
-    "diarrhea": ("اسهال", "آیا اسهال دارید؟", "abdomen", ["اسهال"]),
-    "constipation": ("یبوست", "آیا یبوست دارید؟", "abdomen", ["یبوست"]),
-    "heartburn": ("سوزش سر دل", "آیا سوزش سر دل دارید؟", "abdomen", ["سوزش سر دل", "سر دل"]),
-    "appetite": ("بی‌اشتهایی", "آیا اشتهایتان کم شده است؟", "abdomen", ["بی‌اشتهایی"]),
-    "jaundice": ("زردی پوست یا چشم", "آیا زردی پوست یا سفیدی چشم دیده‌اید؟", "abdomen", ["زردی"]),
-    "back_pain": ("درد کمر", "آیا درد کمر دارید؟", "back", ["درد کمر", "کمر"]),
-    "flank_pain": ("درد پهلو یا کلیه", "آیا درد پهلو یا ناحیهٔ کلیه دارید؟", "back", ["پهلو", "کلیه"]),
-    "joint_pain": ("درد مفاصل", "آیا درد مفاصل یا تورم دارید؟", "back", ["مفصل"]),
-    "body_ache": ("بدن‌درد", "آیا بدن‌درد یا درد عضلات دارید؟", "back", ["بدن‌درد", "بدن درد", "عضلات"]),
-    "burning_urine": ("سوزش هنگام ادرار", "آیا هنگام ادرار سوزش دارید؟", "urinary", ["سوزش ادرار"]),
-    "frequent_urine": ("تکرر ادرار", "آیا بیشتر از معمول ادرار می‌کنید؟", "urinary", ["تکرر"]),
-    "blood_urine": ("خون در ادرار", "آیا خون در ادرار دیده‌اید؟", "urinary", ["خون در ادرار"]),
-    "vaginal_bleed": ("خونریزی واژینال", "آیا خونریزی غیرعادی واژینال دارید؟", "urinary", ["خونریزی واژینال"]),
-    "rash": ("جوش، خارش یا راش پوستی", "آیا جوش، خارش یا تغییر رنگ پوست دارید؟", "skin", ["خارش", "جوش", "راش", "پوست"]),
-}
+VERSION = 5
+MIN_TAGS = 3  # below this a disease cannot be ranked fairly
+CORE, SUPPORTING = "core", "supporting"
 
-# Red-flag questions. Any "yes" routes to the emergency result.
-RED_FLAGS = [
-    {"id": "rf_chest", "question": "آیا درد قفسه سینه همراه با تعریق سرد یا تنگی نفس دارید؟", "tags_any": ["chest_pain"], "tags_all": []},
-    {"id": "rf_thunder", "question": "آیا ناگهان دچار سردرد بسیار شدید شده‌اید، بدترین سردرد عمرتان؟", "tags_any": ["headache"], "tags_all": []},
-    {"id": "rf_stroke", "question": "آیا ضعف ناگهانی یک طرف بدن، افتادگی صورت یا اختلال تکلم دارید؟", "tags_any": [], "tags_all": []},
-    {"id": "rf_breath", "question": "آیا تنگی نفس شدید دارید و نمی‌توانید جمله‌ای کامل بگویید؟", "tags_any": ["dyspnea"], "tags_all": []},
-    {"id": "rf_faint", "question": "آیا غش کرده‌اید یا گیجی ناگهانی دارید؟", "tags_any": [], "tags_all": []},
-    {"id": "rf_hemoptysis", "question": "آیا خون سرفه یا خون استفراغ کرده‌اید؟", "tags_any": [], "tags_all": []},
-    {"id": "rf_rigid", "question": "آیا شکمتان سفت شده و لمس آن بسیار دردناک است؟", "tags_any": ["abd_pain"], "tags_all": []},
-    {"id": "rf_pregnancy", "question": "آیا خونریزی واژینال همراه با درد شکم دارید؟", "tags_any": [], "tags_all": ["vaginal_bleed", "abd_pain"]},
-    {"id": "rf_meningitis", "question": "آیا سفتی گردن همراه با تب دارید؟", "tags_any": [], "tags_all": ["neck_stiff", "fever"]},
-    {"id": "rf_cauda", "question": "آیا بی‌اختیاری تازه ادرار یا مدفوع، یا بی‌حسی ناحیهٔ نشیمنگاه دارید؟", "tags_any": [], "tags_all": []},
-]
-
+# Tag category -> question-flow region (order matters for the UI).
 REGIONS = [
     {"id": "head", "name": "سر و صورت"},
     {"id": "chest", "name": "قفسه سینه و تنفس"},
@@ -78,54 +41,134 @@ REGIONS = [
     {"id": "skin", "name": "پوست"},
     {"id": "general", "name": "علائم عمومی"},
 ]
+REGION_IDS = {r["id"] for r in REGIONS}
+AGE_GROUPS = ["child", "teen", "adult", "elderly"]
+SEXES = ["any", "female", "male"]
 
 
-def tags_for(text: str) -> list:
-    return [tag for tag, (_, _, _, kws) in TAGS.items() if any(k in text for k in kws)]
+def load(path):
+    with open(path, encoding="utf8") as f:
+        return json.load(f)
 
 
-def _bullets(text: str) -> list:
-    return [b.strip().lstrip("•").strip() for b in (text or "").split("\n") if b.strip().lstrip("•").strip()]
+def write(path, data):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+        f.write("\n")
 
 
-def main() -> None:
-    seed = json.loads((DATA / "disease-seed.json").read_text(encoding="utf-8"))
-    profiles = {p["diseaseId"]: p for p in json.loads((DATA / "disease-profiles.json").read_text(encoding="utf-8"))}
-    diseases = []
-    for s in seed:
-        p = profiles.get(s["diseaseId"])
-        if not p:
-            continue
-        prof = p["profile"]
-        symptoms = _bullets(prof.get("symptoms", ""))
-        tag_set = set()
-        for b in symptoms:
-            tag_set.update(tags_for(b))
-        # Source names only: the profiles carry no verified URLs, so none are invented.
-        sources = _bullets(prof.get("sources", "")) if isinstance(prof.get("sources"), str) else []
-        diseases.append({
-            "id": s["diseaseId"],
-            "nameFa": prof["nameFa"],
-            "nameEn": prof["nameEn"],
-            "specialty": prof.get("specialty", ""),
-            "symptoms": symptoms,
-            "tags": sorted(tag_set),
-            "whenToSeeDoctor": _bullets(prof.get("whenToSeeDoctor", "")),
-            "sources": sources,
-            "reviewStatus": "unreviewed",
+def build(published_only=False):
+    tag_doc = load(SRC / "tags.json")
+    rf_doc = load(SRC / "red-flags.json")
+    tags = tag_doc["tags"]
+    tag_ids = {t["id"] for t in tags}
+
+    vocab_tags = []
+    for t in tags:
+        if t["category"] not in REGION_IDS:
+            raise SystemExit(f"tag {t['id']}: unknown category {t['category']}")
+        vocab_tags.append({
+            "id": t["id"],
+            "label": t["label_fa"],
+            "question": t["question_fa"],
+            "definition": t["definition_fa"],
+            "region": t["category"],
+            "background": t["background"],
+            "synonyms": t.get("synonyms_fa", []),
         })
-    OUT.mkdir(parents=True, exist_ok=True)
-    (OUT / "diseases.json").write_text(json.dumps({"version": 1, "count": len(diseases), "diseases": diseases}, ensure_ascii=False, indent=1), encoding="utf-8")
+
+    red_flags = []
+    for r in rf_doc["rules"]:
+        when = r["when"]
+        used = list(when.get("all", [])) + list(when.get("any", []))
+        for tid in used:
+            if tid not in tag_ids:
+                raise SystemExit(f"red flag {r['id']}: unknown tag {tid}")
+        red_flags.append({
+            "id": r["id"],
+            "label": r["label_fa"],
+            "question": r["question_fa"],
+            "when": {"all": when.get("all", []), "any": when.get("any", [])},
+            "message": r["message_fa"],
+            "sources": r.get("sources", []),
+            "reviewStatus": r["review"]["status"],
+        })
+
+    diseases = []
+    skipped = []
+    for path in sorted((SRC / "diseases").glob("*.json")):
+        d = load(path)
+        status = d["review"]["status"]
+        if published_only and status != "published":
+            skipped.append(d["id"])
+            continue
+        seen = set()
+        tag_list, roles, freqs = [], {}, {}
+        for t in d["tags"]:
+            if t["tag"] not in tag_ids:
+                raise SystemExit(f"{d['id']}: unknown tag {t['tag']}")
+            if t["tag"] in seen:
+                raise SystemExit(f"{d['id']}: duplicate tag {t['tag']}")
+            seen.add(t["tag"])
+            tag_list.append(t["tag"])
+            roles[t["tag"]] = t["role"]
+            freqs[t["tag"]] = t["freq"]
+        for a in d["age_groups"]:
+            if a not in AGE_GROUPS:
+                raise SystemExit(f"{d['id']}: unknown age group {a}")
+        if d["sex"] not in SEXES:
+            raise SystemExit(f"{d['id']}: unknown sex {d['sex']}")
+        diseases.append({
+            "id": d["id"],
+            "nameFa": d["name_fa"],
+            "nameEn": d["name_en"],
+            "specialty": d["category"],
+            "prevalence": d["prevalence"],
+            "urgency": d["urgency"],
+            "ageGroups": d["age_groups"],
+            "sex": d["sex"],
+            "tags": tag_list,
+            "tagRoles": roles,
+            "tagFreq": freqs,
+            "rankable": len(tag_list) >= MIN_TAGS,
+            "symptoms": d["symptoms_fa"],
+            "whenToSeeDoctor": d["when_to_see_doctor_fa"],
+            "summary": d["summary_fa"],
+            "nextStep": d["next_step_fa"],
+            "sources": [
+                {"publisher": s.get("publisher", ""), "url": s.get("url", "")}
+                for s in d["sources"]
+            ],
+            "reviewStatus": status,
+        })
+
+    if skipped:
+        print(f"skipped (not published): {len(skipped)}")
+
+    ids = [d["id"] for d in diseases]
+    if len(ids) != len(set(ids)):
+        raise SystemExit("duplicate disease ids")
+
     vocab = {
-        "version": 1,
+        "version": VERSION,
         "regions": REGIONS,
-        "tags": [{"id": t, "label": v[0], "question": v[1], "region": v[2]} for t, v in TAGS.items()],
-        "redFlags": RED_FLAGS,
+        "ageGroups": AGE_GROUPS,
+        "sexes": SEXES,
+        "tags": vocab_tags,
+        "redFlags": red_flags,
     }
-    (OUT / "vocab.json").write_text(json.dumps(vocab, ensure_ascii=False, indent=1), encoding="utf-8")
-    empty = sum(1 for d in diseases if not d["tags"])
-    print(f"diseases={len(diseases)} empty_tag_sets={empty}")
+    out = {
+        "version": VERSION,
+        "count": len(diseases),
+        "rankableCount": sum(1 for d in diseases if d["rankable"]),
+        "diseases": diseases,
+    }
+    write(OUT / "diseases.json", out)
+    write(OUT / "vocab.json", vocab)
+    print(f"diseases={len(diseases)} rankable={out['rankableCount']} "
+          f"tags={len(vocab_tags)} redFlags={len(red_flags)}")
 
 
 if __name__ == "__main__":
-    main()
+    build(published_only="--published-only" in sys.argv[1:])

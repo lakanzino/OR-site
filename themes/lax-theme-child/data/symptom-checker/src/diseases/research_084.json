@@ -1,0 +1,67 @@
+{
+  "id": "research_084",
+  "name_fa": "وقفه تنفسی انسدادی در خواب (آپنه خواب)",
+  "name_en": "Obstructive sleep apnea",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "خروپف بلند",
+    "وقفه تنفسی مشاهده‌شده در خواب",
+    "خواب‌آلودگی روزانه",
+    "خواب ناآرام",
+    "سردرد صبحگاهی",
+    "اختلال تمرکز"
+  ],
+  "when_to_see_doctor_fa": [
+    "خروپف بلند، وقفه تنفسی یا خواب‌آلودگی روزانه",
+    "اورژانس: درد قفسه سینه یا تنگی نفس"
+  ],
+  "summary_fa": "وقفه تنفسی انسدادی در خواب (آپنه خواب) (تخصص: ریه و تنفس، اختلالات خواب). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Obstructive sleep apnoea (https://www.who.int/news-room/fact-sheets/detail/obstructive-sleep-apnoea)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Sleep apnoea (https://www.nhs.uk/conditions/sleep-apnoea/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Obstructive sleep apnea (https://www.mayoclinic.org/diseases-conditions/obstructive-sleep-apnea/symptoms-causes/syc-20352090)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AASM: Sleep Apnea (https://aasm.org/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

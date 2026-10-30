@@ -1,0 +1,71 @@
+{
+  "id": "research_029",
+  "name_fa": "روزاسه",
+  "name_en": "Rosacea",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "قرمزی و گرگرفتگی صورت",
+    "رگ‌های خونی ریز قابل مشاهده",
+    "جوش‌های ریز قرمز",
+    "سوزش یا حساسیت پوست",
+    "در برخی موارد: خشکی و تحریک چشم"
+  ],
+  "when_to_see_doctor_fa": [
+    "قرمزی صورت با جوش یا گرگرفتگی",
+    "اورژانس: درد چشم، تغییر بینایی یا حساسیت به نور"
+  ],
+  "summary_fa": "روزاسه (تخصص: پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Rosacea (https://www.nhs.uk/conditions/rosacea/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Rosacea (https://www.mayoclinic.org/diseases-conditions/rosacea/symptoms-causes/syc-20353805)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAD: Rosacea (https://www.aad.org/public/diseases/rosacea)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NRS: Rosacea (https://www.rosacea.org/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

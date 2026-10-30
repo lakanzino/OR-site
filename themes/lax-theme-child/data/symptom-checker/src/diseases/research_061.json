@@ -1,0 +1,84 @@
+{
+  "id": "research_061",
+  "name_fa": "بیماری مزمن کلیه",
+  "name_en": "Chronic kidney disease (CKD)",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "flank_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "در مراحل اولیه بدون علامت",
+    "خستگی",
+    "ورم پا",
+    "خارش پوست",
+    "تهوع",
+    "کاهش حجم ادرار",
+    "کم‌خونی",
+    "در مراحل پیشرفته: علائم اورمی (مسمومیت ناشی از نارسایی کلیه)"
+  ],
+  "when_to_see_doctor_fa": [
+    "خستگی، ورم، خارش یا کاهش ادرار",
+    "اورژانس: گیجی، تنگی نفس یا کاهش شدید ادرار"
+  ],
+  "summary_fa": "بیماری مزمن کلیه (تخصص: نفرولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Chronic Kidney Disease (CKD) (https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Chronic kidney disease (https://www.nhs.uk/conditions/chronic-kidney-disease/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Chronic kidney disease (https://www.mayoclinic.org/diseases-conditions/chronic-kidney-disease/symptoms-causes/syc-20354521)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "KDIGO Guidelines: CKD (https://kdigo.org/guidelines/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

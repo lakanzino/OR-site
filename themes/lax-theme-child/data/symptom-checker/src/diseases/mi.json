@@ -1,0 +1,106 @@
+{
+  "id": "mi",
+  "name_fa": "حمله قلبی",
+  "name_en": "Heart attack (Myocardial infarction)",
+  "category": "قلب و عروق",
+  "prevalence": "common",
+  "urgency": "urgent",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "arm_jaw_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "chest_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dizziness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "sweating",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "درد یا فشار قفسه سینه، اغلب در مرکز یا سمت چپ",
+    "انتشار درد به بازوی چپ، فک، گردن، پشت یا معده",
+    "تنگی نفس",
+    "تعریق سرد",
+    "تهوع یا استفراغ",
+    "سرگیجه یا سبکی سر",
+    "اضطراب یا احساس مرگ قریب‌الوقوع",
+    "در زنان، سالمندان و دیابتی‌ها ممکن است علائم غیرمعمول مانند خستگی شدید یا تنگی نفس باشد"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد یا فشار قفسه سینه بیش از چند دقیقه یا عودکننده (بازگشت‌کننده)",
+    "تنگی نفس، تعریق سرد، تهوع، سرگیجه یا غش",
+    "در زنان، سالمندان و دیابتی‌ها علائم غیرمعمول مانند خستگی شدید",
+    "اورژانس: تماس فوری با اورژانس"
+  ],
+  "summary_fa": "حمله قلبی (تخصص: متخصص قلب و عروق). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Heart attack (https://www.who.int/news-room/fact-sheets/detail/heart-attack)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Heart Attack (https://www.cdc.gov/heart-disease/about/heart-attack.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Heart attack (https://www.nhs.uk/conditions/heart-attack/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Heart attack (https://www.mayoclinic.org/diseases-conditions/heart-attack/symptoms-causes/syc-20373106)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

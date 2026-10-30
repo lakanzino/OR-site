@@ -1,0 +1,83 @@
+{
+  "id": "research_040",
+  "name_fa": "بیماری انسدادی مزمن ریه",
+  "name_en": "Chronic obstructive pulmonary disease (COPD)",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "cough",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "سرفه مزمن (طولانی‌مدت)",
+    "خلط مزمن",
+    "تنگی نفس، به‌ویژه با فعالیت",
+    "خس‌خس سینه",
+    "تشدید دوره‌ای علائم (exacerbation)",
+    "خستگی",
+    "کاهش وزن در بیماری پیشرفته"
+  ],
+  "when_to_see_doctor_fa": [
+    "سرفه مزمن، خلط، تنگی نفس یا خس‌خس",
+    "اورژانس: تشدید حاد، تب، گیجی یا سیانوز"
+  ],
+  "summary_fa": "بیماری انسدادی مزمن ریه (تخصص: ریه و تنفس). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Chronic obstructive pulmonary disease (COPD) (https://www.who.int/news-room/fact-sheets/detail/chronic-obstructive-pulmonary-disease-(copd))",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: COPD (https://www.nhs.uk/conditions/chronic-obstructive-pulmonary-disease-copd/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: COPD (https://www.mayoclinic.org/diseases-conditions/copd/symptoms-causes/syc-20353679)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "GOLD Guidelines: COPD (https://goldcopd.org/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

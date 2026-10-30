@@ -60,3 +60,37 @@ function hj_sc_enqueue_assets() {
 	wp_enqueue_script( 'hj-symptom-ui', $uri . '/assets/js/symptom-checker-ui.js', array( 'hj-symptom-engine' ), LAX_THEME_CHILD_VERSION, true );
 }
 add_action( 'wp_enqueue_scripts', 'hj_sc_enqueue_assets', 20 );
+
+/**
+ * Emergency number shown by the checker. Set with the filter `hj_emergency_number`
+ * or the theme option `hj_emergency_number`. Persian digits are kept as Persian.
+ *
+ * @return string
+ */
+function hj_sc_emergency_number() {
+	$raw = get_theme_mod( 'hj_emergency_number', '۱۱۵' );
+	$raw = apply_filters( 'hj_emergency_number', $raw );
+	return hj_sc_sanitize_emergency_number( $raw );
+}
+
+/**
+ * Keep only digits (Persian ۰-۹, Arabic ٠-٩, or Latin 0-9) and show them in Persian.
+ * Falls back to ۱۱۵ when nothing usable remains. Never strips a valid Persian digit.
+ *
+ * @param mixed $value Raw value.
+ * @return string
+ */
+function hj_sc_sanitize_emergency_number( $value ) {
+	$map = array(
+		'۰' => '0', '۱' => '1', '۲' => '2', '۳' => '3', '۴' => '4',
+		'۵' => '5', '۶' => '6', '۷' => '7', '۸' => '8', '۹' => '9',
+		'٠' => '0', '١' => '1', '٢' => '2', '٣' => '3', '٤' => '4',
+		'٥' => '5', '٦' => '6', '٧' => '7', '٨' => '8', '٩' => '9',
+	);
+	$latin = strtr( (string) $value, $map );
+	$digits = preg_replace( '/[^0-9]/', '', $latin );
+	if ( '' === $digits || strlen( $digits ) > 6 ) {
+		return '۱۱۵';
+	}
+	return strtr( $digits, array_flip( array_slice( $map, 0, 10, true ) ) );
+}

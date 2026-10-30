@@ -1,0 +1,103 @@
+{
+  "id": "diabetes",
+  "name_fa": "دیابت نوع ۲",
+  "name_en": "Type 2 Diabetes Mellitus",
+  "category": "غدد درون‌ریز و متابولیسم",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "frequent_urine",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "thirst",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تشنگی زیاد",
+    "تکرر ادرار",
+    "گرسنگی زیاد",
+    "خستگی",
+    "تاری دید",
+    "زخم‌هایی که دیر بهبود می‌یابند",
+    "عفونت‌های مکرر پوست، لثه یا ادراری",
+    "گزگز یا بی‌حسی دست و پا",
+    "لکه‌های تیره پوست در چین‌ها (آکانتوزیس نیگریکانس)",
+    "کاهش وزن ناخواسته (کم‌تر شایع)",
+    "بسیاری از مبتلایان سال‌ها بدون علامت‌اند"
+  ],
+  "when_to_see_doctor_fa": [
+    "علائم دیابت یا نتیجه آزمایش غیرطبیعی",
+    "اورژانس: گیجی، استفراغ، تنفس (دم و بازدم) عمیق و تند، بوی میوه‌ای دهان، قند بسیار بالا یا افت قند با غش"
+  ],
+  "summary_fa": "دیابت نوع ۲ (تخصص: متخصص غدد، داخلی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Diabetes Fact Sheet",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ADA: Standards of Care in Diabetes",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "CDC: Type 2 Diabetes",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NIDDK: Type 2 Diabetes",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Type 2 diabetes",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "id": "research_100",
+  "name_fa": "سرگیجه وضعیتی حمله‌ای خوش‌خیم (سرگیجه وضعیتی)",
+  "name_en": "Benign paroxysmal positional vertigo (BPPV)",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "dizziness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "سرگیجه کوتاه و شدید با تغییر وضعیت سر",
+    "تهوع",
+    "نیستاگموس (حرکت غیرارادی و تکانی چشم)",
+    "معمولاً بدون کاهش شنوایی",
+    "علائم با حرکات خاص سر تحریک می‌شوند"
+  ],
+  "when_to_see_doctor_fa": [
+    "سرگیجه کوتاه با تغییر وضعیت سر",
+    "اورژانس: سرگیجه شدید با علائم عصبی یا پس از ضربه به سر"
+  ],
+  "summary_fa": "سرگیجه وضعیتی حمله‌ای خوش‌خیم (سرگیجه وضعیتی) (تخصص: گوش، حلق و بینی، مغز و اعصاب). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Vertigo (https://www.nhs.uk/conditions/vertigo/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Benign paroxysmal positional vertigo (BPPV) (https://www.mayoclinic.org/diseases-conditions/benign-paroxysmal-positional-vertigo/symptoms-causes/syc-20356171)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NIDCD: BPPV (https://www.nidcd.nih.gov/health/benign-paroxysmal-positional-vertigo-bppv)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAN Guidelines: BPPV (https://www.aan.com/Guidelines/home/GuidelineDetail/1130)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

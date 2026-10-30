@@ -1,0 +1,94 @@
+{
+  "id": "research_020",
+  "name_fa": "کم‌خونی فقر آهن",
+  "name_en": "Iron deficiency anemia",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "chest_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dizziness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "palpitation",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "خستگی",
+    "رنگ‌پریدگی",
+    "تنگی نفس با فعالیت",
+    "تپش قلب",
+    "سردرد یا سرگیجه",
+    "ناخن‌های شکننده",
+    "میل به خوردن مواد غیرغذایی (پیکا)",
+    "در موارد شدید: درد قفسه سینه"
+  ],
+  "when_to_see_doctor_fa": [
+    "خستگی، رنگ‌پریدگی، تنگی نفس یا تپش قلب",
+    "اورژانس: درد قفسه سینه، غش یا مدفوع سیاه"
+  ],
+  "summary_fa": "کم‌خونی فقر آهن (تخصص: خون (هماتولوژی)). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Anaemia (https://www.who.int/news-room/fact-sheets/detail/anaemia)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NIDDK: Iron-Deficiency Anemia (https://www.niddk.nih.gov/health-information/blood-diseases/iron-deficiency-anemia)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Iron deficiency anaemia (https://www.nhs.uk/conditions/iron-deficiency-anaemia/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Iron deficiency anemia (https://www.mayoclinic.org/diseases-conditions/iron-deficiency-anemia/symptoms-causes/syc-20355034)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

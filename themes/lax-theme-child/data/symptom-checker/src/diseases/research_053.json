@@ -1,0 +1,92 @@
+{
+  "id": "research_053",
+  "name_fa": "دیورتیکولیت",
+  "name_en": "Diverticulitis",
+  "category": "بیماری‌های گوارشی",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "constipation",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "درد پایدار شکم، معمولاً در پایین سمت چپ (در برخی جمعیت‌ها مانند آسیای شرقی ممکن است سمت راست باشد)",
+    "تب",
+    "تهوع و استفراغ",
+    "یبوست یا اسهال",
+    "نفخ",
+    "حساسیت شکم هنگام لمس"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد شکم همراه با تب",
+    "اورژانس: درد شدید و ناگهانی، استفراغ مداوم، تب بالا، ناتوانی در دفع گاز یا مدفوع"
+  ],
+  "summary_fa": "دیورتیکولیت (تخصص: گوارش و کبد، جراحی عمومی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Diverticular Disease",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Diverticulitis",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "MedlinePlus: Diverticulitis",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ASCRS Guidelines: Left-Sided Colonic Diverticulitis",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "id": "research_080",
+  "name_fa": "سندرم تورت (تیک عصبی؛ تورت)",
+  "name_en": "Tourette syndrome",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [],
+  "symptoms_fa": [
+    "تیک‌های حرکتی متعدد",
+    "تیک‌های صوتی",
+    "تیک‌ها ناخواسته و ناگهانی هستند",
+    "ممکن است موقت یا مزمن (طولانی‌مدت) باشند",
+    "احساس پیش‌درآمد قبل از تیک"
+  ],
+  "when_to_see_doctor_fa": [
+    "تیک‌های حرکتی یا صوتی مزمن (طولانی‌مدت)",
+    "اورژانس: تیک شدید با خودآسیبی"
+  ],
+  "summary_fa": "سندرم تورت (تیک عصبی؛ تورت) (تخصص: مغز و اعصاب، روان‌پزشکی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "CDC: Tourette Syndrome (https://www.cdc.gov/tourette-syndrome/index.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NINDS: Tourette Syndrome (https://www.ninds.nih.gov/health-information/disorders/tourette-syndrome)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Tourette syndrome (https://www.nhs.uk/conditions/tourette-syndrome/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Tourette Association of America (https://tourette.org/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

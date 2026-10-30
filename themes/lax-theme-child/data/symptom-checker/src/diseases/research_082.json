@@ -1,0 +1,77 @@
+{
+  "id": "research_082",
+  "name_fa": "التهاب آلرژیک بینی (حساسیت بینی، تب یونجه)",
+  "name_en": "Allergic rhinitis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "ear_nose",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "عطسه",
+    "آبریزش بینی",
+    "گرفتگی بینی",
+    "خارش بینی و چشم",
+    "اشک‌ریزش",
+    "در نوع فصلی، علائم در فصل گرده‌افشانی تشدید می‌شود"
+  ],
+  "when_to_see_doctor_fa": [
+    "عطسه، آبریزش، گرفتگی یا خارش بینی",
+    "اورژانس: تنگی نفس، ویزینگ یا آنافیلاکسی"
+  ],
+  "summary_fa": "التهاب آلرژیک بینی (حساسیت بینی، تب یونجه) (تخصص: گوش، حلق و بینی، آلرژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Allergic rhinitis (https://www.who.int/news-room/fact-sheets/detail/allergic-rhinitis)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Allergic rhinitis (https://www.nhs.uk/conditions/allergic-rhinitis/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Hay fever (https://www.mayoclinic.org/diseases-conditions/hay-fever/symptoms-causes/syc-20373039)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "ARIA Guidelines: Allergic Rhinitis (https://www.ariaallergy.com/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

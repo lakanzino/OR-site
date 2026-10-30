@@ -1,0 +1,59 @@
+{
+  "id": "research_032",
+  "name_fa": "تباهی لکه زرد وابسته به سن",
+  "name_en": "Age-related macular degeneration",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [],
+  "symptoms_fa": [
+    "از دست رفتن بینایی مرکزی",
+    "دیدن خطوط کج یا موج‌دار",
+    "لکه تاریک در مرکز دید",
+    "مشکل در خواندن یا شناختن چهره‌ها"
+  ],
+  "when_to_see_doctor_fa": [
+    "کاهش بینایی مرکزی، خطوط موج‌دار یا لکه تاریک",
+    "اورژانس: تغییر ناگهانی بینایی"
+  ],
+  "summary_fa": "تباهی لکه زرد وابسته به سن (تخصص: چشم‌پزشکی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Age-related macular degeneration (https://www.who.int/news-room/fact-sheets/detail/age-related-macular-degeneration)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Macular degeneration (https://www.nhs.uk/conditions/age-related-macular-degeneration-amd/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Macular degeneration (https://www.mayoclinic.org/diseases-conditions/macular-degeneration/symptoms-causes/syc-20356084)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAO: AMD (https://www.aao.org/eye-health/diseases/amd-macular-degeneration)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": "research_059",
+  "name_fa": "فتق کشاله ران",
+  "name_en": "Inguinal Hernia",
+  "category": "جراحی عمومی",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "cough",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "برآمدگی در ناحیه کشاله ران که با ایستادن، سرفه یا زور زدن واضح‌تر می‌شود",
+    "ممکن است با خوابیدن ناپدید شود",
+    "احساس سنگینی، فشار، سوزش یا درد در کشاله ران",
+    "تورم کیسه بیضه در مردان",
+    "علائم هشدار (فتق گیرکرده یا خفه‌شده): درد ناگهانی و شدید، برآمدگی قرمز، بنفش یا تیره، تهوع و استفراغ، تب، ناتوانی در دفع گاز یا مدفوع"
+  ],
+  "when_to_see_doctor_fa": [
+    "هر برآمدگی جدید در کشاله ران",
+    "درد یا ناراحتی مداوم",
+    "اورژانس: درد ناگهانی و شدید با برآمدگی سفت، تغییر رنگ، تهوع، استفراغ یا ناتوانی در دفع"
+  ],
+  "summary_fa": "فتق کشاله ران (تخصص: متخصص جراحی عمومی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "Mayo Clinic: Inguinal hernia",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NIDDK: Inguinal hernia",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "MedlinePlus: Hernia",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Inguinal hernia repair",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

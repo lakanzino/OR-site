@@ -1,0 +1,60 @@
+{
+  "id": "research_086",
+  "name_fa": "عفونت قارچی ناخن (قارچ ناخن)",
+  "name_en": "Onychomycosis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [],
+  "symptoms_fa": [
+    "ضخیم‌شدن ناخن",
+    "تغییر رنگ ناخن",
+    "شکنندگی ناخن",
+    "جدا شدن ناخن از بستر",
+    "معمولاً بدون درد"
+  ],
+  "when_to_see_doctor_fa": [
+    "ضخیم‌شدن، تغییر رنگ یا شکنندگی ناخن",
+    "اورژانس: دیابت یا نقص ایمنی با عفونت"
+  ],
+  "summary_fa": "عفونت قارچی ناخن (قارچ ناخن) (تخصص: پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "CDC: Fungal Nail Infections (https://www.cdc.gov/fungal/nail-infections.html)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "NHS: Fungal nail infection (https://www.nhs.uk/conditions/fungal-nail-infection/)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "Mayo Clinic: Nail fungus (https://www.mayoclinic.org/diseases-conditions/nail-fungus/symptoms-causes/syc-20353294)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    },
+    {
+      "publisher": "AAD: Nail Fungus (https://www.aad.org/public/diseases/a-z/nail-fungus)",
+      "title": "",
+      "url": "",
+      "accessed": ""
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": ""
+  }
+}

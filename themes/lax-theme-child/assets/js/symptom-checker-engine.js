@@ -1,15 +1,22 @@
 /**
  * Symptom checker engine (test space). Pure functions, no DOM.
  *
- * Reasoning: abductive. Each disease is a hypothesis explained by its tags.
- * Evidence (yes/no answers to tag questions) raises or lowers hypotheses.
- * The next question is the tag whose answer would split the current
- * probability mass most evenly (maximum entropy), which approximates the
- * information gain of the question.
+ * Order of work for every visit:
+ *   1. Age and sex are collected first (filters, not evidence).
+ *   2. All red-flag questions are asked before anything else. A "yes" is a hard
+ *      override: the result is an emergency and no disease ranking is shown.
+ *      "unknown" never hides an emergency; it only adds a caution notice.
+ *   3. Tag questions: first every tag of the body region the visitor chose
+ *      (vocabulary order), then the question that best splits the remaining
+ *      candidates.
+ *   4. Candidates are diseases that pass the age/sex filter and are rankable
+ *      (enough tags to judge). Each candidate's score is the weight of its tags
+ *      the visit confirmed, minus a penalty for core tags the visit denied.
+ *      Core tags weigh 2, supporting tags weigh 1.
  *
- * Red flags are asked first and override everything else.
- * "Unknown" answers never count as evidence. Red flags answered "unknown"
- * only add a caution notice; they never hide an emergency.
+ * Output is a relative match level, not a probability. The engine never
+ * claims a diagnosis; it says which known conditions the answers resemble and
+ * what is still unconfirmed.
  *
  * Loaded in the browser as a plain script (window.SymptomEngine) and in node
  * for tests (module.exports).
@@ -23,32 +30,94 @@
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
 
-  var MAX_QUESTIONS = 12;
-  var TEMPERATURE = 4;
+  var MAX_QUESTIONS = 15;
   var TOP_N = 3;
+  var CORE_WEIGHT = 2;
+  var SUPPORT_WEIGHT = 1;
+  var DENY_PENALTY = 0.5; // share of a denied core tag's weight subtracted
+  var MIN_CONFIRMED = 2; // a candidate needs at least this many confirmed tags
+  var CONFIDENT_SCORE = 0.6;
+  var CONFIDENT_MARGIN = 0.15;
+  var TEMPERATURE = 4;
+  var MATCH_LABELS = {
+    high: 'همخوانی بالا با علائم',
+    moderate: 'همخوانی نسبی',
+    low: 'احتمال ضعیف',
+  };
 
-  function tagSetOf(disease) {
-    return new Set(disease.tags || []);
+  function weightOf(disease, tag) {
+    var role = (disease.tagRoles || {})[tag];
+    return role === 'core' ? CORE_WEIGHT : SUPPORT_WEIGHT;
   }
 
-  /** Score every disease against the current evidence. */
-  function scoreDiseases(diseases, present, absent) {
+  /** Answers → sets. Only 'yes' and 'no' carry information. */
+  function evidenceOf(tagAnswers) {
+    var present = new Set();
+    var absent = new Set();
+    Object.keys(tagAnswers || {}).forEach(function (t) {
+      if (tagAnswers[t] === 'yes') present.add(t);
+      if (tagAnswers[t] === 'no') absent.add(t);
+    });
+    return { present: present, absent: absent };
+  }
+
+  /** Age and sex are filters. Unknown values never exclude a disease. */
+  function passesFilters(disease, answers) {
+    if (answers.age && disease.ageGroups && disease.ageGroups.indexOf(answers.age) === -1) {
+      return false;
+    }
+    if (answers.sex && disease.sex && disease.sex !== 'any' && disease.sex !== answers.sex) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Score one disease. Returns null when it cannot be a candidate.
+   * score = (confirmed weight − penalty for denied core weight) / total weight
+   */
+  function scoreOne(disease, present, absent) {
+    var tags = disease.tags || [];
+    if (!tags.length) return null;
+    var total = 0;
+    var confirmed = [];
+    var missingCore = [];
+    var deniedCoreW = 0;
+    var confirmedW = 0;
+    tags.forEach(function (t) {
+      var w = weightOf(disease, t);
+      total += w;
+      if (present.has(t)) {
+        confirmed.push(t);
+        confirmedW += w;
+      } else if (absent.has(t)) {
+        if (w === CORE_WEIGHT) deniedCoreW += w;
+      } else if (w === CORE_WEIGHT) {
+        missingCore.push(t);
+      }
+    });
+    if (confirmed.length < MIN_CONFIRMED) return null;
+    var raw = (confirmedW - DENY_PENALTY * deniedCoreW) / total;
+    return {
+      disease: disease,
+      score: Math.max(0, raw),
+      confirmed: confirmed,
+      missingCore: missingCore,
+    };
+  }
+
+  /** Rank candidates, highest first. Only rankable, filter-passing diseases. */
+  function rank(diseases, answers) {
+    var tagAnswers = (answers && answers.tags) || {};
+    var ev = evidenceOf(tagAnswers);
     var scored = [];
     diseases.forEach(function (d) {
-      var tags = tagSetOf(d);
-      if (tags.size === 0) return;
-      var matched = [];
-      var denied = 0;
-      tags.forEach(function (t) {
-        if (present.has(t)) matched.push(t);
-        else if (absent.has(t)) denied += 1;
-      });
-      if (matched.length === 0) return;
-      var base = matched.length / Math.sqrt(tags.size + 1);
-      var penalty = 1 - 0.15 * Math.min(denied, 3);
-      scored.push({ disease: d, matched: matched, score: base * penalty });
+      if (!d.rankable) return;
+      if (!passesFilters(d, answers || {})) return;
+      var s = scoreOne(d, ev.present, ev.absent);
+      if (s) scored.push(s);
     });
-    // Softmax turns scores into a probability mass over hypotheses.
+    // Softmax weights give a relative ordering for the question picker only.
     var total = 0;
     scored.forEach(function (s) {
       s.weight = Math.exp(TEMPERATURE * s.score);
@@ -57,42 +126,98 @@
     scored.forEach(function (s) {
       s.p = total > 0 ? s.weight / total : 0;
     });
-    scored.sort(function (a, b) { return b.p - a.p; });
+    scored.sort(function (a, b) {
+      return b.score - a.score || a.disease.id.localeCompare(b.disease.id);
+    });
     return scored;
   }
 
-  /** Confidence band of the leading hypothesis. Conservative by design. */
-  function bandOf(top) {
-    if (!top) return 'none';
-    if (top.p >= 0.5 && top.matched.length >= 3) return 'high';
-    if (top.p >= 0.3 && top.matched.length >= 2) return 'medium';
+  function levelOf(score) {
+    if (score >= CONFIDENT_SCORE) return 'high';
+    if (score >= 0.35) return 'moderate';
     return 'low';
   }
 
-  /** Pick the unasked tag with the most even split across the hypotheses. */
-  function nextTag(scored, present, absent, asked, vocabTags) {
-    var best = null;
-    var bestEntropy = 0;
-    vocabTags.forEach(function (tag) {
-      if (asked.has(tag.id)) return;
-      var mass = 0;
-      scored.forEach(function (s) {
-        if (s.disease.tags && s.disease.tags.indexOf(tag.id) !== -1) mass += s.p;
-      });
-      if (mass <= 0 || mass >= 1) return;
-      var h = -(mass * Math.log2(mass) + (1 - mass) * Math.log2(1 - mass));
-      if (h > bestEntropy) {
-        bestEntropy = h;
-        best = tag;
-      }
-    });
-    return bestEntropy > 0.2 ? best : null;
+  /** Stop only when one candidate clearly leads. */
+  function isConfident(scored) {
+    if (!scored.length) return false;
+    var top = scored[0];
+    var second = scored[1];
+    var margin = top.score - (second ? second.score : 0);
+    return top.score >= CONFIDENT_SCORE && margin >= CONFIDENT_MARGIN;
   }
 
   /**
-   * Replay the answers and decide the next step.
-   * answers: { region, redFlags: {id: 'yes'|'no'|'unknown'}, tags: {id: 'yes'|'no'|'unknown'} }
-   * vocab: parsed vocab.json; diseases: parsed diseases.json array.
+   * The chosen body area's most relevant tags, first. Relevance = how many
+   * eligible rankable diseases use the tag. Capped, so the area never crowds
+   * out the entropy-based questions that cover other body areas.
+   */
+  var REGION_FIRST = 4;
+  function regionQueue(vocab, diseases, answers, asked) {
+    if (!answers.region) return [];
+    var eligible = diseases.filter(function (d) {
+      return d.rankable && passesFilters(d, answers);
+    });
+    var count = {};
+    eligible.forEach(function (d) {
+      (d.tags || []).forEach(function (t) { count[t] = (count[t] || 0) + 1; });
+    });
+    return (vocab.tags || [])
+      .filter(function (t) {
+        return t.region === answers.region && !asked.has(t.id) && count[t.id];
+      })
+      .sort(function (a, b) { return count[b.id] - count[a.id]; })
+      .slice(0, REGION_FIRST);
+  }
+
+  /**
+   * Basis for choosing the next question. Before any disease has enough
+   * confirmed tags, every eligible rankable disease counts equally, so the
+   * first questions cover the broadest set of conditions.
+   */
+  function questionBasis(diseases, answers) {
+    var scored = rank(diseases, answers);
+    if (scored.length) return scored.slice(0, 10);
+    var eligible = diseases.filter(function (d) {
+      return d.rankable && passesFilters(d, answers);
+    });
+    if (!eligible.length) return [];
+    return eligible.map(function (d) {
+      return { disease: d, p: 1 / eligible.length };
+    });
+  }
+
+  /**
+   * Pick the unasked tag whose yes/no answer would split the basis most
+   * evenly (highest entropy of mass). Null when nothing helps.
+   */
+  function nextTag(pool, asked, vocabTags) {
+    var best = null;
+    var bestH = 0.2;
+    (vocabTags || []).forEach(function (tag) {
+      if (asked.has(tag.id)) return;
+      var mass = 0;
+      var norm = 0;
+      pool.forEach(function (s) {
+        norm += s.p;
+        if ((s.disease.tags || []).indexOf(tag.id) !== -1) mass += s.p;
+      });
+      if (norm <= 0) return;
+      var m = mass / norm;
+      if (m <= 0 || m >= 1) return;
+      var h = -(m * Math.log2(m) + (1 - m) * Math.log2(1 - m));
+      if (h > bestH) {
+        bestH = h;
+        best = tag;
+      }
+    });
+    return best;
+  }
+
+  /**
+   * Replay all answers and decide the next step.
+   * answers: { age, sex, redFlags: {id: 'yes'|'no'|'unknown'}, tags: {id: 'yes'|'no'|'unknown'} }
+   * Returns { type: 'redFlag' | 'tag' | 'result', ... }
    */
   function nextStep(vocab, diseases, answers) {
     var redFlags = vocab.redFlags || [];
@@ -111,89 +236,74 @@
     }
 
     var tagAnswers = answers.tags || {};
-    var present = new Set();
-    var absent = new Set();
-    Object.keys(tagAnswers).forEach(function (t) {
-      if (tagAnswers[t] === 'yes') present.add(t);
-      if (tagAnswers[t] === 'no') absent.add(t);
-    });
     var asked = new Set(Object.keys(tagAnswers));
+    var scored = rank(diseases, answers);
 
-    // Ask the chosen region's tags first, in vocabulary order.
-    var regionTags = (vocab.tags || []).filter(function (t) {
-      return t.region === answers.region && !asked.has(t.id);
-    });
+    if (isConfident(scored) || asked.size >= MAX_QUESTIONS) {
+      return { type: 'result', result: buildResult(vocab, diseases, answers, []) };
+    }
+    // The main body area the visitor chose is asked first, in vocabulary order.
+    var regionTags = regionQueue(vocab, diseases, answers, asked);
     if (regionTags.length) {
       return { type: 'tag', tag: regionTags[0] };
     }
-
-    var scored = scoreDiseases(diseases, present, absent);
-    var band = bandOf(scored[0]);
-    var askedCount = asked.size;
-    if (band === 'high' || askedCount >= MAX_QUESTIONS) {
-      return { type: 'result', result: buildResult(vocab, diseases, answers, []) };
-    }
-    var tag = nextTag(scored, present, absent, asked, vocab.tags || []);
+    var tag = nextTag(questionBasis(diseases, answers), asked, vocab.tags || []);
     if (!tag) {
       return { type: 'result', result: buildResult(vocab, diseases, answers, []) };
     }
     return { type: 'tag', tag: tag };
   }
 
-  var MATCH_LABELS = {
-    high: 'همخوانی بالا با علائم',
-    moderate: 'همخوانی نسبی',
-    low: 'احتمال ضعیف',
-  };
-  function matchLevelOf(matchedCount, tagCount) {
-    if (!tagCount) return 'low';
-    var share = matchedCount / tagCount;
-    if (share >= 0.5) return 'high';
-    if (share >= 0.25) return 'moderate';
-    return 'low';
-  }
-
   function buildResult(vocab, diseases, answers, emergencyIds) {
-    var tagAnswers = answers.tags || {};
-    var present = new Set();
-    var absent = new Set();
-    Object.keys(tagAnswers).forEach(function (t) {
-      if (tagAnswers[t] === 'yes') present.add(t);
-      if (tagAnswers[t] === 'no') absent.add(t);
-    });
-    var labels = {};
-    (vocab.tags || []).forEach(function (t) { labels[t.id] = t.label; });
-
     var redAnswers = answers.redFlags || {};
-    var unknownRed = (vocab.redFlags || []).some(function (rf) { return redAnswers[rf.id] === 'unknown'; });
+    var unknownRed = (vocab.redFlags || []).some(function (rf) {
+      return redAnswers[rf.id] === 'unknown';
+    });
 
     if (emergencyIds.length) {
       return {
         emergency: true,
+        status: 'emergency',
         cautionUnknown: false,
         emergencyIds: emergencyIds,
         candidates: [],
       };
     }
 
-    var scored = scoreDiseases(diseases, present, absent).slice(0, TOP_N);
+    var labels = {};
+    (vocab.tags || []).forEach(function (t) { labels[t.id] = t.label; });
+    var ev = evidenceOf(answers.tags);
+    var pool = diseases.filter(function (d) { return passesFilters(d, answers); });
+    var rankablePool = pool.filter(function (d) { return d.rankable; });
+    var scored = rank(diseases, answers);
+
+    var status = 'ok';
+    if (!rankablePool.length) status = 'insufficient';
+    else if (!scored.length) status = 'nomatch';
+
     return {
       emergency: false,
+      status: status,
       cautionUnknown: unknownRed,
-      band: bandOf(scored[0]),
-      candidates: scored.map(function (s) {
+      confident: isConfident(scored),
+      askedCount: Object.keys(answers.tags || {}).length,
+      unrankableCount: pool.length - rankablePool.length,
+      candidates: scored.slice(0, TOP_N).map(function (s) {
+        var level = levelOf(s.score);
         return {
           id: s.disease.id,
           nameFa: s.disease.nameFa,
           nameEn: s.disease.nameEn,
           specialty: s.disease.specialty,
+          reviewStatus: s.disease.reviewStatus,
           // No numeric probability: the score is relative, not calibrated.
-          // Level = share of this disease's tags that the visit matched.
-          matchLevel: matchLevelOf(s.matched.length, tagSetOf(s.disease).size),
-          matchLabelFa: MATCH_LABELS[matchLevelOf(s.matched.length, tagSetOf(s.disease).size)],
-          matched: s.matched.map(function (t) { return labels[t] || t; }),
+          matchLevel: level,
+          matchLabelFa: MATCH_LABELS[level],
+          matched: s.confirmed.map(function (t) { return labels[t] || t; }),
+          missingCore: s.missingCore.map(function (t) { return labels[t] || t; }),
           symptoms: (s.disease.symptoms || []).slice(),
           whenToSeeDoctor: (s.disease.whenToSeeDoctor || []).slice(),
+          nextStep: s.disease.nextStep || '',
           sources: s.disease.sources || [],
         };
       }),
@@ -201,11 +311,13 @@
   }
 
   return {
-    scoreDiseases: scoreDiseases,
-    bandOf: bandOf,
-    nextTag: nextTag,
-    nextStep: nextStep,
-    buildResult: buildResult,
     MAX_QUESTIONS: MAX_QUESTIONS,
+    questionBasis: questionBasis,
+    rank: rank,
+    nextStep: nextStep,
+    passesFilters: passesFilters,
+    scoreOne: scoreOne,
+    levelOf: levelOf,
+    isConfident: isConfident,
   };
 });
