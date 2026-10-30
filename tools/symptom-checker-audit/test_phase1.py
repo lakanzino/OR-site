@@ -13,10 +13,12 @@ import unittest
 
 from validate_phase1 import (
     BUNDLE_PATH,
+    EVIDENCE_PATH,
     SCENARIOS_PATH,
     evaluate,
     load_json,
     validate_bundle,
+    validate_evidence_map,
     validate_scenarios,
 )
 
@@ -26,6 +28,7 @@ class Phase1ContractTest(unittest.TestCase):
     def setUpClass(cls):
         cls.bundle = load_json(BUNDLE_PATH)
         cls.scenarios = load_json(SCENARIOS_PATH)
+        cls.evidence = load_json(EVIDENCE_PATH)
 
     def mutated_bundle(self, mutate):
         bundle = copy.deepcopy(self.bundle)
@@ -198,6 +201,35 @@ class Phase1ContractTest(unittest.TestCase):
 
         errors = validate_scenarios(self.bundle, self.mutated_scenarios(mutate))
         self.assertTrue(any("allows result cards" in e for e in errors), errors)
+
+    # --- نگاشت شواهد -------------------------------------------------
+    def test_evidence_map_is_valid(self):
+        self.assertEqual(validate_evidence_map(self.bundle, self.evidence), [])
+
+    def test_evidence_map_with_unknown_option_is_rejected(self):
+        evidence = copy.deepcopy(self.evidence)
+        evidence["entries"].append(
+            {
+                "question_id": "q_pain_present",
+                "option_id": "maybe",
+                "symptom_id": "s_pain_abdomen",
+                "state": "present",
+            }
+        )
+        errors = validate_evidence_map(self.bundle, evidence)
+        self.assertTrue(any("unknown option" in e for e in errors), errors)
+
+    def test_evidence_map_with_stale_bundle_version_is_rejected(self):
+        evidence = copy.deepcopy(self.evidence)
+        evidence["bundle_version"] = "0.0.1"
+        errors = validate_evidence_map(self.bundle, evidence)
+        self.assertTrue(any("does not match bundle" in e for e in errors), errors)
+
+    def test_evidence_map_with_invalid_state_is_rejected(self):
+        evidence = copy.deepcopy(self.evidence)
+        evidence["entries"][0]["state"] = "maybe"
+        errors = validate_evidence_map(self.bundle, evidence)
+        self.assertTrue(any("state must be" in e for e in errors), errors)
 
     def test_wrong_expected_branch_is_caught(self):
         def mutate(scenarios):

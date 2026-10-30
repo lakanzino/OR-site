@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parents[2]
 BUNDLE_PATH = ROOT / "docs" / "symptom-checker" / "phase-1" / "knowledge-bundle.v1.json"
 SCENARIOS_PATH = ROOT / "docs" / "symptom-checker" / "phase-1" / "scenarios.v1.json"
 PROFILES_PATH = ROOT / "themes" / "lax-theme-child" / "data" / "disease-profiles.json"
+EVIDENCE_PATH = ROOT / "symptom-checker" / "engine" / "data" / "evidence-map.v1.json"
 
 COVERAGE_VALUES = {"sufficient", "insufficient", "out_of_scope"}
 SEVERITIES = {"urgent", "prompt", "info"}
@@ -427,10 +428,48 @@ def validate_scenarios(bundle: dict, scenarios: dict) -> list:
     return errors
 
 
+def validate_evidence_map(bundle: dict, evidence: dict) -> list:
+    """نگاشت پاسخ→نشانه باید فقط به سؤال، گزینه و نشانهٔ موجود اشاره کند."""
+    errors: list = []
+    questions = {item["id"]: item for item in bundle.get("questions", [])}
+    symptoms = {item["id"] for item in bundle.get("symptoms", [])}
+    seen = set()
+
+    if evidence.get("bundle_id") != bundle.get("bundle_id"):
+        errors.append("evidence map bundle_id does not match the knowledge bundle")
+    if evidence.get("bundle_version") != bundle.get("bundle_version"):
+        errors.append(
+            "evidence map bundle_version {!r} does not match bundle {!r}".format(
+                evidence.get("bundle_version"), bundle.get("bundle_version")
+            )
+        )
+
+    for entry in evidence.get("entries", []):
+        owner = "evidence entry {}->{}".format(entry.get("question_id"), entry.get("symptom_id"))
+        question = questions.get(entry.get("question_id"))
+        if not question:
+            errors.append(f"{owner}: unknown question")
+            continue
+        option_ids = {opt["id"] for opt in question.get("options", [])}
+        if entry.get("option_id") not in option_ids:
+            errors.append(f"{owner}: unknown option {entry.get('question_id')}.{entry.get('option_id')}")
+        if entry.get("symptom_id") not in symptoms:
+            errors.append(f"{owner}: unknown symptom")
+        if entry.get("state") not in {"present", "absent"}:
+            errors.append(f"{owner}: state must be present or absent")
+        key = (entry.get("question_id"), entry.get("option_id"), entry.get("symptom_id"), entry.get("state"))
+        if key in seen:
+            errors.append(f"{owner}: duplicate entry")
+        seen.add(key)
+
+    return errors
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Validate the phase-1 symptom-checker bundle")
     parser.add_argument("--bundle", default=str(BUNDLE_PATH))
     parser.add_argument("--scenarios", default=str(SCENARIOS_PATH))
+    parser.add_argument("--evidence", default=str(EVIDENCE_PATH))
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args(argv)
 
@@ -439,6 +478,13 @@ def main(argv=None) -> int:
 
     errors = validate_bundle(bundle)
     errors += validate_scenarios(bundle, scenarios)
+
+    evidence_file = Path(args.evidence)
+    evidence_note = "بدون نگاشت شواهد"
+    if evidence_file.is_file():
+        evidence = load_json(evidence_file)
+        errors += validate_evidence_map(bundle, evidence)
+        evidence_note = f"{len(evidence.get('entries', []))} نگاشت پاسخ→نشانه"
 
     if errors:
         print(f"FAIL — {len(errors)} issue(s)")
@@ -449,7 +495,7 @@ def main(argv=None) -> int:
     if not args.quiet:
         print(
             "OK — bundle {} v{}: {} symptoms, {} questions, {} conditions, "
-            "{} paths, {} safety rules, {} coverage rules, {} scenarios".format(
+            "{} paths, {} safety rules, {} coverage rules, {} scenarios — {}".format(
                 bundle["bundle_id"],
                 bundle["bundle_version"],
                 len(bundle["symptoms"]),
@@ -459,6 +505,7 @@ def main(argv=None) -> int:
                 len(bundle["safety_rules"]),
                 len(bundle["coverage_rules"]),
                 len(scenarios["scenarios"]),
+                evidence_note,
             )
         )
         print("Advisory: structure and traceability only — no clinical validation.")
