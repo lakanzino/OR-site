@@ -174,12 +174,12 @@ $hj_faqs = array(
 
 			<div class="hj-home-hero__search"><?php get_search_form(); ?></div>
 
-			<?php
-			$hj_app_page_id = (int) get_option( 'hamyar_symptom_guide_page_id' );
-			$hj_app_url = $hj_app_page_id && function_exists( 'hamyar_symptom_guide_template' ) && 'publish' === get_post_status( $hj_app_page_id ) ? get_permalink( $hj_app_page_id ) : '';
-			?>
+			<!-- لینک مستقیم ابزار تشخیص علائم داخل قالب فرزند -->
 			<div class="hj-home-hero__actions">
-				<?php if ( $hj_app_url ) : ?><a class="hj-button hj-button--light" href="<?php echo esc_url( $hj_app_url ); ?>">ابزار هوشمند ارزیابی علائم بیماری</a><?php endif; ?>
+				<?php
+				$hj_symptom_url = esc_url( get_stylesheet_directory_uri() ) . '/inc/symptom-checker-test.php';
+				?>
+				<a class="hj-button hj-button--light" href="<?php echo $hj_symptom_url; ?>">ابزار هوشمند ارزیابی علائم بیماری</a>
 				<a class="hj-button hj-button--light" href="<?php echo esc_url( hj_archive_url( 'patient_guide' ) ); ?>">شروع از راهنمای بیمار</a>
 				<a class="hj-button hj-button--outline-light" href="<?php echo esc_url( hj_archive_url( 'or_environment' ) ); ?>">شناخت اتاق عمل و تیم</a>
 			</div>
@@ -220,43 +220,43 @@ $hj_faqs = array(
 
 					<script type="application/json" id="hj-care-data"><?php echo wp_json_encode( $hj_care_stages, JSON_UNESCAPED_UNICODE ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON data. ?></script>
 					<script>
-					(function () {
-						var data = document.getElementById('hj-care-data');
-						var run = document.getElementById('hj-care-run');
-						var box = document.getElementById('hj-care-result');
-						var surgery = document.getElementById('hj-care-surgery');
-						var stage = document.getElementById('hj-care-stage');
-						if (!data || !run || !box || !surgery || !stage) { return; }
-						var stages = {};
-						try { stages = JSON.parse(data.textContent); } catch (e) { return; }
-						run.addEventListener('click', function () {
-							var chosen = stages[stage.value];
-							if (!chosen) { return; }
-							box.textContent = '';
-							var h = document.createElement('h3');
-							h.textContent = chosen.title;
-							box.appendChild(h);
-							var ul = document.createElement('ul');
-							chosen.points.forEach(function (point) {
-								var li = document.createElement('li');
-								li.textContent = point;
-								ul.appendChild(li);
+						(function () {
+							var data = document.getElementById('hj-care-data');
+							var run = document.getElementById('hj-care-run');
+							var box = document.getElementById('hj-care-result');
+							var surgery = document.getElementById('hj-care-surgery');
+							var stage = document.getElementById('hj-care-stage');
+							if (!data || !run || !box || !surgery || !stage) { return; }
+							var stages = {};
+							try { stages = JSON.parse(data.textContent); } catch (e) { return; }
+							run.addEventListener('click', function () {
+								var chosen = stages[stage.value];
+								if (!chosen) { return; }
+								box.textContent = '';
+								var h = document.createElement('h3');
+								h.textContent = chosen.title;
+								box.appendChild(h);
+								var ul = document.createElement('ul');
+								chosen.points.forEach(function (point) {
+									var li = document.createElement('li');
+									li.textContent = point;
+									ul.appendChild(li);
+								});
+								box.appendChild(ul);
+								var flag = document.createElement('p');
+								flag.className = 'hj-care-tool__flag';
+								flag.textContent = 'علائم هشدار: تب، تنگی نفس، درد شدید و فزاینده، خون‌ریزی یا ترشح چرکی — با مرکز جراحی تماس بگیرید و در وضعیت اورژانسی با ۱۱۵.';
+								box.appendChild(flag);
+								var link = document.createElement('p');
+								link.className = 'hj-care-tool__links';
+								var a = document.createElement('a');
+								a.href = surgery.options[surgery.selectedIndex].getAttribute('data-url') || '';
+								a.textContent = 'راهنمای کامل ' + (surgery.options[surgery.selectedIndex].getAttribute('data-title') || surgery.options[surgery.selectedIndex].textContent);
+								link.appendChild(a);
+								box.appendChild(link);
+								box.hidden = false;
 							});
-							box.appendChild(ul);
-							var flag = document.createElement('p');
-							flag.className = 'hj-care-tool__flag';
-							flag.textContent = 'علائم هشدار: تب، تنگی نفس، درد شدید و فزاینده، خون‌ریزی یا ترشح چرکی — با مرکز جراحی تماس بگیرید و در وضعیت اورژانسی با ۱۱۵.';
-							box.appendChild(flag);
-							var link = document.createElement('p');
-							link.className = 'hj-care-tool__links';
-							var a = document.createElement('a');
-							a.href = surgery.options[surgery.selectedIndex].getAttribute('data-url') || '';
-							a.textContent = 'راهنمای کامل ' + (surgery.options[surgery.selectedIndex].getAttribute('data-title') || surgery.options[surgery.selectedIndex].textContent);
-							link.appendChild(a);
-							box.appendChild(link);
-							box.hidden = false;
-						});
-					})();
+						})();
 					</script>
 				<?php else : ?>
 					<div class="hj-care-tool__fallback">
@@ -378,24 +378,25 @@ $hj_faqs = array(
 				</div>
 			<?php endif; ?>
 
-			<?php if ( $hj_glossary_topics ) : ?>
-				<div class="hj-glossary-strip">
-					<h3 id="hj-glossary-topics-title">از واژه‌نامه شروع کنید</h3>
-					<nav aria-labelledby="hj-glossary-topics-title">
-						<ul class="hj-glossary-topic-list">
-							<?php foreach ( $hj_glossary_topics as $hj_topic ) : ?>
-								<li>
-									<a class="hj-glossary-topic-list__link" href="<?php echo esc_url( $hj_topic['url'] ); ?>" title="<?php echo esc_attr( $hj_topic['name'] ); ?>">
-										<span class="hj-glossary-topic-list__label"><?php echo esc_html( $hj_topic['name'] ); ?></span>
-										<span class="hj-glossary-topic-list__arrow" aria-hidden="true">‹</span>
-									</a>
-								</li>
-							<?php endforeach; ?>
-						</ul>
-					</nav>
-					<a class="hj-text-link" href="<?php echo esc_url( hj_archive_url( 'glossary' ) ); ?>">همه‌ی اصطلاحات اتاق عمل</a>
-				</div>
-			<?php endif; ?>
+		</section>
+
+		<section id="hj-glossary" class="hj-home-section" aria-labelledby="hj-glossary-topics-title">
+			<div class="hj-glossary-strip">
+				<h3 id="hj-glossary-topics-title">از واژه‌نامه شروع کنید</h3>
+				<nav aria-labelledby="hj-glossary-topics-title">
+					<ul class="hj-glossary-topic-list">
+						<?php foreach ( $hj_glossary_topics as $hj_topic ) : ?>
+							<li>
+								<a class="hj-glossary-topic-list__link" href="<?php echo esc_url( $hj_topic['url'] ); ?>" title="<?php echo esc_attr( $hj_topic['name'] ); ?>">
+									<span class="hj-glossary-topic-list__label"><?php echo esc_html( $hj_topic['name'] ); ?></span>
+									<span class="hj-glossary-topic-list__arrow" aria-hidden="true">‹</span>
+								</a>
+							</li>
+						<?php endforeach; ?>
+					</ul>
+				</nav>
+				<a class="hj-text-link" href="<?php echo esc_url( hj_archive_url( 'glossary' ) ); ?>">همه‌ی اصطلاحات اتاق عمل</a>
+			</div>
 		</section>
 
 		<section id="hj-faq" class="hj-home-section" aria-labelledby="hj-faq-title">
