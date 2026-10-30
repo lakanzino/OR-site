@@ -46,6 +46,15 @@ get_header();
 <script src="<?php echo esc_url( get_stylesheet_directory_uri() ); ?>/assets/js/engine.js" defer></script>
 <script src="<?php echo esc_url( get_stylesheet_directory_uri() ); ?>/assets/js/ui.js" defer></script>
 
+<!-- محتوای ابزار -->
+<div id="region-container" class="region-container"></div>
+<div id="symptoms-container" class="symptoms-container"></div>
+<div id="result-container" class="result-container"></div>
+<div id="status" class="status">در حال بارگذاری داده‌ها…</div>
+
+<!-- دکمه تست -->
+<button type="button" onclick="runSymptomChecker(['درد شکم', 'تهوع', 'تب'], 'abdomen', window.hamyarDbUrl)">تست ابزار (آپاندیسیت)</button>
+
 <?php
 get_footer();
 ?>
