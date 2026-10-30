@@ -1,0 +1,114 @@
+{
+  "id": "research_075",
+  "name_fa": "اختلال هراس (اختلال پانیک)",
+  "name_en": "Panic disorder",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "panic_attack",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "palpitation",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sweating",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dizziness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "chest_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "numbness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "tremor",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "حملات ناگهانی تپش قلب",
+    "تعریق",
+    "لرزش",
+    "تنگی نفس",
+    "درد قفسه سینه",
+    "ترس از مرگ یا از دست دادن کنترل",
+    "گزگز",
+    "سرگیجه"
+  ],
+  "when_to_see_doctor_fa": [
+    "حملات ناگهانی تپش قلب، تنگی نفس یا ترس شدید",
+    "اورژانس: اولین حمله با درد قفسه سینه یا علائم قلبی"
+  ],
+  "summary_fa": "اختلال هراس (اختلال پانیک) (تخصص: روان‌پزشکی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIMH: Panic Disorder",
+      "title": "",
+      "url": "https://www.nimh.nih.gov/health/topics/panic-disorder",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Panic disorder",
+      "title": "",
+      "url": "https://www.nhs.uk/mental-health/conditions/panic-disorder/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Panic attacks and panic disorder",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/panic-attacks/symptoms-causes/syc-20376021",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "ADAA: Panic Disorder",
+      "title": "",
+      "url": "https://adaa.org/understanding-anxiety/panic-disorder",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "SSRI",
+    "روان‌درمانی (CBT)",
+    "بنزودیازپین‌ها فقط کوتاه‌مدت"
+  ]
+}

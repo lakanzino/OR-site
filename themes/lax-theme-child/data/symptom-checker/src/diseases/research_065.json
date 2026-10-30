@@ -1,0 +1,113 @@
+{
+  "id": "research_065",
+  "name_fa": "بیماری آدیسون",
+  "name_en": "Addison disease",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "weakness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dizziness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dark_patches",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "salt_craving",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "خستگی و ضعف",
+    "کاهش وزن",
+    "افت فشار خون",
+    "تاریک‌شدن پوست و مخاط",
+    "میل شدید به نمک",
+    "تهوع",
+    "سرگیجه"
+  ],
+  "when_to_see_doctor_fa": [
+    "خستگی، افت فشار، تاریک‌شدن پوست یا میل به نمک",
+    "اورژانس: بحران آدرنال (استفراغ، گیجی، افت فشار)"
+  ],
+  "summary_fa": "بیماری آدیسون (تخصص: غدد درون‌ریز و متابولیسم). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Addison's Disease",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/endocrine-diseases/adrenal-insufficiency-addisons-disease",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Addison's disease",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/addisons-disease/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Addison's disease",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/addisons-disease/symptoms-causes/syc-20350293",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Endocrine Society: Adrenal Insufficiency",
+      "title": "",
+      "url": "https://www.endocrine.org/patient-engagement/endocrine-library/adrenal-insufficiency",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "جایگزینی گلوکوکورتیکوئید (هیدروکورتیزون)",
+    "جایگزینی مینرالوکورتیکوئید (فلودروکورتیزون)",
+    "آموزش مدیریت استرس و بیماری حاد"
+  ]
+}

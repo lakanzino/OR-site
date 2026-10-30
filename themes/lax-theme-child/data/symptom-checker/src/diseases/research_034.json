@@ -1,0 +1,103 @@
+{
+  "id": "research_034",
+  "name_fa": "سندرم تخمدان پلی‌کیستیک",
+  "name_en": "Polycystic ovary syndrome",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "missed_period",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "hirsutism",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "acne_lesions",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_gain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "infertility",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dark_patches",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "قاعدگی نامنظم یا قطع قاعدگی",
+    "رشد موی زائد (هیرسوتیسم)",
+    "آکنه",
+    "افزایش وزن",
+    "ناباروری",
+    "لکه‌های تیره پوست (آکانتوزیس نیگریکانس)"
+  ],
+  "when_to_see_doctor_fa": [
+    "قاعدگی نامنظم، موی زائد، آکنه یا ناباروری",
+    "اورژانس: خونریزی شدید"
+  ],
+  "summary_fa": "سندرم تخمدان پلی‌کیستیک (تخصص: زنان و زایمان، غدد). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Polycystic ovary syndrome",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/polycystic-ovary-syndrome",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Polycystic ovary syndrome (PCOS)",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/polycystic-ovary-syndrome-pcos/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: PCOS",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/pcos/symptoms-causes/syc-20353439",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "ASRM: PCOS",
+      "title": "",
+      "url": "https://www.asrm.org/topics/topic-detail/polycystic-ovary-syndrome/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "اصلاح سبک زندگی و کاهش وزن",
+    "متفورمین",
+    "قرص‌های ضدبارداری برای تنظیم قاعدگی",
+    "کلومیفن یا لتروزول برای القای تخمک‌گذاری"
+  ]
+}

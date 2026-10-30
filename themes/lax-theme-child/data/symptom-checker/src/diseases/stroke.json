@@ -1,0 +1,139 @@
+{
+  "id": "stroke",
+  "name_fa": "سکته مغزی",
+  "name_en": "Stroke",
+  "category": "مغز و اعصاب",
+  "prevalence": "common",
+  "urgency": "urgent",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "facial_droop",
+      "freq": "very_common",
+      "role": "red_flag"
+    },
+    {
+      "tag": "arm_weakness",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "speech_difficulty",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sudden_onset",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "numbness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dizziness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "balance_problem",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "confusion",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "ضعف یا بی‌حسی ناگهانی صورت، بازو یا پا، اغلب یک‌طرفه",
+    "اختلال ناگهانی در تکلم یا درک کلام",
+    "تاری یا از دست رفتن ناگهانی بینایی، اغلب یک چشم",
+    "سردرد شدید و ناگهانی",
+    "سرگیجه، عدم تعادل یا اختلال راه رفتن",
+    "افتادگی صورت",
+    "گیجی یا کاهش هوشیاری"
+  ],
+  "when_to_see_doctor_fa": [
+    "ضعف یا بی‌حسی ناگهانی صورت، بازو یا پا، اغلب یک‌طرفه",
+    "اختلال ناگهانی تکلم یا درک کلام",
+    "تاری یا از دست رفتن ناگهانی بینایی",
+    "سردرد شدید و ناگهانی، سرگیجه یا عدم تعادل",
+    "اورژانس: علائم FAST؛ زمان طلایی را از دست ندهید"
+  ],
+  "summary_fa": "سکته مغزی (تخصص: متخصص مغز و اعصاب (نورولوژی)). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Stroke",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/stroke",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Stroke",
+      "title": "",
+      "url": "https://www.cdc.gov/stroke/about/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Stroke",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/stroke/symptoms/",
+      "accessed": "2026-10-30",
+      "verified": true
+    },
+    {
+      "publisher": "Mayo Clinic: Stroke",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/stroke/symptoms-causes/syc-20350113",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "در سکته ایسکمیک: ترومبولیتیک وریدی (آلته‌پلاز) در پنجره زمانی (اغلب تا ۴٫۵ ساعت)",
+    "ترومبکتومی مکانیکی (خارج کردن لخته با کاتتر) برای انسداد عروق بزرگ (LVO)",
+    "آسپیرین پس از رد خونریزی",
+    "ضدانعقاد در سکته ناشی از فیبریلاسیون دهلیزی",
+    "کنترل فشار خون و قند",
+    "بازتوانی عصبی و گفتاردرمانی"
+  ]
+}

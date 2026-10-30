@@ -25,6 +25,29 @@ function hj_home_specialty_label( $name, $slug = '' ) {
 	$name = (string) $name;
 	$plain = trim( $name );
 
+	// Persian display names for specialty slugs (English slugs and English names
+	// must never reach visitors). Technical words are kept in parentheses.
+	$persian = array(
+		'cardiac-bypass'     => 'قلب باز و بای‌پس عروق کرونر',
+		'hip-replacement'    => 'تعویض مفصل ران',
+		'knee-replacement'   => 'تعویض مفصل زانو',
+		'laparoscopy'        => 'جراحی با دوربین (لاپاراسکوپی)',
+		'urology'            => 'کلیه و مجاری ادرار (ارولوژی)',
+		'general-surgery'    => 'جراحی عمومی و گوارش',
+		'pediatric-surgery'  => 'جراحی کودکان',
+		'eye'                => 'چشم (افتالمولوژی)',
+		'gynecology'         => 'زنان و زایمان (ژینکولوژی)',
+		'cosmetic'           => 'زیبایی (پلاستیک)',
+		'ent'                => 'گوش، حلق و بینی (ای‌ان‌تی)',
+		'orthopedics'        => 'استخوان و مفصل (ارتوپدی)',
+		'vascular-cardiac'   => 'قلب و عروق (کاردیووسکولار)',
+		'neurosurgery'       => 'مغز و اعصاب (نوروسرجری)',
+		'breast'             => 'پستان',
+	);
+	if ( '' !== (string) $slug && isset( $persian[ $slug ] ) ) {
+		return $persian[ $slug ];
+	}
+
 	if ( preg_match( '/^(?:general[ _-]+)?laparoscop(?:y|ic)(?:[ _-]+surgery)?$/i', $plain ) ) {
 		return 'general-laparoscopy' === $slug || preg_match( '/^general[ _-]/i', $plain )
 			? 'لاپاروسکوپی عمومی'

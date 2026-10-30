@@ -1,0 +1,109 @@
+{
+  "id": "shingles",
+  "name_fa": "زونا",
+  "name_en": "Shingles / Herpes zoster",
+  "category": "پوست",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "blisters",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "skin_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "skin_burning",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "numbness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "itch",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "headache",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "درد، سوزش یا گزگز یک‌طرفه در ناحیه یک عصب",
+    "بثورات تاولی محدود به یک ناحیه پوستی",
+    "تب و سردرد",
+    "خارش یا حساسیت پوست",
+    "درد عصبی پس از بهبود بثورات (نورالژی پس‌هرپتیک)"
+  ],
+  "when_to_see_doctor_fa": [
+    "بثورات نزدیک چشم یا بینی، تغییر بینایی یا درد شدید",
+    "نقص ایمنی یا بارداری",
+    "گیجی، تب بالا یا انتشار بثورات",
+    "اورژانس: درگیری چشم یا عصبی"
+  ],
+  "summary_fa": "زونا (تخصص: متخصص پوست (درماتولوژی)، عفونی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "CDC: Shingles (Herpes Zoster)",
+      "title": "",
+      "url": "https://www.cdc.gov/shingles/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Shingles",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/shingles/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Shingles",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/shingles/symptoms-causes/syc-20353054",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AAD: Shingles",
+      "title": "",
+      "url": "https://www.aad.org/public/diseases/rashes/shingles",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "داروهای ضدویروس (آسیکلوویر، والاسیکلوویر یا فام‌سیکلوویر) در ۷۲ ساعت اول",
+    "مسکن برای درد",
+    "گاباپنتین یا پره‌گابالین برای درد عصبی پس از بهبود",
+    "مراقبت از ضایعات پوستی"
+  ]
+}

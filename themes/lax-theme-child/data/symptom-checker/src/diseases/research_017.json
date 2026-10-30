@@ -1,0 +1,105 @@
+{
+  "id": "research_017",
+  "name_fa": "کولیت اولسراتیو (کولیت زخمی)",
+  "name_en": "Ulcerative colitis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "blood_in_stool",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "tenesmus",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "اسهال خونی",
+    "فوریت دفع",
+    "تِنِسموس (احساس دفع ناقص)",
+    "درد یا کرامپ شکم",
+    "کم‌خونی",
+    "کاهش وزن",
+    "خستگی"
+  ],
+  "when_to_see_doctor_fa": [
+    "اسهال خونی، تب، درد شدید یا نفخ",
+    "اورژانس: مگاکولون توکسیک یا پرفوراسیون"
+  ],
+  "summary_fa": "کولیت اولسراتیو (کولیت زخمی) (تخصص: گوارش و کبد). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Ulcerative Colitis",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/ulcerative-colitis",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Ulcerative colitis",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/ulcerative-colitis/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Ulcerative colitis",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/ulcerative-colitis/symptoms-causes/syc-20353326",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CCFA: Ulcerative Colitis",
+      "title": "",
+      "url": "https://www.crohnscolitisfoundation.org/what-is-ulcerative-colitis",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "آمینوسالیسیلات‌ها",
+    "کورتیکواستروئید",
+    "ایمونومدولاتورها",
+    "بیولوژیک‌ها",
+    "جراحی (کولکتومی؛ برداشتن روده بزرگ) در موارد مقاوم یا عوارض"
+  ]
+}

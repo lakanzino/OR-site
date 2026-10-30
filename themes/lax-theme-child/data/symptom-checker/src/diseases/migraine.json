@@ -1,0 +1,116 @@
+{
+  "id": "migraine",
+  "name_fa": "میگرن",
+  "name_en": "Migraine",
+  "category": "مغز و اعصاب",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "headache",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "light_sensitivity",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vision",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "numbness",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "weakness",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "سردرد ضربان‌دار، اغلب یک‌طرفه",
+    "تهوع و استفراغ",
+    "حساسیت به نور و صدا",
+    "تشدید با فعالیت بدنی",
+    "احساس ضعف یا خستگی",
+    "در برخی افراد، علائم پیش‌درآمد (اورا) مانند جرقه‌های بینایی یا اختلال حسی"
+  ],
+  "when_to_see_doctor_fa": [
+    "سردرد ناگهانی و شدید («بدترین سردرد عمر»)",
+    "سردرد با تب، سفتی گردن، ضعف، گیجی یا تشنج",
+    "سردرد پس از ضربه به سر",
+    "سردرد جدید بعد از ۵۰ سالگی یا در بارداری",
+    "اورژانس: علائم عصبی جدید"
+  ],
+  "summary_fa": "میگرن (تخصص: متخصص مغز و اعصاب (نورولوژی)). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Migraine",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/migraine/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Migraine",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/migraine/symptoms-causes/syc-20360201",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NICE CKS: Migraine",
+      "title": "",
+      "url": "https://cks.nice.org.uk/topics/migraine/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "WHO: Headache disorders",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/headache-disorders",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "در حمله حاد: مسکن‌های NSAID، تریپتان‌ها (مثلاً سوماتریپتان؛ داروهای ضدمیگرن)، ضدتهوع",
+    "درمان پیشگیرانه: بتابلاکر، توپیرامات، والپروات، آنتی‌بادی‌های مونوکلونال CGRP",
+    "شناسایی و پرهیز از محرک‌ها",
+    "استراحت در محیط تاریک و آرام"
+  ]
+}

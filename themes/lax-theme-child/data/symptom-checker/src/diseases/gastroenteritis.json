@@ -1,0 +1,110 @@
+{
+  "id": "gastroenteritis",
+  "name_fa": "التهاب معده و روده (گاستروانتریت)",
+  "name_en": "Gastroenteritis",
+  "category": "گوارش و کبد",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "diarrhea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dry_mouth",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "weakness",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "اسهال",
+    "استفراغ",
+    "تهوع",
+    "درد یا کرامپ شکم",
+    "تب",
+    "نشانه‌های کم‌آبی مانند خشکی دهان، کاهش ادرار و ضعف"
+  ],
+  "when_to_see_doctor_fa": [
+    "اسهال خونی، تب بالا یا استفراغ مداوم",
+    "کم‌آبی شدید، خشکی دهان، کاهش ادرار یا گیجی",
+    "اورژانس: عدم توانایی نوشیدن یا ضعف شدید"
+  ],
+  "summary_fa": "التهاب معده و روده (گاستروانتریت) (تخصص: متخصص گوارش و کبد). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Gastroenteritis",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gastroenteritis",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Norovirus",
+      "title": "",
+      "url": "https://www.cdc.gov/norovirus/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Diarrhoea and vomiting",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/diarrhoea-and-vomiting/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Gastroenteritis",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/gastroenteritis/symptoms-causes/syc-20353041",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "محلول خوراکی آبرسان (ORS) برای پیشگیری و درمان کم‌آبی",
+    "ضدتهوع در صورت نیاز",
+    "روی (زینک) در کودکان",
+    "پرهیز از ضداسهال در موارد شدید یا خونریزی",
+    "مایعات وریدی در کم‌آبی شدید"
+  ]
+}

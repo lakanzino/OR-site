@@ -1,0 +1,109 @@
+{
+  "id": "research_074",
+  "name_fa": "اختلال اضطراب فراگیر (اضطراب مزمن)",
+  "name_en": "Generalized anxiety disorder (GAD)",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "anxiety",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "concentration_problem",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "irritability",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sleep_problem",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "muscle_stiffness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "hyperactivity",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "نگرانی مفرط و پایدار",
+    "بی‌قراری",
+    "خستگی",
+    "مشکل در تمرکز",
+    "تحریک‌پذیری",
+    "اختلال خواب",
+    "تنش عضلانی"
+  ],
+  "when_to_see_doctor_fa": [
+    "نگرانی مفرط، بی‌قراری یا اختلال خواب",
+    "اورژانس: افکار خودکشی یا حملات پانیک شدید"
+  ],
+  "summary_fa": "اختلال اضطراب فراگیر (اضطراب مزمن) (تخصص: روان‌پزشکی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIMH: Generalized Anxiety Disorder",
+      "title": "",
+      "url": "https://www.nimh.nih.gov/health/topics/generalized-anxiety-disorder-gad",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Generalised anxiety disorder (GAD)",
+      "title": "",
+      "url": "https://www.nhs.uk/mental-health/conditions/generalised-anxiety-disorder-gad/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Generalized anxiety disorder",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/generalized-anxiety-disorder/symptoms-causes/syc-20360803",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "ADAA: GAD",
+      "title": "",
+      "url": "https://adaa.org/understanding-anxiety/generalized-anxiety-disorder-gad",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "SSRI یا SNRI",
+    "بوسپیرون",
+    "روان‌درمانی (CBT)",
+    "تکنیک‌های آرام‌سازی"
+  ]
+}

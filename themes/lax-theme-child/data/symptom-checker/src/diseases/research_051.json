@@ -1,0 +1,129 @@
+{
+  "id": "research_051",
+  "name_fa": "ریفلاکس معده",
+  "name_en": "Gastroesophageal Reflux Disease (GERD)",
+  "category": "بیماری‌های گوارشی",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "heartburn",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "regurgitation",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "swallow_difficulty",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "cough",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "hoarseness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "sore_throat",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "throat_lump",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "sleep_problem",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "chest_pain",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "سوزش سر دل (احساس سوزش پشت جناغ، اغلب پس از غذا و هنگام دراز کشیدن)",
+    "برگشت مایع ترش یا تلخ به دهان (رگورژیتاسیون)",
+    "دشواری در بلع",
+    "احساس وجود توده در گلو",
+    "سرفه مزمن، گرفتگی صدا، گلودرد",
+    "تشدید آسم",
+    "اختلال خواب",
+    "درد قفسه سینه (باید ابتدا مشکل قلبی رد شود)"
+  ],
+  "when_to_see_doctor_fa": [
+    "علائم بیش از دو بار در هفته یا عدم پاسخ به درمان",
+    "دشواری یا درد هنگام بلع",
+    "کاهش وزن ناخواسته",
+    "استفراغ مکرر",
+    "مدفوع سیاه یا استفراغ خونی",
+    "اورژانس: درد قفسه سینه با تنگی نفس یا انتشار به بازو و فک"
+  ],
+  "summary_fa": "ریفلاکس معده (تخصص: متخصص گوارش و کبد، جراحی عمومی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Acid Reflux (GER & GERD) in Adults",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "Mayo Clinic: GERD",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "MedlinePlus: GERD",
+      "title": "",
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "ACG Clinical Guideline: GERD",
+      "title": "",
+      "url": "https://gi.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "تغییر سبک زندگی: کاهش وزن، پرهیز از غذاهای محرک، وعده‌های کم‌حجم، بالا بردن سر تخت",
+    "آنتی‌اسیدها برای تسکین سریع",
+    "مهارکننده‌های گیرنده H2 مانند فاموتیدین",
+    "مهارکننده‌های پمپ پروتون (PPI؛ داروهای کاهنده اسید معده) با کمترین دوز مؤثر و کوتاه‌ترین مدت",
+    "جراحی (فوندوپلیکاسیون؛ پیچیدن بالای معده دور مری) در موارد مقاوم"
+  ]
+}

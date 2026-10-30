@@ -1,0 +1,104 @@
+{
+  "id": "research_052",
+  "name_fa": "سندرم روده تحریک‌پذیر (روده عصبی)",
+  "name_en": "Irritable bowel syndrome (IBS)",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "abd_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "bloating",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "constipation",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "stool_change",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "tenesmus",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "درد شکم عودکننده (بازگشت‌کننده) که با دفع مدفوع تغییر می‌کند",
+    "تغییر در تعداد یا شکل مدفوع",
+    "نفخ",
+    "یبوست یا اسهال یا هر دو",
+    "احساس دفع ناقص",
+    "بدون علائم هشدار مانند خونریزی یا کاهش وزن"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد شکم مزمن، نفخ یا تغییر اجابت مزاج",
+    "اورژانس: کاهش وزن، خون در مدفوع، تب یا شروع بعد از ۵۰ سالگی"
+  ],
+  "summary_fa": "سندرم روده تحریک‌پذیر (روده عصبی) (تخصص: گوارش و کبد). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Irritable Bowel Syndrome (IBS)",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Irritable bowel syndrome (IBS)",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/irritable-bowel-syndrome-ibs/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Irritable bowel syndrome",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/irritable-bowel-syndrome/symptoms-causes/syc-20360016",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Rome Foundation: IBS",
+      "title": "",
+      "url": "https://theromefoundation.org/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "فیبر غذایی و مایعات",
+    "ضداسپاسم‌ها",
+    "ملین یا ضداسهال بر اساس علائم غالب",
+    "رژیم کم‌FODMAP (رژیم کم‌قندهای تخمیرپذیر)",
+    "درمان روان‌شناختی (CBT؛ درمان شناختی-رفتاری)"
+  ]
+}

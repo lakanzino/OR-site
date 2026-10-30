@@ -1,0 +1,116 @@
+{
+  "id": "research_056",
+  "name_fa": "سیروز کبدی",
+  "name_en": "Cirrhosis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "abdominal_swelling",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "leg_swelling",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "easy_bruising",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "confusion",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "در مراحل اولیه ممکن است بدون علامت باشد",
+    "خستگی",
+    "در مراحل پیشرفته: زردی، آسیت (تجمع مایع شکم)، ورم پا، کبودی آسان، گیجی و اختلال هوشیاری (انسفالوپاتی)، خونریزی از وریدهای مری"
+  ],
+  "when_to_see_doctor_fa": [
+    "زردی، آسیت، ورم پا یا گیجی",
+    "اورژانس: استفراغ خونی یا مدفوع سیاه"
+  ],
+  "summary_fa": "سیروز کبدی (تخصص: گوارش و کبد). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Cirrhosis",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/cirrhosis",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NIDDK: Cirrhosis",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/liver-disease/cirrhosis",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Cirrhosis",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/cirrhosis/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Cirrhosis",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/cirrhosis/symptoms-causes/syc-20351487",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "درمان علت زمینه‌ای",
+    "دیورتیک برای آسیت (تجمع مایع شکم)",
+    "بتابلاکر برای پیشگیری از خونریزی وریدهای مری",
+    "لاکتولوز برای انسفالوپاتی (اختلال هوشیاری کبدی)",
+    "پیوند کبد در موارد پیشرفته"
+  ]
+}

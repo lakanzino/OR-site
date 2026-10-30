@@ -1,0 +1,92 @@
+{
+  "id": "research_094",
+  "name_fa": "بی‌اختیاری ادرار (نشت ادرار)",
+  "name_en": "Urinary incontinence",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "urinary_leak",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "urgency",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "cough",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "sneezing",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "نشت غیرارادی ادرار",
+    "در بی‌اختیاری استرسی: نشت با سرفه، عطسه یا ورزش",
+    "در بی‌اختیاری فوریتی: نیاز ناگهانی و شدید به ادرار",
+    "در بی‌اختیاری سرریزی: تخلیه ناقص و نشت مداوم"
+  ],
+  "when_to_see_doctor_fa": [
+    "نشت ادرار یا نیاز ناگهانی به ادرار",
+    "اورژانس: خون در ادرار، تب یا احتباس ادرار"
+  ],
+  "summary_fa": "بی‌اختیاری ادرار (نشت ادرار) (تخصص: اورولوژی، نفرولوژی، زنان). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Urinary Incontinence",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-control-problems",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Urinary incontinence",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/urinary-incontinence/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Urinary incontinence",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/urinary-incontinence/symptoms-causes/syc-20352808",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AUA Guidelines: Urinary Incontinence",
+      "title": "",
+      "url": "https://www.auanet.org/guidelines-and-quality/guidelines/urinary-incontinence",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "تمرینات عضلات کف لگن (کگل)",
+    "آموزش مثانه",
+    "آنتی‌کولینرژیک‌ها",
+    "تحریک عصبی ساکرال",
+    "جراحی در موارد منتخب"
+  ]
+}

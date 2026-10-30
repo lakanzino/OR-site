@@ -1,0 +1,134 @@
+{
+  "id": "research_009",
+  "name_fa": "مالاریا",
+  "name_en": "Malaria",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fever",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "chills",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sweating",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "body_ache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "confusion",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "seizure",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تب دوره‌ای با لرز و تعریق",
+    "سردرد",
+    "درد عضلانی",
+    "تهوع و استفراغ",
+    "کم‌خونی",
+    "زردی",
+    "در مالاریا شدید: گیجی، تشنج، تنگی نفس و نارسایی اندام"
+  ],
+  "when_to_see_doctor_fa": [
+    "تب پس از سفر به منطقه مالاریاخیز",
+    "گیجی، تشنج، تنگی نفس یا ادرار تیره",
+    "اورژانس: مالاریای شدید"
+  ],
+  "summary_fa": "مالاریا (تخصص: عفونی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Malaria",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/malaria",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Malaria",
+      "title": "",
+      "url": "https://www.cdc.gov/malaria/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Malaria",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/malaria/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Malaria",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/malaria/symptoms-causes/syc-20351184",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "درمان ترکیبی مبتنی بر آرتمیزینین (ACT) برای مالاریا فالسیپاروم",
+    "کلروکین برای گونه‌های حساس",
+    "درمان حمایتی و مراقبت شدید در مالاریای شدید"
+  ]
+}

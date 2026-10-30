@@ -1,0 +1,91 @@
+{
+  "id": "research_087",
+  "name_fa": "جرب (گال)",
+  "name_en": "Scabies",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "itch",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "burrows",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "skin_cracking",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "خارش شدید، به‌ویژه شب‌ها",
+    "نقب‌های ریز پوستی",
+    "پاپول (برجستگی کوچک و قرمز پوستی) یا ندول (توده کوچک و سفت زیر پوست)",
+    "ضایعات در نواحی بین انگشتان، مچ و اندام تناسلی"
+  ],
+  "when_to_see_doctor_fa": [
+    "خارش شدید شبانه یا نقب پوستی",
+    "اورژانس: عفونت ثانویه یا انتشار گسترده"
+  ],
+  "summary_fa": "جرب (گال) (تخصص: پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Scabies",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/scabies",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Scabies",
+      "title": "",
+      "url": "https://www.cdc.gov/scabies/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Scabies",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/scabies/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Scabies",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/scabies/symptoms-causes/syc-20377330",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "کرم پرمترین (ضد انگل)",
+    "ایورمکتین خوراکی",
+    "درمان تمام تماس‌های نزدیک",
+    "شستشوی لباس و ملحفه با آب گرم"
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "id": "research_088",
+  "name_fa": "آلودگی به شپش سر (شپش سر)",
+  "name_en": "Head lice / Pediculosis capitis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "itch",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "lice",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "rash",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "swollen_glands",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "خارش پوست سر",
+    "مشاهده شپش یا رشک (تخم)",
+    "خراشیدگی پوست",
+    "در موارد شدید: بزرگ‌شدن غدد لنفاوی گردن"
+  ],
+  "when_to_see_doctor_fa": [
+    "خارش سر، شپش یا رشک",
+    "اورژانس: عفونت ثانویه یا شکست درمان"
+  ],
+  "summary_fa": "آلودگی به شپش سر (شپش سر) (تخصص: پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "CDC: Head Lice",
+      "title": "",
+      "url": "https://www.cdc.gov/head-lice/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Head lice and nits",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/head-lice-and-nits/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Head lice",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/head-lice/symptoms-causes/syc-20356180",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AAP: Head Lice",
+      "title": "",
+      "url": "https://publications.aap.org/pediatrics/article/135/5/e1355/33216/Head-Lice",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "شامپو پرمترین",
+    "مالاتیون",
+    "ایورمکتین خوراکی",
+    "شانه کردن موها با شانه دندانه‌ریز",
+    "درمان تماس‌های نزدیک"
+  ]
+}

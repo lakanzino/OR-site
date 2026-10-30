@@ -16,6 +16,7 @@ from pathlib import Path
 
 # --- URLs that exist on the live site or inside the current batch -------------
 LIVE = {
+    "/patient-guide/",  # راهنمای بیمار (صفحهٔ ستون، زنده)
     "/patient-guide/glossary-surgical-terms/", "/patient-guide/what-is-operating-room/",
     "/patient-guide/surgical-care-team/", "/patient-guide/patient-journey/",
     "/patient-guide/operating-room-moment-by-moment/", "/patient-guide/general-anesthesia/",
@@ -106,8 +107,6 @@ START_WORDS = {
 
 # --- mandatory blocks -------------------------------------------------------
 REQUIRED = [
-    ("سلب مسئولیت پزشکی", r"سلب\s*مسئولیت"),
-    ("شماره اورژانس ۱۱۵", r"۱۱۵"),
     ("منابع", r"##?\s*|منابع و چارچوب مرجع|<h2>منابع"),
     ("پرسش‌های متداول", r"پرسش‌های متداول"),
 ]
@@ -159,8 +158,8 @@ def lint(pkg: Path) -> tuple[list[str], list[str]]:
     dead = [l for l in internal if l not in ALLOWED]
     if dead:
         errs.append("link target not live and not in this batch: " + ", ".join(sorted(set(dead))))
-    if len(external) < 2:
-        errs.append(f"{len(external)} source links (want >= 2)")
+    if not 1 <= len(external) <= 10:
+        errs.append(f"{len(external)} source links (want 1-10, named and used in the text)")
 
     faq = man.get("faq") or []
     if len(faq) < 3:

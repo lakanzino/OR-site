@@ -1,0 +1,122 @@
+{
+  "id": "obesity",
+  "name_fa": "چاقی",
+  "name_en": "Obesity",
+  "category": "غدد و متابولیسم",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "weight_gain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "snoring",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "joint_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "back_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "sweating",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "افزایش چربی بدن و BMI (شاخص توده بدنی؛ وزن نسبت به قد) ≥ ۳۰",
+    "افزایش دور کمر",
+    "تنگی نفس و تعریق زیاد",
+    "خروپف",
+    "درد مفاصل و کمر",
+    "خستگی",
+    "مشکلات پوستی در چین‌ها",
+    "اثرات روانی مانند کاهش اعتمادبه‌نفس"
+  ],
+  "when_to_see_doctor_fa": [
+    "BMI برابر یا بالاتر از ۳۰",
+    "نگرانی درباره وزن همراه با بیماری‌های دیگر",
+    "مشاوره برای جراحی چاقی در صورت داشتن شرایط"
+  ],
+  "treatments_fa": [
+    "اصلاح سبک زندگی: رژیم کم‌کالری سالم، فعالیت بدنی، درمان رفتاری",
+    "داروهای کاهش وزن تأییدشده (از جمله گروه GLP-1) فقط تحت نظر پزشک",
+    "جراحی چاقی (متابولیک): اسلیو گاستروکتومی (برداشتن بخشی از معده) و بای‌پس معده",
+    "معمولاً در BMI ≥ ۳۵ یا ≥ ۳۰ همراه با بیماری‌های متابولیک پیشنهاد می‌شود"
+  ],
+  "summary_fa": "چاقی انباشت بیش از حد چربی بدن است که می‌تواند سلامت را به خطر بیندازد. در بزرگسالان، شاخص توده بدنی (BMI) برابر یا بیشتر از ۳۰ معمولاً به‌عنوان چاقی تعریف می‌شود (اضافه‌وزن: ۲۵ تا ۲۹٫۹).",
+  "next_step_fa": "اگر BMI شما ۳۰ یا بیشتر است یا از وزن خود نگران هستید، با پزشک درباره‌ی برنامه‌ی کاهش وزن و بررسی بیماری‌های همراه مشورت کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Obesity and overweight Fact Sheet",
+      "title": "",
+      "url": "https://www.who.int/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "CDC: Adult Obesity",
+      "title": "",
+      "url": "https://www.cdc.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "NIDDK: Overweight & Obesity",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "ASMBS/IFSO Guidelines on Metabolic and Bariatric Surgery",
+      "title": "",
+      "url": "https://asmbs.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "Mayo Clinic: Obesity",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "پروفایل «پایگاه داده بیماری‌ها» (ردیف 20) و فهرست علائم آن؛ برچسب‌ها و متن هنوز بازبینی پزشکی نشده‌اند."
+  }
+}

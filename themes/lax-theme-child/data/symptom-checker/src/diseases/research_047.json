@@ -1,0 +1,104 @@
+{
+  "id": "research_047",
+  "name_fa": "فلج اطفال",
+  "name_en": "Poliomyelitis / Polio",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "weakness",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "neck_stiff",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "balance_problem",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "اغلب بدون علامت یا علائم خفیف گوارشی",
+    "مننژیت آسپتیک",
+    "فلج شل نامتقارن",
+    "در موارد شدید: نارسایی تنفسی (ناتوانی ریه در رساندن اکسیژن کافی)"
+  ],
+  "when_to_see_doctor_fa": [
+    "ضعف یا فلج اندام",
+    "اورژانس: علائم عصبی حاد"
+  ],
+  "summary_fa": "فلج اطفال (تخصص: عفونی، اطفال). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Poliomyelitis",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/poliomyelitis",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Polio",
+      "title": "",
+      "url": "https://www.cdc.gov/polio/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Polio",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/polio/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Polio",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/polio/symptoms-causes/syc-20376567",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "مراقبت حمایتی و توان‌بخشی",
+    "پیشگیری با واکسن"
+  ]
+}

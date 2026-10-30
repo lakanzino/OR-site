@@ -1,0 +1,95 @@
+{
+  "id": "research_013",
+  "name_fa": "نقرس",
+  "name_en": "Gout",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "joint_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "joint_swelling",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "joint_warmth",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "flank_pain",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "حمله ناگهانی درد شدید، قرمزی، گرمی و تورم یک مفصل، اغلب شست پا",
+    "درد بسیار شدید حتی با لمس ملافه",
+    "تب خفیف",
+    "در بیماری مزمن: توفی (رسوب اورات) و سنگ کلیه"
+  ],
+  "when_to_see_doctor_fa": [
+    "حمله درد شدید مفصل، اغلب شست پا",
+    "اورژانس: مفصل داغ با تب (رد عفونت)"
+  ],
+  "summary_fa": "نقرس (تخصص: روماتولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Gout",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/gout/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Gout",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/gout/symptoms-causes/syc-20372897",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "ACR: Gout Guidelines",
+      "title": "",
+      "url": "https://rheumatology.org/gout-guideline",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NIDDK: Gout",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gout",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "در حمله حاد: NSAID، کلشی‌سین یا کورتیکواستروئید",
+    "درمان پایین‌آورنده اسید اوریک (آلوپورینول یا فبوکسوستات) پس از کنترل حمله",
+    "کاهش وزن و پرهیز از غذاهای پرپورین و الکل"
+  ]
+}

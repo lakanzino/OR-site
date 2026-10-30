@@ -1,0 +1,110 @@
+{
+  "id": "research_072",
+  "name_fa": "اختلال دوقطبی (دوقطبی)",
+  "name_en": "Bipolar disorder",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "high_mood",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "low_mood",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sleep_problem",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "racing_thoughts",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "impulsivity",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "mood_change",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "suicidal_thoughts",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "دوره‌های شیدایی: خلق بالا، کاهش خواب، افکار پرسرعت، رفتار پرخطر",
+    "دوره‌های افسردگی: غم، بی‌انگیزگی، خستگی و افکار خودکشی",
+    "نوسان شدید خلق"
+  ],
+  "when_to_see_doctor_fa": [
+    "نوسان شدید خلق، کاهش خواب یا رفتار پرخطر",
+    "اورژانس: افکار خودکشی یا روان‌پریشی"
+  ],
+  "summary_fa": "اختلال دوقطبی (دوقطبی) (تخصص: روان‌پزشکی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Bipolar disorder",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/bipolar-disorder",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NIMH: Bipolar Disorder",
+      "title": "",
+      "url": "https://www.nimh.nih.gov/health/topics/bipolar-disorder",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Bipolar disorder",
+      "title": "",
+      "url": "https://www.nhs.uk/mental-health/conditions/bipolar-disorder/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Bipolar disorder",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/bipolar-disorder/symptoms-causes/syc-20355955",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "تثبیت‌کننده‌های خلق (لیتیوم، والپروات)",
+    "آنتی‌سایکوتیک‌ها",
+    "ضدافسردگی با احتیاط",
+    "روان‌درمانی"
+  ]
+}

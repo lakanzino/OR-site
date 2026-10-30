@@ -1,0 +1,98 @@
+{
+  "id": "research_007",
+  "name_fa": "سرخک",
+  "name_en": "Measles",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fever",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "cough",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nasal_discharge",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "eye_redness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "rash",
+      "freq": "very_common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "تب بالا",
+    "سرفه",
+    "آبریزش بینی",
+    "التهاب ملتحمه",
+    "لکه‌های کوپلیک در دهان",
+    "بثورات ماکولوپاپولار (بثورات تخت و برجسته) که از صورت شروع و به پایین منتشر می‌شود"
+  ],
+  "when_to_see_doctor_fa": [
+    "تب و بثورات، سرفه یا التهاب چشم",
+    "تنگی نفس، گیجی یا تشنج",
+    "اورژانس: علائم عصبی یا تنفسی"
+  ],
+  "summary_fa": "سرخک (تخصص: عفونی، اطفال). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Measles",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/measles",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Measles",
+      "title": "",
+      "url": "https://www.cdc.gov/measles/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Measles",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/measles/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Measles",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/measles/symptoms-causes/syc-20374857",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "مراقبت حمایتی (مایعات، تب‌بر، تغذیه)",
+    "ویتامین A در کودکان طبق توصیه WHO",
+    "ایزوله کردن بیمار برای پیشگیری از انتقال"
+  ]
+}

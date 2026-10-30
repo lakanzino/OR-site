@@ -1,0 +1,129 @@
+{
+  "id": "peptic_ulcer",
+  "name_fa": "زخم معده و دوازدهه",
+  "name_en": "Peptic Ulcer Disease",
+  "category": "بیماری‌های گوارشی",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "heartburn",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "bloating",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "belching",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "early_satiety",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "food_trigger",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "blood_vomit",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "black_stool",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "سوزش یا درد در بالای شکم (ناحیه سردل)، گاهی با گرسنگی یا شب‌ها بدتر می‌شود",
+    "نفخ و آروغ",
+    "تهوع",
+    "سیری زودرس",
+    "ناراحتی با غذاهای چرب",
+    "علائم هشدار: استفراغ خونی یا شبیه تفاله قهوه، مدفوع سیاه و قیرگون، کاهش وزن ناخواسته، درد ناگهانی و شدید شکم"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد مداوم سردل بیش از چند هفته",
+    "کاهش وزن ناخواسته",
+    "مدفوع سیاه، استفراغ خونی",
+    "اورژانس: درد ناگهانی و شدید شکم، سرگیجه و ضعف شدید"
+  ],
+  "summary_fa": "زخم معده و دوازدهه (تخصص: متخصص گوارش و کبد). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Peptic Ulcers (Stomach Ulcers)",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "Mayo Clinic: Peptic ulcer",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "MedlinePlus: Peptic Ulcer",
+      "title": "",
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "ACG Guideline: H. pylori infection",
+      "title": "",
+      "url": "https://gi.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "داروهای کاهنده اسید (PPI)",
+    "ریشه‌کنی هلیکوباکتر پیلوری با ترکیب چند آنتی‌بیوتیک و PPI (گاهی همراه بیسموت)",
+    "قطع یا جایگزینی NSAID (مسکن‌های ضدالتهابی غیراستروئیدی) با نظر پزشک",
+    "درمان آندوسکوپی یا جراحی در خونریزی، سوراخ‌شدگی یا انسداد"
+  ]
+}

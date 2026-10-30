@@ -1,0 +1,144 @@
+{
+  "id": "diabetes",
+  "name_fa": "دیابت نوع ۲",
+  "name_en": "Type 2 Diabetes Mellitus",
+  "category": "غدد درون‌ریز و متابولیسم",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "thirst",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "frequent_urine",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "hunger",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "slow_healing",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "numbness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dark_patches",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "burning_urine",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تشنگی زیاد",
+    "تکرر ادرار",
+    "گرسنگی زیاد",
+    "خستگی",
+    "تاری دید",
+    "زخم‌هایی که دیر بهبود می‌یابند",
+    "عفونت‌های مکرر پوست، لثه یا ادراری",
+    "گزگز یا بی‌حسی دست و پا",
+    "لکه‌های تیره پوست در چین‌ها (آکانتوزیس نیگریکانس)",
+    "کاهش وزن ناخواسته (کم‌تر شایع)",
+    "بسیاری از مبتلایان سال‌ها بدون علامت‌اند"
+  ],
+  "when_to_see_doctor_fa": [
+    "علائم دیابت یا نتیجه آزمایش غیرطبیعی",
+    "اورژانس: گیجی، استفراغ، تنفس عمیق و تند، بوی میوه‌ای دهان، قند بسیار بالا یا افت قند با غش"
+  ],
+  "summary_fa": "دیابت نوع ۲ (تخصص: متخصص غدد، داخلی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Diabetes Fact Sheet",
+      "title": "",
+      "url": "https://www.who.int/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "ADA: Standards of Care in Diabetes",
+      "title": "",
+      "url": "https://diabetes.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "CDC: Type 2 Diabetes",
+      "title": "",
+      "url": "https://www.cdc.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "NIDDK: Type 2 Diabetes",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "Mayo Clinic: Type 2 diabetes",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "تغذیه سالم، کاهش وزن و فعالیت بدنی منظم",
+    "متفورمین (Metformin) به‌عنوان داروی خط اول",
+    "داروهای دیگر مانند مهارکننده‌های SGLT2، آگونیست‌های GLP-1، مهارکننده‌های DPP-4، سولفونیل‌اوره",
+    "انسولین در صورت نیاز",
+    "پایش قند خون",
+    "کنترل فشار خون و چربی خون",
+    "جراحی متابولیک (چاقی) در موارد مناسب",
+    "غربالگری منظم چشم، کلیه و پا"
+  ]
+}

@@ -1,0 +1,485 @@
+{
+  "rules": [
+    {
+      "id": "rf_acs",
+      "label_fa": "احتمال حملهٔ قلبی",
+      "when": {
+        "all": [
+          "chest_pressure"
+        ],
+        "any": [
+          "arm_jaw_pain",
+          "sweating",
+          "dyspnea",
+          "nausea"
+        ]
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا درد یا فشار قفسهٔ سینه دارید که همراه با درد بازو یا فک، تعریق، تنگی نفس یا تهوع باشد؟"
+    },
+    {
+      "id": "rf_chest",
+      "label_fa": "درد قفسهٔ سینه با علامت همراه",
+      "when": {
+        "all": [
+          "chest_pain"
+        ],
+        "any": [
+          "sweating",
+          "arm_jaw_pain",
+          "dyspnea"
+        ]
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا درد قفسهٔ سینه دارید که همراه با تعریق، درد بازو یا فک، یا تنگی نفس باشد؟"
+    },
+    {
+      "id": "rf_stroke",
+      "label_fa": "علائم احتمالی سکتهٔ مغزی",
+      "when": {
+        "all": [],
+        "any": [
+          "facial_droop",
+          "arm_weakness",
+          "speech_difficulty"
+        ]
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا ناگهان افتادگی یک طرف صورت، ضعف یک طرف بدن یا اختلال در حرف زدن دارید؟"
+    },
+    {
+      "id": "rf_pe",
+      "label_fa": "احتمال آمبولی ریه",
+      "when": {
+        "all": [
+          "sudden_shortness_of_breath"
+        ],
+        "any": [
+          "pleuritic_chest_pain",
+          "leg_swelling",
+          "chest_pain"
+        ]
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا ناگهان تنگی نفس شدید دارید، یا درد تیز قفسهٔ سینه هنگام نفس کشیدن، یا تورم یک پا؟"
+    },
+    {
+      "id": "rf_breath",
+      "label_fa": "نفس کشیدن بسیار سخت یا تورم راه هوایی",
+      "when": {
+        "all": [],
+        "any": [
+          "difficulty_breathing",
+          "throat_swelling"
+        ]
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا نفس کشیدن بسیار سخت است یا گلو و زبان دچار تورم شده؟"
+    },
+    {
+      "id": "rf_thunder",
+      "label_fa": "سردرد ناگهانی و بسیار شدید",
+      "when": {
+        "all": [
+          "sudden_onset",
+          "headache"
+        ],
+        "any": []
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا ناگهان دچار بدترین سردرد عمرتان شده‌اید؟"
+    },
+    {
+      "id": "rf_meningitis",
+      "label_fa": "احتمال مننژیت",
+      "when": {
+        "all": [
+          "neck_stiff",
+          "fever"
+        ],
+        "any": []
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا گردن سفت شده و تب دارید؟"
+    },
+    {
+      "id": "rf_rash_meningitis",
+      "label_fa": "جوش که با فشار رنگ نمی‌بازد",
+      "when": {
+        "all": [],
+        "any": [
+          "non_blanching_rash"
+        ]
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا جوش یا لکه‌های قرمز یا بنفش دارید که با فشار دادن شیشه‌ی لیوان رنگ نمی‌بازند؟"
+    },
+    {
+      "id": "rf_rigid",
+      "label_fa": "شکم سفت و دردناک",
+      "when": {
+        "all": [],
+        "any": [
+          "abdominal_rigidity"
+        ]
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا شکمتان سفت و بسیار دردناک است؟"
+    },
+    {
+      "id": "rf_pregnancy",
+      "label_fa": "خونریزی واژینال همراه با درد شکم",
+      "when": {
+        "all": [
+          "vaginal_bleed",
+          "abd_pain"
+        ],
+        "any": []
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا خونریزی واژینال همراه با درد شکم دارید؟"
+    },
+    {
+      "id": "rf_testicular",
+      "label_fa": "درد شدید ناگهانی بیضه",
+      "when": {
+        "all": [],
+        "any": [
+          "sudden_severe_scrotal_pain"
+        ]
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا درد شدید و ناگهانی در یک بیضه دارید؟"
+    },
+    {
+      "id": "rf_dka",
+      "label_fa": "بوی میوه‌ای در نفس",
+      "when": {
+        "all": [
+          "fruity_breath"
+        ],
+        "any": []
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا نفس شما بوی میوه‌ای دارد؟"
+    },
+    {
+      "id": "rf_dvt",
+      "label_fa": "احتمال لختهٔ خون در ساق پا",
+      "when": {
+        "all": [
+          "unilateral_calf_swelling"
+        ],
+        "any": [
+          "calf_pain",
+          "calf_warmth"
+        ]
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا یک ساق پا ناگهان ورم، درد یا گرمی پیدا کرده؟"
+    },
+    {
+      "id": "rf_faint",
+      "label_fa": "غش یا از دست رفتن هوشیاری",
+      "when": {
+        "all": [],
+        "any": [
+          "fainting"
+        ]
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا غش کرده‌اید یا هوشیاری‌تان از دست رفته؟"
+    },
+    {
+      "id": "rf_hemoptysis",
+      "label_fa": "خون در سرفه",
+      "when": {
+        "all": [],
+        "any": [
+          "coughing_blood"
+        ]
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا خون در خلط یا سرفه‌تان دیده‌اید؟"
+    },
+    {
+      "id": "rf_cauda",
+      "label_fa": "بی‌اختیاری ادرار یا مدفوع",
+      "when": {
+        "all": [],
+        "any": [
+          "bladder_bowel_loss"
+        ]
+      },
+      "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      },
+      "question_fa": "آیا بی‌اختیاری ادرار یا مدفوع یا بی‌حسی ناحیه‌ی زین دارید؟"
+    },
+    {
+      "id": "rf_suicide",
+      "label_fa": "افکار خودکشی",
+      "question_fa": "آیا به مردن یا آسیب زدن به خودتان فکر می‌کنید؟",
+      "when": {
+        "all": [],
+        "any": [
+          "suicidal_thoughts"
+        ]
+      },
+      "message_fa": "اگر به آسیب زدن به خود فکر می‌کنید، همین حالا با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید. تنها نمانید و با یک فرد قابل اعتماد صحبت کنید.",
+      "sources": [
+        {
+          "publisher": "WHO",
+          "title": "",
+          "url": "https://www.who.int/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      }
+    }
+  ]
+}

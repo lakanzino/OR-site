@@ -1,0 +1,104 @@
+{
+  "id": "research_069",
+  "name_fa": "تالاسمی",
+  "name_en": "Thalassemia",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "pallor",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "abdominal_swelling",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "bone_deformity",
+      "freq": "occasional",
+      "role": "core"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "کم‌خونی",
+    "رنگ‌پریدگی",
+    "خستگی",
+    "بزرگ‌شدن طحال",
+    "تغییر شکل استخوان‌ها",
+    "در موارد وابسته به ترانسفوزیون: عوارض اضافه‌بار آهن"
+  ],
+  "when_to_see_doctor_fa": [
+    "کم‌خونی، خستگی، رنگ‌پریدگی یا بزرگ‌شدن طحال",
+    "اورژانس: نارسایی قلبی یا عفونت شدید"
+  ],
+  "summary_fa": "تالاسمی (تخصص: خون (هماتولوژی)). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Thalassaemia",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/thalassaemia",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHLBI: Thalassemia",
+      "title": "",
+      "url": "https://www.nhlbi.nih.gov/health-topics/thalassemias",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Thalassaemia",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/thalassaemia/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Thalassemia",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/thalassemia/symptoms-causes/syc-20354995",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "تزریق خون منظم در نوع وابسته به ترانسفوزیون",
+    "شلاتور آهن (داروی دفع‌کننده آهن اضافی) برای پیشگیری از اضافه‌بار آهن",
+    "اسید فولیک",
+    "اسپلنکتومی (برداشتن طحال) در موارد منتخب",
+    "پیوند سلول‌های بنیادی"
+  ]
+}

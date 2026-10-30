@@ -1,0 +1,94 @@
+{
+  "id": "research_031",
+  "name_fa": "آب‌مروارید",
+  "name_en": "Cataract",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "vision",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "halo_glare",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "light_sensitivity",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "night_vision",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "color_fading",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "تاری تدریجی و بدون درد بینایی",
+    "حساسیت به نور و پخش شدن نور",
+    "هاله دور نور",
+    "رنگ‌ها کم‌رنگ به نظر می‌رسند",
+    "مشکل در دید شب"
+  ],
+  "when_to_see_doctor_fa": [
+    "تاری تدریجی بینایی، حساسیت به نور یا هاله",
+    "اورژانس: کاهش ناگهانی بینایی"
+  ],
+  "summary_fa": "آب‌مروارید (تخصص: چشم‌پزشکی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Cataract",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/cataract",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Cataracts",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/cataracts/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Cataracts",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/cataracts/symptoms-causes/syc-20353790",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AAO: Cataract",
+      "title": "",
+      "url": "https://www.aao.org/eye-health/diseases/what-are-cataracts",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "جراحی آب‌مروارید (فاکوامولسیفیکاسیون؛ خرد کردن عدسی با امواج فراصوت و کارگذاری لنز داخل چشمی)"
+  ]
+}

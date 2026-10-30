@@ -1,0 +1,91 @@
+{
+  "id": "research_079",
+  "name_fa": "اختلال طیف اوتیسم (اوتیسم)",
+  "name_en": "Autism spectrum disorder (ASD)",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "social_communication",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "repetitive_behavior",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sensory_sensitivity",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "speech_delay",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "اختلال در ارتباط و تعامل اجتماعی",
+    "الگوهای رفتاری یا علایق محدود و تکراری",
+    "حساسیت حسی",
+    "تأخیر در مهارت‌های زبانی یا اجتماعی"
+  ],
+  "when_to_see_doctor_fa": [
+    "اختلال ارتباط، رفتار تکراری یا حساسیت حسی",
+    "اورژانس: پسرفت مهارت‌ها، تشنج یا خودآسیبی"
+  ],
+  "summary_fa": "اختلال طیف اوتیسم (اوتیسم) (تخصص: روان‌پزشکی، اطفال). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "CDC: Autism Spectrum Disorder (ASD)",
+      "title": "",
+      "url": "https://www.cdc.gov/autism/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NIMH: Autism Spectrum Disorder",
+      "title": "",
+      "url": "https://www.nimh.nih.gov/health/topics/autism-spectrum-disorders-asd",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Autism",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/autism/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Autism Speaks",
+      "title": "",
+      "url": "https://www.autismspeaks.org/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "رفتاردرمانی (ABA؛ تحلیل رفتار کاربردی)",
+    "گفتاردرمانی",
+    "کاردرمانی",
+    "دارو برای علائم همراه (پرخاشگری، اضطراب)"
+  ]
+}

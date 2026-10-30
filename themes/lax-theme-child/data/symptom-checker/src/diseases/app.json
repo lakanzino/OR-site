@@ -1,0 +1,131 @@
+{
+  "id": "app",
+  "name_fa": "آپاندیسیت",
+  "name_en": "Appendicitis",
+  "category": "بیماری‌های گوارشی و جراحی عمومی",
+  "prevalence": "common",
+  "urgency": "soon",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "abd_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "right_lower",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "appetite",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "bloating",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fever",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "constipation",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "abdominal_rigidity",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "درد ناگهانی که اغلب از اطراف ناف شروع می‌شود و سپس به پایین سمت راست شکم می‌رود",
+    "تشدید درد با حرکت، راه رفتن، سرفه یا عطسه",
+    "بی‌اشتهایی",
+    "تهوع و استفراغ",
+    "تب خفیف",
+    "یبوست یا اسهال",
+    "نفخ شکم",
+    "ناتوانی در دفع گاز",
+    "حساسیت و سفتی شکم هنگام لمس"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد ناگهانی شکم که به‌ویژه در پایین سمت راست بدتر می‌شود",
+    "درد همراه با تب، تهوع و استفراغ",
+    "این وضعیت اورژانسی است؛ از مصرف خودسرانه مسکن و داروی ملین بپرهیزید"
+  ],
+  "summary_fa": "آپاندیسیت (تخصص: متخصص جراحی عمومی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "Mayo Clinic: Appendicitis",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "NIDDK: Appendicitis",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "MedlinePlus: Appendicitis",
+      "title": "",
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "NHS: Appendicitis",
+      "title": "",
+      "url": "https://www.nhs.uk/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "برداشتن آپاندیس (آپاندکتومی) به روش لاپاراسکوپی (جراحی با برش‌های کوچک و دوربین) یا باز",
+    "آنتی‌بیوتیک قبل و بعد از عمل",
+    "در موارد انتخاب‌شده، آنتی‌بیوتیک به‌تنهایی ممکن است (با احتمال عود)",
+    "تخلیه آبسه در صورت وجود"
+  ]
+}

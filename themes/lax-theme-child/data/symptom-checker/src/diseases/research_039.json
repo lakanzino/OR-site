@@ -1,0 +1,110 @@
+{
+  "id": "research_039",
+  "name_fa": "فیبریلاسیون دهلیزی",
+  "name_en": "Atrial fibrillation",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "palpitation",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "irregular_pulse",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "dizziness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "chest_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fainting",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تپش قلب",
+    "ضربان نامنظم",
+    "درد قفسه سینه",
+    "تنگی نفس",
+    "خستگی",
+    "سرگیجه یا سبکی سر",
+    "غش",
+    "در برخی موارد بدون علامت و با سکته مغزی کشف می‌شود"
+  ],
+  "when_to_see_doctor_fa": [
+    "تپش قلب، ضربان نامنظم، تنگی نفس یا خستگی",
+    "اورژانس: درد قفسه سینه، غش یا علائم سکته"
+  ],
+  "summary_fa": "فیبریلاسیون دهلیزی (تخصص: قلب و عروق). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Atrial fibrillation",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/atrial-fibrillation",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Atrial fibrillation",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/atrial-fibrillation/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Atrial fibrillation",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/atrial-fibrillation/symptoms-causes/syc-20350624",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "ACC/AHA Guidelines: Atrial Fibrillation",
+      "title": "",
+      "url": "https://www.acc.org/Guidelines",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "کنترل ضربان (بتابلاکر، CCB)",
+    "کنترل ریتم (ضدآریتمی، کاردیوورژن؛ شوک الکتریکی)",
+    "ضدانعقاد برای پیشگیری از سکته",
+    "ابلیشن (سوزاندن کاتتر) در موارد منتخب"
+  ]
+}

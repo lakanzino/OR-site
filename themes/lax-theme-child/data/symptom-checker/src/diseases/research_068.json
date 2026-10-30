@@ -1,0 +1,116 @@
+{
+  "id": "research_068",
+  "name_fa": "بیماری سلول داسی‌شکل",
+  "name_en": "Sickle cell disease",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "bone_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "pallor",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "chest_pain",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "arm_weakness",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "prolonged_erection",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "بحران‌های دردناک",
+    "کم‌خونی",
+    "زردی",
+    "عفونت‌های مکرر",
+    "پریاپیسم",
+    "سکته مغزی",
+    "سندرم قفسه سینه حاد (کوتاه‌مدت و ناگهانی)"
+  ],
+  "when_to_see_doctor_fa": [
+    "بحران درد، تب، تنگی نفس، درد قفسه سینه یا پریاپیسم",
+    "اورژانس: سندرم حاد قفسه سینه یا سکته"
+  ],
+  "summary_fa": "بیماری سلول داسی‌شکل (تخصص: خون (هماتولوژی)). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Sickle Cell Disease",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/sickle-cell-disease",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHLBI: Sickle Cell Disease",
+      "title": "",
+      "url": "https://www.nhlbi.nih.gov/health-topics/sickle-cell-disease",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Sickle cell disease",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/sickle-cell-disease/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Sickle cell anemia",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/sickle-cell-anemia/symptoms-causes/syc-20355876",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "هیدروکسی‌اوره",
+    "مدیریت درد با مسکن‌های قوی",
+    "مایعات و اکسیژن",
+    "تزریق خون در موارد نیاز",
+    "اسید فولیک",
+    "پیوند سلول‌های بنیادی در موارد منتخب"
+  ]
+}

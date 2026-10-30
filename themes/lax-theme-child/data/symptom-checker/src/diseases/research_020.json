@@ -1,0 +1,120 @@
+{
+  "id": "research_020",
+  "name_fa": "کم‌خونی فقر آهن",
+  "name_en": "Iron deficiency anemia",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "pallor",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "palpitation",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dizziness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nail_change",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "pica",
+      "freq": "occasional",
+      "role": "core"
+    },
+    {
+      "tag": "chest_pain",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "خستگی",
+    "رنگ‌پریدگی",
+    "تنگی نفس با فعالیت",
+    "تپش قلب",
+    "سردرد یا سرگیجه",
+    "ناخن‌های شکننده",
+    "میل به خوردن مواد غیرغذایی (پیکا)",
+    "در موارد شدید: درد قفسه سینه"
+  ],
+  "when_to_see_doctor_fa": [
+    "خستگی، رنگ‌پریدگی، تنگی نفس یا تپش قلب",
+    "اورژانس: درد قفسه سینه، غش یا مدفوع سیاه"
+  ],
+  "summary_fa": "کم‌خونی فقر آهن (تخصص: خون (هماتولوژی)). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Anaemia",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/anaemia",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NIDDK: Iron-Deficiency Anemia",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/blood-diseases/iron-deficiency-anemia",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Iron deficiency anaemia",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Iron deficiency anemia",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/iron-deficiency-anemia/symptoms-causes/syc-20355034",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "مکمل آهن خوراکی (سولفات فرو)",
+    "درمان علت زمینه‌ای (خونریزی، رژیم غذایی)",
+    "آهن وریدی در موارد عدم تحمل یا جذب ناکافی",
+    "ویتامین C برای بهبود جذب"
+  ]
+}

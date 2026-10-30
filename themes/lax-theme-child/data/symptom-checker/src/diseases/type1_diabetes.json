@@ -1,0 +1,131 @@
+{
+  "id": "type1_diabetes",
+  "name_fa": "دیابت نوع ۱ (دیابت وابسته به انسولین)",
+  "name_en": "Type 1 diabetes",
+  "category": "غدد و متابولیسم",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "thirst",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "frequent_urine",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "hunger",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "fruity_breath",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تشنگی شدید",
+    "تکرر ادرار",
+    "گرسنگی زیاد",
+    "کاهش وزن",
+    "خستگی",
+    "تاری دید",
+    "در موارد شدید: تهوع، استفراغ، درد شکم، تنفس عمیق و سریع و بوی میوه‌ای دهان (کتواسیدوز)"
+  ],
+  "when_to_see_doctor_fa": [
+    "تهوع، استفراغ، درد شکم، تنفس عمیق و سریع یا بوی میوه‌ای دهان",
+    "گیجی، تشنج یا کاهش هوشیاری",
+    "اورژانس: کتواسیدوز دیابتی"
+  ],
+  "summary_fa": "دیابت نوع ۱ (دیابت وابسته به انسولین) (تخصص: متخصص غدد درون‌ریز و متابولیسم). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Diabetes",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/diabetes",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NIDDK: Type 1 Diabetes",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/type-1-diabetes",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Type 1 Diabetes",
+      "title": "",
+      "url": "https://www.cdc.gov/diabetes/about/type-1-diabetes.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "ADA: Standards of Care in Diabetes",
+      "title": "",
+      "url": "https://diabetesjournals.org/care/issue/47/Supplement_1",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "انسولین (رژیم بازال-بولوس یا پمپ)",
+    "پایش مکرر قند خون",
+    "شمارش کربوهیدرات و آموزش",
+    "اصلاح سبک زندگی و فعالیت بدنی",
+    "کنترل فشار خون و چربی خون"
+  ]
+}

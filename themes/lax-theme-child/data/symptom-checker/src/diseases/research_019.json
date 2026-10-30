@@ -1,0 +1,115 @@
+{
+  "id": "research_019",
+  "name_fa": "عفونت اچ‌آی‌وی",
+  "name_en": "HIV infection",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sore_throat",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "swollen_glands",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sweating",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "cough",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "در عفونت حاد (کوتاه‌مدت و ناگهانی): علائم شبیه آنفولانزا، تب، گلودرد، بثورات و بزرگ‌شدن غدد لنفاوی",
+    "در مرحله مزمن (طولانی‌مدت) ممکن است سال‌ها بدون علامت باشد",
+    "در ایدز (مرحله پیشرفته عفونت HIV): عفونت‌های فرصت‌طلب، کاهش وزن و خستگی شدید"
+  ],
+  "when_to_see_doctor_fa": [
+    "مواجهه پرخطر، تب، بثورات یا گلودرد",
+    "اورژانس: علائم عفونت فرصت‌طلب یا تنگی نفس"
+  ],
+  "summary_fa": "عفونت اچ‌آی‌وی (تخصص: عفونی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: HIV/AIDS",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/hiv-aids",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: HIV Basics",
+      "title": "",
+      "url": "https://www.cdc.gov/hiv/basics/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: HIV and AIDS",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/hiv-and-aids/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: HIV/AIDS",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/hiv-aids/symptoms-causes/syc-20373524",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "درمان ضدویروسی ترکیبی (ART) برای تمام بیماران",
+    "پروفیلاکسی برای عفونت‌های فرصت‌طلب در موارد CD4 پایین",
+    "پایش CD4 و بار ویروسی",
+    "واکسیناسیون و مراقبت حمایتی"
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "id": "sinusitis",
+  "name_fa": "سینوزیت (التهاب سینوس‌ها)",
+  "name_en": "Sinusitis",
+  "category": "گوش، حلق و بینی",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "facial_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nasal_congestion",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nasal_discharge",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "smell_loss",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "cough",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "درد یا فشار صورت",
+    "گرفتگی بینی",
+    "ترشح غلیظ بینی",
+    "سردرد",
+    "تب",
+    "کاهش حس بویایی",
+    "سرفه، به‌ویژه شب‌ها",
+    "در سینوزیت مزمن، علائم بیش از ۱۲ هفته ادامه دارد"
+  ],
+  "when_to_see_doctor_fa": [
+    "علائم بیش از ۱۰ روز یا تب بالا و درد شدید صورت",
+    "تورم دور چشم، تغییر بینایی یا سردرد شدید",
+    "گیجی یا سفتی گردن",
+    "اورژانس: علائم چشمی یا عصبی"
+  ],
+  "summary_fa": "سینوزیت (التهاب سینوس‌ها) (تخصص: متخصص گوش، حلق و بینی (ENT)). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Sinusitis (Sinus infection)",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/sinusitis-sinus-infection/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Sinusitis",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/sinusitis/symptoms-causes/syc-20377596",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Sinus Infection",
+      "title": "",
+      "url": "https://www.cdc.gov/antibiotic-use/sinus-infection.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AAO-HNS: Sinusitis",
+      "title": "",
+      "url": "https://www.entnet.org/health-information/sinusitis/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "ضداحتقان (کوتاه‌مدت)",
+    "مسکن و تب‌بر",
+    "کورتیکواستروئید داخل بینی",
+    "آنتی‌بیوتیک در سینوزیت باکتریایی تأییدشده"
+  ]
+}

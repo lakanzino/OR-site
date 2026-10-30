@@ -1,0 +1,113 @@
+{
+  "id": "kidney_infection",
+  "name_fa": "عفونت کلیه (پیلونفریت)",
+  "name_en": "Kidney infection / Pyelonephritis",
+  "category": "کلیه و ادرار",
+  "prevalence": "common",
+  "urgency": "soon",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "flank_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "chills",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "burning_urine",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "frequent_urine",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تب و لرز",
+    "درد پهلو",
+    "سوزش یا تکرر ادرار",
+    "تهوع و استفراغ",
+    "حساسیت در ناحیه پهلو هنگام لمس",
+    "خستگی"
+  ],
+  "when_to_see_doctor_fa": [
+    "تب و لرز، درد پهلو یا استفراغ",
+    "بارداری، نقص ایمنی یا گیجی",
+    "اورژانس: سپسیس یا افت فشار"
+  ],
+  "summary_fa": "عفونت کلیه (پیلونفریت) (تخصص: نفرولوژی، اورولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Kidney Infection (Pyelonephritis)",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-infection-pyelonephritis",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Kidney infection",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/kidney-infection/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Kidney infection",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/kidney-infection/symptoms-causes/syc-20353387",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Kidney Infection",
+      "title": "",
+      "url": "https://www.cdc.gov/uti/about/kidney-infection.html",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "آنتی‌بیوتیک وریدی سپس خوراکی بر اساس کشت",
+    "مایعات و مسکن",
+    "بستری در موارد شدید یا عدم تحمل خوراکی"
+  ]
+}

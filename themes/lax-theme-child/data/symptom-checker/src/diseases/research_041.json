@@ -1,0 +1,104 @@
+{
+  "id": "research_041",
+  "name_fa": "هاری",
+  "name_en": "Rabies",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "urgent",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "animal_bite",
+      "freq": "very_common",
+      "role": "red_flag"
+    },
+    {
+      "tag": "water_fear",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "hyperactivity",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "confusion",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "weakness",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "گزگز یا سوزش در محل گازگرفتگی",
+    "تب",
+    "بی‌قراری و اضطراب",
+    "ترس از آب (هیدروفوبیا)",
+    "ترس از هوا (آئروفوبیا)",
+    "گیجی",
+    "فلج",
+    "کما"
+  ],
+  "when_to_see_doctor_fa": [
+    "هر گازگرفتگی یا خراشیدگی حیوان مشکوک",
+    "اورژانس: شستشوی فوری و شروع PEP"
+  ],
+  "summary_fa": "هاری (تخصص: عفونی، اورژانس). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Rabies",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/rabies",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Rabies",
+      "title": "",
+      "url": "https://www.cdc.gov/rabies/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Rabies",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/rabies/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Rabies",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/rabies/symptoms-causes/syc-20351821",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "شستشوی فوری زخم",
+    "واکسن هاری و ایمونوگلوبولین هاری (PEP؛ پیشگیری پس از تماس)",
+    "پس از بروز علائم، درمان حمایتی است و بیماری کشنده است"
+  ]
+}

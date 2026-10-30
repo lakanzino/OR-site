@@ -1,0 +1,86 @@
+{
+  "id": "research_086",
+  "name_fa": "عفونت قارچی ناخن (قارچ ناخن)",
+  "name_en": "Onychomycosis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "nail_change",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "brittle_nails",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nail_separation",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "ضخیم‌شدن ناخن",
+    "تغییر رنگ ناخن",
+    "شکنندگی ناخن",
+    "جدا شدن ناخن از بستر",
+    "معمولاً بدون درد"
+  ],
+  "when_to_see_doctor_fa": [
+    "ضخیم‌شدن، تغییر رنگ یا شکنندگی ناخن",
+    "اورژانس: دیابت یا نقص ایمنی با عفونت"
+  ],
+  "summary_fa": "عفونت قارچی ناخن (قارچ ناخن) (تخصص: پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "CDC: Fungal Nail Infections",
+      "title": "",
+      "url": "https://www.cdc.gov/fungal/nail-infections.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Fungal nail infection",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/fungal-nail-infection/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Nail fungus",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/nail-fungus/symptoms-causes/syc-20353294",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AAD: Nail Fungus",
+      "title": "",
+      "url": "https://www.aad.org/public/diseases/a-z/nail-fungus",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "ضدقارچ خوراکی (تربینافین، ایتراکونازول)",
+    "لاک ناخن ضدقارچ",
+    "برداشتن ناخن در موارد شدید"
+  ]
+}

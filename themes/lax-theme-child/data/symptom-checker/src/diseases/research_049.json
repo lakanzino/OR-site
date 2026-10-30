@@ -1,0 +1,124 @@
+{
+  "id": "research_049",
+  "name_fa": "تب دنگی",
+  "name_en": "Dengue",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fever",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "headache",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "eye_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "body_ache",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "joint_pain",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "easy_bruising",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تب بالا",
+    "سردرد",
+    "درد پشت چشم",
+    "درد عضلانی و مفاصل",
+    "بثورات پوستی",
+    "تهوع و استفراغ",
+    "علائم هشدار دنگی شدید: درد شکم، استفراغ مداوم، خونریزی، خواب‌آلودگی"
+  ],
+  "when_to_see_doctor_fa": [
+    "تب بالا، درد شکم، استفراغ مداوم، خونریزی یا خواب‌آلودگی",
+    "اورژانس: علائم هشدار دنگی شدید"
+  ],
+  "summary_fa": "تب دنگی (تخصص: عفونی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Dengue and severe dengue",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/dengue-and-severe-dengue",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Dengue",
+      "title": "",
+      "url": "https://www.cdc.gov/dengue/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Dengue",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/dengue/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Dengue fever",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/dengue-fever/symptoms-causes/syc-20353066",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "مراقبت حمایتی و مایعات",
+    "استامینوفن برای درد (پرهیز از NSAID)",
+    "پایش برای علائم دنگی شدید",
+    "بستری در موارد شدید"
+  ]
+}

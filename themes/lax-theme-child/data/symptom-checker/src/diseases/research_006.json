@@ -1,0 +1,115 @@
+{
+  "id": "research_006",
+  "name_fa": "سل",
+  "name_en": "Tuberculosis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "cough",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sputum",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "coughing_blood",
+      "freq": "occasional",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sweating",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "chest_pain",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "سرفه بیش از سه هفته",
+    "خلط خونی",
+    "تب",
+    "تعریق شبانه",
+    "کاهش وزن",
+    "خستگی",
+    "درد قفسه سینه",
+    "در سل خارج‌ریوی، علائم بر اساس عضو درگیر متفاوت است"
+  ],
+  "when_to_see_doctor_fa": [
+    "سرفه بیش از ۳ هفته، خلط خونی، تب یا تعریق شبانه",
+    "تنگی نفس یا درد قفسه سینه",
+    "اورژانس: هموپتیزی شدید یا نارسایی تنفسی"
+  ],
+  "summary_fa": "سل (تخصص: عفونی، ریه). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Tuberculosis",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/tuberculosis",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Tuberculosis (TB)",
+      "title": "",
+      "url": "https://www.cdc.gov/tb/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Tuberculosis (TB)",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/tuberculosis-tb/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Tuberculosis",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/tuberculosis/symptoms-causes/syc-20351250",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "رژیم چنددارویی (ایزونیازید، ریفامپین، پیرازینامید، اتامبوتول) برای ۶ ماه",
+    "نظارت مستقیم درمان (DOT؛ نظارت بر مصرف دارو)",
+    "در سل مقاوم: رژیم طولانی‌تر و داروهای خط دوم"
+  ]
+}

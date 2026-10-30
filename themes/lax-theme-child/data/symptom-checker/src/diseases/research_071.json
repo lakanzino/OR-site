@@ -1,0 +1,109 @@
+{
+  "id": "research_071",
+  "name_fa": "اختلال افسردگی اساسی (افسردگی)",
+  "name_en": "Major depressive disorder",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "low_mood",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sleep_problem",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "appetite_change",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "concentration_problem",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "guilt",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "suicidal_thoughts",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "خلق افسرده",
+    "از دست رفتن لذت",
+    "اختلال خواب",
+    "تغییر اشتها",
+    "خستگی",
+    "کاهش تمرکز",
+    "احساس گناه یا بی‌ارزشی",
+    "افکار خودکشی"
+  ],
+  "when_to_see_doctor_fa": [
+    "خلق افسرده، بی‌لذتی یا اختلال خواب",
+    "اورژانس: افکار خودکشی، روان‌پریشی یا ناتوانی در مراقبت از خود"
+  ],
+  "summary_fa": "اختلال افسردگی اساسی (افسردگی) (تخصص: روان‌پزشکی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Depression",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/depression",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NIMH: Depression",
+      "title": "",
+      "url": "https://www.nimh.nih.gov/health/topics/depression",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Depression",
+      "title": "",
+      "url": "https://www.nhs.uk/mental-health/conditions/depression-in-adults/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Depression (major depressive disorder)",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/depression/symptoms-causes/syc-20356007",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "مهارکننده‌های بازجذب سروتونین (SSRI) یا سروتونین-نوراپی‌نفرین (SNRI)",
+    "روان‌درمانی (CBT)",
+    "الکتروشوک درمانی (ECT) در موارد شدید و مقاوم"
+  ]
+}

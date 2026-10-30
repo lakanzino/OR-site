@@ -1,0 +1,137 @@
+{
+  "id": "flu",
+  "name_fa": "آنفولانزا",
+  "name_en": "Influenza / Flu",
+  "category": "عفونی",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fever",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "chills",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "body_ache",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "cough",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "sore_throat",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nasal_congestion",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nasal_discharge",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تب ناگهانی",
+    "لرز",
+    "درد عضلانی و بدن‌درد",
+    "سردرد",
+    "خستگی شدید",
+    "سرفه",
+    "گلودرد",
+    "آبریزش یا گرفتگی بینی",
+    "در کودکان ممکن است تهوع، استفراغ یا اسهال دیده شود"
+  ],
+  "when_to_see_doctor_fa": [
+    "تب بالا بیش از ۳ روز، تنگی نفس، درد قفسه سینه یا گیجی",
+    "کم‌آبی شدید یا عدم توانایی نوشیدن",
+    "اورژانس: تشدید سریع علائم"
+  ],
+  "summary_fa": "آنفولانزا (تخصص: متخصص بیماری‌های عفونی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Influenza (Seasonal) )",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/influenza-(seasonal",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Flu (Influenza)",
+      "title": "",
+      "url": "https://www.cdc.gov/flu/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Flu",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/flu/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Influenza",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/flu/symptoms-causes/syc-20351719",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "استراحت، مایعات و تغذیه مناسب",
+    "داروهای ضدویروسی (مانند اسلتامیویر یا زانامیویر) در ۴۸ ساعت اول در افراد پرخطر",
+    "تب‌بر و مسکن",
+    "واکسیناسیون سالانه"
+  ]
+}

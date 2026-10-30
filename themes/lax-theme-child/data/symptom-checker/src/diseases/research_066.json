@@ -1,0 +1,129 @@
+{
+  "id": "research_066",
+  "name_fa": "بیماری گریوز",
+  "name_en": "Graves disease",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "palpitation",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "heat_intolerance",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "tremor",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "anxiety",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "eye_bulging",
+      "freq": "occasional",
+      "role": "core"
+    },
+    {
+      "tag": "double_vision",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "neck_swelling",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sleep_problem",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "کاهش وزن",
+    "تپش قلب",
+    "عدم تحمل گرما",
+    "لرزش",
+    "اضطراب",
+    "گواتر",
+    "درگیری چشم: برجستگی، خشکی و دوبینی"
+  ],
+  "when_to_see_doctor_fa": [
+    "کاهش وزن، تپش قلب، لرزش یا تعریق",
+    "اورژانس: تب بالا، ضربان بسیار سریع، گیجی (طوفان تیروئیدی)"
+  ],
+  "summary_fa": "بیماری گریوز (تخصص: غدد درون‌ریز و متابولیسم). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Graves' Disease",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/endocrine-diseases/graves-disease",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Graves' disease",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/graves-disease/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Graves' disease",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/graves-disease/symptoms-causes/syc-20356240",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "ATA Guidelines: Graves' Disease",
+      "title": "",
+      "url": "https://www.thyroid.org/graves-disease/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "داروهای ضدتیروئید (متی‌مازول، PTU؛ پروپیل‌تیواوراسیل)",
+    "ید رادیواکتیو",
+    "جراحی تیروئید",
+    "بتابلاکر برای کنترل علائم"
+  ]
+}

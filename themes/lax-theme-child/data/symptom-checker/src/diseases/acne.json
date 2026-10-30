@@ -1,0 +1,95 @@
+{
+  "id": "acne",
+  "name_fa": "آکنه (جوش)",
+  "name_en": "Acne",
+  "category": "پوست",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "acne_lesions",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "skin_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dark_patches",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "کومدون (جوش سرسیاه یا سفید)",
+    "جوش‌های التهابی قرمز",
+    "پوسته یا جوش چرکی",
+    "ندول (توده کوچک و سفت زیر پوست) یا کیست در موارد شدید",
+    "جای زخم یا لک",
+    "درگیری صورت، سینه و پشت"
+  ],
+  "when_to_see_doctor_fa": [
+    "آکنه شدید با ندول، کیست یا جای زخم",
+    "درد، قرمزی گسترده یا تب",
+    "اورژانس: علائم عفونت شدید"
+  ],
+  "summary_fa": "آکنه (جوش) (تخصص: متخصص پوست (درماتولوژی)). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Acne",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/acne/",
+      "accessed": "2026-10-30",
+      "verified": true
+    },
+    {
+      "publisher": "Mayo Clinic: Acne",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/acne/symptoms-causes/syc-20368047",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AAD: Acne",
+      "title": "",
+      "url": "https://www.aad.org/public/diseases/acne-and-rosacea/acne",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NICE: Acne vulgaris",
+      "title": "",
+      "url": "https://cks.nice.org.uk/topics/acne-vulgaris/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "رتینوئیدهای موضعی",
+    "بنزوئیل پروکساید",
+    "آنتی‌بیوتیک موضعی یا خوراکی",
+    "ایزوترتینوئین در آکنه شدید و مقاوم",
+    "درمان هورمونی در زنان (با نظر پزشک)"
+  ]
+}

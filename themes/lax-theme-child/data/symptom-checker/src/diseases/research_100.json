@@ -1,0 +1,91 @@
+{
+  "id": "research_100",
+  "name_fa": "سرگیجه وضعیتی حمله‌ای خوش‌خیم (سرگیجه وضعیتی)",
+  "name_en": "Benign paroxysmal positional vertigo (BPPV)",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "positional_dizziness",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "dizziness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "eye_jerking",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "سرگیجه کوتاه و شدید با تغییر وضعیت سر",
+    "تهوع",
+    "نیستاگموس (حرکت غیرارادی و تکانی چشم)",
+    "معمولاً بدون کاهش شنوایی",
+    "علائم با حرکات خاص سر تحریک می‌شوند"
+  ],
+  "when_to_see_doctor_fa": [
+    "سرگیجه کوتاه با تغییر وضعیت سر",
+    "اورژانس: سرگیجه شدید با علائم عصبی یا پس از ضربه به سر"
+  ],
+  "summary_fa": "سرگیجه وضعیتی حمله‌ای خوش‌خیم (سرگیجه وضعیتی) (تخصص: گوش، حلق و بینی، مغز و اعصاب). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Vertigo",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/vertigo/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Benign paroxysmal positional vertigo (BPPV)",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/benign-paroxysmal-positional-vertigo/symptoms-causes/syc-20356171",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NIDCD: BPPV",
+      "title": "",
+      "url": "https://www.nidcd.nih.gov/health/benign-paroxysmal-positional-vertigo-bppv",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AAN Guidelines: BPPV",
+      "title": "",
+      "url": "https://www.aan.com/Guidelines/home/GuidelineDetail/1130",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "مانور Epley (جابه‌جایی ذرات)",
+    "توان‌بخشی وستیبولار (تعادلی)",
+    "پرهیز از حرکات تحریک‌کننده"
+  ]
+}

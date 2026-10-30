@@ -1,0 +1,104 @@
+{
+  "id": "epilepsy",
+  "name_fa": "صرع (اپی‌لپسی)",
+  "name_en": "Epilepsy",
+  "category": "مغز و اعصاب",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "seizure",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fainting",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "confusion",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "urinary_leak",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "muscle_stiffness",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تشنج‌های عودکننده (بازگشت‌کننده) و غیرتحریکی",
+    "گیجی یا خیره شدن گذرا",
+    "حرکات تکان‌دهنده یا سفتی عضلانی",
+    "افتادن یا از دست دادن هوشیاری",
+    "خستگی یا سردرگمی پس از تشنج",
+    "بی‌اختیاری ادرار در برخی تشنج‌ها"
+  ],
+  "when_to_see_doctor_fa": [
+    "اولین تشنج، تشنج بیش از ۵ دقیقه یا تشنج‌های مکرر",
+    "آسیب، بارداری یا گیجی پس از تشنج",
+    "اورژانس: وضعیت صرع"
+  ],
+  "summary_fa": "صرع (اپی‌لپسی) (تخصص: متخصص مغز و اعصاب (نورولوژی)). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Epilepsy",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/epilepsy",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Epilepsy",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/epilepsy/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Epilepsy",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/epilepsy/symptoms-causes/syc-20350093",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "ILAE: Epilepsy",
+      "title": "",
+      "url": "https://www.ilae.org/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "داروهای ضدتشنج (مثلاً لوتیراستام، والپروات، لاموتریژین)",
+    "رژیم کتوژنیک در موارد مقاوم (به‌ویژه کودکان)",
+    "جراحی صرع در موارد منتخب",
+    "آموزش بیمار و خانواده"
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "id": "research_095",
+  "name_fa": "اختلال نعوظ (مشکل نعوظ)",
+  "name_en": "Erectile dysfunction",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "erectile_difficulty",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "low_libido",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "anxiety",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "دشواری در رسیدن به نعوظ",
+    "دشواری در حفظ نعوظ",
+    "کاهش سختی نعوظ",
+    "کاهش میل جنسی در برخی موارد"
+  ],
+  "when_to_see_doctor_fa": [
+    "دشواری در نعوظ یا کاهش میل جنسی",
+    "اورژانس: درد قفسه سینه یا علائم قلبی-عروقی"
+  ],
+  "summary_fa": "اختلال نعوظ (مشکل نعوظ) (تخصص: اورولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Erectile Dysfunction",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/erectile-dysfunction",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Erectile dysfunction (impotence)",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/erectile-dysfunction-impotence/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Erectile dysfunction",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/erectile-dysfunction/symptoms-causes/syc-20355776",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AUA Guidelines: Erectile Dysfunction",
+      "title": "",
+      "url": "https://www.auanet.org/guidelines-and-quality/guidelines/erectile-dysfunction",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "مهارکننده‌های PDE5 (سیلدنافیل)",
+    "تستوسترون در صورت کمبود",
+    "روان‌درمانی",
+    "دستگاه خلأ",
+    "جراحی (پروتز) در موارد مقاوم"
+  ],
+  "checker_rankable": false,
+  "checker_note": "سه برچسب؛ علائم بیشتر روانی/عملکردی‌اند و بدون بازبینی پزشکی رتبه‌بندی نمی‌شود."
+}

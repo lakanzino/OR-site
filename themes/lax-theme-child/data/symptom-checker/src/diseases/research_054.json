@@ -1,0 +1,98 @@
+{
+  "id": "research_054",
+  "name_fa": "هموروئید (بواسیر)",
+  "name_en": "Hemorrhoids",
+  "category": "بیماری‌های گوارشی و مقعد",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "blood_in_stool",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "anal_lump",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "anal_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "itch",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "خون قرمز روشن و بدون درد هنگام دفع (روی دستمال یا داخل توالت)",
+    "خارش یا تحریک اطراف مقعد",
+    "درد یا ناراحتی، به‌ویژه هنگام نشستن",
+    "توده یا تورم اطراف مقعد",
+    "بیرون‌زدگی هموروئید داخلی (پرولاپس)",
+    "درد ناگهانی و شدید در هموروئید خارجی لخته‌شده (ترومبوزه)"
+  ],
+  "when_to_see_doctor_fa": [
+    "هرگونه خونریزی از مقعد باید توسط پزشک بررسی شود، چون سرطان روده نیز می‌تواند علائم مشابه داشته باشد",
+    "درد شدید یا توده سفت و دردناک",
+    "اورژانس: خونریزی شدید، سرگیجه یا غش"
+  ],
+  "summary_fa": "هموروئید (بواسیر) (تخصص: جراحی عمومی و کولوپروکتولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Hemorrhoids",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "Mayo Clinic: Hemorrhoids",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "MedlinePlus: Hemorrhoids",
+      "title": "",
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "ASCRS Clinical Practice Guidelines: Hemorrhoids",
+      "title": "",
+      "url": "",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "افزایش فیبر و مایعات",
+    "نشستن در لگن آب گرم (سیتس‌باث)",
+    "پمادها و شیاف‌های موضعی",
+    "روش‌های سرپایی: بستن با لاستیک، اسکلروتراپی (تزریق ماده انسداد رگ)، انعقاد با مادون‌قرمز",
+    "جراحی: هموروئیدکتومی (برداشتن هموروئید) یا هموروئیدوپکسی استپلر"
+  ]
+}

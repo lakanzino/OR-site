@@ -1,0 +1,119 @@
+{
+  "id": "research_005",
+  "name_fa": "بیماری سلیاک",
+  "name_en": "Celiac disease",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "diarrhea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "bloating",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "blisters",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "itch",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fracture_fragility",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "growth_delay",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "اسهال مزمن (طولانی‌مدت)",
+    "نفخ و درد شکم",
+    "کاهش وزن",
+    "خستگی",
+    "کم‌خونی",
+    "بثورات خارش‌دار تاولی (درماتیت هرپتی‌فورم)",
+    "پوکی استخوان",
+    "در کودکان: اختلال رشد"
+  ],
+  "when_to_see_doctor_fa": [
+    "اسهال مزمن، کاهش وزن یا کم‌خونی",
+    "اورژانس: کم‌آبی شدید، اسهال خونی یا ضعف شدید"
+  ],
+  "summary_fa": "بیماری سلیاک (تخصص: گوارش و کبد). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Celiac Disease",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Coeliac disease",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/coeliac-disease/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Celiac disease",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/celiac-disease/symptoms-causes/syc-20352220",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Beyond Celiac: Celiac Disease",
+      "title": "",
+      "url": "https://www.beyondceliac.org/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "رژیم سخت‌گیرانه بدون گلوتن برای تمام عمر",
+    "مکمل‌های تغذیه‌ای در صورت کمبود",
+    "پایش دوره‌ای سرولوژی و رشد در کودکان"
+  ]
+}

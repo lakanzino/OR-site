@@ -134,7 +134,7 @@ function hj_dashboard_render_widget(): void {
 					<div style="height:6px;background:#f1f5f9;border-radius:999px;overflow:hidden;display:flex">
 						<span style="width:<?php echo esc_attr( (string) $sec['percent'] ); ?>%;background:<?php echo esc_attr( $sec['color'] ); ?>"></span>
 						<?php if ( $sec['draft_percent'] > 0 ) : ?>
-							<span style="width:<?php echo esc_attr( (string) $sec['draft_percent'] ); ?>%;background:#f59e0b;opacity:.65"></span>
+							<span style="width:<?php echo esc_attr( (string) $sec['draft_percent'] ); ?>%;background:#94A3B8;opacity:.65"></span>
 						<?php endif; ?>
 					</div>
 				</div>
@@ -267,13 +267,16 @@ function hj_dashboard_render_page(): void {
 	$pub_arc       = round( ( $tot['percent_publish'] / 100 ) * $circ, 2 );
 	$drf_arc       = round( ( $draft_pct_tot / 100 ) * $circ, 2 );
 	$drf_offset    = -1 * $pub_arc;
+	$dis_counts    = wp_count_posts( 'disease' );
+	$dis_pub       = isset( $dis_counts->publish ) ? (int) $dis_counts->publish : 0;
+	$dis_drf       = isset( $dis_counts->draft ) ? (int) $dis_counts->draft : 0;
 	?>
 	<style>
 		.hj-rd-wrap { max-width: 1280px; direction: rtl; font-family: Tahoma, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #0f172a; }
 		.hj-rd-topbar { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:14px; background:#fff; border:1px solid #dcdcde; border-right:6px solid #06265C; border-radius:12px; padding:18px 22px; margin:16px 0; box-shadow:0 2px 8px rgba(6,38,92,.06); }
 		.hj-rd-topbar h1 { margin:0 0 6px; font-size:21px; color:#06265C; padding:0; }
 		.hj-rd-topbar p { margin:0; font-size:13px; color:#475569; }
-		.hj-rd-mode-switch { display:inline-flex; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:8px; padding:3px; gap:4px; }
+		.hj-rd-mode-switch { display:inline-flex; background:#f1f5f9; border:1px solid #CBD5E1; border-radius:8px; padding:3px; gap:4px; }
 		.hj-rd-mode-btn { padding:6px 12px; border-radius:6px; text-decoration:none; font-size:12.5px; font-weight:700; color:#334155; }
 		.hj-rd-mode-btn.is-active { background:#06265C; color:#fff; }
 
@@ -282,7 +285,7 @@ function hj_dashboard_render_page(): void {
 		.hj-rd-donut-card { background:linear-gradient(145deg, #06265C 0%, #0b3b8c 100%); color:#fff; border-radius:14px; padding:20px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; box-shadow:0 6px 18px rgba(6,38,92,.18); }
 		.hj-rd-donut-badge { display:inline-block; margin-top:10px; padding:4px 12px; border-radius:999px; font-size:12px; font-weight:700; background:rgba(255,255,255,.16); color:#fff; border:1px solid rgba(255,255,255,.28); }
 		.hj-rd-kpi-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(195px, 1fr)); gap:14px; }
-		.hj-rd-kpi { background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:16px 18px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 2px 6px rgba(15,23,42,.04); }
+		.hj-rd-kpi { background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:12px 14px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 2px 6px rgba(15,23,42,.04); }
 		.hj-rd-kpi__lbl { font-size:12.5px; color:#64748b; font-weight:600; }
 		.hj-rd-kpi__val { font-size:26px; font-weight:800; margin:8px 0 4px; color:#0f172a; }
 		.hj-rd-kpi__sub { font-size:12px; color:#475569; }
@@ -300,32 +303,32 @@ function hj_dashboard_render_page(): void {
 		.hj-rd-sec-counts { font-size:12px; color:#475569; }
 		.hj-rd-bar { height:10px; background:#f1f5f9; border-radius:999px; overflow:hidden; display:flex; }
 		.hj-rd-bar__pub { height:100%; transition:width .3s ease; }
-		.hj-rd-bar__drf { height:100%; background:repeating-linear-gradient(45deg,#f59e0b,#f59e0b 5px,#fbbf24 5px,#fbbf24 10px); }
+		.hj-rd-bar__drf { height:100%; background:repeating-linear-gradient(45deg,#94A3B8,#94A3B8 5px,#94A3B8 5px,#94A3B8 10px); }
 		.hj-rd-sec-card__foot { padding:10px 16px; background:#f8fafc; border-top:1px solid #eef2f7; display:flex; justify-content:space-between; align-items:center; font-size:12px; }
 		.hj-rd-sec-card__foot a { text-decoration:none; font-weight:600; }
 
 		.hj-rd-legend { background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:12px 16px; margin-bottom:18px; display:flex; flex-wrap:wrap; align-items:center; gap:12px; font-size:12px; }
-		.hj-rd-toolbar { background:#fff; border:1px solid #cbd5e1; border-radius:10px; padding:14px 16px; margin-bottom:18px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; position:sticky; top:36px; z-index:20; box-shadow:0 3px 10px rgba(15,23,42,.06); }
+		.hj-rd-toolbar { background:#fff; border:1px solid #CBD5E1; border-radius:10px; padding:14px 16px; margin-bottom:18px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; position:sticky; top:36px; z-index:20; box-shadow:0 3px 10px rgba(15,23,42,.06); }
 		.hj-rd-search { min-width:250px; flex:1; padding:6px 12px; border:1px solid #94a3b8; border-radius:7px; font-size:13px; }
-		.hj-rd-filter-btn { padding:6px 12px; border-radius:7px; border:1px solid #cbd5e1; background:#f8fafc; cursor:pointer; font-size:12px; font-weight:600; color:#334155; }
+		.hj-rd-filter-btn { padding:6px 12px; border-radius:7px; border:1px solid #CBD5E1; background:#f8fafc; cursor:pointer; font-size:12px; font-weight:600; color:#334155; }
 		.hj-rd-filter-btn.is-active { background:#06265C; border-color:#06265C; color:#fff; }
 
-		.hj-rd-acc { background:#fff; border:1px solid #cbd5e1; border-radius:12px; margin-bottom:16px; overflow:hidden; }
+		.hj-rd-acc { background:#fff; border:1px solid #CBD5E1; border-radius:12px; margin-bottom:16px; overflow:hidden; }
 		.hj-rd-acc summary { list-style:none; cursor:pointer; padding:14px 18px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; font-weight:700; }
 		.hj-rd-acc summary::-webkit-details-marker { display:none; }
 		.hj-rd-table { width:100%; border-collapse:collapse; font-size:12.5px; }
 		.hj-rd-table th { background:#f8fafc; color:#334155; text-align:right; padding:10px 12px; border-top:1px solid #e2e8f0; border-bottom:1px solid #e2e8f0; }
 		.hj-rd-table td { padding:10px 12px; border-bottom:1px solid #f1f5f9; vertical-align:middle; }
-		.hj-rd-table tr.is-publish { background:#f0fdf438; }
-		.hj-rd-table tr.is-draft { background:#fffbeb55; }
+		.hj-rd-table tr.is-publish { background:#f8fafc38; }
+		.hj-rd-table tr.is-draft { background:#f8fafc; }
 		.hj-rd-code { display:inline-block; padding:2px 7px; border-radius:5px; font-family:monospace; font-size:11.5px; font-weight:700; background:#eef2f7; color:#1e293b; }
-		.hj-rd-p1 { display:inline-block; background:#dbeafe; color:#1e40af; padding:1px 6px; border-radius:4px; font-size:10.5px; font-weight:700; margin-right:4px; }
-		.hj-rd-opt { display:inline-block; background:#f3e8ff; color:#6b21a8; padding:1px 6px; border-radius:4px; font-size:10.5px; font-weight:700; margin-right:4px; }
-		.hj-rd-st-pub { display:inline-flex; align-items:center; gap:4px; background:#dcfce7; color:#166534; padding:3px 9px; border-radius:999px; font-weight:700; font-size:11.5px; }
-		.hj-rd-st-drf { display:inline-flex; align-items:center; gap:4px; background:#fef3c7; color:#92400e; padding:3px 9px; border-radius:999px; font-weight:700; font-size:11.5px; }
+		.hj-rd-p1 { display:inline-block; background:#E0E9F7; color:#06265C; padding:1px 6px; border-radius:4px; font-size:10.5px; font-weight:700; margin-right:4px; }
+		.hj-rd-opt { display:inline-block; background:#F1F5F9; color:#475569; padding:1px 6px; border-radius:4px; font-size:10.5px; font-weight:700; margin-right:4px; }
+		.hj-rd-st-pub { display:inline-flex; align-items:center; gap:4px; background:#E0E9F7; color:#06265C; padding:3px 9px; border-radius:999px; font-weight:700; font-size:11.5px; }
+		.hj-rd-st-drf { display:inline-flex; align-items:center; gap:4px; background:#F1F5F9; color:#475569; padding:3px 9px; border-radius:999px; font-weight:700; font-size:11.5px; }
 		.hj-rd-st-mis { display:inline-flex; align-items:center; gap:4px; background:#f1f5f9; color:#64748b; padding:3px 9px; border-radius:999px; font-weight:600; font-size:11.5px; }
-		.hj-rd-health-warn { display:inline-block; font-size:11px; color:#b45309; background:#fef3c7; padding:1px 6px; border-radius:4px; margin-top:3px; }
-		.hj-rd-health-ok { display:inline-block; font-size:11px; color:#15803d; margin-top:3px; }
+		.hj-rd-health-warn { display:inline-block; font-size:11px; color:#475569; background:#F1F5F9; padding:1px 6px; border-radius:4px; margin-top:3px; }
+		.hj-rd-health-ok { display:inline-block; font-size:11px; color:#06265C; margin-top:3px; }
 	</style>
 
 	<div class="wrap hj-rd-wrap">
@@ -353,18 +356,18 @@ function hj_dashboard_render_page(): void {
 				<svg width="136" height="136" viewBox="0 0 136 136" aria-label="درصد کل پیشرفت">
 					<circle cx="68" cy="68" r="52" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="14"></circle>
 					<?php if ( $drf_arc > 0 ) : ?>
-						<circle cx="68" cy="68" r="52" fill="none" stroke="#fbbf24" stroke-width="14"
+						<circle cx="68" cy="68" r="52" fill="none" stroke="#94A3B8" stroke-width="14"
 							stroke-dasharray="<?php echo esc_attr( $drf_arc . ' ' . $circ ); ?>"
 							stroke-dashoffset="<?php echo esc_attr( (string) $drf_offset ); ?>"
 							transform="rotate(-90 68 68)"></circle>
 					<?php endif; ?>
-					<circle cx="68" cy="68" r="52" fill="none" stroke="#4ade80" stroke-width="14" stroke-linecap="round"
+					<circle cx="68" cy="68" r="52" fill="none" stroke="#8FA9D6" stroke-width="14" stroke-linecap="round"
 						stroke-dasharray="<?php echo esc_attr( $pub_arc . ' ' . $circ ); ?>"
 						transform="rotate(-90 68 68)"></circle>
 					<text x="68" y="64" text-anchor="middle" fill="#ffffff" font-size="22" font-weight="800">
 						<?php echo esc_html( number_format_i18n( $tot['percent_publish'], 1 ) ); ?>٪
 					</text>
-					<text x="68" y="84" text-anchor="middle" fill="#cbd5e1" font-size="11">منتشرشده کل</text>
+					<text x="68" y="84" text-anchor="middle" fill="#CBD5E1" font-size="11">منتشرشده کل</text>
 				</svg>
 				<div style="font-size:13.5px;font-weight:700;margin-top:6px">
 					<?php echo esc_html( number_format_i18n( $tot['published'] ) ); ?> از <?php echo esc_html( number_format_i18n( $tot['total'] ) ); ?> مقاله‌ی هدف
@@ -375,40 +378,45 @@ function hj_dashboard_render_page(): void {
 			</div>
 
 			<div class="hj-rd-kpi-grid">
-				<div class="hj-rd-kpi" style="border-top:4px solid #16a34a">
-					<span class="hj-rd-kpi__lbl">🟢 مقالات منتشرشده در سایت</span>
-					<div class="hj-rd-kpi__val" style="color:#15803d"><?php echo esc_html( number_format_i18n( $tot['published'] ) ); ?></div>
+				<div class="hj-rd-kpi" style="border-top:4px solid #06265C">
+					<span class="hj-rd-kpi__lbl">مقالات منتشرشده در سایت</span>
+					<div class="hj-rd-kpi__val" style="color:#06265C"><?php echo esc_html( number_format_i18n( $tot['published'] ) ); ?></div>
 					<span class="hj-rd-kpi__sub"><?php echo esc_html( number_format_i18n( $tot['percent_publish'], 1 ) ); ?>٪ از کل فهرست هدف</span>
 				</div>
 
-				<div class="hj-rd-kpi" style="border-top:4px solid #d97706">
-					<span class="hj-rd-kpi__lbl">📝 آماده در پیش‌نویس (Draft)</span>
-					<div class="hj-rd-kpi__val" style="color:#b45309"><?php echo esc_html( number_format_i18n( $tot['draft'] ) ); ?></div>
+				<div class="hj-rd-kpi" style="border-top:4px solid #64748b">
+					<span class="hj-rd-kpi__lbl">آماده در پیش‌نویس (Draft)</span>
+					<div class="hj-rd-kpi__val" style="color:#475569"><?php echo esc_html( number_format_i18n( $tot['draft'] ) ); ?></div>
 					<span class="hj-rd-kpi__sub">
 						مجموع پوشش (منتشر + پیش‌نویس): <strong><?php echo esc_html( number_format_i18n( $tot['percent_written'], 1 ) ); ?>٪</strong>
 					</span>
 				</div>
 
 				<div class="hj-rd-kpi" style="border-top:4px solid #64748b">
-					<span class="hj-rd-kpi__lbl">⚪ مقالات باقی‌مانده</span>
+					<span class="hj-rd-kpi__lbl">مقالات باقی‌مانده</span>
 					<div class="hj-rd-kpi__val"><?php echo esc_html( number_format_i18n( $tot['remaining'] ) ); ?></div>
 					<span class="hj-rd-kpi__sub">در انتظار نگارش / ایمپورت ZIP</span>
 				</div>
 
-				<div class="hj-rd-kpi" style="border-top:4px solid #0284c7">
-					<span class="hj-rd-kpi__lbl">⭐ پیشرفت ستون‌ها و اولویت فاز ۱</span>
-					<div class="hj-rd-kpi__val" style="color:#0369a1"><?php echo esc_html( number_format_i18n( $tot['phase1_percent'], 1 ) ); ?>٪</div>
+				<div class="hj-rd-kpi" style="border-top:4px solid #1E4E9C">
+					<span class="hj-rd-kpi__lbl">پیشرفت ستون‌ها و اولویت فاز ۱</span>
+					<div class="hj-rd-kpi__val" style="color:#0B3B8C"><?php echo esc_html( number_format_i18n( $tot['phase1_percent'], 1 ) ); ?>٪</div>
 					<span class="hj-rd-kpi__sub">
 						<?php echo esc_html( number_format_i18n( $tot['phase1_publish'] ) ); ?> از <?php echo esc_html( number_format_i18n( $tot['phase1_total'] ) ); ?> مقاله‌ی هسته اولیه
 					</span>
 				</div>
 
-				<div class="hj-rd-kpi" style="border-top:4px solid #059669">
-					<span class="hj-rd-kpi__lbl">📖 بانک واژه‌نامه و هایلایت سبز</span>
-					<div class="hj-rd-kpi__val" style="color:#047857"><?php echo esc_html( number_format_i18n( $gl['published'] ) ); ?></div>
+				<div class="hj-rd-kpi" style="border-top:4px solid #1E4E9C">
+					<span class="hj-rd-kpi__lbl">بانک واژه‌نامه و هایلایت سبز</span>
+					<div class="hj-rd-kpi__val" style="color:#0B3B8C"><?php echo esc_html( number_format_i18n( $gl['published'] ) ); ?></div>
 					<span class="hj-rd-kpi__sub">
-						واژه‌ی فعال (هدف: +<?php echo esc_html( number_format_i18n( $gl['target'] ) ); ?> واژه) · <a href="<?php echo esc_url( $gl_imp_url ); ?>" style="font-weight:700;color:#059669;">ورود انبوه اکسل/CSV</a>
+						واژه‌ی فعال (هدف: +<?php echo esc_html( number_format_i18n( $gl['target'] ) ); ?> واژه) · <a href="<?php echo esc_url( $gl_imp_url ); ?>" style="font-weight:700;color:#1E4E9C;">ورود انبوه اکسل/CSV</a>
 					</span>
+				</div>
+				<div class="hj-rd-kpi" style="border-top:4px solid #0B3B8C">
+					<span class="hj-rd-kpi__lbl">دایرکتوری بیماری‌ها (منتشرشده)</span>
+					<div class="hj-rd-kpi__val" style="color:#0B3B8C"><?php echo esc_html( number_format_i18n( $dis_pub ) ); ?></div>
+					<span class="hj-rd-kpi__sub">جدا از ۱۸۴ مقاله‌ی هدف · <?php echo esc_html( number_format_i18n( $dis_drf ) ); ?> پیش‌نویس</span>
 				</div>
 			</div>
 		</div>
@@ -420,7 +428,7 @@ function hj_dashboard_render_page(): void {
 			<span>🚀 <strong>پیشتاز</strong> (۷۵٪ تا ۹۹٪)</span>
 			<span>⚡ <strong>نیمه‌راه</strong> (۴۰٪ تا ۷۴٪)</span>
 			<span>🌱 <strong>در جریان</strong> (۱٪ تا ۳۹٪)</span>
-			<span>📝 <strong>در پیش‌نویس</strong> (۰٪ منتشر ولی دارای پیش‌نویس)</span>
+			<span><strong>در پیش‌نویس</strong> (۰٪ منتشر ولی دارای پیش‌نویس)</span>
 			<span>⏳ <strong>در انتظار شروع</strong> (۰٪)</span>
 		</div>
 
@@ -453,7 +461,7 @@ function hj_dashboard_render_page(): void {
 								<span class="hj-rd-sec-counts">
 									<strong><?php echo esc_html( number_format_i18n( $sec['published'] ) ); ?></strong> از <strong><?php echo esc_html( number_format_i18n( $sec['total'] ) ); ?></strong> منتشر
 									<?php if ( $sec['draft'] > 0 ) : ?>
-										· <span style="color:#b45309"><?php echo esc_html( number_format_i18n( $sec['draft'] ) ); ?> پیش‌نویس</span>
+										· <span style="color:#475569"><?php echo esc_html( number_format_i18n( $sec['draft'] ) ); ?> پیش‌نویس</span>
 									<?php endif; ?>
 									· <?php echo esc_html( number_format_i18n( $sec['remaining'] ) ); ?> مانده
 								</span>
@@ -481,10 +489,10 @@ function hj_dashboard_render_page(): void {
 		<div class="hj-rd-toolbar">
 			<input type="search" id="hj-rd-search-input" class="hj-rd-search" placeholder="🔎 جستجوی سریع در عنوان فارسی، نامک انگلیسی یا شماره ردیف (مثلاً آپاندکتومی، medications، 23)...">
 			<button type="button" class="hj-rd-filter-btn is-active" data-filter="all">همه (<?php echo esc_html( number_format_i18n( $tot['total'] ) ); ?>)</button>
-			<button type="button" class="hj-rd-filter-btn" data-filter="publish">🟢 منتشرشده (<?php echo esc_html( number_format_i18n( $tot['published'] ) ); ?>)</button>
-			<button type="button" class="hj-rd-filter-btn" data-filter="draft">📝 پیش‌نویس (<?php echo esc_html( number_format_i18n( $tot['draft'] ) ); ?>)</button>
-			<button type="button" class="hj-rd-filter-btn" data-filter="todo">⚪ باقی‌مانده (<?php echo esc_html( number_format_i18n( $tot['remaining'] ) ); ?>)</button>
-			<button type="button" class="hj-rd-filter-btn" data-filter="phase1">⭐ فقط ستون‌ها و فاز ۱ (<?php echo esc_html( number_format_i18n( $tot['phase1_total'] ) ); ?>)</button>
+			<button type="button" class="hj-rd-filter-btn" data-filter="publish">منتشرشده (<?php echo esc_html( number_format_i18n( $tot['published'] ) ); ?>)</button>
+			<button type="button" class="hj-rd-filter-btn" data-filter="draft">پیش‌نویس (<?php echo esc_html( number_format_i18n( $tot['draft'] ) ); ?>)</button>
+			<button type="button" class="hj-rd-filter-btn" data-filter="todo">باقی‌مانده (<?php echo esc_html( number_format_i18n( $tot['remaining'] ) ); ?>)</button>
+			<button type="button" class="hj-rd-filter-btn" data-filter="phase1">فقط ستون‌ها و فاز ۱ (<?php echo esc_html( number_format_i18n( $tot['phase1_total'] ) ); ?>)</button>
 			<button type="button" class="button button-small" id="hj-rd-expand-all">باز کردن همه بخش‌ها</button>
 			<button type="button" class="button button-small" id="hj-rd-collapse-all">بستن همه بخش‌ها</button>
 		</div>
@@ -511,9 +519,9 @@ function hj_dashboard_render_page(): void {
 							<?php echo esc_html( number_format_i18n( $sec['percent'], 1 ) ); ?>٪
 						</span>
 						<span>
-							🟢 <?php echo esc_html( number_format_i18n( $sec['published'] ) ); ?> منتشر ·
-							📝 <?php echo esc_html( number_format_i18n( $sec['draft'] ) ); ?> پیش‌نویس ·
-							⚪ <?php echo esc_html( number_format_i18n( $sec['remaining'] ) ); ?> مانده
+							<?php echo esc_html( number_format_i18n( $sec['published'] ) ); ?> منتشر ·
+							<?php echo esc_html( number_format_i18n( $sec['draft'] ) ); ?> پیش‌نویس ·
+							<?php echo esc_html( number_format_i18n( $sec['remaining'] ) ); ?> مانده
 							(از <?php echo esc_html( number_format_i18n( $sec['total'] ) ); ?>)
 						</span>
 					</div>
@@ -587,14 +595,14 @@ function hj_dashboard_render_page(): void {
 								</td>
 								<td>
 									<?php if ( 'publish' === $st_code ) : ?>
-										<span class="hj-rd-st-pub">🟢 منتشرشده</span>
+										<span class="hj-rd-st-pub">منتشرشده</span>
 										<?php if ( ! empty( $p_info['updated_at'] ) ) : ?>
 											<div style="font-size:11px;color:#64748b;margin-top:2px">به‌روزرسانی: <?php echo esc_html( $p_info['updated_at'] ); ?></div>
 										<?php endif; ?>
 									<?php elseif ( 'draft' === $st_code ) : ?>
-										<span class="hj-rd-st-drf">📝 پیش‌نویس آماده</span>
+										<span class="hj-rd-st-drf">پیش‌نویس آماده</span>
 									<?php else : ?>
-										<span class="hj-rd-st-mis">⚪ منتشرنشده</span>
+										<span class="hj-rd-st-mis">منتشرنشده</span>
 									<?php endif; ?>
 
 									<?php if ( is_array( $p_info ) ) : ?>
@@ -636,7 +644,7 @@ function hj_dashboard_render_page(): void {
 		<?php endforeach; ?>
 
 		<?php if ( ! empty( $report['unmapped_posts'] ) ) : ?>
-			<div style="background:#fff;border:1px solid #cbd5e1;border-radius:12px;padding:16px 20px;margin-top:20px">
+			<div style="background:#fff;border:1px solid #CBD5E1;border-radius:12px;padding:16px 20px;margin-top:20px">
 				<h3 style="margin-top:0;color:#06265C">📌 نوشته‌های اضافی در سایت (خارج از نامک‌های پیش‌فرض فهرست بالا: <?php echo esc_html( number_format_i18n( count( $report['unmapped_posts'] ) ) ); ?> مورد)</h3>
 				<table class="widefat striped">
 					<thead>
@@ -654,7 +662,7 @@ function hj_dashboard_render_page(): void {
 								<td><strong><?php echo esc_html( $up['title'] ); ?></strong></td>
 								<td><code><?php echo esc_html( $up['slug'] ); ?></code></td>
 								<td><?php echo esc_html( $up['post_type'] ); ?></td>
-								<td><?php echo 'publish' === $up['status'] ? '🟢 منتشرشده' : '📝 پیش‌نویس'; ?></td>
+								<td><?php echo 'publish' === $up['status'] ? 'منتشرشده' : 'پیش‌نویس'; ?></td>
 								<td>
 									<a href="<?php echo esc_url( $up['edit_link'] ); ?>">ویرایش</a> |
 									<a href="<?php echo esc_url( $up['permalink'] ); ?>" target="_blank" rel="noopener">مشاهده</a>

@@ -1,0 +1,131 @@
+{
+  "id": "pancreatitis",
+  "name_fa": "پانکراتیت حاد",
+  "name_en": "Acute Pancreatitis",
+  "category": "بیماری‌های گوارشی",
+  "prevalence": "common",
+  "urgency": "soon",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "abd_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "back_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "palpitation",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "bloating",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "food_trigger",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "abdominal_rigidity",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "درد ناگهانی در بالای شکم که اغلب به پشت کشیده می‌شود",
+    "تشدید درد پس از غذا",
+    "تهوع و استفراغ",
+    "تب",
+    "ضربان قلب سریع",
+    "حساسیت شکم",
+    "نفخ",
+    "در موارد شدید: تنگی نفس، افت فشار خون، کم‌آبی"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد شدید و مداوم بالای شکم، به‌ویژه با تهوع و استفراغ؛ نیاز به مراجعه فوری",
+    "اورژانس: تب، تنگی نفس، گیجی، افت فشار یا زردی"
+  ],
+  "summary_fa": "پانکراتیت حاد (تخصص: گوارش و کبد، جراحی عمومی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Acute Pancreatitis",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "Mayo Clinic: Pancreatitis",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "MedlinePlus: Pancreatitis",
+      "title": "",
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "ACG Guideline: Acute Pancreatitis",
+      "title": "",
+      "url": "https://gi.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "مایع‌درمانی وریدی تهاجمی اولیه (هیدراتاسیون)",
+    "کنترل درد (مسکن‌های اپیوئیدی)",
+    "تغذیه زودهنگام از طریق لوله (روده‌ای) به‌جای ناشتایی طولانی",
+    "درمان علت: برداشتن کیسه صفرا (در سنگ)، ERCP در عفونت یا انسداد مجرای صفراوی",
+    "قطع الکل",
+    "درمان عوارض (تخلیه کیست یا برداشتن بافت مرده)"
+  ]
+}

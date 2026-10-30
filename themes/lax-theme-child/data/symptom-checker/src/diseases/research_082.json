@@ -1,0 +1,99 @@
+{
+  "id": "research_082",
+  "name_fa": "التهاب آلرژیک بینی (حساسیت بینی، تب یونجه)",
+  "name_en": "Allergic rhinitis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "sneezing",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nasal_discharge",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nasal_congestion",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "itch",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "eye_watering",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "عطسه",
+    "آبریزش بینی",
+    "گرفتگی بینی",
+    "خارش بینی و چشم",
+    "اشک‌ریزش",
+    "در نوع فصلی، علائم در فصل گرده‌افشانی تشدید می‌شود"
+  ],
+  "when_to_see_doctor_fa": [
+    "عطسه، آبریزش، گرفتگی یا خارش بینی",
+    "اورژانس: تنگی نفس، ویزینگ یا آنافیلاکسی"
+  ],
+  "summary_fa": "التهاب آلرژیک بینی (حساسیت بینی، تب یونجه) (تخصص: گوش، حلق و بینی، آلرژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Allergic rhinitis",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/allergic-rhinitis",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Allergic rhinitis",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/allergic-rhinitis/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Hay fever",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/hay-fever/symptoms-causes/syc-20373039",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "ARIA Guidelines: Allergic Rhinitis",
+      "title": "",
+      "url": "https://www.ariaallergy.com/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "آنتی‌هیستامین‌ها",
+    "کورتیکواستروئید داخل بینی",
+    "ضداحتقان کوتاه‌مدت",
+    "پرهیز از آلرژن",
+    "ایمونوتراپی (واکسن حساسیت) در موارد مقاوم"
+  ]
+}

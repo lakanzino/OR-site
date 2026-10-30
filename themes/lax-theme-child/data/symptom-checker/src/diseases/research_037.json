@@ -1,0 +1,110 @@
+{
+  "id": "research_037",
+  "name_fa": "سندرم کوشینگ",
+  "name_en": "Cushing syndrome",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "weight_gain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "posture_change",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "facial_swelling",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "stretch_marks",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "weakness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "thirst",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "easy_bruising",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "چاقی مرکزی",
+    "صورت گرد (ماه‌صورت)",
+    "قوز پشت گردن",
+    "خطوط پوستی بنفش",
+    "ضعف عضلانی",
+    "فشار خون بالا",
+    "افزایش قند خون (میزان گلوکز در خون)",
+    "نازک‌شدن پوست و کبودی آسان"
+  ],
+  "when_to_see_doctor_fa": [
+    "چاقی مرکزی، ضعف عضلانی یا فشار خون بالا",
+    "اورژانس: عفونت، شکستگی یا ضعف شدید"
+  ],
+  "summary_fa": "سندرم کوشینگ (تخصص: غدد درون‌ریز و متابولیسم). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Cushing's Syndrome",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/endocrine-diseases/cushings-syndrome",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Cushing's syndrome",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/cushings-syndrome/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Cushing syndrome",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/cushing-syndrome/symptoms-causes/syc-20351310",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Endocrine Society: Cushing's Syndrome",
+      "title": "",
+      "url": "https://www.endocrine.org/patient-engagement/endocrine-library/cushings-syndrome",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "جراحی (ترانس‌اسفنوئیدال یا آدرنالکتومی؛ برداشتن تومور هیپوفیز یا آدرنال)",
+    "پرتودرمانی",
+    "درمان دارویی (کتوکونازول، متراپون)",
+    "قطع داروهای کورتیکواستروئیدی در صورت امکان"
+  ]
+}

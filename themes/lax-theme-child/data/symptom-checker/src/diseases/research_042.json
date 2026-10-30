@@ -1,0 +1,108 @@
+{
+  "id": "research_042",
+  "name_fa": "کزاز",
+  "name_en": "Tetanus",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "soon",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "jaw_stiffness",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "neck_stiff",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "muscle_stiffness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "swallow_difficulty",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "body_ache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "sweating",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fever",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "قفل شدن فک (تریسموس)",
+    "سفتی گردن",
+    "اسپاسم (انقباض ناگهانی عضله) شدید عضلات",
+    "لبخند اجباری (ریسوس ساردونیکوس)",
+    "دشواری در بلع",
+    "بی‌ثباتی سیستم عصبی خودکار"
+  ],
+  "when_to_see_doctor_fa": [
+    "سفتی فک، اسپاسم عضلات یا دشواری بلع",
+    "اورژانس: مراجعه فوری"
+  ],
+  "summary_fa": "کزاز (تخصص: عفونی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Tetanus",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/tetanus",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Tetanus",
+      "title": "",
+      "url": "https://www.cdc.gov/tetanus/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Tetanus",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/tetanus/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Tetanus",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/tetanus/symptoms-causes/syc-20351625",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "مراقبت از زخم",
+    "ایمونوگلوبولین تتانی",
+    "آنتی‌بیوتیک (مترونیدازول)",
+    "شل‌کننده‌های عضلانی و مراقبت شدید"
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "id": "gallbladder",
+  "name_fa": "سنگ کیسه صفرا",
+  "name_en": "Gallstones (Cholelithiasis)",
+  "category": "بیماری‌های گوارشی و کبد و صفرا",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "abd_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "back_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fever",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "chills",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "اغلب بدون علامت (سنگ خاموش)",
+    "درد ناگهانی و شدید در بالا و سمت راست شکم یا وسط شکم زیر جناغ (قولنج صفراوی)",
+    "درد پشت بین دو کتف یا شانه راست",
+    "تهوع و استفراغ",
+    "درد معمولاً چند دقیقه تا چند ساعت طول می‌کشد",
+    "علائم عوارض: تب و لرز، زردی پوست و چشم، درد پایدار و شدید"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد شدید شکم که اجازه نشستن راحت نمی‌دهد",
+    "درد همراه با تب و لرز",
+    "زردی پوست و چشم",
+    "ادرار تیره و مدفوع کم‌رنگ",
+    "درد که بیش از چند ساعت ادامه می‌یابد"
+  ],
+  "summary_fa": "سنگ کیسه صفرا (تخصص: جراحی عمومی، گوارش و کبد). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Gallstones",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "Mayo Clinic: Gallstones",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "MedlinePlus: Gallstones",
+      "title": "",
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "NHS: Gallstones",
+      "title": "",
+      "url": "https://www.nhs.uk/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "سنگ بدون علامت: معمولاً نیاز به درمان ندارد",
+    "برداشتن کیسه صفرا (کوله‌سیستکتومی) به روش لاپاراسکوپی؛ درمان استاندارد سنگ علامت‌دار",
+    "خارج‌کردن سنگ مجرای صفراوی با ERCP (آندوسکوپی مجاری صفراوی)",
+    "داروی اورسودیوکسی‌کولیک اسید (UDCA) فقط در موارد خاص"
+  ]
+}

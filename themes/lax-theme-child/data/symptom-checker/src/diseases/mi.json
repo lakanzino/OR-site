@@ -1,0 +1,129 @@
+{
+  "id": "mi",
+  "name_fa": "حمله قلبی",
+  "name_en": "Heart attack (Myocardial infarction)",
+  "category": "قلب و عروق",
+  "prevalence": "common",
+  "urgency": "urgent",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "chest_pain",
+      "freq": "very_common",
+      "role": "red_flag"
+    },
+    {
+      "tag": "chest_pressure",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "arm_jaw_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sweating",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dizziness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "anxiety",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "درد یا فشار قفسه سینه، اغلب در مرکز یا سمت چپ",
+    "انتشار درد به بازوی چپ، فک، گردن، پشت یا معده",
+    "تنگی نفس",
+    "تعریق سرد",
+    "تهوع یا استفراغ",
+    "سرگیجه یا سبکی سر",
+    "اضطراب یا احساس مرگ قریب‌الوقوع",
+    "در زنان، سالمندان و دیابتی‌ها ممکن است علائم غیرمعمول مانند خستگی شدید یا تنگی نفس باشد"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد یا فشار قفسه سینه بیش از چند دقیقه یا عودکننده",
+    "تنگی نفس، تعریق سرد، تهوع، سرگیجه یا غش",
+    "در زنان، سالمندان و دیابتی‌ها علائم غیرمعمول مانند خستگی شدید",
+    "اورژانس: تماس فوری با اورژانس"
+  ],
+  "summary_fa": "حمله قلبی (تخصص: متخصص قلب و عروق). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Heart attack",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/heart-attack",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Heart Attack",
+      "title": "",
+      "url": "https://www.cdc.gov/heart-disease/about/heart-attack.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Heart attack",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/heart-attack/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Heart attack",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/heart-attack/symptoms-causes/syc-20373106",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "بازگشایی فوری شریان با آنژیوپلاستی اولیه (Primary PCI) یا در صورت عدم دسترسی، ترومبولیتیک (حل لخته)",
+    "آسپیرین و سایر داروهای ضدپلاکت",
+    "نیتروگلیسیرین برای درد",
+    "بتابلاکر، مهارکننده ACE، استاتین",
+    "اکسیژن در صورت هیپوکسی",
+    "بازتوانی قلبی پس از ترخیص"
+  ]
+}

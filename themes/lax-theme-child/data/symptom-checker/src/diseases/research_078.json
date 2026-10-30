@@ -1,0 +1,92 @@
+{
+  "id": "research_078",
+  "name_fa": "اختلال کم‌توجهی‌ـ‌بیش‌فعالی (بیش‌فعالی، ADHD)",
+  "name_en": "Attention-deficit/hyperactivity disorder",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "concentration_problem",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "hyperactivity",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "impulsivity",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "daily_function_loss",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "بی‌توجهی",
+    "بیش‌فعالی",
+    "تکانشگری",
+    "اختلال در عملکرد تحصیلی یا شغلی",
+    "علائم نامتناسب با سن"
+  ],
+  "when_to_see_doctor_fa": [
+    "بی‌توجهی، بیش‌فعالی یا تکانشگری نامتناسب با سن",
+    "اورژانس: پرخاشگری شدید یا آسیب"
+  ],
+  "summary_fa": "اختلال کم‌توجهی‌ـ‌بیش‌فعالی (بیش‌فعالی، ADHD) (تخصص: روان‌پزشکی، اطفال). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "CDC: ADHD",
+      "title": "",
+      "url": "https://www.cdc.gov/adhd/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NIMH: Attention-Deficit/Hyperactivity Disorder",
+      "title": "",
+      "url": "https://www.nimh.nih.gov/health/topics/attention-deficit-hyperactivity-disorder-adhd",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Attention deficit hyperactivity disorder (ADHD)",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CHADD: ADHD",
+      "title": "",
+      "url": "https://chadd.org/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "محرک‌ها (متیل‌فنیدیت، آمفتامین)",
+    "غیرمحرک‌ها (اتوموکستین)",
+    "رفتاردرمانی",
+    "آموزش والدین و مدرسه"
+  ]
+}

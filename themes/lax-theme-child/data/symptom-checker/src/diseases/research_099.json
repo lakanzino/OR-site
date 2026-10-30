@@ -1,0 +1,109 @@
+{
+  "id": "research_099",
+  "name_fa": "فلج عصب صورت با علت نامشخص (فلج بل)",
+  "name_en": "Bell’s palsy",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "facial_droop",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "eyelid_droop",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "drooling",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "taste_loss",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dry_mouth",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "eye_watering",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "ear_pain",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "ضعف یا فلج حاد (کوتاه‌مدت و ناگهانی) یک‌طرفه صورت",
+    "افتادگی گوشه دهان",
+    "ناتوانی در بستن کامل چشم",
+    "افتادگی ابرو",
+    "تغییر در تولید اشک",
+    "اختلال حس چشایی",
+    "درد یا ناراحتی پشت گوش"
+  ],
+  "when_to_see_doctor_fa": [
+    "ضعف یا فلج حاد یک‌طرفه صورت",
+    "اورژانس: رد سکته؛ درد چشم یا کاهش بینایی"
+  ],
+  "summary_fa": "فلج عصب صورت با علت نامشخص (فلج بل) (تخصص: مغز و اعصاب، گوش، حلق و بینی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Bell's palsy",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/bells-palsy/",
+      "accessed": "2026-10-30",
+      "verified": true
+    },
+    {
+      "publisher": "Mayo Clinic: Bell's palsy",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/bells-palsy/symptoms-causes/syc-20370028",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NINDS: Bell's Palsy",
+      "title": "",
+      "url": "https://www.ninds.nih.gov/health-information/disorders/bells-palsy",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AAN Guidelines: Bell's Palsy",
+      "title": "",
+      "url": "https://www.aan.com/Guidelines/home/GuidelineDetail/1036",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "کورتیکواستروئید خوراکی (پردنیزون) در ۷۲ ساعت اول؛ درمان استاندارد و مؤثر",
+    "ضدویروس (آسیکلوویر) همراه با کورتیکواستروئید: شواهد قوی ندارد و فقط در موارد خاص ممکن است در نظر گرفته شود",
+    "محافظت از چشم (قطره اشک مصنوعی و پوشش)",
+    "تمرینات صورت"
+  ]
+}

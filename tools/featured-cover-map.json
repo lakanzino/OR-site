@@ -1,0 +1,452 @@
+{
+ "anesthesia-and-memory": {
+  "fa": "بیهوشی و حافظه",
+  "en": "Anesthesia & Memory",
+  "bg": "#e7f5e9"
+ },
+ "appendectomy-overview": {
+  "fa": "آپاندکتومی",
+  "en": "Appendectomy",
+  "bg": "#f6ede6"
+ },
+ "cabg-overview": {
+  "fa": "بای‌پس عروق کرونر",
+  "en": "Coronary Artery Bypass",
+  "bg": "#e6f4f1"
+ },
+ "cabg-preparation": {
+  "fa": "آمادگی بای‌پس قلب",
+  "en": "Bypass Preparation",
+  "bg": "#f6ede6"
+ },
+ "cabg-recovery": {
+  "fa": "بهبودی بای‌پس قلب",
+  "en": "Bypass Recovery",
+  "bg": "#e8eefb"
+ },
+ "cataract-overview": {
+  "fa": "جراحی آب مروارید",
+  "en": "Cataract Surgery",
+  "bg": "#e5f3f8"
+ },
+ "cataract-preparation": {
+  "fa": "آمادگی آب مروارید",
+  "en": "Cataract Preparation",
+  "bg": "#fff3e6"
+ },
+ "cataract-recovery": {
+  "fa": "بهبودی آب مروارید",
+  "en": "Cataract Recovery",
+  "bg": "#f6ede6"
+ },
+ "cesarean-recovery": {
+  "fa": "بعد از سزارین",
+  "en": "After Cesarean",
+  "bg": "#f4f1e2"
+ },
+ "children-and-anesthesia": {
+  "fa": "کودک و بیهوشی",
+  "en": "Children & Anesthesia",
+  "bg": "#fff3e6"
+ },
+ "cholecystectomy-overview": {
+  "fa": "برداشتن کیسه صفرا",
+  "en": "Gallbladder Removal",
+  "bg": "#fff3e6"
+ },
+ "cholecystectomy-preparation": {
+  "fa": "آمادگی کیسه صفرا",
+  "en": "Gallbladder Preparation",
+  "bg": "#efe9f7"
+ },
+ "cholecystectomy-recovery": {
+  "fa": "بهبودی کیسه صفرا",
+  "en": "Gallbladder Recovery",
+  "bg": "#e8eefb"
+ },
+ "circumcision-overview": {
+  "fa": "ختنه‌ی کودکان",
+  "en": "Child Circumcision",
+  "bg": "#fdf4e3"
+ },
+ "circumcision-preparation": {
+  "fa": "آمادگی ختنه",
+  "en": "Circumcision Preparation",
+  "bg": "#fff3e6"
+ },
+ "circumcision-recovery": {
+  "fa": "بهبودی ختنه",
+  "en": "Circumcision Recovery",
+  "bg": "#fbeaf0"
+ },
+ "diabetes-and-surgery": {
+  "fa": "دیابت و جراحی",
+  "en": "Diabetes & Surgery",
+  "bg": "#e6f4f1"
+ },
+ "discharge-checklist": {
+  "fa": "چک‌لیست ترخیص",
+  "en": "Hospital Discharge",
+  "bg": "#eaf7f2"
+ },
+ "dvt-pulmonary-embolism-prevention": {
+  "fa": "پیشگیری از لخته خون",
+  "en": "Blood Clot Prevention",
+  "bg": "#eaf7f2"
+ },
+ "elderly-and-surgery": {
+  "fa": "سالمند و جراحی",
+  "en": "Elderly & Surgery",
+  "bg": "#e7f5e9"
+ },
+ "emergency-vs-elective-surgery": {
+  "fa": "جراحی اورژانسی یا انتخابی",
+  "en": "Emergency or Elective",
+  "bg": "#e7f5e9"
+ },
+ "general-preparation-before-surgery": {
+  "fa": "آمادگی قبل از عمل",
+  "en": "Pre-Surgery Preparation",
+  "bg": "#fff3e6"
+ },
+ "hemorrhoid-overview": {
+  "fa": "هموروئید و درمان",
+  "en": "Hemorrhoid Treatment",
+  "bg": "#f3e9f9"
+ },
+ "hemorrhoid-preparation": {
+  "fa": "آمادگی هموروئید",
+  "en": "Hemorrhoid Preparation",
+  "bg": "#fbeaf0"
+ },
+ "hemorrhoid-recovery": {
+  "fa": "بهبودی هموروئید",
+  "en": "Hemorrhoid Recovery",
+  "bg": "#e5f3f8"
+ },
+ "hernia-overview": {
+  "fa": "جراحی فتق",
+  "en": "Hernia Surgery",
+  "bg": "#fdf4e3"
+ },
+ "hernia-preparation": {
+  "fa": "آمادگی جراحی فتق",
+  "en": "Hernia Preparation",
+  "bg": "#e8eefb"
+ },
+ "hernia-recovery": {
+  "fa": "بهبودی جراحی فتق",
+  "en": "Hernia Recovery",
+  "bg": "#fdf4e3"
+ },
+ "hip-replacement-overview": {
+  "fa": "تعویض مفصل ران",
+  "en": "Hip Replacement",
+  "bg": "#fdf4e3"
+ },
+ "home-wound-care": {
+  "fa": "مراقبت زخم در خانه",
+  "en": "Home Wound Care",
+  "bg": "#f4f1e2"
+ },
+ "hysterectomy-overview": {
+  "fa": "هیسترکتومی",
+  "en": "Hysterectomy",
+  "bg": "#fbeaf0"
+ },
+ "hysterectomy-preparation": {
+  "fa": "آمادگی هیسترکتومی",
+  "en": "Hysterectomy Preparation",
+  "bg": "#e7f5e9"
+ },
+ "hysterectomy-recovery": {
+  "fa": "بهبودی هیسترکتومی",
+  "en": "Hysterectomy Recovery",
+  "bg": "#e6f4f1"
+ },
+ "intubation-explained": {
+  "fa": "اینتوباسیون",
+  "en": "Intubation",
+  "bg": "#f6ede6"
+ },
+ "kidney-stone-overview": {
+  "fa": "سنگ کلیه",
+  "en": "Kidney Stone",
+  "bg": "#fff3e6"
+ },
+ "kidney-stone-preparation": {
+  "fa": "آمادگی سنگ کلیه",
+  "en": "Kidney Stone Preparation",
+  "bg": "#f4f1e2"
+ },
+ "kidney-stone-recovery": {
+  "fa": "بهبودی سنگ کلیه",
+  "en": "Kidney Stone Recovery",
+  "bg": "#f4f1e2"
+ },
+ "knee-replacement-overview": {
+  "fa": "تعویض مفصل زانو",
+  "en": "Knee Replacement",
+  "bg": "#e6f4f1"
+ },
+ "knee-replacement-preparation": {
+  "fa": "آمادگی تعویض زانو",
+  "en": "Knee Replacement Preparation",
+  "bg": "#e6f4f1"
+ },
+ "knee-replacement-recovery": {
+  "fa": "بهبودی تعویض زانو",
+  "en": "Knee Replacement Recovery",
+  "bg": "#e5f3f8"
+ },
+ "laparoscopy-overview": {
+  "fa": "لاپاروسکوپی عمومی",
+  "en": "General Laparoscopy",
+  "bg": "#f3e9f9"
+ },
+ "laparoscopy-preparation": {
+  "fa": "آمادگی لاپاروسکوپی",
+  "en": "Laparoscopy Preparation",
+  "bg": "#e7f5e9"
+ },
+ "laparoscopy-recovery": {
+  "fa": "بهبودی لاپاروسکوپی",
+  "en": "Laparoscopy Recovery",
+  "bg": "#fdf4e3"
+ },
+ "medical-history-disclosure": {
+  "fa": "اطلاعات پزشکی",
+  "en": "Medical History",
+  "bg": "#fbeaf0"
+ },
+ "obesity-and-anesthesia": {
+  "fa": "چاقی و بیهوشی",
+  "en": "Obesity & Anesthesia",
+  "bg": "#fbeaf0"
+ },
+ "outpatient-vs-inpatient-surgery": {
+  "fa": "عمل سرپایی یا بستری",
+  "en": "Outpatient or Inpatient",
+  "bg": "#fff3e6"
+ },
+ "prostate-turp-overview": {
+  "fa": "جراحی پروستات",
+  "en": "Prostate Surgery (TURP)",
+  "bg": "#e6f4f1"
+ },
+ "prostate-turp-preparation": {
+  "fa": "آمادگی جراحی پروستات",
+  "en": "TURP Preparation",
+  "bg": "#efe9f7"
+ },
+ "prostate-turp-recovery": {
+  "fa": "بهبودی جراحی پروستات",
+  "en": "TURP Recovery",
+  "bg": "#e8eefb"
+ },
+ "questions-before-surgery": {
+  "fa": "سؤال‌های قبل از عمل",
+  "en": "Questions Before Surgery",
+  "bg": "#fff3e6"
+ },
+ "rhinoplasty-overview": {
+  "fa": "رینوپلاستی",
+  "en": "Rhinoplasty",
+  "bg": "#e7f5e9"
+ },
+ "rhinoplasty-preparation": {
+  "fa": "آمادگی رینوپلاستی",
+  "en": "Rhinoplasty Preparation",
+  "bg": "#fff3e6"
+ },
+ "rhinoplasty-recovery": {
+  "fa": "بهبودی رینوپلاستی",
+  "en": "Rhinoplasty Recovery",
+  "bg": "#e8eefb"
+ },
+ "smoking-and-surgery": {
+  "fa": "سیگار و جراحی",
+  "en": "Smoking & Surgery",
+  "bg": "#eaf7f2"
+ },
+ "thyroidectomy-overview": {
+  "fa": "جراحی تیروئید",
+  "en": "Thyroid Surgery",
+  "bg": "#fdf4e3"
+ },
+ "thyroidectomy-preparation": {
+  "fa": "آمادگی جراحی تیروئید",
+  "en": "Thyroid Preparation",
+  "bg": "#efe9f7"
+ },
+ "thyroidectomy-recovery": {
+  "fa": "بهبودی جراحی تیروئید",
+  "en": "Thyroid Recovery",
+  "bg": "#fff3e6"
+ },
+ "tonsillectomy-overview": {
+  "fa": "جراحی لوزه",
+  "en": "Tonsillectomy",
+  "bg": "#fbeaf0"
+ },
+ "tonsillectomy-preparation": {
+  "fa": "آمادگی عمل لوزه",
+  "en": "Tonsillectomy Preparation",
+  "bg": "#f6ede6"
+ },
+ "tonsillectomy-recovery": {
+  "fa": "بهبودی عمل لوزه",
+  "en": "Tonsillectomy Recovery",
+  "bg": "#fdf4e3"
+ },
+ "why-operating-room-is-sterile": {
+  "fa": "استریل بودن اتاق عمل",
+  "en": "Sterile Operating Room",
+  "bg": "#f3e9f9"
+ },
+ "cesarean-overview": {
+  "fa": "سزارین",
+  "en": "Cesarean Section",
+  "bg": "#fdf4e3"
+ },
+ "cesarean-preparation": {
+  "fa": "آمادگی سزارین",
+  "en": "Cesarean Preparation",
+  "bg": "#e8eefb"
+ },
+ "appendectomy-recovery": {
+  "fa": "بهبودی آپاندکتومی",
+  "en": "Appendectomy Recovery",
+  "bg": "#fdf4e3"
+ },
+ "appendectomy-preparation": {
+  "fa": "آمادگی آپاندکتومی",
+  "en": "Appendectomy Preparation",
+  "bg": "#f4f1e2"
+ },
+ "anesthesia-consultation": {
+  "fa": "مشاوره‌ی بیهوشی",
+  "en": "Anesthesia Consultation",
+  "bg": "#e8eefb"
+ },
+ "anesthesia-side-effects": {
+  "fa": "عوارض بیهوشی",
+  "en": "Anesthesia Side Effects",
+  "bg": "#fff3e6"
+ },
+ "warning-signs-after-surgery": {
+  "fa": "علائم خطر بعد از عمل",
+  "en": "Warning Signs After Surgery",
+  "bg": "#fdf4e3"
+ },
+ "mental-preparation-before-surgery": {
+  "fa": "آمادگی روانی",
+  "en": "Mental Preparation",
+  "bg": "#e6f4f1"
+ },
+ "medications-before-surgery": {
+  "fa": "داروها قبل از عمل",
+  "en": "Medications Before Surgery",
+  "bg": "#fbeaf0"
+ },
+ "companion-role-admission-day": {
+  "fa": "نقش همراه در روز عمل",
+  "en": "Companion on Surgery Day",
+  "bg": "#fbeaf0"
+ },
+ "early-walking-after-surgery": {
+  "fa": "راه رفتن بعد از عمل",
+  "en": "Walking After Surgery",
+  "bg": "#fff3e6"
+ },
+ "post-surgery-nutrition": {
+  "fa": "تغذیه بعد از عمل",
+  "en": "Post-Surgery Nutrition",
+  "bg": "#fdf4e3"
+ },
+ "surgical-site-infection": {
+  "fa": "عفونت محل جراحی",
+  "en": "Surgical Site Infection",
+  "bg": "#f6ede6"
+ },
+ "suture-removal": {
+  "fa": "کشیدن بخیه‌ها",
+  "en": "Suture Removal",
+  "bg": "#e7f5e9"
+ },
+ "what-is-operating-room": {
+  "fa": "اتاق عمل چیست؟",
+  "en": "What Is an Operating Room",
+  "bg": "#f3e9f9"
+ },
+ "what-not-to-eat-before-surgery": {
+  "fa": "خوردن و نوشیدن قبل از عمل",
+  "en": "Eating Before Surgery",
+  "bg": "#f3e9f9"
+ },
+ "post-surgery-pain": {
+  "fa": "درد بعد از عمل",
+  "en": "Post-Surgery Pain",
+  "bg": "#fff3e6"
+ },
+ "preoperative-tests": {
+  "fa": "آزمایش‌های قبل از عمل",
+  "en": "Preoperative Tests",
+  "bg": "#efe9f7"
+ },
+ "general-vs-spinal-anesthesia": {
+  "fa": "بیهوشی عمومی یا نخاعی",
+  "en": "General vs Spinal Anesthesia",
+  "bg": "#eaf7f2"
+ },
+ "informed-consent-anesthesia-consult": {
+  "fa": "رضایت‌نامه‌ی بیهوشی",
+  "en": "Informed Consent",
+  "bg": "#eaf7f2"
+ },
+ "fear-of-anesthesia-awareness": {
+  "fa": "ترس از بیهوشی",
+  "en": "Fear of Anesthesia",
+  "bg": "#fff3e6"
+ },
+ "general-anesthesia": {
+  "fa": "بیهوشی عمومی",
+  "en": "General Anesthesia",
+  "bg": "#e5f3f8"
+ },
+ "pacu-recovery": {
+  "fa": "اتاق ریکاوری",
+  "en": "Recovery Room (PACU)",
+  "bg": "#f6ede6"
+ },
+ "preoperative-fasting": {
+  "fa": "ناشتا بودن قبل از عمل",
+  "en": "Preoperative Fasting",
+  "bg": "#f6ede6"
+ },
+ "glossary-surgical-terms": {
+  "fa": "اصطلاحات اتاق عمل",
+  "en": "Operating Room Glossary",
+  "bg": "#e8eefb"
+ },
+ "operating-room-moment-by-moment": {
+  "fa": "اتاق عمل لحظه به لحظه",
+  "en": "Inside the Operating Room",
+  "bg": "#fbeaf0"
+ },
+ "patient-journey": {
+  "fa": "مسیر بیمار",
+  "en": "The Patient Journey",
+  "bg": "#e6f4f1"
+ },
+ "surgical-care-team": {
+  "fa": "تیم درمان",
+  "en": "The Surgical Team",
+  "bg": "#e5f3f8"
+ },
+ "blood-donation-reserve-before-surgery": {
+  "fa": "اهدای خون قبل از عمل",
+  "en": "Blood Donation Before Surgery",
+  "bg": "#f3e9f9"
+ }
+}

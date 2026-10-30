@@ -1,0 +1,124 @@
+{
+  "id": "pulmonary_embolism",
+  "name_fa": "آمبولی ریه",
+  "name_en": "Pulmonary embolism",
+  "category": "ریه و تنفس",
+  "prevalence": "common",
+  "urgency": "urgent",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "dyspnea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sudden_shortness_of_breath",
+      "freq": "common",
+      "role": "red_flag"
+    },
+    {
+      "tag": "pleuritic_chest_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "chest_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "cough",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "coughing_blood",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "palpitation",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fainting",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "unilateral_calf_swelling",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "calf_pain",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تنگی نفس ناگهانی",
+    "درد قفسه سینه، اغلب با تنفس (دم و بازدم) بدتر می‌شود",
+    "سرفه، گاهی با خون",
+    "ضربان قلب سریع",
+    "سرگیجه یا غش",
+    "تورم یا درد ساق پا در صورت وجود لخته (توده خون‌بسته‌شده) در پا"
+  ],
+  "when_to_see_doctor_fa": [
+    "تنگی نفس ناگهانی، درد قفسه سینه یا سرفه خونی",
+    "غش، ضربان سریع یا افت فشار",
+    "اورژانس: مراجعه فوری"
+  ],
+  "summary_fa": "آمبولی ریه (تخصص: متخصص ریه، قلب و عروق). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Pulmonary embolism",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/pulmonary-embolism",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Pulmonary embolism",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/pulmonary-embolism/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Pulmonary embolism",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/pulmonary-embolism/symptoms-causes/syc-20354647",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "ESC Guidelines: Pulmonary Embolism",
+      "title": "",
+      "url": "https://www.escardio.org/Guidelines/Clinical-Practice-Guidelines/Acute-Pulmonary-Embolism-Diagnosis-and-Management-of",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "ضدانعقاد (هپارین، DOAC یا وارفارین)",
+    "ترومبولیتیک در آمبولی massive",
+    "آمبولکتومی (برداشتن لخته با جراحی یا کاتتر) در موارد شدید",
+    "اکسیژن و حمایت همودینامیک (حفظ گردش خون)"
+  ]
+}

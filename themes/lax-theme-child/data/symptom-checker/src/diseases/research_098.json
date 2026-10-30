@@ -1,0 +1,92 @@
+{
+  "id": "research_098",
+  "name_fa": "سندرم تونل مچ دست (گرفتگی عصب مچ دست)",
+  "name_en": "Carpal tunnel syndrome",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "numbness",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "hand_arm_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "weakness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sleep_problem",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "بی‌حسی و گزگز در انگشتان، به‌ویژه شست، اشاره و وسط",
+    "درد شبانه",
+    "ضعف عضلات دست",
+    "تحلیل عضله تنار",
+    "افتادن اشیا"
+  ],
+  "when_to_see_doctor_fa": [
+    "بی‌حسی، گزگز یا ضعف دست",
+    "اورژانس: ضعف شدید یا آتروفی عضلانی"
+  ],
+  "summary_fa": "سندرم تونل مچ دست (گرفتگی عصب مچ دست) (تخصص: ارتوپدی، مغز و اعصاب). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Carpal tunnel syndrome",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/carpal-tunnel-syndrome/",
+      "accessed": "2026-10-30",
+      "verified": true
+    },
+    {
+      "publisher": "Mayo Clinic: Carpal tunnel syndrome",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/carpal-tunnel-syndrome/symptoms-causes/syc-20355603",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NINDS: Carpal Tunnel Syndrome",
+      "title": "",
+      "url": "https://www.ninds.nih.gov/health-information/disorders/carpal-tunnel-syndrome",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AAOS: Carpal Tunnel Syndrome",
+      "title": "",
+      "url": "https://orthoinfo.aaos.org/en/diseases--conditions/carpal-tunnel-syndrome/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "آتل مچ دست",
+    "NSAID",
+    "تزریق کورتیکواستروئید",
+    "جراحی آزادسازی عصب در موارد مقاوم"
+  ]
+}

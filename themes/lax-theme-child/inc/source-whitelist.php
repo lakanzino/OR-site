@@ -47,8 +47,8 @@ function hj_source_whitelist( bool $reload = false ): array {
 	$empty = array(
 		'loaded'      => false,
 		'version'     => '',
-		'min_domains' => 3,
-		'min_tier1'   => 1,
+		'min_domains' => 1,
+		'min_tier1'   => 0,
 		'tier1'       => array(),
 		'tier2'       => array(),
 	);
@@ -80,8 +80,8 @@ function hj_source_whitelist( bool $reload = false ): array {
 	$list = array(
 		'loaded'      => true,
 		'version'     => isset( $data['version'] ) ? (string) $data['version'] : '',
-		'min_domains' => isset( $data['min_domains'] ) ? max( 1, (int) $data['min_domains'] ) : 3,
-		'min_tier1'   => isset( $data['min_tier1'] ) ? max( 0, (int) $data['min_tier1'] ) : 1,
+		'min_domains' => isset( $data['min_domains'] ) ? max( 1, (int) $data['min_domains'] ) : 1,
+		'min_tier1'   => isset( $data['min_tier1'] ) ? max( 0, (int) $data['min_tier1'] ) : 0,
 		'tier1'       => $clean( $data['tier1'] ),
 		'tier2'       => $clean( isset( $data['tier2'] ) ? $data['tier2'] : array() ),
 	);

@@ -1,0 +1,112 @@
+{
+  "id": "research_057",
+  "name_fa": "التهاب معده (گاستریت)",
+  "name_en": "Gastritis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "heartburn",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "early_satiety",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "bloating",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "black_stool",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "blood_vomit",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "سوءهاضمه",
+    "درد یا سوزش سر دل",
+    "تهوع",
+    "استفراغ",
+    "سیری زودرس",
+    "در صورت خونریزی: مدفوع سیاه یا استفراغ خونی"
+  ],
+  "when_to_see_doctor_fa": [
+    "سوءهاضمه، درد سردل یا تهوع",
+    "اورژانس: استفراغ خونی، مدفوع سیاه یا درد شدید"
+  ],
+  "summary_fa": "التهاب معده (گاستریت) (تخصص: گوارش و کبد). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Gastritis",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gastritis",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Gastritis",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/gastritis/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Gastritis",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/gastritis/symptoms-causes/syc-20355807",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "ACG Guidelines: Gastritis",
+      "title": "",
+      "url": "https://gi.org/guideline/management-of-gastritis/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "مهارکننده‌های پمپ پروتون (PPI)",
+    "ریشه‌کنی هلیکوباکتر پیلوری در صورت مثبت",
+    "پرهیز از NSAID و الکل"
+  ]
+}

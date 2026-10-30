@@ -1,0 +1,96 @@
+{
+  "id": "research_090",
+  "name_fa": "کهیر (کهیر پوستی)",
+  "name_en": "Urticaria / Hives",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "hives",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "itch",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "facial_swelling",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "throat_swelling",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "skin_burning",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "ورم‌های قرمز، برجسته و خارش‌دار (ویل)",
+    "ممکن است اندازه و محل آن‌ها تغییر کند",
+    "آنژیوادم (ورم عمقی پوست) در برخی موارد",
+    "خارش شدید"
+  ],
+  "when_to_see_doctor_fa": [
+    "کهیر خارش‌دار یا آنژیوادم",
+    "اورژانس: تنگی نفس، تورم صورت/گلو یا غش"
+  ],
+  "summary_fa": "کهیر (کهیر پوستی) (تخصص: پوست، آلرژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Urticaria (hives)",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/urticaria/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Hives and angioedema",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/hives-and-angioedema/symptoms-causes/syc-20355527",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AAAAI: Urticaria",
+      "title": "",
+      "url": "https://www.aaaai.org/conditions-treatments/allergies/urticaria-hives",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "EAACI/GA²LEN: Urticaria",
+      "title": "",
+      "url": "https://www.eaaci.org/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "آنتی‌هیستامین‌های H1",
+    "پرهیز از محرک‌ها",
+    "کورتیکواستروئید کوتاه‌مدت در موارد شدید",
+    "اومالیزوماب در کهیر مزمن مقاوم"
+  ]
+}

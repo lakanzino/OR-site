@@ -1,0 +1,97 @@
+{
+  "id": "research_027",
+  "name_fa": "پسوریازیس",
+  "name_en": "Psoriasis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "scaling",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "itch",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nail_change",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "joint_pain",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "پلاک‌های قرمز با پوسته نقره‌ای",
+    "خارش",
+    "درگیری پوست سر و ناخن",
+    "در برخی افراد: درد و تورم مفاصل"
+  ],
+  "when_to_see_doctor_fa": [
+    "پلاک‌های گسترده، درد مفاصل یا تب",
+    "اورژانس: پوسچول‌های منتشر یا علائم سیستمیک"
+  ],
+  "summary_fa": "پسوریازیس (تخصص: پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Psoriasis",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/psoriasis",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Psoriasis",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/psoriasis/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Psoriasis",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/psoriasis/symptoms-causes/syc-20355840",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AAD: Psoriasis",
+      "title": "",
+      "url": "https://www.aad.org/public/diseases/psoriasis",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "کورتیکواستروئید موضعی",
+    "آنالوگ‌های ویتامین D",
+    "متوترکسات در موارد متوسط تا شدید",
+    "بیولوژیک‌ها (مهارکننده‌های TNF، IL-17، IL-23)",
+    "فتوتراپی"
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "id": "kidney_stone",
+  "name_fa": "سنگ کلیه",
+  "name_en": "Kidney Stones (Nephrolithiasis)",
+  "category": "بیماری‌های کلیه و مجاری ادراری",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "flank_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "blood_urine",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "burning_urine",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "cloudy_urine",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "urgency",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "fever",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "chills",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "درد شدید در پهلو و پشت زیر دنده‌ها که به شکم پایین و کشاله ران کشیده می‌شود و موج‌وار است",
+    "درد یا سوزش هنگام ادرار",
+    "ادرار صورتی، قرمز یا قهوه‌ای",
+    "ادرار کدر یا بدبو",
+    "تکرر و فوریت ادرار",
+    "تهوع و استفراغ",
+    "تب و لرز در صورت عفونت",
+    "برخی سنگ‌ها بدون علامت‌اند"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد شدید پهلو",
+    "خون در ادرار",
+    "اورژانس: تب و لرز با درد، ناتوانی در ادرار، استفراغ مداوم یا درد غیرقابل تحمل"
+  ],
+  "summary_fa": "سنگ کلیه (تخصص: اورولوژی، نفرولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Kidney Stones",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "Mayo Clinic: Kidney stones",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "MedlinePlus: Kidney Stones",
+      "title": "",
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "AUA Guideline: Surgical Management of Stones",
+      "title": "",
+      "url": "https://www.auanet.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "سنگ‌های کوچک: مایعات فراوان، مسکن و گاهی داروهای شل‌کننده مجرای ادراری (مانند تامسولوسین)",
+    "سنگ‌شکنی با امواج برون‌اندام (ESWL)",
+    "اورتروسکوپی (دوربین از مجرای ادراری) با لیزر",
+    "نفرولیتوتومی از راه پوست (PCNL) برای سنگ‌های بزرگ",
+    "گذاشتن استنت (لوله باریک) در برخی موارد"
+  ]
+}

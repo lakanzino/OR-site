@@ -1,0 +1,145 @@
+{
+  "id": "research_010",
+  "name_fa": "هپاتیت B",
+  "name_en": "Hepatitis B",
+  "category": "بیماری‌های عفونی و کبدی",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "appetite",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dark_urine",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "pale_stool",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "joint_pain",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "بسیاری از افراد هیچ علامتی ندارند، به‌ویژه در عفونت مزمن (طولانی‌مدت)",
+    "در هپاتیت حاد، علائم معمولاً چند هفته تا چند ماه پس از آلودگی پدیدار می‌شوند",
+    "خستگی",
+    "تب خفیف",
+    "بی‌اشتهایی",
+    "تهوع و استفراغ",
+    "درد شکم، به‌ویژه ناحیه بالا و راست شکم",
+    "ادرار تیره",
+    "مدفوع کم‌رنگ (رنگ خاکستری یا گچی)",
+    "درد مفاصل",
+    "زردی پوست و سفیدی چشم (یرقان)"
+  ],
+  "when_to_see_doctor_fa": [
+    "زردی پوست یا چشم",
+    "ادرار بسیار تیره یا مدفوع کم‌رنگ",
+    "درد مداوم شکم",
+    "تماس با خون یا ترشحات فرد مبتلا (هرچه زودتر، ترجیحاً ظرف ۲۴ ساعت)",
+    "نتیجه آزمایش مثبت هپاتیت B",
+    "اورژانس: گیجی، خواب‌آلودگی شدید، استفراغ خونی"
+  ],
+  "summary_fa": "هپاتیت B (تخصص: متخصص عفونی، گوارش و کبد (هپاتولوژی)). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Hepatitis B Fact Sheet",
+      "title": "",
+      "url": "https://www.who.int/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "CDC: Hepatitis B Basics",
+      "title": "",
+      "url": "https://www.cdc.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "MedlinePlus: Hepatitis B",
+      "title": "",
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "NIDDK: Hepatitis B",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "Mayo Clinic: Hepatitis B",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "هپاتیت حاد: مراقبت حمایتی (استراحت، مایعات، تغذیه) و پیگیری",
+    "هپاتیت مزمن: داروهای ضدویروسی مانند تنوفوویر یا انتکاویر",
+    "پایش منظم کبد برای تشخیص زودهنگام سیروز و سرطان کبد",
+    "پیوند کبد در نارسایی شدید",
+    "پس از تماس مشکوک: ایمونوگلوبولین هپاتیت B (HBIG) و واکسن"
+  ]
+}

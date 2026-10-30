@@ -1,0 +1,122 @@
+{
+  "id": "colorectal_cancer",
+  "name_fa": "سرطان روده بزرگ",
+  "name_en": "Colorectal Cancer",
+  "category": "سرطان",
+  "prevalence": "common",
+  "urgency": "soon",
+  "age_groups": [
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "blood_in_stool",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "stool_change",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "bloating",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "pallor",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "اغلب در مراحل اولیه بدون علامت است",
+    "تغییر مداوم در عادت دفع (اسهال یا یبوست، باریک‌شدن مدفوع)",
+    "خون در مدفوع یا خونریزی از مقعد",
+    "ناراحتی مداوم شکم (کرامپ، گاز، درد)",
+    "احساس تخلیه ناقص روده",
+    "خستگی و ضعف",
+    "کاهش وزن ناخواسته",
+    "کم‌خونی ناشی از کمبود آهن"
+  ],
+  "when_to_see_doctor_fa": [
+    "خون در مدفوع یا تغییر مداوم عادت دفع",
+    "درد شکم و کاهش وزن بدون دلیل",
+    "سابقه فامیلی: مشورت درباره شروع زودتر غربالگری"
+  ],
+  "treatments_fa": [
+    "برداشتن آندوسکوپیک پولیپ یا سرطان‌های بسیار زودرس",
+    "جراحی (برداشتن بخش بیمار روده)",
+    "شیمی‌درمانی",
+    "پرتودرمانی (به‌ویژه در سرطان راست‌روده)",
+    "درمان هدفمند و ایمنی‌درمانی در موارد انتخاب‌شده (مانند MSI-high)"
+  ],
+  "summary_fa": "سرطان روده بزرگ در روده بزرگ (کولون) یا راست‌روده (رکتوم) آغاز می‌شود. اغلب از پولیپ‌ها (برجستگی‌های کوچک پوشش داخلی روده) پس از سال‌ها شکل می‌گیرد. با غربالگری و برداشتن پولیپ‌ها قابل پیشگیری و در مراحل اولیه قابل درمان است.",
+  "next_step_fa": "اگر خون در مدفوع یا تغییر ماندگار عادت دفع دارید، باید به پزشک مراجعه کنید؛ این علامت‌ها خودبه‌خود کم نمی‌شوند.",
+  "sources": [
+    {
+      "publisher": "NCI: Colorectal Cancer",
+      "title": "",
+      "url": "https://www.cancer.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "American Cancer Society: Colorectal Cancer",
+      "title": "",
+      "url": "https://www.cancer.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "Mayo Clinic: Colon cancer",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "WHO: Colorectal cancer",
+      "title": "",
+      "url": "https://www.who.int/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "USPSTF: Colorectal Cancer Screening",
+      "title": "",
+      "url": "https://www.uspreventiveservicestaskforce.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "پروفایل «پایگاه داده بیماری‌ها» (ردیف 12) و فهرست علائم آن؛ برچسب‌ها و متن هنوز بازبینی پزشکی نشده‌اند."
+  }
+}

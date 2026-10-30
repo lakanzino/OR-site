@@ -1,0 +1,81 @@
+{
+  "id": "research_028",
+  "name_fa": "ویتیلیگو (برص)",
+  "name_en": "Vitiligo",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "pale_patches",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "hair_graying",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "لکه‌های سفید یا بی‌رنگ پوست",
+    "معمولاً بدون خارش یا پوسته‌ریزی",
+    "الگوی قرینه در دو طرف بدن",
+    "درگیری دست، صورت، گردن و نواحی تناسلی"
+  ],
+  "when_to_see_doctor_fa": [
+    "لکه‌های سفید جدید یا گسترده",
+    "اورژانس: علائم همراه خودایمنی"
+  ],
+  "summary_fa": "ویتیلیگو (برص) (تخصص: پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Vitiligo",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/vitiligo/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Vitiligo",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/vitiligo/symptoms-causes/syc-20355912",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AAD: Vitiligo",
+      "title": "",
+      "url": "https://www.aad.org/public/diseases/a-z/vitiligo-overview",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Vitiligo Research Foundation",
+      "title": "",
+      "url": "https://vrfoundation.org/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "کورتیکواستروئید موضعی",
+    "مهارکننده‌های کلسینورین موضعی",
+    "فتوتراپی با NB-UVB (نور فرابنفش باریک‌باند)",
+    "دپیگمانتاسیون (بی‌رنگ کردن پوست سالم) در موارد گسترده (با نظر پزشک)"
+  ]
+}

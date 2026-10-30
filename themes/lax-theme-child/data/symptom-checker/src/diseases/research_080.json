@@ -1,0 +1,88 @@
+{
+  "id": "research_080",
+  "name_fa": "سندرم تورت (تیک عصبی؛ تورت)",
+  "name_en": "Tourette syndrome",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "tics",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "premonitory_urge",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vocal_tics",
+      "freq": "very_common",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "تیک‌های حرکتی متعدد",
+    "تیک‌های صوتی",
+    "تیک‌ها ناخواسته و ناگهانی هستند",
+    "ممکن است موقت یا مزمن (طولانی‌مدت) باشند",
+    "احساس پیش‌درآمد قبل از تیک"
+  ],
+  "when_to_see_doctor_fa": [
+    "تیک‌های حرکتی یا صوتی مزمن",
+    "اورژانس: تیک شدید با خودآسیبی"
+  ],
+  "summary_fa": "سندرم تورت (تیک عصبی؛ تورت) (تخصص: مغز و اعصاب، روان‌پزشکی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "CDC: Tourette Syndrome",
+      "title": "",
+      "url": "https://www.cdc.gov/tourette-syndrome/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NINDS: Tourette Syndrome",
+      "title": "",
+      "url": "https://www.ninds.nih.gov/health-information/disorders/tourette-syndrome",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Tourette syndrome",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/tourette-syndrome/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Tourette Association of America",
+      "title": "",
+      "url": "https://tourette.org/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "رفتاردرمانی (CBIT؛ درمان رفتاری جامع تیک)",
+    "آنتی‌سایکوتیک‌ها (هالوپریدول، آریپیپرازول)",
+    "آگونیست‌های آلفا-۲ (کلونیدین)"
+  ],
+  "checker_rankable": false,
+  "checker_note": "سه برچسب و بدون تفکیک کافی از سایر اختلالات حرکتی؛ تا بازبینی پزشکی رتبه‌بندی نمی‌شود."
+}

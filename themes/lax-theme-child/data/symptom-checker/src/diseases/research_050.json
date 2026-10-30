@@ -1,0 +1,130 @@
+{
+  "id": "research_050",
+  "name_fa": "کووید ۱۹",
+  "name_en": "COVID-19",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "smell_loss",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "taste_loss",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "cough",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sore_throat",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "body_ache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تب",
+    "سرفه",
+    "تنگی نفس",
+    "خستگی",
+    "گلودرد",
+    "از دست دادن حس بویایی یا چشایی",
+    "علائم گوارشی",
+    "در موارد شدید: هیپوکسی و نارسایی تنفسی (ناتوانی ریه در رساندن اکسیژن کافی)"
+  ],
+  "when_to_see_doctor_fa": [
+    "تنگی نفس، درد قفسه سینه، گیجی یا اشباع اکسیژن پایین",
+    "اورژانس: علائم شدید تنفسی"
+  ],
+  "summary_fa": "کووید ۱۹ (تخصص: عفونی، ریه). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Coronavirus disease (COVID-19)",
+      "title": "",
+      "url": "https://www.who.int/health-topics/coronavirus",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: COVID-19",
+      "title": "",
+      "url": "https://www.cdc.gov/covid/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: COVID-19",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/covid-19/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: COVID-19",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/coronavirus/symptoms-causes/syc-20379923",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "مراقبت حمایتی",
+    "داروهای ضدویروسی (نیرماترلویر/ریتوناویر، رمدسیویر) در موارد پرخطر",
+    "کورتیکواستروئید در موارد شدید",
+    "اکسیژن و حمایت تنفسی"
+  ]
+}

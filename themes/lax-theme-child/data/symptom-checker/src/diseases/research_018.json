@@ -1,0 +1,107 @@
+{
+  "id": "research_018",
+  "name_fa": "هپاتیت سی",
+  "name_en": "Hepatitis C",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dark_urine",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "abdominal_swelling",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "leg_swelling",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "confusion",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "اغلب بدون علامت",
+    "خستگی",
+    "زردی",
+    "ادرار تیره",
+    "درد یا ناراحتی در سمت راست بالای شکم",
+    "در سیروز: آسیت، ورم، خونریزی و گیجی"
+  ],
+  "when_to_see_doctor_fa": [
+    "تست مثبت HCV، خستگی یا زردی",
+    "اورژانس: گیجی، استفراغ خونی یا آسیت"
+  ],
+  "summary_fa": "هپاتیت سی (تخصص: گوارش و کبد، عفونی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Hepatitis C",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/hepatitis-c",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Hepatitis C",
+      "title": "",
+      "url": "https://www.cdc.gov/hepatitis-c/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NIDDK: Hepatitis C",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/liver-disease/viral-hepatitis/hepatitis-c",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Hepatitis C",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/hepatitis-c/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "داروهای ضدویروسی مستقیم‌الاثر (DAA) مانند سوفوسبوویر/ولپاتاسویر",
+    "درمان معمولاً ۸-۱۲ هفته و میزان درمان >۹۵٪",
+    "پایش بار ویروسی و عملکرد کبد"
+  ]
+}

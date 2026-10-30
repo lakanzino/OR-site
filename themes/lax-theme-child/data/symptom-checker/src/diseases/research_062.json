@@ -1,0 +1,98 @@
+{
+  "id": "research_062",
+  "name_fa": "بیماری کلیه پلی‌کیستیک",
+  "name_en": "Polycystic kidney disease (PKD)",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "flank_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "blood_urine",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "abdominal_mass",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "abdominal_swelling",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "درد پهلو",
+    "خون در ادرار",
+    "فشار خون بالا",
+    "توده شکمی",
+    "سنگ کلیه",
+    "در مراحل پیشرفته: علائم نارسایی کلیه"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد پهلو، خون در ادرار یا فشار خون بالا",
+    "اورژانس: تب، درد شدید یا کاهش ادرار"
+  ],
+  "summary_fa": "بیماری کلیه پلی‌کیستیک (تخصص: نفرولوژی، اورولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Polycystic Kidney Disease (PKD)",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/polycystic-kidney-disease-pkd",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Polycystic kidney disease",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/polycystic-kidney-disease/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Polycystic kidney disease",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/polycystic-kidney-disease/symptoms-causes/syc-20352820",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "PKD Foundation",
+      "title": "",
+      "url": "https://pkdcure.org/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "کنترل فشار خون",
+    "مدیریت درد",
+    "تخلیه کیست در صورت علامت‌دار",
+    "دیالیز و پیوند کلیه در نارسایی پیشرفته"
+  ]
+}

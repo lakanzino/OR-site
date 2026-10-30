@@ -1,0 +1,131 @@
+{
+  "id": "hypothyroidism",
+  "name_fa": "کم‌کاری تیروئید",
+  "name_en": "Hypothyroidism",
+  "category": "غدد و متابولیسم",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "cold_intolerance",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_gain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "constipation",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dry_skin",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "hair_loss",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "concentration_problem",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "low_mood",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "heavy_period",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "facial_swelling",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "slow_pulse",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "خستگی و بی‌حالی",
+    "افزایش وزن",
+    "عدم تحمل سرما",
+    "یبوست",
+    "خشکی پوست و مو",
+    "ریزش مو",
+    "کندی ضربان قلب",
+    "افسردگی یا کاهش تمرکز",
+    "اختلالات قاعدگی",
+    "تورم صورت یا پف‌کردگی"
+  ],
+  "when_to_see_doctor_fa": [
+    "خستگی شدید، افزایش وزن، یبوست یا عدم تحمل سرما",
+    "اورژانس: گیجی، کاهش دمای بدن، تنفس کند، افت فشار (کمای میکسدم)"
+  ],
+  "summary_fa": "کم‌کاری تیروئید (تخصص: متخصص غدد درون‌ریز و متابولیسم). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Hypothyroidism",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/endocrine-diseases/hypothyroidism",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Hypothyroidism",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/hypothyroidism/symptoms-causes/syc-20350284",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Underactive thyroid",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/underactive-thyroid-hypothyroidism/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "ATA Guidelines: Hypothyroidism",
+      "title": "",
+      "url": "https://www.thyroid.org/hypothyroidism/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "لووتیروکسین (Levothyroxine) به‌عنوان جایگزین هورمون تیروئید",
+    "پایش دوره‌ای TSH برای تنظیم دوز",
+    "درمان علت زمینه‌ای"
+  ]
+}

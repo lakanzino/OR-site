@@ -1,0 +1,75 @@
+{
+  "_note": "Five scenarios from the external AI answer (Drive folder), remapped to this project's tag and disease IDs. The external answer claimed 50; only 5 were delivered. Expected diseases are plausible targets for review, not validated diagnoses. Clinical review still required.",
+  "scenarios": [
+    {
+      "id": "TC-001",
+      "description": "Crushing chest pain with arm radiation (possible heart attack)",
+      "tags_yes": [
+        "chest_pain",
+        "arm_jaw_pain",
+        "dyspnea"
+      ],
+      "red_flags_yes": [
+        "rf_chest"
+      ],
+      "expected_emergency": true,
+      "region": "chest"
+    },
+    {
+      "id": "TC-002",
+      "description": "Fever, dry cough, mild shortness of breath",
+      "tags_yes": [
+        "fever",
+        "cough",
+        "dyspnea"
+      ],
+      "red_flags_yes": [],
+      "expected_emergency": false,
+      "expected_top3_any": [
+        "research_050",
+        "flu",
+        "research_083"
+      ],
+      "region": "chest"
+    },
+    {
+      "id": "TC-003",
+      "description": "Burning urination and urinary frequency",
+      "tags_yes": [
+        "burning_urine",
+        "frequent_urine"
+      ],
+      "red_flags_yes": [],
+      "expected_emergency": false,
+      "expected_top3_any": [
+        "urinary_tract",
+        "research_093"
+      ],
+      "region": "urinary"
+    },
+    {
+      "id": "TC-004",
+      "description": "Throbbing one-sided headache with nausea",
+      "tags_yes": [
+        "headache",
+        "nausea"
+      ],
+      "red_flags_yes": [],
+      "expected_emergency": false,
+      "expected_top3_any": [
+        "migraine"
+      ],
+      "region": "head"
+    },
+    {
+      "id": "TC-005",
+      "description": "Sudden facial droop, speech difficulty, arm weakness (possible stroke)",
+      "tags_yes": [],
+      "red_flags_yes": [
+        "rf_stroke"
+      ],
+      "expected_emergency": true,
+      "region": "head"
+    }
+  ]
+}

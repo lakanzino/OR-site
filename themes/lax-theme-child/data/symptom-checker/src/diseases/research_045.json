@@ -1,0 +1,95 @@
+{
+  "id": "research_045",
+  "name_fa": "اوریون",
+  "name_en": "Mumps",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "parotid_swelling",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "body_ache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "scrotal_swelling",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تورم دردناک غدد بزاقی، به‌ویژه پاروتید",
+    "تب",
+    "سردرد",
+    "درد عضلانی",
+    "در پسران نوجوان: ارکیت",
+    "در برخی موارد: مننژیت"
+  ],
+  "when_to_see_doctor_fa": [
+    "تورم غدد بزاقی، تب یا درد بیضه",
+    "اورژانس: سردرد شدید، سفتی گردن یا درد شدید بیضه"
+  ],
+  "summary_fa": "اوریون (تخصص: عفونی، اطفال). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Mumps",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/mumps",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Mumps",
+      "title": "",
+      "url": "https://www.cdc.gov/mumps/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Mumps",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/mumps/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Mumps",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/mumps/symptoms-causes/syc-20375361",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "مراقبت حمایتی (مایعات، مسکن، استراحت)"
+  ]
+}

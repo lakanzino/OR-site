@@ -1,0 +1,97 @@
+{
+  "id": "asthma",
+  "name_fa": "آسم",
+  "name_en": "Asthma",
+  "category": "ریه و تنفس",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "wheeze",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "cough",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "chest_pressure",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "خس‌خس سینه",
+    "سرفه، به‌ویژه شب‌ها یا صبح زود",
+    "تنگی نفس",
+    "احساس فشار یا سفتی قفسه سینه",
+    "علائم متغیر و دوره‌ای",
+    "تشدید با ورزش، آلرژن، عفونت ویروسی یا هوای سرد"
+  ],
+  "when_to_see_doctor_fa": [
+    "تنگی نفس شدید، ناتوانی در صحبت کردن، خس‌خس شدید یا سیانوز",
+    "عدم پاسخ به اسپری تسکین‌دهنده",
+    "خواب‌آلودگی، گیجی یا خستگی شدید",
+    "اورژانس: حملات شدید یا وضعیت آسم"
+  ],
+  "summary_fa": "آسم (تخصص: متخصص ریه (پولمونولوژی)). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Asthma",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/asthma",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Asthma",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/asthma/symptoms-causes/syc-20369653",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Asthma",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/asthma/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "GINA Guidelines: Asthma",
+      "title": "",
+      "url": "https://ginasthma.org/reports/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "کورتیکواستروئید استنشاقی (ICS) به‌عنوان درمان پایه",
+    "آگونیست بتا-۲ کوتاه‌اثر (SABA) برای تسکین سریع",
+    "LABA یا سایر گشادکننده‌های برونش در صورت نیاز",
+    "آنتاگونیست‌های لوکوترین",
+    "بیولوژیک‌ها در آسم شدید",
+    "برنامه اقدام مکتوب و آموزش استفاده صحیح از اسپری"
+  ]
+}

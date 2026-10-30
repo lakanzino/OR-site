@@ -1,0 +1,112 @@
+{
+  "id": "research_038",
+  "name_fa": "نارسایی قلبی",
+  "name_en": "Heart failure",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "dyspnea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "leg_swelling",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "night_breathlessness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "wheeze",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "cough",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "palpitation",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تنگی نفس با فعالیت",
+    "تنگی نفس در حالت خوابیده",
+    "بیدار شدن شبانه با تنگی نفس",
+    "ورم پا و مچ",
+    "خستگی و ضعف",
+    "افزایش فشار ورید گردن",
+    "صدای خس‌خس در ریه"
+  ],
+  "when_to_see_doctor_fa": [
+    "تنگی نفس با فعالیت، خوابیده یا شبانه",
+    "ورم پا، خستگی یا افزایش وزن سریع",
+    "اورژانس: درد قفسه سینه، غش یا تنگی نفس شدید"
+  ],
+  "summary_fa": "نارسایی قلبی (تخصص: قلب و عروق). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Cardiovascular diseases )",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Heart failure",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/heart-failure/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Heart failure",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/heart-failure/symptoms-causes/syc-20373142",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "ACC/AHA Guidelines: Heart Failure",
+      "title": "",
+      "url": "https://www.acc.org/Guidelines",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "مهارکننده‌های ACE/ARB/ARNI",
+    "بتابلاکر",
+    "دیورتیک‌ها",
+    "آنتاگونیست‌های آلدوسترون",
+    "مهارکننده‌های SGLT2",
+    "دستگاه‌های کمکی (ICD؛ دفیبریلاتور کاشتنی، CRT؛ درمان همزمان قلبی)"
+  ]
+}

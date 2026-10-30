@@ -1,0 +1,100 @@
+{
+  "id": "research_011",
+  "name_fa": "آرتریت روماتوئید",
+  "name_en": "Rheumatoid arthritis",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "joint_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "joint_swelling",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "morning_stiffness",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fever",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "درد، تورم و سفتی مفاصل، اغلب قرینه و در مفاصل کوچک دست و پا",
+    "خشکی صبحگاهی بیش از یک ساعت",
+    "خستگی",
+    "تب خفیف",
+    "ندول‌های زیرپوستی",
+    "درگیری چشم، ریه یا سایر اعضا در موارد شدید"
+  ],
+  "when_to_see_doctor_fa": [
+    "درد و تورم مزمن مفاصل یا خشکی صبحگاهی",
+    "تب، تنگی نفس، درد قفسه سینه یا ضعف",
+    "اورژانس: علائم سیستمیک"
+  ],
+  "summary_fa": "آرتریت روماتوئید (تخصص: روماتولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Rheumatoid arthritis",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/rheumatoid-arthritis/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Rheumatoid arthritis",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/rheumatoid-arthritis/symptoms-causes/syc-20353648",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "ACR: Rheumatoid Arthritis",
+      "title": "",
+      "url": "https://rheumatology.org/patients/fact-sheet-rheumatoid-arthritis",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "WHO: Rheumatoid arthritis",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/rheumatoid-arthritis",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "داروهای ضدالتهابی (NSAID) برای کنترل علائم",
+    "DMARDها (داروهای تعدیل‌کننده بیماری، مثلاً متوترکسات) به‌عنوان درمان پایه",
+    "بیولوژیک‌ها (مهارکننده‌های TNF، ضد IL-6)",
+    "کورتیکواستروئید در دوره‌های کوتاه",
+    "فیزیوتراپی و کاردرمانی"
+  ]
+}

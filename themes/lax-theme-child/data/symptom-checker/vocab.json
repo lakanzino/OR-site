@@ -1,0 +1,2558 @@
+{
+  "version": 5,
+  "regions": [
+    {
+      "id": "head",
+      "name": "سر و صورت"
+    },
+    {
+      "id": "chest",
+      "name": "قفسه سینه و تنفس"
+    },
+    {
+      "id": "abdomen",
+      "name": "شکم و لگن"
+    },
+    {
+      "id": "back",
+      "name": "کمر و پهلو"
+    },
+    {
+      "id": "urinary",
+      "name": "ادرار و کلیه"
+    },
+    {
+      "id": "skin",
+      "name": "پوست"
+    },
+    {
+      "id": "general",
+      "name": "علائم عمومی"
+    }
+  ],
+  "ageGroups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sexes": [
+    "any",
+    "female",
+    "male"
+  ],
+  "tags": [
+    {
+      "id": "fever",
+      "label": "تب",
+      "question": "آیا تب دارید یا گرمای بدن را حس کرده‌اید؟",
+      "definition": "افزایش دمای بدن (معمولاً بالای ۳۸ درجه) یا احساس گرما و لرز.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "fatigue",
+      "label": "خستگی",
+      "question": "آیا خستگی یا بی‌حالی غیرعادی دارید؟",
+      "definition": "احساس خستگی یا بی‌حالی که با استراحت بهتر نمی‌شود.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "chills",
+      "label": "لرز",
+      "question": "آیا لرز یا تکان‌های ناگهانی دارید؟",
+      "definition": "لرزهای ناگهانی که معمولاً همراه تب است.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "weight_loss",
+      "label": "کاهش وزن",
+      "question": "آیا بدون دلیل وزنتان کم شده است؟",
+      "definition": "کاهش وزن بدون تغییر عمدی در رژیم یا فعالیت.",
+      "region": "general",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "thirst",
+      "label": "تشنگی زیاد",
+      "question": "آیا تشنگی زیاد دارید؟",
+      "definition": "تشنگی بیش از حد معمول.",
+      "region": "general",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "sweating",
+      "label": "تعریق یا عرق سرد",
+      "question": "آیا عرق سرد یا تعریق غیرعادی دارید؟",
+      "definition": "تعریق زیاد یا عرق سرد، بدون علت واضح.",
+      "region": "general",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "headache",
+      "label": "سردرد",
+      "question": "آیا سردرد دارید؟",
+      "definition": "درد یا فشار در ناحیهٔ سر.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "dizziness",
+      "label": "سرگیجه",
+      "question": "آیا سرگیجه دارید؟",
+      "definition": "احساس گیجی، چرخش یا سبکی سر.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "vision",
+      "label": "تاری دید",
+      "question": "آیا دیدتان تار شده یا درد چشم دارید؟",
+      "definition": "تغییر دید: تاری، دوبینی یا درد چشم.",
+      "region": "head",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "sore_throat",
+      "label": "گلودرد",
+      "question": "آیا گلودرد دارید؟",
+      "definition": "درد یا سوزش گلو، به‌ویژه هنگام بلع.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "neck_stiff",
+      "label": "سفتی گردن",
+      "question": "آیا گردنتان سفت شده و خم کردنش سخت است؟",
+      "definition": "سفتی گردن و دشواری خم کردن آن.",
+      "region": "head",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "cough",
+      "label": "سرفه",
+      "question": "آیا سرفه دارید؟",
+      "definition": "سرفه، با یا بدون خلط.",
+      "region": "chest",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "chest_pain",
+      "label": "درد قفسه سینه",
+      "question": "آیا درد یا فشار در قفسه سینه دارید؟",
+      "definition": "درد، فشار یا سنگینی در قفسهٔ سینه.",
+      "region": "chest",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "dyspnea",
+      "label": "تنگی نفس",
+      "question": "آیا نفستان تنگ شده است؟",
+      "definition": "احساس تنگی یا کمبود نفس.",
+      "region": "chest",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "palpitation",
+      "label": "تپش قلب",
+      "question": "آیا تپش قلب دارید؟",
+      "definition": "احساس تپش، ضربان نامنظم یا تند قلب.",
+      "region": "chest",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "arm_jaw_pain",
+      "label": "درد بازو یا فک",
+      "question": "آیا درد به بازو، فک یا پشت منتشر می‌شود؟",
+      "definition": "درد منتشرشده به بازو، فک یا پشت.",
+      "region": "chest",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "abd_pain",
+      "label": "درد شکم",
+      "question": "آیا درد شکم دارید؟",
+      "definition": "درد در هر ناحیهٔ شکم.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "right_lower",
+      "label": "درد پایین سمت راست شکم",
+      "question": "آیا درد بیشتر در پایین سمت راست شکم است؟",
+      "definition": "درد بیشتر در پایین سمت راست شکم.",
+      "region": "abdomen",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "nausea",
+      "label": "تهوع",
+      "question": "آیا تهوع دارید؟",
+      "definition": "حالت تهوع یا احساس نیاز به استفراغ.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "vomiting",
+      "label": "استفراغ",
+      "question": "آیا استفراغ کرده‌اید؟",
+      "definition": "بالا آمدن محتویات معده از دهان، با یا بدون تهوع قبلی.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "diarrhea",
+      "label": "اسهال",
+      "question": "آیا اسهال دارید؟",
+      "definition": "اجابت مزاج مکرر با مدفوع آبکی.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "constipation",
+      "label": "یبوست",
+      "question": "آیا یبوست دارید؟",
+      "definition": "یبوست یا اجابت مزاج دشوار و کم‌دفعات.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "heartburn",
+      "label": "سوزش سر دل",
+      "question": "آیا سوزش سر دل دارید؟",
+      "definition": "سوزش در ناحیهٔ پشت جناغ یا معده.",
+      "region": "abdomen",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "appetite",
+      "label": "بی‌اشتهایی",
+      "question": "آیا اشتهایتان کم شده است؟",
+      "definition": "کاهش اشتها یا میل به غذا.",
+      "region": "abdomen",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "jaundice",
+      "label": "زردی پوست یا چشم",
+      "question": "آیا زردی پوست یا سفیدی چشم دیده‌اید؟",
+      "definition": "زردی پوست یا سفیدی چشم.",
+      "region": "abdomen",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "back_pain",
+      "label": "درد کمر",
+      "question": "آیا درد کمر دارید؟",
+      "definition": "درد در ناحیهٔ کمر.",
+      "region": "back",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "flank_pain",
+      "label": "درد پهلو یا کلیه",
+      "question": "آیا درد پهلو یا ناحیهٔ کلیه دارید؟",
+      "definition": "درد در پهلو یا ناحیهٔ کلیه.",
+      "region": "back",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "joint_pain",
+      "label": "درد مفاصل",
+      "question": "آیا درد مفاصل یا تورم دارید؟",
+      "definition": "درد یا تورم مفاصل.",
+      "region": "back",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "body_ache",
+      "label": "بدن‌درد",
+      "question": "آیا بدن‌درد یا درد عضلات دارید؟",
+      "definition": "درد عمومی عضلات یا بدن.",
+      "region": "back",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "burning_urine",
+      "label": "سوزش هنگام ادرار",
+      "question": "آیا هنگام ادرار سوزش دارید؟",
+      "definition": "سوزش یا درد هنگام ادرار.",
+      "region": "urinary",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "frequent_urine",
+      "label": "تکرر ادرار",
+      "question": "آیا بیشتر از معمول ادرار می‌کنید؟",
+      "definition": "ادرار بیشتر از حد معمول، با یا بدون احساس فوریت.",
+      "region": "urinary",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "blood_urine",
+      "label": "خون در ادرار",
+      "question": "آیا خون در ادرار دیده‌اید؟",
+      "definition": "دیده شدن خون در ادرار.",
+      "region": "urinary",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "vaginal_bleed",
+      "label": "خونریزی واژینال",
+      "question": "آیا خونریزی غیرعادی واژینال دارید؟",
+      "definition": "خونریزی غیرعادی از واژن.",
+      "region": "urinary",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "rash",
+      "label": "جوش، خارش یا راش پوستی",
+      "question": "آیا جوش، خارش یا تغییر رنگ پوست دارید؟",
+      "definition": "جوش، خارش یا تغییر رنگ پوست.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "facial_droop",
+      "label": "افتادگی یک طرف صورت",
+      "question": "آیا یک طرف صورتتان افتاده یا لبخندتان کج شده است؟",
+      "definition": "افتادگی یک طرف صورت.",
+      "region": "head",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "arm_weakness",
+      "label": "ضعف یا بی‌حسی ناگهانی یک طرف بدن",
+      "question": "آیا ناگهان ضعف یا بی‌حسی یک بازو یا پا دارید؟",
+      "definition": "ضعف یا بی‌حسی ناگهانی یک طرف بدن.",
+      "region": "general",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "speech_difficulty",
+      "label": "اختلال ناگهانی در حرف زدن یا فهمیدن گفتار",
+      "question": "آیا ناگهان حرف زدن یا فهمیدن حرف دیگران برایتان سخت شده است؟",
+      "definition": "اختلال ناگهانی در حرف زدن یا فهمیدن گفتار.",
+      "region": "head",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "sudden_onset",
+      "label": "شروع ناگهانی علائم (چند دقیقه تا چند ساعت)",
+      "question": "آیا علائم ناگهانی و در کمتر از چند ساعت شروع شده‌اند؟",
+      "definition": "شروع ناگهانی علائم (چند دقیقه تا چند ساعت).",
+      "region": "general",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "chest_pressure",
+      "label": "احساس فشار یا سنگینی در قفسهٔ سینه",
+      "question": "آیا احساس فشار یا سنگینی در قفسهٔ سینه دارید؟",
+      "definition": "احساس فشار یا سنگینی در قفسهٔ سینه.",
+      "region": "chest",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "sudden_shortness_of_breath",
+      "label": "تنگی نفس ناگهانی",
+      "question": "آیا تنگی نفس ناگهانی دارید؟",
+      "definition": "تنگی نفس ناگهانی.",
+      "region": "chest",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "pleuritic_chest_pain",
+      "label": "درد تیز قفسهٔ سینه که با نفس عمیق یا سرفه بدتر می‌شود",
+      "question": "آیا درد قفسهٔ سینه با نفس عمیق یا سرفه بدتر می‌شود؟",
+      "definition": "درد تیز قفسهٔ سینه که با نفس عمیق یا سرفه بدتر می‌شود.",
+      "region": "chest",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "leg_swelling",
+      "label": "ورم پا",
+      "question": "آیا پاهایتان ورم کرده است؟",
+      "definition": "ورم پا یا قوزک پا، معمولاً در یک یا هر دو طرف.",
+      "region": "general",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "hives",
+      "label": "کهیر یا جوش برجسته و خارش‌دار",
+      "question": "آیا کهیر یا جوش برجسته و خارش‌دار دارید؟",
+      "definition": "کهیر یا جوش برجسته و خارش‌دار.",
+      "region": "skin",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "throat_swelling",
+      "label": "تورم گلو یا زبان",
+      "question": "آیا گلو یا زبانتان متورم شده است؟",
+      "definition": "تورم گلو یا زبان.",
+      "region": "head",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "difficulty_breathing",
+      "label": "نفس کشیدن بسیار سخت",
+      "question": "آیا نفس کشیدن برایتان بسیار سخت شده است؟",
+      "definition": "نفس کشیدن بسیار سخت.",
+      "region": "chest",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "sudden_severe_scrotal_pain",
+      "label": "درد شدید و ناگهانی بیضه",
+      "question": "آیا درد شدید و ناگهانی در بیضه دارید؟",
+      "definition": "درد شدید و ناگهانی بیضه.",
+      "region": "urinary",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "scrotal_swelling",
+      "label": "ورم بیضه",
+      "question": "آیا بیضه‌ای ورم کرده است؟",
+      "definition": "بزرگ شدن یا ورم یکی از بیضه‌ها یا کیسهٔ بیضه.",
+      "region": "urinary",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "missed_period",
+      "label": "قاعدگی دیر شده یا نشده",
+      "question": "آیا پریود شما دیر شده یا نشده است؟",
+      "definition": "قاعدگی دیر شده یا نشده.",
+      "region": "urinary",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "fruity_breath",
+      "label": "بوی میوه‌ای یا استونی در بازدم",
+      "question": "آیا بوی غیرعادی شبیه میوه یا استون در نفستان حس می‌شود؟",
+      "definition": "بوی میوه‌ای یا استونی در بازدم.",
+      "region": "general",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "unilateral_calf_swelling",
+      "label": "ورم یک‌طرفهٔ ساق پا",
+      "question": "آیا فقط یک ساق پایتان ورم کرده است؟",
+      "definition": "ورم یک‌طرفهٔ ساق پا.",
+      "region": "general",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "calf_pain",
+      "label": "درد ساق پا",
+      "question": "آیا ساق پایتان درد دارد؟",
+      "definition": "درد یا حساسیت در ناحیهٔ عضلات ساق پا.",
+      "region": "general",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "calf_warmth",
+      "label": "گرمی یا قرمزی ساق پا",
+      "question": "آیا ساق پای دردناک گرم یا قرمز است؟",
+      "definition": "گرمی یا قرمزی ساق پا.",
+      "region": "general",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "non_blanching_rash",
+      "label": "جوش قرمز یا بنفش که با فشار دادن لیوان شفاف رنگش نمی‌رود",
+      "question": "آیا جوش‌های قرمز یا بنفش دارید که با فشار دادن لیوان شفاف رنگشان نمی‌رود؟",
+      "definition": "جوش قرمز یا بنفش که با فشار دادن لیوان شفاف رنگش نمی‌رود.",
+      "region": "skin",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "light_sensitivity",
+      "label": "حساسیت شدید به نور",
+      "question": "آیا از نور شدید آزار می‌بینید؟",
+      "definition": "حساسیت شدید به نور.",
+      "region": "head",
+      "background": "usual",
+      "synonyms": []
+    },
+    {
+      "id": "abdominal_rigidity",
+      "label": "سفتی شکم",
+      "question": "آیا شکمتان سفت شده است؟",
+      "definition": "سفت شدن عضلات شکم، معمولاً همراه درد هنگام لمس.",
+      "region": "abdomen",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "fainting",
+      "label": "غش یا از دست رفتن هوشیاری",
+      "question": "آیا غش کرده‌اید یا هوشیاری‌تان کم شده است؟",
+      "definition": "غش یا از دست رفتن هوشیاری.",
+      "region": "head",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "coughing_blood",
+      "label": "خون در سرفه یا خلط",
+      "question": "آیا خون سرفه کرده‌اید؟",
+      "definition": "خون در سرفه یا خلط.",
+      "region": "chest",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "bladder_bowel_loss",
+      "label": "بی‌اختیاری ادرار یا مدفوع",
+      "question": "آیا ادرار یا مدفوع را کنترل نمی‌کنید؟",
+      "definition": "بی‌اختیاری ادرار یا مدفوع.",
+      "region": "urinary",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "hunger",
+      "label": "گرسنگی زیاد یا پرخوری",
+      "question": "آیا گرسنگی زیاد یا پرخوری دارید؟",
+      "definition": "اشتهای زیاد و احساس گرسنگی مداوم، حتی بعد از غذا.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "slow_healing",
+      "label": "زخم‌های دیرهبود",
+      "question": "آیا زخم‌های دیرهبود دارید؟",
+      "definition": "زخم‌ها یا عفونت‌های پوستی که دیرتر از معمول بهبود می‌یابند.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "weight_gain",
+      "label": "افزایش وزن ناخواسته",
+      "question": "آیا افزایش وزن ناخواسته دارید؟",
+      "definition": "افزایش وزن بدون تغییر عمدی در رژیم یا فعالیت.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "cold_intolerance",
+      "label": "تحمل کم سرما",
+      "question": "آیا تحمل کم سرما دارید؟",
+      "definition": "احساس سرمای بیشتر از دیگران در شرایط یکسان.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "heat_intolerance",
+      "label": "تحمل کم گرما",
+      "question": "آیا تحمل کم گرما دارید؟",
+      "definition": "گرمای زیاد و تعریق بیشتر از معمول حتی در دمای متوسط.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "tremor",
+      "label": "لرزش دست یا بدن",
+      "question": "آیا لرزش دست یا بدن دارید؟",
+      "definition": "لرزش ریتمیک یا غیرارادی دست، سر یا بدن.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "weakness",
+      "label": "ضعف عضلانی",
+      "question": "آیا ضعف عضلانی دارید؟",
+      "definition": "ضعف یک یا چند عضله که در کارهای روزمره دیده می‌شود.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "numbness",
+      "label": "بی‌حسی یا گزگز اندام",
+      "question": "آیا بی‌حسی یا گزگز اندام دارید؟",
+      "definition": "کاهش حس یا احساس سوزن‌سوزن شدن در دست، پا یا صورت.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "balance_problem",
+      "label": "اختلال تعادل یا راه رفتن",
+      "question": "آیا اختلال تعادل یا راه رفتن دارید؟",
+      "definition": "ناپایداری هنگام راه رفتن یا احساس افتادن.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "memory_loss",
+      "label": "فراموشی یا کاهش حافظه",
+      "question": "آیا فراموشی یا کاهش حافظه دارید؟",
+      "definition": "فراموش کردن رویدادهای اخیر یا اطلاعات آشنا.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "confusion",
+      "label": "گیجی یا سردرگمی",
+      "question": "آیا گیجی یا سردرگمی دارید؟",
+      "definition": "دشواری در تشخیص زمان یا مکان، یا درک نادرست اطراف.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "seizure",
+      "label": "تشنج یا حملهٔ تکان‌دهنده",
+      "question": "آیا تشنج یا حملهٔ تکان‌دهنده دارید؟",
+      "definition": "حملهٔ ناگهانی با حرکات تکان‌دهنده یا سفتی بدن، گاهی با از دست رفتن هوشیاری.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "low_mood",
+      "label": "خلق افسرده یا بی‌لذتی",
+      "question": "آیا خلق افسرده یا بی‌لذتی دارید؟",
+      "definition": "غم پایدار، ناامیدی یا از دست رفتن لذت از کارهای همیشگی.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "high_mood",
+      "label": "خلق بسیار بالا",
+      "question": "آیا خلق بسیار بالا دارید؟",
+      "definition": "دوره‌ای از خلق بسیار بالا یا انرژی غیرعادی زیاد.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "mood_change",
+      "label": "تغییر خلق یا رفتار",
+      "question": "آیا تغییر خلق یا رفتار دارید؟",
+      "definition": "تغییر ملموس خلق یا رفتار نسبت به گذشته.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "anxiety",
+      "label": "نگرانی یا اضطراب مفرط",
+      "question": "آیا نگرانی یا اضطراب مفرط دارید؟",
+      "definition": "نگرانی زیاد و پایدار که کنترل آن دشوار است.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "panic_attack",
+      "label": "حملهٔ ناگهانی ترس شدید",
+      "question": "آیا حملهٔ ناگهانی ترس شدید دارید؟",
+      "definition": "دورهٔ ناگهانی ترس شدید که چند دقیقه به اوج می‌رسد.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "sleep_problem",
+      "label": "اختلال خواب",
+      "question": "آیا اختلال خواب دارید؟",
+      "definition": "خوابیدن سخت، بیداری‌های مکرر یا خواب ناآرام.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "concentration_problem",
+      "label": "مشکل تمرکز یا توجه",
+      "question": "آیا مشکل تمرکز یا توجه دارید؟",
+      "definition": "دشواری در تمرکز یا حواس‌پرتی مداوم.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "hyperactivity",
+      "label": "بی‌قراری یا بیش‌فعالی",
+      "question": "آیا بی‌قراری یا بیش‌فعالی دارید؟",
+      "definition": "حرکت یا صحبت بیش از حد، یا احساس بی‌قراری مداوم.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "impulsivity",
+      "label": "تکانشگری",
+      "question": "آیا تکانشگری دارید؟",
+      "definition": "انجام کار یا تصمیم بدون فکر کردن به پیامدهای آن.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "hallucination",
+      "label": "توهم یا هذیان",
+      "question": "آیا توهم یا هذیان دارید؟",
+      "definition": "دیدن یا شنیدن چیزی که دیگران نمی‌بینند، یا باور محکم به چیزی که واقعیت ندارد.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "social_communication",
+      "label": "مشکل در ارتباط اجتماعی",
+      "question": "آیا مشکل در ارتباط اجتماعی دارید؟",
+      "definition": "دشواری در تعامل اجتماعی یا فهمیدن نشانه‌های اجتماعی.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "repetitive_behavior",
+      "label": "رفتارهای تکراری",
+      "question": "آیا رفتارهای تکراری دارید؟",
+      "definition": "حرکات یا علایق تکراری و محدود که بیش از حد معمول است.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "intrusive_thoughts",
+      "label": "افکار مزاحم و ناخواسته",
+      "question": "آیا افکار مزاحم و ناخواسته دارید؟",
+      "definition": "افکار تکراری و ناخواسته که مانع فکر کردن عادی می‌شوند.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "compulsions",
+      "label": "رفتارهای تکراری برای کاهش اضطراب",
+      "question": "آیا رفتارهای تکراری برای کاهش اضطراب دارید؟",
+      "definition": "کارهای تکراری مثل شستن یا کنترل که برای کاهش اضطراب انجام می‌شوند.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "flashbacks",
+      "label": "یادآوری ناگهانی رویداد آسیب‌زا",
+      "question": "آیا یادآوری ناگهانی رویداد آسیب‌زا دارید؟",
+      "definition": "بازگشت ناگهانی و زنده‌ی خاطرهٔ یک رویداد آسیب‌زا.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "nightmares",
+      "label": "کابوس",
+      "question": "آیا کابوس دارید؟",
+      "definition": "خواب‌های پریشان‌کننده، اغلب دربارهٔ یک رویداد آسیب‌زا.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "avoidance",
+      "label": "پرهیز از یادآورهای رویداد",
+      "question": "آیا پرهیز از یادآورهای رویداد دارید؟",
+      "definition": "دوری عمدی از مکان‌ها، افراد یا افکار مرتبط با یک رویداد آسیب‌زا.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "irritability",
+      "label": "تحریک‌پذیری",
+      "question": "آیا تحریک‌پذیری دارید؟",
+      "definition": "عصبانیت یا بی‌صبری زودتر از معمول.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "tics",
+      "label": "تیک‌های حرکتی یا صوتی",
+      "question": "آیا تیک‌های حرکتی یا صوتی دارید؟",
+      "definition": "حرکات یا صداهای ناگهانی، تکراری و ناخواسته.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "premonitory_urge",
+      "label": "احساس پیش‌درآمد قبل از تیک",
+      "question": "آیا احساس پیش‌درآمد قبل از تیک دارید؟",
+      "definition": "احساس ناراحت‌کننده پیش از تیک که با انجام تیک کم می‌شود.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "hair_loss",
+      "label": "ریزش مو",
+      "question": "آیا ریزش مو دارید؟",
+      "definition": "ریزش مو بیش از حد معمول.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "easy_bruising",
+      "label": "کبودی آسان",
+      "question": "آیا کبودی آسان دارید؟",
+      "definition": "کبودشدن پوست با ضربهٔ کم یا بدون ضربه.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "muscle_stiffness",
+      "label": "سفتی عضلات",
+      "question": "آیا سفتی عضلات دارید؟",
+      "definition": "سفتی یا انقباض عضلات که حرکت را دشوار می‌کند.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "word_finding",
+      "label": "مشکل در یافتن کلمات",
+      "question": "آیا مشکل در یافتن کلمات دارید؟",
+      "definition": "دشواری در پیدا کردن کلمهٔ درست هنگام صحبت.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "daily_function_loss",
+      "label": "کاهش توان کارهای روزمره",
+      "question": "آیا کاهش توان کارهای روزمره دارید؟",
+      "definition": "دشواری در انجام کارهای عادی زندگی مثل خرید، آشپزی یا پرداخت قبض.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "swallow_difficulty",
+      "label": "دشواری در بلع",
+      "question": "آیا دشواری در بلع دارید؟",
+      "definition": "احساس گیر کردن غذا یا مایع در گلو یا سینه هنگام بلع.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "erectile_difficulty",
+      "label": "دشواری در نعوظ",
+      "question": "آیا دشواری در نعوظ دارید؟",
+      "definition": "ناتوانی در رسیدن به نعوظ یا حفظ آن برای رابطهٔ جنسی.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "low_libido",
+      "label": "کاهش میل جنسی",
+      "question": "آیا کاهش میل جنسی دارید؟",
+      "definition": "کاهش علاقه یا میل به رابطهٔ جنسی.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "infertility",
+      "label": "ناباروری",
+      "question": "آیا ناباروری دارید؟",
+      "definition": "ناتوانی در باردار شدن پس از مدت قابل توجه تلاش.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "dark_patches",
+      "label": "لکه‌های تیره یا مخملی پوست",
+      "question": "آیا لکه‌های تیره یا مخملی پوست دارید؟",
+      "definition": "لکه‌های تیره و مخملی پوست، اغلب در چین‌های بدن.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "suicidal_thoughts",
+      "label": "افکار خودکشی",
+      "question": "آیا افکار خودکشی دارید؟",
+      "definition": "فکر کردن به مردن یا آسیب زدن به خود.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "sensory_sensitivity",
+      "label": "حساسیت حسی شدید",
+      "question": "آیا حساسیت حسی شدید دارید؟",
+      "definition": "واکنش شدید به صداها، بوها، لمس یا نور.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "speech_delay",
+      "label": "تأخیر در زبان یا مهارت‌های اجتماعی",
+      "question": "آیا تأخیر در زبان یا مهارت‌های اجتماعی دارید؟",
+      "definition": "رشد دیرتر از سن در حرف زدن یا بازی و تعامل با دیگران.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "social_withdrawal",
+      "label": "کناره‌گیری و بی‌انگیزگی",
+      "question": "آیا کناره‌گیری و بی‌انگیزگی دارید؟",
+      "definition": "دوری از دیگران و کاهش انگیزه برای کارها و ارتباطات.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "disorganized_speech",
+      "label": "گفتار یا رفتار آشفته",
+      "question": "آیا گفتار یا رفتار آشفته دارید؟",
+      "definition": "صحبت نامنظم یا رفتاری که پیوند منطقی ندارد.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "racing_thoughts",
+      "label": "افکار پرسرعت",
+      "question": "آیا افکار پرسرعت دارید؟",
+      "definition": "افکار سریع و پرشمار که کنترل آن‌ها دشوار است.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "appetite_change",
+      "label": "تغییر اشتها",
+      "question": "آیا تغییر اشتها دارید؟",
+      "definition": "کاهش یا افزایش غیرعادی اشتها.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "guilt",
+      "label": "احساس گناه یا بی‌ارزشی",
+      "question": "آیا احساس گناه یا بی‌ارزشی دارید؟",
+      "definition": "احساس شدید گناه، بی‌ارزشی یا سرزنش خود.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "animal_bite",
+      "label": "گاز گرفتگی یا تماس با حیوان مشکوک",
+      "question": "آیا گاز گرفتگی یا تماس با حیوان مشکوک دارید؟",
+      "definition": "گاز گرفته شدن یا خراش با حیوان، به‌ویژه حیوان ولگرد یا مشکوک.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "water_fear",
+      "label": "ترس یا تنگی هنگام دیدن آب",
+      "question": "آیا ترس یا تنگی هنگام دیدن آب دارید؟",
+      "definition": "واکنش ترس یا تنگی نفس هنگام دیدن یا نوشیدن آب.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "jaw_stiffness",
+      "label": "سفتی یا قفل شدن فک",
+      "question": "آیا سفتی یا قفل شدن فک دارید؟",
+      "definition": "دشواری در باز کردن دهان به‌علت سفتی فک.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "pallor",
+      "label": "رنگ‌پریدگی",
+      "question": "آیا رنگ‌پریدگی دارید؟",
+      "definition": "کم‌رنگ شدن پوست یا ملتحمه.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "pica",
+      "label": "میل به خوردن مواد غیرغذایی",
+      "question": "آیا میل به خوردن مواد غیرغذایی دارید؟",
+      "definition": "میل شدید به خوردن موادی مثل یخ، خاک یا گچ.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "slow_movement",
+      "label": "کندی حرکت",
+      "question": "آیا کندی حرکت دارید؟",
+      "definition": "حرکت کُند و کاهش سرعت کارها.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "masked_face",
+      "label": "صورت بی‌حالت",
+      "question": "آیا صورت بی‌حالت دارید؟",
+      "definition": "کاهش حالت چهره و کم‌پلک زدن.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "bone_pain",
+      "label": "درد استخوان یا بحران دردناک",
+      "question": "آیا درد استخوان یا بحران دردناک دارید؟",
+      "definition": "درد شدید و ناگهانی استخوان یا مفاصل، گاهی همراه با تب.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "bone_deformity",
+      "label": "تغییر شکل استخوان",
+      "question": "آیا تغییر شکل استخوان دارید؟",
+      "definition": "تغییر ظاهر یا شکل استخوان‌ها.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "tongue_inflammation",
+      "label": "التهاب و قرمزی زبان",
+      "question": "آیا التهاب و قرمزی زبان دارید؟",
+      "definition": "قرمزی یا تورم زبان که گاهی دردناک است.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "slow_pulse",
+      "label": "ضربان کُند قلب",
+      "question": "آیا ضربان کُند قلب دارید؟",
+      "definition": "ضربان قلب کمتر از معمول در حالت استراحت.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "irregular_pulse",
+      "label": "ضربان نامنظم",
+      "question": "آیا ضربان نامنظم دارید؟",
+      "definition": "ضربان قلب بی‌نظم و ناهمگون.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "night_breathlessness",
+      "label": "تنگی نفس شبانه",
+      "question": "آیا تنگی نفس شبانه دارید؟",
+      "definition": "بیدار شدن شبانه با تنگی نفس.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "daytime_sleepiness",
+      "label": "خواب‌آلودگی روزانه",
+      "question": "آیا خواب‌آلودگی روزانه دارید؟",
+      "definition": "خواب‌آلودگی شدید در طول روز، حتی پس از خواب کافی.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "snoring",
+      "label": "خروپف بلند",
+      "question": "آیا خروپف بلند دارید؟",
+      "definition": "خروپف بلند و منظم در خواب.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "breathing_pause",
+      "label": "وقفهٔ تنفسی در خواب",
+      "question": "آیا وقفهٔ تنفسی در خواب دارید؟",
+      "definition": "قطع موقت نفس کشیدن در خواب که دیگران مشاهده می‌کنند.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "whoop_sound",
+      "label": "صدای کی‌کی هنگام دم",
+      "question": "آیا صدای کی‌کی هنگام دم دارید؟",
+      "definition": "صدای بلند و کشیده هنگام نفس گرفتن پس از سرفه.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "growth_delay",
+      "label": "کندی رشد در کودکان",
+      "question": "آیا کندی رشد در کودکان دارید؟",
+      "definition": "رشد قد یا وزن کمتر از حد انتظار سن.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "wheeze",
+      "label": "خس‌خس سینه",
+      "question": "آیا خس‌خس سینه دارید؟",
+      "definition": "صدای سوت‌مانند هنگام تنفس، به‌ویژه بازدم.",
+      "region": "chest",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "sputum",
+      "label": "خلط یا ترشح غلیظ از سینه",
+      "question": "آیا خلط یا ترشح غلیظ از سینه دارید؟",
+      "definition": "ترشح غلیظ از راه سرفه که از ریه یا نایژه‌ها می‌آید.",
+      "region": "chest",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "stool_change",
+      "label": "تغییر شکل یا تعداد مدفوع",
+      "question": "آیا تغییر شکل یا تعداد مدفوع دارید؟",
+      "definition": "تغییر ملموس در دفعات یا شکل مدفوع نسبت به حالت عادی.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "bloating",
+      "label": "نفخ شکم",
+      "question": "آیا نفخ شکم دارید؟",
+      "definition": "پُری یا سفتی شکم بعد از غذا یا در طول روز.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "flatulence",
+      "label": "گاز زیاد روده",
+      "question": "آیا گاز زیاد روده دارید؟",
+      "definition": "تولید و خروج زیاد گاز از روده.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "belching",
+      "label": "آروغ زیاد",
+      "question": "آیا آروغ زیاد دارید؟",
+      "definition": "آروغ زدن بیش از حد معمول.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "early_satiety",
+      "label": "سیری زودرس",
+      "question": "آیا سیری زودرس دارید؟",
+      "definition": "سیرشدن بعد از خوردن مقدار کم غذا.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "black_stool",
+      "label": "مدفوع سیاه یا قیرگون",
+      "question": "آیا مدفوع سیاه یا قیرگون دارید؟",
+      "definition": "مدفوع سیاه و چسبنده که ممکن است نشانهٔ خونریزی بالای دستگاه گوارش باشد.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "blood_in_stool",
+      "label": "خون روی مدفوع یا دستمال",
+      "question": "آیا خون روی مدفوع یا دستمال دارید؟",
+      "definition": "خون قرمز روشن روی مدفوع، دستمال یا داخل توالت.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "tenesmus",
+      "label": "احساس دفع ناقص یا فوری",
+      "question": "آیا احساس دفع ناقص یا فوری دارید؟",
+      "definition": "احساس نیاز مداوم به دفع با تخلیهٔ کم.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "anal_pain",
+      "label": "درد مقعد یا هنگام دفع",
+      "question": "آیا درد مقعد یا هنگام دفع دارید؟",
+      "definition": "درد یا ناراحتی اطراف مقعد، اغلب هنگام دفع.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "anal_lump",
+      "label": "توده یا برآمدگی اطراف مقعد",
+      "question": "آیا توده یا برآمدگی اطراف مقعد دارید؟",
+      "definition": "برآمدگی یا توده در اطراف مقعد.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "pale_stool",
+      "label": "مدفوع کم‌رنگ یا گچی",
+      "question": "آیا مدفوع کم‌رنگ یا گچی دارید؟",
+      "definition": "مدفوع کم‌رنگ، خاکستری یا گچی.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "abdominal_mass",
+      "label": "توده در شکم",
+      "question": "آیا توده در شکم دارید؟",
+      "definition": "احساس یا دیدن توده‌ای در شکم.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "abdominal_swelling",
+      "label": "بزرگ شدن یا تورم شکم",
+      "question": "آیا بزرگ شدن یا تورم شکم دارید؟",
+      "definition": "افزایش حجم شکم، اغلب به علت تجمع مایع.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "blood_vomit",
+      "label": "استفراغ خونی یا تفاله قهوه‌ای",
+      "question": "آیا استفراغ خونی یا تفاله قهوه‌ای دارید؟",
+      "definition": "استفراغ حاوی خون یا مواد تیره شبیه تفاله قهوه.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "food_trigger",
+      "label": "علائم پس از خوردن غذای خاص",
+      "question": "آیا علائم پس از خوردن غذای خاص دارید؟",
+      "definition": "علائمی که بعد از خوردن یک غذای مشخص مثل لبنیات یا غذای چرب شروع می‌شوند.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "regurgitation",
+      "label": "برگشت مایع ترش به دهان",
+      "question": "آیا برگشت مایع ترش به دهان دارید؟",
+      "definition": "بازگشت مایع معده یا ترش به دهان یا گلو.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "groin_bulge",
+      "label": "برآمدگی کشاله ران",
+      "question": "آیا برآمدگی کشاله ران دارید؟",
+      "definition": "برآمدگی در کشاله ران که با ایستادن یا زور زدن بیشتر دیده می‌شود.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "groin_pain",
+      "label": "درد یا سنگینی کشاله ران",
+      "question": "آیا درد یا سنگینی کشاله ران دارید؟",
+      "definition": "درد یا فشار در ناحیهٔ کشاله ران.",
+      "region": "abdomen",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "joint_swelling",
+      "label": "تورم مفصل",
+      "question": "آیا تورم مفصل دارید؟",
+      "definition": "تورم یا بزرگ شدن یک یا چند مفصل.",
+      "region": "back",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "joint_warmth",
+      "label": "گرمی یا قرمزی مفصل",
+      "question": "آیا گرمی یا قرمزی مفصل دارید؟",
+      "definition": "مفصل گرم و قرمز که به لمس دردناک است.",
+      "region": "back",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "joint_crepitus",
+      "label": "صدای ساییدگی مفصل",
+      "question": "آیا صدای ساییدگی مفصل دارید؟",
+      "definition": "صدا یا احساس ساییدگی هنگام حرکت مفصل.",
+      "region": "back",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "morning_stiffness",
+      "label": "خشکی صبحگاهی مفاصل",
+      "question": "آیا خشکی صبحگاهی مفاصل دارید؟",
+      "definition": "خشکی مفاصل بعد از بیدار شدن که با حرکت کم می‌شود.",
+      "region": "back",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "fracture_fragility",
+      "label": "شکستگی با ضربهٔ کم",
+      "question": "آیا شکستگی با ضربهٔ کم دارید؟",
+      "definition": "شکستگی استخوان با افتادن یا ضربهٔ کم.",
+      "region": "back",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "height_loss",
+      "label": "کاهش قد",
+      "question": "آیا کاهش قد دارید؟",
+      "definition": "کوتاه‌تر شدن قد نسبت به گذشته.",
+      "region": "back",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "posture_change",
+      "label": "قوز یا خمیدگی پشت",
+      "question": "آیا قوز یا خمیدگی پشت دارید؟",
+      "definition": "خمیدگی یا قوز پشت و گردن.",
+      "region": "back",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "hand_arm_pain",
+      "label": "درد دست یا بازو",
+      "question": "آیا درد دست یا بازو دارید؟",
+      "definition": "درد یا ناراحتی در دست، مچ یا بازو.",
+      "region": "back",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "stretch_marks",
+      "label": "خطوط پوستی بنفش یا نقره‌ای",
+      "question": "آیا خطوط پوستی بنفش یا نقره‌ای دارید؟",
+      "definition": "خطوط کشیده روی پوست، به رنگ بنفش یا نقره‌ای.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "facial_swelling",
+      "label": "تورم صورت",
+      "question": "آیا تورم صورت دارید؟",
+      "definition": "تورم یا پف صورت، اغلب دور چشم.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "neck_swelling",
+      "label": "تورم یا بزرگی جلوی گردن",
+      "question": "آیا تورم یا بزرگی جلوی گردن دارید؟",
+      "definition": "تورم یا بزرگ شدن جلوی گردن، مثل گواتر.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "swollen_glands",
+      "label": "بزرگ شدن غدد لنفاوی",
+      "question": "آیا بزرگ شدن غدد لنفاوی دارید؟",
+      "definition": "برجستگی زیر پوست گردن یا زیر فک، دردناک یا بی‌درد.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "parotid_swelling",
+      "label": "تورم دردناک زیر گوش",
+      "question": "آیا تورم دردناک زیر گوش دارید؟",
+      "definition": "تورم دردناک غدهٔ بزاقی زیر گوش یا بناگوش.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "ear_discharge",
+      "label": "ترشح از گوش",
+      "question": "آیا ترشح از گوش دارید؟",
+      "definition": "ترشح یا مایع از کانال گوش.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "ear_pain",
+      "label": "درد گوش",
+      "question": "آیا درد گوش دارید؟",
+      "definition": "درد در داخل گوش یا پشت آن.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "hearing_loss",
+      "label": "کاهش شنوایی",
+      "question": "آیا کاهش شنوایی دارید؟",
+      "definition": "شنیدن کمتر از حد معمول.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "nasal_congestion",
+      "label": "گرفتگی بینی",
+      "question": "آیا گرفتگی بینی دارید؟",
+      "definition": "بسته بودن بینی و سختی تنفس از بینی.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "nasal_discharge",
+      "label": "آبریزش یا ترشح بینی",
+      "question": "آیا آبریزش یا ترشح بینی دارید؟",
+      "definition": "آب‌ریزش یا ترشح از بینی.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "sneezing",
+      "label": "عطسهٔ مکرر",
+      "question": "آیا عطسهٔ مکرر دارید؟",
+      "definition": "عطسه‌های پشت‌سرهم.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "smell_loss",
+      "label": "کاهش یا از دست رفتن بویایی",
+      "question": "آیا کاهش یا از دست رفتن بویایی دارید؟",
+      "definition": "کاهش توانایی تشخیص بو.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "taste_loss",
+      "label": "کاهش حس چشایی",
+      "question": "آیا کاهش حس چشایی دارید؟",
+      "definition": "کاهش توانایی تشخیص مزه.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "facial_pain",
+      "label": "درد یا فشار صورت",
+      "question": "آیا درد یا فشار صورت دارید؟",
+      "definition": "درد یا فشار در صورت، گونه یا زیر چشم.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "hoarseness",
+      "label": "گرفتگی یا خش‌دار شدن صدا",
+      "question": "آیا گرفتگی یا خش‌دار شدن صدا دارید؟",
+      "definition": "تغییر صدا، گرفتگی یا خش‌دار شدن آن.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "throat_lump",
+      "label": "احساس توده یا گیر در گلو",
+      "question": "آیا احساس توده یا گیر در گلو دارید؟",
+      "definition": "احساس وجود چیزی در گلو بدون اینکه چیزی دیده شود.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "double_vision",
+      "label": "دوبینی",
+      "question": "آیا دوبینی دارید؟",
+      "definition": "دیدن دو تصویر از یک جسم.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "eye_redness",
+      "label": "قرمزی چشم",
+      "question": "آیا قرمزی چشم دارید؟",
+      "definition": "قرمز شدن سفیدی چشم.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "eye_discharge",
+      "label": "ترشح یا چسبندگی چشم",
+      "question": "آیا ترشح یا چسبندگی چشم دارید؟",
+      "definition": "ترشح زرد یا سفید از چشم که گاهی پلک‌ها را می‌چسباند.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "eye_burning",
+      "label": "سوزش یا شن در چشم",
+      "question": "آیا سوزش یا شن در چشم دارید؟",
+      "definition": "احساس سوزش یا وجود جسم خارجی در چشم.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "eye_watering",
+      "label": "اشک‌ریزی چشم",
+      "question": "آیا اشک‌ریزی چشم دارید؟",
+      "definition": "اشک‌ریزی زیاد یا آبریزش چشم.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "eye_pain",
+      "label": "درد چشم",
+      "question": "آیا درد چشم دارید؟",
+      "definition": "درد در داخل یا پشت چشم.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "eye_bulging",
+      "label": "برجستگی چشم",
+      "question": "آیا برجستگی چشم دارید؟",
+      "definition": "بیرون زدگی چشم از حدقه.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "eyelid_droop",
+      "label": "افتادگی پلک یا گوشهٔ دهان",
+      "question": "آیا افتادگی پلک یا گوشهٔ دهان دارید؟",
+      "definition": "پلک یا گوشهٔ دهان که پایین‌تر از حالت عادی افتاده است.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "drooling",
+      "label": "آب دهان سرازیر شدن",
+      "question": "آیا آب دهان سرازیر شدن دارید؟",
+      "definition": "ترشح بیش از حد بزاق از دهان.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "dry_mouth",
+      "label": "خشکی دهان",
+      "question": "آیا خشکی دهان دارید؟",
+      "definition": "احساس خشکی دهان یا کم بودن بزاق.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "halo_glare",
+      "label": "هاله یا خیرگی دور نور",
+      "question": "آیا هاله یا خیرگی دور نور دارید؟",
+      "definition": "دیدن هاله یا حلقهٔ رنگی دور نور، یا خیرگی شدید.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "night_vision",
+      "label": "کاهش دید در شب",
+      "question": "آیا کاهش دید در شب دارید؟",
+      "definition": "دشواری دیدن در نور کم یا شب.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "color_fading",
+      "label": "کم‌رنگ دیدن رنگ‌ها",
+      "question": "آیا کم‌رنگ دیدن رنگ‌ها دارید؟",
+      "definition": "رنگ‌ها کم‌رنگ یا کدر به نظر برسند.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "peripheral_vision_loss",
+      "label": "کاهش دید جانبی",
+      "question": "آیا کاهش دید جانبی دارید؟",
+      "definition": "کاهش دید اطراف، مثل دیدن از داخل تونل.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "central_vision_loss",
+      "label": "از دست رفتن دید مرکزی",
+      "question": "آیا از دست رفتن دید مرکزی دارید؟",
+      "definition": "تاری یا سیاهی در وسط دید که خواندن را سخت می‌کند.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "vision_distortion",
+      "label": "خطوط کج یا موج‌دار",
+      "question": "آیا خطوط کج یا موج‌دار دارید؟",
+      "definition": "دیدن خطوط راست به صورت کج یا موج‌دار.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "hirsutism",
+      "label": "رشد موی زائد",
+      "question": "آیا رشد موی زائد دارید؟",
+      "definition": "رشد موی بیشتر از حد معمول در صورت یا بدن زنان.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "skin_pain",
+      "label": "درد یا حساسیت پوست",
+      "question": "آیا درد یا حساسیت پوست دارید؟",
+      "definition": "درد، حساسیت یا ناراحتی پوست هنگام لمس.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "skin_burning",
+      "label": "سوزش پوست",
+      "question": "آیا سوزش پوست دارید؟",
+      "definition": "احساس سوزش در پوست.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "skin_thickening",
+      "label": "ضخیم شدن پوست",
+      "question": "آیا ضخیم شدن پوست دارید؟",
+      "definition": "پوست سفت‌تر و ضخیم‌تر از حالت عادی.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "skin_cracking",
+      "label": "ترک‌خوردگی پوست",
+      "question": "آیا ترک‌خوردگی پوست دارید؟",
+      "definition": "ترک‌های باریک در پوست، اغلب بین انگشتان.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "scaling",
+      "label": "پوسته‌ریزی یا پوسته‌های نقره‌ای",
+      "question": "آیا پوسته‌ریزی یا پوسته‌های نقره‌ای دارید؟",
+      "definition": "پوسته‌های سفید یا نقره‌ای روی پوست.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "blisters",
+      "label": "تاول یا تاولک",
+      "question": "آیا تاول یا تاولک دارید؟",
+      "definition": "برجستگی‌های پر از مایع روی پوست.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "pale_patches",
+      "label": "لکه‌های سفید یا بی‌رنگ پوست",
+      "question": "آیا لکه‌های سفید یا بی‌رنگ پوست دارید؟",
+      "definition": "لکه‌های بی‌رنگ یا سفید روی پوست.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "nail_change",
+      "label": "تغییر رنگ یا شکل ناخن",
+      "question": "آیا تغییر رنگ یا شکل ناخن دارید؟",
+      "definition": "تغییر رنگ، ضخامت یا شکل ناخن.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "brittle_nails",
+      "label": "شکنندگی ناخن",
+      "question": "آیا شکنندگی ناخن دارید؟",
+      "definition": "ناخن‌های نازک، ترک‌خورده یا شکننده.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "nail_separation",
+      "label": "جدا شدن ناخن از بستر",
+      "question": "آیا جدا شدن ناخن از بستر دارید؟",
+      "definition": "جدا شدن ناخن از پوست زیر آن.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "warts",
+      "label": "زگیل یا برجستگی سخت پوستی",
+      "question": "آیا زگیل یا برجستگی سخت پوستی دارید؟",
+      "definition": "برجستگی سخت و زبر روی پوست.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "itch",
+      "label": "خارش پوست",
+      "question": "آیا خارش پوست دارید؟",
+      "definition": "احساس خارش روی پوست.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "dry_skin",
+      "label": "خشکی پوست",
+      "question": "آیا خشکی پوست دارید؟",
+      "definition": "پوست خشک، زبر یا ترک‌خورده.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "facial_redness",
+      "label": "قرمزی و گرگرفتگی صورت",
+      "question": "آیا قرمزی و گرگرفتگی صورت دارید؟",
+      "definition": "قرمزی یا گرمی صورت، گاهی با حساسیت.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "visible_vessels",
+      "label": "رگ‌های ریز قابل مشاهده",
+      "question": "آیا رگ‌های ریز قابل مشاهده دارید؟",
+      "definition": "رگ‌های ریز قرمز یا بنفش که زیر پوست دیده می‌شوند.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "acne_lesions",
+      "label": "جوش، ندول یا کیست",
+      "question": "آیا جوش، ندول یا کیست دارید؟",
+      "definition": "جوش‌های سرسیاه، سفید، چرکی، برجسته یا توده‌های دردناک.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "burrows",
+      "label": "نقب‌های ریز پوستی",
+      "question": "آیا نقب‌های ریز پوستی دارید؟",
+      "definition": "خطوط یا نقب‌های باریک روی پوست.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "lice",
+      "label": "شپش یا تخم شپش",
+      "question": "آیا شپش یا تخم شپش دارید؟",
+      "definition": "شپش یا تخم‌های آن روی مو.",
+      "region": "skin",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "prolonged_erection",
+      "label": "نعوظ طولانی دردناک",
+      "question": "آیا نعوظ طولانی دردناک دارید؟",
+      "definition": "نعوظ بیش از چند ساعت که دردناک است.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "cloudy_urine",
+      "label": "ادرار کدر یا بدبو",
+      "question": "آیا ادرار کدر یا بدبو دارید؟",
+      "definition": "ادرار کدر، تیره یا با بوی نامطبوع.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "low_urine",
+      "label": "کاهش حجم ادرار",
+      "question": "آیا کاهش حجم ادرار دارید؟",
+      "definition": "ادرار کمتر از حد معمول در طول روز.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "foamy_urine",
+      "label": "ادرار کف‌آلود",
+      "question": "آیا ادرار کف‌آلود دارید؟",
+      "definition": "ادراری که کف زیاد و ماندگار دارد.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "urgency",
+      "label": "فوریت ادرار",
+      "question": "آیا فوریت ادرار دارید؟",
+      "definition": "نیاز ناگهانی و شدید به ادرار.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "night_urine",
+      "label": "بیدار شدن شبانه برای ادرار",
+      "question": "آیا بیدار شدن شبانه برای ادرار دارید؟",
+      "definition": "بیدار شدن در شب برای رفتن به دستشویی.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "urine_retention",
+      "label": "ناتوانی یا تأخیر در شروع ادرار",
+      "question": "آیا ناتوانی یا تأخیر در شروع ادرار دارید؟",
+      "definition": "دشواری در شروع ادرار با وجود نیاز به آن.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "weak_stream",
+      "label": "جریان ضعیف یا قطع و وصل ادرار",
+      "question": "آیا جریان ضعیف یا قطع و وصل ادرار دارید؟",
+      "definition": "جریان ادرار ضعیف، قطع و وصل شونده یا فشار زیاد برای ادرار.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "urinary_leak",
+      "label": "نشت غیرارادی ادرار",
+      "question": "آیا نشت غیرارادی ادرار دارید؟",
+      "definition": "خروج ادرار بدون کنترل.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "incomplete_emptying",
+      "label": "احساس تخلیه ناقص مثانه",
+      "question": "آیا احساس تخلیه ناقص مثانه دارید؟",
+      "definition": "احساس باقی ماندن ادرار بعد از دفع.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "dark_urine",
+      "label": "ادرار تیره",
+      "question": "آیا ادرار تیره دارید؟",
+      "definition": "ادرار به رنگ تیره یا قهوه‌ای.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "vaginal_discharge",
+      "label": "ترشح غیرعادی واژن",
+      "question": "آیا ترشح غیرعادی واژن دارید؟",
+      "definition": "ترشح واژن با رنگ، بو یا قوام غیرعادی.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "vaginal_itch",
+      "label": "خارش واژن یا فرج",
+      "question": "آیا خارش واژن یا فرج دارید؟",
+      "definition": "خارش یا سوزش در ناحیهٔ واژن یا فرج.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "fishy_odor",
+      "label": "بوی ماهی‌مانند ترشح",
+      "question": "آیا بوی ماهی‌مانند ترشح دارید؟",
+      "definition": "بوی ماهی‌مانند در ترشح واژن، بیشتر پس از رابطه.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "menstrual_pain",
+      "label": "درد شدید قاعدگی",
+      "question": "آیا درد شدید قاعدگی دارید؟",
+      "definition": "درد شدید هنگام قاعدگی که کار روزمره را مختل می‌کند.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "heavy_period",
+      "label": "قاعدگی شدید یا طولانی",
+      "question": "آیا قاعدگی شدید یا طولانی دارید؟",
+      "definition": "خونریزی قاعدگی بیش از حد معمول یا طولانی‌تر از معمول.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "painful_intercourse",
+      "label": "درد هنگام رابطهٔ جنسی",
+      "question": "آیا درد هنگام رابطهٔ جنسی دارید؟",
+      "definition": "درد هنگام رابطهٔ جنسی.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "pelvic_pain",
+      "label": "درد یا فشار لگنی",
+      "question": "آیا درد یا فشار لگنی دارید؟",
+      "definition": "درد یا فشار در ناحیهٔ لگن.",
+      "region": "urinary",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "positional_dizziness",
+      "label": "سرگیجه با تغییر وضعیت سر",
+      "question": "آیا سرگیجه با تغییر وضعیت سر دارید؟",
+      "definition": "سرگیجهٔ کوتاه و شدید که با چرخاندن سر یا خوابیدن و بلند شدن ایجاد می‌شود.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "eye_jerking",
+      "label": "حرکت غیرارادی و تکانی چشم",
+      "question": "آیا حرکت غیرارادی و تکانی چشم دارید؟",
+      "definition": "لرزش یا حرکت تکانی غیرارادی چشم (نیستاگموس).",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "salt_craving",
+      "label": "میل شدید به نمک",
+      "question": "آیا میل شدید به نمک دارید؟",
+      "definition": "میل زیاد به خوردن نمک یا غذای شور.",
+      "region": "general",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "breast_lump",
+      "label": "توده یا ضخیم‌شدگی جدید در پستان یا زیر بغل",
+      "question": "سوال: آیا توده یا ضخیم‌شدگی جدیدی در پستان یا زیر بغل لمس می‌کنید؟",
+      "definition": "توده‌ای سفت یا ضخیم‌شده که تازه ایجاد شده و در پستان یا زیر بغل لمس می‌شود.",
+      "region": "chest",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "nipple_discharge",
+      "label": "ترشح از نوک پستان",
+      "question": "سوال: آیا از نوک پستان ترشح دارید (به‌ویژه خونی)؟",
+      "definition": "ترشح از نوک پستان، از جمله ترشح خونی یا بدون ارتباط با شیردهی.",
+      "region": "chest",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "nipple_retraction",
+      "label": "فرورفتن نوک پستان",
+      "question": "سوال: آیا نوک پستان به داخل فرورفته یا تغییر شکل داده؟",
+      "definition": "نوک پستان که جدیدا به داخل کشیده یا فرورفته است.",
+      "region": "chest",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "no_gas_or_stool",
+      "label": "ناتوانی در دفع گاز و مدفوع",
+      "question": "سوال: آیا نمی‌توانید گاز یا مدفوع دفع کنید؟",
+      "definition": "نداشتن دفع گاز یا مدفوع همراه با درد و شکم متورم؛ می‌تواند نشانهٔ انسداد روده باشد.",
+      "region": "abdomen",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "hair_graying",
+      "label": "سفید شدن زودهنگام مو یا مژه یا ابرو",
+      "question": "سوال: آیا موی سر، مژه یا ابرو شما زودتر از معمول سفید شده؟",
+      "definition": "سفید شدن موی سر، مژه یا ابرو در سن کمتر از حد معمول، بدون علت واضح.",
+      "region": "skin",
+      "background": "rare",
+      "synonyms": []
+    },
+    {
+      "id": "vocal_tics",
+      "label": "تیک صوتی (صدا یا کلمه)",
+      "question": "سوال: آیا صداها یا کلمات ناخواسته و تکراری از شما بیرون می‌آید؟",
+      "definition": "صدای ناخواسته و تکراری مانند خرخر، سرفه‌ی مکرر یا تکرار کلمه یا هجا.",
+      "region": "head",
+      "background": "common",
+      "synonyms": []
+    },
+    {
+      "id": "black_dots_in_lesion",
+      "label": "نقطه‌های ریز سیاه داخل برجستگی پوست",
+      "question": "سوال: آیا داخل یک برجستگی پوستی نقطه‌های ریز سیاه می‌بینید؟",
+      "definition": "نقاط ریز سیاه‌رنگ در سطح یک برجستگی پوستی، که معمولاً عروق کوچک لخته‌شده‌اند.",
+      "region": "skin",
+      "background": "rare",
+      "synonyms": []
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "rf_acs",
+      "label": "احتمال حملهٔ قلبی",
+      "question": "آیا درد یا فشار قفسهٔ سینه دارید که همراه با درد بازو یا فک، تعریق، تنگی نفس یا تهوع باشد؟",
+      "when": {
+        "all": [
+          "chest_pressure"
+        ],
+        "any": [
+          "arm_jaw_pain",
+          "sweating",
+          "dyspnea",
+          "nausea"
+        ]
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_chest",
+      "label": "درد قفسهٔ سینه با علامت همراه",
+      "question": "آیا درد قفسهٔ سینه دارید که همراه با تعریق، درد بازو یا فک، یا تنگی نفس باشد؟",
+      "when": {
+        "all": [
+          "chest_pain"
+        ],
+        "any": [
+          "sweating",
+          "arm_jaw_pain",
+          "dyspnea"
+        ]
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_stroke",
+      "label": "علائم احتمالی سکتهٔ مغزی",
+      "question": "آیا ناگهان افتادگی یک طرف صورت، ضعف یک طرف بدن یا اختلال در حرف زدن دارید؟",
+      "when": {
+        "all": [],
+        "any": [
+          "facial_droop",
+          "arm_weakness",
+          "speech_difficulty"
+        ]
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_pe",
+      "label": "احتمال آمبولی ریه",
+      "question": "آیا ناگهان تنگی نفس شدید دارید، یا درد تیز قفسهٔ سینه هنگام نفس کشیدن، یا تورم یک پا؟",
+      "when": {
+        "all": [
+          "sudden_shortness_of_breath"
+        ],
+        "any": [
+          "pleuritic_chest_pain",
+          "leg_swelling",
+          "chest_pain"
+        ]
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_breath",
+      "label": "نفس کشیدن بسیار سخت یا تورم راه هوایی",
+      "question": "آیا نفس کشیدن بسیار سخت است یا گلو و زبان دچار تورم شده؟",
+      "when": {
+        "all": [],
+        "any": [
+          "difficulty_breathing",
+          "throat_swelling"
+        ]
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_thunder",
+      "label": "سردرد ناگهانی و بسیار شدید",
+      "question": "آیا ناگهان دچار بدترین سردرد عمرتان شده‌اید؟",
+      "when": {
+        "all": [
+          "sudden_onset",
+          "headache"
+        ],
+        "any": []
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_meningitis",
+      "label": "احتمال مننژیت",
+      "question": "آیا گردن سفت شده و تب دارید؟",
+      "when": {
+        "all": [
+          "neck_stiff",
+          "fever"
+        ],
+        "any": []
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_rash_meningitis",
+      "label": "جوش که با فشار رنگ نمی‌بازد",
+      "question": "آیا جوش یا لکه‌های قرمز یا بنفش دارید که با فشار دادن شیشه‌ی لیوان رنگ نمی‌بازند؟",
+      "when": {
+        "all": [],
+        "any": [
+          "non_blanching_rash"
+        ]
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_rigid",
+      "label": "شکم سفت و دردناک",
+      "question": "آیا شکمتان سفت و بسیار دردناک است؟",
+      "when": {
+        "all": [],
+        "any": [
+          "abdominal_rigidity"
+        ]
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_pregnancy",
+      "label": "خونریزی واژینال همراه با درد شکم",
+      "question": "آیا خونریزی واژینال همراه با درد شکم دارید؟",
+      "when": {
+        "all": [
+          "vaginal_bleed",
+          "abd_pain"
+        ],
+        "any": []
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_testicular",
+      "label": "درد شدید ناگهانی بیضه",
+      "question": "آیا درد شدید و ناگهانی در یک بیضه دارید؟",
+      "when": {
+        "all": [],
+        "any": [
+          "sudden_severe_scrotal_pain"
+        ]
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_dka",
+      "label": "بوی میوه‌ای در نفس",
+      "question": "آیا نفس شما بوی میوه‌ای دارد؟",
+      "when": {
+        "all": [
+          "fruity_breath"
+        ],
+        "any": []
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_dvt",
+      "label": "احتمال لختهٔ خون در ساق پا",
+      "question": "آیا یک ساق پا ناگهان ورم، درد یا گرمی پیدا کرده؟",
+      "when": {
+        "all": [
+          "unilateral_calf_swelling"
+        ],
+        "any": [
+          "calf_pain",
+          "calf_warmth"
+        ]
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_faint",
+      "label": "غش یا از دست رفتن هوشیاری",
+      "question": "آیا غش کرده‌اید یا هوشیاری‌تان از دست رفته؟",
+      "when": {
+        "all": [],
+        "any": [
+          "fainting"
+        ]
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_hemoptysis",
+      "label": "خون در سرفه",
+      "question": "آیا خون در خلط یا سرفه‌تان دیده‌اید؟",
+      "when": {
+        "all": [],
+        "any": [
+          "coughing_blood"
+        ]
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_cauda",
+      "label": "بی‌اختیاری ادرار یا مدفوع",
+      "question": "آیا بی‌اختیاری ادرار یا مدفوع یا بی‌حسی ناحیه‌ی زین دارید؟",
+      "when": {
+        "all": [],
+        "any": [
+          "bladder_bowel_loss"
+        ]
+      },
+      "message": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    },
+    {
+      "id": "rf_suicide",
+      "label": "افکار خودکشی",
+      "question": "آیا به مردن یا آسیب زدن به خودتان فکر می‌کنید؟",
+      "when": {
+        "all": [],
+        "any": [
+          "suicidal_thoughts"
+        ]
+      },
+      "message": "اگر به آسیب زدن به خود فکر می‌کنید، همین حالا با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید. تنها نمانید و با یک فرد قابل اعتماد صحبت کنید.",
+      "sources": [
+        {
+          "publisher": "WHO",
+          "title": "",
+          "url": "https://www.who.int/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "reviewStatus": "draft"
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "id": "research_048",
+  "name_fa": "هپاتیت آ",
+  "name_en": "Hepatitis A",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "appetite",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dark_urine",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تب",
+    "خستگی",
+    "تهوع و استفراغ",
+    "زردی",
+    "ادرار تیره",
+    "درد سمت راست بالای شکم",
+    "بی‌اشتهایی"
+  ],
+  "when_to_see_doctor_fa": [
+    "زردی، خستگی، تهوع یا ادرار تیره",
+    "اورژانس: گیجی، استفراغ مداوم یا اختلال انعقاد"
+  ],
+  "summary_fa": "هپاتیت آ (تخصص: گوارش و کبد، عفونی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "WHO: Hepatitis A",
+      "title": "",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/hepatitis-a",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: Hepatitis A",
+      "title": "",
+      "url": "https://www.cdc.gov/hepatitis-a/index.html",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NIDDK: Hepatitis A",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/health-information/liver-disease/viral-hepatitis/hepatitis-a",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "NHS: Hepatitis A",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/hepatitis-a/",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "مراقبت حمایتی (استراحت، مایعات، تغذیه)",
+    "پرهیز از داروهای کبدساز",
+    "بستری در موارد شدید"
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "id": "research_089",
+  "name_fa": "زگیل پوستی معمولی (زگیل)",
+  "name_en": "Common cutaneous wart",
+  "category": "دانشنامه بیماری‌ها",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "warts",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "skin_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "skin_thickening",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "black_dots_in_lesion",
+      "freq": "occasional",
+      "role": "core"
+    }
+  ],
+  "symptoms_fa": [
+    "برجستگی سخت و زبر پوستی",
+    "سطح کراتینه‌شده",
+    "در کف پا ممکن است دردناک باشد",
+    "گاهی چند زگیل کنار هم"
+  ],
+  "when_to_see_doctor_fa": [
+    "برجستگی سخت و زبر پوستی",
+    "اورژانس: تغییر رنگ، خونریزی یا درد"
+  ],
+  "summary_fa": "زگیل پوستی معمولی (زگیل) (تخصص: پوست). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NHS: Warts and verrucas",
+      "title": "",
+      "url": "https://www.nhs.uk/conditions/warts-and-verrucas/",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "Mayo Clinic: Common warts",
+      "title": "",
+      "url": "https://www.mayoclinic.org/diseases-conditions/common-warts/symptoms-causes/syc-20371125",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "AAD: Warts",
+      "title": "",
+      "url": "https://www.aad.org/public/diseases/a-z/warts",
+      "accessed": "",
+      "verified": false
+    },
+    {
+      "publisher": "CDC: HPV and Warts",
+      "title": "",
+      "url": "https://www.cdc.gov/hpv/about/cancers-caused-by-hpv.html",
+      "accessed": "",
+      "verified": false
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "اسید سالیسیلیک موضعی",
+    "کرایوتراپی (انجماد با نیتروژن مایع)",
+    "لیزر",
+    "ایمیکیمود"
+  ]
+}

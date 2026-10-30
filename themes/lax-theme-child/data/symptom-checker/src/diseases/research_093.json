@@ -1,0 +1,125 @@
+{
+  "id": "research_093",
+  "name_fa": "بزرگی خوش‌خیم پروستات",
+  "name_en": "Benign Prostatic Hyperplasia (BPH)",
+  "category": "بیماری‌های مجاری ادراری مردان",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "urgency",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "frequent_urine",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "night_urine",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "weak_stream",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "incomplete_emptying",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "urine_retention",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "urinary_leak",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "blood_urine",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "تکرر ادرار",
+    "فوریت ادرار",
+    "بیدار شدن شبانه برای ادرار (نیکتوری)",
+    "جریان ضعیف ادرار",
+    "تأخیر در شروع ادرار",
+    "قطع و وصل شدن جریان",
+    "چکه‌کردن در پایان ادرار",
+    "احساس تخلیه ناقص مثانه",
+    "نیاز به زور زدن",
+    "احتباس ادرار ناگهانی"
+  ],
+  "when_to_see_doctor_fa": [
+    "بروز علائم ادراری مزاحم",
+    "خون در ادرار",
+    "تب یا درد هنگام ادرار",
+    "اورژانس: ناتوانی کامل در ادرار کردن"
+  ],
+  "summary_fa": "بزرگی خوش‌خیم پروستات (تخصص: اورولوژی). علائم و موارد مراجعه فوری در ادامه آمده است.",
+  "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
+  "sources": [
+    {
+      "publisher": "NIDDK: Prostate Enlargement (BPH)",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "Mayo Clinic: BPH",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "MedlinePlus: BPH",
+      "title": "",
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "AUA Guideline: Management of BPH/LUTS",
+      "title": "",
+      "url": "https://www.auanet.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "treatments_fa": [
+    "پیگیری و تغییر سبک زندگی در علائم خفیف",
+    "آلفابلاکرها (شل‌کننده عضلات پروستات) مثل تامسولوسین",
+    "مهارکننده‌های ۵-آلفا ردوکتاز مثل فیناستراید و دوتاستراید",
+    "ترکیب دارویی",
+    "تادالافیل در برخی موارد",
+    "جراحی و کم‌تهاجمی: TURP (برداشتن پروستات از طریق مجرا)، لیزر، لیفت پروستات"
+  ]
+}
