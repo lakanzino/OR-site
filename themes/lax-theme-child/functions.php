@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.29.0' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.29.1' );
 }
 
 /**

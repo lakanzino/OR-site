@@ -140,6 +140,19 @@
     return { type: 'tag', tag: tag };
   }
 
+  var MATCH_LABELS = {
+    high: 'همخوانی بالا با علائم',
+    moderate: 'همخوانی نسبی',
+    low: 'احتمال ضعیف',
+  };
+  function matchLevelOf(matchedCount, tagCount) {
+    if (!tagCount) return 'low';
+    var share = matchedCount / tagCount;
+    if (share >= 0.5) return 'high';
+    if (share >= 0.25) return 'moderate';
+    return 'low';
+  }
+
   function buildResult(vocab, diseases, answers, emergencyIds) {
     var tagAnswers = answers.tags || {};
     var present = new Set();
@@ -174,7 +187,10 @@
           nameFa: s.disease.nameFa,
           nameEn: s.disease.nameEn,
           specialty: s.disease.specialty,
-          probability: Math.round(s.p * 100),
+          // No numeric probability: the score is relative, not calibrated.
+          // Level = share of this disease's tags that the visit matched.
+          matchLevel: matchLevelOf(s.matched.length, tagSetOf(s.disease).size),
+          matchLabelFa: MATCH_LABELS[matchLevelOf(s.matched.length, tagSetOf(s.disease).size)],
           matched: s.matched.map(function (t) { return labels[t] || t; }),
           symptoms: (s.disease.symptoms || []).slice(),
           whenToSeeDoctor: (s.disease.whenToSeeDoctor || []).slice(),

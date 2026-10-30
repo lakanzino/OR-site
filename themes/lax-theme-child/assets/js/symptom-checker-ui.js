@@ -105,7 +105,7 @@
       var head = el('div', 'hj-sc-card__head');
       head.appendChild(el('span', 'hj-sc-rank', '#' + (i + 1)));
       head.appendChild(el('h3', '', c.nameFa + ' (' + c.nameEn + ')'));
-      head.appendChild(el('span', 'hj-sc-prob', 'احتمال نسبی ' + c.probability + '٪'));
+      head.appendChild(el('span', 'hj-sc-prob', c.matchLabelFa));
       card.appendChild(head);
       if (c.matched.length) {
         card.appendChild(el('p', 'hj-sc-muted', 'با پاسخ‌های شما همخوان: ' + c.matched.join('، ')));
