@@ -29,6 +29,8 @@
 
 افزونهٔ وردپرس [`plugins/hamyar-symptom-guide/`](plugins/hamyar-symptom-guide/) برگه‌ای مستقل و پیش‌نویس بدون شورت‌کد برای بررسی و انتشار می‌سازد. راهنمای نصب و محدودیت‌ها در README افزونه است.
 
+**فاز ۲ (موتور) کامل شد:** موتور مستقل و بدون وردپرس در [`symptom-checker/engine/`](symptom-checker/engine/) با ۳۸ آزمون Node — شامل اجرای همان ۱۲ سناریوی فاز ۱ — و تفکیک شواهد هفت‌گانه. اجرا: `cd symptom-checker/engine && node --test` و `node bin/demo.js sc05`. [گزارش فاز ۲](docs/symptom-checker/phase-2-report.fa.md)
+
 **فاز ۱ (داده و سؤال) شروع شد:** بستهٔ دانش پیش‌نویس خوشهٔ درد شکم/پهلو با قرارداد schema، ۱۷ سؤال مشترک، ۵ موضوع، لایهٔ ایمنی مستقل و ۱۲ سناریوی آزمون در [`docs/symptom-checker/phase-1/`](docs/symptom-checker/phase-1/) است؛ اعتبارسنج و ۲۱ آزمون خودکار: `python3 tools/symptom-checker-audit/validate_phase1.py` و `python3 tools/symptom-checker-audit/test_phase1.py`. هیچ انتشار یا صفحهٔ عمومی از این بسته ساخته نشده و تأیید محتوایی تیم باز است. [گزارش فاز ۱](docs/symptom-checker/phase-1-report.fa.md)
 
 ## نمونهٔ راهنمای علائم
