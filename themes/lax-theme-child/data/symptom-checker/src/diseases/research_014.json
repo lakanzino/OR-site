@@ -12,7 +12,28 @@
     "elderly"
   ],
   "sex": "any",
-  "tags": [],
+  "tags": [
+    {
+      "tag": "fracture_fragility",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "height_loss",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "posture_change",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "back_pain",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
   "symptoms_fa": [
     "معمولاً بدون علامت تا زمان شکستگی",
     "کاهش قد",
@@ -28,33 +49,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Osteoporosis (https://www.who.int/news-room/fact-sheets/detail/osteoporosis)",
+      "publisher": "WHO: Osteoporosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/osteoporosis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Osteoporosis (https://www.nhs.uk/conditions/osteoporosis/)",
+      "publisher": "NHS: Osteoporosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/osteoporosis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Osteoporosis (https://www.mayoclinic.org/diseases-conditions/osteoporosis/symptoms-causes/syc-20351968)",
+      "publisher": "Mayo Clinic: Osteoporosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/osteoporosis/symptoms-causes/syc-20351968",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NOF: Osteoporosis (https://www.nof.org/)",
+      "publisher": "NOF: Osteoporosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nof.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

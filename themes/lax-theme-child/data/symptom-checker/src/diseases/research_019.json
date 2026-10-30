@@ -14,23 +14,48 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "fatigue",
+      "tag": "fever",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "fever",
+      "tag": "fatigue",
       "freq": "common",
       "role": "core"
     },
     {
       "tag": "sore_throat",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "swollen_glands",
+      "freq": "common",
+      "role": "core"
     },
     {
       "tag": "weight_loss",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sweating",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "cough",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -47,33 +72,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: HIV/AIDS (https://www.who.int/news-room/fact-sheets/detail/hiv-aids)",
+      "publisher": "WHO: HIV/AIDS",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/hiv-aids",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: HIV Basics (https://www.cdc.gov/hiv/basics/index.html)",
+      "publisher": "CDC: HIV Basics",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/hiv/basics/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: HIV and AIDS (https://www.nhs.uk/conditions/hiv-and-aids/)",
+      "publisher": "NHS: HIV and AIDS",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/hiv-and-aids/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: HIV/AIDS (https://www.mayoclinic.org/diseases-conditions/hiv-aids/symptoms-causes/syc-20373524)",
+      "publisher": "Mayo Clinic: HIV/AIDS",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/hiv-aids/symptoms-causes/syc-20373524",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

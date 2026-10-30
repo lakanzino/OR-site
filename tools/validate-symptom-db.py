@@ -37,7 +37,10 @@ REQUIRED = ["id", "name_fa", "name_en", "category", "prevalence", "urgency", "ag
             "sources", "review"]
 ALLOWED_DOMAINS = {"nhs.uk", "heart.org", "stroke.org", "aafp.org", "cdc.gov", "who.int",
                    "nih.gov", "nlm.nih.gov", "medlineplus.gov", "mayoclinic.org", "nice.org.uk",
-                   "acog.org", "diabetes.org", "thoracic.org", "cochrane.org"}
+                   "acog.org", "diabetes.org", "thoracic.org", "cochrane.org",
+                   # Guideline publishers used in disease profiles (added 2026-10-30):
+                   "auanet.org", "gi.org", "acc.org", "escardio.org", "aad.org", "aao.org",
+                   "entnet.org", "rheumatology.org", "kdigo.org"}
 ID_RE = re.compile(r"^[a-z0-9_]+$")
 PERSIAN_DIGITS = str.maketrans("۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩", "01234567890123456789")
 BANNED = [r"درمان خانگی", r"دمنوش", r"گیاه(?:ان)? دارویی", r"داروی گیاهی", r"طب سنتی",

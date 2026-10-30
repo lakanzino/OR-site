@@ -14,23 +14,53 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "dyspnea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sudden_shortness_of_breath",
+      "freq": "common",
+      "role": "red_flag"
+    },
+    {
+      "tag": "pleuritic_chest_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
       "tag": "chest_pain",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "cough",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "dizziness",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "dyspnea",
+      "tag": "cough",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "coughing_blood",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "palpitation",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fainting",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "unilateral_calf_swelling",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "calf_pain",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -51,33 +81,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Pulmonary embolism (https://www.who.int/news-room/fact-sheets/detail/pulmonary-embolism)",
+      "publisher": "WHO: Pulmonary embolism",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/pulmonary-embolism",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Pulmonary embolism (https://www.nhs.uk/conditions/pulmonary-embolism/)",
+      "publisher": "NHS: Pulmonary embolism",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/pulmonary-embolism/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Pulmonary embolism (https://www.mayoclinic.org/diseases-conditions/pulmonary-embolism/symptoms-causes/syc-20354647)",
+      "publisher": "Mayo Clinic: Pulmonary embolism",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/pulmonary-embolism/symptoms-causes/syc-20354647",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ESC Guidelines: Pulmonary Embolism (https://www.escardio.org/Guidelines/Clinical-Practice-Guidelines/Acute-Pulmonary-Embolism-Diagnosis-and-Management-of)",
+      "publisher": "ESC Guidelines: Pulmonary Embolism",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.escardio.org/Guidelines/Clinical-Practice-Guidelines/Acute-Pulmonary-Embolism-Diagnosis-and-Management-of",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

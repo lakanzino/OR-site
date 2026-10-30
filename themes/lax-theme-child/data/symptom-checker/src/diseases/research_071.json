@@ -14,7 +14,17 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "arm_jaw_pain",
+      "tag": "low_mood",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sleep_problem",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "appetite_change",
       "freq": "common",
       "role": "core"
     },
@@ -22,6 +32,21 @@
       "tag": "fatigue",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "concentration_problem",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "guilt",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "suicidal_thoughts",
+      "freq": "rare",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -42,33 +67,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Depression (https://www.who.int/news-room/fact-sheets/detail/depression)",
+      "publisher": "WHO: Depression",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/depression",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NIMH: Depression (https://www.nimh.nih.gov/health/topics/depression)",
+      "publisher": "NIMH: Depression",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nimh.nih.gov/health/topics/depression",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Depression (https://www.nhs.uk/mental-health/conditions/depression-in-adults/)",
+      "publisher": "NHS: Depression",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/mental-health/conditions/depression-in-adults/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Depression (major depressive disorder) (https://www.mayoclinic.org/diseases-conditions/depression/symptoms-causes/syc-20356007)",
+      "publisher": "Mayo Clinic: Depression (major depressive disorder)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/depression/symptoms-causes/syc-20356007",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

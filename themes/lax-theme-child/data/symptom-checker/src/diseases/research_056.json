@@ -14,18 +14,48 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "abd_pain",
-      "freq": "common",
-      "role": "core"
-    },
-    {
       "tag": "fatigue",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "jaundice",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "abdominal_swelling",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "leg_swelling",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "easy_bruising",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "confusion",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -42,33 +72,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Cirrhosis (https://www.who.int/news-room/fact-sheets/detail/cirrhosis)",
+      "publisher": "WHO: Cirrhosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/cirrhosis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NIDDK: Cirrhosis (https://www.niddk.nih.gov/health-information/liver-disease/cirrhosis)",
+      "publisher": "NIDDK: Cirrhosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/liver-disease/cirrhosis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Cirrhosis (https://www.nhs.uk/conditions/cirrhosis/)",
+      "publisher": "NHS: Cirrhosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/cirrhosis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Cirrhosis (https://www.mayoclinic.org/diseases-conditions/cirrhosis/symptoms-causes/syc-20351487)",
+      "publisher": "Mayo Clinic: Cirrhosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/cirrhosis/symptoms-causes/syc-20351487",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

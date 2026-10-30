@@ -14,9 +14,34 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "fatigue",
+      "tag": "menstrual_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "pelvic_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "painful_intercourse",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "infertility",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "anal_pain",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -35,33 +60,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Endometriosis (https://www.who.int/news-room/fact-sheets/detail/endometriosis)",
+      "publisher": "WHO: Endometriosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/endometriosis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Endometriosis (https://www.nhs.uk/conditions/endometriosis/)",
+      "publisher": "NHS: Endometriosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/endometriosis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Endometriosis (https://www.mayoclinic.org/diseases-conditions/endometriosis/symptoms-causes/syc-20354656)",
+      "publisher": "Mayo Clinic: Endometriosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/endometriosis/symptoms-causes/syc-20354656",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ACOG: Endometriosis (https://www.acog.org/womens-health/faqs/endometriosis)",
+      "publisher": "ACOG: Endometriosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.acog.org/womens-health/faqs/endometriosis",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

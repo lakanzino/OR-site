@@ -14,6 +14,11 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "positional_dizziness",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
       "tag": "dizziness",
       "freq": "common",
       "role": "core"
@@ -21,12 +26,12 @@
     {
       "tag": "nausea",
       "freq": "common",
-      "role": "core"
+      "role": "supporting"
     },
     {
-      "tag": "vision",
+      "tag": "eye_jerking",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     }
   ],
   "symptoms_fa": [
@@ -44,33 +49,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Vertigo (https://www.nhs.uk/conditions/vertigo/)",
+      "publisher": "NHS: Vertigo",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/vertigo/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Benign paroxysmal positional vertigo (BPPV) (https://www.mayoclinic.org/diseases-conditions/benign-paroxysmal-positional-vertigo/symptoms-causes/syc-20356171)",
+      "publisher": "Mayo Clinic: Benign paroxysmal positional vertigo (BPPV)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/benign-paroxysmal-positional-vertigo/symptoms-causes/syc-20356171",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NIDCD: BPPV (https://www.nidcd.nih.gov/health/benign-paroxysmal-positional-vertigo-bppv)",
+      "publisher": "NIDCD: BPPV",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nidcd.nih.gov/health/benign-paroxysmal-positional-vertigo-bppv",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAN Guidelines: BPPV (https://www.aan.com/Guidelines/home/GuidelineDetail/1130)",
+      "publisher": "AAN Guidelines: BPPV",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aan.com/Guidelines/home/GuidelineDetail/1130",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

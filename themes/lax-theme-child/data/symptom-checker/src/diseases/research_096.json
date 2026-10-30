@@ -14,9 +14,29 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "rash",
+      "tag": "vaginal_itch",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "vaginal_discharge",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "skin_burning",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "burning_urine",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "rash",
+      "freq": "common",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -34,33 +54,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "CDC: Vaginal Candidiasis (https://www.cdc.gov/candidiasis/vaginal/index.html)",
+      "publisher": "CDC: Vaginal Candidiasis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/candidiasis/vaginal/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Thrush in men and women (https://www.nhs.uk/conditions/thrush-in-men-and-women/)",
+      "publisher": "NHS: Thrush in men and women",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/thrush-in-men-and-women/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Vaginal yeast infection (https://www.mayoclinic.org/diseases-conditions/vaginal-yeast-infection/symptoms-causes/syc-20369634)",
+      "publisher": "Mayo Clinic: Vaginal yeast infection",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/vaginal-yeast-infection/symptoms-causes/syc-20369634",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ACOG: Vaginitis (https://www.acog.org/womens-health/faqs/vaginitis)",
+      "publisher": "ACOG: Vaginitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.acog.org/womens-health/faqs/vaginitis",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

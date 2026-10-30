@@ -19,28 +19,43 @@
       "role": "core"
     },
     {
-      "tag": "blood_urine",
+      "tag": "frequent_urine",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "urgency",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "chills",
+      "tag": "cloudy_urine",
       "freq": "common",
-      "role": "core"
+      "role": "supporting"
+    },
+    {
+      "tag": "pelvic_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "blood_urine",
+      "freq": "occasional",
+      "role": "supporting"
     },
     {
       "tag": "fever",
-      "freq": "common",
+      "freq": "occasional",
       "role": "supporting"
     },
     {
       "tag": "flank_pain",
-      "freq": "common",
+      "freq": "occasional",
       "role": "supporting"
     },
     {
-      "tag": "frequent_urine",
-      "freq": "common",
+      "tag": "chills",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -63,33 +78,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Bladder Infection (UTI) in Adults (https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults)",
+      "publisher": "NIDDK: Bladder Infection (UTI) in Adults",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Urinary Tract Infection (https://www.cdc.gov/uti/index.html)",
+      "publisher": "CDC: Urinary Tract Infection",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/uti/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Urinary tract infections (UTIs) (https://www.nhs.uk/conditions/urinary-tract-infections-utis/)",
+      "publisher": "NHS: Urinary tract infections (UTIs)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/urinary-tract-infections-utis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Urinary tract infection (UTI) (https://www.mayoclinic.org/diseases-conditions/urinary-tract-infection/symptoms-causes/syc-20353447)",
+      "publisher": "Mayo Clinic: Urinary tract infection (UTI)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/urinary-tract-infection/symptoms-causes/syc-20353447",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

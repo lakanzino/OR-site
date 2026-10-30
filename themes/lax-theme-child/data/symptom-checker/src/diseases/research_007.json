@@ -14,19 +14,29 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "cough",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "ear_nose",
-      "freq": "common",
-      "role": "core"
-    },
-    {
       "tag": "fever",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "cough",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nasal_discharge",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
+    },
+    {
+      "tag": "eye_redness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "rash",
+      "freq": "very_common",
+      "role": "core"
     }
   ],
   "symptoms_fa": [
@@ -46,33 +56,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Measles (https://www.who.int/news-room/fact-sheets/detail/measles)",
+      "publisher": "WHO: Measles",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/measles",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Measles (https://www.cdc.gov/measles/index.html)",
+      "publisher": "CDC: Measles",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/measles/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Measles (https://www.nhs.uk/conditions/measles/)",
+      "publisher": "NHS: Measles",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/measles/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Measles (https://www.mayoclinic.org/diseases-conditions/measles/symptoms-causes/syc-20374857)",
+      "publisher": "Mayo Clinic: Measles",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/measles/symptoms-causes/syc-20374857",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

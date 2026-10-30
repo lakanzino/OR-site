@@ -14,18 +14,28 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "fever",
-      "freq": "common",
+      "tag": "joint_pain",
+      "freq": "very_common",
       "role": "core"
+    },
+    {
+      "tag": "joint_swelling",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "joint_warmth",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "occasional",
+      "role": "supporting"
     },
     {
       "tag": "flank_pain",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "joint_pain",
-      "freq": "common",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -43,33 +53,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Gout (https://www.nhs.uk/conditions/gout/)",
+      "publisher": "NHS: Gout",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/gout/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Gout (https://www.mayoclinic.org/diseases-conditions/gout/symptoms-causes/syc-20372897)",
+      "publisher": "Mayo Clinic: Gout",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/gout/symptoms-causes/syc-20372897",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ACR: Gout Guidelines (https://rheumatology.org/gout-guideline)",
+      "publisher": "ACR: Gout Guidelines",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://rheumatology.org/gout-guideline",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NIDDK: Gout (https://www.niddk.nih.gov/health-information/digestive-diseases/gout)",
+      "publisher": "NIDDK: Gout",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gout",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

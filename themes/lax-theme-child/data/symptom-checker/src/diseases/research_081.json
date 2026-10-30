@@ -14,27 +14,37 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "nasal_discharge",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nasal_congestion",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sore_throat",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sneezing",
+      "freq": "common",
+      "role": "core"
+    },
+    {
       "tag": "cough",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "ear_nose",
-      "freq": "common",
-      "role": "core"
+      "tag": "fever",
+      "freq": "occasional",
+      "role": "supporting"
     },
     {
       "tag": "fatigue",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "fever",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "sore_throat",
       "freq": "common",
       "role": "supporting"
     }
@@ -56,33 +66,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "CDC: Common Cold (https://www.cdc.gov/common-cold/index.html)",
+      "publisher": "CDC: Common Cold",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/common-cold/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Common cold (https://www.nhs.uk/conditions/common-cold/)",
+      "publisher": "NHS: Common cold",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/common-cold/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Common cold (https://www.mayoclinic.org/diseases-conditions/common-cold/symptoms-causes/syc-20351605)",
+      "publisher": "Mayo Clinic: Common cold",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/common-cold/symptoms-causes/syc-20351605",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAFP: Common Cold (https://www.aafp.org/pubs/afp/issues/2019/0815/p215.html)",
+      "publisher": "AAFP: Common Cold",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aafp.org/pubs/afp/issues/2019/0815/p215.html",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

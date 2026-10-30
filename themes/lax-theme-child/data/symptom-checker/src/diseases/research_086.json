@@ -12,7 +12,23 @@
     "elderly"
   ],
   "sex": "any",
-  "tags": [],
+  "tags": [
+    {
+      "tag": "nail_change",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "brittle_nails",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nail_separation",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
   "symptoms_fa": [
     "ضخیم‌شدن ناخن",
     "تغییر رنگ ناخن",
@@ -28,33 +44,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "CDC: Fungal Nail Infections (https://www.cdc.gov/fungal/nail-infections.html)",
+      "publisher": "CDC: Fungal Nail Infections",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/fungal/nail-infections.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Fungal nail infection (https://www.nhs.uk/conditions/fungal-nail-infection/)",
+      "publisher": "NHS: Fungal nail infection",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/fungal-nail-infection/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Nail fungus (https://www.mayoclinic.org/diseases-conditions/nail-fungus/symptoms-causes/syc-20353294)",
+      "publisher": "Mayo Clinic: Nail fungus",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/nail-fungus/symptoms-causes/syc-20353294",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAD: Nail Fungus (https://www.aad.org/public/diseases/a-z/nail-fungus)",
+      "publisher": "AAD: Nail Fungus",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aad.org/public/diseases/a-z/nail-fungus",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

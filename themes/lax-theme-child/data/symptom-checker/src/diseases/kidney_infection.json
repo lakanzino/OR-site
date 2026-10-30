@@ -14,22 +14,22 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "chills",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "fatigue",
-      "freq": "common",
+      "tag": "flank_pain",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "fever",
-      "freq": "common",
-      "role": "supporting"
+      "freq": "very_common",
+      "role": "core"
     },
     {
-      "tag": "flank_pain",
+      "tag": "chills",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "burning_urine",
       "freq": "common",
       "role": "supporting"
     },
@@ -45,6 +45,11 @@
     },
     {
       "tag": "vomiting",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
       "freq": "common",
       "role": "supporting"
     }
@@ -66,33 +71,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Kidney Infection (Pyelonephritis) (https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-infection-pyelonephritis)",
+      "publisher": "NIDDK: Kidney Infection (Pyelonephritis)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-infection-pyelonephritis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Kidney infection (https://www.nhs.uk/conditions/kidney-infection/)",
+      "publisher": "NHS: Kidney infection",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/kidney-infection/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Kidney infection (https://www.mayoclinic.org/diseases-conditions/kidney-infection/symptoms-causes/syc-20353387)",
+      "publisher": "Mayo Clinic: Kidney infection",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/kidney-infection/symptoms-causes/syc-20353387",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Kidney Infection (https://www.cdc.gov/uti/about/kidney-infection.html)",
+      "publisher": "CDC: Kidney Infection",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/uti/about/kidney-infection.html",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

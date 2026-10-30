@@ -14,8 +14,8 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "rash",
-      "freq": "common",
+      "tag": "pale_patches",
+      "freq": "very_common",
       "role": "core"
     }
   ],
@@ -33,33 +33,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Vitiligo (https://www.nhs.uk/conditions/vitiligo/)",
+      "publisher": "NHS: Vitiligo",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/vitiligo/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Vitiligo (https://www.mayoclinic.org/diseases-conditions/vitiligo/symptoms-causes/syc-20355912)",
+      "publisher": "Mayo Clinic: Vitiligo",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/vitiligo/symptoms-causes/syc-20355912",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAD: Vitiligo (https://www.aad.org/public/diseases/a-z/vitiligo-overview)",
+      "publisher": "AAD: Vitiligo",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aad.org/public/diseases/a-z/vitiligo-overview",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Vitiligo Research Foundation (https://vrfoundation.org/)",
+      "publisher": "Vitiligo Research Foundation",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://vrfoundation.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

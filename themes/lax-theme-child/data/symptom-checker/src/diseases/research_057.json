@@ -15,17 +15,42 @@
   "tags": [
     {
       "tag": "heartburn",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "nausea",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "vomiting",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "early_satiety",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "bloating",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "black_stool",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "blood_vomit",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -45,33 +70,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Gastritis (https://www.niddk.nih.gov/health-information/digestive-diseases/gastritis)",
+      "publisher": "NIDDK: Gastritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gastritis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Gastritis (https://www.nhs.uk/conditions/gastritis/)",
+      "publisher": "NHS: Gastritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/gastritis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Gastritis (https://www.mayoclinic.org/diseases-conditions/gastritis/symptoms-causes/syc-20355807)",
+      "publisher": "Mayo Clinic: Gastritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/gastritis/symptoms-causes/syc-20355807",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ACG Guidelines: Gastritis (https://gi.org/guideline/management-of-gastritis/)",
+      "publisher": "ACG Guidelines: Gastritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://gi.org/guideline/management-of-gastritis/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

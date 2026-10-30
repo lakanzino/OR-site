@@ -14,14 +14,34 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "rash",
+      "tag": "eye_redness",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "eye_discharge",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "eye_burning",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "vision",
+      "tag": "eye_watering",
       "freq": "common",
-      "role": "core"
+      "role": "supporting"
+    },
+    {
+      "tag": "itch",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "light_sensitivity",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -41,33 +61,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Conjunctivitis (https://www.nhs.uk/conditions/conjunctivitis/)",
+      "publisher": "NHS: Conjunctivitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/conjunctivitis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Conjunctivitis (https://www.mayoclinic.org/diseases-conditions/pink-eye/symptoms-causes/syc-20376355)",
+      "publisher": "Mayo Clinic: Conjunctivitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/pink-eye/symptoms-causes/syc-20376355",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Conjunctivitis (Pink Eye) (https://www.cdc.gov/conjunctivitis/index.html)",
+      "publisher": "CDC: Conjunctivitis (Pink Eye)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/conjunctivitis/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAO: Conjunctivitis (https://www.aao.org/eye-health/diseases/pink-eye-conjunctivitis)",
+      "publisher": "AAO: Conjunctivitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aao.org/eye-health/diseases/pink-eye-conjunctivitis",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

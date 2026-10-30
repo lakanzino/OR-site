@@ -35,6 +35,7 @@
   var CORE_WEIGHT = 2;
   var SUPPORT_WEIGHT = 1;
   var DENY_PENALTY = 0.5; // share of a denied core tag's weight subtracted
+  var UNEXPLAINED_PENALTY = 1; // share of a confirmed-but-unlisted tag's weight subtracted
   var MIN_CONFIRMED = 2; // a candidate needs at least this many confirmed tags
   var CONFIDENT_SCORE = 0.6;
   var CONFIDENT_MARGIN = 0.15;
@@ -47,7 +48,8 @@
 
   function weightOf(disease, tag) {
     var role = (disease.tagRoles || {})[tag];
-    return role === 'core' ? CORE_WEIGHT : SUPPORT_WEIGHT;
+    // red_flag marks a tag that signals urgency; it weighs like a core tag.
+    return role === 'core' || role === 'red_flag' ? CORE_WEIGHT : SUPPORT_WEIGHT;
   }
 
   /** Answers → sets. Only 'yes' and 'no' carry information. */
@@ -97,7 +99,12 @@
       }
     });
     if (confirmed.length < MIN_CONFIRMED) return null;
-    var raw = (confirmedW - DENY_PENALTY * deniedCoreW) / total;
+    // A symptom the visitor has but this disease never lists is evidence against it.
+    var unexplainedW = 0;
+    present.forEach(function (t) {
+      if (tags.indexOf(t) === -1) unexplainedW += CORE_WEIGHT;
+    });
+    var raw = (confirmedW - DENY_PENALTY * deniedCoreW - UNEXPLAINED_PENALTY * unexplainedW) / total;
     return {
       disease: disease,
       score: Math.max(0, raw),
@@ -162,12 +169,12 @@
     eligible.forEach(function (d) {
       (d.tags || []).forEach(function (t) { count[t] = (count[t] || 0) + 1; });
     });
+    // Top N by relevance are fixed first; then only the unasked ones among them.
     return (vocab.tags || [])
-      .filter(function (t) {
-        return t.region === answers.region && !asked.has(t.id) && count[t.id];
-      })
+      .filter(function (t) { return t.region === answers.region && count[t.id]; })
       .sort(function (a, b) { return count[b.id] - count[a.id]; })
-      .slice(0, REGION_FIRST);
+      .slice(0, REGION_FIRST)
+      .filter(function (t) { return !asked.has(t.id); });
   }
 
   /**
@@ -178,12 +185,22 @@
   function questionBasis(diseases, answers) {
     var scored = rank(diseases, answers);
     if (scored.length) return scored.slice(0, 10);
+    var ev = evidenceOf(answers.tags);
     var eligible = diseases.filter(function (d) {
       return d.rankable && passesFilters(d, answers);
     });
-    if (!eligible.length) return [];
-    return eligible.map(function (d) {
-      return { disease: d, p: 1 / eligible.length };
+    // Nothing reaches the candidate threshold yet: diseases that share at
+    // least one confirmed symptom are the next best basis, weighted by overlap.
+    var partial = eligible.filter(function (d) {
+      return (d.tags || []).some(function (t) { return ev.present.has(t); });
+    });
+    var pool = partial.length ? partial : eligible;
+    if (!pool.length) return [];
+    return pool.map(function (d) {
+      var w = (d.tags || []).reduce(function (acc, t) {
+        return acc + (ev.present.has(t) ? weightOf(d, t) : 0);
+      }, 0);
+      return { disease: d, p: 1 + w };
     });
   }
 

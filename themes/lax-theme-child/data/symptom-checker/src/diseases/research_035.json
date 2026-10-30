@@ -14,7 +14,17 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "abd_pain",
+      "tag": "heavy_period",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "pelvic_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "frequent_urine",
       "freq": "common",
       "role": "core"
     },
@@ -24,8 +34,13 @@
       "role": "core"
     },
     {
-      "tag": "frequent_urine",
+      "tag": "abdominal_swelling",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "infertility",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -45,33 +60,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Fibroids (https://www.nhs.uk/conditions/fibroids/)",
+      "publisher": "NHS: Fibroids",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/fibroids/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Uterine fibroids (https://www.mayoclinic.org/diseases-conditions/uterine-fibroids/symptoms-causes/syc-20354288)",
+      "publisher": "Mayo Clinic: Uterine fibroids",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/uterine-fibroids/symptoms-causes/syc-20354288",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ACOG: Uterine Fibroids (https://www.acog.org/womens-health/faqs/uterine-fibroids)",
+      "publisher": "ACOG: Uterine Fibroids",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.acog.org/womens-health/faqs/uterine-fibroids",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NICE: Fibroids (https://cks.nice.org.uk/topics/fibroids/)",
+      "publisher": "NICE: Fibroids",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://cks.nice.org.uk/topics/fibroids/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

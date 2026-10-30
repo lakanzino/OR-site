@@ -131,13 +131,15 @@ def build(published_only=False):
             "tags": tag_list,
             "tagRoles": roles,
             "tagFreq": freqs,
-            "rankable": len(tag_list) >= MIN_TAGS,
+            "rankable": len(tag_list) >= MIN_TAGS and d.get("checker_rankable", True),
+            "checkerNote": d.get("checker_note", ""),
             "symptoms": d["symptoms_fa"],
             "whenToSeeDoctor": d["when_to_see_doctor_fa"],
             "summary": d["summary_fa"],
             "nextStep": d["next_step_fa"],
             "sources": [
-                {"publisher": s.get("publisher", ""), "url": s.get("url", "")}
+                {"publisher": s.get("publisher", ""), "url": s.get("url", ""),
+                 "verified": bool(s.get("verified", False))}
                 for s in d["sources"]
             ],
             "reviewStatus": status,

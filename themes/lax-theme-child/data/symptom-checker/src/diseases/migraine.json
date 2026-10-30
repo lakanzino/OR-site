@@ -14,23 +14,43 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "fatigue",
-      "freq": "common",
-      "role": "core"
-    },
-    {
       "tag": "headache",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "nausea",
-      "freq": "common",
-      "role": "supporting"
+      "freq": "very_common",
+      "role": "core"
     },
     {
       "tag": "vomiting",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "light_sensitivity",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vision",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "numbness",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "weakness",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -53,33 +73,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Migraine (https://www.nhs.uk/conditions/migraine/)",
+      "publisher": "NHS: Migraine",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/migraine/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Migraine (https://www.mayoclinic.org/diseases-conditions/migraine/symptoms-causes/syc-20360201)",
+      "publisher": "Mayo Clinic: Migraine",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/migraine/symptoms-causes/syc-20360201",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NICE CKS: Migraine (https://cks.nice.org.uk/topics/migraine/)",
+      "publisher": "NICE CKS: Migraine",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://cks.nice.org.uk/topics/migraine/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "WHO: Headache disorders (https://www.who.int/news-room/fact-sheets/detail/headache-disorders)",
+      "publisher": "WHO: Headache disorders",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/headache-disorders",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

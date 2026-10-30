@@ -15,42 +15,37 @@
   "tags": [
     {
       "tag": "abd_pain",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
-    },
-    {
-      "tag": "chills",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "fever",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "jaundice",
-      "freq": "common",
-      "role": "supporting"
     },
     {
       "tag": "nausea",
       "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "rash",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "vision",
-      "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
       "tag": "vomiting",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "back_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fever",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "chills",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -75,31 +70,40 @@
     {
       "publisher": "NIDDK: Gallstones",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "Mayo Clinic: Gallstones",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "MedlinePlus: Gallstones",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "NHS: Gallstones",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,9 +14,24 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "rash",
+      "tag": "scaling",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "itch",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "facial_redness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "rash",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -34,33 +49,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Seborrhoeic dermatitis (https://www.nhs.uk/conditions/seborrhoeic-dermatitis/)",
+      "publisher": "NHS: Seborrhoeic dermatitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/seborrhoeic-dermatitis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Seborrheic dermatitis (https://www.mayoclinic.org/diseases-conditions/seborrheic-dermatitis/symptoms-causes/syc-20352745)",
+      "publisher": "Mayo Clinic: Seborrheic dermatitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/seborrheic-dermatitis/symptoms-causes/syc-20352745",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAD: Seborrheic Dermatitis (https://www.aad.org/public/diseases/a-z/seborrheic-dermatitis)",
+      "publisher": "AAD: Seborrheic Dermatitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aad.org/public/diseases/a-z/seborrheic-dermatitis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NICE CKS: Seborrhoeic dermatitis (https://cks.nice.org.uk/topics/seborrhoeic-dermatitis/)",
+      "publisher": "NICE CKS: Seborrhoeic dermatitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://cks.nice.org.uk/topics/seborrhoeic-dermatitis/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -12,7 +12,38 @@
     "elderly"
   ],
   "sex": "any",
-  "tags": [],
+  "tags": [
+    {
+      "tag": "hallucination",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "disorganized_speech",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "social_withdrawal",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "daily_function_loss",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "concentration_problem",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "sleep_problem",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
   "symptoms_fa": [
     "هذیان",
     "توهم",
@@ -28,33 +59,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Schizophrenia (https://www.who.int/news-room/fact-sheets/detail/schizophrenia)",
+      "publisher": "WHO: Schizophrenia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/schizophrenia",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NIMH: Schizophrenia (https://www.nimh.nih.gov/health/topics/schizophrenia)",
+      "publisher": "NIMH: Schizophrenia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nimh.nih.gov/health/topics/schizophrenia",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Schizophrenia (https://www.nhs.uk/mental-health/conditions/schizophrenia/)",
+      "publisher": "NHS: Schizophrenia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/mental-health/conditions/schizophrenia/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Schizophrenia (https://www.mayoclinic.org/diseases-conditions/schizophrenia/symptoms-causes/syc-20354443)",
+      "publisher": "Mayo Clinic: Schizophrenia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/schizophrenia/symptoms-causes/syc-20354443",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

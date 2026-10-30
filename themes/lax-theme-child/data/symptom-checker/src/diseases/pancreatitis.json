@@ -15,11 +15,21 @@
   "tags": [
     {
       "tag": "abd_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "vomiting",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "dyspnea",
+      "tag": "back_pain",
       "freq": "common",
       "role": "core"
     },
@@ -29,13 +39,28 @@
       "role": "supporting"
     },
     {
-      "tag": "nausea",
+      "tag": "palpitation",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "vomiting",
+      "tag": "bloating",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "food_trigger",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "abdominal_rigidity",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -59,31 +84,40 @@
     {
       "publisher": "NIDDK: Acute Pancreatitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "Mayo Clinic: Pancreatitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "MedlinePlus: Pancreatitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "ACG Guideline: Acute Pancreatitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://gi.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

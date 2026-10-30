@@ -14,18 +14,33 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "sore_throat",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "swollen_glands",
+      "freq": "common",
+      "role": "core"
+    },
+    {
       "tag": "dyspnea",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "fever",
-      "freq": "common",
-      "role": "core"
+      "tag": "weakness",
+      "freq": "occasional",
+      "role": "supporting"
     },
     {
-      "tag": "sore_throat",
-      "freq": "common",
+      "tag": "palpitation",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -45,33 +60,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Diphtheria (https://www.who.int/news-room/fact-sheets/detail/diphtheria)",
+      "publisher": "WHO: Diphtheria",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/diphtheria",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Diphtheria (https://www.cdc.gov/diphtheria/index.html)",
+      "publisher": "CDC: Diphtheria",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/diphtheria/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Diphtheria (https://www.nhs.uk/conditions/diphtheria/)",
+      "publisher": "NHS: Diphtheria",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/diphtheria/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Diphtheria (https://www.mayoclinic.org/diseases-conditions/diphtheria/symptoms-causes/syc-20351897)",
+      "publisher": "Mayo Clinic: Diphtheria",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/diphtheria/symptoms-causes/syc-20351897",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

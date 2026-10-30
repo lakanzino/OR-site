@@ -14,28 +14,43 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "weakness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "core"
+    },
+    {
       "tag": "dizziness",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "fatigue",
+      "tag": "dark_patches",
       "freq": "common",
       "role": "core"
     },
     {
       "tag": "nausea",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
-      "tag": "rash",
+      "tag": "salt_craving",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
-      "tag": "weight_loss",
-      "freq": "common",
+      "tag": "vomiting",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -56,33 +71,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Addison's Disease (https://www.niddk.nih.gov/health-information/endocrine-diseases/adrenal-insufficiency-addisons-disease)",
+      "publisher": "NIDDK: Addison's Disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/endocrine-diseases/adrenal-insufficiency-addisons-disease",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Addison's disease (https://www.nhs.uk/conditions/addisons-disease/)",
+      "publisher": "NHS: Addison's disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/addisons-disease/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Addison's disease (https://www.mayoclinic.org/diseases-conditions/addisons-disease/symptoms-causes/syc-20350293)",
+      "publisher": "Mayo Clinic: Addison's disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/addisons-disease/symptoms-causes/syc-20350293",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Endocrine Society: Adrenal Insufficiency (https://www.endocrine.org/patient-engagement/endocrine-library/adrenal-insufficiency)",
+      "publisher": "Endocrine Society: Adrenal Insufficiency",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.endocrine.org/patient-engagement/endocrine-library/adrenal-insufficiency",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

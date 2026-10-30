@@ -12,7 +12,43 @@
     "elderly"
   ],
   "sex": "any",
-  "tags": [],
+  "tags": [
+    {
+      "tag": "weakness",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "neck_stiff",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "balance_problem",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
   "symptoms_fa": [
     "اغلب بدون علامت یا علائم خفیف گوارشی",
     "مننژیت آسپتیک",
@@ -27,33 +63,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Poliomyelitis (https://www.who.int/news-room/fact-sheets/detail/poliomyelitis)",
+      "publisher": "WHO: Poliomyelitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/poliomyelitis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Polio (https://www.cdc.gov/polio/index.html)",
+      "publisher": "CDC: Polio",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/polio/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Polio (https://www.nhs.uk/conditions/polio/)",
+      "publisher": "NHS: Polio",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/polio/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Polio (https://www.mayoclinic.org/diseases-conditions/polio/symptoms-causes/syc-20376567)",
+      "publisher": "Mayo Clinic: Polio",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/polio/symptoms-causes/syc-20376567",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

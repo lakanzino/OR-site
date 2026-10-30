@@ -12,7 +12,23 @@
     "elderly"
   ],
   "sex": "any",
-  "tags": [],
+  "tags": [
+    {
+      "tag": "central_vision_loss",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "vision_distortion",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
   "symptoms_fa": [
     "از دست رفتن بینایی مرکزی",
     "دیدن خطوط کج یا موج‌دار",
@@ -27,33 +43,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Age-related macular degeneration (https://www.who.int/news-room/fact-sheets/detail/age-related-macular-degeneration)",
+      "publisher": "WHO: Age-related macular degeneration",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/age-related-macular-degeneration",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Macular degeneration (https://www.nhs.uk/conditions/age-related-macular-degeneration-amd/)",
+      "publisher": "NHS: Macular degeneration",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/age-related-macular-degeneration-amd/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Macular degeneration (https://www.mayoclinic.org/diseases-conditions/macular-degeneration/symptoms-causes/syc-20356084)",
+      "publisher": "Mayo Clinic: Macular degeneration",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/macular-degeneration/symptoms-causes/syc-20356084",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAO: AMD (https://www.aao.org/eye-health/diseases/amd-macular-degeneration)",
+      "publisher": "AAO: AMD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aao.org/eye-health/diseases/amd-macular-degeneration",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

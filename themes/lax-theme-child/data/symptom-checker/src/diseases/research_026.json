@@ -14,9 +14,24 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "itch",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "dry_skin",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
       "tag": "rash",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "skin_thickening",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -34,33 +49,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Atopic eczema (https://www.nhs.uk/conditions/atopic-eczema/)",
+      "publisher": "NHS: Atopic eczema",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/atopic-eczema/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Atopic dermatitis (eczema) (https://www.mayoclinic.org/diseases-conditions/atopic-dermatitis-eczema/symptoms-causes/syc-20353273)",
+      "publisher": "Mayo Clinic: Atopic dermatitis (eczema)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/atopic-dermatitis-eczema/symptoms-causes/syc-20353273",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NIAID: Atopic Dermatitis (https://www.niaid.nih.gov/diseases-conditions/atopic-dermatitis-eczema)",
+      "publisher": "NIAID: Atopic Dermatitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niaid.nih.gov/diseases-conditions/atopic-dermatitis-eczema",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAD: Eczema (https://www.aad.org/public/diseases/eczema)",
+      "publisher": "AAD: Eczema",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aad.org/public/diseases/eczema",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

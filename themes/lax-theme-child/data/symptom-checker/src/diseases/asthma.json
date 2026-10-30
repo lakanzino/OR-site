@@ -14,17 +14,22 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "chest_pain",
-      "freq": "common",
+      "tag": "wheeze",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "cough",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "dyspnea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "chest_pressure",
       "freq": "common",
       "role": "supporting"
     }
@@ -47,33 +52,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Asthma (https://www.who.int/news-room/fact-sheets/detail/asthma)",
+      "publisher": "WHO: Asthma",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/asthma",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Asthma (https://www.mayoclinic.org/diseases-conditions/asthma/symptoms-causes/syc-20369653)",
+      "publisher": "Mayo Clinic: Asthma",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/asthma/symptoms-causes/syc-20369653",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Asthma (https://www.nhs.uk/conditions/asthma/)",
+      "publisher": "NHS: Asthma",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/asthma/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "GINA Guidelines: Asthma (https://ginasthma.org/reports/)",
+      "publisher": "GINA Guidelines: Asthma",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://ginasthma.org/reports/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

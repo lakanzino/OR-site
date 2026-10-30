@@ -15,13 +15,38 @@
   "tags": [
     {
       "tag": "dyspnea",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "leg_swelling",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "night_breathlessness",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "wheeze",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "cough",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "palpitation",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -42,33 +67,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Cardiovascular diseases (https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds))",
+      "publisher": "WHO: Cardiovascular diseases )",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Heart failure (https://www.nhs.uk/conditions/heart-failure/)",
+      "publisher": "NHS: Heart failure",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/heart-failure/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Heart failure (https://www.mayoclinic.org/diseases-conditions/heart-failure/symptoms-causes/syc-20373142)",
+      "publisher": "Mayo Clinic: Heart failure",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/heart-failure/symptoms-causes/syc-20373142",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ACC/AHA Guidelines: Heart Failure (https://www.acc.org/Guidelines)",
+      "publisher": "ACC/AHA Guidelines: Heart Failure",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.acc.org/Guidelines",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

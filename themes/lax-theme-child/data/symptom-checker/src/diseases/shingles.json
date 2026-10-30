@@ -14,18 +14,38 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "blisters",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "skin_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "skin_burning",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "numbness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "itch",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
       "tag": "fever",
       "freq": "common",
-      "role": "core"
+      "role": "supporting"
     },
     {
       "tag": "headache",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "rash",
-      "freq": "common",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -46,33 +66,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "CDC: Shingles (Herpes Zoster) (https://www.cdc.gov/shingles/index.html)",
+      "publisher": "CDC: Shingles (Herpes Zoster)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/shingles/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Shingles (https://www.nhs.uk/conditions/shingles/)",
+      "publisher": "NHS: Shingles",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/shingles/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Shingles (https://www.mayoclinic.org/diseases-conditions/shingles/symptoms-causes/syc-20353054)",
+      "publisher": "Mayo Clinic: Shingles",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/shingles/symptoms-causes/syc-20353054",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAD: Shingles (https://www.aad.org/public/diseases/rashes/shingles)",
+      "publisher": "AAD: Shingles",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aad.org/public/diseases/rashes/shingles",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

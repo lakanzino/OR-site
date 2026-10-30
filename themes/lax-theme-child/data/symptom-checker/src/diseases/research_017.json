@@ -14,12 +14,22 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "abd_pain",
-      "freq": "common",
+      "tag": "blood_in_stool",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "diarrhea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "tenesmus",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "abd_pain",
       "freq": "common",
       "role": "core"
     },
@@ -51,33 +61,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Ulcerative Colitis (https://www.niddk.nih.gov/health-information/digestive-diseases/ulcerative-colitis)",
+      "publisher": "NIDDK: Ulcerative Colitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/ulcerative-colitis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Ulcerative colitis (https://www.nhs.uk/conditions/ulcerative-colitis/)",
+      "publisher": "NHS: Ulcerative colitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/ulcerative-colitis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Ulcerative colitis (https://www.mayoclinic.org/diseases-conditions/ulcerative-colitis/symptoms-causes/syc-20353326)",
+      "publisher": "Mayo Clinic: Ulcerative colitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/ulcerative-colitis/symptoms-causes/syc-20353326",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CCFA: Ulcerative Colitis (https://www.crohnscolitisfoundation.org/what-is-ulcerative-colitis)",
+      "publisher": "CCFA: Ulcerative Colitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.crohnscolitisfoundation.org/what-is-ulcerative-colitis",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

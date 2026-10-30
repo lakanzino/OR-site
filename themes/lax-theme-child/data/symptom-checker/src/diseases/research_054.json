@@ -14,9 +14,24 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "rash",
+      "tag": "blood_in_stool",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "anal_lump",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "anal_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "itch",
+      "freq": "common",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -38,31 +53,39 @@
     {
       "publisher": "NIDDK: Hemorrhoids",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "Mayo Clinic: Hemorrhoids",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "MedlinePlus: Hemorrhoids",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "ASCRS Clinical Practice Guidelines: Hemorrhoids",
       "title": "",
       "url": "",
-      "accessed": ""
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

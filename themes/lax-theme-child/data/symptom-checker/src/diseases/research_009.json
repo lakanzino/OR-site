@@ -14,19 +14,19 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "chills",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "dyspnea",
-      "freq": "common",
-      "role": "core"
-    },
-    {
       "tag": "fever",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "chills",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sweating",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
       "tag": "headache",
@@ -34,7 +34,7 @@
       "role": "supporting"
     },
     {
-      "tag": "jaundice",
+      "tag": "body_ache",
       "freq": "common",
       "role": "supporting"
     },
@@ -44,13 +44,33 @@
       "role": "supporting"
     },
     {
-      "tag": "sweating",
+      "tag": "vomiting",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "vomiting",
+      "tag": "fatigue",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "confusion",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "seizure",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -72,33 +92,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Malaria (https://www.who.int/news-room/fact-sheets/detail/malaria)",
+      "publisher": "WHO: Malaria",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/malaria",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Malaria (https://www.cdc.gov/malaria/index.html)",
+      "publisher": "CDC: Malaria",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/malaria/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Malaria (https://www.nhs.uk/conditions/malaria/)",
+      "publisher": "NHS: Malaria",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/malaria/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Malaria (https://www.mayoclinic.org/diseases-conditions/malaria/symptoms-causes/syc-20351184)",
+      "publisher": "Mayo Clinic: Malaria",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/malaria/symptoms-causes/syc-20351184",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

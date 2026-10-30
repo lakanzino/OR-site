@@ -14,12 +14,22 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "ear_nose",
-      "freq": "common",
+      "tag": "ear_pain",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "fever",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "hearing_loss",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "ear_discharge",
       "freq": "common",
       "role": "core"
     }
@@ -40,33 +50,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Ear infection (middle ear) (https://www.nhs.uk/conditions/ear-infections/)",
+      "publisher": "NHS: Ear infection (middle ear)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/ear-infections/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Ear infection (middle ear) (https://www.mayoclinic.org/diseases-conditions/ear-infections/symptoms-causes/syc-20351616)",
+      "publisher": "Mayo Clinic: Ear infection (middle ear)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/ear-infections/symptoms-causes/syc-20351616",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAP: Acute Otitis Media (https://publications.aap.org/pediatrics/article/131/3/e964/30912/The-Diagnosis-and-Management-of-Acute-Otitis)",
+      "publisher": "AAP: Acute Otitis Media",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://publications.aap.org/pediatrics/article/131/3/e964/30912/The-Diagnosis-and-Management-of-Acute-Otitis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Ear Infection (https://www.cdc.gov/antibiotic-use/ear-infection.html)",
+      "publisher": "CDC: Ear Infection",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/antibiotic-use/ear-infection.html",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

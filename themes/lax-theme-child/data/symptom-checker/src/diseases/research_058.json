@@ -14,12 +14,27 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "bloating",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
       "tag": "abd_pain",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "diarrhea",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "food_trigger",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "flatulence",
       "freq": "common",
       "role": "core"
     }
@@ -39,27 +54,31 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Lactose Intolerance (https://www.niddk.nih.gov/health-information/digestive-diseases/lactose-intolerance)",
+      "publisher": "NIDDK: Lactose Intolerance",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/lactose-intolerance",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Lactose intolerance (https://www.nhs.uk/conditions/lactose-intolerance/)",
+      "publisher": "NHS: Lactose intolerance",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/lactose-intolerance/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Lactose intolerance (https://www.mayoclinic.org/diseases-conditions/lactose-intolerance/symptoms-causes/syc-20374224)",
+      "publisher": "Mayo Clinic: Lactose intolerance",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/lactose-intolerance/symptoms-causes/syc-20374224",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

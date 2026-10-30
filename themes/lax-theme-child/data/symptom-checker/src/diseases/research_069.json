@@ -14,9 +14,34 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "fatigue",
-      "freq": "common",
+      "tag": "pallor",
+      "freq": "very_common",
       "role": "core"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "abdominal_swelling",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "bone_deformity",
+      "freq": "occasional",
+      "role": "core"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -35,33 +60,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Thalassaemia (https://www.who.int/news-room/fact-sheets/detail/thalassaemia)",
+      "publisher": "WHO: Thalassaemia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/thalassaemia",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHLBI: Thalassemia (https://www.nhlbi.nih.gov/health-topics/thalassemias)",
+      "publisher": "NHLBI: Thalassemia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhlbi.nih.gov/health-topics/thalassemias",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Thalassaemia (https://www.nhs.uk/conditions/thalassaemia/)",
+      "publisher": "NHS: Thalassaemia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/thalassaemia/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Thalassemia (https://www.mayoclinic.org/diseases-conditions/thalassemia/symptoms-causes/syc-20354995)",
+      "publisher": "Mayo Clinic: Thalassemia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/thalassemia/symptoms-causes/syc-20354995",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

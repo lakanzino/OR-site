@@ -14,14 +14,44 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "arm_jaw_pain",
+      "tag": "facial_droop",
+      "freq": "very_common",
+      "role": "red_flag"
+    },
+    {
+      "tag": "arm_weakness",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "speech_difficulty",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sudden_onset",
       "freq": "common",
       "role": "core"
     },
     {
+      "tag": "numbness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
       "tag": "dizziness",
       "freq": "common",
-      "role": "core"
+      "role": "supporting"
+    },
+    {
+      "tag": "balance_problem",
+      "freq": "common",
+      "role": "supporting"
     },
     {
       "tag": "headache",
@@ -29,8 +59,18 @@
       "role": "supporting"
     },
     {
-      "tag": "vision",
+      "tag": "confusion",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -54,33 +94,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Stroke (https://www.who.int/news-room/fact-sheets/detail/stroke)",
+      "publisher": "WHO: Stroke",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/stroke",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Stroke (https://www.cdc.gov/stroke/about/index.html)",
+      "publisher": "CDC: Stroke",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/stroke/about/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Stroke (https://www.nhs.uk/conditions/stroke/)",
+      "publisher": "NHS: Stroke",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/stroke/symptoms/",
+      "accessed": "2026-10-30",
+      "verified": true
     },
     {
-      "publisher": "Mayo Clinic: Stroke (https://www.mayoclinic.org/diseases-conditions/stroke/symptoms-causes/syc-20350113)",
+      "publisher": "Mayo Clinic: Stroke",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/stroke/symptoms-causes/syc-20350113",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,23 +14,33 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "cough",
+      "tag": "groin_bulge",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "groin_pain",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "fever",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "nausea",
+      "tag": "scrotal_swelling",
       "freq": "common",
       "role": "supporting"
     },
     {
+      "tag": "nausea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
       "tag": "vomiting",
-      "freq": "common",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -52,31 +62,40 @@
     {
       "publisher": "Mayo Clinic: Inguinal hernia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "NIDDK: Inguinal hernia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "MedlinePlus: Hernia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "NHS: Inguinal hernia repair",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

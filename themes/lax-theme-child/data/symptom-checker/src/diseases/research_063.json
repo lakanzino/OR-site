@@ -15,13 +15,33 @@
   "tags": [
     {
       "tag": "blood_urine",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "facial_swelling",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "fatigue",
+      "tag": "leg_swelling",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "low_urine",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "foamy_urine",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -40,33 +60,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Glomerulonephritis (https://www.niddk.nih.gov/health-information/kidney-disease/glomerulonephritis)",
+      "publisher": "NIDDK: Glomerulonephritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/glomerulonephritis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Glomerulonephritis (https://www.nhs.uk/conditions/glomerulonephritis/)",
+      "publisher": "NHS: Glomerulonephritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/glomerulonephritis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Glomerulonephritis (https://www.mayoclinic.org/diseases-conditions/glomerulonephritis/symptoms-causes/syc-20355705)",
+      "publisher": "Mayo Clinic: Glomerulonephritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/glomerulonephritis/symptoms-causes/syc-20355705",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "KDIGO Guidelines: Glomerulonephritis (https://kdigo.org/guidelines/glomerular-diseases/)",
+      "publisher": "KDIGO Guidelines: Glomerulonephritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://kdigo.org/guidelines/glomerular-diseases/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

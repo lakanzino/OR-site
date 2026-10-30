@@ -15,6 +15,21 @@
   "tags": [
     {
       "tag": "joint_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "morning_stiffness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "joint_swelling",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "joint_crepitus",
       "freq": "common",
       "role": "core"
     }
@@ -35,33 +50,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Osteoarthritis (https://www.nhs.uk/conditions/osteoarthritis/)",
+      "publisher": "NHS: Osteoarthritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/osteoarthritis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Osteoarthritis (https://www.mayoclinic.org/diseases-conditions/osteoarthritis/symptoms-causes/syc-20351925)",
+      "publisher": "Mayo Clinic: Osteoarthritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/osteoarthritis/symptoms-causes/syc-20351925",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Osteoarthritis (https://www.cdc.gov/arthritis/about/osteoarthritis.html)",
+      "publisher": "CDC: Osteoarthritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/arthritis/about/osteoarthritis.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "OARSI Guidelines: Osteoarthritis (https://oarsi.org/guidelines)",
+      "publisher": "OARSI Guidelines: Osteoarthritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://oarsi.org/guidelines",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

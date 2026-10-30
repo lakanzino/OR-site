@@ -14,9 +14,34 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "rash",
+      "tag": "missed_period",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "hirsutism",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "acne_lesions",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "weight_gain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "infertility",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dark_patches",
+      "freq": "common",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -35,33 +60,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Polycystic ovary syndrome (https://www.who.int/news-room/fact-sheets/detail/polycystic-ovary-syndrome)",
+      "publisher": "WHO: Polycystic ovary syndrome",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/polycystic-ovary-syndrome",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Polycystic ovary syndrome (PCOS) (https://www.nhs.uk/conditions/polycystic-ovary-syndrome-pcos/)",
+      "publisher": "NHS: Polycystic ovary syndrome (PCOS)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/polycystic-ovary-syndrome-pcos/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: PCOS (https://www.mayoclinic.org/diseases-conditions/pcos/symptoms-causes/syc-20353439)",
+      "publisher": "Mayo Clinic: PCOS",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/pcos/symptoms-causes/syc-20353439",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ASRM: PCOS (https://www.asrm.org/topics/topic-detail/polycystic-ovary-syndrome/)",
+      "publisher": "ASRM: PCOS",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.asrm.org/topics/topic-detail/polycystic-ovary-syndrome/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

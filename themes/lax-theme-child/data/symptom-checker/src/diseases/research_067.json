@@ -15,13 +15,38 @@
   "tags": [
     {
       "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "pallor",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "jaundice",
+      "tag": "tongue_inflammation",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "numbness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "balance_problem",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "concentration_problem",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -41,33 +66,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Pernicious Anemia (https://www.niddk.nih.gov/health-information/blood-diseases/pernicious-anemia)",
+      "publisher": "NIDDK: Pernicious Anemia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/blood-diseases/pernicious-anemia",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Vitamin B12 or folate deficiency anaemia (https://www.nhs.uk/conditions/vitamin-b12-or-folate-deficiency-anaemia/)",
+      "publisher": "NHS: Vitamin B12 or folate deficiency anaemia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/vitamin-b12-or-folate-deficiency-anaemia/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Vitamin deficiency anemia (https://www.mayoclinic.org/diseases-conditions/vitamin-deficiency-anemia/symptoms-causes/syc-20355025)",
+      "publisher": "Mayo Clinic: Vitamin deficiency anemia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/vitamin-deficiency-anemia/symptoms-causes/syc-20355025",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "B12 Deficiency.org (https://www.b12deficiency.info/)",
+      "publisher": "B12 Deficiency.org",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.b12deficiency.info/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

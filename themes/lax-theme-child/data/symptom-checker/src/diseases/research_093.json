@@ -14,14 +14,44 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "fever",
-      "freq": "common",
+      "tag": "urgency",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "frequent_urine",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "night_urine",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "weak_stream",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "incomplete_emptying",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "urine_retention",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "urinary_leak",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "blood_urine",
+      "freq": "rare",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -48,31 +78,40 @@
     {
       "publisher": "NIDDK: Prostate Enlargement (BPH)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "Mayo Clinic: BPH",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "MedlinePlus: BPH",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "AUA Guideline: Management of BPH/LUTS",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.auanet.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

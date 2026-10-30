@@ -14,14 +14,39 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "ear_nose",
+      "tag": "facial_droop",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "eyelid_droop",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "vision",
+      "tag": "drooling",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "taste_loss",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dry_mouth",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "eye_watering",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "ear_pain",
+      "freq": "common",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -41,33 +66,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Bell's palsy (https://www.nhs.uk/conditions/bells-palsy/)",
+      "publisher": "NHS: Bell's palsy",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/bells-palsy/",
+      "accessed": "2026-10-30",
+      "verified": true
     },
     {
-      "publisher": "Mayo Clinic: Bell's palsy (https://www.mayoclinic.org/diseases-conditions/bells-palsy/symptoms-causes/syc-20370028)",
+      "publisher": "Mayo Clinic: Bell's palsy",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/bells-palsy/symptoms-causes/syc-20370028",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NINDS: Bell's Palsy (https://www.ninds.nih.gov/health-information/disorders/bells-palsy)",
+      "publisher": "NINDS: Bell's Palsy",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.ninds.nih.gov/health-information/disorders/bells-palsy",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAN Guidelines: Bell's Palsy (https://www.aan.com/Guidelines/home/GuidelineDetail/1036)",
+      "publisher": "AAN Guidelines: Bell's Palsy",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aan.com/Guidelines/home/GuidelineDetail/1036",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

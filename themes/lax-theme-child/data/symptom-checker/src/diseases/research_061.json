@@ -15,22 +15,37 @@
   "tags": [
     {
       "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "leg_swelling",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "flank_pain",
+      "tag": "itch",
       "freq": "common",
       "role": "core"
     },
     {
       "tag": "nausea",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "low_urine",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "occasional",
       "role": "supporting"
     },
     {
-      "tag": "rash",
-      "freq": "common",
+      "tag": "confusion",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -52,33 +67,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Chronic Kidney Disease (CKD) (https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd)",
+      "publisher": "NIDDK: Chronic Kidney Disease (CKD)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Chronic kidney disease (https://www.nhs.uk/conditions/chronic-kidney-disease/)",
+      "publisher": "NHS: Chronic kidney disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/chronic-kidney-disease/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Chronic kidney disease (https://www.mayoclinic.org/diseases-conditions/chronic-kidney-disease/symptoms-causes/syc-20354521)",
+      "publisher": "Mayo Clinic: Chronic kidney disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/chronic-kidney-disease/symptoms-causes/syc-20354521",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "KDIGO Guidelines: CKD (https://kdigo.org/guidelines/)",
+      "publisher": "KDIGO Guidelines: CKD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://kdigo.org/guidelines/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,9 +14,34 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "fatigue",
+      "tag": "seizure",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fainting",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "confusion",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "urinary_leak",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "muscle_stiffness",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -36,33 +61,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Epilepsy (https://www.who.int/news-room/fact-sheets/detail/epilepsy)",
+      "publisher": "WHO: Epilepsy",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/epilepsy",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Epilepsy (https://www.nhs.uk/conditions/epilepsy/)",
+      "publisher": "NHS: Epilepsy",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/epilepsy/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Epilepsy (https://www.mayoclinic.org/diseases-conditions/epilepsy/symptoms-causes/syc-20350093)",
+      "publisher": "Mayo Clinic: Epilepsy",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/epilepsy/symptoms-causes/syc-20350093",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ILAE: Epilepsy (https://www.ilae.org/)",
+      "publisher": "ILAE: Epilepsy",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.ilae.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,14 +14,24 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "chest_pain",
-      "freq": "common",
+      "tag": "palpitation",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "irregular_pulse",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "dizziness",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "chest_pain",
+      "freq": "common",
+      "role": "supporting"
     },
     {
       "tag": "dyspnea",
@@ -34,8 +44,8 @@
       "role": "supporting"
     },
     {
-      "tag": "palpitation",
-      "freq": "common",
+      "tag": "fainting",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -57,33 +67,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Atrial fibrillation (https://www.who.int/news-room/fact-sheets/detail/atrial-fibrillation)",
+      "publisher": "WHO: Atrial fibrillation",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/atrial-fibrillation",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Atrial fibrillation (https://www.nhs.uk/conditions/atrial-fibrillation/)",
+      "publisher": "NHS: Atrial fibrillation",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/atrial-fibrillation/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Atrial fibrillation (https://www.mayoclinic.org/diseases-conditions/atrial-fibrillation/symptoms-causes/syc-20350624)",
+      "publisher": "Mayo Clinic: Atrial fibrillation",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/atrial-fibrillation/symptoms-causes/syc-20350624",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ACC/AHA Guidelines: Atrial Fibrillation (https://www.acc.org/Guidelines)",
+      "publisher": "ACC/AHA Guidelines: Atrial Fibrillation",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.acc.org/Guidelines",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

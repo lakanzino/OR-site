@@ -14,8 +14,8 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "abd_pain",
-      "freq": "common",
+      "tag": "flank_pain",
+      "freq": "very_common",
       "role": "core"
     },
     {
@@ -24,8 +24,18 @@
       "role": "core"
     },
     {
-      "tag": "flank_pain",
+      "tag": "abdominal_mass",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "abdominal_swelling",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -45,33 +55,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Polycystic Kidney Disease (PKD) (https://www.niddk.nih.gov/health-information/kidney-disease/polycystic-kidney-disease-pkd)",
+      "publisher": "NIDDK: Polycystic Kidney Disease (PKD)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/polycystic-kidney-disease-pkd",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Polycystic kidney disease (https://www.nhs.uk/conditions/polycystic-kidney-disease/)",
+      "publisher": "NHS: Polycystic kidney disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/polycystic-kidney-disease/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Polycystic kidney disease (https://www.mayoclinic.org/diseases-conditions/polycystic-kidney-disease/symptoms-causes/syc-20352820)",
+      "publisher": "Mayo Clinic: Polycystic kidney disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/polycystic-kidney-disease/symptoms-causes/syc-20352820",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "PKD Foundation (https://pkdcure.org/)",
+      "publisher": "PKD Foundation",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://pkdcure.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

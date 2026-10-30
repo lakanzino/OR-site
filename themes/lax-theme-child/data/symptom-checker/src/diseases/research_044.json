@@ -15,17 +15,27 @@
   "tags": [
     {
       "tag": "cough",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
-      "tag": "ear_nose",
-      "freq": "common",
+      "tag": "whoop_sound",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "vomiting",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nasal_discharge",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "breathing_pause",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -44,33 +54,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Pertussis (https://www.who.int/news-room/fact-sheets/detail/pertussis)",
+      "publisher": "WHO: Pertussis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/pertussis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Pertussis (Whooping Cough) (https://www.cdc.gov/pertussis/index.html)",
+      "publisher": "CDC: Pertussis (Whooping Cough)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/pertussis/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Whooping cough (https://www.nhs.uk/conditions/whooping-cough/)",
+      "publisher": "NHS: Whooping cough",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/whooping-cough/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Whooping cough (https://www.mayoclinic.org/diseases-conditions/whooping-cough/symptoms-causes/syc-20378978)",
+      "publisher": "Mayo Clinic: Whooping cough",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/whooping-cough/symptoms-causes/syc-20378978",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

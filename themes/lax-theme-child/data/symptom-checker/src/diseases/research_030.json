@@ -14,27 +14,37 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "halo_glare",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "eye_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vision",
+      "freq": "common",
+      "role": "core"
+    },
+    {
       "tag": "headache",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "nausea",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "sore_throat",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "vision",
+      "tag": "nausea",
       "freq": "common",
       "role": "supporting"
     },
     {
       "tag": "vomiting",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "peripheral_vision_loss",
       "freq": "common",
       "role": "supporting"
     }
@@ -52,33 +62,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Glaucoma (https://www.who.int/news-room/fact-sheets/detail/glaucoma)",
+      "publisher": "WHO: Glaucoma",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/glaucoma",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Glaucoma (https://www.nhs.uk/conditions/glaucoma/)",
+      "publisher": "NHS: Glaucoma",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/glaucoma/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Glaucoma (https://www.mayoclinic.org/diseases-conditions/glaucoma/symptoms-causes/syc-20372839)",
+      "publisher": "Mayo Clinic: Glaucoma",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/glaucoma/symptoms-causes/syc-20372839",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAO: Glaucoma (https://www.aao.org/eye-health/diseases/what-is-glaucoma)",
+      "publisher": "AAO: Glaucoma",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aao.org/eye-health/diseases/what-is-glaucoma",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,9 +14,29 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "rash",
+      "tag": "itch",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "scaling",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "skin_cracking",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "blisters",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "skin_pain",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -34,33 +54,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "CDC: Ringworm (Tinea) (https://www.cdc.gov/ringworm/index.html)",
+      "publisher": "CDC: Ringworm (Tinea)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/ringworm/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Athlete's foot (https://www.nhs.uk/conditions/athletes-foot/)",
+      "publisher": "NHS: Athlete's foot",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/athletes-foot/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Athlete's foot (https://www.mayoclinic.org/diseases-conditions/athletes-foot/symptoms-causes/syc-20353864)",
+      "publisher": "Mayo Clinic: Athlete's foot",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/athletes-foot/symptoms-causes/syc-20353864",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAD: Athlete's Foot (https://www.aad.org/public/diseases/a-z/athletes-foot)",
+      "publisher": "AAD: Athlete's Foot",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aad.org/public/diseases/a-z/athletes-foot",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,18 +14,28 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "chest_pain",
+      "tag": "cough",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sputum",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "cough",
+      "tag": "chest_pressure",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "wheeze",
       "freq": "common",
       "role": "core"
     },
     {
       "tag": "fever",
-      "freq": "common",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -44,33 +54,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Bronchitis (https://www.nhs.uk/conditions/bronchitis/)",
+      "publisher": "NHS: Bronchitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/bronchitis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Bronchitis (https://www.mayoclinic.org/diseases-conditions/bronchitis/symptoms-causes/syc-20355566)",
+      "publisher": "Mayo Clinic: Bronchitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/bronchitis/symptoms-causes/syc-20355566",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Bronchitis (https://www.cdc.gov/bronchitis/index.html)",
+      "publisher": "CDC: Bronchitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/bronchitis/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAFP: Acute Bronchitis (https://www.aafp.org/pubs/afp/issues/2016/0415/p560.html)",
+      "publisher": "AAFP: Acute Bronchitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aafp.org/pubs/afp/issues/2016/0415/p560.html",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

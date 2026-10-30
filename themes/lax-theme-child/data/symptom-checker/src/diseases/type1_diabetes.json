@@ -14,27 +14,27 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "abd_pain",
+      "tag": "thirst",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "frequent_urine",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "hunger",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_loss",
       "freq": "common",
       "role": "core"
     },
     {
       "tag": "fatigue",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "frequent_urine",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "nausea",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "thirst",
       "freq": "common",
       "role": "supporting"
     },
@@ -44,13 +44,28 @@
       "role": "supporting"
     },
     {
-      "tag": "vomiting",
-      "freq": "common",
+      "tag": "nausea",
+      "freq": "occasional",
       "role": "supporting"
     },
     {
-      "tag": "weight_loss",
-      "freq": "common",
+      "tag": "vomiting",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "fruity_breath",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -72,33 +87,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Diabetes (https://www.who.int/news-room/fact-sheets/detail/diabetes)",
+      "publisher": "WHO: Diabetes",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/diabetes",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NIDDK: Type 1 Diabetes (https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/type-1-diabetes)",
+      "publisher": "NIDDK: Type 1 Diabetes",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/type-1-diabetes",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Type 1 Diabetes (https://www.cdc.gov/diabetes/about/type-1-diabetes.html)",
+      "publisher": "CDC: Type 1 Diabetes",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/diabetes/about/type-1-diabetes.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ADA: Standards of Care in Diabetes (https://diabetesjournals.org/care/issue/47/Supplement_1)",
+      "publisher": "ADA: Standards of Care in Diabetes",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://diabetesjournals.org/care/issue/47/Supplement_1",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

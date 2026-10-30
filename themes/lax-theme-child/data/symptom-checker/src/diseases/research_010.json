@@ -14,7 +14,22 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "jaundice",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
       "tag": "abd_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
       "freq": "common",
       "role": "core"
     },
@@ -24,7 +39,12 @@
       "role": "core"
     },
     {
-      "tag": "fatigue",
+      "tag": "dark_urine",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "vomiting",
       "freq": "common",
       "role": "supporting"
     },
@@ -34,28 +54,13 @@
       "role": "supporting"
     },
     {
-      "tag": "jaundice",
-      "freq": "common",
+      "tag": "pale_stool",
+      "freq": "occasional",
       "role": "supporting"
     },
     {
-      "tag": "nausea",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "rash",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "vision",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "vomiting",
-      "freq": "common",
+      "tag": "joint_pain",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -86,37 +91,48 @@
     {
       "publisher": "WHO: Hepatitis B Fact Sheet",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "CDC: Hepatitis B Basics",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "MedlinePlus: Hepatitis B",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "NIDDK: Hepatitis B",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "Mayo Clinic: Hepatitis B",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

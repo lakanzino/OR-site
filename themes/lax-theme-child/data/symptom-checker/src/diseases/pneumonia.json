@@ -14,8 +14,13 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "chest_pain",
-      "freq": "common",
+      "tag": "cough",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "very_common",
       "role": "core"
     },
     {
@@ -24,12 +29,17 @@
       "role": "core"
     },
     {
-      "tag": "cough",
+      "tag": "dyspnea",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
-      "tag": "dyspnea",
+      "tag": "sputum",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "pleuritic_chest_pain",
       "freq": "common",
       "role": "supporting"
     },
@@ -39,13 +49,13 @@
       "role": "supporting"
     },
     {
-      "tag": "fever",
+      "tag": "sweating",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "sweating",
-      "freq": "common",
+      "tag": "confusion",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -68,33 +78,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Pneumonia (https://www.who.int/news-room/fact-sheets/detail/pneumonia)",
+      "publisher": "WHO: Pneumonia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/pneumonia",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Pneumonia (https://www.mayoclinic.org/diseases-conditions/pneumonia/symptoms-causes/syc-20354204)",
+      "publisher": "Mayo Clinic: Pneumonia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/pneumonia/symptoms-causes/syc-20354204",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Pneumonia (https://www.nhs.uk/conditions/pneumonia/)",
+      "publisher": "NHS: Pneumonia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/pneumonia/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Pneumonia (https://www.cdc.gov/pneumonia/index.html)",
+      "publisher": "CDC: Pneumonia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/pneumonia/index.html",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

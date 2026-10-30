@@ -15,8 +15,43 @@
   "tags": [
     {
       "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "numbness",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "vision",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "weakness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "muscle_stiffness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "balance_problem",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "urinary_leak",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "concentration_problem",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -37,33 +72,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Multiple sclerosis (https://www.who.int/news-room/fact-sheets/detail/multiple-sclerosis)",
+      "publisher": "WHO: Multiple sclerosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/multiple-sclerosis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Multiple sclerosis (https://www.nhs.uk/conditions/multiple-sclerosis/)",
+      "publisher": "NHS: Multiple sclerosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/multiple-sclerosis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Multiple sclerosis (https://www.mayoclinic.org/diseases-conditions/multiple-sclerosis/symptoms-causes/syc-20354022)",
+      "publisher": "Mayo Clinic: Multiple sclerosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/multiple-sclerosis/symptoms-causes/syc-20354022",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NMSS: Multiple Sclerosis (https://www.nationalmssociety.org/)",
+      "publisher": "NMSS: Multiple Sclerosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nationalmssociety.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

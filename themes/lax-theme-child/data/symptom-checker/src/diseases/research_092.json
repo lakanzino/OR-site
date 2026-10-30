@@ -15,8 +15,23 @@
   "tags": [
     {
       "tag": "rash",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "itch",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "blisters",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "skin_burning",
+      "freq": "common",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -34,33 +49,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Contact dermatitis (https://www.nhs.uk/conditions/contact-dermatitis/)",
+      "publisher": "NHS: Contact dermatitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/contact-dermatitis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Contact dermatitis (https://www.mayoclinic.org/diseases-conditions/contact-dermatitis/symptoms-causes/syc-20352730)",
+      "publisher": "Mayo Clinic: Contact dermatitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/contact-dermatitis/symptoms-causes/syc-20352730",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAD: Contact Dermatitis (https://www.aad.org/public/diseases/a-z/contact-dermatitis)",
+      "publisher": "AAD: Contact Dermatitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aad.org/public/diseases/a-z/contact-dermatitis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ACDS: Contact Dermatitis (https://www.contactderm.org/)",
+      "publisher": "ACDS: Contact Dermatitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.contactderm.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

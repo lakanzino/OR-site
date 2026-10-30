@@ -14,12 +14,22 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "abd_pain",
-      "freq": "common",
+      "tag": "diarrhea",
+      "freq": "very_common",
       "role": "core"
     },
     {
-      "tag": "diarrhea",
+      "tag": "vomiting",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nausea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "abd_pain",
       "freq": "common",
       "role": "core"
     },
@@ -29,12 +39,12 @@
       "role": "supporting"
     },
     {
-      "tag": "nausea",
+      "tag": "dry_mouth",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "vomiting",
+      "tag": "weakness",
       "freq": "common",
       "role": "supporting"
     }
@@ -56,33 +66,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Gastroenteritis (https://www.niddk.nih.gov/health-information/digestive-diseases/gastroenteritis)",
+      "publisher": "NIDDK: Gastroenteritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gastroenteritis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Norovirus (https://www.cdc.gov/norovirus/index.html)",
+      "publisher": "CDC: Norovirus",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/norovirus/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Diarrhoea and vomiting (https://www.nhs.uk/conditions/diarrhoea-and-vomiting/)",
+      "publisher": "NHS: Diarrhoea and vomiting",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/diarrhoea-and-vomiting/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Gastroenteritis (https://www.mayoclinic.org/diseases-conditions/gastroenteritis/symptoms-causes/syc-20353041)",
+      "publisher": "Mayo Clinic: Gastroenteritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/gastroenteritis/symptoms-causes/syc-20353041",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,23 +14,53 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "heartburn",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
       "tag": "abd_pain",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "nausea",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "vomiting",
+      "tag": "bloating",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "weight_loss",
+      "tag": "belching",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "early_satiety",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "food_trigger",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "blood_vomit",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "black_stool",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -54,31 +84,40 @@
     {
       "publisher": "NIDDK: Peptic Ulcers (Stomach Ulcers)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "Mayo Clinic: Peptic ulcer",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "MedlinePlus: Peptic Ulcer",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "ACG Guideline: H. pylori infection",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://gi.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

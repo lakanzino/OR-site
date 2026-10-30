@@ -14,17 +14,57 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "fatigue",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "cold_intolerance",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_gain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
       "tag": "constipation",
       "freq": "common",
-      "role": "core"
+      "role": "supporting"
     },
     {
-      "tag": "fatigue",
+      "tag": "dry_skin",
       "freq": "common",
-      "role": "core"
+      "role": "supporting"
     },
     {
-      "tag": "rash",
+      "tag": "hair_loss",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "concentration_problem",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "low_mood",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "heavy_period",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "facial_swelling",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "slow_pulse",
       "freq": "common",
       "role": "supporting"
     }
@@ -49,33 +89,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Hypothyroidism (https://www.niddk.nih.gov/health-information/endocrine-diseases/hypothyroidism)",
+      "publisher": "NIDDK: Hypothyroidism",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/endocrine-diseases/hypothyroidism",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Hypothyroidism (https://www.mayoclinic.org/diseases-conditions/hypothyroidism/symptoms-causes/syc-20350284)",
+      "publisher": "Mayo Clinic: Hypothyroidism",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/hypothyroidism/symptoms-causes/syc-20350284",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Underactive thyroid (https://www.nhs.uk/conditions/underactive-thyroid-hypothyroidism/)",
+      "publisher": "NHS: Underactive thyroid",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/underactive-thyroid-hypothyroidism/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ATA Guidelines: Hypothyroidism (https://www.thyroid.org/hypothyroidism/)",
+      "publisher": "ATA Guidelines: Hypothyroidism",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.thyroid.org/hypothyroidism/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

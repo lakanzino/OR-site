@@ -14,6 +14,16 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "acne_lesions",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "skin_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
       "tag": "rash",
       "freq": "common",
       "role": "core"
@@ -36,33 +46,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Acne (https://www.nhs.uk/conditions/acne/)",
+      "publisher": "NHS: Acne",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/acne/",
+      "accessed": "2026-10-30",
+      "verified": true
     },
     {
-      "publisher": "Mayo Clinic: Acne (https://www.mayoclinic.org/diseases-conditions/acne/symptoms-causes/syc-20368047)",
+      "publisher": "Mayo Clinic: Acne",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/acne/symptoms-causes/syc-20368047",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAD: Acne (https://www.aad.org/public/diseases/acne-and-rosacea/acne)",
+      "publisher": "AAD: Acne",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aad.org/public/diseases/acne-and-rosacea/acne",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NICE: Acne vulgaris (https://cks.nice.org.uk/topics/acne-vulgaris/)",
+      "publisher": "NICE: Acne vulgaris",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://cks.nice.org.uk/topics/acne-vulgaris/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

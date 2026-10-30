@@ -14,12 +14,32 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "chest_pain",
+      "tag": "cough",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sputum",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "coughing_blood",
+      "freq": "occasional",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "cough",
+      "tag": "sweating",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_loss",
       "freq": "common",
       "role": "core"
     },
@@ -29,17 +49,7 @@
       "role": "supporting"
     },
     {
-      "tag": "fever",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "sweating",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "weight_loss",
+      "tag": "chest_pain",
       "freq": "common",
       "role": "supporting"
     }
@@ -63,33 +73,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Tuberculosis (https://www.who.int/news-room/fact-sheets/detail/tuberculosis)",
+      "publisher": "WHO: Tuberculosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/tuberculosis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Tuberculosis (TB) (https://www.cdc.gov/tb/index.html)",
+      "publisher": "CDC: Tuberculosis (TB)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/tb/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Tuberculosis (TB) (https://www.nhs.uk/conditions/tuberculosis-tb/)",
+      "publisher": "NHS: Tuberculosis (TB)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/tuberculosis-tb/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Tuberculosis (https://www.mayoclinic.org/diseases-conditions/tuberculosis/symptoms-causes/syc-20351250)",
+      "publisher": "Mayo Clinic: Tuberculosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/tuberculosis/symptoms-causes/syc-20351250",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

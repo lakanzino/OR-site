@@ -14,12 +14,37 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "rash",
+      "tag": "weight_gain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "posture_change",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "sore_throat",
+      "tag": "facial_swelling",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "stretch_marks",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "weakness",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "thirst",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "easy_bruising",
       "freq": "common",
       "role": "core"
     }
@@ -42,33 +67,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Cushing's Syndrome (https://www.niddk.nih.gov/health-information/endocrine-diseases/cushings-syndrome)",
+      "publisher": "NIDDK: Cushing's Syndrome",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/endocrine-diseases/cushings-syndrome",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Cushing's syndrome (https://www.nhs.uk/conditions/cushings-syndrome/)",
+      "publisher": "NHS: Cushing's syndrome",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/cushings-syndrome/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Cushing syndrome (https://www.mayoclinic.org/diseases-conditions/cushing-syndrome/symptoms-causes/syc-20351310)",
+      "publisher": "Mayo Clinic: Cushing syndrome",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/cushing-syndrome/symptoms-causes/syc-20351310",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Endocrine Society: Cushing's Syndrome (https://www.endocrine.org/patient-engagement/endocrine-library/cushings-syndrome)",
+      "publisher": "Endocrine Society: Cushing's Syndrome",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.endocrine.org/patient-engagement/endocrine-library/cushings-syndrome",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

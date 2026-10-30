@@ -14,19 +14,29 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "ear_nose",
+      "tag": "sneezing",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nasal_discharge",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nasal_congestion",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "rash",
+      "tag": "itch",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "vision",
+      "tag": "eye_watering",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     }
   ],
   "symptoms_fa": [
@@ -45,33 +55,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Allergic rhinitis (https://www.who.int/news-room/fact-sheets/detail/allergic-rhinitis)",
+      "publisher": "WHO: Allergic rhinitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/allergic-rhinitis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Allergic rhinitis (https://www.nhs.uk/conditions/allergic-rhinitis/)",
+      "publisher": "NHS: Allergic rhinitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/allergic-rhinitis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Hay fever (https://www.mayoclinic.org/diseases-conditions/hay-fever/symptoms-causes/syc-20373039)",
+      "publisher": "Mayo Clinic: Hay fever",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/hay-fever/symptoms-causes/syc-20373039",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ARIA Guidelines: Allergic Rhinitis (https://www.ariaallergy.com/)",
+      "publisher": "ARIA Guidelines: Allergic Rhinitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.ariaallergy.com/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

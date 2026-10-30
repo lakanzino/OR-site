@@ -15,32 +15,42 @@
   "tags": [
     {
       "tag": "abd_pain",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
-    },
-    {
-      "tag": "constipation",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "diarrhea",
-      "freq": "common",
-      "role": "supporting"
     },
     {
       "tag": "fever",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
       "tag": "nausea",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
       "tag": "vomiting",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "constipation",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "bloating",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "abdominal_rigidity",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -62,31 +72,39 @@
     {
       "publisher": "NIDDK: Diverticular Disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "Mayo Clinic: Diverticulitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "MedlinePlus: Diverticulitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "ASCRS Guidelines: Left-Sided Colonic Diverticulitis",
       "title": "",
       "url": "",
-      "accessed": ""
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

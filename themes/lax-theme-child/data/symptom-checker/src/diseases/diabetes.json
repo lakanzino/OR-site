@@ -14,22 +14,22 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "fatigue",
-      "freq": "common",
+      "tag": "thirst",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "frequent_urine",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
-      "tag": "rash",
+      "tag": "hunger",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "thirst",
+      "tag": "fatigue",
       "freq": "common",
       "role": "supporting"
     },
@@ -39,8 +39,28 @@
       "role": "supporting"
     },
     {
-      "tag": "weight_loss",
+      "tag": "slow_healing",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "numbness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dark_patches",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "burning_urine",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -67,37 +87,48 @@
     {
       "publisher": "WHO: Diabetes Fact Sheet",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "ADA: Standards of Care in Diabetes",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://diabetes.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "CDC: Type 2 Diabetes",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "NIDDK: Type 2 Diabetes",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "Mayo Clinic: Type 2 diabetes",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

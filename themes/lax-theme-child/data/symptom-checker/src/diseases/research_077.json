@@ -12,7 +12,48 @@
     "elderly"
   ],
   "sex": "any",
-  "tags": [],
+  "tags": [
+    {
+      "tag": "flashbacks",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "nightmares",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "avoidance",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sleep_problem",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "anxiety",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "mood_change",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "irritability",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "concentration_problem",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
   "symptoms_fa": [
     "تجربه مجدد رویداد آسیب‌زا",
     "کابوس",
@@ -29,33 +70,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIMH: Post-Traumatic Stress Disorder (PTSD) (https://www.nimh.nih.gov/health/topics/post-traumatic-stress-disorder-ptsd)",
+      "publisher": "NIMH: Post-Traumatic Stress Disorder (PTSD)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nimh.nih.gov/health/topics/post-traumatic-stress-disorder-ptsd",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Post-traumatic stress disorder (PTSD) (https://www.nhs.uk/mental-health/conditions/post-traumatic-stress-disorder-ptsd/)",
+      "publisher": "NHS: Post-traumatic stress disorder (PTSD)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/mental-health/conditions/post-traumatic-stress-disorder-ptsd/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: PTSD (https://www.mayoclinic.org/diseases-conditions/post-traumatic-stress-disorder/symptoms-causes/syc-20355967)",
+      "publisher": "Mayo Clinic: PTSD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/post-traumatic-stress-disorder/symptoms-causes/syc-20355967",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "VA: PTSD (https://www.ptsd.va.gov/)",
+      "publisher": "VA: PTSD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.ptsd.va.gov/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

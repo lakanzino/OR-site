@@ -14,23 +14,48 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "chest_pain",
+      "tag": "heartburn",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "regurgitation",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "swallow_difficulty",
+      "freq": "common",
+      "role": "supporting"
     },
     {
       "tag": "cough",
       "freq": "common",
-      "role": "core"
+      "role": "supporting"
     },
     {
-      "tag": "heartburn",
+      "tag": "hoarseness",
       "freq": "common",
       "role": "supporting"
     },
     {
       "tag": "sore_throat",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "throat_lump",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "sleep_problem",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "chest_pain",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -58,31 +83,40 @@
     {
       "publisher": "NIDDK: Acid Reflux (GER & GERD) in Adults",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "Mayo Clinic: GERD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "MedlinePlus: GERD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "ACG Clinical Guideline: GERD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://gi.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,9 +14,39 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "anxiety",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
       "tag": "fatigue",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "concentration_problem",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "irritability",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sleep_problem",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "muscle_stiffness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "hyperactivity",
+      "freq": "common",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -36,33 +66,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIMH: Generalized Anxiety Disorder (https://www.nimh.nih.gov/health/topics/generalized-anxiety-disorder-gad)",
+      "publisher": "NIMH: Generalized Anxiety Disorder",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nimh.nih.gov/health/topics/generalized-anxiety-disorder-gad",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Generalised anxiety disorder (GAD) (https://www.nhs.uk/mental-health/conditions/generalised-anxiety-disorder-gad/)",
+      "publisher": "NHS: Generalised anxiety disorder (GAD)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/mental-health/conditions/generalised-anxiety-disorder-gad/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Generalized anxiety disorder (https://www.mayoclinic.org/diseases-conditions/generalized-anxiety-disorder/symptoms-causes/syc-20360803)",
+      "publisher": "Mayo Clinic: Generalized anxiety disorder",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/generalized-anxiety-disorder/symptoms-causes/syc-20360803",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ADAA: GAD (https://adaa.org/understanding-anxiety/generalized-anxiety-disorder-gad)",
+      "publisher": "ADAA: GAD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://adaa.org/understanding-anxiety/generalized-anxiety-disorder-gad",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

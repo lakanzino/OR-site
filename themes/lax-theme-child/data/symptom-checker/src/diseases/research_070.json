@@ -15,17 +15,47 @@
   "tags": [
     {
       "tag": "fatigue",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "flank_pain",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "rash",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "light_sensitivity",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "joint_pain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "hair_loss",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "pleuritic_chest_pain",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "blood_urine",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "leg_swelling",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -46,33 +76,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Lupus (https://www.nhs.uk/conditions/lupus/)",
+      "publisher": "NHS: Lupus",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/lupus/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Lupus (https://www.mayoclinic.org/diseases-conditions/lupus/symptoms-causes/syc-20365789)",
+      "publisher": "Mayo Clinic: Lupus",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/lupus/symptoms-causes/syc-20365789",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Lupus Foundation of America (https://www.lupus.org/)",
+      "publisher": "Lupus Foundation of America",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.lupus.org/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ACR Guidelines: Lupus (https://rheumatology.org/lupus-guideline)",
+      "publisher": "ACR Guidelines: Lupus",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://rheumatology.org/lupus-guideline",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

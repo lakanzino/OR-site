@@ -14,28 +14,58 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "cough",
+      "tag": "smell_loss",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "taste_loss",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "dyspnea",
+      "tag": "cough",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
       "freq": "common",
       "role": "core"
     },
     {
       "tag": "fatigue",
       "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "fever",
-      "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
       "tag": "sore_throat",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "body_ache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -57,33 +87,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Coronavirus disease (COVID-19) (https://www.who.int/health-topics/coronavirus)",
+      "publisher": "WHO: Coronavirus disease (COVID-19)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/health-topics/coronavirus",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: COVID-19 (https://www.cdc.gov/covid/index.html)",
+      "publisher": "CDC: COVID-19",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/covid/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: COVID-19 (https://www.nhs.uk/conditions/covid-19/)",
+      "publisher": "NHS: COVID-19",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/covid-19/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: COVID-19 (https://www.mayoclinic.org/diseases-conditions/coronavirus/symptoms-causes/syc-20379923)",
+      "publisher": "Mayo Clinic: COVID-19",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/coronavirus/symptoms-causes/syc-20379923",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

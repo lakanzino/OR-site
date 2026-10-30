@@ -14,6 +14,16 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "itch",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "burrows",
+      "freq": "common",
+      "role": "core"
+    },
+    {
       "tag": "rash",
       "freq": "common",
       "role": "core"
@@ -33,33 +43,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Scabies (https://www.who.int/news-room/fact-sheets/detail/scabies)",
+      "publisher": "WHO: Scabies",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/scabies",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Scabies (https://www.cdc.gov/scabies/index.html)",
+      "publisher": "CDC: Scabies",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/scabies/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Scabies (https://www.nhs.uk/conditions/scabies/)",
+      "publisher": "NHS: Scabies",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/scabies/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Scabies (https://www.mayoclinic.org/diseases-conditions/scabies/symptoms-causes/syc-20377330)",
+      "publisher": "Mayo Clinic: Scabies",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/scabies/symptoms-causes/syc-20377330",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

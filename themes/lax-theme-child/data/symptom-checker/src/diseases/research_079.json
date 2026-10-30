@@ -14,7 +14,22 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "fever",
+      "tag": "social_communication",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "repetitive_behavior",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sensory_sensitivity",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "speech_delay",
       "freq": "common",
       "role": "core"
     }
@@ -33,33 +48,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "CDC: Autism Spectrum Disorder (ASD) (https://www.cdc.gov/autism/index.html)",
+      "publisher": "CDC: Autism Spectrum Disorder (ASD)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/autism/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NIMH: Autism Spectrum Disorder (https://www.nimh.nih.gov/health/topics/autism-spectrum-disorders-asd)",
+      "publisher": "NIMH: Autism Spectrum Disorder",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nimh.nih.gov/health/topics/autism-spectrum-disorders-asd",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Autism (https://www.nhs.uk/conditions/autism/)",
+      "publisher": "NHS: Autism",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/autism/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Autism Speaks (https://www.autismspeaks.org/)",
+      "publisher": "Autism Speaks",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.autismspeaks.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

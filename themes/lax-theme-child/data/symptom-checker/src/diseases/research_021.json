@@ -15,11 +15,21 @@
   "tags": [
     {
       "tag": "fever",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "headache",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "neck_stiff",
+      "freq": "very_common",
+      "role": "red_flag"
+    },
+    {
+      "tag": "light_sensitivity",
       "freq": "common",
       "role": "core"
     },
@@ -29,18 +39,23 @@
       "role": "supporting"
     },
     {
-      "tag": "neck_stiff",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "rash",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
       "tag": "vomiting",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "confusion",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "non_blanching_rash",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "seizure",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -63,33 +78,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Meningitis (https://www.who.int/news-room/fact-sheets/detail/meningitis)",
+      "publisher": "WHO: Meningitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/meningitis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Meningitis (https://www.cdc.gov/meningitis/index.html)",
+      "publisher": "CDC: Meningitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/meningitis/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Meningitis (https://www.nhs.uk/conditions/meningitis/)",
+      "publisher": "NHS: Meningitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/meningitis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Meningitis (https://www.mayoclinic.org/diseases-conditions/meningitis/symptoms-causes/syc-20350508)",
+      "publisher": "Mayo Clinic: Meningitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/meningitis/symptoms-causes/syc-20350508",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

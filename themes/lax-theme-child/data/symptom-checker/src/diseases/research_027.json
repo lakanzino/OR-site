@@ -14,9 +14,29 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "scaling",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
       "tag": "rash",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "itch",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nail_change",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "joint_pain",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -33,33 +53,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Psoriasis (https://www.who.int/news-room/fact-sheets/detail/psoriasis)",
+      "publisher": "WHO: Psoriasis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/psoriasis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Psoriasis (https://www.nhs.uk/conditions/psoriasis/)",
+      "publisher": "NHS: Psoriasis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/psoriasis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Psoriasis (https://www.mayoclinic.org/diseases-conditions/psoriasis/symptoms-causes/syc-20355840)",
+      "publisher": "Mayo Clinic: Psoriasis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/psoriasis/symptoms-causes/syc-20355840",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAD: Psoriasis (https://www.aad.org/public/diseases/psoriasis)",
+      "publisher": "AAD: Psoriasis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aad.org/public/diseases/psoriasis",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

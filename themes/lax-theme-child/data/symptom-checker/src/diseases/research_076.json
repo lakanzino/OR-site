@@ -14,9 +14,24 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "arm_jaw_pain",
-      "freq": "common",
+      "tag": "intrusive_thoughts",
+      "freq": "very_common",
       "role": "core"
+    },
+    {
+      "tag": "compulsions",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "anxiety",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "daily_function_loss",
+      "freq": "common",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -33,33 +48,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIMH: Obsessive-Compulsive Disorder (OCD) (https://www.nimh.nih.gov/health/topics/obsessive-compulsive-disorder-ocd)",
+      "publisher": "NIMH: Obsessive-Compulsive Disorder (OCD)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nimh.nih.gov/health/topics/obsessive-compulsive-disorder-ocd",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Obsessive compulsive disorder (OCD) (https://www.nhs.uk/mental-health/conditions/obsessive-compulsive-disorder-ocd/)",
+      "publisher": "NHS: Obsessive compulsive disorder (OCD)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/mental-health/conditions/obsessive-compulsive-disorder-ocd/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: OCD (https://www.mayoclinic.org/diseases-conditions/obsessive-compulsive-disorder/symptoms-causes/syc-20354432)",
+      "publisher": "Mayo Clinic: OCD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/obsessive-compulsive-disorder/symptoms-causes/syc-20354432",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "IOCDF: OCD (https://iocdf.org/)",
+      "publisher": "IOCDF: OCD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://iocdf.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,9 +14,29 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "rash",
-      "freq": "common",
+      "tag": "hives",
+      "freq": "very_common",
       "role": "core"
+    },
+    {
+      "tag": "itch",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "facial_swelling",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "throat_swelling",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "skin_burning",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -33,33 +53,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Urticaria (hives) (https://www.nhs.uk/conditions/urticaria/)",
+      "publisher": "NHS: Urticaria (hives)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/urticaria/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Hives and angioedema (https://www.mayoclinic.org/diseases-conditions/hives-and-angioedema/symptoms-causes/syc-20355527)",
+      "publisher": "Mayo Clinic: Hives and angioedema",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/hives-and-angioedema/symptoms-causes/syc-20355527",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAAAI: Urticaria (https://www.aaaai.org/conditions-treatments/allergies/urticaria-hives)",
+      "publisher": "AAAAI: Urticaria",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aaaai.org/conditions-treatments/allergies/urticaria-hives",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "EAACI/GA²LEN: Urticaria (https://www.eaaci.org/)",
+      "publisher": "EAACI/GA²LEN: Urticaria",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.eaaci.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

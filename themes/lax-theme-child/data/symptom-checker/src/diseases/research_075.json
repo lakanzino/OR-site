@@ -14,32 +14,42 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "chest_pain",
+      "tag": "panic_attack",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "palpitation",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sweating",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "chills",
+      "tag": "dyspnea",
       "freq": "common",
       "role": "core"
     },
     {
       "tag": "dizziness",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
-      "tag": "dyspnea",
+      "tag": "chest_pain",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "palpitation",
+      "tag": "numbness",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "sweating",
+      "tag": "tremor",
       "freq": "common",
       "role": "supporting"
     }
@@ -62,33 +72,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIMH: Panic Disorder (https://www.nimh.nih.gov/health/topics/panic-disorder)",
+      "publisher": "NIMH: Panic Disorder",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nimh.nih.gov/health/topics/panic-disorder",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Panic disorder (https://www.nhs.uk/mental-health/conditions/panic-disorder/)",
+      "publisher": "NHS: Panic disorder",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/mental-health/conditions/panic-disorder/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Panic attacks and panic disorder (https://www.mayoclinic.org/diseases-conditions/panic-attacks/symptoms-causes/syc-20376021)",
+      "publisher": "Mayo Clinic: Panic attacks and panic disorder",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/panic-attacks/symptoms-causes/syc-20376021",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ADAA: Panic Disorder (https://adaa.org/understanding-anxiety/panic-disorder)",
+      "publisher": "ADAA: Panic Disorder",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://adaa.org/understanding-anxiety/panic-disorder",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,9 +14,34 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "animal_bite",
+      "freq": "very_common",
+      "role": "red_flag"
+    },
+    {
+      "tag": "water_fear",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
       "tag": "fever",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "hyperactivity",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "confusion",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "weakness",
+      "freq": "common",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -37,33 +62,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Rabies (https://www.who.int/news-room/fact-sheets/detail/rabies)",
+      "publisher": "WHO: Rabies",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/rabies",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Rabies (https://www.cdc.gov/rabies/index.html)",
+      "publisher": "CDC: Rabies",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/rabies/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Rabies (https://www.nhs.uk/conditions/rabies/)",
+      "publisher": "NHS: Rabies",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/rabies/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Rabies (https://www.mayoclinic.org/diseases-conditions/rabies/symptoms-causes/syc-20351821)",
+      "publisher": "Mayo Clinic: Rabies",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/rabies/symptoms-causes/syc-20351821",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

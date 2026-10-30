@@ -14,9 +14,24 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "rash",
-      "freq": "common",
+      "tag": "itch",
+      "freq": "very_common",
       "role": "core"
+    },
+    {
+      "tag": "lice",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "rash",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "swollen_glands",
+      "freq": "rare",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -33,33 +48,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "CDC: Head Lice (https://www.cdc.gov/head-lice/index.html)",
+      "publisher": "CDC: Head Lice",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/head-lice/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Head lice and nits (https://www.nhs.uk/conditions/head-lice-and-nits/)",
+      "publisher": "NHS: Head lice and nits",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/head-lice-and-nits/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Head lice (https://www.mayoclinic.org/diseases-conditions/head-lice/symptoms-causes/syc-20356180)",
+      "publisher": "Mayo Clinic: Head lice",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/head-lice/symptoms-causes/syc-20356180",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAP: Head Lice (https://publications.aap.org/pediatrics/article/135/5/e1355/33216/Head-Lice)",
+      "publisher": "AAP: Head Lice",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://publications.aap.org/pediatrics/article/135/5/e1355/33216/Head-Lice",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

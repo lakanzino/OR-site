@@ -14,18 +14,38 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "arm_jaw_pain",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "body_ache",
-      "freq": "common",
+      "tag": "jaw_stiffness",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "neck_stiff",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "muscle_stiffness",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "swallow_difficulty",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "body_ache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "sweating",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fever",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -45,33 +65,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Tetanus (https://www.who.int/news-room/fact-sheets/detail/tetanus)",
+      "publisher": "WHO: Tetanus",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/tetanus",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Tetanus (https://www.cdc.gov/tetanus/index.html)",
+      "publisher": "CDC: Tetanus",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/tetanus/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Tetanus (https://www.nhs.uk/conditions/tetanus/)",
+      "publisher": "NHS: Tetanus",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/tetanus/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Tetanus (https://www.mayoclinic.org/diseases-conditions/tetanus/symptoms-causes/syc-20351625)",
+      "publisher": "Mayo Clinic: Tetanus",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/tetanus/symptoms-causes/syc-20351625",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

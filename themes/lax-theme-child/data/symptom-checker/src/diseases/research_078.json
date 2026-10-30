@@ -12,7 +12,28 @@
     "elderly"
   ],
   "sex": "any",
-  "tags": [],
+  "tags": [
+    {
+      "tag": "concentration_problem",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "hyperactivity",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "impulsivity",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "daily_function_loss",
+      "freq": "common",
+      "role": "supporting"
+    }
+  ],
   "symptoms_fa": [
     "بی‌توجهی",
     "بیش‌فعالی",
@@ -28,33 +49,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "CDC: ADHD (https://www.cdc.gov/adhd/index.html)",
+      "publisher": "CDC: ADHD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/adhd/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NIMH: Attention-Deficit/Hyperactivity Disorder (https://www.nimh.nih.gov/health/topics/attention-deficit-hyperactivity-disorder-adhd)",
+      "publisher": "NIMH: Attention-Deficit/Hyperactivity Disorder",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nimh.nih.gov/health/topics/attention-deficit-hyperactivity-disorder-adhd",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Attention deficit hyperactivity disorder (ADHD) (https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/)",
+      "publisher": "NHS: Attention deficit hyperactivity disorder (ADHD)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CHADD: ADHD (https://chadd.org/)",
+      "publisher": "CHADD: ADHD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://chadd.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

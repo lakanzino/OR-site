@@ -15,7 +15,12 @@
   "tags": [
     {
       "tag": "abd_pain",
-      "freq": "common",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "bloating",
+      "freq": "very_common",
       "role": "core"
     },
     {
@@ -26,10 +31,15 @@
     {
       "tag": "diarrhea",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
-      "tag": "weight_loss",
+      "tag": "stool_change",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "tenesmus",
       "freq": "common",
       "role": "supporting"
     }
@@ -50,33 +60,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Irritable Bowel Syndrome (IBS) (https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome)",
+      "publisher": "NIDDK: Irritable Bowel Syndrome (IBS)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Irritable bowel syndrome (IBS) (https://www.nhs.uk/conditions/irritable-bowel-syndrome-ibs/)",
+      "publisher": "NHS: Irritable bowel syndrome (IBS)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/irritable-bowel-syndrome-ibs/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Irritable bowel syndrome (https://www.mayoclinic.org/diseases-conditions/irritable-bowel-syndrome/symptoms-causes/syc-20360016)",
+      "publisher": "Mayo Clinic: Irritable bowel syndrome",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/irritable-bowel-syndrome/symptoms-causes/syc-20360016",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Rome Foundation: IBS (https://theromefoundation.org/)",
+      "publisher": "Rome Foundation: IBS",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://theromefoundation.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,23 +14,28 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "cough",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "ear_nose",
-      "freq": "common",
+      "tag": "sore_throat",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "fever",
-      "freq": "common",
-      "role": "supporting"
+      "freq": "very_common",
+      "role": "core"
     },
     {
-      "tag": "sore_throat",
+      "tag": "swollen_glands",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "swallow_difficulty",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "cough",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -51,33 +56,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Tonsillitis (https://www.nhs.uk/conditions/tonsillitis/)",
+      "publisher": "NHS: Tonsillitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/tonsillitis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Tonsillitis (https://www.mayoclinic.org/diseases-conditions/tonsillitis/symptoms-causes/syc-20378479)",
+      "publisher": "Mayo Clinic: Tonsillitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/tonsillitis/symptoms-causes/syc-20378479",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAO-HNS: Tonsillitis (https://www.entnet.org/health-information/tonsillitis/)",
+      "publisher": "AAO-HNS: Tonsillitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.entnet.org/health-information/tonsillitis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Tonsillitis (https://www.cdc.gov/group-a-strep/about/tonsillitis.html)",
+      "publisher": "CDC: Tonsillitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/group-a-strep/about/tonsillitis.html",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

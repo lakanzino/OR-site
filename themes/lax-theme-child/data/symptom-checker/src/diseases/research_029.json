@@ -14,14 +14,29 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "rash",
+      "tag": "facial_redness",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "visible_vessels",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "vision",
+      "tag": "acne_lesions",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "skin_burning",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "eye_burning",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -39,33 +54,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Rosacea (https://www.nhs.uk/conditions/rosacea/)",
+      "publisher": "NHS: Rosacea",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/rosacea/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Rosacea (https://www.mayoclinic.org/diseases-conditions/rosacea/symptoms-causes/syc-20353805)",
+      "publisher": "Mayo Clinic: Rosacea",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/rosacea/symptoms-causes/syc-20353805",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAD: Rosacea (https://www.aad.org/public/diseases/rosacea)",
+      "publisher": "AAD: Rosacea",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aad.org/public/diseases/rosacea",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NRS: Rosacea (https://www.rosacea.org/)",
+      "publisher": "NRS: Rosacea",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.rosacea.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

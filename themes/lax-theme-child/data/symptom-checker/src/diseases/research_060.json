@@ -14,8 +14,8 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "appetite",
-      "freq": "common",
+      "tag": "jaundice",
+      "freq": "very_common",
       "role": "core"
     },
     {
@@ -24,13 +24,28 @@
       "role": "core"
     },
     {
-      "tag": "jaundice",
+      "tag": "nausea",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "appetite",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dark_urine",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
+      "freq": "occasional",
       "role": "supporting"
     },
     {
-      "tag": "nausea",
-      "freq": "common",
+      "tag": "abd_pain",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -46,33 +61,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Hepatitis E (https://www.who.int/news-room/fact-sheets/detail/hepatitis-e)",
+      "publisher": "WHO: Hepatitis E",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/hepatitis-e",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Hepatitis E (https://www.cdc.gov/hepatitis-e/index.html)",
+      "publisher": "CDC: Hepatitis E",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/hepatitis-e/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NIDDK: Hepatitis E (https://www.niddk.nih.gov/health-information/liver-disease/viral-hepatitis/hepatitis-e)",
+      "publisher": "NIDDK: Hepatitis E",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/liver-disease/viral-hepatitis/hepatitis-e",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Hepatitis E (https://www.nhs.uk/conditions/hepatitis-e/)",
+      "publisher": "NHS: Hepatitis E",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/hepatitis-e/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

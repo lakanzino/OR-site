@@ -14,22 +14,27 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "chest_pain",
-      "freq": "common",
+      "tag": "fatigue",
+      "freq": "very_common",
       "role": "core"
     },
     {
-      "tag": "dizziness",
-      "freq": "common",
+      "tag": "pallor",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "dyspnea",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
-      "tag": "fatigue",
+      "tag": "palpitation",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dizziness",
       "freq": "common",
       "role": "supporting"
     },
@@ -39,8 +44,18 @@
       "role": "supporting"
     },
     {
-      "tag": "palpitation",
+      "tag": "nail_change",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "pica",
+      "freq": "occasional",
+      "role": "core"
+    },
+    {
+      "tag": "chest_pain",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -62,33 +77,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Anaemia (https://www.who.int/news-room/fact-sheets/detail/anaemia)",
+      "publisher": "WHO: Anaemia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/anaemia",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NIDDK: Iron-Deficiency Anemia (https://www.niddk.nih.gov/health-information/blood-diseases/iron-deficiency-anemia)",
+      "publisher": "NIDDK: Iron-Deficiency Anemia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/blood-diseases/iron-deficiency-anemia",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Iron deficiency anaemia (https://www.nhs.uk/conditions/iron-deficiency-anaemia/)",
+      "publisher": "NHS: Iron deficiency anaemia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/iron-deficiency-anaemia/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Iron deficiency anemia (https://www.mayoclinic.org/diseases-conditions/iron-deficiency-anemia/symptoms-causes/syc-20355034)",
+      "publisher": "Mayo Clinic: Iron deficiency anemia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/iron-deficiency-anemia/symptoms-causes/syc-20355034",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,28 +14,58 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "chills",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "ear_nose",
-      "freq": "common",
-      "role": "core"
-    },
-    {
       "tag": "palpitation",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "vision",
-      "freq": "common",
-      "role": "supporting"
+      "freq": "very_common",
+      "role": "core"
     },
     {
       "tag": "weight_loss",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "heat_intolerance",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "tremor",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "anxiety",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "eye_bulging",
+      "freq": "occasional",
+      "role": "core"
+    },
+    {
+      "tag": "double_vision",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "neck_swelling",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "sleep_problem",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -56,33 +86,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Graves' Disease (https://www.niddk.nih.gov/health-information/endocrine-diseases/graves-disease)",
+      "publisher": "NIDDK: Graves' Disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/endocrine-diseases/graves-disease",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Graves' disease (https://www.nhs.uk/conditions/graves-disease/)",
+      "publisher": "NHS: Graves' disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/graves-disease/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Graves' disease (https://www.mayoclinic.org/diseases-conditions/graves-disease/symptoms-causes/syc-20356240)",
+      "publisher": "Mayo Clinic: Graves' disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/graves-disease/symptoms-causes/syc-20356240",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ATA Guidelines: Graves' Disease (https://www.thyroid.org/graves-disease/)",
+      "publisher": "ATA Guidelines: Graves' Disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.thyroid.org/graves-disease/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,27 +14,32 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "flank_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "blood_urine",
+      "freq": "common",
+      "role": "core"
+    },
+    {
       "tag": "abd_pain",
       "freq": "common",
-      "role": "core"
+      "role": "supporting"
     },
     {
-      "tag": "chills",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "fever",
+      "tag": "burning_urine",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "flank_pain",
+      "tag": "cloudy_urine",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "frequent_urine",
+      "tag": "urgency",
       "freq": "common",
       "role": "supporting"
     },
@@ -45,7 +50,17 @@
     },
     {
       "tag": "vomiting",
-      "freq": "common",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "fever",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "chills",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -70,31 +85,40 @@
     {
       "publisher": "NIDDK: Kidney Stones",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "Mayo Clinic: Kidney stones",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "MedlinePlus: Kidney Stones",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "AUA Guideline: Surgical Management of Stones",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.auanet.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

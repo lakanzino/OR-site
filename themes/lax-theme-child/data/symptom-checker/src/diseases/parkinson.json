@@ -14,18 +14,48 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "body_ache",
+      "tag": "tremor",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "slow_movement",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "muscle_stiffness",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "chills",
+      "tag": "balance_problem",
       "freq": "common",
-      "role": "core"
+      "role": "supporting"
+    },
+    {
+      "tag": "sleep_problem",
+      "freq": "common",
+      "role": "supporting"
     },
     {
       "tag": "constipation",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "smell_loss",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "low_mood",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "masked_face",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -49,33 +79,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Parkinson's disease (https://www.nhs.uk/conditions/parkinsons-disease/)",
+      "publisher": "NHS: Parkinson's disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/parkinsons-disease/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Parkinson's disease (https://www.mayoclinic.org/diseases-conditions/parkinsons-disease/symptoms-causes/syc-20376055)",
+      "publisher": "Mayo Clinic: Parkinson's disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/parkinsons-disease/symptoms-causes/syc-20376055",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NINDS: Parkinson's Disease (https://www.ninds.nih.gov/health-information/disorders/parkinsons-disease)",
+      "publisher": "NINDS: Parkinson's Disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.ninds.nih.gov/health-information/disorders/parkinsons-disease",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "WHO: Parkinson disease (https://www.who.int/news-room/fact-sheets/detail/parkinson-disease)",
+      "publisher": "WHO: Parkinson disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/parkinson-disease",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

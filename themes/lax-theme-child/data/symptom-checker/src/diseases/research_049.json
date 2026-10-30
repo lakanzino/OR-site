@@ -14,38 +14,53 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "abd_pain",
-      "freq": "common",
-      "role": "core"
-    },
-    {
       "tag": "fever",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "headache",
-      "freq": "common",
-      "role": "supporting"
+      "freq": "very_common",
+      "role": "core"
     },
     {
-      "tag": "nausea",
+      "tag": "eye_pain",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
+    },
+    {
+      "tag": "body_ache",
+      "freq": "common",
+      "role": "core"
     },
     {
       "tag": "rash",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
-      "tag": "vision",
+      "tag": "nausea",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
       "tag": "vomiting",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "joint_pain",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "easy_bruising",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -66,33 +81,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Dengue and severe dengue (https://www.who.int/news-room/fact-sheets/detail/dengue-and-severe-dengue)",
+      "publisher": "WHO: Dengue and severe dengue",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/dengue-and-severe-dengue",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Dengue (https://www.cdc.gov/dengue/index.html)",
+      "publisher": "CDC: Dengue",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/dengue/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Dengue (https://www.nhs.uk/conditions/dengue/)",
+      "publisher": "NHS: Dengue",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/dengue/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Dengue fever (https://www.mayoclinic.org/diseases-conditions/dengue-fever/symptoms-causes/syc-20353066)",
+      "publisher": "Mayo Clinic: Dengue fever",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/dengue-fever/symptoms-causes/syc-20353066",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

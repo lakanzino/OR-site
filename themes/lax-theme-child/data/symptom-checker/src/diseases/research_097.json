@@ -14,9 +14,19 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "rash",
-      "freq": "common",
+      "tag": "vaginal_discharge",
+      "freq": "very_common",
       "role": "core"
+    },
+    {
+      "tag": "fishy_odor",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "vaginal_itch",
+      "freq": "rare",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -33,33 +43,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "CDC: Bacterial Vaginosis (https://www.cdc.gov/bacterial-vaginosis/index.html)",
+      "publisher": "CDC: Bacterial Vaginosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/bacterial-vaginosis/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Bacterial vaginosis (https://www.nhs.uk/conditions/bacterial-vaginosis/)",
+      "publisher": "NHS: Bacterial vaginosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/bacterial-vaginosis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Bacterial vaginosis (https://www.mayoclinic.org/diseases-conditions/bacterial-vaginosis/symptoms-causes/syc-20352211)",
+      "publisher": "Mayo Clinic: Bacterial vaginosis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/bacterial-vaginosis/symptoms-causes/syc-20352211",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ACOG: Vaginitis (https://www.acog.org/womens-health/faqs/vaginitis)",
+      "publisher": "ACOG: Vaginitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.acog.org/womens-health/faqs/vaginitis",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

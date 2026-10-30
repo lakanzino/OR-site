@@ -14,9 +14,19 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "rash",
+      "tag": "warts",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "skin_pain",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "skin_thickening",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -33,33 +43,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Warts and verrucas (https://www.nhs.uk/conditions/warts-and-verrucas/)",
+      "publisher": "NHS: Warts and verrucas",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/warts-and-verrucas/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Common warts (https://www.mayoclinic.org/diseases-conditions/common-warts/symptoms-causes/syc-20371125)",
+      "publisher": "Mayo Clinic: Common warts",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/common-warts/symptoms-causes/syc-20371125",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAD: Warts (https://www.aad.org/public/diseases/a-z/warts)",
+      "publisher": "AAD: Warts",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aad.org/public/diseases/a-z/warts",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: HPV and Warts (https://www.cdc.gov/hpv/about/cancers-caused-by-hpv.html)",
+      "publisher": "CDC: HPV and Warts",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/hpv/about/cancers-caused-by-hpv.html",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -12,7 +12,18 @@
     "elderly"
   ],
   "sex": "any",
-  "tags": [],
+  "tags": [
+    {
+      "tag": "tics",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "premonitory_urge",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
   "symptoms_fa": [
     "تیک‌های حرکتی متعدد",
     "تیک‌های صوتی",
@@ -28,33 +39,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "CDC: Tourette Syndrome (https://www.cdc.gov/tourette-syndrome/index.html)",
+      "publisher": "CDC: Tourette Syndrome",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/tourette-syndrome/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NINDS: Tourette Syndrome (https://www.ninds.nih.gov/health-information/disorders/tourette-syndrome)",
+      "publisher": "NINDS: Tourette Syndrome",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.ninds.nih.gov/health-information/disorders/tourette-syndrome",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Tourette syndrome (https://www.nhs.uk/conditions/tourette-syndrome/)",
+      "publisher": "NHS: Tourette syndrome",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/tourette-syndrome/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Tourette Association of America (https://tourette.org/)",
+      "publisher": "Tourette Association of America",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://tourette.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

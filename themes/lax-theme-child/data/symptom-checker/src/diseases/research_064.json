@@ -14,17 +14,32 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "foamy_urine",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "facial_swelling",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "leg_swelling",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_gain",
+      "freq": "common",
+      "role": "core"
+    },
+    {
       "tag": "fatigue",
       "freq": "common",
-      "role": "core"
+      "role": "supporting"
     },
     {
-      "tag": "fever",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "vision",
+      "tag": "appetite",
       "freq": "common",
       "role": "supporting"
     }
@@ -45,33 +60,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Nephrotic Syndrome (https://www.niddk.nih.gov/health-information/kidney-disease/nephrotic-syndrome-adults)",
+      "publisher": "NIDDK: Nephrotic Syndrome",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/nephrotic-syndrome-adults",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Nephrotic syndrome (https://www.nhs.uk/conditions/nephrotic-syndrome/)",
+      "publisher": "NHS: Nephrotic syndrome",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/nephrotic-syndrome/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Nephrotic syndrome (https://www.mayoclinic.org/diseases-conditions/nephrotic-syndrome/symptoms-causes/syc-20375608)",
+      "publisher": "Mayo Clinic: Nephrotic syndrome",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/nephrotic-syndrome/symptoms-causes/syc-20375608",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "KDIGO Guidelines: Nephrotic Syndrome (https://kdigo.org/guidelines/glomerular-diseases/)",
+      "publisher": "KDIGO Guidelines: Nephrotic Syndrome",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://kdigo.org/guidelines/glomerular-diseases/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

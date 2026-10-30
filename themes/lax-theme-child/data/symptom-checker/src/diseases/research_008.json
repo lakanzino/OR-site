@@ -14,8 +14,13 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "fatigue",
-      "freq": "common",
+      "tag": "blisters",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "itch",
+      "freq": "very_common",
       "role": "core"
     },
     {
@@ -24,13 +29,18 @@
       "role": "core"
     },
     {
-      "tag": "headache",
+      "tag": "fatigue",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "rash",
-      "freq": "common",
+      "tag": "headache",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "appetite",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -50,33 +60,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "CDC: Chickenpox (Varicella) (https://www.cdc.gov/chickenpox/index.html)",
+      "publisher": "CDC: Chickenpox (Varicella)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/chickenpox/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Chickenpox (https://www.nhs.uk/conditions/chickenpox/)",
+      "publisher": "NHS: Chickenpox",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/chickenpox/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Chickenpox (https://www.mayoclinic.org/diseases-conditions/chickenpox/symptoms-causes/syc-20351282)",
+      "publisher": "Mayo Clinic: Chickenpox",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/chickenpox/symptoms-causes/syc-20351282",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "WHO: Varicella (https://www.who.int/teams/health-product-policy-and-standards/standards-and-specifications/vaccine-standardization/varicella)",
+      "publisher": "WHO: Varicella",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/teams/health-product-policy-and-standards/standards-and-specifications/vaccine-standardization/varicella",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

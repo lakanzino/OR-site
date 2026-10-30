@@ -12,7 +12,18 @@
     "elderly"
   ],
   "sex": "any",
-  "tags": [],
+  "tags": [
+    {
+      "tag": "erectile_difficulty",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "low_libido",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
   "symptoms_fa": [
     "دشواری در رسیدن به نعوظ",
     "دشواری در حفظ نعوظ",
@@ -27,33 +38,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Erectile Dysfunction (https://www.niddk.nih.gov/health-information/urologic-diseases/erectile-dysfunction)",
+      "publisher": "NIDDK: Erectile Dysfunction",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/erectile-dysfunction",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Erectile dysfunction (impotence) (https://www.nhs.uk/conditions/erectile-dysfunction-impotence/)",
+      "publisher": "NHS: Erectile dysfunction (impotence)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/erectile-dysfunction-impotence/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Erectile dysfunction (https://www.mayoclinic.org/diseases-conditions/erectile-dysfunction/symptoms-causes/syc-20355776)",
+      "publisher": "Mayo Clinic: Erectile dysfunction",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/erectile-dysfunction/symptoms-causes/syc-20355776",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AUA Guidelines: Erectile Dysfunction (https://www.auanet.org/guidelines-and-quality/guidelines/erectile-dysfunction)",
+      "publisher": "AUA Guidelines: Erectile Dysfunction",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.auanet.org/guidelines-and-quality/guidelines/erectile-dysfunction",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

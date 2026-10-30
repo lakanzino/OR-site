@@ -14,28 +14,28 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "chest_pain",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "dyspnea",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "ear_nose",
-      "freq": "common",
+      "tag": "headache",
+      "freq": "rare",
       "role": "supporting"
     },
     {
-      "tag": "headache",
-      "freq": "common",
+      "tag": "chest_pressure",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "dyspnea",
+      "freq": "rare",
       "role": "supporting"
     },
     {
       "tag": "vision",
-      "freq": "common",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "confusion",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -54,37 +54,50 @@
     {
       "publisher": "WHO: Hypertension Fact Sheet",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "ACC/AHA Guideline: High Blood Pressure",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.acc.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "ESC/ESH Guidelines: Arterial Hypertension",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.escardio.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "NHLBI: High Blood Pressure",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhlbi.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "Mayo Clinic: High blood pressure",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
-  }
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
+  },
+  "checker_rankable": false,
+  "checker_note": "بیشتر موارد بدون علامت‌اند؛ علامت‌های بحران فشار خون غیراختصاصی‌اند. به‌عنوان بیماری رتبه‌پذیر نمایش داده نمی‌شود."
 }

@@ -14,14 +14,24 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "cough",
-      "freq": "common",
+      "tag": "facial_pain",
+      "freq": "very_common",
       "role": "core"
     },
     {
-      "tag": "ear_nose",
-      "freq": "common",
+      "tag": "nasal_congestion",
+      "freq": "very_common",
       "role": "core"
+    },
+    {
+      "tag": "nasal_discharge",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "headache",
+      "freq": "common",
+      "role": "supporting"
     },
     {
       "tag": "fever",
@@ -29,7 +39,12 @@
       "role": "supporting"
     },
     {
-      "tag": "headache",
+      "tag": "smell_loss",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "cough",
       "freq": "common",
       "role": "supporting"
     }
@@ -54,33 +69,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Sinusitis (Sinus infection) (https://www.nhs.uk/conditions/sinusitis-sinus-infection/)",
+      "publisher": "NHS: Sinusitis (Sinus infection)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/sinusitis-sinus-infection/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Sinusitis (https://www.mayoclinic.org/diseases-conditions/sinusitis/symptoms-causes/syc-20377596)",
+      "publisher": "Mayo Clinic: Sinusitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/sinusitis/symptoms-causes/syc-20377596",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Sinus Infection (https://www.cdc.gov/antibiotic-use/sinus-infection.html)",
+      "publisher": "CDC: Sinus Infection",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/antibiotic-use/sinus-infection.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAO-HNS: Sinusitis (https://www.entnet.org/health-information/sinusitis/)",
+      "publisher": "AAO-HNS: Sinusitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.entnet.org/health-information/sinusitis/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

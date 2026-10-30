@@ -15,11 +15,21 @@
   "tags": [
     {
       "tag": "cough",
-      "freq": "common",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sputum",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "dyspnea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "wheeze",
       "freq": "common",
       "role": "core"
     },
@@ -30,7 +40,7 @@
     },
     {
       "tag": "weight_loss",
-      "freq": "common",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -51,33 +61,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Chronic obstructive pulmonary disease (COPD) (https://www.who.int/news-room/fact-sheets/detail/chronic-obstructive-pulmonary-disease-(copd))",
+      "publisher": "WHO: Chronic obstructive pulmonary disease (COPD) )",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/chronic-obstructive-pulmonary-disease-(copd",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: COPD (https://www.nhs.uk/conditions/chronic-obstructive-pulmonary-disease-copd/)",
+      "publisher": "NHS: COPD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/chronic-obstructive-pulmonary-disease-copd/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: COPD (https://www.mayoclinic.org/diseases-conditions/copd/symptoms-causes/syc-20353679)",
+      "publisher": "Mayo Clinic: COPD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/copd/symptoms-causes/syc-20353679",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "GOLD Guidelines: COPD (https://goldcopd.org/)",
+      "publisher": "GOLD Guidelines: COPD",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://goldcopd.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

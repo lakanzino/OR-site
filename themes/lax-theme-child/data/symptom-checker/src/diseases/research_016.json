@@ -15,27 +15,37 @@
   "tags": [
     {
       "tag": "abd_pain",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "diarrhea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "fever",
       "freq": "common",
       "role": "core"
     },
     {
       "tag": "fatigue",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "anal_pain",
+      "freq": "occasional",
       "role": "supporting"
     },
     {
-      "tag": "fever",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "weight_loss",
-      "freq": "common",
+      "tag": "anal_lump",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -57,33 +67,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Crohn's Disease (https://www.niddk.nih.gov/health-information/digestive-diseases/crohns-disease)",
+      "publisher": "NIDDK: Crohn's Disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/crohns-disease",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Crohn's disease (https://www.nhs.uk/conditions/crohns-disease/)",
+      "publisher": "NHS: Crohn's disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/crohns-disease/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Crohn's disease (https://www.mayoclinic.org/diseases-conditions/crohns-disease/symptoms-causes/syc-20353304)",
+      "publisher": "Mayo Clinic: Crohn's disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/crohns-disease/symptoms-causes/syc-20353304",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CCFA: Crohn's Disease (https://www.crohnscolitisfoundation.org/what-is-crohns-disease)",
+      "publisher": "CCFA: Crohn's Disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.crohnscolitisfoundation.org/what-is-crohns-disease",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

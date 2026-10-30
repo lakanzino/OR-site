@@ -12,7 +12,48 @@
     "elderly"
   ],
   "sex": "any",
-  "tags": [],
+  "tags": [
+    {
+      "tag": "memory_loss",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "confusion",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "word_finding",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "mood_change",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "daily_function_loss",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "concentration_problem",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "balance_problem",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "swallow_difficulty",
+      "freq": "rare",
+      "role": "supporting"
+    }
+  ],
   "symptoms_fa": [
     "افت پیش‌رونده حافظه، به‌ویژه حافظه کوتاه‌مدت",
     "گم‌شدن در مکان‌های آشنا",
@@ -32,33 +73,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Dementia (https://www.who.int/news-room/fact-sheets/detail/dementia)",
+      "publisher": "WHO: Dementia",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/dementia",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NIA: Alzheimer's Disease (https://www.nia.nih.gov/health/alzheimers-and-dementia)",
+      "publisher": "NIA: Alzheimer's Disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nia.nih.gov/health/alzheimers-and-dementia",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Alzheimer's disease (https://www.nhs.uk/conditions/alzheimers-disease/)",
+      "publisher": "NHS: Alzheimer's disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/alzheimers-disease/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Alzheimer's disease (https://www.mayoclinic.org/diseases-conditions/alzheimers-disease/symptoms-causes/syc-20350447)",
+      "publisher": "Mayo Clinic: Alzheimer's disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/alzheimers-disease/symptoms-causes/syc-20350447",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

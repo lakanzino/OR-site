@@ -14,18 +14,38 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "abd_pain",
-      "freq": "common",
-      "role": "core"
-    },
-    {
       "tag": "fatigue",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "jaundice",
       "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "dark_urine",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "abd_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "abdominal_swelling",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "leg_swelling",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "confusion",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -45,33 +65,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Hepatitis C (https://www.who.int/news-room/fact-sheets/detail/hepatitis-c)",
+      "publisher": "WHO: Hepatitis C",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/hepatitis-c",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Hepatitis C (https://www.cdc.gov/hepatitis-c/index.html)",
+      "publisher": "CDC: Hepatitis C",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/hepatitis-c/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NIDDK: Hepatitis C (https://www.niddk.nih.gov/health-information/liver-disease/viral-hepatitis/hepatitis-c)",
+      "publisher": "NIDDK: Hepatitis C",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/liver-disease/viral-hepatitis/hepatitis-c",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Hepatitis C (https://www.nhs.uk/conditions/hepatitis-c/)",
+      "publisher": "NHS: Hepatitis C",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/hepatitis-c/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

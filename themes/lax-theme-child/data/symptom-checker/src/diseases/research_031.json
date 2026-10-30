@@ -12,7 +12,33 @@
     "elderly"
   ],
   "sex": "any",
-  "tags": [],
+  "tags": [
+    {
+      "tag": "vision",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "halo_glare",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "light_sensitivity",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "night_vision",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "color_fading",
+      "freq": "common",
+      "role": "core"
+    }
+  ],
   "symptoms_fa": [
     "تاری تدریجی و بدون درد بینایی",
     "حساسیت به نور و پخش شدن نور",
@@ -28,33 +54,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Cataract (https://www.who.int/news-room/fact-sheets/detail/cataract)",
+      "publisher": "WHO: Cataract",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/cataract",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Cataracts (https://www.nhs.uk/conditions/cataracts/)",
+      "publisher": "NHS: Cataracts",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/cataracts/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Cataracts (https://www.mayoclinic.org/diseases-conditions/cataracts/symptoms-causes/syc-20353790)",
+      "publisher": "Mayo Clinic: Cataracts",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/cataracts/symptoms-causes/syc-20353790",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAO: Cataract (https://www.aao.org/eye-health/diseases/what-are-cataracts)",
+      "publisher": "AAO: Cataract",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.aao.org/eye-health/diseases/what-are-cataracts",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

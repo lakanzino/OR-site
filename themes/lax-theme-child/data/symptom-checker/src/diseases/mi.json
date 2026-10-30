@@ -14,29 +14,29 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "arm_jaw_pain",
-      "freq": "common",
-      "role": "core"
-    },
-    {
       "tag": "chest_pain",
-      "freq": "common",
+      "freq": "very_common",
+      "role": "red_flag"
+    },
+    {
+      "tag": "chest_pressure",
+      "freq": "very_common",
       "role": "core"
     },
     {
-      "tag": "dizziness",
-      "freq": "common",
-      "role": "supporting"
+      "tag": "arm_jaw_pain",
+      "freq": "very_common",
+      "role": "core"
     },
     {
       "tag": "dyspnea",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
-      "tag": "fatigue",
+      "tag": "sweating",
       "freq": "common",
-      "role": "supporting"
+      "role": "core"
     },
     {
       "tag": "nausea",
@@ -44,13 +44,23 @@
       "role": "supporting"
     },
     {
-      "tag": "sweating",
+      "tag": "dizziness",
       "freq": "common",
       "role": "supporting"
     },
     {
       "tag": "vomiting",
-      "freq": "common",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "anxiety",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "fatigue",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -74,33 +84,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Heart attack (https://www.who.int/news-room/fact-sheets/detail/heart-attack)",
+      "publisher": "WHO: Heart attack",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/heart-attack",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Heart Attack (https://www.cdc.gov/heart-disease/about/heart-attack.html)",
+      "publisher": "CDC: Heart Attack",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/heart-disease/about/heart-attack.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Heart attack (https://www.nhs.uk/conditions/heart-attack/)",
+      "publisher": "NHS: Heart attack",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/heart-attack/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Heart attack (https://www.mayoclinic.org/diseases-conditions/heart-attack/symptoms-causes/syc-20373106)",
+      "publisher": "Mayo Clinic: Heart attack",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/heart-attack/symptoms-causes/syc-20373106",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,23 +14,28 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "joint_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "joint_swelling",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "morning_stiffness",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
       "tag": "fatigue",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "fever",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "rash",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "vision",
-      "freq": "common",
+      "tag": "fever",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -51,33 +56,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Rheumatoid arthritis (https://www.nhs.uk/conditions/rheumatoid-arthritis/)",
+      "publisher": "NHS: Rheumatoid arthritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/rheumatoid-arthritis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Rheumatoid arthritis (https://www.mayoclinic.org/diseases-conditions/rheumatoid-arthritis/symptoms-causes/syc-20353648)",
+      "publisher": "Mayo Clinic: Rheumatoid arthritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/rheumatoid-arthritis/symptoms-causes/syc-20353648",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "ACR: Rheumatoid Arthritis (https://rheumatology.org/patients/fact-sheet-rheumatoid-arthritis)",
+      "publisher": "ACR: Rheumatoid Arthritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://rheumatology.org/patients/fact-sheet-rheumatoid-arthritis",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "WHO: Rheumatoid arthritis (https://www.who.int/news-room/fact-sheets/detail/rheumatoid-arthritis)",
+      "publisher": "WHO: Rheumatoid arthritis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/rheumatoid-arthritis",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

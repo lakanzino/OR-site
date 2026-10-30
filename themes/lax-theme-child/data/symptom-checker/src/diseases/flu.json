@@ -14,27 +14,22 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "body_ache",
-      "freq": "common",
+      "tag": "fever",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "chills",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
-      "tag": "cough",
-      "freq": "common",
-      "role": "supporting"
+      "tag": "body_ache",
+      "freq": "very_common",
+      "role": "core"
     },
     {
-      "tag": "diarrhea",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "ear_nose",
+      "tag": "headache",
       "freq": "common",
       "role": "supporting"
     },
@@ -44,17 +39,7 @@
       "role": "supporting"
     },
     {
-      "tag": "fever",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "headache",
-      "freq": "common",
-      "role": "supporting"
-    },
-    {
-      "tag": "nausea",
+      "tag": "cough",
       "freq": "common",
       "role": "supporting"
     },
@@ -64,8 +49,28 @@
       "role": "supporting"
     },
     {
-      "tag": "vomiting",
+      "tag": "nasal_congestion",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nasal_discharge",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "nausea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -89,33 +94,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Influenza (Seasonal) (https://www.who.int/news-room/fact-sheets/detail/influenza-(seasonal))",
+      "publisher": "WHO: Influenza (Seasonal) )",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/influenza-(seasonal",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Flu (Influenza) (https://www.cdc.gov/flu/index.html)",
+      "publisher": "CDC: Flu (Influenza)",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/flu/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Flu (https://www.nhs.uk/conditions/flu/)",
+      "publisher": "NHS: Flu",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/flu/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Influenza (https://www.mayoclinic.org/diseases-conditions/flu/symptoms-causes/syc-20351719)",
+      "publisher": "Mayo Clinic: Influenza",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/flu/symptoms-causes/syc-20351719",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

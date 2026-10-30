@@ -14,18 +14,23 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "hoarseness",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "sore_throat",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
       "tag": "cough",
       "freq": "common",
       "role": "core"
     },
     {
       "tag": "fever",
-      "freq": "common",
-      "role": "core"
-    },
-    {
-      "tag": "sore_throat",
-      "freq": "common",
+      "freq": "occasional",
       "role": "supporting"
     }
   ],
@@ -45,33 +50,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NHS: Laryngitis (https://www.nhs.uk/conditions/laryngitis/)",
+      "publisher": "NHS: Laryngitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/laryngitis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Laryngitis (https://www.mayoclinic.org/diseases-conditions/laryngitis/symptoms-causes/syc-20374262)",
+      "publisher": "Mayo Clinic: Laryngitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/laryngitis/symptoms-causes/syc-20374262",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "AAO-HNS: Laryngitis (https://www.entnet.org/health-information/laryngitis/)",
+      "publisher": "AAO-HNS: Laryngitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.entnet.org/health-information/laryngitis/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NIDCD: Laryngitis (https://www.nidcd.nih.gov/health/laryngitis)",
+      "publisher": "NIDCD: Laryngitis",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nidcd.nih.gov/health/laryngitis",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

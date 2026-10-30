@@ -14,14 +14,24 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "diarrhea",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "bloating",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
       "tag": "abd_pain",
       "freq": "common",
       "role": "core"
     },
     {
-      "tag": "diarrhea",
+      "tag": "weight_loss",
       "freq": "common",
-      "role": "core"
+      "role": "supporting"
     },
     {
       "tag": "fatigue",
@@ -29,13 +39,23 @@
       "role": "supporting"
     },
     {
-      "tag": "rash",
+      "tag": "blisters",
       "freq": "common",
       "role": "supporting"
     },
     {
-      "tag": "weight_loss",
+      "tag": "itch",
       "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "fracture_fragility",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "growth_delay",
+      "freq": "rare",
       "role": "supporting"
     }
   ],
@@ -57,33 +77,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "NIDDK: Celiac Disease (https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease)",
+      "publisher": "NIDDK: Celiac Disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Coeliac disease (https://www.nhs.uk/conditions/coeliac-disease/)",
+      "publisher": "NHS: Coeliac disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/coeliac-disease/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Celiac disease (https://www.mayoclinic.org/diseases-conditions/celiac-disease/symptoms-causes/syc-20352220)",
+      "publisher": "Mayo Clinic: Celiac disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/celiac-disease/symptoms-causes/syc-20352220",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Beyond Celiac: Celiac Disease (https://www.beyondceliac.org/)",
+      "publisher": "Beyond Celiac: Celiac Disease",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.beyondceliac.org/",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

@@ -14,14 +14,29 @@
   "sex": "any",
   "tags": [
     {
+      "tag": "parotid_swelling",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
       "tag": "fever",
-      "freq": "common",
+      "freq": "very_common",
       "role": "core"
     },
     {
       "tag": "headache",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "body_ache",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "scrotal_swelling",
+      "freq": "rare",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -40,33 +55,38 @@
   "next_step_fa": "اگر علائم ادامه یافت یا هر یک از موارد «مراجعهٔ فوری» را داشتید، به پزشک مراجعه کنید.",
   "sources": [
     {
-      "publisher": "WHO: Mumps (https://www.who.int/news-room/fact-sheets/detail/mumps)",
+      "publisher": "WHO: Mumps",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.who.int/news-room/fact-sheets/detail/mumps",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "CDC: Mumps (https://www.cdc.gov/mumps/index.html)",
+      "publisher": "CDC: Mumps",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.cdc.gov/mumps/index.html",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "NHS: Mumps (https://www.nhs.uk/conditions/mumps/)",
+      "publisher": "NHS: Mumps",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.nhs.uk/conditions/mumps/",
+      "accessed": "",
+      "verified": false
     },
     {
-      "publisher": "Mayo Clinic: Mumps (https://www.mayoclinic.org/diseases-conditions/mumps/symptoms-causes/syc-20375361)",
+      "publisher": "Mayo Clinic: Mumps",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/diseases-conditions/mumps/symptoms-causes/syc-20375361",
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }

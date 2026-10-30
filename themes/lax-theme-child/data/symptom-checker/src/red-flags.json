@@ -15,7 +15,16 @@
         ]
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -37,7 +46,16 @@
         ]
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -57,7 +75,16 @@
         ]
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -79,7 +106,16 @@
         ]
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -98,7 +134,16 @@
         ]
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -117,7 +162,16 @@
         "any": []
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -136,7 +190,16 @@
         "any": []
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -154,7 +217,16 @@
         ]
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -172,7 +244,16 @@
         ]
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -191,7 +272,16 @@
         "any": []
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -209,7 +299,16 @@
         ]
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -227,7 +326,16 @@
         "any": []
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -248,7 +356,16 @@
         ]
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -266,7 +383,16 @@
         ]
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -284,7 +410,16 @@
         ]
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
@@ -302,13 +437,49 @@
         ]
       },
       "message_fa": "این علائم می‌تواند اورژانسی باشد. فوراً با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید.",
-      "sources": [],
+      "sources": [
+        {
+          "publisher": "NHS",
+          "title": "",
+          "url": "https://www.nhs.uk/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
       "review": {
         "status": "draft",
         "reviewer": "",
         "date": ""
       },
       "question_fa": "آیا بی‌اختیاری ادرار یا مدفوع یا بی‌حسی ناحیه‌ی زین دارید؟"
+    },
+    {
+      "id": "rf_suicide",
+      "label_fa": "افکار خودکشی",
+      "question_fa": "آیا به مردن یا آسیب زدن به خودتان فکر می‌کنید؟",
+      "when": {
+        "all": [],
+        "any": [
+          "suicidal_thoughts"
+        ]
+      },
+      "message_fa": "اگر به آسیب زدن به خود فکر می‌کنید، همین حالا با {{EMERGENCY}} تماس بگیرید یا به نزدیک‌ترین اورژانس بروید. تنها نمانید و با یک فرد قابل اعتماد صحبت کنید.",
+      "sources": [
+        {
+          "publisher": "WHO",
+          "title": "",
+          "url": "https://www.who.int/",
+          "accessed": "",
+          "verified": false,
+          "urlLevel": "homepage"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "reviewer": "",
+        "date": ""
+      }
     }
   ]
 }

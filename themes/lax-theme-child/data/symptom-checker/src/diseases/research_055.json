@@ -14,9 +14,29 @@
   "sex": "any",
   "tags": [
     {
-      "tag": "rash",
+      "tag": "anal_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "blood_in_stool",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "itch",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "anal_lump",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "skin_burning",
+      "freq": "common",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -37,31 +57,39 @@
     {
       "publisher": "NIDDK: Anal Fissure",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "Mayo Clinic: Anal fissure",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "MedlinePlus: Anal fissure",
       "title": "",
-      "url": "",
-      "accessed": ""
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
     },
     {
       "publisher": "ASCRS Clinical Practice Guidelines: Anal Fissures",
       "title": "",
       "url": "",
-      "accessed": ""
+      "accessed": "",
+      "verified": false
     }
   ],
   "review": {
     "status": "draft",
     "reviewer": "",
-    "date": ""
+    "date": "",
+    "basis": "فهرست علائم پروفایل، با ۱ تا ۳ منبع نام‌برده در پروفایل؛ برچسب‌ها بازبینی پزشکی نشده‌اند."
   }
 }
