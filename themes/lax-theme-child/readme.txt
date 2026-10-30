@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.28.1
+Stable tag: 0.29.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.29.0 =
+* چک‌کنندهٔ علائم بازسازی شد: ۱۲۰ بیماری با همهٔ علائم و توضیح‌ها، در فضای تست `/symptom-checker-test/` (noindex، بدون لینک در منو). افزونهٔ `hamyar-symptom-guide` حذف شد. خروجی شامل درمان خانگی نیست و هشدار ایمنی همیشه نمایش داده می‌شود.
 
 = 0.28.1 =
 * صفحه‌ی اول: نام تخصص‌ها فارسی شد و جملهٔ ثابت زیر نوارها حذف شد.

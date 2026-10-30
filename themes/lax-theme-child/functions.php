@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.28.1' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.29.0' );
 }
 
 /**
@@ -29,6 +29,7 @@ require_once get_stylesheet_directory() . '/inc/content-types.php';
 
 /** Disease directory and editable starter drafts. */
 require_once get_stylesheet_directory() . '/inc/disease-directory.php';
+require_once get_stylesheet_directory() . '/inc/symptom-checker-test.php';
 
 /**
  * Load article display helpers (TOC, badges, related articles).

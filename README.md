@@ -12,7 +12,6 @@
 | قالب والد `lax-theme` | 1.0.1 | [`themes/lax-theme/`](themes/lax-theme/) |
 | قالب فرزند `lax-theme-child` | 0.22.2 | [`themes/lax-theme-child/`](themes/lax-theme-child/) |
 | افزونهٔ `orsite-media-matcher` | 1.2.0 | [`plugins/orsite-media-matcher/`](plugins/orsite-media-matcher/) |
-| افزونهٔ `hamyar-symptom-guide` | 0.5.0 | [`plugins/hamyar-symptom-guide/`](plugins/hamyar-symptom-guide/) |
 | ساختار محتوا (`ORSITE_STRUCTURE_VERSION`) | 1.0.0 | `themes/lax-theme-child/inc/content-types.php` |
 
 این شماره‌ها نسخه‌های موجود در مخزن هستند؛ وضعیت نصب افزونه‌ها روی سایت مستقلاً بررسی نشده است. ریلیز فرزند [`child-v0.22.2`](https://github.com/lakanzino/OR-site/releases/tag/child-v0.22.2) منتشر شده است؛ صاحب سایت پیش‌تر نصب 0.22.0 را گزارش کرده بود. نصب و عملکرد 0.22.1 یا 0.22.2 در سایت واقعی مستقلاً بررسی نشده‌اند؛ جزئیات در [چنج‌لاگ پروژه](docs/PROJECT-CHANGELOG.md) آمده است.
@@ -30,7 +29,7 @@
 
 ## افزونهٔ راهنمای علائم
 
-افزونهٔ وردپرس [`plugins/hamyar-symptom-guide/`](plugins/hamyar-symptom-guide/) برگه‌ای مستقل و پیش‌نویس بدون شورت‌کد برای بررسی و انتشار می‌سازد. راهنمای نصب و محدودیت‌ها در README افزونه است.
+چک‌کنندهٔ علائم (۱۲۰ بیماری) در قالب فرزند و در فضای تست `/symptom-checker-test/` قرار دارد؛ افزونهٔ قبلی `hamyar-symptom-guide` حذف شد.
 
 ## نمونهٔ راهنمای علائم
 

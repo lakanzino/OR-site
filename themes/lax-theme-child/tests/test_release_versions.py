@@ -141,7 +141,7 @@ class ReleaseVersionsTest(unittest.TestCase):
         self.assertTrue(self.manifest["changelog"][0].startswith(self.child_version + " "))
 
     def test_plugin_source_and_package_versions_agree(self):
-        for slug in ("orsite-media-matcher", "hamyar-symptom-guide"):
+        for slug in ("orsite-media-matcher",):
             with self.subTest(plugin=slug):
                 source = (ROOT / "plugins" / slug / f"{slug}.php").read_text(encoding="utf-8")
                 with ZipFile(RELEASES / f"{slug}.zip") as archive:

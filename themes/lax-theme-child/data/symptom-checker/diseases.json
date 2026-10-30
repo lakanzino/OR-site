@@ -1,0 +1,3681 @@
+{
+ "version": 1,
+ "count": 120,
+ "diseases": [
+  {
+   "id": "app",
+   "nameFa": "آپاندیسیت",
+   "nameEn": "Appendicitis",
+   "specialty": "بیماری‌های گوارشی و جراحی عمومی — متخصص جراحی عمومی",
+   "symptoms": [
+    "درد ناگهانی که اغلب از اطراف ناف شروع می‌شود و سپس به پایین سمت راست شکم می‌رود",
+    "تشدید درد با حرکت، راه رفتن، سرفه یا عطسه",
+    "بی‌اشتهایی",
+    "تهوع و استفراغ",
+    "تب خفیف",
+    "یبوست یا اسهال",
+    "نفخ شکم",
+    "ناتوانی در دفع گاز",
+    "حساسیت و سفتی شکم هنگام لمس"
+   ],
+   "tags": [
+    "abd_pain",
+    "appetite",
+    "constipation",
+    "cough",
+    "diarrhea",
+    "fever",
+    "nausea",
+    "right_lower",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "درد ناگهانی شکم که به‌ویژه در پایین سمت راست بدتر می‌شود",
+    "درد همراه با تب، تهوع و استفراغ",
+    "این وضعیت اورژانسی است؛ از مصرف خودسرانه مسکن و داروی ملین بپرهیزید"
+   ],
+   "sources": [
+    "Mayo Clinic: Appendicitis",
+    "NIDDK: Appendicitis",
+    "MedlinePlus: Appendicitis",
+    "NHS: Appendicitis"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "mi",
+   "nameFa": "حمله قلبی",
+   "nameEn": "Heart attack (Myocardial infarction)",
+   "specialty": "قلب و عروق — متخصص قلب و عروق",
+   "symptoms": [
+    "درد یا فشار قفسه سینه، اغلب در مرکز یا سمت چپ",
+    "انتشار درد به بازوی چپ، فک، گردن، پشت یا معده",
+    "تنگی نفس",
+    "تعریق سرد",
+    "تهوع یا استفراغ",
+    "سرگیجه یا سبکی سر",
+    "اضطراب یا احساس مرگ قریب‌الوقوع",
+    "در زنان، سالمندان و دیابتی‌ها ممکن است علائم غیرمعمول مانند خستگی شدید یا تنگی نفس باشد"
+   ],
+   "tags": [
+    "arm_jaw_pain",
+    "chest_pain",
+    "dizziness",
+    "dyspnea",
+    "fatigue",
+    "nausea",
+    "sweating",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "درد یا فشار قفسه سینه بیش از چند دقیقه یا عودکننده (بازگشت‌کننده)",
+    "تنگی نفس، تعریق سرد، تهوع، سرگیجه یا غش",
+    "در زنان، سالمندان و دیابتی‌ها علائم غیرمعمول مانند خستگی شدید",
+    "اورژانس: تماس فوری با اورژانس"
+   ],
+   "sources": [
+    "WHO: Heart attack (https://www.who.int/news-room/fact-sheets/detail/heart-attack)",
+    "CDC: Heart Attack (https://www.cdc.gov/heart-disease/about/heart-attack.html)",
+    "NHS: Heart attack (https://www.nhs.uk/conditions/heart-attack/)",
+    "Mayo Clinic: Heart attack (https://www.mayoclinic.org/diseases-conditions/heart-attack/symptoms-causes/syc-20373106)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "stroke",
+   "nameFa": "سکته مغزی",
+   "nameEn": "Stroke",
+   "specialty": "مغز و اعصاب — متخصص مغز و اعصاب (نورولوژی)",
+   "symptoms": [
+    "ضعف یا بی‌حسی ناگهانی صورت، بازو یا پا، اغلب یک‌طرفه",
+    "اختلال ناگهانی در تکلم یا درک کلام",
+    "تاری یا از دست رفتن ناگهانی بینایی، اغلب یک چشم",
+    "سردرد شدید و ناگهانی",
+    "سرگیجه، عدم تعادل یا اختلال راه رفتن",
+    "افتادگی صورت",
+    "گیجی یا کاهش هوشیاری"
+   ],
+   "tags": [
+    "arm_jaw_pain",
+    "dizziness",
+    "headache",
+    "vision"
+   ],
+   "whenToSeeDoctor": [
+    "ضعف یا بی‌حسی ناگهانی صورت، بازو یا پا، اغلب یک‌طرفه",
+    "اختلال ناگهانی تکلم یا درک کلام",
+    "تاری یا از دست رفتن ناگهانی بینایی",
+    "سردرد شدید و ناگهانی، سرگیجه یا عدم تعادل",
+    "اورژانس: علائم FAST؛ زمان طلایی را از دست ندهید"
+   ],
+   "sources": [
+    "WHO: Stroke (https://www.who.int/news-room/fact-sheets/detail/stroke)",
+    "CDC: Stroke (https://www.cdc.gov/stroke/about/index.html)",
+    "NHS: Stroke (https://www.nhs.uk/conditions/stroke/)",
+    "Mayo Clinic: Stroke (https://www.mayoclinic.org/diseases-conditions/stroke/symptoms-causes/syc-20350113)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "migraine",
+   "nameFa": "میگرن",
+   "nameEn": "Migraine",
+   "specialty": "مغز و اعصاب — متخصص مغز و اعصاب (نورولوژی)",
+   "symptoms": [
+    "سردرد ضربان‌دار، اغلب یک‌طرفه",
+    "تهوع و استفراغ",
+    "حساسیت به نور و صدا",
+    "تشدید با فعالیت بدنی",
+    "احساس ضعف یا خستگی",
+    "در برخی افراد، علائم پیش‌درآمد (اورا) مانند جرقه‌های بینایی یا اختلال حسی"
+   ],
+   "tags": [
+    "fatigue",
+    "headache",
+    "nausea",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "سردرد ناگهانی و شدید («بدترین سردرد عمر»)",
+    "سردرد با تب، سفتی گردن، ضعف، گیجی یا تشنج",
+    "سردرد پس از ضربه به سر",
+    "سردرد جدید بعد از ۵۰ سالگی یا در بارداری",
+    "اورژانس: علائم عصبی جدید"
+   ],
+   "sources": [
+    "NHS: Migraine (https://www.nhs.uk/conditions/migraine/)",
+    "Mayo Clinic: Migraine (https://www.mayoclinic.org/diseases-conditions/migraine/symptoms-causes/syc-20360201)",
+    "NICE CKS: Migraine (https://cks.nice.org.uk/topics/migraine/)",
+    "WHO: Headache disorders (https://www.who.int/news-room/fact-sheets/detail/headache-disorders)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "asthma",
+   "nameFa": "آسم",
+   "nameEn": "Asthma",
+   "specialty": "ریه و تنفس — متخصص ریه (پولمونولوژی)",
+   "symptoms": [
+    "خس‌خس سینه",
+    "سرفه، به‌ویژه شب‌ها یا صبح زود",
+    "تنگی نفس",
+    "احساس فشار یا سفتی قفسه سینه",
+    "علائم متغیر و دوره‌ای",
+    "تشدید با ورزش، آلرژن، عفونت ویروسی یا هوای سرد"
+   ],
+   "tags": [
+    "chest_pain",
+    "cough",
+    "dyspnea"
+   ],
+   "whenToSeeDoctor": [
+    "تنگی نفس شدید، ناتوانی در صحبت کردن، خس‌خس شدید یا سیانوز",
+    "عدم پاسخ به اسپری تسکین‌دهنده",
+    "خواب‌آلودگی، گیجی یا خستگی شدید",
+    "اورژانس: حملات شدید یا وضعیت آسم"
+   ],
+   "sources": [
+    "WHO: Asthma (https://www.who.int/news-room/fact-sheets/detail/asthma)",
+    "Mayo Clinic: Asthma (https://www.mayoclinic.org/diseases-conditions/asthma/symptoms-causes/syc-20369653)",
+    "NHS: Asthma (https://www.nhs.uk/conditions/asthma/)",
+    "GINA Guidelines: Asthma (https://ginasthma.org/reports/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "pneumonia",
+   "nameFa": "ذات‌الریه",
+   "nameEn": "Pneumonia",
+   "specialty": "ریه و تنفس — متخصص ریه و بیماری‌های عفونی",
+   "symptoms": [
+    "سرفه، اغلب با خلط",
+    "تب و لرز",
+    "تنگی نفس",
+    "درد قفسه سینه هنگام تنفس (دم و بازدم) یا سرفه",
+    "خستگی",
+    "تعریق",
+    "در سالمندان ممکن است گیجی یا کاهش هوشیاری دیده شود"
+   ],
+   "tags": [
+    "chest_pain",
+    "chills",
+    "cough",
+    "dyspnea",
+    "fatigue",
+    "fever",
+    "sweating"
+   ],
+   "whenToSeeDoctor": [
+    "تب بالا، تنگی نفس، درد قفسه سینه یا خلط خونی",
+    "گیجی، افت فشار یا سیانوز",
+    "اشباع اکسیژن پایین",
+    "اورژانس: مراجعه فوری"
+   ],
+   "sources": [
+    "WHO: Pneumonia (https://www.who.int/news-room/fact-sheets/detail/pneumonia)",
+    "Mayo Clinic: Pneumonia (https://www.mayoclinic.org/diseases-conditions/pneumonia/symptoms-causes/syc-20354204)",
+    "NHS: Pneumonia (https://www.nhs.uk/conditions/pneumonia/)",
+    "CDC: Pneumonia (https://www.cdc.gov/pneumonia/index.html)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "diabetes",
+   "nameFa": "دیابت نوع ۲",
+   "nameEn": "Type 2 Diabetes Mellitus",
+   "specialty": "غدد درون‌ریز و متابولیسم — متخصص غدد، داخلی",
+   "symptoms": [
+    "تشنگی زیاد",
+    "تکرر ادرار",
+    "گرسنگی زیاد",
+    "خستگی",
+    "تاری دید",
+    "زخم‌هایی که دیر بهبود می‌یابند",
+    "عفونت‌های مکرر پوست، لثه یا ادراری",
+    "گزگز یا بی‌حسی دست و پا",
+    "لکه‌های تیره پوست در چین‌ها (آکانتوزیس نیگریکانس)",
+    "کاهش وزن ناخواسته (کم‌تر شایع)",
+    "بسیاری از مبتلایان سال‌ها بدون علامت‌اند"
+   ],
+   "tags": [
+    "fatigue",
+    "frequent_urine",
+    "rash",
+    "thirst",
+    "vision",
+    "weight_loss"
+   ],
+   "whenToSeeDoctor": [
+    "علائم دیابت یا نتیجه آزمایش غیرطبیعی",
+    "اورژانس: گیجی، استفراغ، تنفس (دم و بازدم) عمیق و تند، بوی میوه‌ای دهان، قند بسیار بالا یا افت قند با غش"
+   ],
+   "sources": [
+    "WHO: Diabetes Fact Sheet",
+    "ADA: Standards of Care in Diabetes",
+    "CDC: Type 2 Diabetes",
+    "NIDDK: Type 2 Diabetes",
+    "Mayo Clinic: Type 2 diabetes"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "kidney_stone",
+   "nameFa": "سنگ کلیه",
+   "nameEn": "Kidney Stones (Nephrolithiasis)",
+   "specialty": "بیماری‌های کلیه و مجاری ادراری — اورولوژی، نفرولوژی",
+   "symptoms": [
+    "درد شدید در پهلو و پشت زیر دنده‌ها که به شکم پایین و کشاله ران کشیده می‌شود و موج‌وار است",
+    "درد یا سوزش هنگام ادرار",
+    "ادرار صورتی، قرمز یا قهوه‌ای",
+    "ادرار کدر یا بدبو",
+    "تکرر و فوریت ادرار",
+    "تهوع و استفراغ",
+    "تب و لرز در صورت عفونت",
+    "برخی سنگ‌ها بدون علامت‌اند"
+   ],
+   "tags": [
+    "abd_pain",
+    "chills",
+    "fever",
+    "flank_pain",
+    "frequent_urine",
+    "nausea",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "درد شدید پهلو",
+    "خون در ادرار",
+    "اورژانس: تب و لرز با درد، ناتوانی در ادرار، استفراغ مداوم یا درد غیرقابل تحمل"
+   ],
+   "sources": [
+    "NIDDK: Kidney Stones",
+    "Mayo Clinic: Kidney stones",
+    "MedlinePlus: Kidney Stones",
+    "AUA Guideline: Surgical Management of Stones"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "gallbladder",
+   "nameFa": "سنگ کیسه صفرا",
+   "nameEn": "Gallstones (Cholelithiasis)",
+   "specialty": "بیماری‌های گوارشی و کبد و صفرا — جراحی عمومی، گوارش و کبد",
+   "symptoms": [
+    "اغلب بدون علامت (سنگ خاموش)",
+    "درد ناگهانی و شدید در بالا و سمت راست شکم یا وسط شکم زیر جناغ (قولنج صفراوی)",
+    "درد پشت بین دو کتف یا شانه راست",
+    "تهوع و استفراغ",
+    "درد معمولاً چند دقیقه تا چند ساعت طول می‌کشد",
+    "علائم عوارض: تب و لرز، زردی پوست و چشم، درد پایدار و شدید"
+   ],
+   "tags": [
+    "abd_pain",
+    "chills",
+    "fever",
+    "jaundice",
+    "nausea",
+    "rash",
+    "vision",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "درد شدید شکم که اجازه نشستن راحت نمی‌دهد",
+    "درد همراه با تب و لرز",
+    "زردی پوست و چشم",
+    "ادرار تیره و مدفوع کم‌رنگ",
+    "درد که بیش از چند ساعت ادامه می‌یابد"
+   ],
+   "sources": [
+    "NIDDK: Gallstones",
+    "Mayo Clinic: Gallstones",
+    "MedlinePlus: Gallstones",
+    "NHS: Gallstones"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "hypothyroidism",
+   "nameFa": "کم‌کاری تیروئید",
+   "nameEn": "Hypothyroidism",
+   "specialty": "غدد و متابولیسم — متخصص غدد درون‌ریز و متابولیسم",
+   "symptoms": [
+    "خستگی و بی‌حالی",
+    "افزایش وزن",
+    "عدم تحمل سرما",
+    "یبوست",
+    "خشکی پوست و مو",
+    "ریزش مو",
+    "کندی ضربان قلب",
+    "افسردگی یا کاهش تمرکز",
+    "اختلالات قاعدگی",
+    "تورم صورت یا پف‌کردگی"
+   ],
+   "tags": [
+    "constipation",
+    "fatigue",
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "خستگی شدید، افزایش وزن، یبوست یا عدم تحمل سرما",
+    "اورژانس: گیجی، کاهش دمای بدن، تنفس کند، افت فشار (کمای میکسدم)"
+   ],
+   "sources": [
+    "NIDDK: Hypothyroidism (https://www.niddk.nih.gov/health-information/endocrine-diseases/hypothyroidism)",
+    "Mayo Clinic: Hypothyroidism (https://www.mayoclinic.org/diseases-conditions/hypothyroidism/symptoms-causes/syc-20350284)",
+    "NHS: Underactive thyroid (https://www.nhs.uk/conditions/underactive-thyroid-hypothyroidism/)",
+    "ATA Guidelines: Hypothyroidism (https://www.thyroid.org/hypothyroidism/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "flu",
+   "nameFa": "آنفولانزا",
+   "nameEn": "Influenza / Flu",
+   "specialty": "عفونی — متخصص بیماری‌های عفونی",
+   "symptoms": [
+    "تب ناگهانی",
+    "لرز",
+    "درد عضلانی و بدن‌درد",
+    "سردرد",
+    "خستگی شدید",
+    "سرفه",
+    "گلودرد",
+    "آبریزش یا گرفتگی بینی",
+    "در کودکان ممکن است تهوع، استفراغ یا اسهال دیده شود"
+   ],
+   "tags": [
+    "body_ache",
+    "chills",
+    "cough",
+    "diarrhea",
+    "ear_nose",
+    "fatigue",
+    "fever",
+    "headache",
+    "nausea",
+    "sore_throat",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "تب بالا بیش از ۳ روز، تنگی نفس، درد قفسه سینه یا گیجی",
+    "کم‌آبی شدید یا عدم توانایی نوشیدن",
+    "اورژانس: تشدید سریع علائم"
+   ],
+   "sources": [
+    "WHO: Influenza (Seasonal) (https://www.who.int/news-room/fact-sheets/detail/influenza-(seasonal))",
+    "CDC: Flu (Influenza) (https://www.cdc.gov/flu/index.html)",
+    "NHS: Flu (https://www.nhs.uk/conditions/flu/)",
+    "Mayo Clinic: Influenza (https://www.mayoclinic.org/diseases-conditions/flu/symptoms-causes/syc-20351719)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "urinary_tract",
+   "nameFa": "عفونت مجاری ادراری",
+   "nameEn": "Urinary tract infection (UTI)",
+   "specialty": "کلیه و ادرار — اورولوژی، نفرولوژی",
+   "symptoms": [
+    "سوزش یا درد هنگام ادرار",
+    "تکرر ادرار",
+    "فوریت ادرار",
+    "درد یا فشار در ناحیه مثانه",
+    "ادرار کدر یا بدبو",
+    "وجود خون در ادرار",
+    "در عفونت کلیه: تب، لرز و درد پهلو"
+   ],
+   "tags": [
+    "blood_urine",
+    "chills",
+    "fever",
+    "flank_pain",
+    "frequent_urine"
+   ],
+   "whenToSeeDoctor": [
+    "سوزش ادرار، تکرر یا خون در ادرار",
+    "تب و لرز، درد پهلو یا استفراغ",
+    "بارداری یا نقص ایمنی",
+    "اورژانس: تب بالا، گیجی یا افت فشار"
+   ],
+   "sources": [
+    "NIDDK: Bladder Infection (UTI) in Adults (https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-infection-uti-in-adults)",
+    "CDC: Urinary Tract Infection (https://www.cdc.gov/uti/index.html)",
+    "NHS: Urinary tract infections (UTIs) (https://www.nhs.uk/conditions/urinary-tract-infections-utis/)",
+    "Mayo Clinic: Urinary tract infection (UTI) (https://www.mayoclinic.org/diseases-conditions/urinary-tract-infection/symptoms-causes/syc-20353447)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "pancreatitis",
+   "nameFa": "پانکراتیت حاد",
+   "nameEn": "Acute Pancreatitis",
+   "specialty": "بیماری‌های گوارشی — گوارش و کبد، جراحی عمومی",
+   "symptoms": [
+    "درد ناگهانی در بالای شکم که اغلب به پشت کشیده می‌شود",
+    "تشدید درد پس از غذا",
+    "تهوع و استفراغ",
+    "تب",
+    "ضربان قلب سریع",
+    "حساسیت شکم",
+    "نفخ",
+    "در موارد شدید: تنگی نفس، افت فشار خون، کم‌آبی"
+   ],
+   "tags": [
+    "abd_pain",
+    "dyspnea",
+    "fever",
+    "nausea",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "درد شدید و مداوم بالای شکم، به‌ویژه با تهوع و استفراغ؛ نیاز به مراجعه فوری",
+    "اورژانس: تب، تنگی نفس، گیجی، افت فشار یا زردی"
+   ],
+   "sources": [
+    "NIDDK: Acute Pancreatitis",
+    "Mayo Clinic: Pancreatitis",
+    "MedlinePlus: Pancreatitis",
+    "ACG Guideline: Acute Pancreatitis"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "peptic_ulcer",
+   "nameFa": "زخم معده و دوازدهه",
+   "nameEn": "Peptic Ulcer Disease",
+   "specialty": "بیماری‌های گوارشی — متخصص گوارش و کبد",
+   "symptoms": [
+    "سوزش یا درد در بالای شکم (ناحیه سردل)، گاهی با گرسنگی یا شب‌ها بدتر می‌شود",
+    "نفخ و آروغ",
+    "تهوع",
+    "سیری زودرس",
+    "ناراحتی با غذاهای چرب",
+    "علائم هشدار: استفراغ خونی یا شبیه تفاله قهوه، مدفوع سیاه و قیرگون، کاهش وزن ناخواسته، درد ناگهانی و شدید شکم"
+   ],
+   "tags": [
+    "abd_pain",
+    "nausea",
+    "vomiting",
+    "weight_loss"
+   ],
+   "whenToSeeDoctor": [
+    "درد مداوم سردل بیش از چند هفته",
+    "کاهش وزن ناخواسته",
+    "مدفوع سیاه، استفراغ خونی",
+    "اورژانس: درد ناگهانی و شدید شکم، سرگیجه و ضعف شدید"
+   ],
+   "sources": [
+    "NIDDK: Peptic Ulcers (Stomach Ulcers)",
+    "Mayo Clinic: Peptic ulcer",
+    "MedlinePlus: Peptic Ulcer",
+    "ACG Guideline: H. pylori infection"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "sinusitis",
+   "nameFa": "سینوزیت (التهاب سینوس‌ها)",
+   "nameEn": "Sinusitis",
+   "specialty": "گوش، حلق و بینی — متخصص گوش، حلق و بینی (ENT)",
+   "symptoms": [
+    "درد یا فشار صورت",
+    "گرفتگی بینی",
+    "ترشح غلیظ بینی",
+    "سردرد",
+    "تب",
+    "کاهش حس بویایی",
+    "سرفه، به‌ویژه شب‌ها",
+    "در سینوزیت مزمن، علائم بیش از ۱۲ هفته ادامه دارد"
+   ],
+   "tags": [
+    "cough",
+    "ear_nose",
+    "fever",
+    "headache"
+   ],
+   "whenToSeeDoctor": [
+    "علائم بیش از ۱۰ روز یا تب بالا و درد شدید صورت",
+    "تورم دور چشم، تغییر بینایی یا سردرد شدید",
+    "گیجی یا سفتی گردن",
+    "اورژانس: علائم چشمی یا عصبی"
+   ],
+   "sources": [
+    "NHS: Sinusitis (Sinus infection) (https://www.nhs.uk/conditions/sinusitis-sinus-infection/)",
+    "Mayo Clinic: Sinusitis (https://www.mayoclinic.org/diseases-conditions/sinusitis/symptoms-causes/syc-20377596)",
+    "CDC: Sinus Infection (https://www.cdc.gov/antibiotic-use/sinus-infection.html)",
+    "AAO-HNS: Sinusitis (https://www.entnet.org/health-information/sinusitis/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "acne",
+   "nameFa": "آکنه (جوش)",
+   "nameEn": "Acne",
+   "specialty": "پوست — متخصص پوست (درماتولوژی)",
+   "symptoms": [
+    "کومدون (جوش سرسیاه یا سفید)",
+    "جوش‌های التهابی قرمز",
+    "پوسته یا جوش چرکی",
+    "ندول (توده کوچک و سفت زیر پوست) یا کیست در موارد شدید",
+    "جای زخم یا لک",
+    "درگیری صورت، سینه و پشت"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "آکنه شدید با ندول، کیست یا جای زخم",
+    "درد، قرمزی گسترده یا تب",
+    "اورژانس: علائم عفونت شدید"
+   ],
+   "sources": [
+    "NHS: Acne (https://www.nhs.uk/conditions/acne/)",
+    "Mayo Clinic: Acne (https://www.mayoclinic.org/diseases-conditions/acne/symptoms-causes/syc-20368047)",
+    "AAD: Acne (https://www.aad.org/public/diseases/acne-and-rosacea/acne)",
+    "NICE: Acne vulgaris (https://cks.nice.org.uk/topics/acne-vulgaris/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "shingles",
+   "nameFa": "زونا",
+   "nameEn": "Shingles / Herpes zoster",
+   "specialty": "پوست — متخصص پوست (درماتولوژی)، عفونی",
+   "symptoms": [
+    "درد، سوزش یا گزگز یک‌طرفه در ناحیه یک عصب",
+    "بثورات تاولی محدود به یک ناحیه پوستی",
+    "تب و سردرد",
+    "خارش یا حساسیت پوست",
+    "درد عصبی پس از بهبود بثورات (نورالژی پس‌هرپتیک)"
+   ],
+   "tags": [
+    "fever",
+    "headache",
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "بثورات نزدیک چشم یا بینی، تغییر بینایی یا درد شدید",
+    "نقص ایمنی یا بارداری",
+    "گیجی، تب بالا یا انتشار بثورات",
+    "اورژانس: درگیری چشم یا عصبی"
+   ],
+   "sources": [
+    "CDC: Shingles (Herpes Zoster) (https://www.cdc.gov/shingles/index.html)",
+    "NHS: Shingles (https://www.nhs.uk/conditions/shingles/)",
+    "Mayo Clinic: Shingles (https://www.mayoclinic.org/diseases-conditions/shingles/symptoms-causes/syc-20353054)",
+    "AAD: Shingles (https://www.aad.org/public/diseases/rashes/shingles)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "gastroenteritis",
+   "nameFa": "التهاب معده و روده (گاستروانتریت)",
+   "nameEn": "Gastroenteritis",
+   "specialty": "گوارش و کبد — متخصص گوارش و کبد",
+   "symptoms": [
+    "اسهال",
+    "استفراغ",
+    "تهوع",
+    "درد یا کرامپ شکم",
+    "تب",
+    "نشانه‌های کم‌آبی مانند خشکی دهان، کاهش ادرار و ضعف"
+   ],
+   "tags": [
+    "abd_pain",
+    "diarrhea",
+    "fever",
+    "nausea",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "اسهال خونی، تب بالا یا استفراغ مداوم",
+    "کم‌آبی شدید، خشکی دهان، کاهش ادرار یا گیجی",
+    "اورژانس: عدم توانایی نوشیدن یا ضعف شدید"
+   ],
+   "sources": [
+    "NIDDK: Gastroenteritis (https://www.niddk.nih.gov/health-information/digestive-diseases/gastroenteritis)",
+    "CDC: Norovirus (https://www.cdc.gov/norovirus/index.html)",
+    "NHS: Diarrhoea and vomiting (https://www.nhs.uk/conditions/diarrhoea-and-vomiting/)",
+    "Mayo Clinic: Gastroenteritis (https://www.mayoclinic.org/diseases-conditions/gastroenteritis/symptoms-causes/syc-20353041)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "pulmonary_embolism",
+   "nameFa": "آمبولی ریه",
+   "nameEn": "Pulmonary embolism",
+   "specialty": "ریه و تنفس — متخصص ریه، قلب و عروق",
+   "symptoms": [
+    "تنگی نفس ناگهانی",
+    "درد قفسه سینه، اغلب با تنفس (دم و بازدم) بدتر می‌شود",
+    "سرفه، گاهی با خون",
+    "ضربان قلب سریع",
+    "سرگیجه یا غش",
+    "تورم یا درد ساق پا در صورت وجود لخته (توده خون‌بسته‌شده) در پا"
+   ],
+   "tags": [
+    "chest_pain",
+    "cough",
+    "dizziness",
+    "dyspnea"
+   ],
+   "whenToSeeDoctor": [
+    "تنگی نفس ناگهانی، درد قفسه سینه یا سرفه خونی",
+    "غش، ضربان سریع یا افت فشار",
+    "اورژانس: مراجعه فوری"
+   ],
+   "sources": [
+    "WHO: Pulmonary embolism (https://www.who.int/news-room/fact-sheets/detail/pulmonary-embolism)",
+    "NHS: Pulmonary embolism (https://www.nhs.uk/conditions/pulmonary-embolism/)",
+    "Mayo Clinic: Pulmonary embolism (https://www.mayoclinic.org/diseases-conditions/pulmonary-embolism/symptoms-causes/syc-20354647)",
+    "ESC Guidelines: Pulmonary Embolism (https://www.escardio.org/Guidelines/Clinical-Practice-Guidelines/Acute-Pulmonary-Embolism-Diagnosis-and-Management-of)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "kidney_infection",
+   "nameFa": "عفونت کلیه (پیلونفریت)",
+   "nameEn": "Kidney infection / Pyelonephritis",
+   "specialty": "کلیه و ادرار — نفرولوژی، اورولوژی",
+   "symptoms": [
+    "تب و لرز",
+    "درد پهلو",
+    "سوزش یا تکرر ادرار",
+    "تهوع و استفراغ",
+    "حساسیت در ناحیه پهلو هنگام لمس",
+    "خستگی"
+   ],
+   "tags": [
+    "chills",
+    "fatigue",
+    "fever",
+    "flank_pain",
+    "frequent_urine",
+    "nausea",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "تب و لرز، درد پهلو یا استفراغ",
+    "بارداری، نقص ایمنی یا گیجی",
+    "اورژانس: سپسیس یا افت فشار"
+   ],
+   "sources": [
+    "NIDDK: Kidney Infection (Pyelonephritis) (https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-infection-pyelonephritis)",
+    "NHS: Kidney infection (https://www.nhs.uk/conditions/kidney-infection/)",
+    "Mayo Clinic: Kidney infection (https://www.mayoclinic.org/diseases-conditions/kidney-infection/symptoms-causes/syc-20353387)",
+    "CDC: Kidney Infection (https://www.cdc.gov/uti/about/kidney-infection.html)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "type1_diabetes",
+   "nameFa": "دیابت نوع ۱ (دیابت وابسته به انسولین)",
+   "nameEn": "Type 1 diabetes",
+   "specialty": "غدد و متابولیسم — متخصص غدد درون‌ریز و متابولیسم",
+   "symptoms": [
+    "تشنگی شدید",
+    "تکرر ادرار",
+    "گرسنگی زیاد",
+    "کاهش وزن",
+    "خستگی",
+    "تاری دید",
+    "در موارد شدید: تهوع، استفراغ، درد شکم، تنفس عمیق و سریع و بوی میوه‌ای دهان (کتواسیدوز)"
+   ],
+   "tags": [
+    "abd_pain",
+    "fatigue",
+    "frequent_urine",
+    "nausea",
+    "thirst",
+    "vision",
+    "vomiting",
+    "weight_loss"
+   ],
+   "whenToSeeDoctor": [
+    "تهوع، استفراغ، درد شکم، تنفس (دم و بازدم) عمیق و سریع یا بوی میوه‌ای دهان",
+    "گیجی، تشنج یا کاهش هوشیاری",
+    "اورژانس: کتواسیدوز (تجمع اسید در خون به علت کمبود انسولین) دیابتی"
+   ],
+   "sources": [
+    "WHO: Diabetes (https://www.who.int/news-room/fact-sheets/detail/diabetes)",
+    "NIDDK: Type 1 Diabetes (https://www.niddk.nih.gov/health-information/diabetes/overview/what-is-diabetes/type-1-diabetes)",
+    "CDC: Type 1 Diabetes (https://www.cdc.gov/diabetes/about/type-1-diabetes.html)",
+    "ADA: Standards of Care in Diabetes (https://diabetesjournals.org/care/issue/47/Supplement_1)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "parkinson",
+   "nameFa": "بیماری پارکینسون (پارکینسون)",
+   "nameEn": "Parkinson’s disease",
+   "specialty": "مغز و اعصاب — متخصص مغز و اعصاب (نورولوژی)",
+   "symptoms": [
+    "لرزش در حالت استراحت",
+    "کندی حرکت (برادیکیزی)",
+    "سفتی عضلات",
+    "اختلال تعادل و وضعیت بدن",
+    "صورت ماسک‌مانند",
+    "ریز شدن دست‌خط",
+    "اختلال خواب",
+    "یبوست",
+    "کاهش حس بویایی",
+    "افسردگی یا اضطراب"
+   ],
+   "tags": [
+    "body_ache",
+    "chills",
+    "constipation"
+   ],
+   "whenToSeeDoctor": [
+    "لرزش، کندی حرکت، سفتی عضلات یا اختلال تعادل",
+    "اورژانس: افت ناگهانی، اختلال بلع، گیجی یا تب بالا"
+   ],
+   "sources": [
+    "NHS: Parkinson's disease (https://www.nhs.uk/conditions/parkinsons-disease/)",
+    "Mayo Clinic: Parkinson's disease (https://www.mayoclinic.org/diseases-conditions/parkinsons-disease/symptoms-causes/syc-20376055)",
+    "NINDS: Parkinson's Disease (https://www.ninds.nih.gov/health-information/disorders/parkinsons-disease)",
+    "WHO: Parkinson disease (https://www.who.int/news-room/fact-sheets/detail/parkinson-disease)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "epilepsy",
+   "nameFa": "صرع (اپی‌لپسی)",
+   "nameEn": "Epilepsy",
+   "specialty": "مغز و اعصاب — متخصص مغز و اعصاب (نورولوژی)",
+   "symptoms": [
+    "تشنج‌های عودکننده (بازگشت‌کننده) و غیرتحریکی",
+    "گیجی یا خیره شدن گذرا",
+    "حرکات تکان‌دهنده یا سفتی عضلانی",
+    "افتادن یا از دست دادن هوشیاری",
+    "خستگی یا سردرگمی پس از تشنج",
+    "بی‌اختیاری ادرار در برخی تشنج‌ها"
+   ],
+   "tags": [
+    "fatigue"
+   ],
+   "whenToSeeDoctor": [
+    "اولین تشنج، تشنج بیش از ۵ دقیقه یا تشنج‌های مکرر",
+    "آسیب، بارداری یا گیجی پس از تشنج",
+    "اورژانس: وضعیت صرع"
+   ],
+   "sources": [
+    "WHO: Epilepsy (https://www.who.int/news-room/fact-sheets/detail/epilepsy)",
+    "NHS: Epilepsy (https://www.nhs.uk/conditions/epilepsy/)",
+    "Mayo Clinic: Epilepsy (https://www.mayoclinic.org/diseases-conditions/epilepsy/symptoms-causes/syc-20350093)",
+    "ILAE: Epilepsy (https://www.ilae.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_004",
+   "nameFa": "بیماری آلزایمر",
+   "nameEn": "Alzheimer’s disease",
+   "specialty": "دانشنامه بیماری‌ها — مغز و اعصاب",
+   "symptoms": [
+    "افت پیش‌رونده حافظه، به‌ویژه حافظه کوتاه‌مدت",
+    "گم‌شدن در مکان‌های آشنا",
+    "مشکل در یافتن کلمات",
+    "اختلال قضاوت و تصمیم‌گیری",
+    "تغییرات خلق یا رفتار",
+    "کاهش توانایی انجام کارهای روزمره",
+    "در مراحل پیشرفته: اختلال بلع و راه رفتن"
+   ],
+   "tags": [],
+   "whenToSeeDoctor": [
+    "افت حافظه، گم‌شدن یا اختلال عملکرد روزمره",
+    "تغییر ناگهانی رفتار، گیجی یا پرخاشگری",
+    "عدم توانایی خوردن و آشامیدن",
+    "اورژانس: علائم عفونت یا آسیب"
+   ],
+   "sources": [
+    "WHO: Dementia (https://www.who.int/news-room/fact-sheets/detail/dementia)",
+    "NIA: Alzheimer's Disease (https://www.nia.nih.gov/health/alzheimers-and-dementia)",
+    "NHS: Alzheimer's disease (https://www.nhs.uk/conditions/alzheimers-disease/)",
+    "Mayo Clinic: Alzheimer's disease (https://www.mayoclinic.org/diseases-conditions/alzheimers-disease/symptoms-causes/syc-20350447)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_005",
+   "nameFa": "بیماری سلیاک",
+   "nameEn": "Celiac disease",
+   "specialty": "دانشنامه بیماری‌ها — گوارش و کبد",
+   "symptoms": [
+    "اسهال مزمن (طولانی‌مدت)",
+    "نفخ و درد شکم",
+    "کاهش وزن",
+    "خستگی",
+    "کم‌خونی",
+    "بثورات خارش‌دار تاولی (درماتیت هرپتی‌فورم)",
+    "پوکی استخوان",
+    "در کودکان: اختلال رشد"
+   ],
+   "tags": [
+    "abd_pain",
+    "diarrhea",
+    "fatigue",
+    "rash",
+    "weight_loss"
+   ],
+   "whenToSeeDoctor": [
+    "اسهال مزمن، کاهش وزن یا کم‌خونی",
+    "اورژانس: کم‌آبی شدید، اسهال خونی یا ضعف شدید"
+   ],
+   "sources": [
+    "NIDDK: Celiac Disease (https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease)",
+    "NHS: Coeliac disease (https://www.nhs.uk/conditions/coeliac-disease/)",
+    "Mayo Clinic: Celiac disease (https://www.mayoclinic.org/diseases-conditions/celiac-disease/symptoms-causes/syc-20352220)",
+    "Beyond Celiac: Celiac Disease (https://www.beyondceliac.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_006",
+   "nameFa": "سل",
+   "nameEn": "Tuberculosis",
+   "specialty": "دانشنامه بیماری‌ها — عفونی، ریه",
+   "symptoms": [
+    "سرفه بیش از سه هفته",
+    "خلط خونی",
+    "تب",
+    "تعریق شبانه",
+    "کاهش وزن",
+    "خستگی",
+    "درد قفسه سینه",
+    "در سل خارج‌ریوی، علائم بر اساس عضو درگیر متفاوت است"
+   ],
+   "tags": [
+    "chest_pain",
+    "cough",
+    "fatigue",
+    "fever",
+    "sweating",
+    "weight_loss"
+   ],
+   "whenToSeeDoctor": [
+    "سرفه بیش از ۳ هفته، خلط خونی، تب یا تعریق شبانه",
+    "تنگی نفس یا درد قفسه سینه",
+    "اورژانس: هموپتیزی شدید یا نارسایی تنفسی (ناتوانی ریه در رساندن اکسیژن کافی)"
+   ],
+   "sources": [
+    "WHO: Tuberculosis (https://www.who.int/news-room/fact-sheets/detail/tuberculosis)",
+    "CDC: Tuberculosis (TB) (https://www.cdc.gov/tb/index.html)",
+    "NHS: Tuberculosis (TB) (https://www.nhs.uk/conditions/tuberculosis-tb/)",
+    "Mayo Clinic: Tuberculosis (https://www.mayoclinic.org/diseases-conditions/tuberculosis/symptoms-causes/syc-20351250)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_007",
+   "nameFa": "سرخک",
+   "nameEn": "Measles",
+   "specialty": "دانشنامه بیماری‌ها — عفونی، اطفال",
+   "symptoms": [
+    "تب بالا",
+    "سرفه",
+    "آبریزش بینی",
+    "التهاب ملتحمه",
+    "لکه‌های کوپلیک در دهان",
+    "بثورات ماکولوپاپولار (بثورات تخت و برجسته) که از صورت شروع و به پایین منتشر می‌شود"
+   ],
+   "tags": [
+    "cough",
+    "ear_nose",
+    "fever"
+   ],
+   "whenToSeeDoctor": [
+    "تب و بثورات، سرفه یا التهاب چشم",
+    "تنگی نفس، گیجی یا تشنج",
+    "اورژانس: علائم عصبی یا تنفسی"
+   ],
+   "sources": [
+    "WHO: Measles (https://www.who.int/news-room/fact-sheets/detail/measles)",
+    "CDC: Measles (https://www.cdc.gov/measles/index.html)",
+    "NHS: Measles (https://www.nhs.uk/conditions/measles/)",
+    "Mayo Clinic: Measles (https://www.mayoclinic.org/diseases-conditions/measles/symptoms-causes/syc-20374857)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_008",
+   "nameFa": "آبله‌مرغان",
+   "nameEn": "Chickenpox / Varicella",
+   "specialty": "دانشنامه بیماری‌ها — عفونی، پوست",
+   "symptoms": [
+    "بثورات خارش‌دار تاولی که در چند مرحله ظاهر می‌شوند",
+    "تب",
+    "بی‌حالی",
+    "سردرد",
+    "کاهش اشتها"
+   ],
+   "tags": [
+    "fatigue",
+    "fever",
+    "headache",
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "بثورات تاولی با تنگی نفس، درد قفسه سینه یا گیجی",
+    "بارداری، نقص ایمنی یا کم‌آبی شدید",
+    "اورژانس: عفونت ثانویه یا علائم عصبی"
+   ],
+   "sources": [
+    "CDC: Chickenpox (Varicella) (https://www.cdc.gov/chickenpox/index.html)",
+    "NHS: Chickenpox (https://www.nhs.uk/conditions/chickenpox/)",
+    "Mayo Clinic: Chickenpox (https://www.mayoclinic.org/diseases-conditions/chickenpox/symptoms-causes/syc-20351282)",
+    "WHO: Varicella (https://www.who.int/teams/health-product-policy-and-standards/standards-and-specifications/vaccine-standardization/varicella)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_009",
+   "nameFa": "مالاریا",
+   "nameEn": "Malaria",
+   "specialty": "دانشنامه بیماری‌ها — عفونی",
+   "symptoms": [
+    "تب دوره‌ای با لرز و تعریق",
+    "سردرد",
+    "درد عضلانی",
+    "تهوع و استفراغ",
+    "کم‌خونی",
+    "زردی",
+    "در مالاریا شدید: گیجی، تشنج، تنگی نفس و نارسایی اندام"
+   ],
+   "tags": [
+    "chills",
+    "dyspnea",
+    "fever",
+    "headache",
+    "jaundice",
+    "nausea",
+    "sweating",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "تب پس از سفر به منطقه مالاریاخیز",
+    "گیجی، تشنج، تنگی نفس یا ادرار تیره",
+    "اورژانس: مالاریای شدید"
+   ],
+   "sources": [
+    "WHO: Malaria (https://www.who.int/news-room/fact-sheets/detail/malaria)",
+    "CDC: Malaria (https://www.cdc.gov/malaria/index.html)",
+    "NHS: Malaria (https://www.nhs.uk/conditions/malaria/)",
+    "Mayo Clinic: Malaria (https://www.mayoclinic.org/diseases-conditions/malaria/symptoms-causes/syc-20351184)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_010",
+   "nameFa": "هپاتیت B",
+   "nameEn": "Hepatitis B",
+   "specialty": "بیماری‌های عفونی و کبدی — متخصص عفونی، گوارش و کبد (هپاتولوژی)",
+   "symptoms": [
+    "بسیاری از افراد هیچ علامتی ندارند، به‌ویژه در عفونت مزمن (طولانی‌مدت)",
+    "در هپاتیت حاد، علائم معمولاً چند هفته تا چند ماه پس از آلودگی پدیدار می‌شوند",
+    "خستگی",
+    "تب خفیف",
+    "بی‌اشتهایی",
+    "تهوع و استفراغ",
+    "درد شکم، به‌ویژه ناحیه بالا و راست شکم",
+    "ادرار تیره",
+    "مدفوع کم‌رنگ (رنگ خاکستری یا گچی)",
+    "درد مفاصل",
+    "زردی پوست و سفیدی چشم (یرقان)"
+   ],
+   "tags": [
+    "abd_pain",
+    "appetite",
+    "fatigue",
+    "fever",
+    "jaundice",
+    "nausea",
+    "rash",
+    "vision",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "زردی پوست یا چشم",
+    "ادرار بسیار تیره یا مدفوع کم‌رنگ",
+    "درد مداوم شکم",
+    "تماس با خون یا ترشحات فرد مبتلا (هرچه زودتر، ترجیحاً ظرف ۲۴ ساعت)",
+    "نتیجه آزمایش مثبت هپاتیت B",
+    "اورژانس: گیجی، خواب‌آلودگی شدید، استفراغ خونی"
+   ],
+   "sources": [
+    "WHO: Hepatitis B Fact Sheet",
+    "CDC: Hepatitis B Basics",
+    "MedlinePlus: Hepatitis B",
+    "NIDDK: Hepatitis B",
+    "Mayo Clinic: Hepatitis B"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_011",
+   "nameFa": "آرتریت روماتوئید",
+   "nameEn": "Rheumatoid arthritis",
+   "specialty": "دانشنامه بیماری‌ها — روماتولوژی",
+   "symptoms": [
+    "درد، تورم و سفتی مفاصل، اغلب قرینه و در مفاصل کوچک دست و پا",
+    "خشکی صبحگاهی بیش از یک ساعت",
+    "خستگی",
+    "تب خفیف",
+    "ندول‌های زیرپوستی",
+    "درگیری چشم، ریه یا سایر اعضا در موارد شدید"
+   ],
+   "tags": [
+    "fatigue",
+    "fever",
+    "rash",
+    "vision"
+   ],
+   "whenToSeeDoctor": [
+    "درد و تورم مزمن (طولانی‌مدت) مفاصل یا خشکی صبحگاهی",
+    "تب، تنگی نفس، درد قفسه سینه یا ضعف",
+    "اورژانس: علائم سیستمیک"
+   ],
+   "sources": [
+    "NHS: Rheumatoid arthritis (https://www.nhs.uk/conditions/rheumatoid-arthritis/)",
+    "Mayo Clinic: Rheumatoid arthritis (https://www.mayoclinic.org/diseases-conditions/rheumatoid-arthritis/symptoms-causes/syc-20353648)",
+    "ACR: Rheumatoid Arthritis (https://rheumatology.org/patients/fact-sheet-rheumatoid-arthritis)",
+    "WHO: Rheumatoid arthritis (https://www.who.int/news-room/fact-sheets/detail/rheumatoid-arthritis)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_012",
+   "nameFa": "استئوآرتریت (آرتروز)",
+   "nameEn": "Osteoarthritis",
+   "specialty": "دانشنامه بیماری‌ها — ارتوپدی، روماتولوژی",
+   "symptoms": [
+    "درد مفصل که با فعالیت بدتر و با استراحت بهتر می‌شود",
+    "خشکی کوتاه‌مدت پس از بیدار شدن",
+    "صدای ساییدگی مفصل",
+    "محدودیت حرکت",
+    "بزرگ‌شدن استخوانی مفصل",
+    "تورم خفیف"
+   ],
+   "tags": [
+    "joint_pain"
+   ],
+   "whenToSeeDoctor": [
+    "درد مفصل محدودکننده فعالیت",
+    "اورژانس: مفصل داغ و متورم با تب یا پس از ضربه"
+   ],
+   "sources": [
+    "NHS: Osteoarthritis (https://www.nhs.uk/conditions/osteoarthritis/)",
+    "Mayo Clinic: Osteoarthritis (https://www.mayoclinic.org/diseases-conditions/osteoarthritis/symptoms-causes/syc-20351925)",
+    "CDC: Osteoarthritis (https://www.cdc.gov/arthritis/about/osteoarthritis.html)",
+    "OARSI Guidelines: Osteoarthritis (https://oarsi.org/guidelines)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_013",
+   "nameFa": "نقرس",
+   "nameEn": "Gout",
+   "specialty": "دانشنامه بیماری‌ها — روماتولوژی",
+   "symptoms": [
+    "حمله ناگهانی درد شدید، قرمزی، گرمی و تورم یک مفصل، اغلب شست پا",
+    "درد بسیار شدید حتی با لمس ملافه",
+    "تب خفیف",
+    "در بیماری مزمن: توفی (رسوب اورات) و سنگ کلیه"
+   ],
+   "tags": [
+    "fever",
+    "flank_pain",
+    "joint_pain"
+   ],
+   "whenToSeeDoctor": [
+    "حمله درد شدید مفصل، اغلب شست پا",
+    "اورژانس: مفصل داغ با تب (رد عفونت)"
+   ],
+   "sources": [
+    "NHS: Gout (https://www.nhs.uk/conditions/gout/)",
+    "Mayo Clinic: Gout (https://www.mayoclinic.org/diseases-conditions/gout/symptoms-causes/syc-20372897)",
+    "ACR: Gout Guidelines (https://rheumatology.org/gout-guideline)",
+    "NIDDK: Gout (https://www.niddk.nih.gov/health-information/digestive-diseases/gout)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_014",
+   "nameFa": "پوکی استخوان",
+   "nameEn": "Osteoporosis",
+   "specialty": "دانشنامه بیماری‌ها — روماتولوژی، غدد",
+   "symptoms": [
+    "معمولاً بدون علامت تا زمان شکستگی",
+    "کاهش قد",
+    "قوز پشتی",
+    "شکستگی‌های fragility در مچ، ستون فقرات یا لگن",
+    "درد پشت فقط در صورت شکستگی مهره‌ای"
+   ],
+   "tags": [],
+   "whenToSeeDoctor": [
+    "شکستگی، درد پشت یا کاهش قد",
+    "اورژانس: پس از زمین‌خوردن یا شکستگی"
+   ],
+   "sources": [
+    "WHO: Osteoporosis (https://www.who.int/news-room/fact-sheets/detail/osteoporosis)",
+    "NHS: Osteoporosis (https://www.nhs.uk/conditions/osteoporosis/)",
+    "Mayo Clinic: Osteoporosis (https://www.mayoclinic.org/diseases-conditions/osteoporosis/symptoms-causes/syc-20351968)",
+    "NOF: Osteoporosis (https://www.nof.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_015",
+   "nameFa": "ام‌اس (اسکلروز چندگانه)",
+   "nameEn": "Multiple sclerosis",
+   "specialty": "دانشنامه بیماری‌ها — مغز و اعصاب",
+   "symptoms": [
+    "خستگی",
+    "اختلال حسی یا گزگز",
+    "نوریت بینایی (التهاب عصب بینایی)",
+    "ضعف عضلانی",
+    "سفتی و اسپاسم (انقباض ناگهانی عضله)",
+    "اختلال تعادل و راه رفتن",
+    "اختلال مثانه یا روده",
+    "مشکلات شناختی"
+   ],
+   "tags": [
+    "fatigue"
+   ],
+   "whenToSeeDoctor": [
+    "اختلال حسی، ضعف، تاری دید یا اختلال مثانه/روده",
+    "اورژانس: علائم عصبی جدید یا تشدید سریع"
+   ],
+   "sources": [
+    "WHO: Multiple sclerosis (https://www.who.int/news-room/fact-sheets/detail/multiple-sclerosis)",
+    "NHS: Multiple sclerosis (https://www.nhs.uk/conditions/multiple-sclerosis/)",
+    "Mayo Clinic: Multiple sclerosis (https://www.mayoclinic.org/diseases-conditions/multiple-sclerosis/symptoms-causes/syc-20354022)",
+    "NMSS: Multiple Sclerosis (https://www.nationalmssociety.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_016",
+   "nameFa": "بیماری کرون",
+   "nameEn": "Crohn’s disease",
+   "specialty": "دانشنامه بیماری‌ها — گوارش و کبد",
+   "symptoms": [
+    "درد شکم",
+    "اسهال مزمن (طولانی‌مدت)",
+    "کاهش وزن",
+    "تب",
+    "خستگی",
+    "بیماری مقعدی مانند شقاق یا فیستول (مسیر غیرطبیعی بین دو حفره یا عضو)",
+    "در موارد شدید: انسداد (بسته شدن مسیر) یا آبسه (کیسه چرکی)"
+   ],
+   "tags": [
+    "abd_pain",
+    "diarrhea",
+    "fatigue",
+    "fever",
+    "weight_loss"
+   ],
+   "whenToSeeDoctor": [
+    "درد شکم، اسهال مزمن، تب یا خون در مدفوع",
+    "نفخ، استفراغ یا ناتوانی در دفع",
+    "اورژانس: انسداد (بسته شدن مسیر) یا آبسه (کیسه چرکی)"
+   ],
+   "sources": [
+    "NIDDK: Crohn's Disease (https://www.niddk.nih.gov/health-information/digestive-diseases/crohns-disease)",
+    "NHS: Crohn's disease (https://www.nhs.uk/conditions/crohns-disease/)",
+    "Mayo Clinic: Crohn's disease (https://www.mayoclinic.org/diseases-conditions/crohns-disease/symptoms-causes/syc-20353304)",
+    "CCFA: Crohn's Disease (https://www.crohnscolitisfoundation.org/what-is-crohns-disease)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_017",
+   "nameFa": "کولیت اولسراتیو (کولیت زخمی)",
+   "nameEn": "Ulcerative colitis",
+   "specialty": "دانشنامه بیماری‌ها — گوارش و کبد",
+   "symptoms": [
+    "اسهال خونی",
+    "فوریت دفع",
+    "تِنِسموس (احساس دفع ناقص)",
+    "درد یا کرامپ شکم",
+    "کم‌خونی",
+    "کاهش وزن",
+    "خستگی"
+   ],
+   "tags": [
+    "abd_pain",
+    "diarrhea",
+    "fatigue",
+    "weight_loss"
+   ],
+   "whenToSeeDoctor": [
+    "اسهال خونی، تب، درد شدید یا نفخ",
+    "اورژانس: مگاکولون توکسیک یا پرفوراسیون"
+   ],
+   "sources": [
+    "NIDDK: Ulcerative Colitis (https://www.niddk.nih.gov/health-information/digestive-diseases/ulcerative-colitis)",
+    "NHS: Ulcerative colitis (https://www.nhs.uk/conditions/ulcerative-colitis/)",
+    "Mayo Clinic: Ulcerative colitis (https://www.mayoclinic.org/diseases-conditions/ulcerative-colitis/symptoms-causes/syc-20353326)",
+    "CCFA: Ulcerative Colitis (https://www.crohnscolitisfoundation.org/what-is-ulcerative-colitis)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_018",
+   "nameFa": "هپاتیت سی",
+   "nameEn": "Hepatitis C",
+   "specialty": "دانشنامه بیماری‌ها — گوارش و کبد، عفونی",
+   "symptoms": [
+    "اغلب بدون علامت",
+    "خستگی",
+    "زردی",
+    "ادرار تیره",
+    "درد یا ناراحتی در سمت راست بالای شکم",
+    "در سیروز: آسیت، ورم، خونریزی و گیجی"
+   ],
+   "tags": [
+    "abd_pain",
+    "fatigue",
+    "jaundice"
+   ],
+   "whenToSeeDoctor": [
+    "تست مثبت HCV (ویروس هپاتیت C)، خستگی یا زردی",
+    "اورژانس: گیجی، استفراغ خونی یا آسیت (جمع شدن مایع در شکم)"
+   ],
+   "sources": [
+    "WHO: Hepatitis C (https://www.who.int/news-room/fact-sheets/detail/hepatitis-c)",
+    "CDC: Hepatitis C (https://www.cdc.gov/hepatitis-c/index.html)",
+    "NIDDK: Hepatitis C (https://www.niddk.nih.gov/health-information/liver-disease/viral-hepatitis/hepatitis-c)",
+    "NHS: Hepatitis C (https://www.nhs.uk/conditions/hepatitis-c/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_019",
+   "nameFa": "عفونت اچ‌آی‌وی",
+   "nameEn": "HIV infection",
+   "specialty": "دانشنامه بیماری‌ها — عفونی",
+   "symptoms": [
+    "در عفونت حاد (کوتاه‌مدت و ناگهانی): علائم شبیه آنفولانزا، تب، گلودرد، بثورات و بزرگ‌شدن غدد لنفاوی",
+    "در مرحله مزمن (طولانی‌مدت) ممکن است سال‌ها بدون علامت باشد",
+    "در ایدز (مرحله پیشرفته عفونت HIV): عفونت‌های فرصت‌طلب، کاهش وزن و خستگی شدید"
+   ],
+   "tags": [
+    "fatigue",
+    "fever",
+    "sore_throat",
+    "weight_loss"
+   ],
+   "whenToSeeDoctor": [
+    "مواجهه پرخطر، تب، بثورات یا گلودرد",
+    "اورژانس: علائم عفونت فرصت‌طلب یا تنگی نفس"
+   ],
+   "sources": [
+    "WHO: HIV/AIDS (https://www.who.int/news-room/fact-sheets/detail/hiv-aids)",
+    "CDC: HIV Basics (https://www.cdc.gov/hiv/basics/index.html)",
+    "NHS: HIV and AIDS (https://www.nhs.uk/conditions/hiv-and-aids/)",
+    "Mayo Clinic: HIV/AIDS (https://www.mayoclinic.org/diseases-conditions/hiv-aids/symptoms-causes/syc-20373524)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_020",
+   "nameFa": "کم‌خونی فقر آهن",
+   "nameEn": "Iron deficiency anemia",
+   "specialty": "دانشنامه بیماری‌ها — خون (هماتولوژی)",
+   "symptoms": [
+    "خستگی",
+    "رنگ‌پریدگی",
+    "تنگی نفس با فعالیت",
+    "تپش قلب",
+    "سردرد یا سرگیجه",
+    "ناخن‌های شکننده",
+    "میل به خوردن مواد غیرغذایی (پیکا)",
+    "در موارد شدید: درد قفسه سینه"
+   ],
+   "tags": [
+    "chest_pain",
+    "dizziness",
+    "dyspnea",
+    "fatigue",
+    "headache",
+    "palpitation"
+   ],
+   "whenToSeeDoctor": [
+    "خستگی، رنگ‌پریدگی، تنگی نفس یا تپش قلب",
+    "اورژانس: درد قفسه سینه، غش یا مدفوع سیاه"
+   ],
+   "sources": [
+    "WHO: Anaemia (https://www.who.int/news-room/fact-sheets/detail/anaemia)",
+    "NIDDK: Iron-Deficiency Anemia (https://www.niddk.nih.gov/health-information/blood-diseases/iron-deficiency-anemia)",
+    "NHS: Iron deficiency anaemia (https://www.nhs.uk/conditions/iron-deficiency-anaemia/)",
+    "Mayo Clinic: Iron deficiency anemia (https://www.mayoclinic.org/diseases-conditions/iron-deficiency-anemia/symptoms-causes/syc-20355034)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_021",
+   "nameFa": "مننژیت (التهاب پرده‌های مغز)",
+   "nameEn": "Meningitis",
+   "specialty": "دانشنامه بیماری‌ها — عفونی، مغز و اعصاب",
+   "symptoms": [
+    "تب",
+    "سردرد شدید",
+    "سفتی گردن",
+    "حساسیت به نور",
+    "تهوع و استفراغ",
+    "کاهش هوشیاری یا گیجی",
+    "در مننژیت مننگوکوکی: بثورات پوستی",
+    "تشنج"
+   ],
+   "tags": [
+    "fever",
+    "headache",
+    "nausea",
+    "neck_stiff",
+    "rash",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "تب، سردرد شدید، سفتی گردن یا حساسیت به نور",
+    "گیجی، تشنج یا بثورات",
+    "اورژانس: مننژیت"
+   ],
+   "sources": [
+    "WHO: Meningitis (https://www.who.int/news-room/fact-sheets/detail/meningitis)",
+    "CDC: Meningitis (https://www.cdc.gov/meningitis/index.html)",
+    "NHS: Meningitis (https://www.nhs.uk/conditions/meningitis/)",
+    "Mayo Clinic: Meningitis (https://www.mayoclinic.org/diseases-conditions/meningitis/symptoms-causes/syc-20350508)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_022",
+   "nameFa": "عفونت حاد گوش میانی",
+   "nameEn": "Acute otitis media",
+   "specialty": "دانشنامه بیماری‌ها — گوش، حلق و بینی، اطفال",
+   "symptoms": [
+    "درد گوش",
+    "تب",
+    "بی‌قراری یا گریه در کودکان",
+    "کاهش شنوایی",
+    "ترشح از گوش",
+    "برجستگی پرده صماخ (پرده گوش میانی) در معاینه"
+   ],
+   "tags": [
+    "ear_nose",
+    "fever"
+   ],
+   "whenToSeeDoctor": [
+    "درد گوش، تب یا کاهش شنوایی",
+    "اورژانس: تورم پشت گوش، ضعف صورت یا گیجی"
+   ],
+   "sources": [
+    "NHS: Ear infection (middle ear) (https://www.nhs.uk/conditions/ear-infections/)",
+    "Mayo Clinic: Ear infection (middle ear) (https://www.mayoclinic.org/diseases-conditions/ear-infections/symptoms-causes/syc-20351616)",
+    "AAP: Acute Otitis Media (https://publications.aap.org/pediatrics/article/131/3/e964/30912/The-Diagnosis-and-Management-of-Acute-Otitis)",
+    "CDC: Ear Infection (https://www.cdc.gov/antibiotic-use/ear-infection.html)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_023",
+   "nameFa": "التهاب لوزه‌ها",
+   "nameEn": "Tonsillitis",
+   "specialty": "دانشنامه بیماری‌ها — گوش، حلق و بینی",
+   "symptoms": [
+    "گلودرد",
+    "تب",
+    "قرمزی و تورم لوزه‌ها",
+    "چرک روی لوزه‌ها",
+    "دشواری در بلع",
+    "بزرگ‌شدن غدد لنفاوی گردن",
+    "در عفونت استرپتوکوکی معمولاً سرفه و آبریزش بینی کمتر است"
+   ],
+   "tags": [
+    "cough",
+    "ear_nose",
+    "fever",
+    "sore_throat"
+   ],
+   "whenToSeeDoctor": [
+    "گلودرد، تب یا دشواری بلع",
+    "اورژانس: آبریزش، عدم توانایی بلع، تنگی نفس یا سفتی گردن"
+   ],
+   "sources": [
+    "NHS: Tonsillitis (https://www.nhs.uk/conditions/tonsillitis/)",
+    "Mayo Clinic: Tonsillitis (https://www.mayoclinic.org/diseases-conditions/tonsillitis/symptoms-causes/syc-20378479)",
+    "AAO-HNS: Tonsillitis (https://www.entnet.org/health-information/tonsillitis/)",
+    "CDC: Tonsillitis (https://www.cdc.gov/group-a-strep/about/tonsillitis.html)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_024",
+   "nameFa": "التهاب حنجره",
+   "nameEn": "Laryngitis",
+   "specialty": "دانشنامه بیماری‌ها — گوش، حلق و بینی",
+   "symptoms": [
+    "گرفتگی یا خش‌دار شدن صدا",
+    "از دست رفتن موقت صدا",
+    "گلودرد",
+    "سرفه خشک",
+    "تب خفیف",
+    "تحریک گلو"
+   ],
+   "tags": [
+    "cough",
+    "fever",
+    "sore_throat"
+   ],
+   "whenToSeeDoctor": [
+    "گرفتگی صدا بیش از ۳ هفته",
+    "اورژانس: تنگی نفس، آبریزش یا اختلال بلع"
+   ],
+   "sources": [
+    "NHS: Laryngitis (https://www.nhs.uk/conditions/laryngitis/)",
+    "Mayo Clinic: Laryngitis (https://www.mayoclinic.org/diseases-conditions/laryngitis/symptoms-causes/syc-20374262)",
+    "AAO-HNS: Laryngitis (https://www.entnet.org/health-information/laryngitis/)",
+    "NIDCD: Laryngitis (https://www.nidcd.nih.gov/health/laryngitis)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_025",
+   "nameFa": "التهاب ملتحمه چشم",
+   "nameEn": "Conjunctivitis",
+   "specialty": "دانشنامه بیماری‌ها — چشم‌پزشکی",
+   "symptoms": [
+    "قرمزی چشم",
+    "ترشح چشم",
+    "احساس سوزش یا شن در چشم",
+    "آبریزش",
+    "حساسیت به نور",
+    "در نوع آلرژیک: خارش شدید"
+   ],
+   "tags": [
+    "rash",
+    "vision"
+   ],
+   "whenToSeeDoctor": [
+    "قرمزی چشم با درد شدید، کاهش بینایی یا حساسیت به نور",
+    "استفاده از لنز تماسی",
+    "اورژانس: علائم قرنیه"
+   ],
+   "sources": [
+    "NHS: Conjunctivitis (https://www.nhs.uk/conditions/conjunctivitis/)",
+    "Mayo Clinic: Conjunctivitis (https://www.mayoclinic.org/diseases-conditions/pink-eye/symptoms-causes/syc-20376355)",
+    "CDC: Conjunctivitis (Pink Eye) (https://www.cdc.gov/conjunctivitis/index.html)",
+    "AAO: Conjunctivitis (https://www.aao.org/eye-health/diseases/pink-eye-conjunctivitis)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_026",
+   "nameFa": "درماتیت آتوپیک (اگزمای آتوپیک)",
+   "nameEn": "Atopic dermatitis",
+   "specialty": "دانشنامه بیماری‌ها — پوست",
+   "symptoms": [
+    "خارش شدید",
+    "خشکی پوست",
+    "قرمزی و بثورات",
+    "ضخیم‌شدن پوست در اثر خارش مزمن (طولانی‌مدت)",
+    "درگیری نواحی تاشو مانند آرنج و زانو"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "خارش شدید، عفونت یا اختلال خواب",
+    "اورژانس: تب، قرمزی گسترده یا تاول"
+   ],
+   "sources": [
+    "NHS: Atopic eczema (https://www.nhs.uk/conditions/atopic-eczema/)",
+    "Mayo Clinic: Atopic dermatitis (eczema) (https://www.mayoclinic.org/diseases-conditions/atopic-dermatitis-eczema/symptoms-causes/syc-20353273)",
+    "NIAID: Atopic Dermatitis (https://www.niaid.nih.gov/diseases-conditions/atopic-dermatitis-eczema)",
+    "AAD: Eczema (https://www.aad.org/public/diseases/eczema)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_027",
+   "nameFa": "پسوریازیس",
+   "nameEn": "Psoriasis",
+   "specialty": "دانشنامه بیماری‌ها — پوست",
+   "symptoms": [
+    "پلاک‌های قرمز با پوسته نقره‌ای",
+    "خارش",
+    "درگیری پوست سر و ناخن",
+    "در برخی افراد: درد و تورم مفاصل"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "پلاک‌های گسترده، درد مفاصل یا تب",
+    "اورژانس: پوسچول‌های منتشر یا علائم سیستمیک"
+   ],
+   "sources": [
+    "WHO: Psoriasis (https://www.who.int/news-room/fact-sheets/detail/psoriasis)",
+    "NHS: Psoriasis (https://www.nhs.uk/conditions/psoriasis/)",
+    "Mayo Clinic: Psoriasis (https://www.mayoclinic.org/diseases-conditions/psoriasis/symptoms-causes/syc-20355840)",
+    "AAD: Psoriasis (https://www.aad.org/public/diseases/psoriasis)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_028",
+   "nameFa": "ویتیلیگو (برص)",
+   "nameEn": "Vitiligo",
+   "specialty": "دانشنامه بیماری‌ها — پوست",
+   "symptoms": [
+    "لکه‌های سفید یا بی‌رنگ پوست",
+    "معمولاً بدون خارش یا پوسته‌ریزی",
+    "الگوی قرینه در دو طرف بدن",
+    "درگیری دست، صورت، گردن و نواحی تناسلی"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "لکه‌های سفید جدید یا گسترده",
+    "اورژانس: علائم همراه خودایمنی (حمله اشتباه سیستم ایمنی به بدن)"
+   ],
+   "sources": [
+    "NHS: Vitiligo (https://www.nhs.uk/conditions/vitiligo/)",
+    "Mayo Clinic: Vitiligo (https://www.mayoclinic.org/diseases-conditions/vitiligo/symptoms-causes/syc-20355912)",
+    "AAD: Vitiligo (https://www.aad.org/public/diseases/a-z/vitiligo-overview)",
+    "Vitiligo Research Foundation (https://vrfoundation.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_029",
+   "nameFa": "روزاسه",
+   "nameEn": "Rosacea",
+   "specialty": "دانشنامه بیماری‌ها — پوست",
+   "symptoms": [
+    "قرمزی و گرگرفتگی صورت",
+    "رگ‌های خونی ریز قابل مشاهده",
+    "جوش‌های ریز قرمز",
+    "سوزش یا حساسیت پوست",
+    "در برخی موارد: خشکی و تحریک چشم"
+   ],
+   "tags": [
+    "rash",
+    "vision"
+   ],
+   "whenToSeeDoctor": [
+    "قرمزی صورت با جوش یا گرگرفتگی",
+    "اورژانس: درد چشم، تغییر بینایی یا حساسیت به نور"
+   ],
+   "sources": [
+    "NHS: Rosacea (https://www.nhs.uk/conditions/rosacea/)",
+    "Mayo Clinic: Rosacea (https://www.mayoclinic.org/diseases-conditions/rosacea/symptoms-causes/syc-20353805)",
+    "AAD: Rosacea (https://www.aad.org/public/diseases/rosacea)",
+    "NRS: Rosacea (https://www.rosacea.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_030",
+   "nameFa": "گلوکوم (آب‌سیاه)",
+   "nameEn": "Glaucoma",
+   "specialty": "دانشنامه بیماری‌ها — چشم‌پزشکی",
+   "symptoms": [
+    "در گلوکوم مزمن (طولانی‌مدت) اغلب بدون علامت تا مراحل پیشرفته",
+    "کاهش بینایی محیطی",
+    "در حمله حاد (کوتاه‌مدت و ناگهانی): درد شدید چشم، سردرد، هاله دور نور، تهوع و استفراغ و تاری دید"
+   ],
+   "tags": [
+    "headache",
+    "nausea",
+    "sore_throat",
+    "vision",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "درد شدید چشم، سردرد، هاله دور نور، تهوع یا کاهش بینایی",
+    "اورژانس: حمله حاد (کوتاه‌مدت و ناگهانی) گلوکوم"
+   ],
+   "sources": [
+    "WHO: Glaucoma (https://www.who.int/news-room/fact-sheets/detail/glaucoma)",
+    "NHS: Glaucoma (https://www.nhs.uk/conditions/glaucoma/)",
+    "Mayo Clinic: Glaucoma (https://www.mayoclinic.org/diseases-conditions/glaucoma/symptoms-causes/syc-20372839)",
+    "AAO: Glaucoma (https://www.aao.org/eye-health/diseases/what-is-glaucoma)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_031",
+   "nameFa": "آب‌مروارید",
+   "nameEn": "Cataract",
+   "specialty": "دانشنامه بیماری‌ها — چشم‌پزشکی",
+   "symptoms": [
+    "تاری تدریجی و بدون درد بینایی",
+    "حساسیت به نور و پخش شدن نور",
+    "هاله دور نور",
+    "رنگ‌ها کم‌رنگ به نظر می‌رسند",
+    "مشکل در دید شب"
+   ],
+   "tags": [],
+   "whenToSeeDoctor": [
+    "تاری تدریجی بینایی، حساسیت به نور یا هاله",
+    "اورژانس: کاهش ناگهانی بینایی"
+   ],
+   "sources": [
+    "WHO: Cataract (https://www.who.int/news-room/fact-sheets/detail/cataract)",
+    "NHS: Cataracts (https://www.nhs.uk/conditions/cataracts/)",
+    "Mayo Clinic: Cataracts (https://www.mayoclinic.org/diseases-conditions/cataracts/symptoms-causes/syc-20353790)",
+    "AAO: Cataract (https://www.aao.org/eye-health/diseases/what-are-cataracts)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_032",
+   "nameFa": "تباهی لکه زرد وابسته به سن",
+   "nameEn": "Age-related macular degeneration",
+   "specialty": "دانشنامه بیماری‌ها — چشم‌پزشکی",
+   "symptoms": [
+    "از دست رفتن بینایی مرکزی",
+    "دیدن خطوط کج یا موج‌دار",
+    "لکه تاریک در مرکز دید",
+    "مشکل در خواندن یا شناختن چهره‌ها"
+   ],
+   "tags": [],
+   "whenToSeeDoctor": [
+    "کاهش بینایی مرکزی، خطوط موج‌دار یا لکه تاریک",
+    "اورژانس: تغییر ناگهانی بینایی"
+   ],
+   "sources": [
+    "WHO: Age-related macular degeneration (https://www.who.int/news-room/fact-sheets/detail/age-related-macular-degeneration)",
+    "NHS: Macular degeneration (https://www.nhs.uk/conditions/age-related-macular-degeneration-amd/)",
+    "Mayo Clinic: Macular degeneration (https://www.mayoclinic.org/diseases-conditions/macular-degeneration/symptoms-causes/syc-20356084)",
+    "AAO: AMD (https://www.aao.org/eye-health/diseases/amd-macular-degeneration)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_033",
+   "nameFa": "آندومتریوز",
+   "nameEn": "Endometriosis",
+   "specialty": "دانشنامه بیماری‌ها — زنان و زایمان",
+   "symptoms": [
+    "درد قاعدگی شدید",
+    "درد لگنی مزمن (طولانی‌مدت)",
+    "درد هنگام رابطه جنسی",
+    "ناباروری",
+    "درد هنگام دفع یا اجابت مزاج",
+    "خستگی"
+   ],
+   "tags": [
+    "fatigue"
+   ],
+   "whenToSeeDoctor": [
+    "درد قاعدگی شدید، درد لگنی یا ناباروری",
+    "اورژانس: درد شدید ناگهانی یا خونریزی"
+   ],
+   "sources": [
+    "WHO: Endometriosis (https://www.who.int/news-room/fact-sheets/detail/endometriosis)",
+    "NHS: Endometriosis (https://www.nhs.uk/conditions/endometriosis/)",
+    "Mayo Clinic: Endometriosis (https://www.mayoclinic.org/diseases-conditions/endometriosis/symptoms-causes/syc-20354656)",
+    "ACOG: Endometriosis (https://www.acog.org/womens-health/faqs/endometriosis)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_034",
+   "nameFa": "سندرم تخمدان پلی‌کیستیک",
+   "nameEn": "Polycystic ovary syndrome",
+   "specialty": "دانشنامه بیماری‌ها — زنان و زایمان، غدد",
+   "symptoms": [
+    "قاعدگی نامنظم یا قطع قاعدگی",
+    "رشد موی زائد (هیرسوتیسم)",
+    "آکنه",
+    "افزایش وزن",
+    "ناباروری",
+    "لکه‌های تیره پوست (آکانتوزیس نیگریکانس)"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "قاعدگی نامنظم، موی زائد، آکنه یا ناباروری",
+    "اورژانس: خونریزی شدید"
+   ],
+   "sources": [
+    "WHO: Polycystic ovary syndrome (https://www.who.int/news-room/fact-sheets/detail/polycystic-ovary-syndrome)",
+    "NHS: Polycystic ovary syndrome (PCOS) (https://www.nhs.uk/conditions/polycystic-ovary-syndrome-pcos/)",
+    "Mayo Clinic: PCOS (https://www.mayoclinic.org/diseases-conditions/pcos/symptoms-causes/syc-20353439)",
+    "ASRM: PCOS (https://www.asrm.org/topics/topic-detail/polycystic-ovary-syndrome/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_035",
+   "nameFa": "فیبروم رحم",
+   "nameEn": "Uterine fibroids",
+   "specialty": "دانشنامه بیماری‌ها — زنان و زایمان",
+   "symptoms": [
+    "خونریزی شدید یا طولانی قاعدگی",
+    "درد یا فشار لگنی",
+    "تکرر ادرار",
+    "یبوست",
+    "بزرگ‌شدن شکم",
+    "ناباروری در برخی موارد"
+   ],
+   "tags": [
+    "abd_pain",
+    "constipation",
+    "frequent_urine"
+   ],
+   "whenToSeeDoctor": [
+    "خونریزی شدید قاعدگی، درد یا فشار لگنی",
+    "اورژانس: خونریزی شدید با سرگیجه"
+   ],
+   "sources": [
+    "NHS: Fibroids (https://www.nhs.uk/conditions/fibroids/)",
+    "Mayo Clinic: Uterine fibroids (https://www.mayoclinic.org/diseases-conditions/uterine-fibroids/symptoms-causes/syc-20354288)",
+    "ACOG: Uterine Fibroids (https://www.acog.org/womens-health/faqs/uterine-fibroids)",
+    "NICE: Fibroids (https://cks.nice.org.uk/topics/fibroids/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_036",
+   "nameFa": "فشار خون بالا",
+   "nameEn": "Hypertension (High Blood Pressure)",
+   "specialty": "بیماری‌های قلب و عروق — متخصص قلب، داخلی",
+   "symptoms": [
+    "معمولاً بدون علامت است و تنها با اندازه‌گیری فشار خون تشخیص داده می‌شود",
+    "سردرد، تنگی نفس یا خونریزی بینی علائم قابل اعتماد نیستند",
+    "بحران فشار خون (معمولاً ≥ ۱۸۰/۱۲۰): سردرد شدید، درد قفسه سینه، تنگی نفس، تاری دید، گیجی، ضعف یا بی‌حسی"
+   ],
+   "tags": [
+    "chest_pain",
+    "dyspnea",
+    "ear_nose",
+    "headache",
+    "vision"
+   ],
+   "whenToSeeDoctor": [
+    "فشار خون مکرر بالاتر از حد طبیعی",
+    "اورژانس: فشار بسیار بالا با درد قفسه سینه، تنگی نفس، ضعف یک‌طرفه، اختلال گفتار یا بینایی"
+   ],
+   "sources": [
+    "WHO: Hypertension Fact Sheet",
+    "ACC/AHA Guideline: High Blood Pressure",
+    "ESC/ESH Guidelines: Arterial Hypertension",
+    "NHLBI: High Blood Pressure",
+    "Mayo Clinic: High blood pressure"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_037",
+   "nameFa": "سندرم کوشینگ",
+   "nameEn": "Cushing syndrome",
+   "specialty": "دانشنامه بیماری‌ها — غدد درون‌ریز و متابولیسم",
+   "symptoms": [
+    "چاقی مرکزی",
+    "صورت گرد (ماه‌صورت)",
+    "قوز پشت گردن",
+    "خطوط پوستی بنفش",
+    "ضعف عضلانی",
+    "فشار خون بالا",
+    "افزایش قند خون (میزان گلوکز در خون)",
+    "نازک‌شدن پوست و کبودی آسان"
+   ],
+   "tags": [
+    "rash",
+    "sore_throat"
+   ],
+   "whenToSeeDoctor": [
+    "چاقی مرکزی، ضعف عضلانی یا فشار خون بالا",
+    "اورژانس: عفونت، شکستگی یا ضعف شدید"
+   ],
+   "sources": [
+    "NIDDK: Cushing's Syndrome (https://www.niddk.nih.gov/health-information/endocrine-diseases/cushings-syndrome)",
+    "NHS: Cushing's syndrome (https://www.nhs.uk/conditions/cushings-syndrome/)",
+    "Mayo Clinic: Cushing syndrome (https://www.mayoclinic.org/diseases-conditions/cushing-syndrome/symptoms-causes/syc-20351310)",
+    "Endocrine Society: Cushing's Syndrome (https://www.endocrine.org/patient-engagement/endocrine-library/cushings-syndrome)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_038",
+   "nameFa": "نارسایی قلبی",
+   "nameEn": "Heart failure",
+   "specialty": "دانشنامه بیماری‌ها — قلب و عروق",
+   "symptoms": [
+    "تنگی نفس با فعالیت",
+    "تنگی نفس در حالت خوابیده",
+    "بیدار شدن شبانه با تنگی نفس",
+    "ورم پا و مچ",
+    "خستگی و ضعف",
+    "افزایش فشار ورید گردن",
+    "صدای خس‌خس در ریه"
+   ],
+   "tags": [
+    "dyspnea",
+    "fatigue"
+   ],
+   "whenToSeeDoctor": [
+    "تنگی نفس با فعالیت، خوابیده یا شبانه",
+    "ورم پا، خستگی یا افزایش وزن سریع",
+    "اورژانس: درد قفسه سینه، غش یا تنگی نفس شدید"
+   ],
+   "sources": [
+    "WHO: Cardiovascular diseases (https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds))",
+    "NHS: Heart failure (https://www.nhs.uk/conditions/heart-failure/)",
+    "Mayo Clinic: Heart failure (https://www.mayoclinic.org/diseases-conditions/heart-failure/symptoms-causes/syc-20373142)",
+    "ACC/AHA Guidelines: Heart Failure (https://www.acc.org/Guidelines)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_039",
+   "nameFa": "فیبریلاسیون دهلیزی",
+   "nameEn": "Atrial fibrillation",
+   "specialty": "دانشنامه بیماری‌ها — قلب و عروق",
+   "symptoms": [
+    "تپش قلب",
+    "ضربان نامنظم",
+    "درد قفسه سینه",
+    "تنگی نفس",
+    "خستگی",
+    "سرگیجه یا سبکی سر",
+    "غش",
+    "در برخی موارد بدون علامت و با سکته مغزی کشف می‌شود"
+   ],
+   "tags": [
+    "chest_pain",
+    "dizziness",
+    "dyspnea",
+    "fatigue",
+    "palpitation"
+   ],
+   "whenToSeeDoctor": [
+    "تپش قلب، ضربان نامنظم، تنگی نفس یا خستگی",
+    "اورژانس: درد قفسه سینه، غش یا علائم سکته"
+   ],
+   "sources": [
+    "WHO: Atrial fibrillation (https://www.who.int/news-room/fact-sheets/detail/atrial-fibrillation)",
+    "NHS: Atrial fibrillation (https://www.nhs.uk/conditions/atrial-fibrillation/)",
+    "Mayo Clinic: Atrial fibrillation (https://www.mayoclinic.org/diseases-conditions/atrial-fibrillation/symptoms-causes/syc-20350624)",
+    "ACC/AHA Guidelines: Atrial Fibrillation (https://www.acc.org/Guidelines)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_040",
+   "nameFa": "بیماری انسدادی مزمن ریه",
+   "nameEn": "Chronic obstructive pulmonary disease (COPD)",
+   "specialty": "دانشنامه بیماری‌ها — ریه و تنفس",
+   "symptoms": [
+    "سرفه مزمن (طولانی‌مدت)",
+    "خلط مزمن",
+    "تنگی نفس، به‌ویژه با فعالیت",
+    "خس‌خس سینه",
+    "تشدید دوره‌ای علائم (exacerbation)",
+    "خستگی",
+    "کاهش وزن در بیماری پیشرفته"
+   ],
+   "tags": [
+    "cough",
+    "dyspnea",
+    "fatigue",
+    "weight_loss"
+   ],
+   "whenToSeeDoctor": [
+    "سرفه مزمن، خلط، تنگی نفس یا خس‌خس",
+    "اورژانس: تشدید حاد، تب، گیجی یا سیانوز"
+   ],
+   "sources": [
+    "WHO: Chronic obstructive pulmonary disease (COPD) (https://www.who.int/news-room/fact-sheets/detail/chronic-obstructive-pulmonary-disease-(copd))",
+    "NHS: COPD (https://www.nhs.uk/conditions/chronic-obstructive-pulmonary-disease-copd/)",
+    "Mayo Clinic: COPD (https://www.mayoclinic.org/diseases-conditions/copd/symptoms-causes/syc-20353679)",
+    "GOLD Guidelines: COPD (https://goldcopd.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_041",
+   "nameFa": "هاری",
+   "nameEn": "Rabies",
+   "specialty": "دانشنامه بیماری‌ها — عفونی، اورژانس",
+   "symptoms": [
+    "گزگز یا سوزش در محل گازگرفتگی",
+    "تب",
+    "بی‌قراری و اضطراب",
+    "ترس از آب (هیدروفوبیا)",
+    "ترس از هوا (آئروفوبیا)",
+    "گیجی",
+    "فلج",
+    "کما"
+   ],
+   "tags": [
+    "fever"
+   ],
+   "whenToSeeDoctor": [
+    "هر گازگرفتگی یا خراشیدگی حیوان مشکوک",
+    "اورژانس: شستشوی فوری و شروع PEP"
+   ],
+   "sources": [
+    "WHO: Rabies (https://www.who.int/news-room/fact-sheets/detail/rabies)",
+    "CDC: Rabies (https://www.cdc.gov/rabies/index.html)",
+    "NHS: Rabies (https://www.nhs.uk/conditions/rabies/)",
+    "Mayo Clinic: Rabies (https://www.mayoclinic.org/diseases-conditions/rabies/symptoms-causes/syc-20351821)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_042",
+   "nameFa": "کزاز",
+   "nameEn": "Tetanus",
+   "specialty": "دانشنامه بیماری‌ها — عفونی",
+   "symptoms": [
+    "قفل شدن فک (تریسموس)",
+    "سفتی گردن",
+    "اسپاسم (انقباض ناگهانی عضله) شدید عضلات",
+    "لبخند اجباری (ریسوس ساردونیکوس)",
+    "دشواری در بلع",
+    "بی‌ثباتی سیستم عصبی خودکار"
+   ],
+   "tags": [
+    "arm_jaw_pain",
+    "body_ache",
+    "neck_stiff"
+   ],
+   "whenToSeeDoctor": [
+    "سفتی فک، اسپاسم (انقباض ناگهانی عضله) عضلات یا دشواری بلع",
+    "اورژانس: مراجعه فوری"
+   ],
+   "sources": [
+    "WHO: Tetanus (https://www.who.int/news-room/fact-sheets/detail/tetanus)",
+    "CDC: Tetanus (https://www.cdc.gov/tetanus/index.html)",
+    "NHS: Tetanus (https://www.nhs.uk/conditions/tetanus/)",
+    "Mayo Clinic: Tetanus (https://www.mayoclinic.org/diseases-conditions/tetanus/symptoms-causes/syc-20351625)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_043",
+   "nameFa": "دیفتری",
+   "nameEn": "Diphtheria",
+   "specialty": "دانشنامه بیماری‌ها — عفونی",
+   "symptoms": [
+    "گلودرد",
+    "تب",
+    "لایه خاکستری روی لوزه‌ها و گلو",
+    "تورم گردن",
+    "تنگی نفس",
+    "در موارد شدید: میوکاردیت و نوروپاتی"
+   ],
+   "tags": [
+    "dyspnea",
+    "fever",
+    "sore_throat"
+   ],
+   "whenToSeeDoctor": [
+    "گلودرد، تب یا لایه خاکستری گلو",
+    "اورژانس: تنگی نفس یا تورم گردن"
+   ],
+   "sources": [
+    "WHO: Diphtheria (https://www.who.int/news-room/fact-sheets/detail/diphtheria)",
+    "CDC: Diphtheria (https://www.cdc.gov/diphtheria/index.html)",
+    "NHS: Diphtheria (https://www.nhs.uk/conditions/diphtheria/)",
+    "Mayo Clinic: Diphtheria (https://www.mayoclinic.org/diseases-conditions/diphtheria/symptoms-causes/syc-20351897)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_044",
+   "nameFa": "سیاه‌سرفه",
+   "nameEn": "Pertussis / Whooping cough",
+   "specialty": "دانشنامه بیماری‌ها — عفونی، اطفال",
+   "symptoms": [
+    "سرفه‌های شدید و حمله‌ای",
+    "صدای کی‌کی هنگام دم",
+    "استفراغ پس از سرفه",
+    "آبریزش بینی",
+    "در نوزادان: وقفه تنفسی"
+   ],
+   "tags": [
+    "cough",
+    "ear_nose",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "سرفه شدید حمله‌ای، صدای کی‌کی یا استفراغ پس از سرفه",
+    "اورژانس: آپنه (توقف تنفس در خواب) در نوزاد یا سیانوز"
+   ],
+   "sources": [
+    "WHO: Pertussis (https://www.who.int/news-room/fact-sheets/detail/pertussis)",
+    "CDC: Pertussis (Whooping Cough) (https://www.cdc.gov/pertussis/index.html)",
+    "NHS: Whooping cough (https://www.nhs.uk/conditions/whooping-cough/)",
+    "Mayo Clinic: Whooping cough (https://www.mayoclinic.org/diseases-conditions/whooping-cough/symptoms-causes/syc-20378978)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_045",
+   "nameFa": "اوریون",
+   "nameEn": "Mumps",
+   "specialty": "دانشنامه بیماری‌ها — عفونی، اطفال",
+   "symptoms": [
+    "تورم دردناک غدد بزاقی، به‌ویژه پاروتید",
+    "تب",
+    "سردرد",
+    "درد عضلانی",
+    "در پسران نوجوان: ارکیت",
+    "در برخی موارد: مننژیت"
+   ],
+   "tags": [
+    "fever",
+    "headache"
+   ],
+   "whenToSeeDoctor": [
+    "تورم غدد بزاقی، تب یا درد بیضه",
+    "اورژانس: سردرد شدید، سفتی گردن یا درد شدید بیضه"
+   ],
+   "sources": [
+    "WHO: Mumps (https://www.who.int/news-room/fact-sheets/detail/mumps)",
+    "CDC: Mumps (https://www.cdc.gov/mumps/index.html)",
+    "NHS: Mumps (https://www.nhs.uk/conditions/mumps/)",
+    "Mayo Clinic: Mumps (https://www.mayoclinic.org/diseases-conditions/mumps/symptoms-causes/syc-20375361)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_046",
+   "nameFa": "سرخجه",
+   "nameEn": "Rubella",
+   "specialty": "دانشنامه بیماری‌ها — عفونی، اطفال",
+   "symptoms": [
+    "تب خفیف",
+    "بثورات ماکولوپاپولار (بثورات تخت و برجسته)",
+    "بزرگ‌شدن غدد لنفاوی",
+    "درد مفاصل",
+    "در عفونت مادرزادی: ناهنجاری‌های چشمی، شنوایی و قلبی"
+   ],
+   "tags": [
+    "fever",
+    "vision"
+   ],
+   "whenToSeeDoctor": [
+    "بثورات و تب، به‌ویژه در بارداری",
+    "اورژانس: مواجهه بارداری با فرد مبتلا"
+   ],
+   "sources": [
+    "WHO: Rubella (https://www.who.int/news-room/fact-sheets/detail/rubella)",
+    "CDC: Rubella (https://www.cdc.gov/rubella/index.html)",
+    "NHS: Rubella (https://www.nhs.uk/conditions/rubella/)",
+    "Mayo Clinic: Rubella (https://www.mayoclinic.org/diseases-conditions/rubella/symptoms-causes/syc-20377335)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_047",
+   "nameFa": "فلج اطفال",
+   "nameEn": "Poliomyelitis / Polio",
+   "specialty": "دانشنامه بیماری‌ها — عفونی، اطفال",
+   "symptoms": [
+    "اغلب بدون علامت یا علائم خفیف گوارشی",
+    "مننژیت آسپتیک",
+    "فلج شل نامتقارن",
+    "در موارد شدید: نارسایی تنفسی (ناتوانی ریه در رساندن اکسیژن کافی)"
+   ],
+   "tags": [],
+   "whenToSeeDoctor": [
+    "ضعف یا فلج اندام",
+    "اورژانس: علائم عصبی حاد (کوتاه‌مدت و ناگهانی)"
+   ],
+   "sources": [
+    "WHO: Poliomyelitis (https://www.who.int/news-room/fact-sheets/detail/poliomyelitis)",
+    "CDC: Polio (https://www.cdc.gov/polio/index.html)",
+    "NHS: Polio (https://www.nhs.uk/conditions/polio/)",
+    "Mayo Clinic: Polio (https://www.mayoclinic.org/diseases-conditions/polio/symptoms-causes/syc-20376567)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_048",
+   "nameFa": "هپاتیت آ",
+   "nameEn": "Hepatitis A",
+   "specialty": "دانشنامه بیماری‌ها — گوارش و کبد، عفونی",
+   "symptoms": [
+    "تب",
+    "خستگی",
+    "تهوع و استفراغ",
+    "زردی",
+    "ادرار تیره",
+    "درد سمت راست بالای شکم",
+    "بی‌اشتهایی"
+   ],
+   "tags": [
+    "abd_pain",
+    "appetite",
+    "fatigue",
+    "fever",
+    "jaundice",
+    "nausea",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "زردی، خستگی، تهوع یا ادرار تیره",
+    "اورژانس: گیجی، استفراغ مداوم یا اختلال انعقاد"
+   ],
+   "sources": [
+    "WHO: Hepatitis A (https://www.who.int/news-room/fact-sheets/detail/hepatitis-a)",
+    "CDC: Hepatitis A (https://www.cdc.gov/hepatitis-a/index.html)",
+    "NIDDK: Hepatitis A (https://www.niddk.nih.gov/health-information/liver-disease/viral-hepatitis/hepatitis-a)",
+    "NHS: Hepatitis A (https://www.nhs.uk/conditions/hepatitis-a/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_049",
+   "nameFa": "تب دنگی",
+   "nameEn": "Dengue",
+   "specialty": "دانشنامه بیماری‌ها — عفونی",
+   "symptoms": [
+    "تب بالا",
+    "سردرد",
+    "درد پشت چشم",
+    "درد عضلانی و مفاصل",
+    "بثورات پوستی",
+    "تهوع و استفراغ",
+    "علائم هشدار دنگی شدید: درد شکم، استفراغ مداوم، خونریزی، خواب‌آلودگی"
+   ],
+   "tags": [
+    "abd_pain",
+    "fever",
+    "headache",
+    "nausea",
+    "rash",
+    "vision",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "تب بالا، درد شکم، استفراغ مداوم، خونریزی یا خواب‌آلودگی",
+    "اورژانس: علائم هشدار دنگی شدید"
+   ],
+   "sources": [
+    "WHO: Dengue and severe dengue (https://www.who.int/news-room/fact-sheets/detail/dengue-and-severe-dengue)",
+    "CDC: Dengue (https://www.cdc.gov/dengue/index.html)",
+    "NHS: Dengue (https://www.nhs.uk/conditions/dengue/)",
+    "Mayo Clinic: Dengue fever (https://www.mayoclinic.org/diseases-conditions/dengue-fever/symptoms-causes/syc-20353066)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_050",
+   "nameFa": "کووید ۱۹",
+   "nameEn": "COVID-19",
+   "specialty": "دانشنامه بیماری‌ها — عفونی، ریه",
+   "symptoms": [
+    "تب",
+    "سرفه",
+    "تنگی نفس",
+    "خستگی",
+    "گلودرد",
+    "از دست دادن حس بویایی یا چشایی",
+    "علائم گوارشی",
+    "در موارد شدید: هیپوکسی و نارسایی تنفسی (ناتوانی ریه در رساندن اکسیژن کافی)"
+   ],
+   "tags": [
+    "cough",
+    "dyspnea",
+    "fatigue",
+    "fever",
+    "sore_throat"
+   ],
+   "whenToSeeDoctor": [
+    "تنگی نفس، درد قفسه سینه، گیجی یا اشباع اکسیژن پایین",
+    "اورژانس: علائم شدید تنفسی"
+   ],
+   "sources": [
+    "WHO: Coronavirus disease (COVID-19) (https://www.who.int/health-topics/coronavirus)",
+    "CDC: COVID-19 (https://www.cdc.gov/covid/index.html)",
+    "NHS: COVID-19 (https://www.nhs.uk/conditions/covid-19/)",
+    "Mayo Clinic: COVID-19 (https://www.mayoclinic.org/diseases-conditions/coronavirus/symptoms-causes/syc-20379923)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_051",
+   "nameFa": "ریفلاکس معده",
+   "nameEn": "Gastroesophageal Reflux Disease (GERD)",
+   "specialty": "بیماری‌های گوارشی — متخصص گوارش و کبد، جراحی عمومی",
+   "symptoms": [
+    "سوزش سر دل (احساس سوزش پشت جناغ، اغلب پس از غذا و هنگام دراز کشیدن)",
+    "برگشت مایع ترش یا تلخ به دهان (رگورژیتاسیون)",
+    "دشواری در بلع",
+    "احساس وجود توده در گلو",
+    "سرفه مزمن، گرفتگی صدا، گلودرد",
+    "تشدید آسم",
+    "اختلال خواب",
+    "درد قفسه سینه (باید ابتدا مشکل قلبی رد شود)"
+   ],
+   "tags": [
+    "chest_pain",
+    "cough",
+    "heartburn",
+    "sore_throat"
+   ],
+   "whenToSeeDoctor": [
+    "علائم بیش از دو بار در هفته یا عدم پاسخ به درمان",
+    "دشواری یا درد هنگام بلع",
+    "کاهش وزن ناخواسته",
+    "استفراغ مکرر",
+    "مدفوع سیاه یا استفراغ خونی",
+    "اورژانس: درد قفسه سینه با تنگی نفس یا انتشار به بازو و فک"
+   ],
+   "sources": [
+    "NIDDK: Acid Reflux (GER & GERD) in Adults",
+    "Mayo Clinic: GERD",
+    "MedlinePlus: GERD",
+    "ACG Clinical Guideline: GERD"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_052",
+   "nameFa": "سندرم روده تحریک‌پذیر (روده عصبی)",
+   "nameEn": "Irritable bowel syndrome (IBS)",
+   "specialty": "دانشنامه بیماری‌ها — گوارش و کبد",
+   "symptoms": [
+    "درد شکم عودکننده (بازگشت‌کننده) که با دفع مدفوع تغییر می‌کند",
+    "تغییر در تعداد یا شکل مدفوع",
+    "نفخ",
+    "یبوست یا اسهال یا هر دو",
+    "احساس دفع ناقص",
+    "بدون علائم هشدار مانند خونریزی یا کاهش وزن"
+   ],
+   "tags": [
+    "abd_pain",
+    "constipation",
+    "diarrhea",
+    "weight_loss"
+   ],
+   "whenToSeeDoctor": [
+    "درد شکم مزمن، نفخ یا تغییر اجابت مزاج",
+    "اورژانس: کاهش وزن، خون در مدفوع، تب یا شروع بعد از ۵۰ سالگی"
+   ],
+   "sources": [
+    "NIDDK: Irritable Bowel Syndrome (IBS) (https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome)",
+    "NHS: Irritable bowel syndrome (IBS) (https://www.nhs.uk/conditions/irritable-bowel-syndrome-ibs/)",
+    "Mayo Clinic: Irritable bowel syndrome (https://www.mayoclinic.org/diseases-conditions/irritable-bowel-syndrome/symptoms-causes/syc-20360016)",
+    "Rome Foundation: IBS (https://theromefoundation.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_053",
+   "nameFa": "دیورتیکولیت",
+   "nameEn": "Diverticulitis",
+   "specialty": "بیماری‌های گوارشی — گوارش و کبد، جراحی عمومی",
+   "symptoms": [
+    "درد پایدار شکم، معمولاً در پایین سمت چپ (در برخی جمعیت‌ها مانند آسیای شرقی ممکن است سمت راست باشد)",
+    "تب",
+    "تهوع و استفراغ",
+    "یبوست یا اسهال",
+    "نفخ",
+    "حساسیت شکم هنگام لمس"
+   ],
+   "tags": [
+    "abd_pain",
+    "constipation",
+    "diarrhea",
+    "fever",
+    "nausea",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "درد شکم همراه با تب",
+    "اورژانس: درد شدید و ناگهانی، استفراغ مداوم، تب بالا، ناتوانی در دفع گاز یا مدفوع"
+   ],
+   "sources": [
+    "NIDDK: Diverticular Disease",
+    "Mayo Clinic: Diverticulitis",
+    "MedlinePlus: Diverticulitis",
+    "ASCRS Guidelines: Left-Sided Colonic Diverticulitis"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_054",
+   "nameFa": "هموروئید (بواسیر)",
+   "nameEn": "Hemorrhoids",
+   "specialty": "بیماری‌های گوارشی و مقعد — جراحی عمومی و کولوپروکتولوژی",
+   "symptoms": [
+    "خون قرمز روشن و بدون درد هنگام دفع (روی دستمال یا داخل توالت)",
+    "خارش یا تحریک اطراف مقعد",
+    "درد یا ناراحتی، به‌ویژه هنگام نشستن",
+    "توده یا تورم اطراف مقعد",
+    "بیرون‌زدگی هموروئید داخلی (پرولاپس)",
+    "درد ناگهانی و شدید در هموروئید خارجی لخته‌شده (ترومبوزه)"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "هرگونه خونریزی از مقعد باید توسط پزشک بررسی شود، چون سرطان روده نیز می‌تواند علائم مشابه داشته باشد",
+    "درد شدید یا توده سفت و دردناک",
+    "اورژانس: خونریزی شدید، سرگیجه یا غش"
+   ],
+   "sources": [
+    "NIDDK: Hemorrhoids",
+    "Mayo Clinic: Hemorrhoids",
+    "MedlinePlus: Hemorrhoids",
+    "ASCRS Clinical Practice Guidelines: Hemorrhoids"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_055",
+   "nameFa": "شقاق مقعد",
+   "nameEn": "Anal Fissure",
+   "specialty": "بیماری‌های مقعد و راست‌روده — جراحی عمومی",
+   "symptoms": [
+    "درد تیز هنگام دفع که ممکن است دقایق تا ساعت‌ها پس از آن ادامه یابد",
+    "خون قرمز روشن روی مدفوع یا دستمال",
+    "ترک قابل مشاهده در پوست اطراف مقعد",
+    "خارش یا سوزش",
+    "برآمدگی کوچک پوست کنار ترک (تگ پوستی)"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "درد یا خونریزی هنگام دفع که بیش از چند هفته ادامه دارد",
+    "خونریزی شدید یا مکرر",
+    "درد شدید که مانع دفع می‌شود"
+   ],
+   "sources": [
+    "NIDDK: Anal Fissure",
+    "Mayo Clinic: Anal fissure",
+    "MedlinePlus: Anal fissure",
+    "ASCRS Clinical Practice Guidelines: Anal Fissures"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_056",
+   "nameFa": "سیروز کبدی",
+   "nameEn": "Cirrhosis",
+   "specialty": "دانشنامه بیماری‌ها — گوارش و کبد",
+   "symptoms": [
+    "در مراحل اولیه ممکن است بدون علامت باشد",
+    "خستگی",
+    "در مراحل پیشرفته: زردی، آسیت (تجمع مایع شکم)، ورم پا، کبودی آسان، گیجی و اختلال هوشیاری (انسفالوپاتی)، خونریزی از وریدهای مری"
+   ],
+   "tags": [
+    "abd_pain",
+    "fatigue",
+    "jaundice"
+   ],
+   "whenToSeeDoctor": [
+    "زردی، آسیت، ورم پا یا گیجی",
+    "اورژانس: استفراغ خونی یا مدفوع سیاه"
+   ],
+   "sources": [
+    "WHO: Cirrhosis (https://www.who.int/news-room/fact-sheets/detail/cirrhosis)",
+    "NIDDK: Cirrhosis (https://www.niddk.nih.gov/health-information/liver-disease/cirrhosis)",
+    "NHS: Cirrhosis (https://www.nhs.uk/conditions/cirrhosis/)",
+    "Mayo Clinic: Cirrhosis (https://www.mayoclinic.org/diseases-conditions/cirrhosis/symptoms-causes/syc-20351487)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_057",
+   "nameFa": "التهاب معده (گاستریت)",
+   "nameEn": "Gastritis",
+   "specialty": "دانشنامه بیماری‌ها — گوارش و کبد",
+   "symptoms": [
+    "سوءهاضمه",
+    "درد یا سوزش سر دل",
+    "تهوع",
+    "استفراغ",
+    "سیری زودرس",
+    "در صورت خونریزی: مدفوع سیاه یا استفراغ خونی"
+   ],
+   "tags": [
+    "heartburn",
+    "nausea",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "سوءهاضمه، درد سردل یا تهوع",
+    "اورژانس: استفراغ خونی، مدفوع سیاه یا درد شدید"
+   ],
+   "sources": [
+    "NIDDK: Gastritis (https://www.niddk.nih.gov/health-information/digestive-diseases/gastritis)",
+    "NHS: Gastritis (https://www.nhs.uk/conditions/gastritis/)",
+    "Mayo Clinic: Gastritis (https://www.mayoclinic.org/diseases-conditions/gastritis/symptoms-causes/syc-20355807)",
+    "ACG Guidelines: Gastritis (https://gi.org/guideline/management-of-gastritis/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_058",
+   "nameFa": "عدم تحمل لاکتوز",
+   "nameEn": "Lactose intolerance",
+   "specialty": "دانشنامه بیماری‌ها — گوارش و کبد",
+   "symptoms": [
+    "نفخ",
+    "کرامپ شکم",
+    "اسهال",
+    "گاز زیاد",
+    "علائم پس از مصرف شیر و لبنیات"
+   ],
+   "tags": [
+    "abd_pain",
+    "diarrhea"
+   ],
+   "whenToSeeDoctor": [
+    "نفخ، اسهال یا درد پس از لبنیات",
+    "اورژانس: کم‌آبی شدید یا کاهش وزن"
+   ],
+   "sources": [
+    "NIDDK: Lactose Intolerance (https://www.niddk.nih.gov/health-information/digestive-diseases/lactose-intolerance)",
+    "NHS: Lactose intolerance (https://www.nhs.uk/conditions/lactose-intolerance/)",
+    "Mayo Clinic: Lactose intolerance (https://www.mayoclinic.org/diseases-conditions/lactose-intolerance/symptoms-causes/syc-20374224)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_059",
+   "nameFa": "فتق کشاله ران",
+   "nameEn": "Inguinal Hernia",
+   "specialty": "جراحی عمومی — متخصص جراحی عمومی",
+   "symptoms": [
+    "برآمدگی در ناحیه کشاله ران که با ایستادن، سرفه یا زور زدن واضح‌تر می‌شود",
+    "ممکن است با خوابیدن ناپدید شود",
+    "احساس سنگینی، فشار، سوزش یا درد در کشاله ران",
+    "تورم کیسه بیضه در مردان",
+    "علائم هشدار (فتق گیرکرده یا خفه‌شده): درد ناگهانی و شدید، برآمدگی قرمز، بنفش یا تیره، تهوع و استفراغ، تب، ناتوانی در دفع گاز یا مدفوع"
+   ],
+   "tags": [
+    "cough",
+    "fever",
+    "nausea",
+    "vomiting"
+   ],
+   "whenToSeeDoctor": [
+    "هر برآمدگی جدید در کشاله ران",
+    "درد یا ناراحتی مداوم",
+    "اورژانس: درد ناگهانی و شدید با برآمدگی سفت، تغییر رنگ، تهوع، استفراغ یا ناتوانی در دفع"
+   ],
+   "sources": [
+    "Mayo Clinic: Inguinal hernia",
+    "NIDDK: Inguinal hernia",
+    "MedlinePlus: Hernia",
+    "NHS: Inguinal hernia repair"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_060",
+   "nameFa": "هپاتیت ای",
+   "nameEn": "Hepatitis E",
+   "specialty": "دانشنامه بیماری‌ها — گوارش و کبد، عفونی",
+   "symptoms": [
+    "مشابه هپاتیت حاد (کوتاه‌مدت و ناگهانی): زردی، خستگی، تهوع، بی‌اشتهایی و ادرار تیره",
+    "در بارداری ممکن است شدید و خطرناک باشد"
+   ],
+   "tags": [
+    "appetite",
+    "fatigue",
+    "jaundice",
+    "nausea"
+   ],
+   "whenToSeeDoctor": [
+    "زردی، خستگی یا تهوع",
+    "اورژانس: بارداری با علائم شدید یا گیجی"
+   ],
+   "sources": [
+    "WHO: Hepatitis E (https://www.who.int/news-room/fact-sheets/detail/hepatitis-e)",
+    "CDC: Hepatitis E (https://www.cdc.gov/hepatitis-e/index.html)",
+    "NIDDK: Hepatitis E (https://www.niddk.nih.gov/health-information/liver-disease/viral-hepatitis/hepatitis-e)",
+    "NHS: Hepatitis E (https://www.nhs.uk/conditions/hepatitis-e/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_061",
+   "nameFa": "بیماری مزمن کلیه",
+   "nameEn": "Chronic kidney disease (CKD)",
+   "specialty": "دانشنامه بیماری‌ها — نفرولوژی",
+   "symptoms": [
+    "در مراحل اولیه بدون علامت",
+    "خستگی",
+    "ورم پا",
+    "خارش پوست",
+    "تهوع",
+    "کاهش حجم ادرار",
+    "کم‌خونی",
+    "در مراحل پیشرفته: علائم اورمی (مسمومیت ناشی از نارسایی کلیه)"
+   ],
+   "tags": [
+    "fatigue",
+    "flank_pain",
+    "nausea",
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "خستگی، ورم، خارش یا کاهش ادرار",
+    "اورژانس: گیجی، تنگی نفس یا کاهش شدید ادرار"
+   ],
+   "sources": [
+    "NIDDK: Chronic Kidney Disease (CKD) (https://www.niddk.nih.gov/health-information/kidney-disease/chronic-kidney-disease-ckd)",
+    "NHS: Chronic kidney disease (https://www.nhs.uk/conditions/chronic-kidney-disease/)",
+    "Mayo Clinic: Chronic kidney disease (https://www.mayoclinic.org/diseases-conditions/chronic-kidney-disease/symptoms-causes/syc-20354521)",
+    "KDIGO Guidelines: CKD (https://kdigo.org/guidelines/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_062",
+   "nameFa": "بیماری کلیه پلی‌کیستیک",
+   "nameEn": "Polycystic kidney disease (PKD)",
+   "specialty": "دانشنامه بیماری‌ها — نفرولوژی، اورولوژی",
+   "symptoms": [
+    "درد پهلو",
+    "خون در ادرار",
+    "فشار خون بالا",
+    "توده شکمی",
+    "سنگ کلیه",
+    "در مراحل پیشرفته: علائم نارسایی کلیه"
+   ],
+   "tags": [
+    "abd_pain",
+    "blood_urine",
+    "flank_pain"
+   ],
+   "whenToSeeDoctor": [
+    "درد پهلو، خون در ادرار یا فشار خون بالا",
+    "اورژانس: تب، درد شدید یا کاهش ادرار"
+   ],
+   "sources": [
+    "NIDDK: Polycystic Kidney Disease (PKD) (https://www.niddk.nih.gov/health-information/kidney-disease/polycystic-kidney-disease-pkd)",
+    "NHS: Polycystic kidney disease (https://www.nhs.uk/conditions/polycystic-kidney-disease/)",
+    "Mayo Clinic: Polycystic kidney disease (https://www.mayoclinic.org/diseases-conditions/polycystic-kidney-disease/symptoms-causes/syc-20352820)",
+    "PKD Foundation (https://pkdcure.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_063",
+   "nameFa": "گلومرولونفریت (التهاب گلومرول‌های کلیه)",
+   "nameEn": "Glomerulonephritis",
+   "specialty": "دانشنامه بیماری‌ها — نفرولوژی",
+   "symptoms": [
+    "خون در ادرار",
+    "پروتئین در ادرار",
+    "ورم، به‌ویژه صورت و پا",
+    "فشار خون بالا",
+    "کاهش ادرار",
+    "خستگی"
+   ],
+   "tags": [
+    "blood_urine",
+    "fatigue"
+   ],
+   "whenToSeeDoctor": [
+    "خون در ادرار، ورم یا فشار خون بالا",
+    "اورژانس: تنگی نفس، کاهش ادرار یا گیجی"
+   ],
+   "sources": [
+    "NIDDK: Glomerulonephritis (https://www.niddk.nih.gov/health-information/kidney-disease/glomerulonephritis)",
+    "NHS: Glomerulonephritis (https://www.nhs.uk/conditions/glomerulonephritis/)",
+    "Mayo Clinic: Glomerulonephritis (https://www.mayoclinic.org/diseases-conditions/glomerulonephritis/symptoms-causes/syc-20355705)",
+    "KDIGO Guidelines: Glomerulonephritis (https://kdigo.org/guidelines/glomerular-diseases/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_064",
+   "nameFa": "سندرم نفروتیک",
+   "nameEn": "Nephrotic syndrome",
+   "specialty": "دانشنامه بیماری‌ها — نفرولوژی",
+   "symptoms": [
+    "ورم شدید، به‌ویژه دور چشم و پا",
+    "ادرار کف‌آلود",
+    "افزایش وزن در اثر احتباس مایع",
+    "خستگی",
+    "کاهش اشتها",
+    "افزایش چربی خون"
+   ],
+   "tags": [
+    "fatigue",
+    "fever",
+    "vision"
+   ],
+   "whenToSeeDoctor": [
+    "ورم شدید، ادرار کف‌آلود یا افزایش وزن",
+    "اورژانس: تنگی نفس، تب یا ترومبوز (لخته شدن خون در رگ)"
+   ],
+   "sources": [
+    "NIDDK: Nephrotic Syndrome (https://www.niddk.nih.gov/health-information/kidney-disease/nephrotic-syndrome-adults)",
+    "NHS: Nephrotic syndrome (https://www.nhs.uk/conditions/nephrotic-syndrome/)",
+    "Mayo Clinic: Nephrotic syndrome (https://www.mayoclinic.org/diseases-conditions/nephrotic-syndrome/symptoms-causes/syc-20375608)",
+    "KDIGO Guidelines: Nephrotic Syndrome (https://kdigo.org/guidelines/glomerular-diseases/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_065",
+   "nameFa": "بیماری آدیسون",
+   "nameEn": "Addison disease",
+   "specialty": "دانشنامه بیماری‌ها — غدد درون‌ریز و متابولیسم",
+   "symptoms": [
+    "خستگی و ضعف",
+    "کاهش وزن",
+    "افت فشار خون",
+    "تاریک‌شدن پوست و مخاط",
+    "میل شدید به نمک",
+    "تهوع",
+    "سرگیجه"
+   ],
+   "tags": [
+    "dizziness",
+    "fatigue",
+    "nausea",
+    "rash",
+    "weight_loss"
+   ],
+   "whenToSeeDoctor": [
+    "خستگی، افت فشار، تاریک‌شدن پوست یا میل به نمک",
+    "اورژانس: بحران آدرنال (استفراغ، گیجی، افت فشار)"
+   ],
+   "sources": [
+    "NIDDK: Addison's Disease (https://www.niddk.nih.gov/health-information/endocrine-diseases/adrenal-insufficiency-addisons-disease)",
+    "NHS: Addison's disease (https://www.nhs.uk/conditions/addisons-disease/)",
+    "Mayo Clinic: Addison's disease (https://www.mayoclinic.org/diseases-conditions/addisons-disease/symptoms-causes/syc-20350293)",
+    "Endocrine Society: Adrenal Insufficiency (https://www.endocrine.org/patient-engagement/endocrine-library/adrenal-insufficiency)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_066",
+   "nameFa": "بیماری گریوز",
+   "nameEn": "Graves disease",
+   "specialty": "دانشنامه بیماری‌ها — غدد درون‌ریز و متابولیسم",
+   "symptoms": [
+    "کاهش وزن",
+    "تپش قلب",
+    "عدم تحمل گرما",
+    "لرزش",
+    "اضطراب",
+    "گواتر",
+    "درگیری چشم: برجستگی، خشکی و دوبینی"
+   ],
+   "tags": [
+    "chills",
+    "ear_nose",
+    "palpitation",
+    "vision",
+    "weight_loss"
+   ],
+   "whenToSeeDoctor": [
+    "کاهش وزن، تپش قلب، لرزش یا تعریق",
+    "اورژانس: تب بالا، ضربان بسیار سریع، گیجی (طوفان تیروئیدی)"
+   ],
+   "sources": [
+    "NIDDK: Graves' Disease (https://www.niddk.nih.gov/health-information/endocrine-diseases/graves-disease)",
+    "NHS: Graves' disease (https://www.nhs.uk/conditions/graves-disease/)",
+    "Mayo Clinic: Graves' disease (https://www.mayoclinic.org/diseases-conditions/graves-disease/symptoms-causes/syc-20356240)",
+    "ATA Guidelines: Graves' Disease (https://www.thyroid.org/graves-disease/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_067",
+   "nameFa": "کم‌خونی پرنیشیوز",
+   "nameEn": "Pernicious anemia",
+   "specialty": "دانشنامه بیماری‌ها — خون (هماتولوژی)، گوارش و کبد",
+   "symptoms": [
+    "خستگی",
+    "رنگ‌پریدگی",
+    "التهاب و قرمزی زبان",
+    "گزگز دست و پا",
+    "اختلال تعادل",
+    "کاهش تمرکز",
+    "زردی خفیف"
+   ],
+   "tags": [
+    "fatigue",
+    "jaundice"
+   ],
+   "whenToSeeDoctor": [
+    "خستگی، رنگ‌پریدگی، گزگز یا اختلال تعادل",
+    "اورژانس: علائم عصبی پیش‌رونده"
+   ],
+   "sources": [
+    "NIDDK: Pernicious Anemia (https://www.niddk.nih.gov/health-information/blood-diseases/pernicious-anemia)",
+    "NHS: Vitamin B12 or folate deficiency anaemia (https://www.nhs.uk/conditions/vitamin-b12-or-folate-deficiency-anaemia/)",
+    "Mayo Clinic: Vitamin deficiency anemia (https://www.mayoclinic.org/diseases-conditions/vitamin-deficiency-anemia/symptoms-causes/syc-20355025)",
+    "B12 Deficiency.org (https://www.b12deficiency.info/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_068",
+   "nameFa": "بیماری سلول داسی‌شکل",
+   "nameEn": "Sickle cell disease",
+   "specialty": "دانشنامه بیماری‌ها — خون (هماتولوژی)",
+   "symptoms": [
+    "بحران‌های دردناک",
+    "کم‌خونی",
+    "زردی",
+    "عفونت‌های مکرر",
+    "پریاپیسم",
+    "سکته مغزی",
+    "سندرم قفسه سینه حاد (کوتاه‌مدت و ناگهانی)"
+   ],
+   "tags": [
+    "chest_pain",
+    "jaundice"
+   ],
+   "whenToSeeDoctor": [
+    "بحران درد، تب، تنگی نفس، درد قفسه سینه یا پریاپیسم",
+    "اورژانس: سندرم حاد (کوتاه‌مدت و ناگهانی) قفسه سینه یا سکته"
+   ],
+   "sources": [
+    "WHO: Sickle Cell Disease (https://www.who.int/news-room/fact-sheets/detail/sickle-cell-disease)",
+    "NHLBI: Sickle Cell Disease (https://www.nhlbi.nih.gov/health-topics/sickle-cell-disease)",
+    "NHS: Sickle cell disease (https://www.nhs.uk/conditions/sickle-cell-disease/)",
+    "Mayo Clinic: Sickle cell anemia (https://www.mayoclinic.org/diseases-conditions/sickle-cell-anemia/symptoms-causes/syc-20355876)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_069",
+   "nameFa": "تالاسمی",
+   "nameEn": "Thalassemia",
+   "specialty": "دانشنامه بیماری‌ها — خون (هماتولوژی)",
+   "symptoms": [
+    "کم‌خونی",
+    "رنگ‌پریدگی",
+    "خستگی",
+    "بزرگ‌شدن طحال",
+    "تغییر شکل استخوان‌ها",
+    "در موارد وابسته به ترانسفوزیون: عوارض اضافه‌بار آهن"
+   ],
+   "tags": [
+    "fatigue"
+   ],
+   "whenToSeeDoctor": [
+    "کم‌خونی، خستگی، رنگ‌پریدگی یا بزرگ‌شدن طحال",
+    "اورژانس: نارسایی قلبی یا عفونت شدید"
+   ],
+   "sources": [
+    "WHO: Thalassaemia (https://www.who.int/news-room/fact-sheets/detail/thalassaemia)",
+    "NHLBI: Thalassemia (https://www.nhlbi.nih.gov/health-topics/thalassemias)",
+    "NHS: Thalassaemia (https://www.nhs.uk/conditions/thalassaemia/)",
+    "Mayo Clinic: Thalassemia (https://www.mayoclinic.org/diseases-conditions/thalassemia/symptoms-causes/syc-20354995)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_070",
+   "nameFa": "لوپوس اریتماتوی سیستمیک",
+   "nameEn": "Systemic lupus erythematosus (SLE)",
+   "specialty": "دانشنامه بیماری‌ها — روماتولوژی",
+   "symptoms": [
+    "خستگی",
+    "راش گونه‌ای (پروانه‌ای)",
+    "حساسیت به نور",
+    "آرتریت",
+    "التهاب پرده‌های ریه یا قلب",
+    "درگیری کلیه",
+    "کاهش سلول‌های خونی"
+   ],
+   "tags": [
+    "fatigue",
+    "flank_pain",
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "خستگی، راش، حساسیت به نور یا درد مفاصل",
+    "اورژانس: درگیری کلیه، تنگی نفس یا علائم عصبی"
+   ],
+   "sources": [
+    "NHS: Lupus (https://www.nhs.uk/conditions/lupus/)",
+    "Mayo Clinic: Lupus (https://www.mayoclinic.org/diseases-conditions/lupus/symptoms-causes/syc-20365789)",
+    "Lupus Foundation of America (https://www.lupus.org/)",
+    "ACR Guidelines: Lupus (https://rheumatology.org/lupus-guideline)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_071",
+   "nameFa": "اختلال افسردگی اساسی (افسردگی)",
+   "nameEn": "Major depressive disorder",
+   "specialty": "دانشنامه بیماری‌ها — روان‌پزشکی",
+   "symptoms": [
+    "خلق افسرده",
+    "از دست رفتن لذت",
+    "اختلال خواب",
+    "تغییر اشتها",
+    "خستگی",
+    "کاهش تمرکز",
+    "احساس گناه یا بی‌ارزشی",
+    "افکار خودکشی"
+   ],
+   "tags": [
+    "arm_jaw_pain",
+    "fatigue"
+   ],
+   "whenToSeeDoctor": [
+    "خلق افسرده، بی‌لذتی یا اختلال خواب",
+    "اورژانس: افکار خودکشی، روان‌پریشی یا ناتوانی در مراقبت از خود"
+   ],
+   "sources": [
+    "WHO: Depression (https://www.who.int/news-room/fact-sheets/detail/depression)",
+    "NIMH: Depression (https://www.nimh.nih.gov/health/topics/depression)",
+    "NHS: Depression (https://www.nhs.uk/mental-health/conditions/depression-in-adults/)",
+    "Mayo Clinic: Depression (major depressive disorder) (https://www.mayoclinic.org/diseases-conditions/depression/symptoms-causes/syc-20356007)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_072",
+   "nameFa": "اختلال دوقطبی (دوقطبی)",
+   "nameEn": "Bipolar disorder",
+   "specialty": "دانشنامه بیماری‌ها — روان‌پزشکی",
+   "symptoms": [
+    "دوره‌های شیدایی: خلق بالا، کاهش خواب، افکار پرسرعت، رفتار پرخطر",
+    "دوره‌های افسردگی: غم، بی‌انگیزگی، خستگی و افکار خودکشی",
+    "نوسان شدید خلق"
+   ],
+   "tags": [
+    "arm_jaw_pain",
+    "fatigue"
+   ],
+   "whenToSeeDoctor": [
+    "نوسان شدید خلق، کاهش خواب یا رفتار پرخطر",
+    "اورژانس: افکار خودکشی یا روان‌پریشی"
+   ],
+   "sources": [
+    "WHO: Bipolar disorder (https://www.who.int/news-room/fact-sheets/detail/bipolar-disorder)",
+    "NIMH: Bipolar Disorder (https://www.nimh.nih.gov/health/topics/bipolar-disorder)",
+    "NHS: Bipolar disorder (https://www.nhs.uk/mental-health/conditions/bipolar-disorder/)",
+    "Mayo Clinic: Bipolar disorder (https://www.mayoclinic.org/diseases-conditions/bipolar-disorder/symptoms-causes/syc-20355955)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_073",
+   "nameFa": "اسکیزوفرنی (شیزوفرنی)",
+   "nameEn": "Schizophrenia",
+   "specialty": "دانشنامه بیماری‌ها — روان‌پزشکی",
+   "symptoms": [
+    "هذیان",
+    "توهم",
+    "گفتار یا رفتار آشفته",
+    "علائم منفی مانند بی‌انگیزگی و کناره‌گیری",
+    "اختلال در عملکرد اجتماعی و شغلی"
+   ],
+   "tags": [],
+   "whenToSeeDoctor": [
+    "هذیان، توهم، گفتار آشفته یا کناره‌گیری",
+    "اورژانس: خطر خودکشی، پرخاشگری یا بی‌خانمانی"
+   ],
+   "sources": [
+    "WHO: Schizophrenia (https://www.who.int/news-room/fact-sheets/detail/schizophrenia)",
+    "NIMH: Schizophrenia (https://www.nimh.nih.gov/health/topics/schizophrenia)",
+    "NHS: Schizophrenia (https://www.nhs.uk/mental-health/conditions/schizophrenia/)",
+    "Mayo Clinic: Schizophrenia (https://www.mayoclinic.org/diseases-conditions/schizophrenia/symptoms-causes/syc-20354443)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_074",
+   "nameFa": "اختلال اضطراب فراگیر (اضطراب مزمن)",
+   "nameEn": "Generalized anxiety disorder (GAD)",
+   "specialty": "دانشنامه بیماری‌ها — روان‌پزشکی",
+   "symptoms": [
+    "نگرانی مفرط و پایدار",
+    "بی‌قراری",
+    "خستگی",
+    "مشکل در تمرکز",
+    "تحریک‌پذیری",
+    "اختلال خواب",
+    "تنش عضلانی"
+   ],
+   "tags": [
+    "fatigue"
+   ],
+   "whenToSeeDoctor": [
+    "نگرانی مفرط، بی‌قراری یا اختلال خواب",
+    "اورژانس: افکار خودکشی یا حملات پانیک شدید"
+   ],
+   "sources": [
+    "NIMH: Generalized Anxiety Disorder (https://www.nimh.nih.gov/health/topics/generalized-anxiety-disorder-gad)",
+    "NHS: Generalised anxiety disorder (GAD) (https://www.nhs.uk/mental-health/conditions/generalised-anxiety-disorder-gad/)",
+    "Mayo Clinic: Generalized anxiety disorder (https://www.mayoclinic.org/diseases-conditions/generalized-anxiety-disorder/symptoms-causes/syc-20360803)",
+    "ADAA: GAD (https://adaa.org/understanding-anxiety/generalized-anxiety-disorder-gad)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_075",
+   "nameFa": "اختلال هراس (اختلال پانیک)",
+   "nameEn": "Panic disorder",
+   "specialty": "دانشنامه بیماری‌ها — روان‌پزشکی",
+   "symptoms": [
+    "حملات ناگهانی تپش قلب",
+    "تعریق",
+    "لرزش",
+    "تنگی نفس",
+    "درد قفسه سینه",
+    "ترس از مرگ یا از دست دادن کنترل",
+    "گزگز",
+    "سرگیجه"
+   ],
+   "tags": [
+    "chest_pain",
+    "chills",
+    "dizziness",
+    "dyspnea",
+    "palpitation",
+    "sweating"
+   ],
+   "whenToSeeDoctor": [
+    "حملات ناگهانی تپش قلب، تنگی نفس یا ترس شدید",
+    "اورژانس: اولین حمله با درد قفسه سینه یا علائم قلبی"
+   ],
+   "sources": [
+    "NIMH: Panic Disorder (https://www.nimh.nih.gov/health/topics/panic-disorder)",
+    "NHS: Panic disorder (https://www.nhs.uk/mental-health/conditions/panic-disorder/)",
+    "Mayo Clinic: Panic attacks and panic disorder (https://www.mayoclinic.org/diseases-conditions/panic-attacks/symptoms-causes/syc-20376021)",
+    "ADAA: Panic Disorder (https://adaa.org/understanding-anxiety/panic-disorder)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_076",
+   "nameFa": "اختلال وسواس فکری‌ـ‌عملی (وسواس)",
+   "nameEn": "Obsessive-compulsive disorder (OCD)",
+   "specialty": "دانشنامه بیماری‌ها — روان‌پزشکی",
+   "symptoms": [
+    "افکار مزاحم و ناخواسته (وسواس فکری)",
+    "رفتارهای تکراری برای کاهش اضطراب (وسواس عملی)",
+    "صرف زمان زیاد برای این افکار و رفتارها",
+    "اختلال در عملکرد روزمره"
+   ],
+   "tags": [
+    "arm_jaw_pain"
+   ],
+   "whenToSeeDoctor": [
+    "افکار مزاحم یا رفتارهای تکراری وقت‌گیر",
+    "اورژانس: اختلال شدید عملکرد یا افکار خودکشی"
+   ],
+   "sources": [
+    "NIMH: Obsessive-Compulsive Disorder (OCD) (https://www.nimh.nih.gov/health/topics/obsessive-compulsive-disorder-ocd)",
+    "NHS: Obsessive compulsive disorder (OCD) (https://www.nhs.uk/mental-health/conditions/obsessive-compulsive-disorder-ocd/)",
+    "Mayo Clinic: OCD (https://www.mayoclinic.org/diseases-conditions/obsessive-compulsive-disorder/symptoms-causes/syc-20354432)",
+    "IOCDF: OCD (https://iocdf.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_077",
+   "nameFa": "اختلال استرس پس از سانحه (استرس پس از سانحه، PTSD)",
+   "nameEn": "Post-traumatic stress disorder",
+   "specialty": "دانشنامه بیماری‌ها — روان‌پزشکی",
+   "symptoms": [
+    "تجربه مجدد رویداد آسیب‌زا",
+    "کابوس",
+    "اجتناب از یادآورها",
+    "برانگیختگی بیش از حد",
+    "اختلال خواب",
+    "تغییرات منفی خلق و شناخت"
+   ],
+   "tags": [],
+   "whenToSeeDoctor": [
+    "تجربه مجدد تروما، کابوس یا اجتناب",
+    "اورژانس: افکار خودکشی یا dissociation شدید"
+   ],
+   "sources": [
+    "NIMH: Post-Traumatic Stress Disorder (PTSD) (https://www.nimh.nih.gov/health/topics/post-traumatic-stress-disorder-ptsd)",
+    "NHS: Post-traumatic stress disorder (PTSD) (https://www.nhs.uk/mental-health/conditions/post-traumatic-stress-disorder-ptsd/)",
+    "Mayo Clinic: PTSD (https://www.mayoclinic.org/diseases-conditions/post-traumatic-stress-disorder/symptoms-causes/syc-20355967)",
+    "VA: PTSD (https://www.ptsd.va.gov/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_078",
+   "nameFa": "اختلال کم‌توجهی‌ـ‌بیش‌فعالی (بیش‌فعالی، ADHD)",
+   "nameEn": "Attention-deficit/hyperactivity disorder",
+   "specialty": "دانشنامه بیماری‌ها — روان‌پزشکی، اطفال",
+   "symptoms": [
+    "بی‌توجهی",
+    "بیش‌فعالی",
+    "تکانشگری",
+    "اختلال در عملکرد تحصیلی یا شغلی",
+    "علائم نامتناسب با سن"
+   ],
+   "tags": [],
+   "whenToSeeDoctor": [
+    "بی‌توجهی، بیش‌فعالی یا تکانشگری نامتناسب با سن",
+    "اورژانس: پرخاشگری شدید یا آسیب"
+   ],
+   "sources": [
+    "CDC: ADHD (https://www.cdc.gov/adhd/index.html)",
+    "NIMH: Attention-Deficit/Hyperactivity Disorder (https://www.nimh.nih.gov/health/topics/attention-deficit-hyperactivity-disorder-adhd)",
+    "NHS: Attention deficit hyperactivity disorder (ADHD) (https://www.nhs.uk/conditions/attention-deficit-hyperactivity-disorder-adhd/)",
+    "CHADD: ADHD (https://chadd.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_079",
+   "nameFa": "اختلال طیف اوتیسم (اوتیسم)",
+   "nameEn": "Autism spectrum disorder (ASD)",
+   "specialty": "دانشنامه بیماری‌ها — روان‌پزشکی، اطفال",
+   "symptoms": [
+    "اختلال در ارتباط و تعامل اجتماعی",
+    "الگوهای رفتاری یا علایق محدود و تکراری",
+    "حساسیت حسی",
+    "تأخیر در مهارت‌های زبانی یا اجتماعی"
+   ],
+   "tags": [
+    "fever"
+   ],
+   "whenToSeeDoctor": [
+    "اختلال ارتباط، رفتار تکراری یا حساسیت حسی",
+    "اورژانس: پسرفت مهارت‌ها، تشنج یا خودآسیبی"
+   ],
+   "sources": [
+    "CDC: Autism Spectrum Disorder (ASD) (https://www.cdc.gov/autism/index.html)",
+    "NIMH: Autism Spectrum Disorder (https://www.nimh.nih.gov/health/topics/autism-spectrum-disorders-asd)",
+    "NHS: Autism (https://www.nhs.uk/conditions/autism/)",
+    "Autism Speaks (https://www.autismspeaks.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_080",
+   "nameFa": "سندرم تورت (تیک عصبی؛ تورت)",
+   "nameEn": "Tourette syndrome",
+   "specialty": "دانشنامه بیماری‌ها — مغز و اعصاب، روان‌پزشکی",
+   "symptoms": [
+    "تیک‌های حرکتی متعدد",
+    "تیک‌های صوتی",
+    "تیک‌ها ناخواسته و ناگهانی هستند",
+    "ممکن است موقت یا مزمن (طولانی‌مدت) باشند",
+    "احساس پیش‌درآمد قبل از تیک"
+   ],
+   "tags": [],
+   "whenToSeeDoctor": [
+    "تیک‌های حرکتی یا صوتی مزمن (طولانی‌مدت)",
+    "اورژانس: تیک شدید با خودآسیبی"
+   ],
+   "sources": [
+    "CDC: Tourette Syndrome (https://www.cdc.gov/tourette-syndrome/index.html)",
+    "NINDS: Tourette Syndrome (https://www.ninds.nih.gov/health-information/disorders/tourette-syndrome)",
+    "NHS: Tourette syndrome (https://www.nhs.uk/conditions/tourette-syndrome/)",
+    "Tourette Association of America (https://tourette.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_081",
+   "nameFa": "سرماخوردگی معمولی (سرماخوردگی)",
+   "nameEn": "Common cold",
+   "specialty": "دانشنامه بیماری‌ها — عفونی، پزشک عمومی",
+   "symptoms": [
+    "آبریزش بینی",
+    "گرفتگی بینی",
+    "گلودرد",
+    "عطسه",
+    "سرفه خفیف",
+    "تب خفیف",
+    "بی‌حالی"
+   ],
+   "tags": [
+    "cough",
+    "ear_nose",
+    "fatigue",
+    "fever",
+    "sore_throat"
+   ],
+   "whenToSeeDoctor": [
+    "آبریزش بینی، گلودرد، عطسه یا سرفه خفیف",
+    "اورژانس: تنگی نفس، تب بالا یا تشدید علائم"
+   ],
+   "sources": [
+    "CDC: Common Cold (https://www.cdc.gov/common-cold/index.html)",
+    "NHS: Common cold (https://www.nhs.uk/conditions/common-cold/)",
+    "Mayo Clinic: Common cold (https://www.mayoclinic.org/diseases-conditions/common-cold/symptoms-causes/syc-20351605)",
+    "AAFP: Common Cold (https://www.aafp.org/pubs/afp/issues/2019/0815/p215.html)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_082",
+   "nameFa": "التهاب آلرژیک بینی (حساسیت بینی، تب یونجه)",
+   "nameEn": "Allergic rhinitis",
+   "specialty": "دانشنامه بیماری‌ها — گوش، حلق و بینی، آلرژی",
+   "symptoms": [
+    "عطسه",
+    "آبریزش بینی",
+    "گرفتگی بینی",
+    "خارش بینی و چشم",
+    "اشک‌ریزش",
+    "در نوع فصلی، علائم در فصل گرده‌افشانی تشدید می‌شود"
+   ],
+   "tags": [
+    "ear_nose",
+    "rash",
+    "vision"
+   ],
+   "whenToSeeDoctor": [
+    "عطسه، آبریزش، گرفتگی یا خارش بینی",
+    "اورژانس: تنگی نفس، ویزینگ یا آنافیلاکسی"
+   ],
+   "sources": [
+    "WHO: Allergic rhinitis (https://www.who.int/news-room/fact-sheets/detail/allergic-rhinitis)",
+    "NHS: Allergic rhinitis (https://www.nhs.uk/conditions/allergic-rhinitis/)",
+    "Mayo Clinic: Hay fever (https://www.mayoclinic.org/diseases-conditions/hay-fever/symptoms-causes/syc-20373039)",
+    "ARIA Guidelines: Allergic Rhinitis (https://www.ariaallergy.com/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_083",
+   "nameFa": "التهاب حاد نایژه‌ها (برونشیت حاد)",
+   "nameEn": "Acute bronchitis",
+   "specialty": "دانشنامه بیماری‌ها — ریه و تنفس، عفونی",
+   "symptoms": [
+    "سرفه، با یا بدون خلط",
+    "ناراحتی قفسه سینه",
+    "خس‌خس سینه",
+    "تب خفیف",
+    "معمولاً خودمحدود و کوتاه‌مدت است"
+   ],
+   "tags": [
+    "chest_pain",
+    "cough",
+    "fever"
+   ],
+   "whenToSeeDoctor": [
+    "سرفه، خلط یا ناراحتی قفسه سینه",
+    "اورژانس: تنگی نفس، تب بالا یا گیجی"
+   ],
+   "sources": [
+    "NHS: Bronchitis (https://www.nhs.uk/conditions/bronchitis/)",
+    "Mayo Clinic: Bronchitis (https://www.mayoclinic.org/diseases-conditions/bronchitis/symptoms-causes/syc-20355566)",
+    "CDC: Bronchitis (https://www.cdc.gov/bronchitis/index.html)",
+    "AAFP: Acute Bronchitis (https://www.aafp.org/pubs/afp/issues/2016/0415/p560.html)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_084",
+   "nameFa": "وقفه تنفسی انسدادی در خواب (آپنه خواب)",
+   "nameEn": "Obstructive sleep apnea",
+   "specialty": "دانشنامه بیماری‌ها — ریه و تنفس، اختلالات خواب",
+   "symptoms": [
+    "خروپف بلند",
+    "وقفه تنفسی مشاهده‌شده در خواب",
+    "خواب‌آلودگی روزانه",
+    "خواب ناآرام",
+    "سردرد صبحگاهی",
+    "اختلال تمرکز"
+   ],
+   "tags": [
+    "headache"
+   ],
+   "whenToSeeDoctor": [
+    "خروپف بلند، وقفه تنفسی یا خواب‌آلودگی روزانه",
+    "اورژانس: درد قفسه سینه یا تنگی نفس"
+   ],
+   "sources": [
+    "WHO: Obstructive sleep apnoea (https://www.who.int/news-room/fact-sheets/detail/obstructive-sleep-apnoea)",
+    "NHS: Sleep apnoea (https://www.nhs.uk/conditions/sleep-apnoea/)",
+    "Mayo Clinic: Obstructive sleep apnea (https://www.mayoclinic.org/diseases-conditions/obstructive-sleep-apnea/symptoms-causes/syc-20352090)",
+    "AASM: Sleep Apnea (https://aasm.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_085",
+   "nameFa": "عفونت قارچی پوست پا (قارچ پا، پای ورزشکار)",
+   "nameEn": "Tinea pedis / Athlete’s foot",
+   "specialty": "دانشنامه بیماری‌ها — پوست",
+   "symptoms": [
+    "خارش بین انگشتان پا",
+    "پوسته‌ریزی",
+    "ترک و پوسته‌شدن بین انگشتان",
+    "تاول",
+    "در موارد شدید: درد یا عفونت ثانویه"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "خارش، پوسته‌ریزی یا ترک بین انگشتان پا",
+    "اورژانس: قرمزی گسترده، تب یا دیابت"
+   ],
+   "sources": [
+    "CDC: Ringworm (Tinea) (https://www.cdc.gov/ringworm/index.html)",
+    "NHS: Athlete's foot (https://www.nhs.uk/conditions/athletes-foot/)",
+    "Mayo Clinic: Athlete's foot (https://www.mayoclinic.org/diseases-conditions/athletes-foot/symptoms-causes/syc-20353864)",
+    "AAD: Athlete's Foot (https://www.aad.org/public/diseases/a-z/athletes-foot)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_086",
+   "nameFa": "عفونت قارچی ناخن (قارچ ناخن)",
+   "nameEn": "Onychomycosis",
+   "specialty": "دانشنامه بیماری‌ها — پوست",
+   "symptoms": [
+    "ضخیم‌شدن ناخن",
+    "تغییر رنگ ناخن",
+    "شکنندگی ناخن",
+    "جدا شدن ناخن از بستر",
+    "معمولاً بدون درد"
+   ],
+   "tags": [],
+   "whenToSeeDoctor": [
+    "ضخیم‌شدن، تغییر رنگ یا شکنندگی ناخن",
+    "اورژانس: دیابت یا نقص ایمنی با عفونت"
+   ],
+   "sources": [
+    "CDC: Fungal Nail Infections (https://www.cdc.gov/fungal/nail-infections.html)",
+    "NHS: Fungal nail infection (https://www.nhs.uk/conditions/fungal-nail-infection/)",
+    "Mayo Clinic: Nail fungus (https://www.mayoclinic.org/diseases-conditions/nail-fungus/symptoms-causes/syc-20353294)",
+    "AAD: Nail Fungus (https://www.aad.org/public/diseases/a-z/nail-fungus)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_087",
+   "nameFa": "جرب (گال)",
+   "nameEn": "Scabies",
+   "specialty": "دانشنامه بیماری‌ها — پوست",
+   "symptoms": [
+    "خارش شدید، به‌ویژه شب‌ها",
+    "نقب‌های ریز پوستی",
+    "پاپول (برجستگی کوچک و قرمز پوستی) یا ندول (توده کوچک و سفت زیر پوست)",
+    "ضایعات در نواحی بین انگشتان، مچ و اندام تناسلی"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "خارش شدید شبانه یا نقب پوستی",
+    "اورژانس: عفونت ثانویه یا انتشار گسترده"
+   ],
+   "sources": [
+    "WHO: Scabies (https://www.who.int/news-room/fact-sheets/detail/scabies)",
+    "CDC: Scabies (https://www.cdc.gov/scabies/index.html)",
+    "NHS: Scabies (https://www.nhs.uk/conditions/scabies/)",
+    "Mayo Clinic: Scabies (https://www.mayoclinic.org/diseases-conditions/scabies/symptoms-causes/syc-20377330)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_088",
+   "nameFa": "آلودگی به شپش سر (شپش سر)",
+   "nameEn": "Head lice / Pediculosis capitis",
+   "specialty": "دانشنامه بیماری‌ها — پوست",
+   "symptoms": [
+    "خارش پوست سر",
+    "مشاهده شپش یا رشک (تخم)",
+    "خراشیدگی پوست",
+    "در موارد شدید: بزرگ‌شدن غدد لنفاوی گردن"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "خارش سر، شپش یا رشک",
+    "اورژانس: عفونت ثانویه یا شکست درمان"
+   ],
+   "sources": [
+    "CDC: Head Lice (https://www.cdc.gov/head-lice/index.html)",
+    "NHS: Head lice and nits (https://www.nhs.uk/conditions/head-lice-and-nits/)",
+    "Mayo Clinic: Head lice (https://www.mayoclinic.org/diseases-conditions/head-lice/symptoms-causes/syc-20356180)",
+    "AAP: Head Lice (https://publications.aap.org/pediatrics/article/135/5/e1355/33216/Head-Lice)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_089",
+   "nameFa": "زگیل پوستی معمولی (زگیل)",
+   "nameEn": "Common cutaneous wart",
+   "specialty": "دانشنامه بیماری‌ها — پوست",
+   "symptoms": [
+    "برجستگی سخت و زبر پوستی",
+    "سطح کراتینه‌شده",
+    "در کف پا ممکن است دردناک باشد",
+    "گاهی چند زگیل کنار هم"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "برجستگی سخت و زبر پوستی",
+    "اورژانس: تغییر رنگ، خونریزی یا درد"
+   ],
+   "sources": [
+    "NHS: Warts and verrucas (https://www.nhs.uk/conditions/warts-and-verrucas/)",
+    "Mayo Clinic: Common warts (https://www.mayoclinic.org/diseases-conditions/common-warts/symptoms-causes/syc-20371125)",
+    "AAD: Warts (https://www.aad.org/public/diseases/a-z/warts)",
+    "CDC: HPV and Warts (https://www.cdc.gov/hpv/about/cancers-caused-by-hpv.html)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_090",
+   "nameFa": "کهیر (کهیر پوستی)",
+   "nameEn": "Urticaria / Hives",
+   "specialty": "دانشنامه بیماری‌ها — پوست، آلرژی",
+   "symptoms": [
+    "ورم‌های قرمز، برجسته و خارش‌دار (ویل)",
+    "ممکن است اندازه و محل آن‌ها تغییر کند",
+    "آنژیوادم (ورم عمقی پوست) در برخی موارد",
+    "خارش شدید"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "کهیر خارش‌دار یا آنژیوادم (ورم عمقی پوست)",
+    "اورژانس: تنگی نفس، تورم صورت/گلو یا غش"
+   ],
+   "sources": [
+    "NHS: Urticaria (hives) (https://www.nhs.uk/conditions/urticaria/)",
+    "Mayo Clinic: Hives and angioedema (https://www.mayoclinic.org/diseases-conditions/hives-and-angioedema/symptoms-causes/syc-20355527)",
+    "AAAAI: Urticaria (https://www.aaaai.org/conditions-treatments/allergies/urticaria-hives)",
+    "EAACI/GA²LEN: Urticaria (https://www.eaaci.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_091",
+   "nameFa": "درماتیت سبورئیک پوست (شوره سر، اگزمای چرب)",
+   "nameEn": "Seborrheic dermatitis",
+   "specialty": "دانشنامه بیماری‌ها — پوست",
+   "symptoms": [
+    "پوسته‌ریزی چرب",
+    "قرمزی پوست سر، صورت یا تنه",
+    "شوره سر",
+    "خارش",
+    "در نوزادان: کلاه گهواره"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "پوسته‌ریزی چرب، قرمزی یا شوره",
+    "اورژانس: عفونت ثانویه یا گسترش شدید"
+   ],
+   "sources": [
+    "NHS: Seborrhoeic dermatitis (https://www.nhs.uk/conditions/seborrhoeic-dermatitis/)",
+    "Mayo Clinic: Seborrheic dermatitis (https://www.mayoclinic.org/diseases-conditions/seborrheic-dermatitis/symptoms-causes/syc-20352745)",
+    "AAD: Seborrheic Dermatitis (https://www.aad.org/public/diseases/a-z/seborrheic-dermatitis)",
+    "NICE CKS: Seborrhoeic dermatitis (https://cks.nice.org.uk/topics/seborrhoeic-dermatitis/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_092",
+   "nameFa": "التهاب تماسی پوست (حساسیت پوستی تماسی)",
+   "nameEn": "Contact dermatitis",
+   "specialty": "دانشنامه بیماری‌ها — پوست",
+   "symptoms": [
+    "قرمزی",
+    "تاول یا وزیکول (تاول کوچک)",
+    "خارش یا سوزش",
+    "محدود به ناحیه تماس",
+    "در نوع آلرژیک ممکن است به نواحی دیگر منتشر شود"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "قرمزی، تاول یا خارش محدود به ناحیه تماس",
+    "اورژانس: عفونت یا انتشار گسترده"
+   ],
+   "sources": [
+    "NHS: Contact dermatitis (https://www.nhs.uk/conditions/contact-dermatitis/)",
+    "Mayo Clinic: Contact dermatitis (https://www.mayoclinic.org/diseases-conditions/contact-dermatitis/symptoms-causes/syc-20352730)",
+    "AAD: Contact Dermatitis (https://www.aad.org/public/diseases/a-z/contact-dermatitis)",
+    "ACDS: Contact Dermatitis (https://www.contactderm.org/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_093",
+   "nameFa": "بزرگی خوش‌خیم پروستات",
+   "nameEn": "Benign Prostatic Hyperplasia (BPH)",
+   "specialty": "بیماری‌های مجاری ادراری مردان — اورولوژی",
+   "symptoms": [
+    "تکرر ادرار",
+    "فوریت ادرار",
+    "بیدار شدن شبانه برای ادرار (نیکتوری)",
+    "جریان ضعیف ادرار",
+    "تأخیر در شروع ادرار",
+    "قطع و وصل شدن جریان",
+    "چکه‌کردن در پایان ادرار",
+    "احساس تخلیه ناقص مثانه",
+    "نیاز به زور زدن",
+    "احتباس ادرار ناگهانی"
+   ],
+   "tags": [
+    "fever",
+    "frequent_urine"
+   ],
+   "whenToSeeDoctor": [
+    "بروز علائم ادراری مزاحم",
+    "خون در ادرار",
+    "تب یا درد هنگام ادرار",
+    "اورژانس: ناتوانی کامل در ادرار کردن"
+   ],
+   "sources": [
+    "NIDDK: Prostate Enlargement (BPH)",
+    "Mayo Clinic: BPH",
+    "MedlinePlus: BPH",
+    "AUA Guideline: Management of BPH/LUTS"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_094",
+   "nameFa": "بی‌اختیاری ادرار (نشت ادرار)",
+   "nameEn": "Urinary incontinence",
+   "specialty": "دانشنامه بیماری‌ها — اورولوژی، نفرولوژی، زنان",
+   "symptoms": [
+    "نشت غیرارادی ادرار",
+    "در بی‌اختیاری استرسی: نشت با سرفه، عطسه یا ورزش",
+    "در بی‌اختیاری فوریتی: نیاز ناگهانی و شدید به ادرار",
+    "در بی‌اختیاری سرریزی: تخلیه ناقص و نشت مداوم"
+   ],
+   "tags": [
+    "cough"
+   ],
+   "whenToSeeDoctor": [
+    "نشت ادرار یا نیاز ناگهانی به ادرار",
+    "اورژانس: خون در ادرار، تب یا احتباس ادرار"
+   ],
+   "sources": [
+    "NIDDK: Urinary Incontinence (https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-control-problems)",
+    "NHS: Urinary incontinence (https://www.nhs.uk/conditions/urinary-incontinence/)",
+    "Mayo Clinic: Urinary incontinence (https://www.mayoclinic.org/diseases-conditions/urinary-incontinence/symptoms-causes/syc-20352808)",
+    "AUA Guidelines: Urinary Incontinence (https://www.auanet.org/guidelines-and-quality/guidelines/urinary-incontinence)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_095",
+   "nameFa": "اختلال نعوظ (مشکل نعوظ)",
+   "nameEn": "Erectile dysfunction",
+   "specialty": "دانشنامه بیماری‌ها — اورولوژی",
+   "symptoms": [
+    "دشواری در رسیدن به نعوظ",
+    "دشواری در حفظ نعوظ",
+    "کاهش سختی نعوظ",
+    "کاهش میل جنسی در برخی موارد"
+   ],
+   "tags": [],
+   "whenToSeeDoctor": [
+    "دشواری در نعوظ یا کاهش میل جنسی",
+    "اورژانس: درد قفسه سینه یا علائم قلبی-عروقی"
+   ],
+   "sources": [
+    "NIDDK: Erectile Dysfunction (https://www.niddk.nih.gov/health-information/urologic-diseases/erectile-dysfunction)",
+    "NHS: Erectile dysfunction (impotence) (https://www.nhs.uk/conditions/erectile-dysfunction-impotence/)",
+    "Mayo Clinic: Erectile dysfunction (https://www.mayoclinic.org/diseases-conditions/erectile-dysfunction/symptoms-causes/syc-20355776)",
+    "AUA Guidelines: Erectile Dysfunction (https://www.auanet.org/guidelines-and-quality/guidelines/erectile-dysfunction)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_096",
+   "nameFa": "عفونت قارچی واژن و فرج (قارچ واژن)",
+   "nameEn": "Vulvovaginal candidiasis",
+   "specialty": "دانشنامه بیماری‌ها — زنان و زایمان",
+   "symptoms": [
+    "خارش ناحیه واژن",
+    "ترشح غلیظ و سفید",
+    "سوزش",
+    "درد هنگام ادرار",
+    "قرمزی و تورم فرج"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "خارش، ترشح غلیظ یا سوزش واژن",
+    "اورژانس: تب، درد لگنی یا بارداری"
+   ],
+   "sources": [
+    "CDC: Vaginal Candidiasis (https://www.cdc.gov/candidiasis/vaginal/index.html)",
+    "NHS: Thrush in men and women (https://www.nhs.uk/conditions/thrush-in-men-and-women/)",
+    "Mayo Clinic: Vaginal yeast infection (https://www.mayoclinic.org/diseases-conditions/vaginal-yeast-infection/symptoms-causes/syc-20369634)",
+    "ACOG: Vaginitis (https://www.acog.org/womens-health/faqs/vaginitis)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_097",
+   "nameFa": "واژینوز باکتریایی (به‌هم‌خوردن تعادل باکتری‌های واژن)",
+   "nameEn": "Bacterial vaginosis (BV)",
+   "specialty": "دانشنامه بیماری‌ها — زنان و زایمان",
+   "symptoms": [
+    "ترشح نازک و خاکستری",
+    "بوی ماهی‌مانند، به‌ویژه پس از رابطه جنسی",
+    "معمولاً خارش یا سوزش شدید ندارد",
+    "ممکن است بدون علامت باشد"
+   ],
+   "tags": [
+    "rash"
+   ],
+   "whenToSeeDoctor": [
+    "ترشح خاکستری با بوی ماهی",
+    "اورژانس: تب، درد لگنی یا بارداری"
+   ],
+   "sources": [
+    "CDC: Bacterial Vaginosis (https://www.cdc.gov/bacterial-vaginosis/index.html)",
+    "NHS: Bacterial vaginosis (https://www.nhs.uk/conditions/bacterial-vaginosis/)",
+    "Mayo Clinic: Bacterial vaginosis (https://www.mayoclinic.org/diseases-conditions/bacterial-vaginosis/symptoms-causes/syc-20352211)",
+    "ACOG: Vaginitis (https://www.acog.org/womens-health/faqs/vaginitis)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_098",
+   "nameFa": "سندرم تونل مچ دست (گرفتگی عصب مچ دست)",
+   "nameEn": "Carpal tunnel syndrome",
+   "specialty": "دانشنامه بیماری‌ها — ارتوپدی، مغز و اعصاب",
+   "symptoms": [
+    "بی‌حسی و گزگز در انگشتان، به‌ویژه شست، اشاره و وسط",
+    "درد شبانه",
+    "ضعف عضلات دست",
+    "تحلیل عضله تنار",
+    "افتادن اشیا"
+   ],
+   "tags": [
+    "body_ache"
+   ],
+   "whenToSeeDoctor": [
+    "بی‌حسی، گزگز یا ضعف دست",
+    "اورژانس: ضعف شدید یا آتروفی (کوچک شدن بافت) عضلانی"
+   ],
+   "sources": [
+    "NHS: Carpal tunnel syndrome (https://www.nhs.uk/conditions/carpal-tunnel-syndrome/)",
+    "Mayo Clinic: Carpal tunnel syndrome (https://www.mayoclinic.org/diseases-conditions/carpal-tunnel-syndrome/symptoms-causes/syc-20355603)",
+    "NINDS: Carpal Tunnel Syndrome (https://www.ninds.nih.gov/health-information/disorders/carpal-tunnel-syndrome)",
+    "AAOS: Carpal Tunnel Syndrome (https://orthoinfo.aaos.org/en/diseases--conditions/carpal-tunnel-syndrome/)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_099",
+   "nameFa": "فلج عصب صورت با علت نامشخص (فلج بل)",
+   "nameEn": "Bell’s palsy",
+   "specialty": "دانشنامه بیماری‌ها — مغز و اعصاب، گوش، حلق و بینی",
+   "symptoms": [
+    "ضعف یا فلج حاد (کوتاه‌مدت و ناگهانی) یک‌طرفه صورت",
+    "افتادگی گوشه دهان",
+    "ناتوانی در بستن کامل چشم",
+    "افتادگی ابرو",
+    "تغییر در تولید اشک",
+    "اختلال حس چشایی",
+    "درد یا ناراحتی پشت گوش"
+   ],
+   "tags": [
+    "ear_nose",
+    "vision"
+   ],
+   "whenToSeeDoctor": [
+    "ضعف یا فلج حاد (کوتاه‌مدت و ناگهانی) یک‌طرفه صورت",
+    "اورژانس: رد سکته؛ درد چشم یا کاهش بینایی"
+   ],
+   "sources": [
+    "NHS: Bell's palsy (https://www.nhs.uk/conditions/bells-palsy/)",
+    "Mayo Clinic: Bell's palsy (https://www.mayoclinic.org/diseases-conditions/bells-palsy/symptoms-causes/syc-20370028)",
+    "NINDS: Bell's Palsy (https://www.ninds.nih.gov/health-information/disorders/bells-palsy)",
+    "AAN Guidelines: Bell's Palsy (https://www.aan.com/Guidelines/home/GuidelineDetail/1036)"
+   ],
+   "reviewStatus": "unreviewed"
+  },
+  {
+   "id": "research_100",
+   "nameFa": "سرگیجه وضعیتی حمله‌ای خوش‌خیم (سرگیجه وضعیتی)",
+   "nameEn": "Benign paroxysmal positional vertigo (BPPV)",
+   "specialty": "دانشنامه بیماری‌ها — گوش، حلق و بینی، مغز و اعصاب",
+   "symptoms": [
+    "سرگیجه کوتاه و شدید با تغییر وضعیت سر",
+    "تهوع",
+    "نیستاگموس (حرکت غیرارادی و تکانی چشم)",
+    "معمولاً بدون کاهش شنوایی",
+    "علائم با حرکات خاص سر تحریک می‌شوند"
+   ],
+   "tags": [
+    "dizziness",
+    "nausea",
+    "vision"
+   ],
+   "whenToSeeDoctor": [
+    "سرگیجه کوتاه با تغییر وضعیت سر",
+    "اورژانس: سرگیجه شدید با علائم عصبی یا پس از ضربه به سر"
+   ],
+   "sources": [
+    "NHS: Vertigo (https://www.nhs.uk/conditions/vertigo/)",
+    "Mayo Clinic: Benign paroxysmal positional vertigo (BPPV) (https://www.mayoclinic.org/diseases-conditions/benign-paroxysmal-positional-vertigo/symptoms-causes/syc-20356171)",
+    "NIDCD: BPPV (https://www.nidcd.nih.gov/health/benign-paroxysmal-positional-vertigo-bppv)",
+    "AAN Guidelines: BPPV (https://www.aan.com/Guidelines/home/GuidelineDetail/1130)"
+   ],
+   "reviewStatus": "unreviewed"
+  }
+ ]
+}

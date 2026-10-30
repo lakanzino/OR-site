@@ -4,7 +4,7 @@
 
 
 رویدادها و نسخه‌های پروژه بر پایهٔ Keep a Changelog ثبت می‌شوند؛ شماره‌های قدیمی تاریخچه‌اند و لزوماً وضعیت جاری نیستند.
-آخرین به‌روزرسانی: **۲۰۲۶-۱۰-۳۰**. نسخه‌های مخزن: والد `lax-theme` **1.0.1**، فرزند `lax-theme-child` **0.28.1** (ریلیز [`child-v0.28.1`](https://github.com/lakanzino/OR-site/releases/tag/child-v0.28.1)) (نصب‌شده روی سایت زنده: ۰.۲۶.۳ تأیید شده؛ بقیه در انتظار)، افزونهٔ `orsite-media-matcher` **1.2.0** و افزونهٔ `hamyar-symptom-guide` **0.5.0**. ریلیز فرزند [`child-v0.22.2`](https://github.com/lakanzino/OR-site/releases/tag/child-v0.22.2) منتشر شده است؛ نسخه‌های نصب‌شده روی سایت و افزونه‌ها مستقلاً بررسی نشده‌اند.
+آخرین به‌روزرسانی: **۲۰۲۶-۱۰-۳۰**. نسخه‌های مخزن: والد `lax-theme` **1.0.1**، فرزند `lax-theme-child` **0.28.1** (ریلیز [`child-v0.28.1`](https://github.com/lakanzino/OR-site/releases/tag/child-v0.28.1)) (نصب‌شده روی سایت زنده: ۰.۲۶.۳ تأیید شده؛ بقیه در انتظار)، افزونهٔ `orsite-media-matcher` **1.2.0**؛ افزونهٔ `hamyar-symptom-guide` **0.5.0** حذف شد و چک‌کنندهٔ علائم در قالب فرزند بازسازی شد (فضای تست). ریلیز فرزند [`child-v0.22.2`](https://github.com/lakanzino/OR-site/releases/tag/child-v0.22.2) منتشر شده است؛ نسخه‌های نصب‌شده روی سایت و افزونه‌ها مستقلاً بررسی نشده‌اند.
 
 ---
 
