@@ -303,5 +303,25 @@
   "fa": "استریل بودن اتاق عمل",
   "en": "Sterile Operating Room",
   "bg": "#f3e9f9"
+ },
+ "cesarean-overview": {
+  "fa": "سزارین",
+  "en": "Cesarean Section",
+  "bg": "#fdf4e3"
+ },
+ "cesarean-preparation": {
+  "fa": "آمادگی سزارین",
+  "en": "Cesarean Preparation",
+  "bg": "#e8eefb"
+ },
+ "appendectomy-recovery": {
+  "fa": "بهبودی آپاندکتومی",
+  "en": "Appendectomy Recovery",
+  "bg": "#fdf4e3"
+ },
+ "appendectomy-preparation": {
+  "fa": "آمادگی آپاندکتومی",
+  "en": "Appendectomy Preparation",
+  "bg": "#f4f1e2"
  }
 }

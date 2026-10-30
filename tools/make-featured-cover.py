@@ -35,7 +35,14 @@ def run(args):
 
 
 def build(slug: str, item: dict) -> Path:
-    out = ROOT / "content/drafts" / slug / "featured.webp"
+    draft = ROOT / "content/drafts" / slug
+    if draft.is_dir():
+        out = draft / "featured.webp"
+    else:
+        # Live-only articles without a draft folder: write to releases/covers-extra/
+        out_dir = ROOT / "releases/covers-extra"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out = out_dir / f"{slug}.webp"
     tmp = Path("/tmp/cover-build")
     tmp.mkdir(parents=True, exist_ok=True)
     text_png = tmp / f"{slug}-text.png"
@@ -72,6 +79,8 @@ def build(slug: str, item: dict) -> Path:
 
 def update_alt(slug: str, item: dict) -> None:
     path = ROOT / "content/drafts" / slug / "article.json"
+    if not path.is_file():
+        return
     data = json.loads(path.read_text(encoding="utf-8"))
     data.setdefault("featured_image", {})["file"] = "featured.webp"
     data["featured_image"]["alt"] = (
