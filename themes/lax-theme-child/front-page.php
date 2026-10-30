@@ -363,7 +363,9 @@ $hj_faqs = array(
 									<?php echo esc_html( $hj_group_label ); ?>
 								<?php endif; ?>
 							</h3>
-							<p><?php echo esc_html( $hj_group->description ? wp_trim_words( wp_strip_all_tags( $hj_group->description ), 22, '…' ) : 'راهنماهای منتشرشده‌ی این تخصص را با الگوی ثابت پیش، حین و پس از عمل بخوانید.' ); ?></p>
+							<?php if ( $hj_group->description ) : ?>
+								<p><?php echo esc_html( wp_trim_words( wp_strip_all_tags( $hj_group->description ), 22, '…' ) ); ?></p>
+							<?php endif; ?>
 							<?php if ( ! is_wp_error( $hj_group_link ) ) : ?>
 								<a class="hj-text-link" href="<?php echo esc_url( $hj_group_link ); ?>">مشاهده‌ی جراحی‌های این تخصص</a>
 							<?php endif; ?>
