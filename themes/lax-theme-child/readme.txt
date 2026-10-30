@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.27.0
+Stable tag: 0.28.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.28.0 =
+* صفحه‌ی اول: «جراحی‌ها بر اساس تخصص» به نوارهای باریک با سایه‌ی عمیق و رنگ‌های روشن و نرم تبدیل شد.
 
 = 0.27.0 =
 * ایمپورتر: تصویرهای داخل متن (`<img src>` نسبی در content.html) به کتابخانهٔ رسانه منتقل می‌شوند و آدرس آن‌ها به فایل رسانه تغییر می‌کند.

@@ -3036,3 +3036,73 @@ textarea:focus-visible {
 
 /* Disease directory */
 .hj-disease-search{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center;margin:1.5rem 0}.hj-disease-search label{width:100%;font-weight:700}.hj-disease-search input{flex:1;min-width:180px;border:1px solid #cad8e2;border-radius:10px;padding:.75rem;font:inherit}.hj-disease-search button{border:0;border-radius:10px;background:#123a61;color:#fff;padding:.75rem 1.25rem;font:inherit;cursor:pointer}.hj-disease-groups{display:flex;flex-wrap:wrap;gap:.6rem;margin:1.5rem 0}.hj-disease-groups a{background:#edf4f7;border:1px solid #d5e5e9;border-radius:99px;padding:.4rem .9rem;text-decoration:none}.hj-disease-groups a[aria-current=page]{background:#123a61;color:#fff}.hj-disease-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}.hj-disease-card,.hj-disease-entry{background:#fff;border:1px solid #dce8ed;border-radius:16px;padding:1.25rem}.hj-disease-card h2{font-size:1.05rem;margin:0 0 .5rem}.hj-disease-card p{text-align:right;color:#627789}.hj-disease-entry{margin-top:1rem}.hj-disease-notice{background:#fff7eb;border-right:4px solid #d88a27;border-radius:8px;padding:1rem;line-height:1.8}.hj-disease-entry .entry-content{line-height:2}
+
+/* 0.28.0 — Surgeries by specialty: slim colour strips with deep shadows.
+ * Each specialty is one compact row; soft pastel tints cycle per card. */
+.hj-home .hj-surgery-grid.hj-surgery-grid {
+	grid-template-columns: minmax(0, 1fr);
+	gap: 0.7rem;
+}
+
+.hj-home .hj-surgery-grid .hj-surgery-card {
+	--hj-strip-bg: #e6f4f1;
+	--hj-strip-accent: #7fc4b1;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	align-items: center;
+	column-gap: 1.25rem;
+	row-gap: 0.15rem;
+	min-height: 0;
+	padding: 0.7rem 1.2rem;
+	background: var(--hj-strip-bg);
+	border: 0;
+	border-inline-start: 6px solid var(--hj-strip-accent);
+	border-radius: 14px;
+	box-shadow: 0 16px 30px rgba(15, 23, 42, 0.18), 0 3px 8px rgba(15, 23, 42, 0.10);
+}
+
+.hj-home .hj-surgery-grid .hj-surgery-card:nth-child(6n+2) { --hj-strip-bg: #e8eefb; --hj-strip-accent: #8fa9dc; }
+.hj-home .hj-surgery-grid .hj-surgery-card:nth-child(6n+3) { --hj-strip-bg: #f8eee6; --hj-strip-accent: #e0a987; }
+.hj-home .hj-surgery-grid .hj-surgery-card:nth-child(6n+4) { --hj-strip-bg: #efe9f7; --hj-strip-accent: #b7a2d8; }
+.hj-home .hj-surgery-grid .hj-surgery-card:nth-child(6n+5) { --hj-strip-bg: #fdf4e3; --hj-strip-accent: #e6c67a; }
+.hj-home .hj-surgery-grid .hj-surgery-card:nth-child(6n+6) { --hj-strip-bg: #e7f5e9; --hj-strip-accent: #95cc9f; }
+
+.hj-home .hj-surgery-grid .hj-surgery-card h3 {
+	grid-column: 1;
+	grid-row: 1;
+	margin: 0;
+	font-size: 1.05rem;
+	line-height: 1.6;
+}
+
+.hj-home .hj-surgery-grid .hj-surgery-card p {
+	grid-column: 1;
+	grid-row: 2;
+	margin: 0;
+	font-size: 0.9rem;
+	line-height: 1.7;
+	color: #475569;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.hj-home .hj-surgery-grid .hj-surgery-card .hj-text-link {
+	grid-column: 2;
+	grid-row: 1 / span 2;
+	margin: 0;
+	white-space: nowrap;
+	font-size: 0.92rem;
+}
+
+@media (max-width: 680px) {
+	.hj-home .hj-surgery-grid .hj-surgery-card {
+		grid-template-columns: minmax(0, 1fr);
+		padding: 0.65rem 0.9rem;
+	}
+
+	.hj-home .hj-surgery-grid .hj-surgery-card .hj-text-link {
+		grid-column: 1;
+		grid-row: 3;
+	}
+}
