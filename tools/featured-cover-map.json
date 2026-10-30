@@ -323,5 +323,125 @@
   "fa": "آمادگی آپاندکتومی",
   "en": "Appendectomy Preparation",
   "bg": "#f4f1e2"
+ },
+ "anesthesia-consultation": {
+  "fa": "مشاوره‌ی بیهوشی",
+  "en": "Anesthesia Consultation",
+  "bg": "#e8eefb"
+ },
+ "anesthesia-side-effects": {
+  "fa": "عوارض بیهوشی",
+  "en": "Anesthesia Side Effects",
+  "bg": "#fff3e6"
+ },
+ "warning-signs-after-surgery": {
+  "fa": "علائم خطر بعد از عمل",
+  "en": "Warning Signs After Surgery",
+  "bg": "#fdf4e3"
+ },
+ "mental-preparation-before-surgery": {
+  "fa": "آمادگی روانی",
+  "en": "Mental Preparation",
+  "bg": "#e6f4f1"
+ },
+ "medications-before-surgery": {
+  "fa": "داروها قبل از عمل",
+  "en": "Medications Before Surgery",
+  "bg": "#fbeaf0"
+ },
+ "companion-role-admission-day": {
+  "fa": "نقش همراه در روز عمل",
+  "en": "Companion on Surgery Day",
+  "bg": "#fbeaf0"
+ },
+ "early-walking-after-surgery": {
+  "fa": "راه رفتن بعد از عمل",
+  "en": "Walking After Surgery",
+  "bg": "#fff3e6"
+ },
+ "post-surgery-nutrition": {
+  "fa": "تغذیه بعد از عمل",
+  "en": "Post-Surgery Nutrition",
+  "bg": "#fdf4e3"
+ },
+ "surgical-site-infection": {
+  "fa": "عفونت محل جراحی",
+  "en": "Surgical Site Infection",
+  "bg": "#f6ede6"
+ },
+ "suture-removal": {
+  "fa": "کشیدن بخیه‌ها",
+  "en": "Suture Removal",
+  "bg": "#e7f5e9"
+ },
+ "what-is-operating-room": {
+  "fa": "اتاق عمل چیست؟",
+  "en": "What Is an Operating Room",
+  "bg": "#f3e9f9"
+ },
+ "what-not-to-eat-before-surgery": {
+  "fa": "خوردن و نوشیدن قبل از عمل",
+  "en": "Eating Before Surgery",
+  "bg": "#f3e9f9"
+ },
+ "post-surgery-pain": {
+  "fa": "درد بعد از عمل",
+  "en": "Post-Surgery Pain",
+  "bg": "#fff3e6"
+ },
+ "preoperative-tests": {
+  "fa": "آزمایش‌های قبل از عمل",
+  "en": "Preoperative Tests",
+  "bg": "#efe9f7"
+ },
+ "general-vs-spinal-anesthesia": {
+  "fa": "بیهوشی عمومی یا نخاعی",
+  "en": "General vs Spinal Anesthesia",
+  "bg": "#eaf7f2"
+ },
+ "informed-consent-anesthesia-consult": {
+  "fa": "رضایت‌نامه‌ی بیهوشی",
+  "en": "Informed Consent",
+  "bg": "#eaf7f2"
+ },
+ "fear-of-anesthesia-awareness": {
+  "fa": "ترس از بیهوشی",
+  "en": "Fear of Anesthesia",
+  "bg": "#fff3e6"
+ },
+ "general-anesthesia": {
+  "fa": "بیهوشی عمومی",
+  "en": "General Anesthesia",
+  "bg": "#e5f3f8"
+ },
+ "pacu-recovery": {
+  "fa": "اتاق ریکاوری",
+  "en": "Recovery Room (PACU)",
+  "bg": "#f6ede6"
+ },
+ "preoperative-fasting": {
+  "fa": "ناشتا بودن قبل از عمل",
+  "en": "Preoperative Fasting",
+  "bg": "#f6ede6"
+ },
+ "glossary-surgical-terms": {
+  "fa": "اصطلاحات اتاق عمل",
+  "en": "Operating Room Glossary",
+  "bg": "#e8eefb"
+ },
+ "operating-room-moment-by-moment": {
+  "fa": "اتاق عمل لحظه به لحظه",
+  "en": "Inside the Operating Room",
+  "bg": "#fbeaf0"
+ },
+ "patient-journey": {
+  "fa": "مسیر بیمار",
+  "en": "The Patient Journey",
+  "bg": "#e6f4f1"
+ },
+ "surgical-care-team": {
+  "fa": "تیم درمان",
+  "en": "The Surgical Team",
+  "bg": "#e5f3f8"
  }
 }
