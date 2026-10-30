@@ -121,3 +121,36 @@
 	background: rgba(245, 180, 0, .08);
 	font-size: .9rem;
 }
+
+/* Hero with image, stats, about section (0.30.0). */
+.hj-sc-hero { max-width: 1040px; display: grid; gap: 24px; align-items: center; }
+@media (min-width: 860px) { .hj-sc-hero { grid-template-columns: 1.1fr .9fr; } }
+.hj-sc-hero__text h1 { font-size: clamp(26px, 3.4vw, 36px); }
+.hj-sc-figure { margin: 0; border: 1px solid var(--sc-line); border-radius: 14px; overflow: hidden; box-shadow: 0 0 30px rgba(62, 230, 255, .18); }
+.hj-sc-figure img { display: block; width: 100%; height: auto; }
+.hj-sc-figure--wide { margin-top: 20px; max-width: 880px; }
+.hj-sc-stats { list-style: none; padding: 0; margin: 16px 0 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.hj-sc-stats li { border: 1px solid var(--sc-line); border-radius: 10px; padding: 10px 6px; text-align: center; background: rgba(12, 27, 46, .7); }
+.hj-sc-stats strong { display: block; color: var(--sc-cyan); font-size: 22px; line-height: 1.4; }
+.hj-sc-stats span { color: var(--sc-muted); font-size: 12px; }
+.hj-sc-about { max-width: 880px; margin: 28px auto 0; border-top: 1px solid var(--sc-line); padding-top: 20px; line-height: 1.9; }
+.hj-sc-about h2 { color: #fff; font-size: 20px; margin: 0 0 10px; }
+.hj-sc-steps { padding-right: 20px; margin: 0 0 12px; }
+.hj-sc-steps li { margin-bottom: 6px; }
+.hj-sc-muted { color: var(--sc-muted); font-size: 14px; }
+
+/* Narrow band on the front page linking to the checker (0.30.0). */
+.hj-sc-band {
+	margin: 18px 0;
+	display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+	padding: 12px 16px;
+	border-radius: 12px;
+	background: #07111f;
+	color: #d8ecff;
+	border: 1px solid #1b3a57;
+	box-shadow: 0 0 18px rgba(62, 230, 255, .15);
+	line-height: 1.8;
+}
+.hj-sc-band strong { color: #3ee6ff; }
+.hj-sc-band a { color: #3ee6ff; border: 1px solid #3ee6ff; border-radius: 999px; padding: 6px 14px; text-decoration: none; white-space: nowrap; }
+.hj-sc-band a:hover, .hj-sc-band a:focus-visible { background: rgba(62, 230, 255, .12); }

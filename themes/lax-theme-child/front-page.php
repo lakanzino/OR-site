@@ -174,16 +174,17 @@ $hj_faqs = array(
 
 			<div class="hj-home-hero__search"><?php get_search_form(); ?></div>
 
-			<?php
-			$hj_app_page_id = (int) get_option( 'hamyar_symptom_guide_page_id' );
-			$hj_app_url = $hj_app_page_id && function_exists( 'hamyar_symptom_guide_template' ) && 'publish' === get_post_status( $hj_app_page_id ) ? get_permalink( $hj_app_page_id ) : '';
-			?>
 			<div class="hj-home-hero__actions">
-				<?php if ( $hj_app_url ) : ?><a class="hj-button hj-button--light" href="<?php echo esc_url( $hj_app_url ); ?>">ابزار هوشمند ارزیابی علائم بیماری</a><?php endif; ?>
+				<a class="hj-button hj-button--light" href="<?php echo esc_url( home_url( '/symptom-checker-test/' ) ); ?>">ابزار تشخیص علائم (آزمایشی)</a>
 				<a class="hj-button hj-button--light" href="<?php echo esc_url( hj_archive_url( 'patient_guide' ) ); ?>">شروع از راهنمای بیمار</a>
 				<a class="hj-button hj-button--outline-light" href="<?php echo esc_url( hj_archive_url( 'or_environment' ) ); ?>">شناخت اتاق عمل و تیم</a>
 			</div>
 		</section>
+
+		<aside class="hj-sc-band" aria-label="ابزار تشخیص علائم">
+			<span><strong>ابزار تشخیص علائم (نسخهٔ آزمایشی):</strong> علائمتان را با ۱۲۰ بیماری مقایسه کنید. جای مشاوره‌ی پزشکی را نمی‌گیرد.</span>
+			<a href="<?php echo esc_url( home_url( '/symptom-checker-test/' ) ); ?>">ورود به ابزار</a>
+		</aside>
 
 		<section id="hj-care-tool" class="hj-home-section" aria-labelledby="hj-care-tool-title">
 			<div class="hj-care-tool">

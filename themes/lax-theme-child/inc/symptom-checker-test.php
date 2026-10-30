@@ -94,3 +94,26 @@ function hj_sc_sanitize_emergency_number( $value ) {
 	}
 	return strtr( $digits, array_flip( array_slice( $map, 0, 10, true ) ) );
 }
+
+/**
+ * Counts for the page header. Read from the generated data; zeros when missing.
+ *
+ * @return array{diseases:int,rankable:int,tags:int,redflags:int}
+ */
+function hj_sc_stats() {
+	$base  = get_stylesheet_directory() . '/data/symptom-checker/';
+	$stats = array( 'diseases' => 0, 'rankable' => 0, 'tags' => 0, 'redflags' => 0 );
+	$dis   = is_readable( $base . 'diseases.json' ) ? json_decode( (string) file_get_contents( $base . 'diseases.json' ), true ) : null;
+	$voc   = is_readable( $base . 'vocab.json' ) ? json_decode( (string) file_get_contents( $base . 'vocab.json' ), true ) : null;
+	if ( is_array( $dis ) && isset( $dis['diseases'] ) ) {
+		$stats['diseases'] = count( $dis['diseases'] );
+		$stats['rankable'] = count( array_filter( $dis['diseases'], function ( $d ) {
+			return ! empty( $d['rankable'] );
+		} ) );
+	}
+	if ( is_array( $voc ) ) {
+		$stats['tags']     = isset( $voc['tags'] ) ? count( $voc['tags'] ) : 0;
+		$stats['redflags'] = isset( $voc['redFlags'] ) ? count( $voc['redFlags'] ) : 0;
+	}
+	return $stats;
+}
