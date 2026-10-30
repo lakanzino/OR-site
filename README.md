@@ -12,7 +12,7 @@
 | افزونهٔ `hamyar-symptom-guide` | 0.5.0 | [`plugins/hamyar-symptom-guide/`](plugins/hamyar-symptom-guide/) |
 | ساختار محتوا (`ORSITE_STRUCTURE_VERSION`) | 1.0.0 | `themes/lax-theme-child/inc/content-types.php` |
 
-این شماره‌ها از فایل‌های شاخهٔ اصلی خوانده شده‌اند و نشان‌دهندهٔ نسخهٔ نصب‌شده روی سایت نیستند. آخرین ریلیز فرزند در GitHub تگ [`child-v0.30.0`](https://github.com/lakanzino/OR-site/releases/tag/child-v0.30.0) است، اما با شاخهٔ اصلی یکسان نیست و فایل ZIP ضمیمهٔ Release ندارد. آخرین نصب تأییدشده در اسناد، 0.26.3 بر اساس گزارش صاحب سایت است؛ وضعیت فعلی نصب و عملکرد سایت مستقلاً بررسی نشده است. اختلاف نسخه‌ها و ایرادهای ابزار علائم در [گزارش بررسی ۰٫۳۰٫۰](docs/reports/symptom-checker-version-audit-2026-10-30.fa.md) ثبت شده‌اند.
+این شماره‌ها از فایل‌های شاخهٔ اصلی خوانده شده‌اند و نشان‌دهندهٔ نسخهٔ نصب‌شده روی سایت نیستند. آخرین ریلیز فرزند در GitHub تگ [`child-v0.30.1`](https://github.com/lakanzino/OR-site/releases/tag/child-v0.30.1) است که روی یک کامیت مخصوص انتشار نشسته و با سورس شاخهٔ اصلی یکسان نیست؛ آرشیو و مانیفست در همان تگ قرار دارند. **آخرین نصب تأییدشده: ۰٫۳۰٫۱ روی سایت زنده (۳۱ اکتبر ۲۰۲۶)** — شاهد: صفحهٔ «بررسی همگام‌سازی پروفایل» با نتیجهٔ `fixed_line_found` و هش `8e5e662f…b59881` ([گزارش](docs/reports/child-v0301-install-confirmed-2026-10-31.fa.md)). این شاهد فقط همان فایل و نسخه را می‌پوشاند، نه سلامت کل سایت. اختلاف نسخه‌ها و ایرادهای ابزار علائم در [گزارش بررسی ۰٫۳۰٫۰](docs/reports/symptom-checker-version-audit-2026-10-30.fa.md) ثبت شده‌اند.
 
 ## وضعیت زندهٔ سایت (بررسی‌شده از REST API — ۲۰۲۶-۱۰-۲۵)
 
@@ -28,6 +28,8 @@
 ## افزونهٔ راهنمای علائم
 
 افزونهٔ وردپرس [`plugins/hamyar-symptom-guide/`](plugins/hamyar-symptom-guide/) برگه‌ای مستقل و پیش‌نویس بدون شورت‌کد برای بررسی و انتشار می‌سازد. راهنمای نصب و محدودیت‌ها در README افزونه است.
+
+**فاز ۱ (داده و سؤال) شروع شد:** بستهٔ دانش پیش‌نویس خوشهٔ درد شکم/پهلو با قرارداد schema، ۱۷ سؤال مشترک، ۵ موضوع، لایهٔ ایمنی مستقل و ۱۲ سناریوی آزمون در [`docs/symptom-checker/phase-1/`](docs/symptom-checker/phase-1/) است؛ اعتبارسنج و ۲۱ آزمون خودکار: `python3 tools/symptom-checker-audit/validate_phase1.py` و `python3 tools/symptom-checker-audit/test_phase1.py`. هیچ انتشار یا صفحهٔ عمومی از این بسته ساخته نشده و تأیید محتوایی تیم باز است. [گزارش فاز ۱](docs/symptom-checker/phase-1-report.fa.md)
 
 ## نمونهٔ راهنمای علائم
 
