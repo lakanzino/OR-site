@@ -23,7 +23,15 @@ hj_fixture_disease( 'Draft test', 'draft', 'draft_test' );
 hj_fixture_disease( 'Private test', 'private', 'private_test' );
 hj_fixture_disease( 'Duplicate one', 'publish', 'duplicate_test' );
 hj_fixture_disease( 'Duplicate two', 'publish', 'duplicate_test' );
+// Reproduce WordPress metadata slash handling using a synthetic multiline profile.
+$fixture_json = wp_json_encode( array( 'symptoms' => "first\nsecond" ) );
+update_post_meta( $published, '_hj_unslashed_fixture', $fixture_json );
+update_post_meta( $published, '_hj_slashed_fixture', wp_slash( $fixture_json ) );
+$unslashed_value = json_decode( get_post_meta( $published, '_hj_unslashed_fixture', true ), true );
+$slashed_value = json_decode( get_post_meta( $published, '_hj_slashed_fixture', true ), true );
 $results = array(
+    'unslashed_newline_changed_to_n' => is_array( $unslashed_value ) && 'firstnsecond' === $unslashed_value['symptoms'],
+    'wp_slash_preserves_newline' => is_array( $slashed_value ) && "first\nsecond" === $slashed_value['symptoms'],
     'wp_version' => get_bloginfo( 'version' ),
     'php_version' => PHP_VERSION,
     'site_installed' => is_blog_installed(),

@@ -34,6 +34,6 @@ import json, sys
 with open(sys.argv[1], encoding='utf-8') as source:
     data = json.load(source)
 print(json.dumps(data, indent=2))
-if data['wp_version'] != '6.8.3' or not data['php_version'].startswith('8.2.') or not data['site_installed'] or not data['sqlite_class'] or not all(data[key] for key in ('published_unique', 'draft_excluded', 'private_excluded', 'duplicate_excluded', 'missing_excluded')):
+if data['wp_version'] != '6.8.3' or not data['php_version'].startswith('8.2.') or not data['site_installed'] or not data['sqlite_class'] or not all(data[key] for key in ('published_unique', 'draft_excluded', 'private_excluded', 'duplicate_excluded', 'missing_excluded', 'unslashed_newline_changed_to_n', 'wp_slash_preserves_newline')):
     raise SystemExit('Unexpected local WordPress environment')
 PY
