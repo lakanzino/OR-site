@@ -1,0 +1,267 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hamyarjarahi.ir/schemas/symptom-checker/knowledge-bundle.v1.json",
+  "title": "بستهٔ دانش دستیار نشانه‌ها — نسخهٔ ۱",
+  "description": "قرارداد داده برای بستهٔ خوشهٔ درد شکم/پهلو. این فایل قرارداد است؛ اعتبارسنج عملی در tools/symptom-checker-audit/validate_phase1.py پیاده شده و همهٔ قواعد این فایل را پوشش نمی‌دهد.",
+  "type": "object",
+  "required": ["schema_version", "bundle_id", "bundle_version", "status", "locale", "scope", "answer_states", "sources", "symptoms", "questions", "conditions", "paths", "safety_rules", "coverage_rules", "disclaimers"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "bundle_id": { "type": "string", "pattern": "^symptom-checker\\.[a-z0-9-]+\\.[a-z0-9]+$" },
+    "bundle_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+(-draft)?$" },
+    "status": { "enum": ["draft", "reviewed", "published", "retired"] },
+    "locale": { "type": "string", "pattern": "^[a-z]{2}-[A-Z]{2}$" },
+    "created": { "type": "string", "format": "date" },
+    "scope": {
+      "type": "object",
+      "required": ["cluster", "conditions_in_scope", "excluded_by_design", "not_a_diagnosis"],
+      "additionalProperties": true,
+      "properties": {
+        "cluster": { "type": "string", "minLength": 3 },
+        "first_path": { "type": "string" },
+        "conditions_in_scope": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "excluded_by_design": { "type": "array", "items": { "type": "string" } },
+        "not_a_diagnosis": { "type": "string", "minLength": 20 }
+      }
+    },
+    "answer_states": {
+      "type": "array",
+      "minItems": 5,
+      "uniqueItems": true,
+      "items": { "enum": ["yes", "no", "unknown", "not_asked", "not_in_profile"] }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/source" }
+    },
+    "symptoms": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/symptom" }
+    },
+    "questions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/question" }
+    },
+    "conditions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/condition" }
+    },
+    "paths": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/path" }
+    },
+    "safety_rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/safetyRule" }
+    },
+    "coverage_rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/coverageRule" }
+    },
+    "disclaimers": {
+      "type": "object",
+      "required": ["before_start_fa", "during_fa", "result_fa"],
+      "additionalProperties": false,
+      "properties": {
+        "before_start_fa": { "type": "string", "minLength": 20 },
+        "during_fa": { "type": "string", "minLength": 20 },
+        "result_fa": { "type": "string", "minLength": 20 }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "refs": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string" } },
+    "source": {
+      "type": "object",
+      "required": ["id", "kind", "title_fa", "publisher", "url", "accessed"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": { "enum": ["internal_profile", "clinical_guideline", "patient_information", "legal"] },
+        "title_fa": { "type": "string", "minLength": 3 },
+        "publisher": { "type": "string", "minLength": 2 },
+        "url": { "type": "string", "pattern": "^https://" },
+        "ref": { "type": "string" },
+        "accessed": { "type": "string", "format": "date" }
+      }
+    },
+    "symptom": {
+      "type": "object",
+      "required": ["id", "label_fa", "category"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label_fa": { "type": "string", "minLength": 2 },
+        "synonyms": { "type": "array", "items": { "type": "string" } },
+        "category": { "enum": ["pain", "gi", "urinary", "general", "other"] }
+      }
+    },
+    "option": {
+      "type": "object",
+      "required": ["id", "label_fa"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "label_fa": { "type": "string", "minLength": 1 },
+        "exclusive": { "type": "boolean" }
+      }
+    },
+    "visibility": {
+      "type": "object",
+      "oneOf": [
+        { "required": ["always"], "properties": { "always": { "const": true } }, "additionalProperties": false },
+        {
+          "required": ["any_of"],
+          "additionalProperties": false,
+          "properties": {
+            "any_of": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["question_id", "answers"],
+                "additionalProperties": false,
+                "properties": {
+                  "question_id": { "$ref": "#/$defs/id" },
+                  "answers": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "question": {
+      "type": "object",
+      "required": ["id", "text_fa", "type", "source_refs", "visibility", "ask_order", "why_fa"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "text_fa": { "type": "string", "minLength": 5 },
+        "type": { "enum": ["boolean3", "single", "multi", "scale"] },
+        "options": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/option" } },
+        "min": { "type": "integer" },
+        "max": { "type": "integer" },
+        "allow_unknown": { "type": "boolean" },
+        "state_labels": { "type": "object" },
+        "source_refs": { "$ref": "#/$defs/refs" },
+        "visibility": { "$ref": "#/$defs/visibility" },
+        "ask_order": { "type": "integer", "minimum": 1 },
+        "why_fa": { "type": "string", "minLength": 10 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "enum": ["boolean3", "single", "multi"] } } },
+          "then": { "required": ["options"] }
+        },
+        {
+          "if": { "properties": { "type": { "const": "scale" } } },
+          "then": { "required": ["min", "max"] }
+        }
+      ]
+    },
+    "condition": {
+      "type": "object",
+      "required": ["id", "name_fa", "profile_ref", "link_status", "symptom_links", "red_flag_refs", "review_status"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "name_fa": { "type": "string", "minLength": 2 },
+        "article_slug": { "type": "string" },
+        "profile_ref": { "type": "string", "pattern": "^themes/lax-theme-child/data/disease-profiles\\.json#" },
+        "link_status": { "enum": ["needs_live_verification", "verified_published", "unmapped"] },
+        "symptom_links": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["symptom_id", "profile_line", "source_refs"],
+            "additionalProperties": false,
+            "properties": {
+              "symptom_id": { "$ref": "#/$defs/id" },
+              "profile_line": { "type": "string", "minLength": 3 },
+              "source_refs": { "$ref": "#/$defs/refs" }
+            }
+          }
+        },
+        "red_flag_refs": { "type": "array", "items": { "type": "string" } },
+        "review_status": { "enum": ["pending_team_review", "approved_by_team", "rejected"] }
+      }
+    },
+    "whenClause": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "question_id": { "$ref": "#/$defs/id" },
+        "answers": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "any_of": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["question_id", "answers"],
+            "additionalProperties": false,
+            "properties": {
+              "question_id": { "$ref": "#/$defs/id" },
+              "answers": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+            }
+          }
+        },
+        "branches_open_min": { "type": "integer", "minimum": 0 },
+        "branches_open_max": { "type": "integer", "minimum": 0 }
+      },
+      "oneOf": [
+        { "required": ["question_id", "answers"] },
+        { "required": ["any_of"] },
+        { "required": ["branches_open_min"] },
+        { "required": ["branches_open_max"] }
+      ]
+    },
+    "path": {
+      "type": "object",
+      "required": ["id", "condition_id", "when", "note_fa", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "condition_id": { "$ref": "#/$defs/id" },
+        "when": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/whenClause" } },
+        "note_fa": { "type": "string", "minLength": 10 },
+        "source_refs": { "$ref": "#/$defs/refs" }
+      }
+    },
+    "safetyRule": {
+      "type": "object",
+      "required": ["id", "when", "severity", "message_fa", "source_refs", "review_status"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "when": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/whenClause" } },
+        "severity": { "enum": ["urgent", "prompt", "info"] },
+        "message_fa": { "type": "string", "minLength": 10 },
+        "source_refs": { "$ref": "#/$defs/refs" },
+        "review_status": { "enum": ["pending_team_review", "approved_by_team", "rejected"] }
+      }
+    },
+    "coverageRule": {
+      "type": "object",
+      "required": ["id", "when", "result", "message_fa", "source_refs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "when": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/whenClause" } },
+        "result": { "enum": ["sufficient", "insufficient", "out_of_scope"] },
+        "message_fa": { "type": "string", "minLength": 10 },
+        "source_refs": { "$ref": "#/$defs/refs" }
+      }
+    }
+  }
+}

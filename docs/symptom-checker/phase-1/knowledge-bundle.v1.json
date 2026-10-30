@@ -1,0 +1,666 @@
+{
+  "schema_version": "1.0.0",
+  "bundle_id": "symptom-checker.abdomen.v1",
+  "bundle_version": "0.1.0-draft",
+  "status": "draft",
+  "locale": "fa-IR",
+  "created": "2026-10-31",
+  "scope": {
+    "cluster": "درد شکم/پهلو در بزرگسالان",
+    "first_path": "آپاندیسیت",
+    "conditions_in_scope": ["app", "kidney_stone", "kidney_infection", "urinary_tract", "gastroenteritis"],
+    "excluded_by_design": [
+      "کودکان زیر ۱۸ سال به‌عنوان پوشش فعال (می‌تواند الگوی نشانه متفاوت داشته باشد)",
+      "بارداری و احتمال بارداری (خارج از پوشش این بسته؛ ارجاع به ارزیابی فوری)",
+      "وضعیت پس از جراحی شکم"
+    ],
+    "not_a_diagnosis": "این بسته موضوع‌های مرتبط را بر پایهٔ قواعد مستند پیشنهاد می‌کند؛ تشخیص، معاینه و آزمایش نیست و ادعای دقت بالینی ندارد."
+  },
+  "answer_states": ["yes", "no", "unknown", "not_asked", "not_in_profile"],
+  "sources": [
+    {
+      "id": "src_profile_app",
+      "kind": "internal_profile",
+      "title_fa": "شناسنامهٔ آپاندیسیت در مخزن",
+      "publisher": "همیار جراحی — دادهٔ قالب",
+      "ref": "themes/lax-theme-child/data/disease-profiles.json#app",
+      "url": "https://github.com/lakanzino/OR-site/blob/main/themes/lax-theme-child/data/disease-profiles.json",
+      "accessed": "2026-10-31"
+    },
+    {
+      "id": "src_profile_kidney_stone",
+      "kind": "internal_profile",
+      "title_fa": "شناسنامهٔ سنگ کلیه در مخزن",
+      "publisher": "همیار جراحی — دادهٔ قالب",
+      "ref": "themes/lax-theme-child/data/disease-profiles.json#kidney_stone",
+      "url": "https://github.com/lakanzino/OR-site/blob/main/themes/lax-theme-child/data/disease-profiles.json",
+      "accessed": "2026-10-31"
+    },
+    {
+      "id": "src_profile_kidney_infection",
+      "kind": "internal_profile",
+      "title_fa": "شناسنامهٔ عفونت کلیه در مخزن",
+      "publisher": "همیار جراحی — دادهٔ قالب",
+      "ref": "themes/lax-theme-child/data/disease-profiles.json#kidney_infection",
+      "url": "https://github.com/lakanzino/OR-site/blob/main/themes/lax-theme-child/data/disease-profiles.json",
+      "accessed": "2026-10-31"
+    },
+    {
+      "id": "src_profile_uti",
+      "kind": "internal_profile",
+      "title_fa": "شناسنامهٔ عفونت مجاری ادراری در مخزن",
+      "publisher": "همیار جراحی — دادهٔ قالب",
+      "ref": "themes/lax-theme-child/data/disease-profiles.json#urinary_tract",
+      "url": "https://github.com/lakanzino/OR-site/blob/main/themes/lax-theme-child/data/disease-profiles.json",
+      "accessed": "2026-10-31"
+    },
+    {
+      "id": "src_profile_gastro",
+      "kind": "internal_profile",
+      "title_fa": "شناسنامهٔ التهاب معده و روده در مخزن",
+      "publisher": "همیار جراحی — دادهٔ قالب",
+      "ref": "themes/lax-theme-child/data/disease-profiles.json#gastroenteritis",
+      "url": "https://github.com/lakanzino/OR-site/blob/main/themes/lax-theme-child/data/disease-profiles.json",
+      "accessed": "2026-10-31"
+    },
+    {
+      "id": "src_nhs_app",
+      "kind": "clinical_guideline",
+      "title_fa": "NHS — آپاندیسیت (نشانه‌ها و توصیهٔ مراجعهٔ فوری)",
+      "publisher": "NHS",
+      "url": "https://www.nhs.uk/conditions/appendicitis/",
+      "accessed": "2026-10-31"
+    },
+    {
+      "id": "src_niddk_stone",
+      "kind": "clinical_guideline",
+      "title_fa": "NIDDK — نشانه‌ها و علل سنگ کلیه",
+      "publisher": "NIDDK (NIH)",
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/kidney-stones/symptoms-causes",
+      "accessed": "2026-10-31"
+    },
+    {
+      "id": "src_nhs_uti",
+      "kind": "clinical_guideline",
+      "title_fa": "NHS — عفونت مجاری ادراری (UTI)",
+      "publisher": "NHS",
+      "url": "https://www.nhs.uk/conditions/urinary-tract-infections-utis/",
+      "accessed": "2026-10-31"
+    },
+    {
+      "id": "src_nhs_kidney_infection",
+      "kind": "clinical_guideline",
+      "title_fa": "NHS — عفونت کلیه",
+      "publisher": "NHS",
+      "url": "https://www.nhs.uk/conditions/kidney-infection/",
+      "accessed": "2026-10-31"
+    },
+    {
+      "id": "src_niddk_gastro",
+      "kind": "clinical_guideline",
+      "title_fa": "NIDDK — التهاب معده و روده (گاستروانتریت)",
+      "publisher": "NIDDK (NIH)",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/gastroenteritis",
+      "accessed": "2026-10-31"
+    }
+  ],
+  "symptoms": [
+    { "id": "s_pain_abdomen", "label_fa": "درد شکم", "synonyms": ["دل‌درد", "درد معده"], "category": "pain" },
+    { "id": "s_pain_periumbilical_start", "label_fa": "شروع درد در اطراف ناف", "synonyms": [], "category": "pain" },
+    { "id": "s_pain_migrates_rlq", "label_fa": "حرکت درد به پایین سمت راست شکم", "synonyms": [], "category": "pain" },
+    { "id": "s_pain_rlq", "label_fa": "درد در پایین سمت راست شکم", "synonyms": [], "category": "pain" },
+    { "id": "s_pain_worse_movement", "label_fa": "بدترشدن درد با حرکت، راه‌رفتن یا سرفه", "synonyms": [], "category": "pain" },
+    { "id": "s_appetite_loss", "label_fa": "کم‌شدن اشتها", "synonyms": ["بی‌اشتهایی"], "category": "general" },
+    { "id": "s_nausea", "label_fa": "تهوع", "synonyms": [], "category": "gi" },
+    { "id": "s_vomiting", "label_fa": "استفراغ", "synonyms": [], "category": "gi" },
+    { "id": "s_fever", "label_fa": "تب یا احساس تب", "synonyms": ["تب‌لرز"], "category": "general" },
+    { "id": "s_chills", "label_fa": "لرز", "synonyms": [], "category": "general" },
+    { "id": "s_constipation", "label_fa": "یبوست", "synonyms": [], "category": "gi" },
+    { "id": "s_diarrhea", "label_fa": "اسهال", "synonyms": [], "category": "gi" },
+    { "id": "s_bloating", "label_fa": "نفخ شکم", "synonyms": [], "category": "gi" },
+    { "id": "s_no_gas_pass", "label_fa": "ناتوانی در دفع گاز", "synonyms": [], "category": "gi" },
+    { "id": "s_flank_pain", "label_fa": "درد پهلو یا کمر", "synonyms": ["درد ناحیهٔ کلیه"], "category": "pain" },
+    { "id": "s_radiate_groin", "label_fa": "انتشار درد به کشالهٔ ران یا پایین شکم", "synonyms": [], "category": "pain" },
+    { "id": "s_colicky_pain", "label_fa": "درد موج‌وار (کم و زیاد می‌شود)", "synonyms": [], "category": "pain" },
+    { "id": "s_dysuria", "label_fa": "سوزش یا درد هنگام ادرار", "synonyms": [], "category": "urinary" },
+    { "id": "s_frequency", "label_fa": "تکرر ادرار", "synonyms": [], "category": "urinary" },
+    { "id": "s_urgency", "label_fa": "فوریت ادراری", "synonyms": ["فشار ناگهانی برای ادرار"], "category": "urinary" },
+    { "id": "s_hematuria", "label_fa": "خون در ادرار یا ادرار صورتی/قرمز/قهوه‌ای", "synonyms": [], "category": "urinary" },
+    { "id": "s_cloudy_urine", "label_fa": "ادرار کدر یا بدبو", "synonyms": [], "category": "urinary" },
+    { "id": "s_bladder_pressure", "label_fa": "درد یا فشار ناحیهٔ مثانه", "synonyms": [], "category": "urinary" },
+    { "id": "s_abdominal_cramp", "label_fa": "درد یا گرفتگی شکم", "synonyms": ["کرامپ شکم"], "category": "gi" },
+    { "id": "s_dehydration", "label_fa": "نشانه‌های کم‌آبی", "synonyms": ["خشکی دهان", "کاهش ادرار"], "category": "general" },
+    { "id": "s_blood_stool", "label_fa": "خون در مدفوع", "synonyms": [], "category": "gi" }
+  ],
+  "questions": [
+    {
+      "id": "q_pain_present",
+      "text_fa": "آیا در ناحیهٔ شکم، پهلو یا کمر دردی داری؟",
+      "type": "boolean3",
+      "options": [
+        { "id": "yes", "label_fa": "بله" },
+        { "id": "no", "label_fa": "نه، دردی ندارم" },
+        { "id": "unknown", "label_fa": "مطمئن نیستم" }
+      ],
+      "source_refs": ["src_profile_app", "src_nhs_app"],
+      "visibility": { "always": true },
+      "ask_order": 10,
+      "why_fa": "شروع مسیر از وجود یا نبود درد، تا نشانه‌های دیگر به کاربر تحمیل نشود."
+    },
+    {
+      "id": "q_pain_location",
+      "text_fa": "درد را بیشتر کجا حس می‌کنی؟",
+      "type": "single",
+      "options": [
+        { "id": "periumbilical", "label_fa": "اطراف ناف" },
+        { "id": "right_lower", "label_fa": "پایین سمت راست شکم" },
+        { "id": "other_abdomen", "label_fa": "جای دیگری از شکم" },
+        { "id": "flank_or_back", "label_fa": "پهلو یا کمر" },
+        { "id": "multiple", "label_fa": "چند ناحیه" },
+        { "id": "unknown", "label_fa": "نمی‌دانم" }
+      ],
+      "source_refs": ["src_profile_app", "src_nhs_app", "src_niddk_stone"],
+      "visibility": { "any_of": [{ "question_id": "q_pain_present", "answers": ["yes", "unknown"] }] },
+      "ask_order": 20,
+      "why_fa": "محل درد یکی از سرنخ‌های مسیر است؛ هیچ محلی بیماری را قطعی نمی‌کند."
+    },
+    {
+      "id": "q_pain_migrated_rlq",
+      "text_fa": "آیا درد از اطراف ناف شروع شد و بعد به پایین سمت راست شکم رفت؟",
+      "type": "boolean3",
+      "options": [
+        { "id": "yes", "label_fa": "بله" },
+        { "id": "no", "label_fa": "نه" },
+        { "id": "unknown", "label_fa": "نمی‌دانم" }
+      ],
+      "source_refs": ["src_profile_app", "src_nhs_app"],
+      "visibility": { "any_of": [{ "question_id": "q_pain_present", "answers": ["yes", "unknown"] }] },
+      "ask_order": 30,
+      "why_fa": "الگوی حرکت درد در آپاندیسیت شایع است، اما همیشه دیده نمی‌شود و الگوی غیرمعمول هم ممکن است."
+    },
+    {
+      "id": "q_pain_onset",
+      "text_fa": "درد چه زمانی شروع شد؟",
+      "type": "single",
+      "options": [
+        { "id": "today", "label_fa": "امروز" },
+        { "id": "two_three_days", "label_fa": "یک تا سه روز پیش" },
+        { "id": "longer", "label_fa": "بیشتر از سه روز پیش" },
+        { "id": "unknown", "label_fa": "نمی‌دانم" }
+      ],
+      "source_refs": ["src_nhs_app"],
+      "visibility": { "any_of": [{ "question_id": "q_pain_present", "answers": ["yes", "unknown"] }] },
+      "ask_order": 40,
+      "why_fa": "مدت زمان برای توضیح روند و ارجاع لازم است، نه برای انتخاب بیماری."
+    },
+    {
+      "id": "q_pain_course",
+      "text_fa": "درد نسبت به شروعش چه روندی داشته است؟",
+      "type": "single",
+      "options": [
+        { "id": "worse", "label_fa": "بدتر شده" },
+        { "id": "stable", "label_fa": "تقریباً ثابت مانده" },
+        { "id": "better", "label_fa": "کمتر شده" },
+        { "id": "intermittent", "label_fa": "می‌آید و می‌رود" },
+        { "id": "unknown", "label_fa": "نمی‌دانم" }
+      ],
+      "source_refs": ["src_nhs_app", "src_niddk_stone"],
+      "visibility": { "any_of": [{ "question_id": "q_pain_present", "answers": ["yes", "unknown"] }] },
+      "ask_order": 50,
+      "why_fa": "دردی که بدتر می‌شود یا ادامه دارد، مستقل از نتیجهٔ بیماری به لایهٔ ایمنی می‌رود."
+    },
+    {
+      "id": "q_pain_severity",
+      "text_fa": "شدت درد را از ۱ تا ۱۰ چطور توصیف می‌کنی؟ (۱ یعنی خیلی خفیف، ۱۰ یعنی غیرقابل تحمل)",
+      "type": "scale",
+      "min": 1,
+      "max": 10,
+      "allow_unknown": true,
+      "source_refs": ["src_nhs_app"],
+      "visibility": { "any_of": [{ "question_id": "q_pain_present", "answers": ["yes"] }] },
+      "ask_order": 60,
+      "why_fa": "شدت فقط برای توضیح و ارتباط با لایهٔ ایمنی است؛ عدد به‌تنهایی تشخیص یا اطمینان‌بخشی نیست."
+    },
+    {
+      "id": "q_pain_worse_movement",
+      "text_fa": "آیا درد هنگام راه‌رفتن، حرکت، سرفه یا عطسه بیشتر می‌شود؟",
+      "type": "boolean3",
+      "options": [
+        { "id": "yes", "label_fa": "بله" },
+        { "id": "no", "label_fa": "نه" },
+        { "id": "unknown", "label_fa": "نمی‌دانم" }
+      ],
+      "source_refs": ["src_profile_app", "src_nhs_app"],
+      "visibility": { "any_of": [{ "question_id": "q_pain_present", "answers": ["yes", "unknown"] }] },
+      "ask_order": 70,
+      "why_fa": "از کاربر خواسته نمی‌شود شکم خود را فشار دهد؛ فقط حرکت و سرفه پرسیده می‌شود."
+    },
+    {
+      "id": "q_associated_symptoms",
+      "text_fa": "کدام یک از این نشانه‌ها را همراه داری؟ (چند مورد می‌توانی انتخاب کنی)",
+      "type": "multi",
+      "options": [
+        { "id": "nausea", "label_fa": "تهوع" },
+        { "id": "vomiting", "label_fa": "استفراغ" },
+        { "id": "appetite_loss", "label_fa": "کم‌شدن اشتها" },
+        { "id": "fever", "label_fa": "تب یا احساس تب" },
+        { "id": "diarrhea", "label_fa": "اسهال" },
+        { "id": "constipation", "label_fa": "یبوست" },
+        { "id": "bloating", "label_fa": "نفخ شکم" },
+        { "id": "no_gas_pass", "label_fa": "ناتوانی در دفع گاز" },
+        { "id": "none", "label_fa": "هیچ‌کدام", "exclusive": true },
+        { "id": "unknown", "label_fa": "نمی‌دانم", "exclusive": true }
+      ],
+      "source_refs": ["src_profile_app", "src_nhs_app"],
+      "visibility": { "any_of": [{ "question_id": "q_pain_present", "answers": ["yes", "unknown"] }] },
+      "ask_order": 80,
+      "why_fa": "نشانه‌های همراه جدا ثبت می‌شوند؛ تهوع به معنی استفراغ نیست و «هیچ‌کدام» با «نمی‌دانم» یکی نیست."
+    },
+    {
+      "id": "q_urinary_symptoms",
+      "text_fa": "آیا هنگام ادرار سوزش یا درد داری، بیشتر از معمول نیاز به ادرار پیدا کرده‌ای، یا در ادرار تغییر رنگ دیده‌ای؟ (چند مورد مجاز است)",
+      "type": "multi",
+      "options": [
+        { "id": "dysuria", "label_fa": "سوزش یا درد هنگام ادرار" },
+        { "id": "frequency", "label_fa": "تکرر ادرار" },
+        { "id": "urgency", "label_fa": "فوریت ادراری" },
+        { "id": "blood_urine", "label_fa": "خون یا رنگ صورتی/قرمز/قهوه‌ای در ادرار" },
+        { "id": "cloudy_odor", "label_fa": "ادرار کدر یا بدبو" },
+        { "id": "none", "label_fa": "هیچ‌کدام", "exclusive": true },
+        { "id": "unknown", "label_fa": "نمی‌دانم", "exclusive": true }
+      ],
+      "source_refs": ["src_profile_uti", "src_nhs_uti", "src_niddk_stone"],
+      "visibility": { "always": true },
+      "ask_order": 90,
+      "why_fa": "نشانه‌های ادراری مسیرهای ادراری و سنگ را باز می‌کنند و آپاندیسیت را به‌تنهایی رد نمی‌کنند."
+    },
+    {
+      "id": "q_flank_radiation",
+      "text_fa": "آیا درد به پهلو، پشت یا کشالهٔ ران می‌زند، یا به شکل موجی کم و زیاد می‌شود؟",
+      "type": "boolean3",
+      "options": [
+        { "id": "yes", "label_fa": "بله" },
+        { "id": "no", "label_fa": "نه" },
+        { "id": "unknown", "label_fa": "نمی‌دانم" }
+      ],
+      "source_refs": ["src_niddk_stone", "src_profile_kidney_stone"],
+      "visibility": { "any_of": [{ "question_id": "q_pain_present", "answers": ["yes", "unknown"] }] },
+      "ask_order": 100,
+      "why_fa": "انتشار درد و شکل موجی از نشانه‌های مرتبط با سنگ است، نه اثبات آن."
+    },
+    {
+      "id": "q_fever_chills",
+      "text_fa": "آیا تب یا لرز داری؟",
+      "type": "boolean3",
+      "options": [
+        { "id": "yes", "label_fa": "بله" },
+        { "id": "no", "label_fa": "نه" },
+        { "id": "unknown", "label_fa": "نمی‌دانم" }
+      ],
+      "source_refs": ["src_profile_kidney_infection", "src_nhs_kidney_infection"],
+      "visibility": { "always": true },
+      "ask_order": 110,
+      "why_fa": "تب و لرز همراه درد پهلو در لایهٔ ایمنی جدا بررسی می‌شود."
+    },
+    {
+      "id": "q_diarrhea_vomiting",
+      "text_fa": "آیا اسهال یا استفراغ داری؟",
+      "type": "multi",
+      "options": [
+        { "id": "diarrhea", "label_fa": "اسهال" },
+        { "id": "vomiting", "label_fa": "استفراغ" },
+        { "id": "none", "label_fa": "هیچ‌کدام", "exclusive": true },
+        { "id": "unknown", "label_fa": "نمی‌دانم", "exclusive": true }
+      ],
+      "source_refs": ["src_profile_gastro", "src_niddk_gastro"],
+      "visibility": { "always": true },
+      "ask_order": 120,
+      "why_fa": "اسهال و استفراغ مسیر گوارشی را باز می‌کنند، اما آپاندیسیت را رد نمی‌کنند."
+    },
+    {
+      "id": "q_keep_fluids",
+      "text_fa": "آیا می‌توانی مایعات را نگه داری یا همه را بالا می‌آوری؟",
+      "type": "boolean3",
+      "state_labels": { "yes": "می‌توانم نگه دارم", "no": "نمی‌توانم نگه دارم", "unknown": "نمی‌دانم" },
+      "options": [
+        { "id": "yes", "label_fa": "می‌توانم نگه دارم" },
+        { "id": "no", "label_fa": "نمی‌توانم نگه دارم" },
+        { "id": "unknown", "label_fa": "نمی‌دانم" }
+      ],
+      "source_refs": ["src_niddk_gastro"],
+      "visibility": { "any_of": [{ "question_id": "q_diarrhea_vomiting", "answers": ["diarrhea", "vomiting"] }] },
+      "ask_order": 130,
+      "why_fa": "ناتوانی در نگه‌داشتن مایعات مستقل از نتیجهٔ بیماری به لایهٔ ایمنی می‌رود."
+    },
+    {
+      "id": "q_blood_in_stool",
+      "text_fa": "آیا در مدفوع خون دیده‌ای؟",
+      "type": "boolean3",
+      "options": [
+        { "id": "yes", "label_fa": "بله" },
+        { "id": "no", "label_fa": "نه" },
+        { "id": "unknown", "label_fa": "نمی‌دانم" }
+      ],
+      "source_refs": ["src_profile_gastro", "src_niddk_gastro"],
+      "visibility": { "any_of": [{ "question_id": "q_diarrhea_vomiting", "answers": ["diarrhea"] }] },
+      "ask_order": 140,
+      "why_fa": "خون در مدفوع یکی از شرایط ارجاع سریع است."
+    },
+    {
+      "id": "q_dehydration_signs",
+      "text_fa": "کدام‌یک از نشانه‌های کم‌آبی را داری؟",
+      "type": "multi",
+      "options": [
+        { "id": "thirst", "label_fa": "تشنگی زیاد" },
+        { "id": "dry_mouth", "label_fa": "خشکی دهان" },
+        { "id": "little_urine", "label_fa": "کاهش واضح ادرار" },
+        { "id": "dizziness", "label_fa": "سرگیجه یا ضعف شدید" },
+        { "id": "none", "label_fa": "هیچ‌کدام", "exclusive": true },
+        { "id": "unknown", "label_fa": "نمی‌دانم", "exclusive": true }
+      ],
+      "source_refs": ["src_profile_gastro", "src_niddk_gastro"],
+      "visibility": { "any_of": [{ "question_id": "q_diarrhea_vomiting", "answers": ["diarrhea", "vomiting"] }] },
+      "ask_order": 150,
+      "why_fa": "نشانه‌های کم‌آبی در لایهٔ ایمنی و پیشنهاد مراجعه اثر دارند."
+    },
+    {
+      "id": "q_unbearable_pain",
+      "text_fa": "آیا درد آن‌قدر شدید است که نمی‌توانی به شکمت دست بزنی یا کارهای روزمره‌ات را انجام دهی؟",
+      "type": "boolean3",
+      "options": [
+        { "id": "yes", "label_fa": "بله" },
+        { "id": "no", "label_fa": "نه" },
+        { "id": "unknown", "label_fa": "نمی‌دانم" }
+      ],
+      "source_refs": ["src_nhs_app"],
+      "visibility": { "any_of": [{ "question_id": "q_pain_present", "answers": ["yes", "unknown"] }] },
+      "ask_order": 160,
+      "why_fa": "خودگزارشی درد بسیار شدید؛ ابزار کاربر را به معاینه یا فشار دادن شکم وادار نمی‌کند."
+    },
+    {
+      "id": "q_pregnancy_possible",
+      "text_fa": "آیا احتمال بارداری وجود دارد؟",
+      "type": "single",
+      "options": [
+        { "id": "yes", "label_fa": "بله" },
+        { "id": "no", "label_fa": "نه" },
+        { "id": "unsure", "label_fa": "مطمئن نیستم" },
+        { "id": "prefer_not", "label_fa": "ترجیح می‌دهم پاسخ ندهم", "exclusive": true }
+      ],
+      "source_refs": ["src_nhs_app"],
+      "visibility": { "always": true },
+      "ask_order": 170,
+      "why_fa": "در احتمال بارداری، این بسته خارج از پوشش است و باید ارزیابی پزشکی فوری پیشنهاد شود؛ آپاندیسیت هم می‌تواند الگوی متفاوت داشته باشد."
+    }
+  ],
+  "conditions": [
+    {
+      "id": "app",
+      "name_fa": "آپاندیسیت",
+      "article_slug": "appendicitis",
+      "profile_ref": "themes/lax-theme-child/data/disease-profiles.json#app",
+      "link_status": "needs_live_verification",
+      "symptom_links": [
+        { "symptom_id": "s_pain_abdomen", "profile_line": "درد ناگهانی که اغلب از اطراف ناف شروع می‌شود و سپس به پایین سمت راست شکم می‌رود", "source_refs": ["src_profile_app", "src_nhs_app"] },
+        { "symptom_id": "s_pain_periumbilical_start", "profile_line": "درد ناگهانی که اغلب از اطراف ناف شروع می‌شود", "source_refs": ["src_profile_app", "src_nhs_app"] },
+        { "symptom_id": "s_pain_migrates_rlq", "profile_line": "سپس به پایین سمت راست شکم می‌رود", "source_refs": ["src_profile_app", "src_nhs_app"] },
+        { "symptom_id": "s_pain_rlq", "profile_line": "درد در پایین سمت راست شکم", "source_refs": ["src_nhs_app"] },
+        { "symptom_id": "s_pain_worse_movement", "profile_line": "تشدید درد با حرکت، راه رفتن، سرفه یا عطسه", "source_refs": ["src_profile_app", "src_nhs_app"] },
+        { "symptom_id": "s_appetite_loss", "profile_line": "بی‌اشتهایی", "source_refs": ["src_profile_app", "src_nhs_app"] },
+        { "symptom_id": "s_nausea", "profile_line": "تهوع و استفراغ", "source_refs": ["src_profile_app", "src_nhs_app"] },
+        { "symptom_id": "s_vomiting", "profile_line": "تهوع و استفراغ", "source_refs": ["src_profile_app", "src_nhs_app"] },
+        { "symptom_id": "s_fever", "profile_line": "تب خفیف", "source_refs": ["src_profile_app", "src_nhs_app"] },
+        { "symptom_id": "s_constipation", "profile_line": "یبوست یا اسهال", "source_refs": ["src_profile_app", "src_nhs_app"] },
+        { "symptom_id": "s_diarrhea", "profile_line": "یبوست یا اسهال", "source_refs": ["src_profile_app", "src_nhs_app"] },
+        { "symptom_id": "s_bloating", "profile_line": "نفخ شکم", "source_refs": ["src_profile_app"] },
+        { "symptom_id": "s_no_gas_pass", "profile_line": "ناتوانی در دفع گاز", "source_refs": ["src_profile_app"] }
+      ],
+      "red_flag_refs": ["sf_severe_pain", "sf_pain_worsening"],
+      "review_status": "pending_team_review"
+    },
+    {
+      "id": "kidney_stone",
+      "name_fa": "سنگ کلیه",
+      "article_slug": "kidney-stones",
+      "profile_ref": "themes/lax-theme-child/data/disease-profiles.json#kidney_stone",
+      "link_status": "needs_live_verification",
+      "symptom_links": [
+        { "symptom_id": "s_flank_pain", "profile_line": "درد شدید در پهلو و پشت زیر دنده‌ها", "source_refs": ["src_profile_kidney_stone", "src_niddk_stone"] },
+        { "symptom_id": "s_radiate_groin", "profile_line": "که به شکم پایین و کشاله ران کشیده می‌شود", "source_refs": ["src_profile_kidney_stone", "src_niddk_stone"] },
+        { "symptom_id": "s_colicky_pain", "profile_line": "و موج‌وار است", "source_refs": ["src_profile_kidney_stone", "src_niddk_stone"] },
+        { "symptom_id": "s_dysuria", "profile_line": "درد یا سوزش هنگام ادرار", "source_refs": ["src_profile_kidney_stone", "src_niddk_stone"] },
+        { "symptom_id": "s_hematuria", "profile_line": "ادرار صورتی، قرمز یا قهوه‌ای", "source_refs": ["src_profile_kidney_stone", "src_niddk_stone"] },
+        { "symptom_id": "s_cloudy_urine", "profile_line": "ادرار کدر یا بدبو", "source_refs": ["src_profile_kidney_stone", "src_niddk_stone"] },
+        { "symptom_id": "s_frequency", "profile_line": "تکرر و فوریت ادرار", "source_refs": ["src_profile_kidney_stone", "src_niddk_stone"] },
+        { "symptom_id": "s_urgency", "profile_line": "تکرر و فوریت ادرار", "source_refs": ["src_profile_kidney_stone"] },
+        { "symptom_id": "s_nausea", "profile_line": "تهوع و استفراغ", "source_refs": ["src_profile_kidney_stone", "src_niddk_stone"] },
+        { "symptom_id": "s_vomiting", "profile_line": "تهوع و استفراغ", "source_refs": ["src_profile_kidney_stone", "src_niddk_stone"] }
+      ],
+      "red_flag_refs": ["sf_fever_flank"],
+      "review_status": "pending_team_review"
+    },
+    {
+      "id": "kidney_infection",
+      "name_fa": "عفونت کلیه (پیلونفریت)",
+      "article_slug": "kidney-infection",
+      "profile_ref": "themes/lax-theme-child/data/disease-profiles.json#kidney_infection",
+      "link_status": "needs_live_verification",
+      "symptom_links": [
+        { "symptom_id": "s_fever", "profile_line": "تب و لرز", "source_refs": ["src_profile_kidney_infection", "src_nhs_kidney_infection"] },
+        { "symptom_id": "s_chills", "profile_line": "تب و لرز", "source_refs": ["src_profile_kidney_infection", "src_nhs_kidney_infection"] },
+        { "symptom_id": "s_flank_pain", "profile_line": "درد پهلو", "source_refs": ["src_profile_kidney_infection", "src_nhs_kidney_infection"] },
+        { "symptom_id": "s_dysuria", "profile_line": "سوزش یا تکرر ادرار", "source_refs": ["src_profile_kidney_infection"] },
+        { "symptom_id": "s_frequency", "profile_line": "سوزش یا تکرر ادرار", "source_refs": ["src_profile_kidney_infection"] },
+        { "symptom_id": "s_nausea", "profile_line": "تهوع و استفراغ", "source_refs": ["src_profile_kidney_infection"] },
+        { "symptom_id": "s_vomiting", "profile_line": "تهوع و استفراغ", "source_refs": ["src_profile_kidney_infection"] }
+      ],
+      "red_flag_refs": ["sf_fever_flank"],
+      "review_status": "pending_team_review"
+    },
+    {
+      "id": "urinary_tract",
+      "name_fa": "عفونت مجاری ادراری",
+      "article_slug": "urinary-tract-infection",
+      "profile_ref": "themes/lax-theme-child/data/disease-profiles.json#urinary_tract",
+      "link_status": "needs_live_verification",
+      "symptom_links": [
+        { "symptom_id": "s_dysuria", "profile_line": "سوزش یا درد هنگام ادرار", "source_refs": ["src_profile_uti", "src_nhs_uti"] },
+        { "symptom_id": "s_frequency", "profile_line": "تکرر ادرار", "source_refs": ["src_profile_uti", "src_nhs_uti"] },
+        { "symptom_id": "s_urgency", "profile_line": "فوریت ادرار", "source_refs": ["src_profile_uti", "src_nhs_uti"] },
+        { "symptom_id": "s_bladder_pressure", "profile_line": "درد یا فشار در ناحیه مثانه", "source_refs": ["src_profile_uti"] },
+        { "symptom_id": "s_cloudy_urine", "profile_line": "ادرار کدر یا بدبو", "source_refs": ["src_profile_uti", "src_nhs_uti"] },
+        { "symptom_id": "s_hematuria", "profile_line": "وجود خون در ادرار", "source_refs": ["src_profile_uti", "src_nhs_uti"] }
+      ],
+      "red_flag_refs": ["sf_fever_flank"],
+      "review_status": "pending_team_review"
+    },
+    {
+      "id": "gastroenteritis",
+      "name_fa": "التهاب معده و روده (گاستروانتریت)",
+      "article_slug": "gastroenteritis",
+      "profile_ref": "themes/lax-theme-child/data/disease-profiles.json#gastroenteritis",
+      "link_status": "needs_live_verification",
+      "symptom_links": [
+        { "symptom_id": "s_diarrhea", "profile_line": "اسهال", "source_refs": ["src_profile_gastro", "src_niddk_gastro"] },
+        { "symptom_id": "s_vomiting", "profile_line": "استفراغ", "source_refs": ["src_profile_gastro", "src_niddk_gastro"] },
+        { "symptom_id": "s_nausea", "profile_line": "تهوع", "source_refs": ["src_profile_gastro"] },
+        { "symptom_id": "s_abdominal_cramp", "profile_line": "درد یا کرامپ شکم", "source_refs": ["src_profile_gastro"] },
+        { "symptom_id": "s_fever", "profile_line": "تب", "source_refs": ["src_profile_gastro", "src_niddk_gastro"] },
+        { "symptom_id": "s_dehydration", "profile_line": "نشانه‌های کم‌آبی مانند خشکی دهان، کاهش ادرار و ضعف", "source_refs": ["src_profile_gastro", "src_niddk_gastro"] }
+      ],
+      "red_flag_refs": ["sf_cannot_keep_fluids", "sf_dehydration", "sf_blood_in_stool"],
+      "review_status": "pending_team_review"
+    }
+  ],
+  "paths": [
+    {
+      "id": "p_app_rlq",
+      "condition_id": "app",
+      "when": [
+        { "any_of": [
+          { "question_id": "q_pain_location", "answers": ["right_lower"] },
+          { "question_id": "q_pain_migrated_rlq", "answers": ["yes"] }
+        ] }
+      ],
+      "note_fa": "درد پایین راست یا حرکت درد به آن ناحیه، مسیر آپاندیسیت را باز می‌کند؛ تشخیص نیست.",
+      "source_refs": ["src_profile_app", "src_nhs_app"]
+    },
+    {
+      "id": "p_app_periumbilical",
+      "condition_id": "app",
+      "when": [
+        { "question_id": "q_pain_location", "answers": ["periumbilical"] }
+      ],
+      "note_fa": "شروع درد در اطراف ناف هم مسیر آپاندیسیت را باز نگه می‌دارد.",
+      "source_refs": ["src_profile_app", "src_nhs_app"]
+    },
+    {
+      "id": "p_stone_flank",
+      "condition_id": "kidney_stone",
+      "when": [
+        { "any_of": [
+          { "question_id": "q_pain_location", "answers": ["flank_or_back"] },
+          { "question_id": "q_flank_radiation", "answers": ["yes"] }
+        ] }
+      ],
+      "note_fa": "درد پهلو/کمر یا انتشار به کشاله، مسیر سنگ کلیه را باز می‌کند.",
+      "source_refs": ["src_profile_kidney_stone", "src_niddk_stone"]
+    },
+    {
+      "id": "p_kidney_infection_fever_flank",
+      "condition_id": "kidney_infection",
+      "when": [
+        { "question_id": "q_fever_chills", "answers": ["yes"] },
+        { "any_of": [
+          { "question_id": "q_pain_location", "answers": ["flank_or_back"] },
+          { "question_id": "q_flank_radiation", "answers": ["yes"] }
+        ] }
+      ],
+      "note_fa": "تب/لرز همراه درد پهلو مسیر عفونت کلیه را باز می‌کند و به لایهٔ ایمنی هم می‌رود.",
+      "source_refs": ["src_profile_kidney_infection", "src_nhs_kidney_infection"]
+    },
+    {
+      "id": "p_uti_urinary",
+      "condition_id": "urinary_tract",
+      "when": [
+        { "question_id": "q_urinary_symptoms", "answers": ["dysuria", "frequency", "urgency", "blood_urine", "cloudy_odor"] }
+      ],
+      "note_fa": "هر نشانهٔ ادراری مسیر عفونت ادراری را باز می‌کند؛ برای بازکردن مسیر کافی است، نه برای تشخیص.",
+      "source_refs": ["src_profile_uti", "src_nhs_uti"]
+    },
+    {
+      "id": "p_gastro_gi",
+      "condition_id": "gastroenteritis",
+      "when": [
+        { "question_id": "q_diarrhea_vomiting", "answers": ["diarrhea", "vomiting"] }
+      ],
+      "note_fa": "اسهال یا استفراغ مسیر گاستروانتریت را باز می‌کند و آپاندیسیت را نمی‌بندد.",
+      "source_refs": ["src_profile_gastro", "src_niddk_gastro"]
+    }
+  ],
+  "safety_rules": [
+    {
+      "id": "sf_severe_pain",
+      "when": [{ "question_id": "q_unbearable_pain", "answers": ["yes"] }],
+      "severity": "urgent",
+      "message_fa": "درد شکم بسیار شدید یا غیرقابل تحمل نیاز به ارزیابی فوری پزشکی دارد؛ منتظر پایان این پرسش‌نامه نمان.",
+      "source_refs": ["src_nhs_app"],
+      "review_status": "pending_team_review"
+    },
+    {
+      "id": "sf_pain_worsening",
+      "when": [{ "question_id": "q_pain_course", "answers": ["worse"] }],
+      "severity": "prompt",
+      "message_fa": "دردی که بدتر می‌شود یا ادامه دارد باید توسط پزشک بررسی شود.",
+      "source_refs": ["src_nhs_app"],
+      "review_status": "pending_team_review"
+    },
+    {
+      "id": "sf_fever_flank",
+      "when": [
+        { "question_id": "q_fever_chills", "answers": ["yes"] },
+        { "any_of": [
+          { "question_id": "q_pain_location", "answers": ["flank_or_back"] },
+          { "question_id": "q_flank_radiation", "answers": ["yes"] }
+        ] }
+      ],
+      "severity": "urgent",
+      "message_fa": "تب یا لرز همراه درد پهلو نیاز به ارزیابی پزشکی فوری دارد.",
+      "source_refs": ["src_nhs_kidney_infection", "src_nhs_uti"],
+      "review_status": "pending_team_review"
+    },
+    {
+      "id": "sf_cannot_keep_fluids",
+      "when": [{ "question_id": "q_keep_fluids", "answers": ["no"] }],
+      "severity": "prompt",
+      "message_fa": "اگر نمی‌توانی مایعات را نگه داری، خطر کم‌آبی وجود دارد و باید با پزشک مشورت کنی.",
+      "source_refs": ["src_niddk_gastro"],
+      "review_status": "pending_team_review"
+    },
+    {
+      "id": "sf_dehydration",
+      "when": [
+        { "question_id": "q_dehydration_signs", "answers": ["thirst", "dry_mouth", "little_urine", "dizziness"] }
+      ],
+      "severity": "prompt",
+      "message_fa": "نشانه‌های کم‌آبی (خشکی دهان، کاهش ادرار، سرگیجه یا ضعف شدید) نیاز به بررسی پزشکی دارد.",
+      "source_refs": ["src_niddk_gastro"],
+      "review_status": "pending_team_review"
+    },
+    {
+      "id": "sf_blood_in_stool",
+      "when": [{ "question_id": "q_blood_in_stool", "answers": ["yes"] }],
+      "severity": "prompt",
+      "message_fa": "خون در مدفوع باید توسط پزشک بررسی شود.",
+      "source_refs": ["src_niddk_gastro"],
+      "review_status": "pending_team_review"
+    },
+    {
+      "id": "sf_pregnancy_out_of_scope",
+      "when": [{ "question_id": "q_pregnancy_possible", "answers": ["yes", "unsure", "prefer_not"] }],
+      "severity": "urgent",
+      "message_fa": "در احتمال بارداری، درد شکم باید فوری توسط پزشک بررسی شود. این ابزار علت‌های مرتبط با بارداری را پوشش نمی‌دهد و نباید نتیجه‌اش باعث اطمینان یا تأخیر شود.",
+      "source_refs": ["src_nhs_app"],
+      "review_status": "pending_team_review"
+    }
+  ],
+  "coverage_rules": [
+    {
+      "id": "cv_out_of_scope_pregnancy",
+      "when": [{ "question_id": "q_pregnancy_possible", "answers": ["yes", "unsure", "prefer_not"] }],
+      "result": "out_of_scope",
+      "message_fa": "این پرسش‌نامه برای احتمال بارداری طراحی نشده است؛ نتیجه‌ای دربارهٔ بیماری‌ها نمایش داده نمی‌شود.",
+      "source_refs": ["src_nhs_app"]
+    },
+    {
+      "id": "cv_no_pain_no_other",
+      "when": [
+        { "question_id": "q_pain_present", "answers": ["no"] },
+        { "question_id": "q_urinary_symptoms", "answers": ["none"] },
+        { "question_id": "q_diarrhea_vomiting", "answers": ["none"] }
+      ],
+      "result": "insufficient",
+      "message_fa": "با پاسخ‌های فعلی، موضوعی از این خوشه (درد شکم/پهلو) قابل بررسی نیست؛ این به معنی سالم بودن نیست.",
+      "source_refs": ["src_nhs_app"]
+    },
+    {
+      "id": "cv_no_branch",
+      "when": [{ "branches_open_max": 0 }],
+      "result": "insufficient",
+      "message_fa": "اطلاعات کافی برای پیشنهاد حتی یک موضوع مرتبط وجود ندارد.",
+      "source_refs": ["src_nhs_app"]
+    },
+    {
+      "id": "cv_sufficient",
+      "when": [{ "branches_open_min": 1 }],
+      "result": "sufficient",
+      "message_fa": "موضوع‌های مرتبط بر پایهٔ پاسخ‌ها و مسیرهای مستند نمایش داده می‌شوند؛ این‌ها تشخیص نیستند.",
+      "source_refs": ["src_nhs_app"]
+    }
+  ],
+  "disclaimers": {
+    "before_start_fa": "این ابزار تشخیص پزشکی نیست. چند پرسش کوتاه می‌پرسد تا موضوع‌های مرتبط با نشانه‌هایت را نشان دهد. اگر درد شدید یا بدحالی داری، همین حالا کمک پزشکی بگیر.",
+    "during_fa": "پاسخ‌ها فقط در همین صفحه و در حافظهٔ مرورگر می‌مانند و به سرور فرستاده نمی‌شوند.",
+    "result_fa": "این‌ها موضوع‌هایی برای بررسی هستند، نه تشخیص. پزشک بر اساس معاینه تصمیم می‌گیرد چه آزمایش یا تصویربرداری لازم است."
+  }
+}
