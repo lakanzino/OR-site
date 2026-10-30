@@ -139,6 +139,12 @@
       c.whenToSeeDoctor.forEach(function (s) { ul2.appendChild(el('li', '', s)); });
       card.appendChild(ul2);
     }
+    if (c.treatments && c.treatments.length) {
+      card.appendChild(el('h4', '', 'درمان‌های رایج (تصمیم نهایی با پزشک است)'));
+      var ul3 = el('ul', 'hj-sc-list');
+      c.treatments.forEach(function (s) { ul3.appendChild(el('li', '', s)); });
+      card.appendChild(ul3);
+    }
     if (c.specialty) {
       card.appendChild(el('p', 'hj-sc-muted', 'تخصص پیشنهادی: ' + c.specialty));
     }

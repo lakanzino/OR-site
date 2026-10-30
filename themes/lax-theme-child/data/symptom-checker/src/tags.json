@@ -2033,6 +2033,42 @@
       "category": "general",
       "background": "common",
       "synonyms_fa": []
+    },
+    {
+      "id": "breast_lump",
+      "label_fa": "توده یا ضخیم‌شدگی جدید در پستان یا زیر بغل",
+      "definition_fa": "توده‌ای سفت یا ضخیم‌شده که تازه ایجاد شده و در پستان یا زیر بغل لمس می‌شود.",
+      "question_fa": "سوال: آیا توده یا ضخیم‌شدگی جدیدی در پستان یا زیر بغل لمس می‌کنید؟",
+      "category": "chest",
+      "background": "common",
+      "synonyms_fa": []
+    },
+    {
+      "id": "nipple_discharge",
+      "label_fa": "ترشح از نوک پستان",
+      "definition_fa": "ترشح از نوک پستان، از جمله ترشح خونی یا بدون ارتباط با شیردهی.",
+      "question_fa": "سوال: آیا از نوک پستان ترشح دارید (به‌ویژه خونی)؟",
+      "category": "chest",
+      "background": "rare",
+      "synonyms_fa": []
+    },
+    {
+      "id": "nipple_retraction",
+      "label_fa": "فرورفتن نوک پستان",
+      "definition_fa": "نوک پستان که جدیدا به داخل کشیده یا فرورفته است.",
+      "question_fa": "سوال: آیا نوک پستان به داخل فرورفته یا تغییر شکل داده؟",
+      "category": "chest",
+      "background": "rare",
+      "synonyms_fa": []
+    },
+    {
+      "id": "no_gas_or_stool",
+      "label_fa": "ناتوانی در دفع گاز و مدفوع",
+      "definition_fa": "نداشتن دفع گاز یا مدفوع همراه با درد و شکم متورم؛ می‌تواند نشانهٔ انسداد روده باشد.",
+      "question_fa": "سوال: آیا نمی‌توانید گاز یا مدفوع دفع کنید؟",
+      "category": "abdomen",
+      "background": "rare",
+      "synonyms_fa": []
     }
   ]
 }

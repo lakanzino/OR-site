@@ -1,0 +1,149 @@
+{
+  "id": "hyperthyroidism",
+  "name_fa": "پرکاری تیروئید",
+  "name_en": "Hyperthyroidism",
+  "category": "غدد و متابولیسم",
+  "prevalence": "common",
+  "urgency": "soon",
+  "age_groups": [
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "palpitation",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "tremor",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "heat_intolerance",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "weight_loss",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "anxiety",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "sweating",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "weakness",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "sleep_problem",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "diarrhea",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "hair_loss",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "neck_swelling",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "eye_bulging",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "irregular_pulse",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "کاهش وزن ناخواسته با وجود اشتهای طبیعی یا زیاد",
+    "تپش قلب و ضربان سریع یا نامنظم",
+    "اضطراب و تحریک‌پذیری",
+    "لرزش دست",
+    "تعریق و عدم تحمل گرما",
+    "خستگی و ضعف عضلانی",
+    "اختلال خواب",
+    "دفع مکرر مدفوع",
+    "نازک‌شدن پوست و مو",
+    "بی‌نظمی قاعدگی",
+    "بزرگ‌شدن گردن (گواتر)",
+    "در گریوز: برجستگی چشم، تحریک و دوبینی",
+    "در سالمندان علائم ممکن است کم‌تر یا غیرمعمول باشد"
+  ],
+  "when_to_see_doctor_fa": [
+    "تپش قلب، کاهش وزن بی‌دلیل، لرزش یا تعریق مداوم",
+    "اورژانس: تب بالا، ضربان بسیار سریع، گیجی و بی‌قراری شدید (طوفان تیروئیدی)"
+  ],
+  "treatments_fa": [
+    "داروهای ضدتیروئید مانند متی‌مازول",
+    "بتابلاکرها برای کنترل علائم مثل تپش قلب",
+    "ید رادیواکتیو",
+    "جراحی (برداشتن تمام یا بخشی از تیروئید)",
+    "در بارداری انتخاب دارو با نظر ویژه پزشک"
+  ],
+  "summary_fa": "در پرکاری تیروئید، غده تیروئید (غده پروانه‌ای شکل گردن) هورمون‌های تیروئید را بیش از نیاز بدن می‌سازد و سوخت‌وساز (متابولیسم) بدن را تسریع می‌کند.",
+  "next_step_fa": "تپش قلب یا کاهش وزن بدون دلیل را پزشک باید بررسی کند. تب بالا، ضربان بسیار سریع یا گیجی شدید نیاز به اورژانس دارد.",
+  "sources": [
+    {
+      "publisher": "ATA Guidelines: Hyperthyroidism",
+      "title": "",
+      "url": "https://www.thyroid.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "NIDDK: Hyperthyroidism (Overactive Thyroid)",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "Mayo Clinic: Hyperthyroidism",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "MedlinePlus: Hyperthyroidism",
+      "title": "",
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "پروفایل «پایگاه داده بیماری‌ها» (ردیف 14) و فهرست علائم آن؛ برچسب‌ها و متن هنوز بازبینی پزشکی نشده‌اند."
+  }
+}

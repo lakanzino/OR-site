@@ -135,6 +135,7 @@ def build(published_only=False):
             "checkerNote": d.get("checker_note", ""),
             "symptoms": d["symptoms_fa"],
             "whenToSeeDoctor": d["when_to_see_doctor_fa"],
+            "treatments": d.get("treatments_fa", []),
             "summary": d["summary_fa"],
             "nextStep": d["next_step_fa"],
             "sources": [

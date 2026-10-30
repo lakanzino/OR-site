@@ -1,0 +1,114 @@
+{
+  "id": "intestinal_obstruction",
+  "name_fa": "انسداد روده",
+  "name_en": "Intestinal Obstruction (Bowel Obstruction)",
+  "category": "گوارش",
+  "prevalence": "uncommon",
+  "urgency": "emergency",
+  "age_groups": [
+    "child",
+    "teen",
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "abd_pain",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "vomiting",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "abdominal_swelling",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "no_gas_or_stool",
+      "freq": "common",
+      "role": "red_flag"
+    },
+    {
+      "tag": "nausea",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "appetite",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "constipation",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "درد کرامپی (پیچشی) شکم که موج‌وار می‌آید",
+    "استفراغ (گاهی صفراوی یا بدبو)",
+    "نفخ و بزرگ‌شدن شکم",
+    "ناتوانی در دفع مدفوع و گاز",
+    "بی‌اشتهایی",
+    "در انسداد (بسته شدن مسیر) نسبی ممکن است اسهال دیده شود"
+  ],
+  "when_to_see_doctor_fa": [
+    "این وضعیت اورژانسی است: درد شدید شکم، استفراغ مکرر، نفخ و نبود دفع مدفوع و گاز",
+    "مراجعه فوری به اورژانس بدون انتظار"
+  ],
+  "treatments_fa": [
+    "بستری و ناشتایی",
+    "مایعات وریدی",
+    "لوله بینی‌ـ‌معده‌ای (NG tube) برای تخلیه محتوای معده",
+    "اصلاح اختلالات الکترولیت",
+    "جراحی در انسداد کامل، علائم خفه‌شدگی روده یا عدم بهبود",
+    "استنت (لوله توری) برای برخی انسدادهای روده بزرگ"
+  ],
+  "summary_fa": "در انسداد (بسته شدن مسیر) روده، عبور مدفوع، گاز و مایعات در روده باریک یا بزرگ مسدود یا مختل می‌شود. یک وضعیت اورژانسی است که نیاز به ارزیابی فوری دارد.",
+  "next_step_fa": "این وضعیت اورژانسی است. همین حالا به اورژانس مراجعه کنید و از خوردن یا مصرف خودسرانهٔ مسکن و ملین بپرهیزید.",
+  "sources": [
+    {
+      "publisher": "Mayo Clinic: Intestinal obstruction",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "NIDDK: Digestive diseases overview",
+      "title": "",
+      "url": "https://www.niddk.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "MedlinePlus: Intestinal obstruction",
+      "title": "",
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "WSES Guidelines: Adhesive Small Bowel Obstruction",
+      "title": "",
+      "url": "https://www.wses.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "پروفایل «پایگاه داده بیماری‌ها» (ردیف 11) و فهرست علائم آن؛ برچسب‌ها و متن هنوز بازبینی پزشکی نشده‌اند."
+  }
+}

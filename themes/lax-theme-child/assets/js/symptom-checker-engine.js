@@ -320,6 +320,7 @@
           missingCore: s.missingCore.map(function (t) { return labels[t] || t; }),
           symptoms: (s.disease.symptoms || []).slice(),
           whenToSeeDoctor: (s.disease.whenToSeeDoctor || []).slice(),
+          treatments: (s.disease.treatments || []).slice(),
           nextStep: s.disease.nextStep || '',
           sources: s.disease.sources || [],
         };

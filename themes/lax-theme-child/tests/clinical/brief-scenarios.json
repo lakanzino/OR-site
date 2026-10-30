@@ -1,0 +1,634 @@
+[
+ {
+  "id": "S01",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "runny_nose",
+   "sneezing",
+   "sore_throat",
+   "mild_cough"
+  ],
+  "expect": "common_cold",
+  "emergency": false
+ },
+ {
+  "id": "S02",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "fever",
+   "body_aches",
+   "fatigue",
+   "cough",
+   "sudden_onset"
+  ],
+  "expect": "influenza",
+  "emergency": false
+ },
+ {
+  "id": "S03",
+  "age": "child",
+  "sex": "any",
+  "tags": [
+   "sore_throat",
+   "fever",
+   "swollen_neck_glands",
+   "painful_swallowing"
+  ],
+  "expect": "strep_throat",
+  "emergency": false
+ },
+ {
+  "id": "S04",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "fever",
+   "cough",
+   "loss_of_smell",
+   "fatigue"
+  ],
+  "expect": "covid19",
+  "emergency": false
+ },
+ {
+  "id": "S05",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "sneezing",
+   "itchy_eyes",
+   "runny_nose",
+   "seasonal_pattern"
+  ],
+  "expect": "allergic_rhinitis",
+  "emergency": false
+ },
+ {
+  "id": "S06",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "facial_pain",
+   "nasal_congestion",
+   "purulent_nasal_discharge",
+   "headache"
+  ],
+  "expect": "acute_sinusitis",
+  "emergency": false
+ },
+ {
+  "id": "S07",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "cough",
+   "sputum",
+   "fatigue",
+   "mild_chest_discomfort"
+  ],
+  "expect": "acute_bronchitis",
+  "emergency": false
+ },
+ {
+  "id": "S08",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "fever",
+   "productive_cough",
+   "shortness_of_breath",
+   "pleuritic_chest_pain"
+  ],
+  "expect": "pneumonia",
+  "emergency": false
+ },
+ {
+  "id": "S09",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "wheezing",
+   "shortness_of_breath",
+   "night_cough",
+   "chest_tightness"
+  ],
+  "expect": "asthma",
+  "emergency": false
+ },
+ {
+  "id": "S10",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "heartburn",
+   "regurgitation",
+   "sour_taste"
+  ],
+  "expect": "gerd",
+  "emergency": false
+ },
+ {
+  "id": "S11",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "diarrhea",
+   "vomiting",
+   "abdominal_cramps",
+   "fever"
+  ],
+  "expect": "gastroenteritis",
+  "emergency": false
+ },
+ {
+  "id": "S12",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "epigastric_pain",
+   "nausea",
+   "pain_improves_with_eating",
+   "bloating"
+  ],
+  "expect": "peptic_ulcer",
+  "emergency": false
+ },
+ {
+  "id": "S13",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "right_lower_abdominal_pain",
+   "nausea",
+   "fever",
+   "loss_of_appetite"
+  ],
+  "expect": "appendicitis",
+  "emergency": true
+ },
+ {
+  "id": "S14",
+  "age": "adult",
+  "sex": "female",
+  "tags": [
+   "right_upper_abdominal_pain",
+   "pain_after_fatty_meal",
+   "nausea"
+  ],
+  "expect": "gallstones",
+  "emergency": false
+ },
+ {
+  "id": "S15",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "abdominal_pain",
+   "bloating",
+   "alternating_bowel_habit"
+  ],
+  "expect": "ibs",
+  "emergency": false
+ },
+ {
+  "id": "S16",
+  "age": "adult",
+  "sex": "female",
+  "tags": [
+   "painful_urination",
+   "urinary_frequency",
+   "urinary_urgency"
+  ],
+  "expect": "cystitis",
+  "emergency": false
+ },
+ {
+  "id": "S17",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "flank_pain",
+   "fever",
+   "painful_urination",
+   "chills"
+  ],
+  "expect": "pyelonephritis",
+  "emergency": false
+ },
+ {
+  "id": "S18",
+  "age": "adult",
+  "sex": "male",
+  "tags": [
+   "severe_colicky_flank_pain",
+   "blood_in_urine",
+   "nausea"
+  ],
+  "expect": "kidney_stones",
+  "emergency": false
+ },
+ {
+  "id": "S19",
+  "age": "adult",
+  "sex": "female",
+  "tags": [
+   "one_sided_headache",
+   "throbbing_headache",
+   "light_sensitivity",
+   "nausea"
+  ],
+  "expect": "migraine",
+  "emergency": false
+ },
+ {
+  "id": "S20",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "band_like_headache",
+   "mild_headache",
+   "stress_trigger",
+   "neck_tension"
+  ],
+  "expect": "tension_headache",
+  "emergency": false
+ },
+ {
+  "id": "S21",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "excessive_urination",
+   "excessive_thirst",
+   "fatigue",
+   "blurred_vision",
+   "weight_loss"
+  ],
+  "expect": "type2_diabetes",
+  "emergency": false
+ },
+ {
+  "id": "S22",
+  "age": "adult",
+  "sex": "female",
+  "tags": [
+   "fatigue",
+   "cold_intolerance",
+   "weight_gain",
+   "constipation",
+   "dry_skin"
+  ],
+  "expect": "hypothyroidism",
+  "emergency": false
+ },
+ {
+  "id": "S23",
+  "age": "adult",
+  "sex": "female",
+  "tags": [
+   "weight_loss",
+   "palpitations",
+   "heat_intolerance",
+   "tremor"
+  ],
+  "expect": "hyperthyroidism",
+  "emergency": false
+ },
+ {
+  "id": "S24",
+  "age": "adult",
+  "sex": "female",
+  "tags": [
+   "fatigue",
+   "pallor",
+   "dizziness",
+   "heavy_periods"
+  ],
+  "expect": "iron_deficiency_anemia",
+  "emergency": false
+ },
+ {
+  "id": "S25",
+  "age": "adult",
+  "sex": "male",
+  "tags": [
+   "chest_pressure",
+   "pain_radiating_to_arm",
+   "sweating",
+   "nausea"
+  ],
+  "expect": "acute_coronary_syndrome",
+  "emergency": true
+ },
+ {
+  "id": "S26",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "facial_droop",
+   "arm_weakness",
+   "speech_difficulty",
+   "sudden_onset"
+  ],
+  "expect": "stroke",
+  "emergency": true
+ },
+ {
+  "id": "S27",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "sudden_shortness_of_breath",
+   "pleuritic_chest_pain",
+   "leg_swelling"
+  ],
+  "expect": "pulmonary_embolism",
+  "emergency": true
+ },
+ {
+  "id": "S28",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "fever",
+   "stiff_neck",
+   "light_sensitivity",
+   "headache",
+   "non_blanching_rash"
+  ],
+  "expect": "meningitis",
+  "emergency": true
+ },
+ {
+  "id": "S29",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "hives",
+   "throat_swelling",
+   "difficulty_breathing",
+   "after_exposure"
+  ],
+  "expect": "anaphylaxis",
+  "emergency": true
+ },
+ {
+  "id": "S30",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "known_diabetes",
+   "nausea",
+   "abdominal_pain",
+   "fruity_breath",
+   "excessive_urination"
+  ],
+  "expect": "diabetic_ketoacidosis",
+  "emergency": true
+ },
+ {
+  "id": "S31",
+  "age": "adult",
+  "sex": "female",
+  "tags": [
+   "lower_abdominal_pain",
+   "vaginal_bleeding",
+   "missed_period",
+   "dizziness"
+  ],
+  "expect": "ectopic_pregnancy",
+  "emergency": true
+ },
+ {
+  "id": "S32",
+  "age": "teen",
+  "sex": "male",
+  "tags": [
+   "sudden_severe_scrotal_pain",
+   "nausea",
+   "scrotal_swelling"
+  ],
+  "expect": "testicular_torsion",
+  "emergency": true
+ },
+ {
+  "id": "S33",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "low_mood",
+   "loss_of_interest",
+   "sleep_changes",
+   "fatigue"
+  ],
+  "expect": "depression",
+  "emergency": false
+ },
+ {
+  "id": "S34",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "excessive_worry",
+   "palpitations",
+   "restlessness",
+   "muscle_tension"
+  ],
+  "expect": "generalized_anxiety",
+  "emergency": false
+ },
+ {
+  "id": "S35",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "difficulty_falling_asleep",
+   "early_waking",
+   "daytime_fatigue"
+  ],
+  "expect": "insomnia",
+  "emergency": false
+ },
+ {
+  "id": "S36",
+  "age": "elderly",
+  "sex": "any",
+  "tags": [
+   "knee_pain",
+   "brief_morning_stiffness",
+   "pain_worse_with_activity"
+  ],
+  "expect": "osteoarthritis",
+  "emergency": false
+ },
+ {
+  "id": "S37",
+  "age": "adult",
+  "sex": "female",
+  "tags": [
+   "symmetric_small_joint_swelling",
+   "prolonged_morning_stiffness",
+   "fatigue"
+  ],
+  "expect": "rheumatoid_arthritis",
+  "emergency": false
+ },
+ {
+  "id": "S38",
+  "age": "adult",
+  "sex": "male",
+  "tags": [
+   "big_toe_pain",
+   "joint_swelling",
+   "joint_redness",
+   "sudden_onset"
+  ],
+  "expect": "gout",
+  "emergency": false
+ },
+ {
+  "id": "S39",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "low_back_pain",
+   "pain_worse_with_movement",
+   "after_lifting"
+  ],
+  "expect": "mechanical_low_back_pain",
+  "emergency": false
+ },
+ {
+  "id": "S40",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "low_back_pain",
+   "pain_radiating_down_leg",
+   "leg_tingling"
+  ],
+  "expect": "sciatica",
+  "emergency": false
+ },
+ {
+  "id": "S41",
+  "age": "adult",
+  "sex": "female",
+  "tags": [
+   "hand_numbness",
+   "night_tingling",
+   "thumb_tingling"
+  ],
+  "expect": "carpal_tunnel",
+  "emergency": false
+ },
+ {
+  "id": "S42",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "heel_pain",
+   "pain_first_steps_morning"
+  ],
+  "expect": "plantar_fasciitis",
+  "emergency": false
+ },
+ {
+  "id": "S43",
+  "age": "child",
+  "sex": "any",
+  "tags": [
+   "itchy_skin",
+   "dry_skin_patches",
+   "skin_redness"
+  ],
+  "expect": "atopic_dermatitis",
+  "emergency": false
+ },
+ {
+  "id": "S44",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "scaly_skin_plaques",
+   "itchy_skin",
+   "silvery_scales"
+  ],
+  "expect": "psoriasis",
+  "emergency": false
+ },
+ {
+  "id": "S45",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "ring_shaped_rash",
+   "itchy_skin",
+   "scaly_skin_patches"
+  ],
+  "expect": "tinea",
+  "emergency": false
+ },
+ {
+  "id": "S46",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "red_warm_swollen_skin",
+   "skin_pain",
+   "fever"
+  ],
+  "expect": "cellulitis",
+  "emergency": false
+ },
+ {
+  "id": "S47",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "red_eye",
+   "eye_discharge",
+   "itchy_eyes"
+  ],
+  "expect": "conjunctivitis",
+  "emergency": false
+ },
+ {
+  "id": "S48",
+  "age": "child",
+  "sex": "any",
+  "tags": [
+   "ear_pain",
+   "fever",
+   "irritability"
+  ],
+  "expect": "otitis_media",
+  "emergency": false
+ },
+ {
+  "id": "S49",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "spinning_sensation",
+   "brief_dizziness_on_head_movement",
+   "nausea"
+  ],
+  "expect": "bppv",
+  "emergency": false
+ },
+ {
+  "id": "S50",
+  "age": "adult",
+  "sex": "any",
+  "tags": [
+   "unilateral_calf_swelling",
+   "calf_pain",
+   "calf_warmth"
+  ],
+  "expect": "dvt",
+  "emergency": true
+ }
+]

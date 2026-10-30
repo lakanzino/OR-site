@@ -1,0 +1,113 @@
+{
+  "id": "varicose_veins",
+  "name_fa": "واریس",
+  "name_en": "Varicose Veins",
+  "category": "قلب و عروق",
+  "prevalence": "common",
+  "urgency": "routine",
+  "age_groups": [
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "leg_swelling",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "visible_vessels",
+      "freq": "very_common",
+      "role": "core"
+    },
+    {
+      "tag": "calf_pain",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "itch",
+      "freq": "common",
+      "role": "supporting"
+    },
+    {
+      "tag": "dark_patches",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "skin_burning",
+      "freq": "occasional",
+      "role": "supporting"
+    },
+    {
+      "tag": "unilateral_calf_swelling",
+      "freq": "rare",
+      "role": "red_flag"
+    }
+  ],
+  "symptoms_fa": [
+    "رگ‌های برجسته، پیچ‌خورده و آبی یا بنفش",
+    "درد و سنگینی پا",
+    "احساس سوزش، ضربان یا گرفتگی عضلانی",
+    "تورم ساق و مچ",
+    "تشدید علائم پس از ایستادن یا نشستن طولانی",
+    "خارش اطراف رگ",
+    "تغییر رنگ پوست"
+  ],
+  "when_to_see_doctor_fa": [
+    "تورم ناگهانی، درد، قرمزی یا گرمی پا (احتمال لخته)",
+    "زخم یا خونریزی",
+    "اورژانس: تنگی نفس یا درد قفسه سینه همراه با تورم پا"
+  ],
+  "treatments_fa": [
+    "خودمراقبتی: جوراب واریس، حرکت و ورزش، بالا نگه داشتن پا",
+    "اسکلروتراپی (تزریق ماده بستن رگ)",
+    "درمان‌های حرارتی داخل رگ با لیزر یا امواج رادیویی",
+    "چسب رگ",
+    "فلبکتومی (برداشتن رگ از راه برش‌های کوچک) یا جراحی لیگاسیون و استریپینگ"
+  ],
+  "summary_fa": "واریس به رگ‌های سطحی متورم، پیچ‌خورده و برجسته گفته می‌شود که بیشتر در پاها دیده می‌شود. دریچه‌های رگ ضعیف می‌شوند و خون در رگ جمع می‌شود.",
+  "next_step_fa": "تورم ناگهانی یک پا با درد، قرمزی یا گرمی نیاز به بررسی فوری دارد (احتمال لخته). در غیر این صورت پزشک درمان را تعیین می‌کند.",
+  "sources": [
+    {
+      "publisher": "Mayo Clinic: Varicose veins",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "NHLBI: Varicose Veins",
+      "title": "",
+      "url": "https://www.nhlbi.nih.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "MedlinePlus: Varicose Veins",
+      "title": "",
+      "url": "https://medlineplus.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "SVS Guidelines: Varicose veins and chronic venous disease",
+      "title": "",
+      "url": "https://vascular.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "پروفایل «پایگاه داده بیماری‌ها» (ردیف 15) و فهرست علائم آن؛ برچسب‌ها و متن هنوز بازبینی پزشکی نشده‌اند."
+  }
+}

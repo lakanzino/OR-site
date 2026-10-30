@@ -1,0 +1,102 @@
+{
+  "id": "breast_cancer",
+  "name_fa": "سرطان پستان",
+  "name_en": "Breast Cancer",
+  "category": "سرطان",
+  "prevalence": "common",
+  "urgency": "soon",
+  "age_groups": [
+    "adult",
+    "elderly"
+  ],
+  "sex": "any",
+  "tags": [
+    {
+      "tag": "breast_lump",
+      "freq": "common",
+      "role": "core"
+    },
+    {
+      "tag": "nipple_retraction",
+      "freq": "rare",
+      "role": "core"
+    },
+    {
+      "tag": "nipple_discharge",
+      "freq": "rare",
+      "role": "supporting"
+    },
+    {
+      "tag": "skin_thickening",
+      "freq": "occasional",
+      "role": "supporting"
+    }
+  ],
+  "symptoms_fa": [
+    "توده یا ضخیم‌شدگی جدید در پستان یا زیر بغل",
+    "تغییر اندازه یا شکل پستان",
+    "فرورفتگی یا چین‌خوردگی پوست پستان",
+    "فرورفتن نوک پستان",
+    "ترشح از نوک پستان (از جمله خونی)",
+    "قرمزی، پوسته‌ریزی یا پوست پرتقالی",
+    "بسیاری از موارد اولیه علامتی ندارند و با ماموگرافی (عکس‌برداری با اشعه ایکس از پستان) پیدا می‌شوند",
+    "اغلب توده‌ٔ پستان خوش‌خیم است، اما باید بررسی شود"
+  ],
+  "when_to_see_doctor_fa": [
+    "هر توده یا تغییر جدید در پستان",
+    "ترشح خونی نوک پستان",
+    "تغییر پوست پستان",
+    "انجام غربالگری طبق توصیه پزشک حتی بدون علامت"
+  ],
+  "treatments_fa": [
+    "جراحی: لامپکتومی (برداشتن توده) یا ماستکتومی (برداشتن کامل پستان)، بررسی غدد لنفاوی زیر بغل",
+    "پرتودرمانی",
+    "شیمی‌درمانی",
+    "هورمون‌درمانی در سرطان‌های حساس به هورمون",
+    "درمان هدفمند ضد HER2",
+    "ایمنی‌درمانی",
+    "بازسازی پستان"
+  ],
+  "summary_fa": "سرطان پستان رشد کنترل‌نشده سلول‌های بافت پستان (مجاری شیری یا لوبول‌ها) است. شایع‌ترین سرطان در زنان است و مردان را نیز به‌ندرت مبتلا می‌کند. تشخیص زودهنگام شانس درمان را به‌طور چشمگیری افزایش می‌دهد.",
+  "next_step_fa": "هر توده یا تغییر جدید در پستان را باید پزشک بررسی کند؛ بیشتر موارد خوش‌خیم‌اند ولی بررسی لازم است.",
+  "sources": [
+    {
+      "publisher": "NCI: Breast Cancer",
+      "title": "",
+      "url": "https://www.cancer.gov/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "American Cancer Society: Breast Cancer",
+      "title": "",
+      "url": "https://www.cancer.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "Mayo Clinic: Breast cancer",
+      "title": "",
+      "url": "https://www.mayoclinic.org/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    },
+    {
+      "publisher": "WHO: Breast cancer",
+      "title": "",
+      "url": "https://www.who.int/",
+      "accessed": "",
+      "verified": false,
+      "urlLevel": "homepage"
+    }
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": "",
+    "date": "",
+    "basis": "پروفایل «پایگاه داده بیماری‌ها» (ردیف 13) و فهرست علائم آن؛ برچسب‌ها و متن هنوز بازبینی پزشکی نشده‌اند."
+  }
+}
