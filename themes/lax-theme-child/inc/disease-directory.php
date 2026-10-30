@@ -131,7 +131,8 @@ function hj_sync_disease_profiles() {
 			$post_id = wp_insert_post( array( 'post_type' => 'disease', 'post_status' => 'draft', 'post_title' => $profile['nameFa'], 'post_name' => $id, 'post_content' => '', 'meta_input' => array( '_hj_disease_seed_id' => $id, '_hj_disease_en' => sanitize_text_field( $profile['nameEn'] ) ) ), true );
 			if ( is_wp_error( $post_id ) || ! $post_id ) { $complete = false; continue; }
 		}
-		update_post_meta( $post_id, '_hj_disease_profile', wp_json_encode( $profile, JSON_UNESCAPED_UNICODE ) );
+		// WordPress unslashes meta values on write; preserve JSON escape sequences such as \n.
+		update_post_meta( $post_id, '_hj_disease_profile', wp_slash( wp_json_encode( $profile, JSON_UNESCAPED_UNICODE ) ) );
 		if ( '' === (string) get_post_meta( $post_id, '_hj_disease_en', true ) && '' !== $profile['nameEn'] ) {
 			update_post_meta( $post_id, '_hj_disease_en', sanitize_text_field( $profile['nameEn'] ) );
 		}
