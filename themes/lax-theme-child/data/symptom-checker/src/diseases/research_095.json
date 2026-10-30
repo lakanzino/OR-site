@@ -22,6 +22,11 @@
       "tag": "low_libido",
       "freq": "common",
       "role": "core"
+    },
+    {
+      "tag": "anxiety",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [
@@ -78,5 +83,7 @@
     "روان‌درمانی",
     "دستگاه خلأ",
     "جراحی (پروتز) در موارد مقاوم"
-  ]
+  ],
+  "checker_rankable": false,
+  "checker_note": "سه برچسب؛ علائم بیشتر روانی/عملکردی‌اند و بدون بازبینی پزشکی رتبه‌بندی نمی‌شود."
 }

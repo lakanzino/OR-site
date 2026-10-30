@@ -17,6 +17,11 @@
       "tag": "pale_patches",
       "freq": "very_common",
       "role": "core"
+    },
+    {
+      "tag": "hair_graying",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [

@@ -27,6 +27,11 @@
       "tag": "skin_thickening",
       "freq": "occasional",
       "role": "supporting"
+    },
+    {
+      "tag": "black_dots_in_lesion",
+      "freq": "occasional",
+      "role": "core"
     }
   ],
   "symptoms_fa": [

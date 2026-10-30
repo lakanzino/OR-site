@@ -27,6 +27,11 @@
       "tag": "vision",
       "freq": "common",
       "role": "supporting"
+    },
+    {
+      "tag": "night_vision",
+      "freq": "occasional",
+      "role": "supporting"
     }
   ],
   "symptoms_fa": [

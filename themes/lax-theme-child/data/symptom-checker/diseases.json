@@ -20,17 +20,20 @@
       "tags": [
         "acne_lesions",
         "skin_pain",
-        "rash"
+        "rash",
+        "dark_patches"
       ],
       "tagRoles": {
         "acne_lesions": "core",
         "skin_pain": "supporting",
-        "rash": "core"
+        "rash": "core",
+        "dark_patches": "supporting"
       },
       "tagFreq": {
         "acne_lesions": "very_common",
         "skin_pain": "common",
-        "rash": "common"
+        "rash": "common",
+        "dark_patches": "occasional"
       },
       "rankable": true,
       "checkerNote": "",
@@ -4294,13 +4297,16 @@
       ],
       "sex": "any",
       "tags": [
-        "pale_patches"
+        "pale_patches",
+        "hair_graying"
       ],
       "tagRoles": {
-        "pale_patches": "core"
+        "pale_patches": "core",
+        "hair_graying": "supporting"
       },
       "tagFreq": {
-        "pale_patches": "very_common"
+        "pale_patches": "very_common",
+        "hair_graying": "occasional"
       },
       "rankable": false,
       "checkerNote": "",
@@ -4603,17 +4609,20 @@
       "tags": [
         "central_vision_loss",
         "vision_distortion",
-        "vision"
+        "vision",
+        "night_vision"
       ],
       "tagRoles": {
         "central_vision_loss": "core",
         "vision_distortion": "core",
-        "vision": "supporting"
+        "vision": "supporting",
+        "night_vision": "supporting"
       },
       "tagFreq": {
         "central_vision_loss": "very_common",
         "vision_distortion": "common",
-        "vision": "common"
+        "vision": "common",
+        "night_vision": "occasional"
       },
       "rankable": true,
       "checkerNote": "",
@@ -8723,18 +8732,21 @@
       "sex": "any",
       "tags": [
         "tics",
-        "premonitory_urge"
+        "premonitory_urge",
+        "vocal_tics"
       ],
       "tagRoles": {
         "tics": "core",
-        "premonitory_urge": "core"
+        "premonitory_urge": "core",
+        "vocal_tics": "core"
       },
       "tagFreq": {
         "tics": "very_common",
-        "premonitory_urge": "common"
+        "premonitory_urge": "common",
+        "vocal_tics": "very_common"
       },
       "rankable": false,
-      "checkerNote": "",
+      "checkerNote": "سه برچسب و بدون تفکیک کافی از سایر اختلالات حرکتی؛ تا بازبینی پزشکی رتبه‌بندی نمی‌شود.",
       "symptoms": [
         "تیک‌های حرکتی متعدد",
         "تیک‌های صوتی",
@@ -9278,17 +9290,20 @@
       "tags": [
         "itch",
         "burrows",
-        "rash"
+        "rash",
+        "skin_cracking"
       ],
       "tagRoles": {
         "itch": "core",
         "burrows": "core",
-        "rash": "core"
+        "rash": "core",
+        "skin_cracking": "supporting"
       },
       "tagFreq": {
         "itch": "very_common",
         "burrows": "common",
-        "rash": "common"
+        "rash": "common",
+        "skin_cracking": "occasional"
       },
       "rankable": true,
       "checkerNote": "",
@@ -9428,17 +9443,20 @@
       "tags": [
         "warts",
         "skin_pain",
-        "skin_thickening"
+        "skin_thickening",
+        "black_dots_in_lesion"
       ],
       "tagRoles": {
         "warts": "core",
         "skin_pain": "core",
-        "skin_thickening": "supporting"
+        "skin_thickening": "supporting",
+        "black_dots_in_lesion": "core"
       },
       "tagFreq": {
         "warts": "very_common",
         "skin_pain": "common",
-        "skin_thickening": "occasional"
+        "skin_thickening": "occasional",
+        "black_dots_in_lesion": "occasional"
       },
       "rankable": true,
       "checkerNote": "",
@@ -9908,18 +9926,21 @@
       "sex": "any",
       "tags": [
         "erectile_difficulty",
-        "low_libido"
+        "low_libido",
+        "anxiety"
       ],
       "tagRoles": {
         "erectile_difficulty": "core",
-        "low_libido": "core"
+        "low_libido": "core",
+        "anxiety": "supporting"
       },
       "tagFreq": {
         "erectile_difficulty": "very_common",
-        "low_libido": "common"
+        "low_libido": "common",
+        "anxiety": "occasional"
       },
       "rankable": false,
-      "checkerNote": "",
+      "checkerNote": "سه برچسب؛ علائم بیشتر روانی/عملکردی‌اند و بدون بازبینی پزشکی رتبه‌بندی نمی‌شود.",
       "symptoms": [
         "دشواری در رسیدن به نعوظ",
         "دشواری در حفظ نعوظ",

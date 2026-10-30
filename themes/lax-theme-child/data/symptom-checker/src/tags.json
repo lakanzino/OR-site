@@ -2069,6 +2069,33 @@
       "category": "abdomen",
       "background": "rare",
       "synonyms_fa": []
+    },
+    {
+      "id": "hair_graying",
+      "label_fa": "سفید شدن زودهنگام مو یا مژه یا ابرو",
+      "definition_fa": "سفید شدن موی سر، مژه یا ابرو در سن کمتر از حد معمول، بدون علت واضح.",
+      "question_fa": "سوال: آیا موی سر، مژه یا ابرو شما زودتر از معمول سفید شده؟",
+      "category": "skin",
+      "background": "rare",
+      "synonyms_fa": []
+    },
+    {
+      "id": "vocal_tics",
+      "label_fa": "تیک صوتی (صدا یا کلمه)",
+      "definition_fa": "صدای ناخواسته و تکراری مانند خرخر، سرفه‌ی مکرر یا تکرار کلمه یا هجا.",
+      "question_fa": "سوال: آیا صداها یا کلمات ناخواسته و تکراری از شما بیرون می‌آید؟",
+      "category": "head",
+      "background": "common",
+      "synonyms_fa": []
+    },
+    {
+      "id": "black_dots_in_lesion",
+      "label_fa": "نقطه‌های ریز سیاه داخل برجستگی پوست",
+      "definition_fa": "نقاط ریز سیاه‌رنگ در سطح یک برجستگی پوستی، که معمولاً عروق کوچک لخته‌شده‌اند.",
+      "question_fa": "سوال: آیا داخل یک برجستگی پوستی نقطه‌های ریز سیاه می‌بینید؟",
+      "category": "skin",
+      "background": "rare",
+      "synonyms_fa": []
     }
   ]
 }
