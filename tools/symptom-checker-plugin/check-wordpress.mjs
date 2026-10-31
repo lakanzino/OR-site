@@ -181,7 +181,15 @@ async function uiCheck(config) {
   const { window } = dom;
   window.HJ_SC_CONFIG = config;
   const realFetch = globalThis.fetch;
-  window.fetch = async (url, options) => realFetch(new URL(url, `${BASE}/symptom-checker/`), options);
+  const requests = [];
+  window.fetch = async (url, options = {}) => {
+    requests.push({
+      url: String(url),
+      method: (options.method ?? 'GET').toUpperCase(),
+      body: options.body ?? null,
+    });
+    return realFetch(new URL(url, `${BASE}/symptom-checker/`), options);
+  };
   globalThis.window = window;
   globalThis.document = window.document;
   globalThis.fetch = window.fetch;
@@ -240,6 +248,32 @@ async function uiCheck(config) {
   const withoutLink = [...doc.querySelectorAll('#app article.card')].filter((card) => !card.querySelector('a[href]'));
   check('unmapped topics stay link-free', withoutLink.every((card) => card.textContent.includes('هیچ لینکی نمایش داده نمی‌شود')));
   check('the UI wrote nothing to localStorage', window.localStorage.length === 0);
+  check('the UI wrote nothing to sessionStorage', window.sessionStorage.length === 0);
+  check('the UI set no cookie', window.document.cookie === '');
+  check(
+    'the packaged UI only asked this WordPress for its two data files',
+    requests.length >= 2 &&
+      requests.every((item) => item.method === 'GET' && item.body === null) &&
+      requests.every((item) => new URL(item.url, `${BASE}/symptom-checker/`).origin === new URL(BASE).origin),
+    requests.map((item) => `${item.method} ${item.url}`).join(' ; '),
+  );
+  // WordPress prints namespace URIs (`rel="https://api.w.org/"`) that are not
+  // requests. Only real resource loaders matter: script, stylesheet, image, font.
+  const loaders = [...page.body.matchAll(/<(script|link|img|iframe|source)\b[^>]*?(?:src|href)\s*=\s*["'](https?:\/\/[^"']+)/gi)];
+  const externalLoaders = loaders.filter((match) => {
+    try {
+      return new URL(match[2]).host !== new URL(BASE).host;
+    } catch {
+      return true;
+    }
+  });
+  check(
+    'the page loads no resource from another origin',
+    externalLoaders.length === 0,
+    `${loaders.length} loaders: ` + externalLoaders.map((match) => match[2]).join(' ; '),
+  );
+  check('the page has no inline font import', !/@import\s+(?:url\()?['"]?https?:/i.test(page.body));
+  check('the checker page has no posting form', !/<form[^>]+action=/i.test(page.body));
 }
 
 let exitCode = 0;

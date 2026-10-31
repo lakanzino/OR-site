@@ -26,19 +26,34 @@ const UI = resolve(HERE, '..');
 const REPO = resolve(UI, '../..');
 
 const readJson = (path) => JSON.parse(readFileSync(resolve(REPO, path), 'utf8'));
-const scenariosFile = readJson('docs/symptom-checker/phase-1/scenarios.v1.json');
 
-const arg = process.argv[2] ?? 'sc10';
+// `--scenarios <file>` runs the same walk against another scenario file, e.g.
+// the phase-5 adversarial set. Everything else stays identical.
+const scenarioFlag = process.argv.indexOf('--scenarios');
+const scenariosPath =
+  scenarioFlag === -1 ? 'docs/symptom-checker/phase-1/scenarios.v1.json' : process.argv[scenarioFlag + 1];
+if (!scenariosPath) {
+  console.error('--scenarios needs a file path');
+  process.exit(2);
+}
+const scenariosFile = readJson(scenariosPath);
+const forwarded = process.argv.slice(2).filter((item, index, list) => {
+  if (item === '--scenarios') return false;
+  if (index > 0 && list[index - 1] === '--scenarios') return false;
+  return true;
+});
+
+const arg = forwarded[0] ?? scenariosFile.scenarios[0].id;
 
 if (arg === '--all') {
   let failed = 0;
   for (const scenario of scenariosFile.scenarios) {
-    const run = spawnSync(process.execPath, [fileURLToPath(import.meta.url), scenario.id], {
+    const run = spawnSync(process.execPath, [fileURLToPath(import.meta.url), '--scenarios', scenariosPath, scenario.id], {
       stdio: 'inherit',
     });
     if (run.status !== 0) failed += 1;
   }
-  console.log(`\n${scenariosFile.scenarios.length - failed}/${scenariosFile.scenarios.length} scenarios clean`);
+  console.log(`\n${scenariosFile.scenarios.length - failed}/${scenariosFile.scenarios.length} scenarios clean (${scenariosPath})`);
   process.exit(failed ? 1 : 0);
 }
 
@@ -52,6 +67,25 @@ try {
 }
 
 const scenario = scenariosFile.scenarios.find((item) => item.id === arg || item.id.startsWith(arg));
+const bundleQuestions = readJson('docs/symptom-checker/phase-1/knowledge-bundle.v1.json').questions;
+
+/**
+ * Scenarios may answer only the questions they are about. Every other visible
+ * question still has to be clicked through, so the driver picks the least
+ * committal option the question offers: «نمی‌دانم», then «خیر», then the first
+ * option. The scenario's own answers are never replaced.
+ */
+function neutralAnswer(questionId) {
+  const question = bundleQuestions.find((item) => item.id === questionId);
+  if (question?.type === 'scale') {
+    if (question.allow_unknown) return 'unknown';
+    return Math.round((question.min + question.max) / 2);
+  }
+  const optionIds = (question?.options ?? []).map((option) => option.id);
+  if (optionIds.includes('unknown')) return 'unknown';
+  if (optionIds.includes('no')) return 'no';
+  return optionIds[0];
+}
 if (!scenario) {
   console.error(`unknown scenario: ${arg}`);
   process.exit(2);
@@ -71,8 +105,10 @@ const dom = new JSDOM(readFileSync(resolve(UI, 'index.html'), 'utf8'), {
 const { window } = dom;
 
 const fetched = [];
-window.fetch = async (url) => {
+const requests = [];
+window.fetch = async (url, init = {}) => {
   fetched.push(String(url));
+  requests.push({ url: String(url), method: (init.method ?? 'GET').toUpperCase(), body: init.body ?? null });
   const path = new URL(url, window.location.href).pathname;
   try {
     const text = readFileSync(resolve(REPO, `.${path}`), 'utf8');
@@ -125,7 +161,7 @@ let guard = 0;
 while (guard++ < 40 && doc.getElementById('question-title')) {
   const name = [...doc.querySelectorAll('#app input')].map((input) => input.name).find(Boolean);
   const questionId = name.replace(/^q-/, '');
-  const value = scenario.answers[questionId] ?? 'unknown';
+  const value = scenario.answers[questionId] ?? neutralAnswer(questionId);
   const numberInput = doc.querySelector(`#app input[type="number"][name="${name}"]`);
   const unknownBox = doc.querySelector('#app input[type="checkbox"][id$="-unknown"]');
   const option = (id) => doc.querySelector(`#app input[name="${name}"][value="${id}"]`);
@@ -187,8 +223,40 @@ check(
   expected.safety.map((rule) => rule.id).join(', ') || 'no rules',
 );
 check(
+  'the safety region comes before the result in the document',
+  doc.getElementById('safety').compareDocumentPosition(doc.getElementById('app')) &
+    window.Node.DOCUMENT_POSITION_FOLLOWING
+    ? true
+    : false,
+  'safety must never be rendered below the cards',
+);
+check(
+  'every warning is rendered verbatim with its tag',
+  expected.safety.every((rule) => text(doc.getElementById('safety')).includes(rule.message_fa)) &&
+    (expected.safety.length === 0 ||
+      [...doc.querySelectorAll('#safety .safety-tag')].length === expected.safety.length) &&
+    (!expected.safety.some((rule) => rule.severity === 'urgent') ||
+      [...doc.querySelectorAll('#safety .safety-tag')].every(
+        (node) => node.textContent === 'فوری' || node.textContent === 'بررسی پزشکی',
+      )),
+  `${expected.safety.length} rules`,
+);
+check(
+  'the safety region is announced to assistive technology',
+  !expected.safety.length || doc.querySelector('#safety [role="alert"]') !== null,
+);
+check(
   'urgent rules appear first',
   !expected.safety.some((rule) => rule.severity === 'urgent') || Boolean(safety.querySelector('.safety.urgent')),
+);
+
+check(
+  'a safe stop shows the stop message and still shows the warnings',
+  expected.coverage.result !== 'out_of_scope' ||
+    (coverage?.classList.contains('out_of_scope') &&
+      Boolean(doc.getElementById('safety')) &&
+      (expected.safety.length === 0 || doc.getElementById('safety').hidden === false)),
+  `coverage=${expected.coverage.result} safety=${expected.safety.map((rule) => rule.id).join(', ') || 'none'}`,
 );
 
 // --- wording -------------------------------------------------------------
@@ -222,7 +290,8 @@ check(
 );
 
 const editName = doc.querySelector('#app input').name;
-const editValue = scenario.answers[editName.replace(/^q-/, '')] ?? 'unknown';
+const editedId = editName.replace(/^q-/, '');
+const editValue = scenario.answers[editedId] ?? neutralAnswer(editedId);
 const editNumber = doc.querySelector(`#app input[type="number"][name="${editName}"]`);
 if (editValue === 'unknown' && editNumber) doc.querySelector('#app input[type="checkbox"][id$="-unknown"]').click();
 else if (editValue === 'unknown') doc.querySelector(`#app input[name="${editName}"][value="unknown"]`).click();
@@ -247,7 +316,26 @@ check('restart hides the previous safety banners', doc.getElementById('safety').
 
 // --- privacy -------------------------------------------------------------
 check('only the two local data files were fetched', fetched.length === 2, fetched.join(' ; '));
+check(
+  'every request is a same-origin GET without a body',
+  requests.every((item) => item.method === 'GET' && item.body === null) &&
+    requests.every((item) => new URL(item.url, window.location.href).origin === window.location.origin),
+  requests.map((item) => `${item.method} ${item.url}`).join(' ; '),
+);
 check('nothing written to localStorage', window.localStorage.length === 0, `${window.localStorage.length} keys`);
+check('nothing written to sessionStorage', window.sessionStorage.length === 0, `${window.sessionStorage.length} keys`);
+check('no cookie is set', window.document.cookie === '', window.document.cookie);
+check(
+  'indexedDB is never opened',
+  !window.indexedDB || typeof window.indexedDB.open !== 'function' || window.indexedDB.__opened !== true,
+  typeof window.indexedDB,
+);
+check('no form can post the answers', window.document.querySelectorAll('form[action], form[method]').length === 0);
+check(
+  'the page never navigates away',
+  window.location.href === 'http://demo.local/symptom-checker/ui/index.html' && window.history.length === 1,
+  window.location.href,
+);
 check('no console errors or uncaught exceptions', errors.length === 0, errors.slice(0, 2).join(' || '));
 
 const failed = checks.filter((item) => !item.ok);

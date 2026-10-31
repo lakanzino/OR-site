@@ -20,6 +20,7 @@ from validate_phase1 import (
     validate_bundle,
     validate_evidence_map,
     validate_scenarios,
+    ADVERSARIAL_PATH,
 )
 
 
@@ -244,6 +245,70 @@ class Phase1ContractTest(unittest.TestCase):
 
         errors = validate_scenarios(self.bundle, self.mutated_scenarios(mutate))
         self.assertTrue(any("forbidden branches opened" in e for e in errors), errors)
+
+    # --- فاز ۵: کارت‌ها و تناقض‌ها --------------------------------
+    def test_cards_without_any_open_branch_are_rejected(self):
+        """A card cannot exist without the branch that produces it."""
+
+        def mutate(scenarios):
+            target = scenarios["scenarios"][0]
+            target["expected"]["branches_open"] = []
+            target["expected"]["branches_must_not_open"] = ["app"]
+            target["expected"]["coverage"] = "sufficient"
+            target["expected"]["result_cards_allowed"] = True
+
+        errors = validate_scenarios(self.bundle, self.mutated_scenarios(mutate))
+        self.assertTrue(any("opens no branch" in e for e in errors), errors)
+
+    def test_sufficient_scenario_that_forbids_its_own_branch_is_rejected(self):
+        """sc13-style drift: the scenario says "a branch opened" and "no card"."""
+
+        def mutate(scenarios):
+            target = scenarios["scenarios"][0]
+            target["expected"]["coverage"] = "sufficient"
+            target["expected"]["result_cards_allowed"] = False
+
+        errors = validate_scenarios(self.bundle, self.mutated_scenarios(mutate))
+        self.assertTrue(any("but forbids cards" in e for e in errors), errors)
+
+    def test_cards_with_non_sufficient_coverage_are_rejected(self):
+        def mutate(scenarios):
+            target = scenarios["scenarios"][0]
+            target["expected"]["coverage"] = "insufficient"
+            target["expected"]["result_cards_allowed"] = True
+
+        errors = validate_scenarios(self.bundle, self.mutated_scenarios(mutate))
+        self.assertTrue(any("coverage is not sufficient" in e or "allows result cards" in e for e in errors), errors)
+
+    def test_conflict_on_unknown_symptom_is_rejected(self):
+        def mutate(scenarios):
+            scenarios["scenarios"][0]["expected"]["conflicts"] = ["s_not_a_symptom"]
+
+        errors = validate_scenarios(self.bundle, self.mutated_scenarios(mutate))
+        self.assertTrue(any("unknown symptom" in e for e in errors), errors)
+
+    def test_conflict_expectation_needs_a_card(self):
+        def mutate(scenarios):
+            target = scenarios["scenarios"][0]
+            target["expected"]["branches_open"] = []
+            target["expected"]["coverage"] = "insufficient"
+            target["expected"]["result_cards_allowed"] = False
+            target["expected"]["conflicts"] = ["s_fever"]
+
+        errors = validate_scenarios(self.bundle, self.mutated_scenarios(mutate))
+        self.assertTrue(any("without any result card" in e for e in errors), errors)
+
+    def test_repeated_safety_flag_is_rejected(self):
+        def mutate(scenarios):
+            scenarios["scenarios"][0]["expected"]["safety_flags"] = ["sf_severe_pain", "sf_severe_pain"]
+
+        errors = validate_scenarios(self.bundle, self.mutated_scenarios(mutate))
+        self.assertTrue(any("repeats a safety flag" in e for e in errors), errors)
+
+    def test_adversarial_scenarios_are_valid(self):
+        adversarial = load_json(ADVERSARIAL_PATH)
+        self.assertEqual(validate_scenarios(self.bundle, adversarial), [])
+        self.assertGreaterEqual(len(adversarial["scenarios"]), 10)
 
 
 if __name__ == "__main__":

@@ -26,6 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 BUNDLE_PATH = ROOT / "docs" / "symptom-checker" / "phase-1" / "knowledge-bundle.v1.json"
 SCENARIOS_PATH = ROOT / "docs" / "symptom-checker" / "phase-1" / "scenarios.v1.json"
+ADVERSARIAL_PATH = ROOT / "docs" / "symptom-checker" / "phase-5" / "scenarios-adversarial.v1.json"
 PROFILES_PATH = ROOT / "themes" / "lax-theme-child" / "data" / "disease-profiles.json"
 EVIDENCE_PATH = ROOT / "symptom-checker" / "engine" / "data" / "evidence-map.v1.json"
 
@@ -330,6 +331,7 @@ def validate_scenarios(bundle: dict, scenarios: dict) -> list:
     questions = {item["id"]: item for item in bundle.get("questions", [])}
     conditions = {item["id"] for item in bundle.get("conditions", [])}
     safety_ids = {item["id"] for item in bundle.get("safety_rules", [])}
+    symptoms = {item["id"] for item in bundle.get("symptoms", [])}
     items = scenarios.get("scenarios", [])
 
     if scenarios.get("bundle_id") != bundle.get("bundle_id"):
@@ -400,6 +402,37 @@ def validate_scenarios(bundle: dict, scenarios: dict) -> list:
             errors.append(
                 f"scenario {sid} allows result cards while coverage is {expected.get('coverage')}"
             )
+        # A card is built from an open branch, so the two expectations can never
+        # disagree. This is the check that sc13-type cases need: a scenario cannot
+        # claim "no cards" while also expecting a branch, nor the reverse.
+        cards_allowed = expected.get("result_cards_allowed")
+        if cards_allowed and not expected.get("branches_open"):
+            errors.append(f"scenario {sid} allows result cards but opens no branch")
+        if cards_allowed and expected.get("coverage") != "sufficient":
+            errors.append(f"scenario {sid} allows result cards while coverage is not sufficient")
+        # A safe stop may compute a path and still refuse to show any card; that is
+        # the whole point of out_of_scope. The contradiction is a *sufficient*
+        # scenario that opens a branch and then forbids every card.
+        if (
+            cards_allowed is False
+            and expected.get("coverage") == "sufficient"
+            and expected.get("branches_open")
+        ):
+            errors.append(
+                f"scenario {sid} is sufficient and opens {sorted(expected.get('branches_open'))} "
+                f"but forbids cards"
+            )
+        flags = expected.get("safety_flags", [])
+        if len(flags) != len(set(flags)):
+            errors.append(f"scenario {sid} repeats a safety flag")
+
+        conflicts = expected.get("conflicts", [])
+        if conflicts:
+            if not cards_allowed:
+                errors.append(f"scenario {sid} expects conflicts without any result card")
+            for symptom_id in conflicts:
+                if symptom_id not in symptoms:
+                    errors.append(f"scenario {sid} expects conflict on unknown symptom {symptom_id}")
 
         calculated = evaluate(bundle, answers)
         got_branches = set(calculated["branches_open"])
@@ -469,6 +502,11 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Validate the phase-1 symptom-checker bundle")
     parser.add_argument("--bundle", default=str(BUNDLE_PATH))
     parser.add_argument("--scenarios", default=str(SCENARIOS_PATH))
+    parser.add_argument(
+        "--adversarial",
+        default=str(ADVERSARIAL_PATH),
+        help="extra scenario file; skipped when the file does not exist",
+    )
     parser.add_argument("--evidence", default=str(EVIDENCE_PATH))
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args(argv)
@@ -478,6 +516,13 @@ def main(argv=None) -> int:
 
     errors = validate_bundle(bundle)
     errors += validate_scenarios(bundle, scenarios)
+
+    scenario_count = len(scenarios["scenarios"])
+    adversarial_file = Path(args.adversarial)
+    if adversarial_file.is_file():
+        adversarial = load_json(adversarial_file)
+        errors += validate_scenarios(bundle, adversarial)
+        scenario_count += len(adversarial["scenarios"])
 
     evidence_file = Path(args.evidence)
     evidence_note = "بدون نگاشت شواهد"
@@ -504,7 +549,7 @@ def main(argv=None) -> int:
                 len(bundle["paths"]),
                 len(bundle["safety_rules"]),
                 len(bundle["coverage_rules"]),
-                len(scenarios["scenarios"]),
+                scenario_count,
                 evidence_note,
             )
         )
