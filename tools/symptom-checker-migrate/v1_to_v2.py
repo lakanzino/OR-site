@@ -44,7 +44,7 @@ REPO = HERE.parents[1]
 
 V1_PATH = "docs/symptom-checker/phase-1/knowledge-bundle.v1.json"
 EVIDENCE_PATH = "symptom-checker/engine/data/evidence-map.v1.json"
-V2_PATH = "docs/symptom-checker/phase-1/knowledge-bundle.v2.json"
+V2_PATH = "docs/symptom-checker/phase-1/knowledge-bundle.v2.base.json"
 SCHEMA_PATH = "docs/symptom-checker/schema/knowledge-bundle.v2.schema.json"
 
 SCHEMA_VERSION = "2.0.0"

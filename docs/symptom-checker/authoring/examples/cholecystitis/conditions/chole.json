@@ -1,0 +1,59 @@
+{
+  "id": "chole",
+  "name_fa": "کوله‌سیستیت (التهاب کیسهٔ صفرا)",
+  "article_slug": null,
+  "profile_ref": "symptom-checker.abdomen.v1#chole",
+  "link_status": "unmapped",
+  "profile": [
+    {
+      "symptom_id": "abd.pain_after_meal",
+      "level": "typical",
+      "profile_line": "درد شکم که اغلب بعد از یک وعدهٔ غذایی سنگین می‌آید",
+      "source_refs": [
+        "src_niddk_gallstones"
+      ]
+    },
+    {
+      "symptom_id": "abd.pain_abdomen",
+      "level": "typical",
+      "profile_line": "درد در بخش بالای شکم، گاهی چند ساعت طول می‌کشد",
+      "source_refs": [
+        "src_niddk_gallstones"
+      ]
+    },
+    {
+      "symptom_id": "abd.nausea",
+      "level": "typical",
+      "profile_line": "تهوع همراه با درد",
+      "source_refs": [
+        "src_niddk_gallstones"
+      ]
+    },
+    {
+      "symptom_id": "abd.vomiting",
+      "level": "possible",
+      "profile_line": "استفراغ همراه با درد",
+      "source_refs": [
+        "src_niddk_gallstones"
+      ]
+    },
+    {
+      "symptom_id": "abd.fever",
+      "level": "possible",
+      "profile_line": "تب، حتی خفیف، به‌همراه درد شکم",
+      "source_refs": [
+        "src_niddk_gallstones"
+      ]
+    },
+    {
+      "symptom_id": "abd.chills",
+      "level": "possible",
+      "profile_line": "لرز همراه با تب",
+      "source_refs": [
+        "src_niddk_gallstones"
+      ]
+    }
+  ],
+  "red_flag_refs": [],
+  "review_status": "pending_team_review"
+}

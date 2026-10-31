@@ -1,0 +1,50 @@
+{
+  "id": "gen_app_typical",
+  "generated_from": {
+    "condition_id": "app",
+    "persona": "typical"
+  },
+  "title_fa": "شخصیت typical برای آپاندیسیت",
+  "answers": {
+    "q_pain_present": "yes",
+    "q_pain_location": "periumbilical",
+    "q_pain_migrated_rlq": "yes",
+    "q_pain_onset": "unknown",
+    "q_pain_after_meal": "unknown",
+    "q_pain_course": "unknown",
+    "q_pain_severity": "unknown",
+    "q_pain_worse_movement": "yes",
+    "q_associated_symptoms": [
+      "nausea",
+      "vomiting",
+      "appetite_loss",
+      "fever",
+      "diarrhea",
+      "constipation",
+      "bloating",
+      "no_gas_pass"
+    ],
+    "q_urinary_symptoms": [
+      "unknown"
+    ],
+    "q_flank_radiation": "unknown",
+    "q_fever_chills": "yes",
+    "q_diarrhea_vomiting": [
+      "diarrhea",
+      "vomiting"
+    ],
+    "q_keep_fluids": "unknown",
+    "q_blood_in_stool": "unknown",
+    "q_dehydration_signs": [
+      "unknown"
+    ],
+    "q_unbearable_pain": "unknown",
+    "q_pregnancy_possible": "no"
+  },
+  "expected": {
+    "must_open": [
+      "app"
+    ],
+    "must_not_open": []
+  }
+}

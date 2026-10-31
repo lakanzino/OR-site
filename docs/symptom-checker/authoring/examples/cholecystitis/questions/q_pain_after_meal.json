@@ -1,0 +1,48 @@
+{
+  "id": "q_pain_after_meal",
+  "text_fa": "آیا دردت بعد از یک وعدهٔ غذایی سنگین شروع شده یا بدتر شده است؟",
+  "type": "boolean3",
+  "options": [
+    {
+      "id": "yes",
+      "label_fa": "بله، بعد از غذای سنگین بود",
+      "evidence": [
+        {
+          "symptom_id": "abd.pain_after_meal",
+          "state": "present"
+        }
+      ]
+    },
+    {
+      "id": "no",
+      "label_fa": "نه، ربطی به غذا نداشت",
+      "evidence": [
+        {
+          "symptom_id": "abd.pain_after_meal",
+          "state": "absent"
+        }
+      ]
+    },
+    {
+      "id": "unknown",
+      "label_fa": "مطمئن نیستم",
+      "evidence": []
+    }
+  ],
+  "source_refs": [
+    "src_niddk_gallstones"
+  ],
+  "visibility": {
+    "any_of": [
+      {
+        "question_id": "q_pain_present",
+        "answers": [
+          "yes"
+        ]
+      }
+    ]
+  },
+  "ask_order": 45,
+  "why_fa": "برای جدا کردن دردهایی که با وعدهٔ غذایی سنگین می‌آیند؛ بدون این پرسش، پروفایل کیسهٔ صفرا هیچ نشانهٔ قابل‌پرسشی برای تمایز نداشت.",
+  "review_status": "pending_team_review"
+}
