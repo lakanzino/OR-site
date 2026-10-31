@@ -1,10 +1,10 @@
 /**
- * The age dial's arithmetic — no DOM, no browser.
+ * The age field's arithmetic — no DOM, no browser.
  *
  * The gate is the first thing a visitor touches, so it must be boringly
- * predictable: the same drag must always land on the same age, a broken host
- * config must never let a child through, and the number that is shown must be
- * the number that was stored.
+ * predictable: the same typed digits must always mean the same age, a broken
+ * host config must never let a child through, and the number that is shown must
+ * be the number that was stored.
  */
 
 import test from 'node:test';
@@ -15,16 +15,16 @@ import {
   AGE_MAX,
   AGE_MIN,
   MIN_AGE_FALLBACK,
-  ageAfterDrag,
+  ageFromText,
   ageIsSupported,
+  bumpAge,
   clampAge,
   describeAge,
   formatAge,
   minAgeFrom,
-  turnForAge,
 } from '../age-gate.js';
 
-test('any input becomes an age inside the dial', () => {
+test('any input becomes an age inside the field', () => {
   assert.equal(clampAge(30), 30);
   assert.equal(clampAge('42'), 42);
   assert.equal(clampAge(-5), AGE_MIN);
@@ -35,22 +35,38 @@ test('any input becomes an age inside the dial', () => {
   assert.equal(clampAge(NaN), AGE_DEFAULT);
 });
 
-test('the gear turns with the age and stays put when the age does', () => {
-  assert.equal(turnForAge(AGE_MIN), 0);
-  assert.ok(turnForAge(30) > turnForAge(20));
-  assert.equal(turnForAge(200), turnForAge(AGE_MAX));
-  assert.equal(turnForAge('bad'), turnForAge(AGE_DEFAULT));
+test('typed Persian, Arabic or Latin digits all mean the same year', () => {
+  assert.equal(ageFromText('۳۰'), 30);
+  assert.equal(ageFromText('30'), 30);
+  assert.equal(ageFromText('٣٠'), 30);
+  assert.equal(ageFromText(' ۲۵ '), 25);
+  assert.equal(ageFromText('٤٥'), 45);
+  assert.equal(ageFromText('سن ۴۲'), 42, 'letters around the digits are ignored');
 });
 
-test('a drag is reversible and lands on whole years', () => {
-  const start = 220;
-  const up = ageAfterDrag(20, start, start + 12);
-  assert.equal(up, 21);
-  assert.equal(ageAfterDrag(21, start + 12, start), 20, 'dragging back returns the same age');
-  assert.equal(ageAfterDrag(20, start, start + 6), 21, 'half a year rounds to the nearer year');
-  assert.equal(ageAfterDrag(20, start, start - 12), 19);
-  assert.equal(ageAfterDrag(AGE_MIN, start, start - 600), AGE_MIN, 'the range holds at the bottom');
-  assert.equal(ageAfterDrag(AGE_MAX, start, start + 600), AGE_MAX, 'the range holds at the top');
+test('a field with no digit in it is empty, not silently thirty', () => {
+  assert.equal(ageFromText(''), null);
+  assert.equal(ageFromText('   '), null);
+  assert.equal(ageFromText('سال'), null);
+  assert.equal(ageFromText(null), null);
+  assert.equal(ageFromText(undefined), null);
+});
+
+test('the field cannot leave its travel, whatever is typed', () => {
+  assert.equal(ageFromText('-5'), 5, 'a minus sign is not a digit, so it is dropped');
+  assert.equal(ageFromText('0'), 1, 'zero is clamped to the first year the tool knows');
+  assert.equal(ageFromText('999'), 100);
+  assert.equal(ageFromText('۲۹۹'), 100);
+});
+
+test('one press of ± moves exactly one year and stays in range', () => {
+  assert.equal(bumpAge(30, 1), 31);
+  assert.equal(bumpAge(30, -1), 29);
+  assert.equal(bumpAge(30, 5), 35);
+  assert.equal(bumpAge(1, -1), 1, 'the bottom holds');
+  assert.equal(bumpAge(100, 1), 100, 'the top holds');
+  assert.equal(bumpAge(30, 'x'), 30);
+  assert.equal(bumpAge('31', 1), 32);
 });
 
 test('a broken host config cannot lower the adult gate', () => {
@@ -75,7 +91,7 @@ test('«supported» means adult, and only adult', () => {
   assert.equal(ageIsSupported(18, 18), true);
   assert.equal(ageIsSupported(19, 18), true);
   assert.equal(ageIsSupported(20, 21), false);
-  assert.equal(ageIsSupported(ageAfterDrag(17, 0, 12), 18), true, '17 + one drag step is 18');
+  assert.equal(ageIsSupported(bumpAge(17, 1), 18), true, '17 + one press is 18');
 });
 
 test('the number is shown in Persian digits and read out with its unit', () => {

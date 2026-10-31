@@ -151,7 +151,25 @@ function check(label, ok, detail = '') {
 // --- intro ---------------------------------------------------------------
 const findButton = (label) => [...doc.querySelectorAll('#app button')].find((button) => button.textContent.includes(label));
 let startButton = findButton('شروع');
-check('intro renders with the demo badges', Boolean(startButton) && text().includes('نمایشی') && text().includes('بدون ذخیره‌سازی'));
+
+check(
+  'the first page says, in one sentence, what the robot is',
+  Boolean(startButton)
+    && /ربات اختصاصی ارزیابی احتمالی بیماری در فرد است/.test(text(doc.querySelector('#app .workspace__title'))),
+  text(doc.querySelector('#app .workspace__title')),
+);
+check(
+  'the lead says the answer is only as good as the answers given',
+  /هرچه اطلاعات و علامت‌های بیماری خود را درست انتخاب کنید، جواب دقیق‌تری/.test(text(doc.querySelector('#app .workspace__lead'))),
+);
+check(
+  'the boilerplate is gone: no preview badge, no «we store nothing» list, no notice card',
+  !doc.querySelector('#app .badge')
+    && !doc.querySelector('#app .notice-card')
+    && !doc.querySelector('#app .facts')
+    && !/پیش‌نویس|پیش‌نمایش|ذخیره یا ارسال|ذخیره نمی‌شود|بدون ذخیره‌سازی/.test(text(doc.querySelector('#app .workspace__body'))),
+  text(doc.querySelector('#app .workspace__body')).slice(0, 90),
+);
 
 // The turning hologram must be its own block above the card: on a phone it used
 // to be absolutely positioned inside the card and sat on top of the title.
@@ -168,61 +186,87 @@ check(
   heroStage?.getAttribute('aria-hidden') === 'true' && heroStage.textContent.trim() === '',
 );
 
-// The preview note moved out of the page header (white on cream there) and into
-// the card, where it is dark text on a warm background.
+// --- sources and the one warning -----------------------------------------
+const sourceLinks = [...doc.querySelectorAll('#app .sources .sources__item a')];
 check(
-  'the preview note lives in the card, not the page header',
-  !doc.querySelector('header .notice') && Boolean(doc.querySelector('#app .intro-card .notice-card')),
-  doc.querySelector('#app .intro-card .notice-card')?.textContent.slice(0, 40) ?? 'missing',
+  'the first page lists the real external sources, with links',
+  sourceLinks.length >= 20
+    && sourceLinks.every((link) => /^https:\/\//.test(link.getAttribute('href') ?? ''))
+    && sourceLinks.every((link) => !/github\.com|lakanzino/i.test(link.getAttribute('href') ?? ''))
+    && sourceLinks.every((link) => link.getAttribute('target') === '_blank'
+      && /noopener/.test(link.getAttribute('rel') ?? '')),
+  `${sourceLinks.length} links`,
+);
+check(
+  'every source link points at a different page',
+  new Set(sourceLinks.map((link) => link.getAttribute('href'))).size === sourceLinks.length,
+);
+check(
+  'the sources cover the big medical sites, not one opinion',
+  ['nhs.uk', 'nhsinform.scot', 'niddk.nih.gov', 'cuh.nhs.uk']
+    .every((host) => sourceLinks.some((link) => (link.getAttribute('href') ?? '').includes(host))),
 );
 
-// --- age gate -------------------------------------------------------------
-const dial = doc.querySelector('#app .age-dial');
+const warnBox = doc.querySelector('#app .warn-box');
 check(
-  'the age dial is a slider with a visible value',
-  dial?.getAttribute('role') === 'slider'
-    && dial.getAttribute('aria-valuemin') === '1'
-    && dial.getAttribute('aria-valuenow') === '30'
-    && /سال/.test(dial.getAttribute('aria-valuetext') ?? '')
-    && dial.textContent.includes('۳۰'),
-  dial ? `now=${dial.getAttribute('aria-valuenow')}` : 'missing',
+  'one small yellow box says the tool is not a medical exam',
+  Boolean(warnBox)
+    && warnBox.textContent.includes('هرگز جای معاینهٔ پزشکی نیست')
+    && warnBox.textContent.includes('فقط احتمال بیماری')
+    && warnBox.textContent.includes('پزشک درمانگر'),
+  warnBox?.textContent.slice(0, 60) ?? 'missing',
 );
-check('the dial is reachable by keyboard', dial?.getAttribute('tabindex') === '0');
+check(
+  'the warning is the last thing on the page, not repeated above',
+  warnBox === doc.querySelector('#app .workspace__body')?.lastElementChild,
+);
 
-const press = (key) => dial.dispatchEvent(new window.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
-dial.focus();
-press('Home');
-for (let step = 0; step < 16; step += 1) press('ArrowUp');
-check('turning the dial to 17 works by keyboard', dial.getAttribute('aria-valuenow') === '17');
+// --- age: a number, not a wheel ------------------------------------------
+const ageInput = doc.querySelector('#app #hj-age');
+check(
+  'the age is a number field, not a dial that turns at random',
+  !doc.querySelector('#app .age-dial')
+    && ageInput?.getAttribute('inputmode') === 'numeric'
+    && ageInput.value === '۳۰'
+    && Boolean(doc.querySelector('label[for="hj-age"]')),
+  ageInput ? `value=${ageInput.value}` : 'missing',
+);
+check(
+  'the field explains its range once',
+  /عددی بین ۱۸ تا ۱۰۰/.test(text(doc.querySelector('#app #hj-age-hint'))),
+  text(doc.querySelector('#app #hj-age-hint')),
+);
 
+const typeAge = (value) => {
+  ageInput.value = value;
+  ageInput.dispatchEvent(new window.Event('input', { bubbles: true }));
+};
+typeAge('۱۷');
 const fetchesBeforeStart = fetched.length;
 startButton.click();
 await wait(80);
 check(
-  'under 18 the tool stops before asking anything',
+  'under 18 stops before asking anything',
   Boolean(doc.querySelector('#app .stop-card')) && !doc.getElementById('question-title'),
   text(doc.querySelector('#app .stop-card')).slice(0, 60),
 );
 check(
-  'the stop screen says why, in the bundle\'s own words',
-  /۱۸|کودک|نوجوان/.test(text(doc.querySelector('#app .stop-card'))),
+  'the stop screen says why',
+  /۱۸|بزرگسال/.test(text(doc.querySelector('#app .stop-card'))),
 );
-check('touching the dial sent nothing anywhere', fetched.length === fetchesBeforeStart);
+check('typing an age sent nothing anywhere', fetched.length === fetchesBeforeStart);
 
 findButton('تغییر سن').click();
 await wait(80);
-const dialAgain = doc.querySelector('#app .age-dial');
-dialAgain.focus();
-dialAgain.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Home', bubbles: true, cancelable: true }));
-for (let step = 0; step < 29; step += 1) {
-  dialAgain.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true, cancelable: true }));
-}
-check('the dial can be turned back to an adult age', dialAgain.getAttribute('aria-valuenow') === '30');
-
+const ageAgain = doc.querySelector('#app #hj-age');
+check('«تغییر سن» brings the field back with the same number', ageAgain?.value === '۱۷', ageAgain?.value ?? 'missing');
+ageAgain.value = '۳۰';
+ageAgain.dispatchEvent(new window.Event('input', { bubbles: true }));
 startButton = findButton('شروع');
 startButton.click();
 await wait(80);
-check('the first question renders', Boolean(doc.getElementById('question-title')), text(doc.getElementById('app')).slice(0, 70));
+check('an adult age opens the first screen of the flow', Boolean(doc.getElementById('question-title')), text(doc.getElementById('app')).slice(0, 70));
+check('the first screen is the sex question, not a symptom', Boolean(doc.querySelector('#app .gate-cards[data-question-id="q_sex"]')));
 
 // --- gates: sex → body map → area ----------------------------------------
 // The tool now opens wide and narrows down: sex, then a picture of five
