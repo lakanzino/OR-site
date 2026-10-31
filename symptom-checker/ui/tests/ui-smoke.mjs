@@ -155,6 +155,54 @@ startButton.click();
 await wait(80);
 check('the first question renders', Boolean(doc.getElementById('question-title')), text(doc.getElementById('app')).slice(0, 70));
 
+// --- robot narrator -------------------------------------------------------
+const narrator = doc.querySelector('#app .narrator');
+const narratorFull = narrator?.querySelector('.sr-only')?.textContent ?? '';
+const narratorTyped = narrator?.querySelector('.narrator-text');
+check(
+  'the question carries a robot explanation card',
+  Boolean(narrator) && Boolean(narrator.querySelector('.narrator-avatar svg')),
+  narrator ? 'avatar + text' : 'missing',
+);
+check('the whole explanation is exposed to screen readers at once', narratorFull.length > 40, `${narratorFull.length} chars`);
+check(
+  'the explanation is typed rather than printed at once',
+  Boolean(narratorTyped) && narratorTyped.textContent.length < narratorFull.length,
+  `${narratorTyped?.textContent.length ?? 0}/${narratorFull.length}`,
+);
+narrator?.querySelector('.narrator-skip button')?.click();
+await wait(60);
+check(
+  'skipping shows the full text and the per-option guide',
+  narratorTyped?.textContent === narratorFull && Boolean(narrator?.querySelector('.narrator-guide li')),
+  `${narrator?.querySelectorAll('.narrator-guide li').length ?? 0} guide lines`,
+);
+const firstQuestionId = (doc.querySelector('#app input')?.name ?? '').replace(/^q-/, '');
+const firstUnknown = (bundleQuestions.find((item) => item.id === firstQuestionId)?.options ?? [])
+  .find((option) => option.id === 'unknown');
+const unknownRule = narrator?.querySelector('.narrator-guide li.unknown-rule');
+check(
+  'the guide ends with the "none of these" rule, worded with the real option label',
+  Boolean(unknownRule) && Boolean(firstUnknown) && unknownRule.textContent.includes(firstUnknown.label_fa),
+  unknownRule ? unknownRule.textContent.slice(0, 48) : 'missing',
+);
+
+// --- free-text note under the options ------------------------------------
+const NOTE_TEXT = 'دردی که فقط وقتی خم می‌شوم حس می‌شود و در گزینه‌ها نیست';
+const noteBox = doc.querySelector('#app .note-field textarea');
+check('every question offers a free-text box under the options', Boolean(noteBox));
+check(
+  'the note box says it has no effect on the path or the result',
+  text(doc.querySelector('#app .note-field')).includes('هیچ تأثیری'),
+);
+noteBox.value = NOTE_TEXT;
+noteBox.dispatchEvent(new window.Event('input', { bubbles: true }));
+check(
+  'a note alone never counts as an answer',
+  doc.getElementById('submit-answer').disabled === true,
+  'submit still disabled',
+);
+
 // --- walk the questionnaire like a person ---------------------------------
 const submitted = [];
 let guard = 0;
@@ -181,6 +229,14 @@ while (guard++ < 40 && doc.getElementById('question-title')) {
   const isMulti = !numberInput && inputs[0]?.type === 'checkbox';
   const recorded = isMulti ? inputs.filter((input) => input.checked).map((input) => input.value) : value;
   submitted.push([questionId, recorded]);
+  if (submitted.length === 1) {
+    // the note typed above must survive the submit and reach the summary only
+    const box = doc.querySelector('#app .note-field textarea');
+    if (box && !box.value) {
+      box.value = NOTE_TEXT;
+      box.dispatchEvent(new window.Event('input', { bubbles: true }));
+    }
+  }
 
   const submit = doc.getElementById('submit-answer');
   if (!submit || submit.disabled) throw new Error(`submit stayed disabled for ${questionId}`);
@@ -213,6 +269,26 @@ check(
   'cards render only when the engine allows them',
   expected.cards_allowed ? cardNames.length > 0 : cardNames.length === 0,
   `cards_allowed=${expected.cards_allowed}`,
+);
+
+// --- the note is recorded, never routed ---------------------------------
+const notesSummary = doc.querySelector('#app .notes-summary');
+check(
+  'the closing screen lists the notes the person wrote',
+  Boolean(notesSummary) && text(notesSummary).includes(NOTE_TEXT),
+  notesSummary ? text(notesSummary).slice(0, 60) : 'missing',
+);
+const resultBody = [...doc.querySelectorAll('#app article.card, #app .coverage')]
+  .map((node) => node.textContent)
+  .join(' ');
+check(
+  'the note never reached the engine or the result cards',
+  !JSON.stringify(submitted).includes(NOTE_TEXT) && !resultBody.includes(NOTE_TEXT),
+  'answers handed to the engine contain no free text',
+);
+check(
+  'the summary says the note was sent nowhere',
+  Boolean(notesSummary) && text(notesSummary).includes('ارسال یا ذخیره نمی‌شوند'),
 );
 
 // --- safety --------------------------------------------------------------
@@ -340,6 +416,7 @@ restart?.click();
 await wait(60);
 check('restart clears the session', text(doc.getElementById('app')).includes('پاسخ‌داده‌شده ۰ از'), text(doc.getElementById('app')).slice(0, 40));
 check('restart hides the previous safety banners', doc.getElementById('safety').hidden === true);
+check('restart forgets the notes', doc.querySelector('#app .notes-summary') === null && !text(doc.getElementById('app')).includes(NOTE_TEXT));
 
 // --- privacy -------------------------------------------------------------
 check('only the two local data files were fetched', fetched.length === 2, fetched.join(' ; '));

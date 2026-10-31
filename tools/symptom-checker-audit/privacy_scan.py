@@ -41,6 +41,7 @@ PACKAGE_PREFIX = "hamyar-symptom-checker-"
 SHIPPED_FILES = [
     "symptom-checker/ui/app.js",
     "symptom-checker/ui/view-model.js",
+    "symptom-checker/ui/question-help.js",
     "symptom-checker/ui/styles.css",
     "symptom-checker/engine/src/engine.js",
     "symptom-checker/engine/src/evidence.js",
@@ -64,6 +65,10 @@ ALLOWED_FETCH_TARGETS = {
 # therefore refuses any absolute URL literal at all: the plugin builds its own
 # asset URLs with WordPress helpers, so no literal is needed anywhere.
 URL_LITERAL = re.compile(r"https?://")
+
+# XML namespace identifiers are plain strings, never fetched. Only these exact
+# URIs are exempt from the "no absolute URL" rule; anything else still fails.
+NAMESPACE_URIS = ("http://www.w3.org/2000/svg", "http://www.w3.org/1999/xlink")
 
 RULES = {
     "storage": [
@@ -159,6 +164,21 @@ def _strip_comments(text: str) -> str:
     return "\n".join("" if COMMENT_LINE.match(line) else line for line in text.splitlines())
 
 
+def _is_namespace_uri(code: str, start: int) -> bool:
+    """True only when a namespace URI stands alone as a whole string.
+
+    A look-alike such as ``.../svg.evil.example/x`` or ``.../svg?collect=1``
+    keeps the finding: the exemption must not swallow real remote URLs.
+    """
+    for uri in NAMESPACE_URIS:
+        if not code.startswith(uri, start):
+            continue
+        following = code[start + len(uri): start + len(uri) + 1]
+        if following in ("", "'", '"', "`"):
+            return True
+    return False
+
+
 def scan_text(name: str, text: str) -> list[Finding]:
     findings: list[Finding] = []
     code = _strip_comments(text)
@@ -171,6 +191,8 @@ def scan_text(name: str, text: str) -> list[Finding]:
                 findings.append(Finding(name, line, rule, snippet))
 
     for match in URL_LITERAL.finditer(code):
+        if _is_namespace_uri(code, match.start()):
+            continue
         line = code[: match.start()].count("\n") + 1
         snippet = code.splitlines()[line - 1].strip()[:160] if code.splitlines() else ""
         findings.append(Finding(name, line, "remote_literal", snippet))
