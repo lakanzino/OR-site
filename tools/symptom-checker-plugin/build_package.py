@@ -57,6 +57,7 @@ ASSET_SOURCES = {
 # Plugin files copied verbatim (relative to the plugin directory).
 PLUGIN_FILES = [
     "hamyar-symptom-checker.php",
+    "includes/bundle-source.php",
     "includes/mapping.php",
     "includes/page.php",
     "templates/checker-page.php",

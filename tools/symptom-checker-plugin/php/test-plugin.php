@@ -52,6 +52,50 @@ function boot( $plugin_dir, $with_disease_type = true ) {
 	require_once $plugin_dir . 'hamyar-symptom-checker.php';
 }
 
+/**
+ * Write a candidate bundle into a throwaway uploads folder and point the stubs
+ * at it. Returns the absolute folder so a scenario can check paths.
+ *
+ * @param array<string,array<string,mixed>|string> $files name => bundle array (or raw string).
+ */
+function prepare_uploads( $files ) {
+	$base = '/work/hj-uploads-' . getmypid();
+	if ( is_dir( $base ) ) {
+		foreach ( glob( $base . '/hj-sc/*' ) as $stale ) {
+			unlink( $stale );
+		}
+	}
+	if ( ! is_dir( $base . '/hj-sc' ) ) {
+		mkdir( $base . '/hj-sc', 0777, true );
+	}
+	foreach ( $files as $name => $payload ) {
+		$body = is_string( $payload ) ? $payload : json_encode( $payload );
+		file_put_contents( $base . '/hj-sc/' . $name, $body );
+	}
+	hj_stub_set_uploads( $base, 'https://example.test/uploads' );
+	return $base . '/hj-sc';
+}
+
+/** A structurally valid bundle, small enough to read in a diff. */
+function sample_bundle( $version = '9.0.0-draft', $schema = '1.0.0', $questions = 1 ) {
+	$items = array();
+	for ( $i = 0; $i < $questions; $i++ ) {
+		$items[] = array(
+			'id'        => 'q_' . $i,
+			'ask_order' => $i,
+			'text_fa'   => 'پرسش آزمایشی',
+			'type'      => 'single',
+			'options'   => array( array( 'id' => 'yes', 'label_fa' => 'بله' ) ),
+		);
+	}
+	return array(
+		'schema_version' => $schema,
+		'bundle_id'      => 'symptom-checker.abdomen.v1',
+		'bundle_version' => $version,
+		'questions'      => $items,
+	);
+}
+
 function add_disease( $slug, $status = 'publish', $title = 'x' ) {
 	$id = wp_insert_post(
 		array(
@@ -396,6 +440,105 @@ switch ( $scenario ) {
 			foreach ( $forbidden as $pattern => $label ) {
 				ok( ! preg_match( $pattern, $source ), "no {$label}: {$name}" );
 			}
+		}
+		break;
+
+	case 'bundle-package':
+		boot( $plugin_dir );
+		$source = hjsc_bundle_source();
+		eq( 'package', $source['source'], 'with no uploads the packaged bundle is used' );
+		ok( str_ends_with( hjsc_bundle_url(), 'assets/data/knowledge-bundle.v1.json' ), 'the packaged URL is unchanged', hjsc_bundle_url() );
+		ok( '' !== hjsc_bundle_version(), 'the packaged bundle version is readable' );
+		ok( 'upload' !== hjsc_bundle_status()['source'], 'status reports the package as the source' );
+		break;
+
+	case 'bundle-upload':
+		boot( $plugin_dir );
+		prepare_uploads( array( 'knowledge-bundle.7.0.0-draft.0123abcd.json' => sample_bundle( '7.0.0-draft' ) ) );
+		$source = hjsc_bundle_source();
+		eq( 'upload', $source['source'], 'an uploaded bundle wins over the package' );
+		eq( 'knowledge-bundle.7.0.0-draft.0123abcd.json', $source['name'], 'the uploaded file name is kept' );
+		ok( str_contains( hjsc_bundle_url(), '?ver=0123abcd' ), 'the URL carries the hash for cache-busting', hjsc_bundle_url() );
+		eq( '7.0.0-draft', hjsc_bundle_version(), 'the page reports the uploaded bundle version' );
+		eq( '7.0.0-draft', hjsc_config()['bundleVersion'], 'the browser config sees the uploaded version' );
+		eq( 'upload', hjsc_config()['bundleStatus']['source'], 'the browser config names the source' );
+		ok( str_contains( hjsc_config()['bundleUrl'], 'hj-sc/' ), 'the browser config points into uploads', hjsc_config()['bundleUrl'] );
+		break;
+
+	case 'bundle-option-pin':
+		boot( $plugin_dir );
+		prepare_uploads(
+			array(
+				'knowledge-bundle.7.0.0-draft.0123abcd.json' => sample_bundle( '7.0.0-draft' ),
+				'knowledge-bundle.6.0.0-draft.deadbeef.json' => sample_bundle( '6.0.0-draft' ),
+			)
+		);
+		update_option( 'hj_sc_active_bundle', 'knowledge-bundle.6.0.0-draft.deadbeef.json' );
+		eq( '6.0.0-draft', hjsc_bundle_version(), 'the option pins an older bundle (instant rollback)' );
+		eq( 'upload', hjsc_bundle_source()['source'], 'the pinned bundle is served from uploads' );
+		break;
+
+	case 'bundle-option-missing':
+		boot( $plugin_dir );
+		prepare_uploads(
+			array(
+				'knowledge-bundle.7.0.0-draft.0123abcd.json' => sample_bundle( '7.0.0-draft' ),
+				'knowledge-bundle.6.0.0-draft.deadbeef.json' => sample_bundle( '6.0.0-draft' ),
+			)
+		);
+		update_option( 'hj_sc_active_bundle', 'knowledge-bundle.9.9.9.ffffffff.json' );
+		eq( '7.0.0-draft', hjsc_bundle_version(), 'a pin to a missing file falls back to the newest usable bundle' );
+		break;
+
+	case 'bundle-newest':
+		boot( $plugin_dir );
+		prepare_uploads(
+			array(
+				'knowledge-bundle.0.9.0-draft.11111111.json' => sample_bundle( '0.9.0-draft' ),
+				'knowledge-bundle.0.10.0-draft.22222222.json' => sample_bundle( '0.10.0-draft' ),
+			)
+		);
+		eq( '0.10.0-draft', hjsc_bundle_version(), 'version_compare picks 0.10 over 0.9 (not a string sort)' );
+		break;
+
+	case 'bundle-fallback':
+		boot( $plugin_dir );
+		$dir = prepare_uploads(
+			array(
+				'knowledge-bundle.7.0.0-draft.0123abcd.json' => '{ not json',
+				'knowledge-bundle.8.0.0-draft.0123abce.json' => sample_bundle( '8.0.0-draft', '9.9.9' ),
+				'knowledge-bundle.9.0.0-draft.0123abcf.json' => sample_bundle( '9.0.0-draft', '1.0.0', 0 ),
+				'nonsense.json'                                 => sample_bundle( '5.0.0-draft' ),
+			)
+		);
+		$source = hjsc_bundle_source();
+		eq( 'package', $source['source'], 'broken, wrong-schema, empty and misnamed files are all refused' );
+		ok( is_dir( $dir ), 'the uploads folder existed, so this was not a missing-folder pass' );
+		break;
+
+	case 'bundle-autodetect-off':
+		boot( $plugin_dir );
+		prepare_uploads( array( 'knowledge-bundle.7.0.0-draft.0123abcd.json' => sample_bundle( '7.0.0-draft' ) ) );
+		add_filter( 'hjsc_bundle_autodetect', '__return_false' );
+		eq( 'package', hjsc_bundle_source()['source'], 'auto-detection can be switched off with a filter' );
+		break;
+
+	case 'bundle-autodetect-off-pin':
+		boot( $plugin_dir );
+		prepare_uploads( array( 'knowledge-bundle.7.0.0-draft.0123abcd.json' => sample_bundle( '7.0.0-draft' ) ) );
+		add_filter( 'hjsc_bundle_autodetect', '__return_false' );
+		update_option( 'hj_sc_active_bundle', 'knowledge-bundle.7.0.0-draft.0123abcd.json' );
+		eq( 'upload', hjsc_bundle_source()['source'], 'an explicit option still works with auto-detection off' );
+		eq( '7.0.0-draft', hjsc_bundle_version(), 'and the pinned bundle is the one that is read' );
+		break;
+
+	case 'bundle-traversal':
+		boot( $plugin_dir );
+		prepare_uploads( array( 'knowledge-bundle.7.0.0-draft.0123abcd.json' => sample_bundle( '7.0.0-draft' ) ) );
+		foreach ( array( '../evil.json', '/etc/passwd', 'knowledge-bundle.7.0.0-draft.0123ABCD.json', 'knowledge-bundle.json' ) as $bad ) {
+			update_option( 'hj_sc_active_bundle', $bad );
+			$source = hjsc_bundle_source();
+			ok( 'upload' === $source['source'] && str_ends_with( $source['name'], '0123abcd.json' ), 'rejected option value: ' . $bad );
 		}
 		break;
 

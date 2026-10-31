@@ -27,8 +27,10 @@ function hjsc_bundle() {
 	}
 
 	$bundle = array();
-	$path   = HJ_SC_DIR . 'assets/data/knowledge-bundle.v1.json';
-	if ( ! is_readable( $path ) ) {
+	// Phase 5-a: the active bundle may live in uploads/hj-sc/ instead of the zip.
+	$source = hjsc_bundle_source();
+	$path   = (string) $source['path'];
+	if ( ! is_string( $path ) || ! is_readable( $path ) ) {
 		return $bundle;
 	}
 

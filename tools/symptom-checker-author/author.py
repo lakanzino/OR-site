@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+from datetime import date
 import json
 import os
 import re
@@ -433,6 +434,273 @@ def report_markdown(bundle: dict) -> str:
     return "\n".join(lines)
 
 
+# --- gap and conflict scan -------------------------------------------------
+def _norm_label(text: str) -> str:
+    """Whitespace/punctuation-insensitive label key, for duplicate detection."""
+    cleaned = "".join(
+        " " if ch in "،٫.؟!?:;()\u060c\u200c" else ch
+        for ch in str(text).replace("\u064b", "")
+    )
+    return " ".join(cleaned.split())
+
+
+def gap_scan(bundle: dict) -> dict:
+    """Structural gaps and contradictions in one bundle — no clinical judgement.
+
+    Every finding is derived only from what the bundle itself declares: symbol
+    reachability, reference integrity, label uniqueness, review metadata. The
+    scan never says whether content is *correct*; only whether it can be
+    reached, told apart, and traced to a source.
+    """
+    symptom_ids = {item["id"] for item in bundle.get("symptoms", [])}
+    condition_ids = [condition["id"] for condition in bundle.get("conditions", [])]
+    source_ids = {item["id"] for item in bundle.get("sources", [])}
+    askable = askable_symptoms(bundle)
+    profiled = {
+        row["symptom_id"]
+        for condition in bundle.get("conditions", [])
+        for row in condition.get("profile", [])
+    }
+    evidence_rows = [
+        (question, option, entry)
+        for question in bundle.get("questions", [])
+        for option in question.get("options", [])
+        for entry in option.get("evidence", [])
+    ]
+
+    broken_refs = [f"question {q['id']} option {o['id']}: unknown symptom {e['symptom_id']}"
+                   for q, o, e in evidence_rows if e.get("symptom_id") not in symptom_ids]
+    broken_refs += [f"condition {c['id']} profile: unknown symptom {row['symptom_id']}"
+                    for c in bundle.get("conditions", [])
+                    for row in c.get("profile", []) if row.get("symptom_id") not in symptom_ids]
+    broken_refs += [f"overrides {item['id']}: unknown condition {item.get('condition_id')}"
+                    for item in bundle.get("overrides", [])
+                    if item.get("condition_id") not in condition_ids]
+
+    def unknown_sources(where: str, refs) -> list[str]:
+        return [f"{where}: unknown source {ref}" for ref in (refs or []) if ref not in source_ids]
+
+    for question in bundle.get("questions", []):
+        broken_refs += unknown_sources(f"question {question['id']}", question.get("source_refs"))
+    for condition in bundle.get("conditions", []):
+        for row in condition.get("profile", []):
+            broken_refs += unknown_sources(f"condition {condition['id']} row {row['symptom_id']}", row.get("source_refs"))
+    for kind in ("overrides", "safety_rules", "coverage_rules"):
+        for item in bundle.get(kind, []):
+            broken_refs += unknown_sources(f"{kind} {item.get('id')}", item.get("source_refs"))
+
+    # A question whose answers no rule and no visibility condition ever reads.
+    referenced_questions = set()
+    for kind in ("safety_rules", "coverage_rules"):
+        for item in bundle.get(kind, []):
+            stack = [item.get("when")]
+            while stack:
+                node = stack.pop()
+                if isinstance(node, dict):
+                    if isinstance(node.get("question_id"), str):
+                        referenced_questions.add(node["question_id"])
+                    stack.extend(value for value in node.values() if isinstance(value, (dict, list)))
+                elif isinstance(node, list):
+                    stack.extend(node)
+    for question in bundle.get("questions", []):
+        stack = [question.get("visibility")]
+        while stack:
+            node = stack.pop()
+            if isinstance(node, dict):
+                if isinstance(node.get("question_id"), str):
+                    referenced_questions.add(node["question_id"])
+                stack.extend(value for value in node.values() if isinstance(value, (dict, list)))
+            elif isinstance(node, list):
+                stack.extend(node)
+
+    # Dead evidence: an option that reports symbols no condition profile mentions.
+    dead_options, evidence_orphans, dead_questions = [], [], []
+    for question in bundle.get("questions", []):
+        # A question "lands" only if some answer reports a symbol a profile uses.
+        lands = False
+        for option in question.get("options", []):
+            symbols = [entry["symptom_id"] for entry in option.get("evidence", [])]
+            if symbols and all(symbol in symptom_ids and symbol not in profiled for symbol in symbols):
+                dead_options.append({"question": question["id"], "option": option["id"], "evidence": symbols})
+            if symbols and any(symbol in profiled for symbol in symbols):
+                lands = True
+        if lands:
+            continue
+        if question["id"] in referenced_questions:
+            evidence_orphans.append(question["id"])  # banner/visibility only, no ranking effect
+        else:
+            dead_questions.append(question["id"])
+
+    inert_questions = [
+        question["id"]
+        for question in bundle.get("questions", [])
+        if question["id"] not in referenced_questions
+        and not any(entry.get("symptom_id") for option in question.get("options", []) for entry in option.get("evidence", []))
+    ]
+
+    pairs, overlap_errors = overlap_pairs(bundle)
+    indistinguishable = [
+        {"a": pair["a"], "b": pair["b"], "shared": pair["shared_askable"]}
+        for pair in pairs if not pair["differentiators"]
+    ]
+    fragile = [
+        {"a": pair["a"], "b": pair["b"], "only": pair["differentiators"]}
+        for pair in pairs if len(pair["differentiators"]) == 1
+    ]
+    for error in overlap_errors:
+        if error not in {f"{item['a']} ↔ {item['b']}: هیچ جداکنندهٔ قابل‌پرسشی ندارد — «به پرسش تازه نیاز دارد»" for item in indistinguishable}:
+            broken_refs.append(f"overlap: {error}")
+
+    # Duplicate labels inside one question: two options a user cannot tell apart.
+    duplicate_labels = []
+    for question in bundle.get("questions", []):
+        seen: dict[tuple, list[str]] = {}
+        for option in question.get("options", []):
+            seen.setdefault(_norm_label(option.get("label_fa", "")), []).append(option["id"])
+        for key, ids in seen.items():
+            if len(ids) > 1:
+                duplicate_labels.append({"question": question["id"], "label": " ".join(key), "options": ids})
+
+    deprecated_in_use = [
+        {"question": q["id"], "option": o["id"]}
+        for q in bundle.get("questions", [])
+        for o in q.get("options", [])
+        if o.get("deprecated")
+    ]
+
+    missing_source_refs = [
+        {"kind": "question", "id": question["id"]}
+        for question in bundle.get("questions", [])
+        if not question.get("source_refs")
+    ]
+    missing_source_refs += [
+        {"kind": "condition", "id": condition["id"]}
+        for condition in bundle.get("conditions", [])
+        if not any(row.get("source_refs") for row in condition.get("profile", []))
+    ]
+    missing_source_refs += [
+        {"kind": kind, "id": item.get("id")}
+        for kind in ("overrides", "safety_rules", "coverage_rules")
+        for item in bundle.get(kind, [])
+        if not item.get("source_refs")
+    ]
+
+    review = {}
+    for kind in ("conditions", "overrides", "safety_rules", "coverage_rules", "change_notes"):
+        for item in bundle.get(kind, []):
+            status = item.get("review_status") or "missing"
+            review.setdefault(status, []).append(f"{kind}:{item.get('id') or item.get('version')}")
+
+    red_flag_gaps = [
+        condition["id"] for condition in bundle.get("conditions", []) if not condition.get("red_flag_refs")
+    ]
+
+    return {
+        "bundle": bundle.get("bundle_id"),
+        "bundle_version": bundle.get("bundle_version"),
+        "counts": {
+            "symptoms": len(symptom_ids),
+            "askable_symptoms": len(askable & symptom_ids),
+            "questions": len(bundle.get("questions", [])),
+            "conditions": len(condition_ids),
+            "overrides": len(bundle.get("overrides", [])),
+            "safety_rules": len(bundle.get("safety_rules", [])),
+            "coverage_rules": len(bundle.get("coverage_rules", [])),
+        },
+        "unaskable": sorted(symptom_ids - askable),
+        "unprofiled": sorted(symptom_ids - profiled),
+        "dead_options": dead_options,
+        "dead_questions": sorted(set(dead_questions) - set(inert_questions)),
+        "evidence_orphans": sorted(set(evidence_orphans)),
+        "inert_questions": sorted(set(inert_questions)),
+        "indistinguishable_pairs": indistinguishable,
+        "fragile_pairs": fragile,
+        "duplicate_labels": duplicate_labels,
+        "deprecated_in_use": deprecated_in_use,
+        "broken_refs": broken_refs,
+        "missing_source_refs": missing_source_refs,
+        "red_flag_gaps": red_flag_gaps,
+        "review_status": {status: sorted(ids) for status, ids in sorted(review.items())},
+    }
+
+
+def gap_blocking(scan: dict) -> list[str]:
+    """Findings that must stop an authoring run: they make content unreachable,
+    ambiguous, or untraceable. Coverage gaps are reported but never block."""
+    blocking = []
+    blocking += [f"ارجاع شکسته — {item}" for item in scan["broken_refs"]]
+    blocking += [f"پرسش مرده (هیچ گزینه‌اش اثری ندارد): {item}" for item in scan["dead_questions"]]
+    blocking += [
+        f"برچسب تکراری در {item['question']}: {', '.join(item['options'])}" for item in scan["duplicate_labels"]
+    ]
+    blocking += [
+        f"گزینهٔ منسوخ هنوز پرسیده می‌شود: {item['question']}/{item['option']}" for item in scan["deprecated_in_use"]
+    ]
+    blocking += [f"{item['a']} ↔ {item['b']}: هیچ جداکنندهٔ قابل‌پرسشی" for item in scan["indistinguishable_pairs"]]
+    return blocking
+
+
+def gap_markdown(scan: dict) -> str:
+    counts = scan["counts"]
+    lines = [
+        "# گزارش گپ و تداخل بستهٔ دانش",
+        "",
+        f"- بسته: `{scan['bundle']}` · نسخه `{scan['bundle_version']}`",
+        f"- {counts['symptoms']} نشانه ({counts['askable_symptoms']} قابل‌پرسش) · {counts['questions']} پرسش · "
+        f"{counts['conditions']} بیماری · {counts['overrides']} override · {counts['safety_rules']} قاعدهٔ ایمنی · "
+        f"{counts['coverage_rules']} قاعدهٔ پوشش",
+        "",
+        "## گپ‌های پوشش (مسدودکننده نیستند)",
+        "",
+        f"- نشانهٔ بی‌پرسش (هیچ گزینه‌ای آن را گزارش نمی‌کند): {', '.join(f'`{i}`' for i in scan['unaskable']) or 'هیچ'}",
+        f"- نشانهٔ بی‌پروفایل (هیچ بیماری‌ای آن را ندارد): {', '.join(f'`{i}`' for i in scan['unprofiled']) or 'هیچ'}",
+        f"- بیماری بدون پرچم قرمز: {', '.join(f'`{i}`' for i in scan['red_flag_gaps']) or 'هیچ'}",
+        "",
+        "## تداخل و ابهام (مسدودکننده)",
+        "",
+        f"- ارجاع شکسته: {len(scan['broken_refs'])}",
+        f"- پرسش مرده: {', '.join(scan['dead_questions']) or 'هیچ'}",
+        f"- پرسش فقط‌بنری (فقط قاعدهٔ ایمنی/پوشش پاسخش را می‌خواند، در رتبه‌بندی اثری ندارد): {', '.join(scan['evidence_orphans']) or 'هیچ'}",
+        f"- پرسش بی‌اثر (نه شاهد، نه قاعده، نه شرط نمایش): {', '.join(scan['inert_questions']) or 'هیچ'}",
+        f"- گزینهٔ مرده: {len(scan['dead_options'])}",
+        f"- برچسب تکراری: {len(scan['duplicate_labels'])}",
+        f"- گزینهٔ منسوخ در حال پرسش: {len(scan['deprecated_in_use'])}",
+        f"- جفت بیماری بدون جداکنندهٔ قابل‌پرسش: {len(scan['indistinguishable_pairs'])}",
+        f"- جفت بیماری با تنها یک جداکننده (شکننده): {len(scan['fragile_pairs'])}",
+        "",
+    ]
+    if scan["fragile_pairs"]:
+        lines += ["| بیماری | بیماری | تنها جداکننده |", "| --- | --- | --- |"]
+        lines += [f"| {item['a']} | {item['b']} | {', '.join(item['only'])} |" for item in scan["fragile_pairs"]]
+        lines.append("")
+    lines += ["## ردگیری و بازبینی", ""]
+    lines += [f"- بدون `source_refs`: {item['kind']} `{item['id']}`" for item in scan["missing_source_refs"]] or ["- بدون `source_refs`: هیچ"]
+    for status, ids in scan["review_status"].items():
+        lines.append(f"- `{status}`: {len(ids)}")
+    lines += ["", "این گزارش فقط ساختار را می‌سنجد؛ هیچ ادعای بالینی نمی‌کند.", ""]
+    return "\n".join(lines)
+
+
+def cmd_gaps(args) -> int:
+    bundle, _schema, _help, _errors, _warnings = load_inputs(args)
+    scan = gap_scan(bundle)
+    blocking = gap_blocking(scan)
+    if args.json:
+        print(json.dumps(scan, ensure_ascii=False, indent=2))
+    else:
+        text = gap_markdown(scan)
+        if args.out:
+            (REPO / args.out).write_text(text, encoding="utf-8")
+            print(f"wrote {args.out}")
+        else:
+            print(text)
+    if blocking:
+        for line in blocking:
+            print(f"BLOCK {line}", file=sys.stderr)
+        return 1 if args.strict else 0
+    return 0
+
+
 # --- commands --------------------------------------------------------------
 def load_inputs(args) -> tuple[dict, dict, str, list[str], list[str]]:
     base = read_json(REPO / BASE_PATH)
@@ -516,6 +784,86 @@ def bump_version(version: str) -> str:
         return version
     major, minor, _patch, suffix = match.groups()
     return f"{major}.{int(minor) + 1}.0{suffix or ''}"
+
+
+def compose_for_output(args) -> tuple[dict, bytes, list[str], list[str], dict, set[str]]:
+    """base + workspace (+ version bump) → (bundle, payload, problems, errors, warnings, parts)."""
+    base = read_json(REPO / BASE_PATH)
+    schema = read_json(REPO / SCHEMA_PATH)
+    help_text = (REPO / HELP_JS).read_text(encoding="utf-8")
+    parts = collect(REPO / args.workspace)
+    bundle, problems, changed = compose(base, parts)
+
+    if changed and not args.no_bump:
+        previous = bundle["bundle_version"]
+        bundle["bundle_version"] = bump_version(previous)
+        bundle["change_notes"] = [
+            {
+                "version": bundle["bundle_version"],
+                "date": args.date,
+                "changes_fa": [
+                    f"افزودن {len(parts['conditions'])} بیماری، {len(parts['questions'])} پرسش، "
+                    f"{len(parts['symptoms'])} نشانه و {len(parts['sources'])} منبع با ابزار نویسندگی "
+                    f"(نسخهٔ قبلی: {previous}). محتوای تازه pending_team_review است."
+                ],
+            }
+        ] + list(bundle.get("change_notes", []))
+
+    authored = {item["id"] for _, item in parts["symptoms"]}
+    for _, condition in parts["conditions"]:
+        authored |= {
+            row["symptom_id"] for row in condition.get("profile", []) if row.get("symptom_id")
+        }
+
+    errors, warnings = validate_bundle(bundle, schema, help_text, authored)
+    errors = problems + errors
+    return bundle, serialise(bundle), problems, errors, warnings, parts
+
+
+def cmd_publish(args) -> int:
+    """Write the bundle under the name the plugin reads from uploads/hj-sc/.
+
+    The file name is the contract: `knowledge-bundle.<bundle_version>.<sha8>.json`.
+    Dropping it into `wp-content/uploads/hj-sc/` publishes the content without a
+    new plugin release; the hash in the name is both the cache-buster and the
+    proof that the bytes are the ones this command validated.
+    """
+    bundle, payload, _problems, errors, warnings, _parts = compose_for_output(args)
+    if errors:
+        for line in errors:
+            print(f"ERROR   {line}")
+        print("\nFAIL nothing was published — fix the data first")
+        return 1
+
+    digest = hashlib.sha256(payload).hexdigest()
+    name = f"knowledge-bundle.{bundle['bundle_version']}.{digest[:8]}.json"
+    target = (REPO / args.out / name) if not Path(args.out).is_absolute() else Path(args.out) / name
+
+    if args.check:
+        if not target.is_file():
+            print(f"FAIL missing {target}: run publish-bundle")
+            return 1
+        if hashlib.sha256(target.read_bytes()).hexdigest() != digest:
+            print(f"FAIL {target} is stale")
+            return 1
+        print(f"OK {target} matches the authoring pipeline — sha8 {digest[:8]}")
+    else:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(payload)
+        print(f"wrote {target} ({len(payload)} bytes, sha8 {digest[:8]})")
+
+    for line in warnings:
+        print(f"WARNING {line}")
+    print(
+        f"{bundle['bundle_id']} {bundle['bundle_version']} · schema {bundle['schema_version']} · "
+        f"{len(bundle['symptoms'])} نشانه، {len(bundle['questions'])} پرسش، "
+        f"{len(bundle['conditions'])} بیماری"
+    )
+    print("\nنصب روی سایت:")
+    print(f"  1) این فایل را در wp-content/uploads/{'hj-sc'}/ بگذارید: {name}")
+    print("  2) صفحهٔ ابزار را یک بار با حساب مدیر باز کنید (یا کش LiteSpeed را پاک کنید).")
+    print(f"  3) برای برگشت: option «hj_sc_active_bundle» را روی نام فایل قبلی بگذارید.")
+    return 0
 
 
 def cmd_build(args) -> int:
@@ -686,6 +1034,12 @@ def main(argv: list[str]) -> int:
     overlap.add_argument("--json", action="store_true")
     overlap.set_defaults(func=cmd_overlap)
 
+    gaps = sub.add_parser("gaps", help="structural gaps, dead content, duplicate labels")
+    gaps.add_argument("--json", action="store_true")
+    gaps.add_argument("--strict", action="store_true", help="exit 1 on blocking findings")
+    gaps.add_argument("--out", default=None)
+    gaps.set_defaults(func=cmd_gaps)
+
     scenarios = sub.add_parser("gen-scenarios", help="one typical persona per condition")
     scenarios.add_argument("--out", default="docs/symptom-checker/scenarios/generated")
     scenarios.set_defaults(func=cmd_gen_scenarios)
@@ -708,12 +1062,22 @@ def main(argv: list[str]) -> int:
     scaffold.add_argument("--force", action="store_true")
     scaffold.set_defaults(func=cmd_scaffold)
 
+    publish = sub.add_parser("publish-bundle", help="bundle named for uploads/hj-sc/ (phase 5-a)")
+    publish.add_argument("--out", default="dist/hj-sc")
+    publish.add_argument("--check", action="store_true")
+    publish.add_argument("--no-bump", action="store_true")
+    publish.add_argument("--date", default=None)
+    publish.set_defaults(func=cmd_publish)
+
     add = sub.add_parser("add", help="add one data file (source, symptom, question, condition, overrides)")
     add.add_argument("kind", choices=list(PARTS) + ["overrides"])
     add.add_argument("--file", required=True)
     add.set_defaults(func=cmd_add)
 
+    # A default date keeps `change_notes` reproducible in CI.
     args = parser.parse_args(argv)
+    if getattr(args, "date", None) is None and hasattr(args, "date"):
+        args.date = date.today().isoformat()
     return args.func(args)
 
 

@@ -228,7 +228,8 @@ function hjsc_config() {
 		'pluginVersion'    => HJ_SC_VERSION,
 		'questionStrategy' => hjsc_question_strategy(),
 		'bundleVersion' => hjsc_bundle_version(),
-		'bundleUrl'     => hjsc_asset_url( 'data/knowledge-bundle.v1.json' ),
+		'bundleUrl'     => hjsc_bundle_url(),
+		'bundleStatus'  => hjsc_bundle_status(),
 		'evidenceUrl'   => hjsc_asset_url( 'engine/data/evidence-map.v1.json' ),
 		'topicLinks'    => (object) hjsc_topic_links(),
 	);
