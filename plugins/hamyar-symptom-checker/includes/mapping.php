@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @return array<string,mixed>
  */
-function hj_sc_bundle() {
+function hjsc_bundle() {
 	static $bundle = null;
 	if ( null !== $bundle ) {
 		return $bundle;
@@ -49,8 +49,8 @@ function hj_sc_bundle() {
 /**
  * Bundle version, used for cache busting and for the preview notice.
  */
-function hj_sc_bundle_version() {
-	$bundle = hj_sc_bundle();
+function hjsc_bundle_version() {
+	$bundle = hjsc_bundle();
 	return isset( $bundle['bundle_version'] ) ? (string) $bundle['bundle_version'] : '';
 }
 
@@ -59,9 +59,9 @@ function hj_sc_bundle_version() {
  *
  * @return array<string,array<string,mixed>>
  */
-function hj_sc_bundle_conditions() {
+function hjsc_bundle_conditions() {
 	$conditions = array();
-	$bundle     = hj_sc_bundle();
+	$bundle     = hjsc_bundle();
 	if ( empty( $bundle['conditions'] ) || ! is_array( $bundle['conditions'] ) ) {
 		return $conditions;
 	}
@@ -75,19 +75,19 @@ function hj_sc_bundle_conditions() {
 
 /**
  * Condition id → article slug. The bundle slug is the default; the team can pin
- * or override any slug explicitly with the `hj_sc_topic_slugs` filter.
+ * or override any slug explicitly with the `hjsc_topic_slugs` filter.
  *
  * @return array<string,string>
  */
-function hj_sc_topic_slugs() {
+function hjsc_topic_slugs() {
 	$slugs = array();
-	foreach ( hj_sc_bundle_conditions() as $condition_id => $condition ) {
+	foreach ( hjsc_bundle_conditions() as $condition_id => $condition ) {
 		if ( ! empty( $condition['article_slug'] ) ) {
 			$slugs[ $condition_id ] = (string) $condition['article_slug'];
 		}
 	}
 	/** @var array<string,string> $slugs */
-	return (array) apply_filters( 'hj_sc_topic_slugs', $slugs );
+	return (array) apply_filters( 'hjsc_topic_slugs', $slugs );
 }
 
 /**
@@ -95,7 +95,7 @@ function hj_sc_topic_slugs() {
  *
  * @return array<string,string>
  */
-function hj_sc_topic_links() {
+function hjsc_topic_links() {
 	static $links = null;
 	if ( null !== $links ) {
 		return $links;
@@ -106,7 +106,7 @@ function hj_sc_topic_links() {
 		return $links;
 	}
 
-	foreach ( hj_sc_topic_slugs() as $condition_id => $slug ) {
+	foreach ( hjsc_topic_slugs() as $condition_id => $slug ) {
 		$slug = sanitize_title( (string) $slug );
 		if ( '' === $slug ) {
 			continue;
@@ -142,5 +142,5 @@ function hj_sc_topic_links() {
 	}
 
 	/** @var array<string,string> $links */
-	return (array) apply_filters( 'hj_sc_topic_links', $links );
+	return (array) apply_filters( 'hjsc_topic_links', $links );
 }

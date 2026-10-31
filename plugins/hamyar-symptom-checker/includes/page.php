@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * ID of the page this plugin owns, or 0 when it is missing.
  */
-function hj_sc_page_id() {
+function hjsc_page_id() {
 	$page_id = (int) get_option( HJ_SC_PAGE_OPTION, 0 );
 	if ( $page_id <= 0 ) {
 		return 0;
@@ -35,7 +35,7 @@ function hj_sc_page_id() {
  *
  * @return int Existing page id, or 0.
  */
-function hj_sc_find_page_by_slug() {
+function hjsc_find_page_by_slug() {
 	$found = get_posts(
 		array(
 			'post_type'        => 'page',
@@ -58,14 +58,14 @@ function hj_sc_find_page_by_slug() {
  *
  * @return bool True when the page exists (or was adopted) afterwards.
  */
-function hj_sc_try_create_page() {
-	if ( hj_sc_page_id() > 0 ) {
+function hjsc_try_create_page() {
+	if ( hjsc_page_id() > 0 ) {
 		delete_option( HJ_SC_ACTIVATION_PENDING );
 		return true;
 	}
 
 	try {
-		$found = hj_sc_find_page_by_slug();
+		$found = hjsc_find_page_by_slug();
 		if ( $found > 0 ) {
 			update_option( HJ_SC_PAGE_OPTION, $found );
 			delete_option( HJ_SC_ACTIVATION_PENDING );
@@ -89,11 +89,11 @@ function hj_sc_try_create_page() {
 		);
 
 		if ( is_wp_error( $page_id ) ) {
-			hj_sc_record_error( 'wp_insert_post failed: ' . $page_id->get_error_message() );
+			hjsc_record_error( 'wp_insert_post failed: ' . $page_id->get_error_message() );
 			return false;
 		}
 		if ( ! $page_id ) {
-			hj_sc_record_error( 'wp_insert_post returned no id' );
+			hjsc_record_error( 'wp_insert_post returned no id' );
 			return false;
 		}
 
@@ -101,7 +101,7 @@ function hj_sc_try_create_page() {
 		delete_option( HJ_SC_ACTIVATION_PENDING );
 		return true;
 	} catch ( \Throwable $error ) {
-		hj_sc_record_error(
+		hjsc_record_error(
 			$error->getMessage(),
 			array(
 				'file' => $error->getFile(),
@@ -123,30 +123,30 @@ function hj_sc_try_create_page() {
  * page load after clicking "activate" — so a problem there can never roll the
  * activation back and can never look like "this plugin is broken".
  */
-function hj_sc_activate() {
+function hjsc_activate() {
 	update_option( HJ_SC_ACTIVATION_PENDING, time() );
 	update_option( 'hj_sc_activation_attempts', 0 );
-	register_shutdown_function( 'hj_sc_capture_activation_fatal' );
+	register_shutdown_function( 'hjsc_capture_activation_fatal' );
 }
 
 /**
  * Second chance on the next admin request, for hosts where the activation
  * request is killed early (memory limit, timeout, security plugin).
  */
-function hj_sc_maybe_finish_activation() {
+function hjsc_maybe_finish_activation() {
 	if ( ! get_option( HJ_SC_ACTIVATION_PENDING ) ) {
 		return;
 	}
 	$attempts = (int) get_option( 'hj_sc_activation_attempts', 0 ) + 1;
 	update_option( 'hj_sc_activation_attempts', $attempts );
 	if ( $attempts > 3 ) {
-		hj_sc_record_error( 'page creation still failing after 3 attempts' );
+		hjsc_record_error( 'page creation still failing after 3 attempts' );
 		delete_option( HJ_SC_ACTIVATION_PENDING );
 		return;
 	}
-	hj_sc_try_create_page();
+	hjsc_try_create_page();
 }
-add_action( 'admin_init', 'hj_sc_maybe_finish_activation' );
+add_action( 'admin_init', 'hjsc_maybe_finish_activation' );
 
 
 
@@ -154,14 +154,14 @@ add_action( 'admin_init', 'hj_sc_maybe_finish_activation' );
 /**
  * Is the current front-end request the checker page?
  */
-function hj_sc_is_checker_page() {
+function hjsc_is_checker_page() {
 	if ( is_admin() && ! wp_doing_ajax() ) {
 		return false;
 	}
 	if ( ! function_exists( 'is_page' ) || ! is_page() ) {
 		return false;
 	}
-	$page_id = hj_sc_page_id();
+	$page_id = hjsc_page_id();
 	return $page_id > 0 && (int) get_queried_object_id() === $page_id;
 }
 
@@ -171,14 +171,14 @@ function hj_sc_is_checker_page() {
  * @param string $template Theme template chosen by WordPress.
  * @return string
  */
-function hj_sc_template_include( $template ) {
-	if ( ! hj_sc_is_checker_page() ) {
+function hjsc_template_include( $template ) {
+	if ( ! hjsc_is_checker_page() ) {
 		return $template;
 	}
 	$own = HJ_SC_DIR . 'templates/checker-page.php';
 	return is_readable( $own ) ? $own : $template;
 }
-add_filter( 'template_include', 'hj_sc_template_include', 99 );
+add_filter( 'template_include', 'hjsc_template_include', 99 );
 
 /**
  * Cache-busting version from the file timestamp, so a rebuilt package is never
@@ -187,7 +187,7 @@ add_filter( 'template_include', 'hj_sc_template_include', 99 );
  * @param string $relative Path inside `assets/`.
  * @return string
  */
-function hj_sc_asset_version( $relative ) {
+function hjsc_asset_version( $relative ) {
 	$path = HJ_SC_DIR . 'assets/' . ltrim( $relative, '/' );
 	return is_readable( $path ) ? (string) filemtime( $path ) : HJ_SC_VERSION;
 }
@@ -198,7 +198,7 @@ function hj_sc_asset_version( $relative ) {
  * @param string $relative Path inside `assets/`.
  * @return string
  */
-function hj_sc_asset_url( $relative ) {
+function hjsc_asset_url( $relative ) {
 	return HJ_SC_URL . 'assets/' . ltrim( $relative, '/' );
 }
 
@@ -208,22 +208,22 @@ function hj_sc_asset_url( $relative ) {
  *
  * @return array<string,mixed>
  */
-function hj_sc_config() {
+function hjsc_config() {
 	return array(
 		'pluginVersion' => HJ_SC_VERSION,
-		'bundleVersion' => hj_sc_bundle_version(),
-		'bundleUrl'     => hj_sc_asset_url( 'data/knowledge-bundle.v1.json' ),
-		'evidenceUrl'   => hj_sc_asset_url( 'engine/data/evidence-map.v1.json' ),
-		'topicLinks'    => (object) hj_sc_topic_links(),
+		'bundleVersion' => hjsc_bundle_version(),
+		'bundleUrl'     => hjsc_asset_url( 'data/knowledge-bundle.v1.json' ),
+		'evidenceUrl'   => hjsc_asset_url( 'engine/data/evidence-map.v1.json' ),
+		'topicLinks'    => (object) hjsc_topic_links(),
 	);
 }
 
 /**
  * JSON for the inline config script, hardened against `</script>` breakouts.
  */
-function hj_sc_config_json() {
+function hjsc_config_json() {
 	return (string) wp_json_encode(
-		hj_sc_config(),
+		hjsc_config(),
 		JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE
 	);
 }
@@ -231,31 +231,31 @@ function hj_sc_config_json() {
 /**
  * Enqueue the UI only on the checker page.
  */
-function hj_sc_enqueue_assets() {
-	if ( ! hj_sc_is_checker_page() ) {
+function hjsc_enqueue_assets() {
+	if ( ! hjsc_is_checker_page() ) {
 		return;
 	}
 
 	wp_enqueue_style(
 		'hj-sc-ui',
-		hj_sc_asset_url( 'ui/styles.css' ),
+		hjsc_asset_url( 'ui/styles.css' ),
 		array(),
-		hj_sc_asset_version( 'ui/styles.css' )
+		hjsc_asset_version( 'ui/styles.css' )
 	);
 
 	wp_enqueue_script(
 		'hj-sc-app',
-		hj_sc_asset_url( 'ui/app.js' ),
+		hjsc_asset_url( 'ui/app.js' ),
 		array(),
-		hj_sc_asset_version( 'ui/app.js' ),
+		hjsc_asset_version( 'ui/app.js' ),
 		true
 	);
 
-	wp_add_inline_script( 'hj-sc-app', 'window.HJ_SC_CONFIG = ' . hj_sc_config_json() . ';', 'before' );
+	wp_add_inline_script( 'hj-sc-app', 'window.HJ_SC_CONFIG = ' . hjsc_config_json() . ';', 'before' );
 
-	add_filter( 'script_loader_tag', 'hj_sc_module_script_tag', 10, 3 );
+	add_filter( 'script_loader_tag', 'hjsc_module_script_tag', 10, 3 );
 }
-add_action( 'wp_enqueue_scripts', 'hj_sc_enqueue_assets' );
+add_action( 'wp_enqueue_scripts', 'hjsc_enqueue_assets' );
 
 /**
  * The entry file is an ES module; WordPress does not add `type="module"` itself.
@@ -265,7 +265,7 @@ add_action( 'wp_enqueue_scripts', 'hj_sc_enqueue_assets' );
  * @param string $src    Script source URL.
  * @return string
  */
-function hj_sc_module_script_tag( $tag, $handle, $src ) {
+function hjsc_module_script_tag( $tag, $handle, $src ) {
 	if ( 'hj-sc-app' !== $handle ) {
 		return $tag;
 	}
@@ -291,8 +291,8 @@ function hj_sc_module_script_tag( $tag, $handle, $src ) {
  * @param array<string,bool> $robots Robots directives.
  * @return array<string,bool>
  */
-function hj_sc_robots( $robots ) {
-	if ( ! hj_sc_is_checker_page() ) {
+function hjsc_robots( $robots ) {
+	if ( ! hjsc_is_checker_page() ) {
 		return $robots;
 	}
 	unset( $robots['index'], $robots['follow'] );
@@ -300,4 +300,4 @@ function hj_sc_robots( $robots ) {
 	$robots['nofollow'] = true;
 	return $robots;
 }
-add_filter( 'wp_robots', 'hj_sc_robots' );
+add_filter( 'wp_robots', 'hjsc_robots' );

@@ -71,12 +71,12 @@ switch ( $scenario ) {
 
 		// Activation itself must be a no-op apart from the pending note: that is
 		// what keeps a slow or memory-hungry site from rolling it back.
-		hj_sc_activate();
+		hjsc_activate();
 		ok( (bool) get_option( HJ_SC_ACTIVATION_PENDING ), 'activation leaves a pending note' );
 		eq( 0, count( $GLOBALS['hj_stub']['posts'] ), 'activation creates no page by itself' );
 
 		// The next admin request builds the page.
-		hj_sc_maybe_finish_activation();
+		hjsc_maybe_finish_activation();
 		$first = (int) get_option( HJ_SC_PAGE_OPTION );
 		ok( $first > 0, 'the next admin request stores the page id' );
 		$page = get_post( $first );
@@ -85,9 +85,9 @@ switch ( $scenario ) {
 		eq( HJ_SC_PAGE_SLUG, $page->post_name, 'the page slug is the documented one' );
 		ok( ! get_option( HJ_SC_ACTIVATION_PENDING ), 'the pending note is cleared' );
 
-		hj_sc_maybe_finish_activation();
-		hj_sc_activate();
-		hj_sc_maybe_finish_activation();
+		hjsc_maybe_finish_activation();
+		hjsc_activate();
+		hjsc_maybe_finish_activation();
 		eq( 1, count( $GLOBALS['hj_stub']['posts'] ), 'activation never creates a second page' );
 
 		// An existing page with the same slug is adopted, not overwritten.
@@ -101,8 +101,8 @@ switch ( $scenario ) {
 				'post_content' => 'محتوای دستی',
 			)
 		);
-		hj_sc_activate();
-		hj_sc_maybe_finish_activation();
+		hjsc_activate();
+		hjsc_maybe_finish_activation();
 		eq( $existing, (int) get_option( HJ_SC_PAGE_OPTION ), 'an existing page is adopted' );
 		eq( 1, count( $GLOBALS['hj_stub']['posts'] ), 'no extra page is created' );
 		eq( 'publish', get_post( $existing )->post_status, 'the existing page status is left untouched' );
@@ -113,9 +113,9 @@ switch ( $scenario ) {
 		hj_stub_reset();
 		require_once $plugin_dir . 'hamyar-symptom-checker.php';
 
-		hj_sc_activate();
+		hjsc_activate();
 		$GLOBALS['hj_stub']['fail_insert'] = true;
-		hj_sc_maybe_finish_activation();
+		hjsc_maybe_finish_activation();
 
 		$error = get_option( HJ_SC_LAST_ERROR, array() );
 		ok( is_array( $error ) && ! empty( $error['message'] ), 'a failing insert is recorded, not thrown' );
@@ -125,9 +125,9 @@ switch ( $scenario ) {
 		eq( 1, (int) get_option( 'hj_sc_activation_attempts', 0 ), 'the attempt is counted' );
 
 		// Three failures stop the retry loop instead of hammering the site.
-		hj_sc_maybe_finish_activation();
-		hj_sc_maybe_finish_activation();
-		hj_sc_maybe_finish_activation();
+		hjsc_maybe_finish_activation();
+		hjsc_maybe_finish_activation();
+		hjsc_maybe_finish_activation();
 		ok( ! get_option( HJ_SC_ACTIVATION_PENDING ), 'the plugin stops retrying after three attempts' );
 		break;
 
@@ -136,7 +136,7 @@ switch ( $scenario ) {
 		require_once $plugin_dir . 'hamyar-symptom-checker.php';
 
 		ob_start();
-		hj_sc_activation_notice();
+		hjsc_activation_notice();
 		$quiet = ob_get_clean();
 		eq( '', $quiet, 'no notice when everything is fine' );
 
@@ -149,7 +149,7 @@ switch ( $scenario ) {
 			)
 		);
 		ob_start();
-		hj_sc_activation_notice();
+		hjsc_activation_notice();
 		$html = ob_get_clean();
 		ok( false !== strpos( $html, 'simulated database failure' ), 'the notice shows the stored error' );
 		ok( false !== strpos( $html, 'includes/page.php:123' ), 'the notice shows the file and line' );
@@ -160,7 +160,7 @@ switch ( $scenario ) {
 		$page_id = wp_insert_post( array( 'post_type' => 'page', 'post_name' => HJ_SC_PAGE_SLUG, 'post_status' => 'draft' ) );
 		update_option( HJ_SC_PAGE_OPTION, $page_id );
 		ob_start();
-		hj_sc_activation_notice();
+		hjsc_activation_notice();
 		$after = ob_get_clean();
 		eq( '', $after, 'the notice disappears after a successful setup' );
 		eq( false, get_option( HJ_SC_LAST_ERROR, false ), 'the stale error is deleted' );
@@ -173,7 +173,7 @@ switch ( $scenario ) {
 		add_disease( 'kidney-stones', 'draft' );
 		add_disease( 'gastroenteritis', 'publish' );
 
-		$links = hj_sc_topic_links();
+		$links = hjsc_topic_links();
 		eq( 'https://example.test/disease/appendicitis/', $links['app'] ?? '', 'a unique published article is linked' );
 		ok( ! isset( $links['kidney_stone'] ), 'a draft article is never linked' );
 		eq( 'https://example.test/disease/gastroenteritis/', $links['gastroenteritis'] ?? '', 'a published article is linked' );
@@ -197,7 +197,7 @@ switch ( $scenario ) {
 				return $args;
 			}
 		);
-		$links = hj_sc_topic_links();
+		$links = hjsc_topic_links();
 		eq( array(), $links, 'an ambiguous match produces no links at all' );
 		$counts = array();
 		foreach ( $GLOBALS['hj_stub']['actions']['hj_sc_topic_link_unresolved'] ?? array() as $args ) {
@@ -210,14 +210,14 @@ switch ( $scenario ) {
 		boot( $plugin_dir, false );
 		// A matching post exists, but without the registered post type nothing is linked.
 		add_disease( 'appendicitis' );
-		eq( array(), hj_sc_topic_links(), 'no registered disease post type means no links' );
+		eq( array(), hjsc_topic_links(), 'no registered disease post type means no links' );
 		break;
 
 	case 'slugs':
 		boot( $plugin_dir );
-		$slugs = hj_sc_topic_slugs();
+		$slugs = hjsc_topic_slugs();
 		eq( 'appendicitis', $slugs['app'] ?? '', 'the bundle slug is the default mapping' );
-		eq( count( hj_sc_bundle_conditions() ), count( $slugs ), 'every condition has a slug' );
+		eq( count( hjsc_bundle_conditions() ), count( $slugs ), 'every condition has a slug' );
 		break;
 
 	case 'slugs-filter':
@@ -225,27 +225,27 @@ switch ( $scenario ) {
 		register_post_type( 'disease' );
 		require_once $plugin_dir . 'hamyar-symptom-checker.php';
 		add_filter(
-			'hj_sc_topic_slugs',
+			'hjsc_topic_slugs',
 			static function ( $value ) {
 				$value['app'] = 'acute-appendicitis';
 				return $value;
 			}
 		);
-		eq( 'acute-appendicitis', hj_sc_topic_slugs()['app'] ?? '', 'the team can pin a slug explicitly' );
+		eq( 'acute-appendicitis', hjsc_topic_slugs()['app'] ?? '', 'the team can pin a slug explicitly' );
 		break;
 
 	case 'config':
 		boot( $plugin_dir );
 		add_disease( 'appendicitis' );
 
-		$config = hj_sc_config();
+		$config = hjsc_config();
 		eq( '0.2.0-draft', $config['bundleVersion'], 'the bundle version is read from the shipped file' );
 		ok( str_ends_with( $config['bundleUrl'], 'assets/data/knowledge-bundle.v1.json' ), 'bundle URL points inside the plugin' );
 		ok( str_ends_with( $config['evidenceUrl'], 'assets/engine/data/evidence-map.v1.json' ), 'evidence URL points inside the plugin' );
 		ok( is_object( $config['topicLinks'] ), 'topic links are an object even when empty' );
 		eq( 'https://example.test/disease/appendicitis/', $config['topicLinks']->app ?? '', 'resolved links reach the browser' );
 
-		$json = hj_sc_config_json();
+		$json = hjsc_config_json();
 		ok( false === stripos( $json, '</script' ), 'config JSON cannot break out of the script tag' );
 		ok( false !== strpos( $json, '\u003C' ) || false === stripos( $json, '<' ), 'angle brackets are hex-escaped' );
 		break;
@@ -253,12 +253,12 @@ switch ( $scenario ) {
 	case 'escaping':
 		boot( $plugin_dir );
 		add_filter(
-			'hj_sc_topic_links',
+			'hjsc_topic_links',
 			static function () {
 				return array( 'app' => 'https://example.test/x?"><script>alert(1)</script>' );
 			}
 		);
-		$json = hj_sc_config_json();
+		$json = hjsc_config_json();
 		ok( false === stripos( $json, '</script' ), 'a hostile permalink cannot close the script tag' );
 		ok( false === strpos( $json, '<script' ), 'a hostile permalink cannot add a script tag' );
 		break;
@@ -277,7 +277,7 @@ switch ( $scenario ) {
 
 		$GLOBALS['hj_stub']['is_page'] = true;
 		$GLOBALS['hj_stub']['queried'] = $page_id;
-		hj_sc_enqueue_assets();
+		hjsc_enqueue_assets();
 
 		ok( isset( $GLOBALS['hj_stub']['styles']['hj-sc-ui'] ), 'the stylesheet is enqueued on the checker page' );
 		ok( isset( $GLOBALS['hj_stub']['scripts']['hj-sc-app'] ), 'the app script is enqueued on the checker page' );
@@ -289,12 +289,12 @@ switch ( $scenario ) {
 		// WordPress builds one string: [inline before] <script src id="handle-js"></script>.
 		$wp_tag = '<script id="hj-sc-app-js-before">window.HJ_SC_CONFIG = {"a":1};</script>' . "\n"
 			. '<script src="https://example.test/a.js" id="hj-sc-app-js"></script>';
-		$tag    = hj_sc_module_script_tag( $wp_tag, 'hj-sc-app', 'https://example.test/a.js' );
+		$tag    = hjsc_module_script_tag( $wp_tag, 'hj-sc-app', 'https://example.test/a.js' );
 		ok( false !== strpos( $tag, 'type="module"' ), 'the entry script is loaded as a module' );
 		ok( false !== strpos( $tag, 'HJ_SC_CONFIG' ), 'the inline config survives the tag filter' );
 		ok( false !== strpos( $tag, 'https://example.test/a.js' ), 'the entry script keeps its URL' );
 		ok( 1 === substr_count( $tag, 'type="module"' ), 'only the entry script becomes a module' );
-		eq( '<script src="x"></script>', hj_sc_module_script_tag( '<script src="x"></script>', 'other-handle', 'y' ), 'other scripts are untouched' );
+		eq( '<script src="x"></script>', hjsc_module_script_tag( '<script src="x"></script>', 'other-handle', 'y' ), 'other scripts are untouched' );
 
 		// A different page must stay clean.
 		hj_stub_reset();
@@ -309,7 +309,7 @@ switch ( $scenario ) {
 		$GLOBALS['hj_stub']['options'][ HJ_SC_PAGE_OPTION ] = $page_id;
 		$GLOBALS['hj_stub']['is_page']                      = true;
 		$GLOBALS['hj_stub']['queried']                      = 999;
-		hj_sc_enqueue_assets();
+		hjsc_enqueue_assets();
 		eq( array(), $GLOBALS['hj_stub']['styles'], 'other pages get no checker stylesheet' );
 		eq( array(), $GLOBALS['hj_stub']['scripts'], 'other pages get no checker script' );
 		break;
@@ -327,12 +327,12 @@ switch ( $scenario ) {
 		$GLOBALS['hj_stub']['is_page'] = true;
 		$GLOBALS['hj_stub']['queried'] = $page_id;
 
-		$robots = hj_sc_robots( array( 'index' => true, 'follow' => true ) );
+		$robots = hjsc_robots( array( 'index' => true, 'follow' => true ) );
 		ok( ! empty( $robots['noindex'] ) && ! empty( $robots['nofollow'] ), 'the checker page is noindex, nofollow' );
 		ok( empty( $robots['index'] ) && empty( $robots['follow'] ), 'the opposite directives are removed' );
 
 		$GLOBALS['hj_stub']['queried'] = 999;
-		$other                         = hj_sc_robots( array( 'index' => true, 'follow' => true ) );
+		$other                         = hjsc_robots( array( 'index' => true, 'follow' => true ) );
 		eq( array( 'index' => true, 'follow' => true ), $other, 'other pages keep their robots directives' );
 		break;
 

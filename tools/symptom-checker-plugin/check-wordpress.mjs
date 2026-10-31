@@ -141,10 +141,12 @@ file_put_contents( '/wordpress/hj-check.json', wp_json_encode( array(
     'permalink' => get_permalink( $page ),
     'published' => get_permalink( $published ),
     'draft_status' => get_post_status( $draft_id ),
-    'links' => hj_sc_topic_links(),
-    'bundle' => hj_sc_bundle_version(),
+    'links' => hjsc_topic_links(),
+    'bundle' => hjsc_bundle_version(),
     'pending' => (bool) get_option( 'hj_sc_activation_pending' ),
     'activation_error' => get_option( 'hj_sc_last_error', null ),
+    // The live site's child theme declares these names; the plugin must not.
+    'theme_collision' => function_exists( 'hj_sc_enqueue_assets' ),
 ), JSON_UNESCAPED_UNICODE ) );
 `;
   const blueprint = {
@@ -319,6 +321,20 @@ try {
 
   // 3. tooling
   mkdirSync(join(work, 'mu'), { recursive: true });
+  // The child theme 0.30.1 loads inc/symptom-checker-test.php, which declares
+  // hj_sc_enqueue_assets() and friends. On 2026-10-31 that name collided with
+  // the plugin and every activation died with "Cannot redeclare function".
+  // Loading the same names from an mu-plugin reproduces the theme at boot.
+  writeFileSync(
+    join(work, 'mu/hj-fixture-theme-hj-sc-names.php'),
+    `<?php
+// Test fixture: the hj_sc_* functions the shipped child theme declares.
+function hj_sc_enqueue_assets() {}
+function hj_sc_is_test_request() { return false; }
+function hj_sc_template_redirect() {}
+function hj_sc_noindex_meta() {}
+`,
+  );
   writeFileSync(
     join(work, 'mu/hj-fixture-disease-cpt.php'),
     `<?php
@@ -346,6 +362,11 @@ add_action( 'init', function () {
     'the first admin request finished the setup and cleared the pending note',
     info?.pending === false,
     `pending=${info?.pending}`,
+  );
+  check(
+    'the theme fixture declares the hj_sc_* names that broke the live site',
+    info?.theme_collision === true,
+    `theme_collision=${info?.theme_collision}`,
   );
   check(
     'no activation error was recorded',

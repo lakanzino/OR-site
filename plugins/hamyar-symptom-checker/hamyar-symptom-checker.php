@@ -2,7 +2,7 @@
 /**
  * Plugin Name: همیار جراحی — دستیار نشانه‌ها (پیش‌نمایش)
  * Description: برگهٔ مستقل و غیرعمومی برای اجرای «دستیار نشانه‌ها» روی موتور مستقل پروژه. بستهٔ دانش و موتور از داخل همین افزونه بارگذاری می‌شوند و پاسخ‌های کاربر هیچ‌گاه به سرور فرستاده یا ذخیره نمی‌شوند.
- * Version: 0.1.2
+ * Version: 0.1.3
  * Requires at least: 6.4
  * Requires PHP: 8.0
  * Author: همیار جراحی
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'HJ_SC_VERSION', '0.1.2' );
+define( 'HJ_SC_VERSION', '0.1.3' );
 define( 'HJ_SC_FILE', __FILE__ );
 define( 'HJ_SC_DIR', plugin_dir_path( __FILE__ ) );
 define( 'HJ_SC_URL', plugin_dir_url( __FILE__ ) );
@@ -34,7 +34,7 @@ define( 'HJ_SC_LAST_ERROR', 'hj_sc_last_error' );
  * @param string $message Human readable message.
  * @param array  $extra   Extra context merged into the stored record.
  */
-function hj_sc_record_error( $message, $extra = array() ) {
+function hjsc_record_error( $message, $extra = array() ) {
 	$record = array_merge(
 		array(
 			'message'        => (string) $message,
@@ -42,7 +42,7 @@ function hj_sc_record_error( $message, $extra = array() ) {
 			'plugin_version' => HJ_SC_VERSION,
 			'php'            => PHP_VERSION,
 			'wp'             => function_exists( 'get_bloginfo' ) ? (string) get_bloginfo( 'version' ) : '',
-			'missing_files'  => hj_sc_missing_files(),
+			'missing_files'  => hjsc_missing_files(),
 		),
 		is_array( $extra ) ? $extra : array()
 	);
@@ -56,7 +56,7 @@ function hj_sc_record_error( $message, $extra = array() ) {
  *
  * @return string[] Relative paths.
  */
-function hj_sc_missing_files() {
+function hjsc_missing_files() {
 	$expected = array(
 		'hamyar-symptom-checker.php',
 		'README.md',
@@ -91,7 +91,7 @@ function hj_sc_missing_files() {
  * way to leave the administrator a message they can forward instead of a blank
  * "the plugin could not be activated" screen.
  */
-function hj_sc_capture_activation_fatal() {
+function hjsc_capture_activation_fatal() {
 	$error = error_get_last();
 	if ( ! $error || ! in_array( (int) $error['type'], array( E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR ), true ) ) {
 		return;
@@ -99,7 +99,7 @@ function hj_sc_capture_activation_fatal() {
 	if ( ! get_option( HJ_SC_ACTIVATION_PENDING ) ) {
 		return;
 	}
-	hj_sc_record_error(
+	hjsc_record_error(
 		'fatal: ' . $error['message'],
 		array(
 			'file' => $error['file'],
@@ -113,11 +113,11 @@ function hj_sc_capture_activation_fatal() {
  *
  * @return string
  */
-function hj_sc_diagnostics_text() {
+function hjsc_diagnostics_text() {
 	$error = get_option( HJ_SC_LAST_ERROR, array() );
 	$lines = array(
 		'plugin: ' . HJ_SC_VERSION,
-		'bundle: ' . ( function_exists( 'hj_sc_bundle_version' ) ? hj_sc_bundle_version() : '?' ),
+		'bundle: ' . ( function_exists( 'hjsc_bundle_version' ) ? hjsc_bundle_version() : '?' ),
 		'php: ' . PHP_VERSION,
 		'wp: ' . ( function_exists( 'get_bloginfo' ) ? get_bloginfo( 'version' ) : '?' ),
 	);
@@ -127,7 +127,7 @@ function hj_sc_diagnostics_text() {
 			$lines[] = 'at: ' . $error['file'] . ':' . ( $error['line'] ?? 0 );
 		}
 	}
-	$missing = hj_sc_missing_files();
+	$missing = hjsc_missing_files();
 	if ( $missing ) {
 		$lines[] = 'missing: ' . implode( ', ', $missing );
 	}
@@ -137,18 +137,18 @@ function hj_sc_diagnostics_text() {
 /**
  * Show the report only to administrators, and only when something went wrong.
  */
-function hj_sc_activation_notice() {
+function hjsc_activation_notice() {
 	if ( ! function_exists( 'current_user_can' ) || ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
 	$error   = get_option( HJ_SC_LAST_ERROR, array() );
-	$missing = hj_sc_missing_files();
+	$missing = hjsc_missing_files();
 	if ( empty( $error['message'] ) && ! $missing ) {
 		return;
 	}
 	// Self-heal: once the page exists and every file is there, the old message
 	// is history and must not nag the administrator forever.
-	if ( ! $missing && function_exists( 'hj_sc_page_id' ) && hj_sc_page_id() > 0 ) {
+	if ( ! $missing && function_exists( 'hjsc_page_id' ) && hjsc_page_id() > 0 ) {
 		delete_option( HJ_SC_LAST_ERROR );
 		return;
 	}
@@ -158,10 +158,10 @@ function hj_sc_activation_notice() {
 	echo '</strong></p><p>';
 	echo esc_html( 'این متن را برای پیگیری بفرستید؛ نیازی به حذف هیچ افزونهٔ دیگری نیست.' );
 	echo '</p><pre style="white-space:pre-wrap;direction:ltr;text-align:left">';
-	echo esc_html( hj_sc_diagnostics_text() );
+	echo esc_html( hjsc_diagnostics_text() );
 	echo '</pre></div>';
 }
-add_action( 'admin_notices', 'hj_sc_activation_notice' );
+add_action( 'admin_notices', 'hjsc_activation_notice' );
 
 /*
  * Load the two include files through a guard.
@@ -182,15 +182,15 @@ foreach ( $hj_sc_include_files as $hj_sc_relative ) {
 }
 unset( $hj_sc_include_files, $hj_sc_include_missing, $hj_sc_relative, $hj_sc_path );
 
-if ( ! function_exists( 'hj_sc_activate' ) ) {
+if ( ! function_exists( 'hjsc_activate' ) ) {
 	/**
 	 * Fallback so activation can never call an undefined function: it records
 	 * why the page could not be created instead of taking the site down.
 	 */
-	function hj_sc_activate() {
-		hj_sc_record_error( 'includes/page.php is missing, the page was not created' );
+	function hjsc_activate() {
+		hjsc_record_error( 'includes/page.php is missing, the page was not created' );
 	}
 }
 
-register_activation_hook( __FILE__, 'hj_sc_activate' );
-add_action( 'admin_notices', 'hj_sc_activation_notice' );
+register_activation_hook( __FILE__, 'hjsc_activate' );
+add_action( 'admin_notices', 'hjsc_activation_notice' );
