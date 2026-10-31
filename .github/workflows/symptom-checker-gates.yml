@@ -141,13 +141,7 @@ jobs:
           # A failing run must say *why*. The job log is not always reachable,
           # but a commit comment always is — and it carries the whole tail.
           if [ "$status" -ne 0 ]; then
-            grep -E '^(FAIL|ERROR)' /tmp/wp.log | head -10 | sed 's/^/::error::/' || true
-            {
-              printf 'WordPress %s failed. Last lines of the harness:\n\n```\n' "$HJ_WP_VERSION"
-              tail -n 80 /tmp/wp.log
-              printf '\n```\n'
-            } > /tmp/comment.md
-            gh api -X POST "repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/comments" \
-              -F body=@/tmp/comment.md >/dev/null || true
+            grep -E '^(FAIL|ERROR)' /tmp/wp.log | head -6 | cut -c1-280 | sed 's/^/::error::/' || true
+            tail -n 6 /tmp/wp.log | cut -c1-280 | sed 's/^/::error::tail: /' || true
           fi
           exit $status

@@ -122,6 +122,14 @@ function hjsc_sanitize_settings( $input ) {
  * Register the option, its section and its fields.
  */
 function hjsc_register_settings() {
+	// `admin_init` also fires from scripts that activate a plugin without
+	// loading wp-admin's template functions. Registering a settings *field*
+	// there would be a fatal error on a page the owner never sees, so the
+	// screen is only built when the Settings API is really loaded.
+	if ( ! function_exists( 'register_setting' ) || ! function_exists( 'add_settings_section' ) || ! function_exists( 'add_settings_field' ) ) {
+		return;
+	}
+
 	register_setting(
 		'hjsc_settings',
 		HJ_SC_SETTINGS_OPTION,
