@@ -2,6 +2,7 @@
 
 **تاریخ:** ۳۱ اکتبر ۲۰۲۶
 **فایل نصبی:** [`releases/hamyar-symptom-checker-0.1.1.zip`](../../../releases/hamyar-symptom-checker-0.1.1.zip)
+**ریلیز:** [`symptom-checker-v0.1.1`](https://github.com/lakanzino/OR-site/releases/tag/symptom-checker-v0.1.1) — دانلود مستقیم از همان تگ (بارگذاری Assets از محیط ساخت ممکن نشد؛ نسخهٔ فایل داخل مخزن با همان هش بررسی شد)
 **SHA-256:** `3f2bbf836a78b9307fd4776f70422fc85cbdcc9492c6f7544c8b7c06592d64a1`
 **دادهٔ دانش:** `0.2.0-draft` · **افزونه:** `0.1.1`
 
