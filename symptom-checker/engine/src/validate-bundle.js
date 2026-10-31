@@ -42,7 +42,14 @@ function checkClause(issues, owner, clause, questions) {
     clause.any_of.forEach((sub) => checkClause(issues, owner, sub, questions));
     return;
   }
-  if ('branches_open_min' in clause || 'branches_open_max' in clause) return;
+  if (
+    'branches_open_min' in clause ||
+    'branches_open_max' in clause ||
+    'unanswered_min' in clause ||
+    'unanswered_max' in clause
+  ) {
+    return;
+  }
 
   const question = questions.get(clause.question_id);
   if (!question) {

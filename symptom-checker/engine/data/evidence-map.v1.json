@@ -1,72 +1,338 @@
 {
   "map_version": "1.0.0",
   "bundle_id": "symptom-checker.abdomen.v1",
-  "bundle_version": "0.1.0-draft",
+  "bundle_version": "0.2.0-draft",
   "description": "نگاشت پاسخ‌های پرسش‌نامه به نشانه‌های شناسنامه. فقط برای توضیح «چه چیزی گزارش شده» است؛ نه امتیازدهی، نه رتبه‌بندی و نه احتمال.",
   "entries": [
-    { "question_id": "q_pain_present", "option_id": "yes", "symptom_id": "s_pain_abdomen", "state": "present" },
-    { "question_id": "q_pain_present", "option_id": "no", "symptom_id": "s_pain_abdomen", "state": "absent" },
-
-    { "question_id": "q_pain_location", "option_id": "right_lower", "symptom_id": "s_pain_rlq", "state": "present" },
-    { "question_id": "q_pain_location", "option_id": "periumbilical", "symptom_id": "s_pain_periumbilical_start", "state": "present" },
-    { "question_id": "q_pain_location", "option_id": "flank_or_back", "symptom_id": "s_flank_pain", "state": "present" },
-
-    { "question_id": "q_pain_migrated_rlq", "option_id": "yes", "symptom_id": "s_pain_migrates_rlq", "state": "present" },
-    { "question_id": "q_pain_migrated_rlq", "option_id": "no", "symptom_id": "s_pain_migrates_rlq", "state": "absent" },
-
-    { "question_id": "q_pain_worse_movement", "option_id": "yes", "symptom_id": "s_pain_worse_movement", "state": "present" },
-    { "question_id": "q_pain_worse_movement", "option_id": "no", "symptom_id": "s_pain_worse_movement", "state": "absent" },
-
-    { "question_id": "q_associated_symptoms", "option_id": "nausea", "symptom_id": "s_nausea", "state": "present" },
-    { "question_id": "q_associated_symptoms", "option_id": "vomiting", "symptom_id": "s_vomiting", "state": "present" },
-    { "question_id": "q_associated_symptoms", "option_id": "appetite_loss", "symptom_id": "s_appetite_loss", "state": "present" },
-    { "question_id": "q_associated_symptoms", "option_id": "fever", "symptom_id": "s_fever", "state": "present" },
-    { "question_id": "q_associated_symptoms", "option_id": "diarrhea", "symptom_id": "s_diarrhea", "state": "present" },
-    { "question_id": "q_associated_symptoms", "option_id": "constipation", "symptom_id": "s_constipation", "state": "present" },
-    { "question_id": "q_associated_symptoms", "option_id": "bloating", "symptom_id": "s_bloating", "state": "present" },
-    { "question_id": "q_associated_symptoms", "option_id": "no_gas_pass", "symptom_id": "s_no_gas_pass", "state": "present" },
-    { "question_id": "q_associated_symptoms", "option_id": "none", "symptom_id": "s_nausea", "state": "absent" },
-    { "question_id": "q_associated_symptoms", "option_id": "none", "symptom_id": "s_vomiting", "state": "absent" },
-    { "question_id": "q_associated_symptoms", "option_id": "none", "symptom_id": "s_appetite_loss", "state": "absent" },
-    { "question_id": "q_associated_symptoms", "option_id": "none", "symptom_id": "s_fever", "state": "absent" },
-    { "question_id": "q_associated_symptoms", "option_id": "none", "symptom_id": "s_diarrhea", "state": "absent" },
-    { "question_id": "q_associated_symptoms", "option_id": "none", "symptom_id": "s_constipation", "state": "absent" },
-    { "question_id": "q_associated_symptoms", "option_id": "none", "symptom_id": "s_bloating", "state": "absent" },
-    { "question_id": "q_associated_symptoms", "option_id": "none", "symptom_id": "s_no_gas_pass", "state": "absent" },
-
-    { "question_id": "q_urinary_symptoms", "option_id": "dysuria", "symptom_id": "s_dysuria", "state": "present" },
-    { "question_id": "q_urinary_symptoms", "option_id": "frequency", "symptom_id": "s_frequency", "state": "present" },
-    { "question_id": "q_urinary_symptoms", "option_id": "urgency", "symptom_id": "s_urgency", "state": "present" },
-    { "question_id": "q_urinary_symptoms", "option_id": "blood_urine", "symptom_id": "s_hematuria", "state": "present" },
-    { "question_id": "q_urinary_symptoms", "option_id": "cloudy_odor", "symptom_id": "s_cloudy_urine", "state": "present" },
-    { "question_id": "q_urinary_symptoms", "option_id": "none", "symptom_id": "s_dysuria", "state": "absent" },
-    { "question_id": "q_urinary_symptoms", "option_id": "none", "symptom_id": "s_frequency", "state": "absent" },
-    { "question_id": "q_urinary_symptoms", "option_id": "none", "symptom_id": "s_urgency", "state": "absent" },
-    { "question_id": "q_urinary_symptoms", "option_id": "none", "symptom_id": "s_hematuria", "state": "absent" },
-    { "question_id": "q_urinary_symptoms", "option_id": "none", "symptom_id": "s_cloudy_urine", "state": "absent" },
-
-    { "question_id": "q_flank_radiation", "option_id": "yes", "symptom_id": "s_radiate_groin", "state": "present" },
-    { "question_id": "q_flank_radiation", "option_id": "yes", "symptom_id": "s_colicky_pain", "state": "present" },
-    { "question_id": "q_flank_radiation", "option_id": "no", "symptom_id": "s_radiate_groin", "state": "absent" },
-    { "question_id": "q_flank_radiation", "option_id": "no", "symptom_id": "s_colicky_pain", "state": "absent" },
-
-    { "question_id": "q_fever_chills", "option_id": "yes", "symptom_id": "s_fever", "state": "present" },
-    { "question_id": "q_fever_chills", "option_id": "yes", "symptom_id": "s_chills", "state": "present" },
-    { "question_id": "q_fever_chills", "option_id": "no", "symptom_id": "s_fever", "state": "absent" },
-    { "question_id": "q_fever_chills", "option_id": "no", "symptom_id": "s_chills", "state": "absent" },
-
-    { "question_id": "q_diarrhea_vomiting", "option_id": "diarrhea", "symptom_id": "s_diarrhea", "state": "present" },
-    { "question_id": "q_diarrhea_vomiting", "option_id": "vomiting", "symptom_id": "s_vomiting", "state": "present" },
-    { "question_id": "q_diarrhea_vomiting", "option_id": "none", "symptom_id": "s_diarrhea", "state": "absent" },
-    { "question_id": "q_diarrhea_vomiting", "option_id": "none", "symptom_id": "s_vomiting", "state": "absent" },
-
-    { "question_id": "q_blood_in_stool", "option_id": "yes", "symptom_id": "s_blood_stool", "state": "present" },
-    { "question_id": "q_blood_in_stool", "option_id": "no", "symptom_id": "s_blood_stool", "state": "absent" },
-
-    { "question_id": "q_dehydration_signs", "option_id": "thirst", "symptom_id": "s_dehydration", "state": "present" },
-    { "question_id": "q_dehydration_signs", "option_id": "dry_mouth", "symptom_id": "s_dehydration", "state": "present" },
-    { "question_id": "q_dehydration_signs", "option_id": "little_urine", "symptom_id": "s_dehydration", "state": "present" },
-    { "question_id": "q_dehydration_signs", "option_id": "dizziness", "symptom_id": "s_dehydration", "state": "present" },
-    { "question_id": "q_dehydration_signs", "option_id": "none", "symptom_id": "s_dehydration", "state": "absent" }
+    {
+      "question_id": "q_pain_present",
+      "option_id": "yes",
+      "symptom_id": "s_pain_abdomen",
+      "state": "present"
+    },
+    {
+      "question_id": "q_pain_present",
+      "option_id": "no",
+      "symptom_id": "s_pain_abdomen",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_pain_location",
+      "option_id": "right_lower",
+      "symptom_id": "s_pain_rlq",
+      "state": "present"
+    },
+    {
+      "question_id": "q_pain_location",
+      "option_id": "periumbilical",
+      "symptom_id": "s_pain_periumbilical_start",
+      "state": "present"
+    },
+    {
+      "question_id": "q_pain_location",
+      "option_id": "flank_or_back",
+      "symptom_id": "s_flank_pain",
+      "state": "present"
+    },
+    {
+      "question_id": "q_pain_migrated_rlq",
+      "option_id": "yes",
+      "symptom_id": "s_pain_migrates_rlq",
+      "state": "present"
+    },
+    {
+      "question_id": "q_pain_migrated_rlq",
+      "option_id": "no",
+      "symptom_id": "s_pain_migrates_rlq",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_pain_worse_movement",
+      "option_id": "yes",
+      "symptom_id": "s_pain_worse_movement",
+      "state": "present"
+    },
+    {
+      "question_id": "q_pain_worse_movement",
+      "option_id": "no",
+      "symptom_id": "s_pain_worse_movement",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "nausea",
+      "symptom_id": "s_nausea",
+      "state": "present"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "vomiting",
+      "symptom_id": "s_vomiting",
+      "state": "present"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "appetite_loss",
+      "symptom_id": "s_appetite_loss",
+      "state": "present"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "fever",
+      "symptom_id": "s_fever",
+      "state": "present"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "diarrhea",
+      "symptom_id": "s_diarrhea",
+      "state": "present"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "constipation",
+      "symptom_id": "s_constipation",
+      "state": "present"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "bloating",
+      "symptom_id": "s_bloating",
+      "state": "present"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "no_gas_pass",
+      "symptom_id": "s_no_gas_pass",
+      "state": "present"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "none",
+      "symptom_id": "s_nausea",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "none",
+      "symptom_id": "s_vomiting",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "none",
+      "symptom_id": "s_appetite_loss",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "none",
+      "symptom_id": "s_fever",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "none",
+      "symptom_id": "s_diarrhea",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "none",
+      "symptom_id": "s_constipation",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "none",
+      "symptom_id": "s_bloating",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_associated_symptoms",
+      "option_id": "none",
+      "symptom_id": "s_no_gas_pass",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_urinary_symptoms",
+      "option_id": "dysuria",
+      "symptom_id": "s_dysuria",
+      "state": "present"
+    },
+    {
+      "question_id": "q_urinary_symptoms",
+      "option_id": "frequency",
+      "symptom_id": "s_frequency",
+      "state": "present"
+    },
+    {
+      "question_id": "q_urinary_symptoms",
+      "option_id": "urgency",
+      "symptom_id": "s_urgency",
+      "state": "present"
+    },
+    {
+      "question_id": "q_urinary_symptoms",
+      "option_id": "blood_urine",
+      "symptom_id": "s_hematuria",
+      "state": "present"
+    },
+    {
+      "question_id": "q_urinary_symptoms",
+      "option_id": "cloudy_odor",
+      "symptom_id": "s_cloudy_urine",
+      "state": "present"
+    },
+    {
+      "question_id": "q_urinary_symptoms",
+      "option_id": "none",
+      "symptom_id": "s_dysuria",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_urinary_symptoms",
+      "option_id": "none",
+      "symptom_id": "s_frequency",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_urinary_symptoms",
+      "option_id": "none",
+      "symptom_id": "s_urgency",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_urinary_symptoms",
+      "option_id": "none",
+      "symptom_id": "s_hematuria",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_urinary_symptoms",
+      "option_id": "none",
+      "symptom_id": "s_cloudy_urine",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_flank_radiation",
+      "option_id": "yes",
+      "symptom_id": "s_radiate_groin",
+      "state": "present"
+    },
+    {
+      "question_id": "q_flank_radiation",
+      "option_id": "yes",
+      "symptom_id": "s_colicky_pain",
+      "state": "present"
+    },
+    {
+      "question_id": "q_flank_radiation",
+      "option_id": "no",
+      "symptom_id": "s_radiate_groin",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_flank_radiation",
+      "option_id": "no",
+      "symptom_id": "s_colicky_pain",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_fever_chills",
+      "option_id": "yes",
+      "symptom_id": "s_fever",
+      "state": "present"
+    },
+    {
+      "question_id": "q_fever_chills",
+      "option_id": "yes",
+      "symptom_id": "s_chills",
+      "state": "present"
+    },
+    {
+      "question_id": "q_fever_chills",
+      "option_id": "no",
+      "symptom_id": "s_fever",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_fever_chills",
+      "option_id": "no",
+      "symptom_id": "s_chills",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_diarrhea_vomiting",
+      "option_id": "diarrhea",
+      "symptom_id": "s_diarrhea",
+      "state": "present"
+    },
+    {
+      "question_id": "q_diarrhea_vomiting",
+      "option_id": "vomiting",
+      "symptom_id": "s_vomiting",
+      "state": "present"
+    },
+    {
+      "question_id": "q_diarrhea_vomiting",
+      "option_id": "none",
+      "symptom_id": "s_diarrhea",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_diarrhea_vomiting",
+      "option_id": "none",
+      "symptom_id": "s_vomiting",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_blood_in_stool",
+      "option_id": "yes",
+      "symptom_id": "s_blood_stool",
+      "state": "present"
+    },
+    {
+      "question_id": "q_blood_in_stool",
+      "option_id": "no",
+      "symptom_id": "s_blood_stool",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_dehydration_signs",
+      "option_id": "thirst",
+      "symptom_id": "s_dehydration",
+      "state": "present"
+    },
+    {
+      "question_id": "q_dehydration_signs",
+      "option_id": "dry_mouth",
+      "symptom_id": "s_dehydration",
+      "state": "present"
+    },
+    {
+      "question_id": "q_dehydration_signs",
+      "option_id": "little_urine",
+      "symptom_id": "s_dehydration",
+      "state": "present"
+    },
+    {
+      "question_id": "q_dehydration_signs",
+      "option_id": "dizziness",
+      "symptom_id": "s_dehydration",
+      "state": "present"
+    },
+    {
+      "question_id": "q_dehydration_signs",
+      "option_id": "none",
+      "symptom_id": "s_dehydration",
+      "state": "absent"
+    },
+    {
+      "question_id": "q_urinary_symptoms",
+      "option_id": "retention",
+      "symptom_id": "s_cannot_urinate",
+      "state": "present"
+    }
   ]
 }

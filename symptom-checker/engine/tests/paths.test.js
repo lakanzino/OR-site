@@ -40,6 +40,12 @@ const CASES = [
     silent: { q_pain_present: 'yes', q_pain_location: 'other_abdomen', q_pain_course: 'stable' },
   },
   {
+    rule: 'sf_cannot_urinate',
+    severity: 'urgent',
+    answers: { q_pain_present: 'yes', q_pain_location: 'other_abdomen', q_urinary_symptoms: ['retention'] },
+    silent: { q_pain_present: 'yes', q_pain_location: 'other_abdomen', q_urinary_symptoms: ['dysuria'] },
+  },
+  {
     rule: 'sf_fever_flank',
     severity: 'urgent',
     answers: { q_pain_present: 'yes', q_pain_location: 'flank_or_back', q_fever_chills: 'yes' },

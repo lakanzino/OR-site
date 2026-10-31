@@ -271,6 +271,33 @@ const emptyGroup = [...doc.querySelectorAll('#app .evidence dd')]
   .some((node) => node.textContent.includes('موردی در این گروه نیست'));
 check('evidence groups render only when non-empty', groupTitles.length === 0 || !emptyGroup, `${groupTitles.length} groups`);
 
+// A contradiction is not just reported: the person gets a way to fix it.
+const expectsConflict = expected.conditions.some((card) => (card.evidence?.conflict ?? []).length > 0);
+const conflictButtons = [...doc.querySelectorAll('#app .conflict-fix button')];
+check(
+  'a contradiction offers a way to fix the answers',
+  expectsConflict ? conflictButtons.length > 0 : conflictButtons.length === 0,
+  `${conflictButtons.length} buttons, expected conflict=${expectsConflict}`,
+);
+if (conflictButtons.length) {
+  conflictButtons[0].click();
+  await wait(60);
+  const marked = [...doc.querySelectorAll('#app .edit-row.conflict-row')];
+  check(
+    'the fix button opens the answer list on the conflicting rows',
+    doc.querySelector('#app details.editor')?.open === true && marked.length >= 2,
+    `${marked.length} marked rows`,
+  );
+  check(
+    'every answer named in the conflict is marked',
+    expected.conditions
+      .flatMap((card) => card.evidence?.conflict ?? [])
+      .flatMap((item) => item.via ?? [])
+      .every((via) => marked.some((row) => row.textContent.length > 0)) &&
+      marked.every((row) => row.querySelector('button')),
+  );
+}
+
 // --- edit / restart ------------------------------------------------------
 const editAll = [...doc.querySelectorAll('#app button')].find((button) => button.textContent.includes('ویرایش پاسخ‌ها'));
 editAll?.click();

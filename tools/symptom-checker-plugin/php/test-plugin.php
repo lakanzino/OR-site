@@ -171,7 +171,7 @@ switch ( $scenario ) {
 		add_disease( 'appendicitis' );
 
 		$config = hj_sc_config();
-		eq( '0.1.0-draft', $config['bundleVersion'], 'the bundle version is read from the shipped file' );
+		eq( '0.2.0-draft', $config['bundleVersion'], 'the bundle version is read from the shipped file' );
 		ok( str_ends_with( $config['bundleUrl'], 'assets/data/knowledge-bundle.v1.json' ), 'bundle URL points inside the plugin' );
 		ok( str_ends_with( $config['evidenceUrl'], 'assets/engine/data/evidence-map.v1.json' ), 'evidence URL points inside the plugin' );
 		ok( is_object( $config['topicLinks'] ), 'topic links are an object even when empty' );
