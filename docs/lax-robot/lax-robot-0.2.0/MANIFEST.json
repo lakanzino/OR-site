@@ -1,0 +1,29 @@
+{
+  "name": "lax-robot",
+  "version": "0.2.0",
+  "date": "2026-10-31",
+  "repo": "lakanzino/OR-site",
+  "note_fa": "فهرست فایل‌های این سند با اندازه و sha256. نام ابزار = نام پوشه = نسخه.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2503,
+      "sha256": "047c1b3f92c6f311b522760fd1561e90b20a4c7b2ffe0420a178d90ed75c7fe8"
+    },
+    {
+      "path": "capacity.fa.md",
+      "bytes": 5939,
+      "sha256": "e19d4d5e120c54bb42ea84e976a4674baab701dbd3af9b8cf29441a68f839a79"
+    },
+    {
+      "path": "changes.fa.md",
+      "bytes": 4430,
+      "sha256": "e3e80a14af19862b0c4b2a0a36eddd1d9c42e2018555a23303d811cbd17553a6"
+    },
+    {
+      "path": "research.fa.md",
+      "bytes": 13119,
+      "sha256": "8dc654ad58167ec49c5292b8e225b09ae48ca64656dc70062a016997a95a69bf"
+    }
+  ]
+}

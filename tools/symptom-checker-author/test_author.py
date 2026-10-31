@@ -104,6 +104,50 @@ class ShippedBundleTest(Fixture):
         for path in committed.glob("gen_*.json"):
             self.assertEqual(path.read_bytes(), (scratch / path.name).read_bytes(), path.name)
 
+    def test_publish_bundle_names_the_file_for_uploads(self) -> None:
+        out = self.tmp / "hj-sc"
+        done = run("publish-bundle", "--out", str(out))
+        self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+        files = sorted(path.name for path in out.glob("knowledge-bundle.*.json"))
+        self.assertEqual(len(files), 1, files)
+        name = files[0]
+        self.assertRegex(name, r"^knowledge-bundle\.[0-9A-Za-z._-]+\.[0-9a-f]{8}\.json$")
+        payload = (out / name).read_bytes()
+        self.assertEqual(hashlib.sha256(payload).hexdigest()[:8], name.split(".")[-2])
+        bundle = json.loads(payload)
+        self.assertIn(bundle["bundle_version"], name)
+        self.assertIn("hj-sc", done.stdout)
+
+    def test_publish_bundle_check_detects_drift(self) -> None:
+        out = self.tmp / "hj-sc"
+        self.assertEqual(run("publish-bundle", "--out", str(out)).returncode, 0)
+        self.assertEqual(run("publish-bundle", "--out", str(out), "--check").returncode, 0)
+        for path in out.glob("knowledge-bundle.*.json"):
+            path.write_bytes(path.read_bytes().replace(b"", b"", 1) + b" ")
+        self.assertEqual(run("publish-bundle", "--out", str(out), "--check").returncode, 1)
+
+    def test_publish_bundle_refuses_broken_data(self) -> None:
+        """Nothing is published when the data cannot pass the gates."""
+        workspace = self.tmp / "broken"
+        shutil.copytree(EXAMPLE, workspace)
+        condition = json.loads((workspace / "conditions/chole.json").read_text(encoding="utf-8"))
+        condition["profile"][0]["symptom_id"] = "abd.does_not_exist"
+        self.write(workspace / "conditions/chole.json", condition)
+        out = self.tmp / "hj-sc"
+        done = run("--workspace", str(workspace), "publish-bundle", "--out", str(out))
+        self.assertEqual(done.returncode, 1)
+        self.assertIn("abd.does_not_exist", done.stdout)
+        self.assertEqual([], list(out.glob("*.json")) if out.exists() else [])
+
+    def test_publish_bundle_of_an_empty_workspace_is_the_base(self) -> None:
+        empty = self.tmp / "empty"
+        empty.mkdir()
+        out = self.tmp / "hj-sc"
+        done = run("--workspace", str(empty), "publish-bundle", "--out", str(out), "--no-bump")
+        self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+        [path] = list(out.glob("*.json"))
+        self.assertEqual(path.read_bytes(), BASE.read_bytes())
+
     def test_build_is_deterministic(self) -> None:
         first = run("--workspace", str(EXAMPLE), "build-bundle", "--no-bump", "--out", "a.json")
         second = run("--workspace", str(EXAMPLE), "build-bundle", "--no-bump", "--out", "b.json")

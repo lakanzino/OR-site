@@ -45,7 +45,12 @@ const work = mkdtempSync(join(tmpdir(), 'hj-sc-wp-'));
 let server = null;
 const results = [];
 
-function check(label, ok, detail = '') {
+// A second UI run (phase 5-a) reports the same assertions under another banner,
+// so the log never shows two identical lines with different meanings.
+let checkPrefix = '';
+
+function check(text, ok, detail = '') {
+  const label = checkPrefix ? `${checkPrefix}${text}` : text;
   results.push({ label, ok, detail });
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${label}${detail ? ` — ${detail}` : ''}`);
 }
@@ -193,7 +198,74 @@ async function waitForReport(timeoutMs = 120000) {
   return null;
 }
 
-async function uiCheck(config) {
+/**
+ * Phase 5-a end to end: a bundle dropped into `uploads/hj-sc/` is served, is
+ * reachable, carries its hash, and disappears again when the file is removed.
+ */
+async function bundlePublishChecks() {
+  const published = join(work, 'publish');
+  const built = spawnSync(
+    'python3',
+    [join(REPO, 'tools/symptom-checker-author/author.py'), 'publish-bundle', '--out', published],
+    { encoding: 'utf8' },
+  );
+  if (built.status !== 0) {
+    check('the authoring CLI publishes a bundle', false, (built.stderr || built.stdout || '').slice(0, 300));
+    return;
+  }
+  const file = readdirSync(published).find((name) => name.startsWith('knowledge-bundle.') && name.endsWith('.json'));
+  check('the authoring CLI publishes a bundle', Boolean(file), file ?? 'no file');
+  if (!file) return;
+  check('the published name carries version and hash', /^knowledge-bundle\.[0-9A-Za-z._-]+\.[0-9a-f]{8}\.json$/.test(file), file);
+
+  const uploads = join(work, `wordpress/WordPress-${WP_VERSION}/wp-content/uploads/hj-sc`);
+  mkdirSync(uploads, { recursive: true });
+  const target = join(uploads, file);
+  writeFileSync(target, readFileSync(join(published, file)));
+
+  await startSite(writeBlueprint('published-with-bundle.json', true));
+
+  const page = await text('/symptom-checker/');
+  const configMatch = page.body.match(/window\.HJ_SC_CONFIG = (\{.*?\});/s);
+  const config = configMatch ? JSON.parse(configMatch[1]) : null;
+  check(
+    'an uploaded bundle becomes the active one',
+    config?.bundleStatus?.source === 'upload' && String(config?.bundleUrl ?? '').includes(`/uploads/hj-sc/${file}`),
+    `${config?.bundleStatus?.source ?? 'none'} ${config?.bundleUrl ?? ''}`,
+  );
+  check('the uploaded URL carries the hash', String(config?.bundleUrl ?? '').includes(`ver=${file.match(/\.([0-9a-f]{8})\.json$/)?.[1]}`), config?.bundleUrl ?? '');
+  const bundleResponse = await fetch(config?.bundleUrl ?? `${BASE}/missing.json`);
+  const bundleText = await bundleResponse.text();
+  let bundleJson = null;
+  try {
+    bundleJson = JSON.parse(bundleText);
+  } catch {
+    bundleJson = null;
+  }
+  check('the uploaded bundle is served as JSON', bundleResponse.status === 200 && Boolean(bundleJson), `${bundleResponse.status}`);
+  check('the served bundle is the schema the engine reads', bundleJson?.schema_version === '2.0.0', bundleJson?.schema_version ?? 'none');
+  check('the served bundle has questions', Array.isArray(bundleJson?.questions) && bundleJson.questions.length > 0, String(bundleJson?.questions?.length ?? 0));
+  if (config) await uiCheck(config, { tag: 'uploaded-bundle', prefix: 'uploaded bundle: ' });
+
+  rmSync(target, { force: true });
+  await startSite(writeBlueprint('published-without-bundle.json', true));
+  const fallbackPage = await text('/symptom-checker/');
+  const fallbackMatch = fallbackPage.body.match(/window\.HJ_SC_CONFIG = (\{.*?\});/s);
+  const fallback = fallbackMatch ? JSON.parse(fallbackMatch[1]) : null;
+  check(
+    'removing the uploaded file falls back to the packaged bundle',
+    fallback?.bundleStatus?.source === 'package' &&
+      String(fallback?.bundleUrl ?? '').includes('/plugins/hamyar-symptom-checker/assets/'),
+    `${fallback?.bundleStatus?.source ?? 'none'} ${fallback?.bundleUrl ?? ''}`,
+  );
+  check('the page still renders after the fallback', fallbackPage.status === 200 && fallbackPage.body.includes('id="app"'));
+}
+
+async function uiCheck(config, options = {}) {
+  // Node caches ES modules by URL, so a second run needs its own URL or the
+  // entry script is never executed again.
+  const cacheBuster = options.tag ? `?run=${options.tag}` : '';
+  checkPrefix = options.prefix ?? '';
   let JSDOM;
   try {
     ({ JSDOM } = await import(pathToFileURL(join(work, 'node_modules/jsdom/lib/api.js')).href));
@@ -224,14 +296,17 @@ async function uiCheck(config) {
   globalThis.fetch = window.fetch;
   globalThis.location = window.location;
 
-  await import(pathToFileURL(join(work, 'plugins/hamyar-symptom-checker/assets/ui/app.js')).href);
+  await import(pathToFileURL(join(work, 'plugins/hamyar-symptom-checker/assets/ui/app.js')).href + cacheBuster);
   await new Promise((done) => setTimeout(done, 600));
 
   const doc = window.document;
   check('packaged UI boots inside WordPress', Boolean(doc.querySelector('#app button')));
   const start = [...doc.querySelectorAll('#app button')].find((button) => button.textContent.includes('شروع'));
   check('the start button is rendered', Boolean(start));
-  if (!start) return;
+  if (!start) {
+    checkPrefix = '';
+    return;
+  }
 
   start.click();
   await new Promise((done) => setTimeout(done, 150));
@@ -279,8 +354,7 @@ async function uiCheck(config) {
   check('the UI wrote nothing to localStorage', window.localStorage.length === 0);
   check('the UI wrote nothing to sessionStorage', window.sessionStorage.length === 0);
   check('the UI set no cookie', window.document.cookie === '');
-  check(
-    'the packaged UI only asked this WordPress for its two data files',
+  check('the packaged UI only asked this WordPress for its two data files',
     requests.length >= 2 &&
       requests.every((item) => item.method === 'GET' && item.body === null) &&
       requests.every((item) => new URL(item.url, `${BASE}/symptom-checker/`).origin === new URL(BASE).origin),
@@ -296,13 +370,13 @@ async function uiCheck(config) {
       return true;
     }
   });
-  check(
-    'the page loads no resource from another origin',
+  check('the page loads no resource from another origin',
     externalLoaders.length === 0,
     `${loaders.length} loaders: ` + externalLoaders.map((match) => match[2]).join(' ; '),
   );
   check('the page has no inline font import', !/@import\s+(?:url\()?['"]?https?:/i.test(page.body));
   check('the checker page has no posting form', !/<form[^>]+action=/i.test(page.body));
+  checkPrefix = '';
 }
 
 let exitCode = 0;
@@ -455,6 +529,9 @@ add_action( 'init', function () {
 
   // 6. the packaged UI against the live URLs
   if (config) await uiCheck(config);
+
+  // 7. phase 5-a: publish content without publishing the plugin
+  await bundlePublishChecks();
 } catch (error) {
   console.error(`\nERROR ${error?.message ?? error}`);
   exitCode = 1;

@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+from datetime import date
 import json
 import os
 import re
@@ -518,6 +519,86 @@ def bump_version(version: str) -> str:
     return f"{major}.{int(minor) + 1}.0{suffix or ''}"
 
 
+def compose_for_output(args) -> tuple[dict, bytes, list[str], list[str], dict, set[str]]:
+    """base + workspace (+ version bump) → (bundle, payload, problems, errors, warnings, parts)."""
+    base = read_json(REPO / BASE_PATH)
+    schema = read_json(REPO / SCHEMA_PATH)
+    help_text = (REPO / HELP_JS).read_text(encoding="utf-8")
+    parts = collect(REPO / args.workspace)
+    bundle, problems, changed = compose(base, parts)
+
+    if changed and not args.no_bump:
+        previous = bundle["bundle_version"]
+        bundle["bundle_version"] = bump_version(previous)
+        bundle["change_notes"] = [
+            {
+                "version": bundle["bundle_version"],
+                "date": args.date,
+                "changes_fa": [
+                    f"افزودن {len(parts['conditions'])} بیماری، {len(parts['questions'])} پرسش، "
+                    f"{len(parts['symptoms'])} نشانه و {len(parts['sources'])} منبع با ابزار نویسندگی "
+                    f"(نسخهٔ قبلی: {previous}). محتوای تازه pending_team_review است."
+                ],
+            }
+        ] + list(bundle.get("change_notes", []))
+
+    authored = {item["id"] for _, item in parts["symptoms"]}
+    for _, condition in parts["conditions"]:
+        authored |= {
+            row["symptom_id"] for row in condition.get("profile", []) if row.get("symptom_id")
+        }
+
+    errors, warnings = validate_bundle(bundle, schema, help_text, authored)
+    errors = problems + errors
+    return bundle, serialise(bundle), problems, errors, warnings, parts
+
+
+def cmd_publish(args) -> int:
+    """Write the bundle under the name the plugin reads from uploads/hj-sc/.
+
+    The file name is the contract: `knowledge-bundle.<bundle_version>.<sha8>.json`.
+    Dropping it into `wp-content/uploads/hj-sc/` publishes the content without a
+    new plugin release; the hash in the name is both the cache-buster and the
+    proof that the bytes are the ones this command validated.
+    """
+    bundle, payload, _problems, errors, warnings, _parts = compose_for_output(args)
+    if errors:
+        for line in errors:
+            print(f"ERROR   {line}")
+        print("\nFAIL nothing was published — fix the data first")
+        return 1
+
+    digest = hashlib.sha256(payload).hexdigest()
+    name = f"knowledge-bundle.{bundle['bundle_version']}.{digest[:8]}.json"
+    target = (REPO / args.out / name) if not Path(args.out).is_absolute() else Path(args.out) / name
+
+    if args.check:
+        if not target.is_file():
+            print(f"FAIL missing {target}: run publish-bundle")
+            return 1
+        if hashlib.sha256(target.read_bytes()).hexdigest() != digest:
+            print(f"FAIL {target} is stale")
+            return 1
+        print(f"OK {target} matches the authoring pipeline — sha8 {digest[:8]}")
+    else:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(payload)
+        print(f"wrote {target} ({len(payload)} bytes, sha8 {digest[:8]})")
+
+    for line in warnings:
+        print(f"WARNING {line}")
+    print(
+        f"{bundle['bundle_id']} {bundle['bundle_version']} · schema {bundle['schema_version']} · "
+        f"{len(bundle['symptoms'])} نشانه، {len(bundle['questions'])} پرسش، "
+        f"{len(bundle['conditions'])} بیماری"
+    )
+    print("\nنصب روی سایت:")
+    print(f"  1) این فایل را در wp-content/uploads/{'hj-sc'}/ بگذارید: {name}")
+    print("  2) صفحهٔ ابزار را یک بار با حساب مدیر باز کنید (یا کش LiteSpeed را پاک کنید).")
+    print(f"  3) برای برگشت: option «hj_sc_active_bundle» را روی نام فایل قبلی بگذارید.")
+    return 0
+
+
 def cmd_build(args) -> int:
     base = read_json(REPO / BASE_PATH)
     schema = read_json(REPO / SCHEMA_PATH)
@@ -708,12 +789,22 @@ def main(argv: list[str]) -> int:
     scaffold.add_argument("--force", action="store_true")
     scaffold.set_defaults(func=cmd_scaffold)
 
+    publish = sub.add_parser("publish-bundle", help="bundle named for uploads/hj-sc/ (phase 5-a)")
+    publish.add_argument("--out", default="dist/hj-sc")
+    publish.add_argument("--check", action="store_true")
+    publish.add_argument("--no-bump", action="store_true")
+    publish.add_argument("--date", default=None)
+    publish.set_defaults(func=cmd_publish)
+
     add = sub.add_parser("add", help="add one data file (source, symptom, question, condition, overrides)")
     add.add_argument("kind", choices=list(PARTS) + ["overrides"])
     add.add_argument("--file", required=True)
     add.set_defaults(func=cmd_add)
 
+    # A default date keeps `change_notes` reproducible in CI.
     args = parser.parse_args(argv)
+    if getattr(args, "date", None) is None and hasattr(args, "date"):
+        args.date = date.today().isoformat()
     return args.func(args)
 
 

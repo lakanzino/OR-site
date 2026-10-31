@@ -43,6 +43,7 @@ function hj_stub_reset() {
 		'is_admin' => false,
 		'is_page'  => false,
 		'queried'  => 0,
+		'uploads'  => null,
 	);
 }
 
@@ -95,6 +96,14 @@ function register_activation_hook( $file, $callback ) {
 	$GLOBALS['hj_stub']['hooks']['activate'] = $callback;
 }
 
+function __return_false() {
+	return false;
+}
+
+function __return_true() {
+	return true;
+}
+
 function add_filter( $tag, $callback, $priority = 10, $accepted_args = 1 ) {
 	$GLOBALS['hj_stub']['filters'][ $tag ][] = array( $callback, $priority, $accepted_args );
 }
@@ -132,6 +141,29 @@ function current_user_can( $capability ) {
 
 function get_bloginfo( $what = '' ) {
 	return 'version' === $what ? ( $GLOBALS['hj_stub']['wp_version'] ?? '6.8.3' ) : '';
+}
+
+/**
+ * Uploads location. Empty by default, which is WordPress' way of saying "this
+ * install cannot upload"; the plugin must then use its packaged bundle.
+ */
+function hj_stub_set_uploads( $basedir, $baseurl ) {
+	$GLOBALS['hj_stub']['uploads'] = array(
+		'basedir' => $basedir,
+		'baseurl' => $baseurl,
+		'error'   => '',
+	);
+}
+
+function wp_upload_dir( $time = null, $create_dir = true, $refresh_cache = false ) {
+	if ( isset( $GLOBALS['hj_stub']['uploads'] ) ) {
+		return $GLOBALS['hj_stub']['uploads'];
+	}
+	return array(
+		'basedir' => '',
+		'baseurl' => '',
+		'error'   => 'stub: no uploads configured',
+	);
 }
 
 function get_option( $name, $default = false ) {
