@@ -283,6 +283,138 @@ class AcceptanceDatasetTest(Fixture):
             self.assertIn(condition["id"], text)
 
 
+class GapScanTest(unittest.TestCase):
+    """`gaps` is the "no silent dead ends" gate: content that cannot be reached,
+    told apart, or traced back must be visible before it ships."""
+
+    @staticmethod
+    def tiny() -> dict:
+        return {
+            "bundle_id": "tiny",
+            "bundle_version": "0.0.1",
+            "schema_version": "2.0.0",
+            "sources": [{"id": "s1"}],
+            "symptoms": [{"id": "a"}, {"id": "b"}, {"id": "orphan"}],
+            "questions": [
+                {
+                    "id": "q1",
+                    "source_refs": ["s1"],
+                    "options": [
+                        {"id": "yes", "label_fa": "بله", "evidence": [{"symptom_id": "a", "state": "present"}]},
+                        {"id": "no", "label_fa": "نه", "evidence": [{"symptom_id": "a", "state": "absent"}]},
+                    ],
+                }
+            ],
+            "conditions": [
+                {
+                    "id": "c1",
+                    "profile": [{"symptom_id": "a", "level": "typical", "source_refs": ["s1"]}],
+                    "red_flag_refs": ["r1"],
+                    "review_status": "pending_team_review",
+                }
+            ],
+            "overrides": [],
+            "safety_rules": [],
+            "coverage_rules": [],
+            "change_notes": [],
+        }
+
+    def setUp(self) -> None:
+        sys.path.insert(0, str(HERE))
+        import author  # noqa: PLC0415
+
+        self.author = author
+
+    def scan(self, bundle: dict) -> dict:
+        return self.author.gap_scan(bundle)
+
+    def test_a_clean_bundle_blocks_nothing(self) -> None:
+        scan = self.scan(self.tiny())
+        self.assertEqual(self.author.gap_blocking(scan), [])
+        self.assertEqual(scan["dead_questions"], [])
+        self.assertEqual(scan["duplicate_labels"], [])
+
+    def test_an_unprofiled_symptom_is_a_coverage_gap_not_a_blocker(self) -> None:
+        """`b` and `orphan` are declared but no condition uses them: a gap, not an error."""
+        scan = self.scan(self.tiny())
+        self.assertEqual(scan["unprofiled"], ["b", "orphan"])
+        self.assertEqual(scan["unaskable"], ["b", "orphan"])
+        self.assertEqual(self.author.gap_blocking(scan), [])
+
+    def test_an_option_that_reports_only_orphans_is_dead(self) -> None:
+        bundle = self.tiny()
+        bundle["questions"][0]["options"].append(
+            {"id": "maybe", "label_fa": "شاید", "evidence": [{"symptom_id": "orphan", "state": "present"}]}
+        )
+        scan = self.scan(bundle)
+        self.assertEqual([item["option"] for item in scan["dead_options"]], ["maybe"])
+        self.assertEqual(scan["dead_questions"], [])  # q1 still lands on `a`
+
+    def test_a_question_that_nothing_reads_is_inert_and_one_a_rule_reads_is_not(self) -> None:
+        bundle = self.tiny()
+        bundle["questions"].append(
+            {"id": "q_ignored", "source_refs": ["s1"], "options": [{"id": "x", "label_fa": "الف", "evidence": []}]}
+        )
+        bundle["questions"].append(
+            {"id": "q_banner", "source_refs": ["s1"], "options": [{"id": "y", "label_fa": "ب", "evidence": []}]}
+        )
+        bundle["safety_rules"].append(
+            {"id": "sf", "when": [{"question_id": "q_banner", "answers": ["y"]}], "source_refs": ["s1"]}
+        )
+        scan = self.scan(bundle)
+        self.assertEqual(scan["inert_questions"], ["q_ignored"])
+        self.assertEqual(scan["evidence_orphans"], ["q_banner"])
+
+    def test_two_options_with_the_same_label_block(self) -> None:
+        bundle = self.tiny()
+        bundle["questions"][0]["options"][1]["label_fa"] = "بله "
+        scan = self.scan(bundle)
+        self.assertEqual(scan["duplicate_labels"][0]["question"], "q1")
+        self.assertTrue(any("برچسب تکراری" in line for line in self.author.gap_blocking(scan)))
+
+    def test_a_broken_reference_blocks(self) -> None:
+        bundle = self.tiny()
+        bundle["questions"][0]["options"][0]["evidence"] = [{"symptom_id": "ghost", "state": "present"}]
+        bundle["safety_rules"].append({"id": "sf", "when": [], "source_refs": ["src_missing"]})
+        scan = self.scan(bundle)
+        blockers = self.author.gap_blocking(scan)
+        self.assertTrue(any("ghost" in line for line in blockers))
+        self.assertTrue(any("src_missing" in line for line in blockers))
+        self.assertEqual(scan["review_status"]["pending_team_review"], ["conditions:c1"])
+
+    def test_a_rule_without_sources_is_a_traceability_gap(self) -> None:
+        bundle = self.tiny()
+        bundle["safety_rules"].append({"id": "sf", "when": [], "source_refs": []})
+        scan = self.scan(bundle)
+        self.assertIn({"kind": "safety_rules", "id": "sf"}, scan["missing_source_refs"])
+        self.assertEqual(self.author.gap_blocking(scan), [])
+
+    def test_a_deprecated_option_that_is_still_asked_blocks(self) -> None:
+        bundle = self.tiny()
+        bundle["questions"][0]["options"][1]["deprecated"] = True
+        scan = self.scan(bundle)
+        self.assertEqual(scan["deprecated_in_use"], [{"question": "q1", "option": "no"}])
+        self.assertTrue(any("منسوخ" in line for line in self.author.gap_blocking(scan)))
+
+    def test_the_shipped_bundle_has_no_blocking_finding(self) -> None:
+        done = run("gaps", "--strict", "--json")
+        self.assertEqual(done.returncode, 0, done.stderr)
+        scan = json.loads(done.stdout)
+        self.assertEqual(scan["broken_refs"], [])
+        self.assertEqual(scan["duplicate_labels"], [])
+        self.assertEqual(scan["dead_questions"], [])
+        self.assertEqual(scan["indistinguishable_pairs"], [])
+        # Known, reported coverage gaps — pinned so a fix shows up as a diff here.
+        self.assertEqual(scan["unaskable"], ["abd.abdominal_cramp", "abd.bladder_pressure"])
+        self.assertEqual(scan["unprofiled"], ["abd.blood_stool"])
+        self.assertEqual(scan["inert_questions"], ["q_pain_onset", "q_pain_severity"])
+
+    def test_markdown_mentions_every_section(self) -> None:
+        text = self.author.gap_markdown(self.scan(self.tiny()))
+        for heading in ("گپ‌های پوشش", "تداخل و ابهام", "ردگیری و بازبینی"):
+            self.assertIn(heading, text)
+
+
 class HashTest(unittest.TestCase):
     def test_shipped_and_demo_digests_differ(self) -> None:
         """The demo may never be confused with the shipped bundle."""

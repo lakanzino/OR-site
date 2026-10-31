@@ -53,6 +53,7 @@ jobs:
           python3 tools/symptom-checker-migrate/validate_v2.py
           python3 tools/symptom-checker-author/author.py validate
           python3 tools/symptom-checker-author/author.py overlap
+          python3 tools/symptom-checker-author/author.py gaps --strict
           python3 tools/symptom-checker-author/author.py build-bundle --check
           python3 tools/symptom-checker-author/author.py --workspace docs/symptom-checker/authoring/examples/cholecystitis build-bundle --out docs/symptom-checker/phase-3/built/knowledge-bundle.v2.cholecystitis-demo.json --check
           python3 tools/symptom-checker-plugin/check-name-collisions.py

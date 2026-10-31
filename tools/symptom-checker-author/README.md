@@ -26,6 +26,7 @@ python3 $A validate                    # همهٔ بررسی‌ها: schema، ا
 python3 $A overlap                     # جفت‌های هم‌پوشان + جداکنندهٔ قابل‌پرسش (--json برای ماشین)
 python3 $A gen-scenarios               # یک شخصیت «typical» برای هر بیماری → docs/symptom-checker/scenarios/generated/
 python3 $A report                      # خلاصهٔ پوشش نشانه‌ها و بیماری‌های بدون جداکننده (--out برای فایل)
+python3 $A gaps --strict               # گپ و تداخل: ارجاع شکسته، پرسش/گزینهٔ مرده، برچسب تکراری، جفت بی‌جداکننده (--json، --out)
 python3 $A build-bundle                # base + workspace → knowledge-bundle.v2.json (نسخهٔ minor بالا می‌رود)
 python3 $A build-bundle --check        # آیا فایل کامیت‌شده همان چیزی است که امروز ساخته می‌شود؟
 python3 $A add-condition <id> --name «نام فارسی»   # اسکلت پروفایل با فهرست نشانه‌های کاتالوگ
