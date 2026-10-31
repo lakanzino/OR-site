@@ -40,12 +40,23 @@ function questionIsVisible(question, answers) {
   });
 }
 
-function clauseMatches(clause, answers, branchCount) {
+/**
+ * @param {object} clause bundle condition
+ * @param {{answers: object, branchCount: number, unanswered: number}} context
+ *
+ * `unanswered` counts visible questions without an answer. A coverage rule needs
+ * it to tell "we still have something to ask" apart from "the person answered
+ * everything and nothing matched", which is a different message.
+ */
+function clauseMatches(clause, context) {
+  const { answers, branchCount, unanswered } = context;
   if ('branches_open_min' in clause) return branchCount >= Number(clause.branches_open_min);
   if ('branches_open_max' in clause) return branchCount <= Number(clause.branches_open_max);
+  if ('unanswered_min' in clause) return unanswered >= Number(clause.unanswered_min);
+  if ('unanswered_max' in clause) return unanswered <= Number(clause.unanswered_max);
 
   if (Array.isArray(clause.any_of)) {
-    return clause.any_of.some((sub) => clauseMatches(sub, answers, branchCount));
+    return clause.any_of.some((sub) => clauseMatches(sub, context));
   }
 
   const given = answers[clause.question_id];
@@ -54,8 +65,8 @@ function clauseMatches(clause, answers, branchCount) {
   return asArray(clause.answers).some((answer) => list.includes(answer));
 }
 
-const clausesMatch = (clauses, answers, branchCount) =>
-  asArray(clauses).every((clause) => clauseMatches(clause, answers, branchCount));
+const clausesMatch = (clauses, context) =>
+  asArray(clauses).every((clause) => clauseMatches(clause, context));
 
 function validateAnswer(question, value) {
   const type = question.type;
@@ -133,10 +144,16 @@ export function createSession(bundle, { evidenceMap = null } = {}) {
   let history = [];
 
   // --- derivation -------------------------------------------------------
+  function visibleUnanswered(activeAnswers) {
+    return questions.filter(
+      (item) => questionIsVisible(item, activeAnswers) && activeAnswers[item.id] === undefined,
+    ).length;
+  }
+
   function matchedPaths(activeAnswers) {
     const map = new Map();
     for (const path of asArray(bundle.paths)) {
-      if (!clausesMatch(path.when, activeAnswers, 0)) continue;
+      if (!clausesMatch(path.when, { answers: activeAnswers, branchCount: 0, unanswered: 0 })) continue;
       if (!map.has(path.condition_id)) map.set(path.condition_id, []);
       map.get(path.condition_id).push({
         path_id: path.id,
@@ -147,9 +164,9 @@ export function createSession(bundle, { evidenceMap = null } = {}) {
     return map;
   }
 
-  function matchedSafety(activeAnswers, branchCount) {
+  function matchedSafety(activeAnswers, context) {
     return asArray(bundle.safety_rules)
-      .filter((rule) => clausesMatch(rule.when, activeAnswers, branchCount))
+      .filter((rule) => clausesMatch(rule.when, context))
       .map((rule) => ({
         id: rule.id,
         severity: rule.severity,
@@ -159,9 +176,9 @@ export function createSession(bundle, { evidenceMap = null } = {}) {
       }));
   }
 
-  function resolveCoverage(activeAnswers, branchCount) {
+  function resolveCoverage(context) {
     for (const rule of asArray(bundle.coverage_rules)) {
-      if (clausesMatch(rule.when, activeAnswers, branchCount)) {
+      if (clausesMatch(rule.when, context)) {
         return { result: rule.result, rule_id: rule.id, message_fa: rule.message_fa };
       }
     }
@@ -196,8 +213,9 @@ export function createSession(bundle, { evidenceMap = null } = {}) {
     pruneInvisible();
     const paths = matchedPaths(answers);
     const branchCount = paths.size;
-    const safety = matchedSafety(answers, branchCount);
-    const coverage = resolveCoverage(answers, branchCount);
+    const context = { answers, branchCount, unanswered: visibleUnanswered(answers) };
+    const safety = matchedSafety(answers, context);
+    const coverage = resolveCoverage(context);
     const stopped = coverage.result === 'out_of_scope';
     return { paths, branchCount, safety, coverage, stopped };
   }
@@ -344,11 +362,9 @@ export function createSession(bundle, { evidenceMap = null } = {}) {
           : [],
         safety: derived.safety,
         answered: Object.keys(answers).length,
-        remaining: cardsAllowed
-          ? questions.filter(
-              (item) => questionIsVisible(item, answers) && answers[item.id] === undefined,
-            ).length
-          : 0,
+        remaining: questions.filter(
+          (item) => questionIsVisible(item, answers) && answers[item.id] === undefined,
+        ).length,
         disclaimers: clone(bundle.disclaimers ?? {}),
         bundle_version: bundle.bundle_version,
       };

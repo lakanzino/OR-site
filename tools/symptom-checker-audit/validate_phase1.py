@@ -53,15 +53,19 @@ def answer_values(answers: dict, question_id: str) -> list:
     return [value]
 
 
-def clause_matches(clause: dict, answers: dict, branches_open: set) -> bool:
+def clause_matches(clause: dict, answers: dict, branches_open: set, unanswered: int = 0) -> bool:
     if "branches_open_min" in clause:
         return len(branches_open) >= int(clause["branches_open_min"])
     if "branches_open_max" in clause:
         return len(branches_open) <= int(clause["branches_open_max"])
+    if "unanswered_min" in clause:
+        return unanswered >= int(clause["unanswered_min"])
+    if "unanswered_max" in clause:
+        return unanswered <= int(clause["unanswered_max"])
 
     if "any_of" in clause:
         return any(
-            clause_matches(sub, answers, branches_open) for sub in clause["any_of"]
+            clause_matches(sub, answers, branches_open, unanswered) for sub in clause["any_of"]
         )
 
     question_id = clause.get("question_id", "")
@@ -70,8 +74,21 @@ def clause_matches(clause: dict, answers: dict, branches_open: set) -> bool:
     return bool(given & expected)
 
 
-def clause_list_matches(clauses: list, answers: dict, branches_open: set) -> bool:
-    return all(clause_matches(clause, answers, branches_open) for clause in clauses)
+def clause_list_matches(
+    clauses: list, answers: dict, branches_open: set, unanswered: int = 0
+) -> bool:
+    return all(
+        clause_matches(clause, answers, branches_open, unanswered) for clause in clauses
+    )
+
+
+def unanswered_count(bundle: dict, answers: dict) -> int:
+    """Questions that would still be shown and have no answer."""
+    return sum(
+        1
+        for question in bundle.get("questions", [])
+        if question_visible(question, answers) and question["id"] not in answers
+    )
 
 
 def evaluate(bundle: dict, answers: dict) -> dict:
@@ -91,10 +108,11 @@ def evaluate(bundle: dict, answers: dict) -> dict:
         if clause_list_matches(rule.get("when", []), answers, branches)
     ]
 
+    unanswered = unanswered_count(bundle, answers)
     coverage = None
     matched_rule = None
     for rule in bundle.get("coverage_rules", []):
-        if clause_list_matches(rule.get("when", []), answers, branches):
+        if clause_list_matches(rule.get("when", []), answers, branches, unanswered):
             coverage = rule["result"]
             matched_rule = rule["id"]
             break
@@ -253,7 +271,12 @@ def validate_bundle(bundle: dict, profiles_path: Path = PROFILES_PATH) -> list:
             for sub in clause["any_of"]:
                 check_clause(owner, sub)
             return
-        if "branches_open_min" in clause or "branches_open_max" in clause:
+        if (
+            "branches_open_min" in clause
+            or "branches_open_max" in clause
+            or "unanswered_min" in clause
+            or "unanswered_max" in clause
+        ):
             return
         qid = clause.get("question_id")
         if qid not in questions:
@@ -451,6 +474,11 @@ def validate_scenarios(bundle: dict, scenarios: dict) -> list:
             errors.append(
                 f"scenario {sid}: safety flags differ — expected "
                 f"{sorted(expected.get('safety_flags', []))}, got {sorted(calculated['safety_flags'])}"
+            )
+        if "coverage_rule" in expected and calculated["coverage_rule"] != expected["coverage_rule"]:
+            errors.append(
+                f"scenario {sid}: coverage rule differs — expected "
+                f"{expected['coverage_rule']}, got {calculated['coverage_rule']}"
             )
         if calculated["coverage"] != expected.get("coverage"):
             errors.append(

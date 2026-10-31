@@ -36,6 +36,8 @@ const state = {
   error: null,
   draft: null,
   showEditor: false,
+  // Questions whose answers contradict each other in the current result.
+  conflictQuestions: new Set(),
 };
 
 const app = document.getElementById('app');
@@ -89,6 +91,7 @@ function startSession() {
   state.session = createSession(state.bundle, { evidenceMap: state.evidenceMap });
   state.error = null;
   state.showEditor = false;
+  state.conflictQuestions = new Set();
   state.screen = 'question';
   state.draft = null;
   renderSafetyBanners(safetyRegion);
@@ -300,10 +303,14 @@ function renderEditor() {
 
   const list = entries.map(([questionId, value]) => {
     const question = state.session.question(questionId);
-    return el('div', { class: 'edit-row' }, [
+    const conflicting = state.conflictQuestions.has(questionId);
+    return el('div', { class: conflicting ? 'edit-row conflict-row' : 'edit-row' }, [
       el('div', {}, [
         el('div', { class: 'edit-question', text: question.text_fa }),
         el('div', { class: 'muted small', text: describeAnswer(question, value) }),
+        conflicting
+          ? el('div', { class: 'conflict-note', text: 'این پاسخ با پاسخ دیگری در تناقض است؛ یکی را اصلاح کنید.' })
+          : null,
       ]),
       el('button', {
         class: 'ghost small',
@@ -403,7 +410,19 @@ function renderCard(card) {
         el('span', { class: 'muted small', text: ` — ${group.hint}` }),
       ]),
       el('dd', {}, group.items.length
-        ? el('ul', { class: 'chips' }, group.items.map((item) => el('li', { text: item.label_fa })))
+        ? [
+          el('ul', { class: 'chips' }, group.items.map((item) => el('li', { text: item.label_fa }))),
+          group.key === 'conflict'
+            ? el('div', { class: 'conflict-fix' }, [
+              el('button', {
+                class: 'ghost small',
+                type: 'button',
+                text: 'این دو پاسخ را اصلاح کنم',
+                onClick: () => openConflictEditor(),
+              }),
+            ])
+            : null,
+        ]
         : el('span', { class: 'muted small', text: 'موردی در این گروه نیست' })),
     ])),
     card.link
@@ -414,9 +433,37 @@ function renderCard(card) {
   ]);
 }
 
+/** Question ids behind every contradictory pair in the current result. */
+function collectConflictQuestions(cards) {
+  const ids = new Set();
+  for (const card of cards) {
+    for (const group of card.groups) {
+      if (group.key !== 'conflict') continue;
+      for (const item of group.items) {
+        for (const via of item.via ?? []) ids.add(via.question_id);
+      }
+    }
+  }
+  return ids;
+}
+
+/**
+ * The conflict group explains what disagrees; this turns the explanation into an
+ * action: open the answer list, highlight those rows and put the cursor there.
+ */
+function openConflictEditor() {
+  state.showEditor = true;
+  render();
+  const row = document.querySelector('#app .edit-row.conflict-row');
+  row?.scrollIntoView?.({ block: 'center', behavior: 'smooth' });
+  row?.querySelector('button')?.focus?.();
+  announce('پاسخ‌هایی که با هم نمی‌خوانند مشخص شدند؛ یکی را اصلاح کنید.');
+}
+
 function renderResult() {
   const result = state.session.result();
   const view = buildResultView(result, { topicLinks: TOPIC_LINKS });
+  state.conflictQuestions = collectConflictQuestions(view.cards);
   pushProgress(100);
 
   const heading = view.showCards ? 'موضوع‌های مرتبط با پاسخ‌های شما' : 'نتیجه‌ای برای نمایش نیست';

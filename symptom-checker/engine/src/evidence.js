@@ -137,10 +137,20 @@ export function buildEvidence(bundle, map, answers) {
       else if (answered.length) status = 'not_reported';
       else status = 'not_asked';
 
+      // A conflict has to name *both* sides, otherwise the person cannot tell
+      // which two answers disagree.
+      const conflicting = status === 'conflict' ? [...present, ...absent] : null;
       groups[status].push({
         symptom_id: symptomId,
         label_fa: label,
-        via: status === 'present' ? via(present) : status === 'absent' ? via(absent) : via(unknown),
+        via:
+          status === 'present'
+            ? via(present)
+            : status === 'absent'
+              ? via(absent)
+              : status === 'conflict'
+                ? via(conflicting)
+                : via(unknown),
       });
     }
 

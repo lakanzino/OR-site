@@ -321,7 +321,7 @@ add_action( 'init', function () {
   check('WordPress booted with the plugin active', Boolean(info) && info.wp === WP_VERSION, info ? `WP ${info.wp} / PHP ${info.php}` : 'no report');
   check('activation created the page as a draft', info?.page_status === 'draft', info?.page_status ?? '');
   check('the draft page is not reachable for a visitor', (await statusOf(`/?page_id=${info?.page_id ?? 0}`)) === 404);
-  check('the bundle version reaches PHP', info?.bundle === '0.1.0-draft', info?.bundle ?? '');
+  check('the bundle version reaches PHP', info?.bundle === '0.2.0-draft', info?.bundle ?? '');
 
   // 5. published phase: render the page and inspect what WordPress serves
   await startSite(writeBlueprint('published.json', true));
@@ -338,7 +338,7 @@ add_action( 'init', function () {
   const config = configMatch ? JSON.parse(configMatch[1]) : null;
   check('the inline config is printed before the module', Boolean(configMatch) && page.body.indexOf('window.HJ_SC_CONFIG') < page.body.indexOf('<script type="module"'));
   check('the config points inside the plugin', Boolean(config?.bundleUrl?.includes('/wp-content/plugins/hamyar-symptom-checker/assets/')));
-  check('the draft bundle version is exposed', config?.bundleVersion === '0.1.0-draft', config?.bundleVersion ?? '');
+  check('the draft bundle version is exposed', config?.bundleVersion === '0.2.0-draft', config?.bundleVersion ?? '');
   check('the published article is mapped', Boolean(config?.topicLinks?.app?.endsWith('/disease/appendicitis/')), JSON.stringify(config?.topicLinks ?? {}));
   check('the draft article is not mapped', !('kidney_stone' in (config?.topicLinks ?? {})));
 

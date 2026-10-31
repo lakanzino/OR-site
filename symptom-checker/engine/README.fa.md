@@ -8,7 +8,7 @@
 
 ```sh
 cd symptom-checker/engine
-node --test            # ۷۶ آزمون
+node --test            # ۸۱ آزمون
 node bin/demo.js       # فهرست سناریوها
 node bin/demo.js sc05  # اجرای یک سناریو
 node bin/demo.js sc05 --json
@@ -66,7 +66,7 @@ engine/
 ├── src/errors.js            خطاهای نوع‌دار با کد پایدار
 ├── data/evidence-map.v1.json
 ├── bin/demo.js
-└── tests/                   ۷۶ آزمون (واحد + ۱۲ سناریوی فاز ۱ + ۱۰ سناریوی حاشیه‌ای + ماتریس مسیر ایمنی)
+└── tests/                   ۸۱ آزمون (واحد + ۱۲ سناریوی فاز ۱ + ۱۳ سناریوی حاشیه‌ای + ماتریس مسیر ایمنی)
 ```
 
 ## محدودیت‌ها

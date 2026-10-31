@@ -52,6 +52,9 @@ for (const scenario of adversarial.scenarios) {
     assert.equal(new Set(safety).size, safety.length, 'safety rules must not repeat');
 
     assert.equal(session.coverage().result, expected.coverage, 'coverage');
+    if (expected.coverage_rule) {
+      assert.equal(session.coverage().rule_id, expected.coverage_rule, 'coverage rule');
+    }
     assert.equal(result.cards_allowed, expected.result_cards_allowed, 'cards allowed');
 
     if (!expected.result_cards_allowed) {

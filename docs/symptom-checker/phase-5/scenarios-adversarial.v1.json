@@ -22,17 +22,31 @@
         "q_pain_severity": 9,
         "q_pain_worse_movement": "no",
         "q_unbearable_pain": "yes",
-        "q_associated_symptoms": ["none"],
-        "q_urinary_symptoms": ["none"],
+        "q_associated_symptoms": [
+          "none"
+        ],
+        "q_urinary_symptoms": [
+          "none"
+        ],
         "q_flank_radiation": "no",
         "q_fever_chills": "no",
-        "q_diarrhea_vomiting": ["none"],
+        "q_diarrhea_vomiting": [
+          "none"
+        ],
         "q_pregnancy_possible": "no"
       },
       "expected": {
         "branches_open": [],
-        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection", "urinary_tract", "gastroenteritis"],
-        "safety_flags": ["sf_severe_pain"],
+        "branches_must_not_open": [
+          "app",
+          "kidney_stone",
+          "kidney_infection",
+          "urinary_tract",
+          "gastroenteritis"
+        ],
+        "safety_flags": [
+          "sf_severe_pain"
+        ],
         "coverage": "insufficient",
         "result_cards_allowed": false,
         "conflicts": [],
@@ -45,13 +59,23 @@
       "purpose": "پاسخ «خیر» صریح نباید به نتیجه یا هشدار تبدیل شود.",
       "answers": {
         "q_pain_present": "no",
-        "q_urinary_symptoms": ["none"],
-        "q_diarrhea_vomiting": ["none"],
+        "q_urinary_symptoms": [
+          "none"
+        ],
+        "q_diarrhea_vomiting": [
+          "none"
+        ],
         "q_pregnancy_possible": "no"
       },
       "expected": {
         "branches_open": [],
-        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection", "urinary_tract", "gastroenteritis"],
+        "branches_must_not_open": [
+          "app",
+          "kidney_stone",
+          "kidney_infection",
+          "urinary_tract",
+          "gastroenteritis"
+        ],
         "safety_flags": [],
         "coverage": "insufficient",
         "result_cards_allowed": false,
@@ -65,13 +89,25 @@
       "purpose": "مسیر بدون درد نباید دور ریخته شود و نباید به شاخهٔ آپاندیسیت وصل شود.",
       "answers": {
         "q_pain_present": "no",
-        "q_urinary_symptoms": ["dysuria", "frequency"],
-        "q_diarrhea_vomiting": ["none"],
+        "q_urinary_symptoms": [
+          "dysuria",
+          "frequency"
+        ],
+        "q_diarrhea_vomiting": [
+          "none"
+        ],
         "q_pregnancy_possible": "no"
       },
       "expected": {
-        "branches_open": ["urinary_tract"],
-        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection", "gastroenteritis"],
+        "branches_open": [
+          "urinary_tract"
+        ],
+        "branches_must_not_open": [
+          "app",
+          "kidney_stone",
+          "kidney_infection",
+          "gastroenteritis"
+        ],
         "safety_flags": [],
         "coverage": "sufficient",
         "result_cards_allowed": true,
@@ -90,17 +126,32 @@
         "q_pain_course": "intermittent",
         "q_pain_severity": 7,
         "q_pain_worse_movement": "no",
-        "q_associated_symptoms": ["nausea"],
-        "q_urinary_symptoms": ["blood_urine"],
+        "q_associated_symptoms": [
+          "nausea"
+        ],
+        "q_urinary_symptoms": [
+          "blood_urine"
+        ],
         "q_flank_radiation": "yes",
         "q_fever_chills": "yes",
-        "q_diarrhea_vomiting": ["none"],
+        "q_diarrhea_vomiting": [
+          "none"
+        ],
         "q_pregnancy_possible": "no"
       },
       "expected": {
-        "branches_open": ["kidney_stone", "kidney_infection", "urinary_tract"],
-        "branches_must_not_open": ["app", "gastroenteritis"],
-        "safety_flags": ["sf_fever_flank"],
+        "branches_open": [
+          "kidney_stone",
+          "kidney_infection",
+          "urinary_tract"
+        ],
+        "branches_must_not_open": [
+          "app",
+          "gastroenteritis"
+        ],
+        "safety_flags": [
+          "sf_fever_flank"
+        ],
         "coverage": "sufficient",
         "result_cards_allowed": true,
         "conflicts": [],
@@ -119,8 +170,18 @@
       },
       "expected": {
         "branches_open": [],
-        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection", "urinary_tract", "gastroenteritis"],
-        "safety_flags": ["sf_severe_pain", "sf_pain_worsening", "sf_pregnancy_out_of_scope"],
+        "branches_must_not_open": [
+          "app",
+          "kidney_stone",
+          "kidney_infection",
+          "urinary_tract",
+          "gastroenteritis"
+        ],
+        "safety_flags": [
+          "sf_severe_pain",
+          "sf_pain_worsening",
+          "sf_pregnancy_out_of_scope"
+        ],
         "coverage": "out_of_scope",
         "result_cards_allowed": false,
         "conflicts": [],
@@ -136,7 +197,13 @@
       },
       "expected": {
         "branches_open": [],
-        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection", "urinary_tract", "gastroenteritis"],
+        "branches_must_not_open": [
+          "app",
+          "kidney_stone",
+          "kidney_infection",
+          "urinary_tract",
+          "gastroenteritis"
+        ],
         "safety_flags": [],
         "coverage": "insufficient",
         "result_cards_allowed": false,
@@ -156,21 +223,37 @@
         "q_pain_course": "worse",
         "q_pain_severity": 7,
         "q_pain_worse_movement": "yes",
-        "q_associated_symptoms": ["fever"],
-        "q_urinary_symptoms": ["none"],
+        "q_associated_symptoms": [
+          "fever"
+        ],
+        "q_urinary_symptoms": [
+          "none"
+        ],
         "q_flank_radiation": "no",
         "q_fever_chills": "no",
-        "q_diarrhea_vomiting": ["none"],
+        "q_diarrhea_vomiting": [
+          "none"
+        ],
         "q_unbearable_pain": "no",
         "q_pregnancy_possible": "no"
       },
       "expected": {
-        "branches_open": ["app"],
-        "branches_must_not_open": ["kidney_stone", "kidney_infection", "gastroenteritis"],
-        "safety_flags": ["sf_pain_worsening"],
+        "branches_open": [
+          "app"
+        ],
+        "branches_must_not_open": [
+          "kidney_stone",
+          "kidney_infection",
+          "gastroenteritis"
+        ],
+        "safety_flags": [
+          "sf_pain_worsening"
+        ],
         "coverage": "sufficient",
         "result_cards_allowed": true,
-        "conflicts": ["s_fever"],
+        "conflicts": [
+          "s_fever"
+        ],
         "notes_fa": "یک پاسخ تب را مثبت و پاسخ دیگر منفی می‌گوید؛ نشانهٔ تب باید در گروه «پاسخ متناقض» بیاید، نه در «گزارش‌شده»."
       }
     },
@@ -184,20 +267,38 @@
         "q_pain_onset": "two_three_days",
         "q_pain_course": "stable",
         "q_pain_severity": 5,
-        "q_associated_symptoms": ["diarrhea", "nausea"],
-        "q_urinary_symptoms": ["dysuria", "urgency"],
+        "q_associated_symptoms": [
+          "diarrhea",
+          "nausea"
+        ],
+        "q_urinary_symptoms": [
+          "dysuria",
+          "urgency"
+        ],
         "q_flank_radiation": "no",
         "q_fever_chills": "no",
-        "q_diarrhea_vomiting": ["diarrhea", "vomiting"],
+        "q_diarrhea_vomiting": [
+          "diarrhea",
+          "vomiting"
+        ],
         "q_keep_fluids": "yes",
         "q_blood_in_stool": "no",
-        "q_dehydration_signs": ["none"],
+        "q_dehydration_signs": [
+          "none"
+        ],
         "q_unbearable_pain": "no",
         "q_pregnancy_possible": "no"
       },
       "expected": {
-        "branches_open": ["urinary_tract", "gastroenteritis"],
-        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection"],
+        "branches_open": [
+          "urinary_tract",
+          "gastroenteritis"
+        ],
+        "branches_must_not_open": [
+          "app",
+          "kidney_stone",
+          "kidney_infection"
+        ],
         "safety_flags": [],
         "coverage": "sufficient",
         "result_cards_allowed": true,
@@ -216,18 +317,32 @@
         "q_pain_onset": "unknown",
         "q_pain_course": "unknown",
         "q_pain_worse_movement": "unknown",
-        "q_associated_symptoms": ["unknown"],
-        "q_urinary_symptoms": ["unknown"],
+        "q_associated_symptoms": [
+          "unknown"
+        ],
+        "q_urinary_symptoms": [
+          "unknown"
+        ],
         "q_flank_radiation": "unknown",
         "q_fever_chills": "unknown",
-        "q_diarrhea_vomiting": ["unknown"],
+        "q_diarrhea_vomiting": [
+          "unknown"
+        ],
         "q_unbearable_pain": "unknown",
         "q_pregnancy_possible": "unsure"
       },
       "expected": {
         "branches_open": [],
-        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection", "urinary_tract", "gastroenteritis"],
-        "safety_flags": ["sf_pregnancy_out_of_scope"],
+        "branches_must_not_open": [
+          "app",
+          "kidney_stone",
+          "kidney_infection",
+          "urinary_tract",
+          "gastroenteritis"
+        ],
+        "safety_flags": [
+          "sf_pregnancy_out_of_scope"
+        ],
         "coverage": "out_of_scope",
         "result_cards_allowed": false,
         "conflicts": [],
@@ -243,12 +358,130 @@
       },
       "expected": {
         "branches_open": [],
-        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection", "urinary_tract", "gastroenteritis"],
+        "branches_must_not_open": [
+          "app",
+          "kidney_stone",
+          "kidney_infection",
+          "urinary_tract",
+          "gastroenteritis"
+        ],
         "safety_flags": [],
         "coverage": "insufficient",
         "result_cards_allowed": false,
         "conflicts": [],
         "notes_fa": "هیچ محلی گزارش نشده؛ «درد دارم» به‌تنهایی هیچ موضوعی نمی‌سازد."
+      }
+    },
+    {
+      "id": "sc23_complete_questionnaire_no_match",
+      "title_fa": "پرسش‌نامهٔ کامل بدون هیچ موضوع مطابق",
+      "purpose": "پیام باید بگوید همه پرسیده شده و تطبیقی نیست، نه «اطلاعات کافی وجود ندارد».",
+      "answers": {
+        "q_pain_present": "yes",
+        "q_pain_location": "other_abdomen",
+        "q_pain_migrated_rlq": "no",
+        "q_pain_onset": "today",
+        "q_pain_course": "better",
+        "q_pain_severity": 5,
+        "q_pain_worse_movement": "no",
+        "q_associated_symptoms": [
+          "none"
+        ],
+        "q_urinary_symptoms": [
+          "none"
+        ],
+        "q_flank_radiation": "no",
+        "q_fever_chills": "no",
+        "q_diarrhea_vomiting": [
+          "none"
+        ],
+        "q_unbearable_pain": "no",
+        "q_pregnancy_possible": "no"
+      },
+      "expected": {
+        "branches_open": [],
+        "branches_must_not_open": [
+          "app",
+          "kidney_stone",
+          "kidney_infection",
+          "urinary_tract",
+          "gastroenteritis"
+        ],
+        "safety_flags": [],
+        "coverage": "insufficient",
+        "result_cards_allowed": false,
+        "conflicts": [],
+        "coverage_rule": "cv_complete_no_match",
+        "notes_fa": "همهٔ پرسش‌های نمایش‌داده‌شده پاسخ دارند و هیچ مسیری باز نمی‌شود؛ قاعدهٔ پوشش باید cv_complete_no_match باشد."
+      }
+    },
+    {
+      "id": "sc24_cannot_urinate_is_urgent",
+      "title_fa": "ناتوانی در دفع ادرار",
+      "purpose": "این نشانه باید بی‌درنگ هشدار فوری بدهد، حتی وقتی هیچ کارتی ساخته نمی‌شود.",
+      "answers": {
+        "q_pain_present": "yes",
+        "q_pain_location": "other_abdomen",
+        "q_urinary_symptoms": [
+          "retention"
+        ]
+      },
+      "expected": {
+        "branches_open": [],
+        "branches_must_not_open": [
+          "app",
+          "kidney_infection",
+          "gastroenteritis"
+        ],
+        "safety_flags": [
+          "sf_cannot_urinate"
+        ],
+        "coverage": "insufficient",
+        "result_cards_allowed": false,
+        "conflicts": [],
+        "notes_fa": "هشدار فوری بدون کارت؛ شاخهٔ ادراری با این نشانه به‌تنهایی باز نمی‌شود."
+      }
+    },
+    {
+      "id": "sc25_dehydration_without_diarrhea",
+      "title_fa": "کم‌آبی همراه تب، بدون اسهال",
+      "purpose": "نشانه‌های کم‌آبی نباید فقط به اسهال/استفراغ گره خورده باشند.",
+      "answers": {
+        "q_pain_present": "yes",
+        "q_pain_location": "other_abdomen",
+        "q_pain_onset": "today",
+        "q_pain_course": "stable",
+        "q_associated_symptoms": [
+          "fever"
+        ],
+        "q_urinary_symptoms": [
+          "none"
+        ],
+        "q_fever_chills": "yes",
+        "q_diarrhea_vomiting": [
+          "none"
+        ],
+        "q_keep_fluids": "no",
+        "q_dehydration_signs": [
+          "thirst"
+        ],
+        "q_unbearable_pain": "no",
+        "q_pregnancy_possible": "no"
+      },
+      "expected": {
+        "branches_open": [],
+        "branches_must_not_open": [
+          "app",
+          "gastroenteritis"
+        ],
+        "safety_flags": [
+          "sf_cannot_keep_fluids",
+          "sf_dehydration"
+        ],
+        "coverage": "insufficient",
+        "result_cards_allowed": false,
+        "conflicts": [],
+        "notes_fa": "تب + نشانهٔ کم‌آبی + ناتوانی در نگه‌داشتن مایعات، بدون اسهال؛ دو هشدار باید فعال شوند."
       }
     }
   ]
