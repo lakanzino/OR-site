@@ -1,0 +1,58 @@
+{
+  "id": "sc17_pregnancy_with_severe_worsening_pain",
+  "source": "docs/symptom-checker/phase-5/scenarios-adversarial.v1.json",
+  "title_fa": "احتمال بارداری همراه درد شدید و بدترشونده",
+  "answers": {
+    "q_pain_present": "yes",
+    "q_pain_course": "worse",
+    "q_unbearable_pain": "yes",
+    "q_pregnancy_possible": "prefer_not"
+  },
+  "result": {
+    "state": "stopped",
+    "coverage": {
+      "result": "out_of_scope",
+      "rule_id": "cv_out_of_scope_pregnancy",
+      "message_fa": "این پرسش‌نامه برای احتمال بارداری طراحی نشده است؛ نتیجه‌ای دربارهٔ بیماری‌ها نمایش داده نمی‌شود."
+    },
+    "cards_allowed": false,
+    "conditions": [],
+    "safety": [
+      {
+        "id": "sf_severe_pain",
+        "severity": "urgent",
+        "message_fa": "درد شکم بسیار شدید یا غیرقابل تحمل نیاز به ارزیابی فوری پزشکی دارد؛ منتظر پایان این پرسش‌نامه نمان.",
+        "source_refs": [
+          "src_nhs_app"
+        ],
+        "review_status": "pending_team_review"
+      },
+      {
+        "id": "sf_pain_worsening",
+        "severity": "prompt",
+        "message_fa": "دردی که بدتر می‌شود یا ادامه دارد باید توسط پزشک بررسی شود.",
+        "source_refs": [
+          "src_nhs_app"
+        ],
+        "review_status": "pending_team_review"
+      },
+      {
+        "id": "sf_pregnancy_out_of_scope",
+        "severity": "urgent",
+        "message_fa": "در احتمال بارداری، درد شکم باید فوری توسط پزشک بررسی شود. این ابزار علت‌های مرتبط با بارداری را پوشش نمی‌دهد و نباید نتیجه‌اش باعث اطمینان یا تأخیر شود.",
+        "source_refs": [
+          "src_nhs_app"
+        ],
+        "review_status": "pending_team_review"
+      }
+    ],
+    "answered": 4,
+    "remaining": 10,
+    "disclaimers": {
+      "before_start_fa": "این ابزار تشخیص پزشکی نیست. چند پرسش کوتاه می‌پرسد تا موضوع‌های مرتبط با نشانه‌هایت را نشان دهد. اگر درد شدید یا بدحالی داری، همین حالا کمک پزشکی بگیر.",
+      "during_fa": "پاسخ‌ها فقط در همین صفحه و در حافظهٔ مرورگر می‌مانند و به سرور فرستاده نمی‌شوند.",
+      "result_fa": "این‌ها موضوع‌هایی برای بررسی هستند، نه تشخیص. پزشک بر اساس معاینه تصمیم می‌گیرد چه آزمایش یا تصویربرداری لازم است."
+    },
+    "bundle_version": "0.2.0-draft"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": "sc23_complete_questionnaire_no_match",
+  "source": "docs/symptom-checker/phase-5/scenarios-adversarial.v1.json",
+  "title_fa": "پرسش‌نامهٔ کامل بدون هیچ موضوع مطابق",
+  "answers": {
+    "q_pain_present": "yes",
+    "q_pain_location": "other_abdomen",
+    "q_pain_migrated_rlq": "no",
+    "q_pain_onset": "today",
+    "q_pain_course": "better",
+    "q_pain_severity": 5,
+    "q_pain_worse_movement": "no",
+    "q_associated_symptoms": [
+      "none"
+    ],
+    "q_urinary_symptoms": [
+      "none"
+    ],
+    "q_flank_radiation": "no",
+    "q_fever_chills": "no",
+    "q_diarrhea_vomiting": [
+      "none"
+    ],
+    "q_unbearable_pain": "no",
+    "q_pregnancy_possible": "no"
+  },
+  "result": {
+    "state": "asking",
+    "coverage": {
+      "result": "insufficient",
+      "rule_id": "cv_complete_no_match",
+      "message_fa": "همهٔ پرسش‌های مرتبط را پاسخ داده‌اید و پاسخ‌های شما با هیچ‌یک از موضوع‌های این نسخه هم‌خوان نیست. این به معنی سالم بودن نیست؛ اگر درد ادامه دارد یا بدتر می‌شود، با پزشک تماس بگیرید."
+    },
+    "cards_allowed": false,
+    "conditions": [],
+    "safety": [],
+    "answered": 14,
+    "remaining": 0,
+    "disclaimers": {
+      "before_start_fa": "این ابزار تشخیص پزشکی نیست. چند پرسش کوتاه می‌پرسد تا موضوع‌های مرتبط با نشانه‌هایت را نشان دهد. اگر درد شدید یا بدحالی داری، همین حالا کمک پزشکی بگیر.",
+      "during_fa": "پاسخ‌ها فقط در همین صفحه و در حافظهٔ مرورگر می‌مانند و به سرور فرستاده نمی‌شوند.",
+      "result_fa": "این‌ها موضوع‌هایی برای بررسی هستند، نه تشخیص. پزشک بر اساس معاینه تصمیم می‌گیرد چه آزمایش یا تصویربرداری لازم است."
+    },
+    "bundle_version": "0.2.0-draft"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "sc11_outside_cluster",
+  "source": "docs/symptom-checker/phase-1/scenarios.v1.json",
+  "title_fa": "بدون درد و بدون نشانهٔ دیگر",
+  "answers": {
+    "q_pain_present": "no",
+    "q_urinary_symptoms": [
+      "none"
+    ],
+    "q_fever_chills": "no",
+    "q_diarrhea_vomiting": [
+      "none"
+    ],
+    "q_pregnancy_possible": "no"
+  },
+  "result": {
+    "state": "asking",
+    "coverage": {
+      "result": "insufficient",
+      "rule_id": "cv_no_pain_no_other",
+      "message_fa": "با پاسخ‌های فعلی، موضوعی از این خوشه (درد شکم/پهلو) قابل بررسی نیست؛ این به معنی سالم بودن نیست."
+    },
+    "cards_allowed": false,
+    "conditions": [],
+    "safety": [],
+    "answered": 5,
+    "remaining": 0,
+    "disclaimers": {
+      "before_start_fa": "این ابزار تشخیص پزشکی نیست. چند پرسش کوتاه می‌پرسد تا موضوع‌های مرتبط با نشانه‌هایت را نشان دهد. اگر درد شدید یا بدحالی داری، همین حالا کمک پزشکی بگیر.",
+      "during_fa": "پاسخ‌ها فقط در همین صفحه و در حافظهٔ مرورگر می‌مانند و به سرور فرستاده نمی‌شوند.",
+      "result_fa": "این‌ها موضوع‌هایی برای بررسی هستند، نه تشخیص. پزشک بر اساس معاینه تصمیم می‌گیرد چه آزمایش یا تصویربرداری لازم است."
+    },
+    "bundle_version": "0.2.0-draft"
+  }
+}

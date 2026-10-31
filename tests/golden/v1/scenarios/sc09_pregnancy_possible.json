@@ -1,0 +1,49 @@
+{
+  "id": "sc09_pregnancy_possible",
+  "source": "docs/symptom-checker/phase-1/scenarios.v1.json",
+  "title_fa": "احتمال بارداری",
+  "answers": {
+    "q_pain_present": "yes",
+    "q_pain_location": "right_lower",
+    "q_pain_migrated_rlq": "unknown",
+    "q_pain_course": "stable",
+    "q_urinary_symptoms": [
+      "none"
+    ],
+    "q_flank_radiation": "no",
+    "q_fever_chills": "unknown",
+    "q_diarrhea_vomiting": [
+      "none"
+    ],
+    "q_pregnancy_possible": "yes"
+  },
+  "result": {
+    "state": "stopped",
+    "coverage": {
+      "result": "out_of_scope",
+      "rule_id": "cv_out_of_scope_pregnancy",
+      "message_fa": "این پرسش‌نامه برای احتمال بارداری طراحی نشده است؛ نتیجه‌ای دربارهٔ بیماری‌ها نمایش داده نمی‌شود."
+    },
+    "cards_allowed": false,
+    "conditions": [],
+    "safety": [
+      {
+        "id": "sf_pregnancy_out_of_scope",
+        "severity": "urgent",
+        "message_fa": "در احتمال بارداری، درد شکم باید فوری توسط پزشک بررسی شود. این ابزار علت‌های مرتبط با بارداری را پوشش نمی‌دهد و نباید نتیجه‌اش باعث اطمینان یا تأخیر شود.",
+        "source_refs": [
+          "src_nhs_app"
+        ],
+        "review_status": "pending_team_review"
+      }
+    ],
+    "answered": 9,
+    "remaining": 5,
+    "disclaimers": {
+      "before_start_fa": "این ابزار تشخیص پزشکی نیست. چند پرسش کوتاه می‌پرسد تا موضوع‌های مرتبط با نشانه‌هایت را نشان دهد. اگر درد شدید یا بدحالی داری، همین حالا کمک پزشکی بگیر.",
+      "during_fa": "پاسخ‌ها فقط در همین صفحه و در حافظهٔ مرورگر می‌مانند و به سرور فرستاده نمی‌شوند.",
+      "result_fa": "این‌ها موضوع‌هایی برای بررسی هستند، نه تشخیص. پزشک بر اساس معاینه تصمیم می‌گیرد چه آزمایش یا تصویربرداری لازم است."
+    },
+    "bundle_version": "0.2.0-draft"
+  }
+}

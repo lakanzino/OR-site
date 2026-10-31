@@ -1,0 +1,41 @@
+{
+  "id": "sc24_cannot_urinate_is_urgent",
+  "source": "docs/symptom-checker/phase-5/scenarios-adversarial.v1.json",
+  "title_fa": "ناتوانی در دفع ادرار",
+  "answers": {
+    "q_pain_present": "yes",
+    "q_pain_location": "other_abdomen",
+    "q_urinary_symptoms": [
+      "retention"
+    ]
+  },
+  "result": {
+    "state": "asking",
+    "coverage": {
+      "result": "insufficient",
+      "rule_id": "cv_no_branch",
+      "message_fa": "اطلاعات کافی برای پیشنهاد حتی یک موضوع مرتبط وجود ندارد."
+    },
+    "cards_allowed": false,
+    "conditions": [],
+    "safety": [
+      {
+        "id": "sf_cannot_urinate",
+        "severity": "urgent",
+        "message_fa": "اگر نمی‌توانی ادرار کنی یا مثانه خالی نمی‌شود، این وضعیت نیاز به ارزیابی فوری پزشکی دارد.",
+        "source_refs": [
+          "src_niddk_stone"
+        ],
+        "review_status": "pending_team_review"
+      }
+    ],
+    "answered": 3,
+    "remaining": 11,
+    "disclaimers": {
+      "before_start_fa": "این ابزار تشخیص پزشکی نیست. چند پرسش کوتاه می‌پرسد تا موضوع‌های مرتبط با نشانه‌هایت را نشان دهد. اگر درد شدید یا بدحالی داری، همین حالا کمک پزشکی بگیر.",
+      "during_fa": "پاسخ‌ها فقط در همین صفحه و در حافظهٔ مرورگر می‌مانند و به سرور فرستاده نمی‌شوند.",
+      "result_fa": "این‌ها موضوع‌هایی برای بررسی هستند، نه تشخیص. پزشک بر اساس معاینه تصمیم می‌گیرد چه آزمایش یا تصویربرداری لازم است."
+    },
+    "bundle_version": "0.2.0-draft"
+  }
+}

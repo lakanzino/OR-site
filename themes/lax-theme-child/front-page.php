@@ -174,12 +174,28 @@ $hj_faqs = array(
 
 			<div class="hj-home-hero__search"><?php get_search_form(); ?></div>
 
-			<!-- لینک مستقیم ابزار تشخیص علائم داخل قالب فرزند -->
+			<!-- ابزار ارزیابی علائم: برگهٔ افزونهٔ «دستیار نشانه‌ها» (نامک symptom-checker).
+			     صفحهٔ آزمایشی قدیمی قالب (inc/symptom-checker-test.php) در فاز ۰ بازنشسته شد،
+			     چون توابع hj_sc_* آن با افزونه هم‌نام بود و فعال‌سازی را می‌شکست. دکمه فقط
+			     وقتی نمایش داده می‌شود که آن برگه منتشر شده باشد، تا هیچ‌وقت لینک ۴۰۴ ندهیم. -->
 			<div class="hj-home-hero__actions">
 				<?php
-				$hj_symptom_url = esc_url( get_stylesheet_directory_uri() ) . '/inc/symptom-checker-test.php';
+				// نامک برگهٔ ابزار، همان ثابت افزونه است؛ اگر افزونه خاموش باشد، همان مقدار پیش‌فرض.
+				$hj_symptom_slug  = defined( 'HJ_SC_PAGE_SLUG' ) ? HJ_SC_PAGE_SLUG : 'symptom-checker';
+				$hj_symptom_pages = get_posts(
+					array(
+						'post_type'     => 'page',
+						'post_status'   => 'publish',
+						'name'          => $hj_symptom_slug,
+						'numberposts'   => 1,
+						'no_found_rows' => true,
+					)
+				);
+				$hj_symptom_url = $hj_symptom_pages ? get_permalink( $hj_symptom_pages[0] ) : '';
 				?>
-				<a class="hj-button hj-button--light" href="<?php echo $hj_symptom_url; ?>">ابزار هوشمند ارزیابی علائم بیماری</a>
+				<?php if ( $hj_symptom_url ) : ?>
+					<a class="hj-button hj-button--light" href="<?php echo esc_url( $hj_symptom_url ); ?>">ابزار هوشمند ارزیابی علائم بیماری</a>
+				<?php endif; ?>
 				<a class="hj-button hj-button--light" href="<?php echo esc_url( hj_archive_url( 'patient_guide' ) ); ?>">شروع از راهنمای بیمار</a>
 				<a class="hj-button hj-button--outline-light" href="<?php echo esc_url( hj_archive_url( 'or_environment' ) ); ?>">شناخت اتاق عمل و تیم</a>
 			</div>

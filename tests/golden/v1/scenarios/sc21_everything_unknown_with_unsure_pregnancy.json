@@ -1,0 +1,55 @@
+{
+  "id": "sc21_everything_unknown_with_unsure_pregnancy",
+  "source": "docs/symptom-checker/phase-5/scenarios-adversarial.v1.json",
+  "title_fa": "همه‌چیز «نمی‌دانم» و بارداری «مطمئن نیستم»",
+  "answers": {
+    "q_pain_present": "unknown",
+    "q_pain_location": "unknown",
+    "q_pain_migrated_rlq": "unknown",
+    "q_pain_onset": "unknown",
+    "q_pain_course": "unknown",
+    "q_pain_worse_movement": "unknown",
+    "q_associated_symptoms": [
+      "unknown"
+    ],
+    "q_urinary_symptoms": [
+      "unknown"
+    ],
+    "q_flank_radiation": "unknown",
+    "q_fever_chills": "unknown",
+    "q_diarrhea_vomiting": [
+      "unknown"
+    ],
+    "q_unbearable_pain": "unknown",
+    "q_pregnancy_possible": "unsure"
+  },
+  "result": {
+    "state": "stopped",
+    "coverage": {
+      "result": "out_of_scope",
+      "rule_id": "cv_out_of_scope_pregnancy",
+      "message_fa": "این پرسش‌نامه برای احتمال بارداری طراحی نشده است؛ نتیجه‌ای دربارهٔ بیماری‌ها نمایش داده نمی‌شود."
+    },
+    "cards_allowed": false,
+    "conditions": [],
+    "safety": [
+      {
+        "id": "sf_pregnancy_out_of_scope",
+        "severity": "urgent",
+        "message_fa": "در احتمال بارداری، درد شکم باید فوری توسط پزشک بررسی شود. این ابزار علت‌های مرتبط با بارداری را پوشش نمی‌دهد و نباید نتیجه‌اش باعث اطمینان یا تأخیر شود.",
+        "source_refs": [
+          "src_nhs_app"
+        ],
+        "review_status": "pending_team_review"
+      }
+    ],
+    "answered": 13,
+    "remaining": 0,
+    "disclaimers": {
+      "before_start_fa": "این ابزار تشخیص پزشکی نیست. چند پرسش کوتاه می‌پرسد تا موضوع‌های مرتبط با نشانه‌هایت را نشان دهد. اگر درد شدید یا بدحالی داری، همین حالا کمک پزشکی بگیر.",
+      "during_fa": "پاسخ‌ها فقط در همین صفحه و در حافظهٔ مرورگر می‌مانند و به سرور فرستاده نمی‌شوند.",
+      "result_fa": "این‌ها موضوع‌هایی برای بررسی هستند، نه تشخیص. پزشک بر اساس معاینه تصمیم می‌گیرد چه آزمایش یا تصویربرداری لازم است."
+    },
+    "bundle_version": "0.2.0-draft"
+  }
+}

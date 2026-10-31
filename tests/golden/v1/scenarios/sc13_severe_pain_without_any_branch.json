@@ -1,0 +1,55 @@
+{
+  "id": "sc13_severe_pain_without_any_branch",
+  "source": "docs/symptom-checker/phase-5/scenarios-adversarial.v1.json",
+  "title_fa": "درد غیرقابل تحمل بدون هیچ شاخهٔ باز",
+  "answers": {
+    "q_pain_present": "yes",
+    "q_pain_location": "other_abdomen",
+    "q_pain_onset": "today",
+    "q_pain_course": "better",
+    "q_pain_severity": 9,
+    "q_pain_worse_movement": "no",
+    "q_associated_symptoms": [
+      "none"
+    ],
+    "q_urinary_symptoms": [
+      "none"
+    ],
+    "q_flank_radiation": "no",
+    "q_fever_chills": "no",
+    "q_diarrhea_vomiting": [
+      "none"
+    ],
+    "q_unbearable_pain": "yes",
+    "q_pregnancy_possible": "no"
+  },
+  "result": {
+    "state": "asking",
+    "coverage": {
+      "result": "insufficient",
+      "rule_id": "cv_no_branch",
+      "message_fa": "اطلاعات کافی برای پیشنهاد حتی یک موضوع مرتبط وجود ندارد."
+    },
+    "cards_allowed": false,
+    "conditions": [],
+    "safety": [
+      {
+        "id": "sf_severe_pain",
+        "severity": "urgent",
+        "message_fa": "درد شکم بسیار شدید یا غیرقابل تحمل نیاز به ارزیابی فوری پزشکی دارد؛ منتظر پایان این پرسش‌نامه نمان.",
+        "source_refs": [
+          "src_nhs_app"
+        ],
+        "review_status": "pending_team_review"
+      }
+    ],
+    "answered": 13,
+    "remaining": 1,
+    "disclaimers": {
+      "before_start_fa": "این ابزار تشخیص پزشکی نیست. چند پرسش کوتاه می‌پرسد تا موضوع‌های مرتبط با نشانه‌هایت را نشان دهد. اگر درد شدید یا بدحالی داری، همین حالا کمک پزشکی بگیر.",
+      "during_fa": "پاسخ‌ها فقط در همین صفحه و در حافظهٔ مرورگر می‌مانند و به سرور فرستاده نمی‌شوند.",
+      "result_fa": "این‌ها موضوع‌هایی برای بررسی هستند، نه تشخیص. پزشک بر اساس معاینه تصمیم می‌گیرد چه آزمایش یا تصویربرداری لازم است."
+    },
+    "bundle_version": "0.2.0-draft"
+  }
+}
