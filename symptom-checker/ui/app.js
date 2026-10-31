@@ -44,10 +44,20 @@ const BUNDLE_URL = config.bundleUrl || '../../docs/symptom-checker/phase-6/knowl
 const EVIDENCE_URL = config.evidenceUrl || '../engine/data/evidence-map.v1.json';
 const TOPIC_LINKS = (config.topicLinks && typeof config.topicLinks === 'object') ? config.topicLinks : {};
 
+// What wp-admin can change (0.1.14+): the three sentences of the first page,
+// whether the source list is shown, and the age the field opens on. A missing
+// or empty value falls back to the shipped wording, never to a blank page.
+const TEXTS = (config.texts && typeof config.texts === 'object') ? config.texts : {};
+const textOrDefault = (value, fallback) => (typeof value === 'string' && value.trim() ? value : fallback);
+
+const DEFAULT_TITLE = 'این یک ربات اختصاصی ارزیابی احتمالی بیماری در فرد است.';
+const DEFAULT_LEAD = 'هرچه اطلاعات و علامت‌های بیماری خود را درست انتخاب کنید، جواب دقیق‌تری دریافت می‌کنید.';
+const DEFAULT_WARNING = 'این ارزیابی هرگز جای معاینهٔ پزشکی نیست و فقط احتمال بیماری را به شما می‌گوید؛ حرف قطعی و صحیح را از پزشک درمانگر بخواهید.';
+
 const state = {
   // The age gate opens the tool. Memory only: it never reaches the engine and
   // never leaves the page.
-  age: AGE_DEFAULT,
+  age: Number.isFinite(Number(TEXTS.defaultAge)) ? clampAge(TEXTS.defaultAge) : AGE_DEFAULT,
   minAge: minAgeFrom(config),
   bundle: null,
   evidenceMap: null,
@@ -365,7 +375,7 @@ function renderError() {
 }
 
 /** The one sentence the page is allowed to repeat, at the bottom, in yellow. */
-const INTRO_WARNING = 'این ارزیابی هرگز جای معاینهٔ پزشکی نیست و فقط احتمال بیماری را به شما می‌گوید؛ حرف قطعی و صحیح را از پزشک درمانگر بخواهید.';
+const introWarning = () => textOrDefault(TEXTS.warning, DEFAULT_WARNING);
 
 /**
  * The sources that back the medical content: the real, external pages the
@@ -444,16 +454,16 @@ function renderIntro() {
       el('span', { class: 'workspace__tag', text: 'ارزیابی احتمالی' }),
     ]),
     el('div', { class: 'workspace__body' }, [
-      el('h1', { class: 'workspace__title', text: 'این یک ربات اختصاصی ارزیابی احتمالی بیماری در فرد است.' }),
+      el('h1', { class: 'workspace__title', text: textOrDefault(TEXTS.title, DEFAULT_TITLE) }),
       el('p', {
         class: 'workspace__lead',
-        text: 'هرچه اطلاعات و علامت‌های بیماری خود را درست انتخاب کنید، جواب دقیق‌تری دریافت می‌کنید.',
+        text: textOrDefault(TEXTS.lead, DEFAULT_LEAD),
       }),
       renderAgeField(),
       el('button', { class: 'primary start-button', text: 'شروع', onClick: begin }),
-      sources.length
+      sources.length && TEXTS.showSources !== false
         ? el('section', { class: 'sources' }, [
-          el('h2', { class: 'sources__title', text: 'منابع علمی' }),
+          el('h2', { class: 'sources__title', text: textOrDefault(TEXTS.sourcesTitle, 'منابع علمی') }),
           el('p', {
             class: 'sources__lead',
             text: `این ربات از اطلاعات علمی و پزشکی این ${formatAge(sources.length)} منبع معتبر جهانی ساخته شده است:`,
@@ -470,7 +480,7 @@ function renderIntro() {
           ]))),
         ])
         : null,
-      el('p', { class: 'warn-box', role: 'note', text: INTRO_WARNING }),
+      el('p', { class: 'warn-box', role: 'note', text: introWarning() }),
     ]),
   ]));
 }

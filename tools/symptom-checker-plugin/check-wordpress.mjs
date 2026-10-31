@@ -323,6 +323,15 @@ async function uiCheck(config, options = {}) {
       && !/پیش‌نمایش|پیش‌نویس|جای معاینه|تشخیص پزشکی/.test(doc.querySelector('header')?.textContent ?? ''),
     (doc.querySelector('header')?.textContent ?? '').trim(),
   );
+  check(
+    'the entry script is served as a module, with a cache-busting version',
+    /<script type="module" src="[^"]*ui\/app\.js\?ver=[^"]+"><\/script>/.test(page.body),
+    (page.body.match(/<script[^>]*ui\/app\.js[^>]*>/) ?? ['missing'])[0],
+  );
+  check(
+    'a watchdog is printed so a boot failure is written on the page, not swallowed',
+    page.body.includes('ابزار در این مرورگر بالا نیامد'),
+  );
   check('packaged UI boots inside WordPress', Boolean(doc.querySelector('#app button')));
   const start = [...doc.querySelectorAll('#app button')].find((button) => button.textContent.includes('شروع'));
   check('the start button is rendered', Boolean(start));
@@ -482,6 +491,32 @@ if ( ! is_wp_error( $subscriber ) ) {
     $subscriber_can = hjsc_admin_user_can();
     wp_set_current_user( 1 );
 }
+// 0.1.14 — the page is a normal page (shortcode in the editor), and the owner
+// has a settings screen of his own.
+$page_object  = get_post( hjsc_page_id() );
+$page_content = $page_object ? (string) $page_object->post_content : '';
+$settings_menu = false;
+foreach ( (array) ( $GLOBALS['submenu'][ HJ_SC_ADMIN_SLUG ] ?? array() ) as $sub ) {
+    if ( isset( $sub[2] ) && 'hj-sc-settings' === $sub[2] ) {
+        $settings_menu = true;
+    }
+}
+ob_start();
+hjsc_settings_render();
+$settings_html = ob_get_clean();
+$clean = hjsc_sanitize_settings( array(
+    'title_fa'      => 'عنوانی که از پیشخوان نوشتم',
+    'lead_fa'       => 'توضیحی که از پیشخوان نوشتم',
+    'warning_fa'    => 'هشداری که از پیشخوان نوشتم',
+    'sources_title' => 'منابع',
+    'min_age'       => '18',
+    'default_age'   => '33',
+    'show_sources'  => '1',
+    'enabled'       => '1',
+    'emergency_note' => 'زنگ بزن',
+) );
+update_option( HJ_SC_SETTINGS_OPTION, $clean );
+$config_texts = hjsc_config()['texts'];
 } catch ( Throwable $e ) {
     $admin_error = get_class( $e ) . ': ' . $e->getMessage();
 }
@@ -498,6 +533,12 @@ file_put_contents( '/wordpress/hj-admin.json', wp_json_encode( array(
     'file_exists'      => ( '' !== $option && is_readable( $path ) ),
     'saved_version'    => isset( $saved['bundle_version'] ) ? $saved['bundle_version'] : '',
     'saved_condition'  => isset( $saved['conditions'][0]['name_fa'] ) ? $saved['conditions'][0]['name_fa'] : '',
+    'page_content'     => $page_content ?? '',
+    'settings_menu'    => (bool) ( $settings_menu ?? false ),
+    'settings_bytes'   => strlen( $settings_html ?? '' ),
+    'settings_field'   => false !== strpos( $settings_html ?? '', HJ_SC_SETTINGS_OPTION ),
+    'config_title'     => $config_texts['title'] ?? '',
+    'config_default_age' => $config_texts['defaultAge'] ?? 0,
     'saved_count'      => isset( $saved['conditions'] ) ? count( $saved['conditions'] ) : 0,
     'base_count'       => $base_conditions,
     'package_unchanged' => $package_before === $package_after,
@@ -520,6 +561,19 @@ file_put_contents( '/wordpress/hj-admin.json', wp_json_encode( array(
   check('the overview renders', (data?.overview_bytes ?? 0) > 800, `${data?.overview_bytes ?? 0} bytes`);
   check('the overview carries a nonce', data?.overview_nonce === true);
   check('the overview offers a bundle upload', data?.overview_upload === true);
+  check(
+    'the page the owner edits is a normal page, with the shortcode in the editor',
+    String(data?.page_content ?? '').includes('[hamyar_symptom_checker]'),
+    String(data?.page_content ?? '').slice(0, 40),
+  );
+  check('the settings screen sits under the checker menu', data?.settings_menu === true);
+  check(
+    'the settings screen renders its fields',
+    (data?.settings_bytes ?? 0) > 800 && data?.settings_field === true,
+    `${data?.settings_bytes ?? 0} bytes`,
+  );
+  check('the saved title reaches the page config', data?.config_title === 'عنوانی که از پیشخوان نوشتم', data?.config_title ?? '');
+  check('the saved opening age reaches the page config', Number(data?.config_default_age) === 33, String(data?.config_default_age ?? ''));
   check('saving a text edit succeeds', data?.save_result === 'saved', data?.save_result ?? 'no result');
   // "Bumped" means the next patch of whatever bundle is active — not a frozen
   // string. Hard-coding 0.2.1 silently pinned this scenario to phase-1 content.
@@ -540,6 +594,11 @@ file_put_contents( '/wordpress/hj-admin.json', wp_json_encode( array(
   const page = await text('/symptom-checker/');
   const match = page.body.match(/window\.HJ_SC_CONFIG = (\{.*?\});/s);
   const config = match ? JSON.parse(match[1]) : null;
+  check(
+    'the page serves the title the owner saved in settings',
+    String(page.body).includes('عنوانی که از پیشخوان نوشتم'),
+    'config title',
+  );
   check(
     'the checker now serves the dashboard-edited bundle',
     config?.bundleStatus?.source === 'upload' && String(config?.bundleUrl ?? '').includes(String(data?.option ?? 'x')),

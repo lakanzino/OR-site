@@ -63,6 +63,7 @@ PLUGIN_FILES = [
     "includes/bundle-source.php",
     "includes/mapping.php",
     "includes/page.php",
+    "includes/settings.php",
     "templates/checker-page.php",
     "README.md",
 ]

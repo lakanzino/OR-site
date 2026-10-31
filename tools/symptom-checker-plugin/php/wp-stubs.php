@@ -49,6 +49,10 @@ function hj_stub_reset() {
 		'died'     => array(),
 		'bad_nonce' => array(),
 		'caps'     => array( 'manage_options' ),
+		'shortcodes' => array(),
+		'settings'   => array(),
+		'sections'   => array(),
+		'fields'     => array(),
 	);
 }
 
@@ -466,4 +470,99 @@ function check_admin_referer( $action = -1, $query_arg = '_wpnonce' ) {
 	}
 	$GLOBALS['hj_stub']['bad_nonce'][] = (string) $action;
 	return false;
+}
+
+/* --- shortcodes, Settings API, and the few helpers 0.1.14 needs ----------- */
+
+function add_shortcode( $tag, $callback ) {
+	$GLOBALS['hj_stub']['shortcodes'][ $tag ] = $callback;
+}
+
+function shortcode_exists( $tag ) {
+	return isset( $GLOBALS['hj_stub']['shortcodes'][ $tag ] );
+}
+
+function has_shortcode( $content, $tag ) {
+	if ( ! is_string( $content ) || '' === $content ) {
+		return false;
+	}
+	return (bool) preg_match( '/\[' . preg_quote( (string) $tag, '/' ) . '\b[^\]]*\]/', $content );
+}
+
+function register_setting( $group, $name, $args = array() ) {
+	$GLOBALS['hj_stub']['settings'][ $name ] = array(
+		'group' => $group,
+		'args'  => $args,
+	);
+}
+
+function add_settings_section( $id, $title, $callback, $page ) {
+	$GLOBALS['hj_stub']['sections'][ $id ] = array(
+		'title' => $title,
+		'page'  => $page,
+	);
+}
+
+function add_settings_field( $id, $title, $callback, $page, $section = 'default', $args = array() ) {
+	$GLOBALS['hj_stub']['fields'][ $id ] = array(
+		'title'   => $title,
+		'section' => $section,
+		'args'    => $args,
+	);
+}
+
+function settings_fields( $group ) {
+	echo '<input type="hidden" name="option_page" value="' . esc_attr( $group ) . '">';
+}
+
+function do_settings_sections( $page ) {
+	echo '<!-- settings sections for ' . esc_html( $page ) . ' -->';
+}
+
+function wp_kses_post( $text ) {
+	if ( ! is_string( $text ) ) {
+		return '';
+	}
+	// Real wp_kses_post drops a script/style element whole, contents included.
+	$clean = preg_replace( '#<(script|style)\b[^>]*>.*?</\1>#is', '', $text );
+	$clean = is_string( $clean ) ? $clean : $text;
+	return strip_tags( $clean, '<strong><em><b><i><br><a>' );
+}
+
+function wp_strip_all_tags( $text ) {
+	return wp_strip_all_tags_stub( $text );
+}
+
+function checked( $checked, $current = true, $display = true ) {
+	$result = ( (string) $checked === (string) $current ) ? " checked='checked'" : '';
+	if ( $display ) {
+		echo $result;
+	}
+	return $result;
+}
+
+function get_edit_post_link( $id, $context = 'display' ) {
+	return admin_url( 'post.php?post=' . (int) $id . '&action=edit' );
+}
+
+function get_post_status( $post ) {
+	$object = is_object( $post ) ? $post : get_post( (int) $post );
+	return $object ? (string) $object->post_status : false;
+}
+
+function wp_update_post( $data, $wp_error = false ) {
+	$id = (int) ( is_array( $data ) ? ( $data['ID'] ?? 0 ) : 0 );
+	if ( $id <= 0 || ! isset( $GLOBALS['hj_stub']['posts'][ $id ] ) ) {
+		return new WP_Error( 'invalid_post', 'no such post' );
+	}
+	$post = $GLOBALS['hj_stub']['posts'][ $id ];
+	foreach ( $data as $key => $value ) {
+		if ( 'ID' === $key ) {
+			continue;
+		}
+		if ( property_exists( $post, $key ) ) {
+			$post->$key = $value;
+		}
+	}
+	return $id;
 }

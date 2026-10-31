@@ -136,6 +136,8 @@ const scenarios = [
   'admin-upload',
   'admin-render',
   'admin-bump',
+  'settings',
+  'shortcode',
 ];
 
 const requested = process.argv.slice(2);
