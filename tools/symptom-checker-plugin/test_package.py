@@ -60,6 +60,28 @@ class PackageTests(unittest.TestCase):
             self.assertNotIn(".test.js", name, "tests must not ship to the site")
             self.assertNotIn("node_modules", name)
 
+    def test_diagnostics_never_ship_inside_the_plugin(self) -> None:
+        """`hj-sc-fatal-catcher` is a debugging tool, not part of the product.
+
+        It must stay outside the shipped package: a fatal catcher inside the
+        plugin would hide the very errors the owner needs to see in wp-admin.
+        """
+        for name in self.package.files:
+            lowered = name.lower()
+            self.assertNotIn("fatal-catcher", lowered, name)
+            self.assertNotIn("fatal_catcher", lowered, name)
+            self.assertNotIn("diagnostics", lowered, name)
+            self.assertNotIn("mu-plugins", lowered, name)
+            self.assertNotIn("golden", lowered, "golden snapshots are test fixtures")
+            self.assertFalse(lowered.endswith(".jsonl") or lowered.endswith(".jsonl.gz"), name)
+
+    def test_fatal_catcher_lives_only_in_tools(self) -> None:
+        source = HERE / "diagnostics" / "hj-sc-fatal-catcher.php"
+        self.assertTrue(source.is_file(), "the debug tool must keep its own source")
+        for path in build.PLUGIN_DIR.rglob("*.php"):
+            self.assertNotIn("fatal-catcher", path.name, f"debug tool inside the plugin: {path}")
+        self.assertNotIn("diagnostics/hj-sc-fatal-catcher.php", build.PLUGIN_FILES)
+
     def test_assets_match_their_sources(self) -> None:
         for target, meta in self.package.sources.items():
             source = build.REPO / meta["source"]

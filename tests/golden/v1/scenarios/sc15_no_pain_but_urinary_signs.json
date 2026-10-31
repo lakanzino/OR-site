@@ -1,0 +1,104 @@
+{
+  "id": "sc15_no_pain_but_urinary_signs",
+  "source": "docs/symptom-checker/phase-5/scenarios-adversarial.v1.json",
+  "title_fa": "بدون درد شکم، فقط نشانه‌های ادراری",
+  "answers": {
+    "q_pain_present": "no",
+    "q_urinary_symptoms": [
+      "dysuria",
+      "frequency"
+    ],
+    "q_diarrhea_vomiting": [
+      "none"
+    ],
+    "q_pregnancy_possible": "no"
+  },
+  "result": {
+    "state": "asking",
+    "coverage": {
+      "result": "sufficient",
+      "rule_id": "cv_sufficient",
+      "message_fa": "موضوع‌های مرتبط بر پایهٔ پاسخ‌ها و مسیرهای مستند نمایش داده می‌شوند؛ این‌ها تشخیص نیستند."
+    },
+    "cards_allowed": true,
+    "conditions": [
+      {
+        "id": "urinary_tract",
+        "name_fa": "عفونت مجاری ادراری",
+        "article_slug": "urinary-tract-infection",
+        "link_status": "needs_live_verification",
+        "reasons": [
+          {
+            "path_id": "p_uti_urinary",
+            "note_fa": "هر نشانهٔ ادراری مسیر عفونت ادراری را باز می‌کند؛ برای بازکردن مسیر کافی است، نه برای تشخیص.",
+            "source_refs": [
+              "src_profile_uti",
+              "src_nhs_uti"
+            ]
+          }
+        ],
+        "evidence": {
+          "present": [
+            {
+              "symptom_id": "s_dysuria",
+              "label_fa": "سوزش یا درد هنگام ادرار",
+              "via": [
+                {
+                  "question_id": "q_urinary_symptoms",
+                  "option_id": "dysuria"
+                }
+              ]
+            },
+            {
+              "symptom_id": "s_frequency",
+              "label_fa": "تکرر ادرار",
+              "via": [
+                {
+                  "question_id": "q_urinary_symptoms",
+                  "option_id": "frequency"
+                }
+              ]
+            }
+          ],
+          "absent": [],
+          "unknown": [],
+          "not_reported": [
+            {
+              "symptom_id": "s_urgency",
+              "label_fa": "فوریت ادراری",
+              "via": []
+            },
+            {
+              "symptom_id": "s_cloudy_urine",
+              "label_fa": "ادرار کدر یا بدبو",
+              "via": []
+            },
+            {
+              "symptom_id": "s_hematuria",
+              "label_fa": "خون در ادرار یا ادرار صورتی/قرمز/قهوه‌ای",
+              "via": []
+            }
+          ],
+          "not_asked": [],
+          "conflict": [],
+          "not_covered": [
+            {
+              "symptom_id": "s_bladder_pressure",
+              "label_fa": "درد یا فشار ناحیهٔ مثانه",
+              "via": []
+            }
+          ]
+        }
+      }
+    ],
+    "safety": [],
+    "answered": 4,
+    "remaining": 1,
+    "disclaimers": {
+      "before_start_fa": "این ابزار تشخیص پزشکی نیست. چند پرسش کوتاه می‌پرسد تا موضوع‌های مرتبط با نشانه‌هایت را نشان دهد. اگر درد شدید یا بدحالی داری، همین حالا کمک پزشکی بگیر.",
+      "during_fa": "پاسخ‌ها فقط در همین صفحه و در حافظهٔ مرورگر می‌مانند و به سرور فرستاده نمی‌شوند.",
+      "result_fa": "این‌ها موضوع‌هایی برای بررسی هستند، نه تشخیص. پزشک بر اساس معاینه تصمیم می‌گیرد چه آزمایش یا تصویربرداری لازم است."
+    },
+    "bundle_version": "0.2.0-draft"
+  }
+}

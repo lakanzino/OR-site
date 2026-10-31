@@ -63,8 +63,45 @@ const php = new PHP(runtimeId);
 await php.mount('/work', createNodeFsMountHandler(work));
 await php.mount('/php', createNodeFsMountHandler(HERE));
 
+// 2b. The theme source is hand-written PHP that never passes through the
+// package builder, so lint it here: a syntax error in front-page.php would
+// white-screen the site. `token_get_all(..., TOKEN_PARSE)` is PHP's own parser.
+await php.mount('/repo-themes', createNodeFsMountHandler(resolve(HERE, '../../themes')));
+const themeLintCode = `<?php
+$directory = '/repo-themes';
+$files = 0;
+$broken = 0;
+$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS));
+foreach ($iterator as $file) {
+    if (strtolower(substr($file->getFilename(), -4)) !== '.php') { continue; }
+    $files++;
+    $path = $file->getPathname();
+    try {
+        token_get_all(file_get_contents($path), TOKEN_PARSE);
+    } catch (ParseError $error) {
+        $broken++;
+        echo "FAIL  theme syntax {$path}:{$error->getLine()} {$error->getMessage()}\\n";
+    } catch (Error $error) {
+        $broken++;
+        echo "FAIL  theme syntax {$path} {$error->getMessage()}\\n";
+    }
+}
+if ($files === 0) { echo "FAIL  no PHP file found in {$directory}\\n"; }
+$status = ($files > 0 && $broken === 0) ? 1 : 0;
+echo "theme-source: {$status}/1 checks passed ({$files} files)\\n";
+`;
+
 const version = await php.run({ code: '<?php echo PHP_VERSION;' });
 console.log(`PHP ${version.text.trim()} — package ${zipName}`);
+
+const themeLint = await php.run({ code: themeLintCode });
+const themeLintText = (themeLint.text ?? '').trimEnd();
+console.log(themeLintText);
+const themeLintMatch = themeLintText.match(/theme-source: (\d+)\/(\d+) checks passed/);
+let themeFailures = 1;
+if (themeLintMatch) {
+  themeFailures = Number(themeLintMatch[1]) === Number(themeLintMatch[2]) ? 0 : 1;
+}
 
 const scenarios = [
   'syntax',
@@ -121,4 +158,5 @@ for (const scenario of selected) {
 }
 
 console.log(`\n${selected.length - failed}/${selected.length} PHP scenarios clean, ${checks} checks`);
-process.exit(failed ? 1 : 0);
+console.log(`${themeFailures ? 'FAIL' : 'PASS'}  theme source syntax (${themeFailures ? 'see above' : 'all files parse'})`);
+process.exit(failed || themeFailures ? 1 : 0);

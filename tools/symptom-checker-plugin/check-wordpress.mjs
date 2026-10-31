@@ -132,6 +132,15 @@ $page = (int) get_option( 'hj_symptom_checker_page_id' );
 if ( ${publishPage ? 'true' : 'false'} ) {
     wp_update_post( array( 'ID' => $page, 'post_status' => 'publish' ) );
 }
+// Phase 0 moved the homepage button from the retired theme page to the plugin
+// page. Run the theme's exact lookup so the decision is proved, not assumed.
+$hj_lookup = get_posts( array(
+    'post_type' => 'page',
+    'post_status' => 'publish',
+    'name' => 'symptom-checker',
+    'numberposts' => 1,
+    'no_found_rows' => true,
+) );
 flush_rewrite_rules( false );
 file_put_contents( '/wordpress/hj-check.json', wp_json_encode( array(
     'wp' => get_bloginfo( 'version' ),
@@ -147,6 +156,10 @@ file_put_contents( '/wordpress/hj-check.json', wp_json_encode( array(
     'activation_error' => get_option( 'hj_sc_last_error', null ),
     // The live site's child theme declares these names; the plugin must not.
     'theme_collision' => function_exists( 'hj_sc_enqueue_assets' ),
+    'home_button' => array(
+        'found' => $hj_lookup ? (int) $hj_lookup[0]->ID : 0,
+        'url' => $hj_lookup ? get_permalink( $hj_lookup[0] ) : '',
+    ),
 ), JSON_UNESCAPED_UNICODE ) );
 `;
   const blueprint = {
@@ -374,12 +387,22 @@ add_action( 'init', function () {
     JSON.stringify(info?.activation_error ?? null).slice(0, 200),
   );
   check('the draft page is not reachable for a visitor', (await statusOf(`/?page_id=${info?.page_id ?? 0}`)) === 404);
+  check(
+    'the homepage button stays hidden while the checker page is a draft',
+    info?.home_button?.found === 0,
+    `found=${info?.home_button?.found}`,
+  );
   check('the bundle version reaches PHP', info?.bundle === '0.2.0-draft', info?.bundle ?? '');
 
   // 5. published phase: render the page and inspect what WordPress serves
   await startSite(writeBlueprint('published.json', true));
   info = await waitForReport();
   check('the page can be published by the owner', info?.page_status === 'publish', info?.permalink ?? '');
+  check(
+    'the homepage button points at the published checker page',
+    info?.home_button?.found === info?.page_id && info?.home_button?.url === info?.permalink,
+    `${info?.home_button?.url ?? 'none'} vs ${info?.permalink ?? 'none'}`,
+  );
   const page = await text('/symptom-checker/');
   check('the checker page returns 200', page.status === 200);
   check('the plugin template is used', ['id="app"', 'id="safety"', 'id="live"'].every((needle) => page.body.includes(needle)));

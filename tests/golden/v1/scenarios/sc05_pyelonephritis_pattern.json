@@ -1,0 +1,337 @@
+{
+  "id": "sc05_pyelonephritis_pattern",
+  "source": "docs/symptom-checker/phase-1/scenarios.v1.json",
+  "title_fa": "تب و لرز همراه درد پهلو",
+  "answers": {
+    "q_pain_present": "yes",
+    "q_pain_location": "flank_or_back",
+    "q_pain_course": "worse",
+    "q_associated_symptoms": [
+      "nausea",
+      "fever"
+    ],
+    "q_urinary_symptoms": [
+      "dysuria"
+    ],
+    "q_flank_radiation": "yes",
+    "q_fever_chills": "yes",
+    "q_diarrhea_vomiting": [
+      "none"
+    ],
+    "q_unbearable_pain": "no",
+    "q_pregnancy_possible": "no"
+  },
+  "result": {
+    "state": "asking",
+    "coverage": {
+      "result": "sufficient",
+      "rule_id": "cv_sufficient",
+      "message_fa": "موضوع‌های مرتبط بر پایهٔ پاسخ‌ها و مسیرهای مستند نمایش داده می‌شوند؛ این‌ها تشخیص نیستند."
+    },
+    "cards_allowed": true,
+    "conditions": [
+      {
+        "id": "kidney_stone",
+        "name_fa": "سنگ کلیه",
+        "article_slug": "kidney-stones",
+        "link_status": "needs_live_verification",
+        "reasons": [
+          {
+            "path_id": "p_stone_flank",
+            "note_fa": "درد پهلو/کمر یا انتشار به کشاله، مسیر سنگ کلیه را باز می‌کند.",
+            "source_refs": [
+              "src_profile_kidney_stone",
+              "src_niddk_stone"
+            ]
+          }
+        ],
+        "evidence": {
+          "present": [
+            {
+              "symptom_id": "s_flank_pain",
+              "label_fa": "درد پهلو یا کمر",
+              "via": [
+                {
+                  "question_id": "q_pain_location",
+                  "option_id": "flank_or_back"
+                }
+              ]
+            },
+            {
+              "symptom_id": "s_radiate_groin",
+              "label_fa": "انتشار درد به کشالهٔ ران یا پایین شکم",
+              "via": [
+                {
+                  "question_id": "q_flank_radiation",
+                  "option_id": "yes"
+                }
+              ]
+            },
+            {
+              "symptom_id": "s_colicky_pain",
+              "label_fa": "درد موج‌وار (کم و زیاد می‌شود)",
+              "via": [
+                {
+                  "question_id": "q_flank_radiation",
+                  "option_id": "yes"
+                }
+              ]
+            },
+            {
+              "symptom_id": "s_dysuria",
+              "label_fa": "سوزش یا درد هنگام ادرار",
+              "via": [
+                {
+                  "question_id": "q_urinary_symptoms",
+                  "option_id": "dysuria"
+                }
+              ]
+            },
+            {
+              "symptom_id": "s_nausea",
+              "label_fa": "تهوع",
+              "via": [
+                {
+                  "question_id": "q_associated_symptoms",
+                  "option_id": "nausea"
+                }
+              ]
+            }
+          ],
+          "absent": [
+            {
+              "symptom_id": "s_vomiting",
+              "label_fa": "استفراغ",
+              "via": [
+                {
+                  "question_id": "q_diarrhea_vomiting",
+                  "option_id": "none"
+                }
+              ]
+            }
+          ],
+          "unknown": [],
+          "not_reported": [
+            {
+              "symptom_id": "s_hematuria",
+              "label_fa": "خون در ادرار یا ادرار صورتی/قرمز/قهوه‌ای",
+              "via": []
+            },
+            {
+              "symptom_id": "s_cloudy_urine",
+              "label_fa": "ادرار کدر یا بدبو",
+              "via": []
+            },
+            {
+              "symptom_id": "s_frequency",
+              "label_fa": "تکرر ادرار",
+              "via": []
+            },
+            {
+              "symptom_id": "s_urgency",
+              "label_fa": "فوریت ادراری",
+              "via": []
+            },
+            {
+              "symptom_id": "s_cannot_urinate",
+              "label_fa": "ناتوانی در دفع ادرار",
+              "via": []
+            }
+          ],
+          "not_asked": [],
+          "conflict": [],
+          "not_covered": []
+        }
+      },
+      {
+        "id": "kidney_infection",
+        "name_fa": "عفونت کلیه (پیلونفریت)",
+        "article_slug": "kidney-infection",
+        "link_status": "needs_live_verification",
+        "reasons": [
+          {
+            "path_id": "p_kidney_infection_fever_flank",
+            "note_fa": "تب/لرز همراه درد پهلو مسیر عفونت کلیه را باز می‌کند و به لایهٔ ایمنی هم می‌رود.",
+            "source_refs": [
+              "src_profile_kidney_infection",
+              "src_nhs_kidney_infection"
+            ]
+          }
+        ],
+        "evidence": {
+          "present": [
+            {
+              "symptom_id": "s_fever",
+              "label_fa": "تب یا احساس تب",
+              "via": [
+                {
+                  "question_id": "q_associated_symptoms",
+                  "option_id": "fever"
+                },
+                {
+                  "question_id": "q_fever_chills",
+                  "option_id": "yes"
+                }
+              ]
+            },
+            {
+              "symptom_id": "s_chills",
+              "label_fa": "لرز",
+              "via": [
+                {
+                  "question_id": "q_fever_chills",
+                  "option_id": "yes"
+                }
+              ]
+            },
+            {
+              "symptom_id": "s_flank_pain",
+              "label_fa": "درد پهلو یا کمر",
+              "via": [
+                {
+                  "question_id": "q_pain_location",
+                  "option_id": "flank_or_back"
+                }
+              ]
+            },
+            {
+              "symptom_id": "s_dysuria",
+              "label_fa": "سوزش یا درد هنگام ادرار",
+              "via": [
+                {
+                  "question_id": "q_urinary_symptoms",
+                  "option_id": "dysuria"
+                }
+              ]
+            },
+            {
+              "symptom_id": "s_nausea",
+              "label_fa": "تهوع",
+              "via": [
+                {
+                  "question_id": "q_associated_symptoms",
+                  "option_id": "nausea"
+                }
+              ]
+            }
+          ],
+          "absent": [
+            {
+              "symptom_id": "s_vomiting",
+              "label_fa": "استفراغ",
+              "via": [
+                {
+                  "question_id": "q_diarrhea_vomiting",
+                  "option_id": "none"
+                }
+              ]
+            }
+          ],
+          "unknown": [],
+          "not_reported": [
+            {
+              "symptom_id": "s_frequency",
+              "label_fa": "تکرر ادرار",
+              "via": []
+            }
+          ],
+          "not_asked": [],
+          "conflict": [],
+          "not_covered": []
+        }
+      },
+      {
+        "id": "urinary_tract",
+        "name_fa": "عفونت مجاری ادراری",
+        "article_slug": "urinary-tract-infection",
+        "link_status": "needs_live_verification",
+        "reasons": [
+          {
+            "path_id": "p_uti_urinary",
+            "note_fa": "هر نشانهٔ ادراری مسیر عفونت ادراری را باز می‌کند؛ برای بازکردن مسیر کافی است، نه برای تشخیص.",
+            "source_refs": [
+              "src_profile_uti",
+              "src_nhs_uti"
+            ]
+          }
+        ],
+        "evidence": {
+          "present": [
+            {
+              "symptom_id": "s_dysuria",
+              "label_fa": "سوزش یا درد هنگام ادرار",
+              "via": [
+                {
+                  "question_id": "q_urinary_symptoms",
+                  "option_id": "dysuria"
+                }
+              ]
+            }
+          ],
+          "absent": [],
+          "unknown": [],
+          "not_reported": [
+            {
+              "symptom_id": "s_frequency",
+              "label_fa": "تکرر ادرار",
+              "via": []
+            },
+            {
+              "symptom_id": "s_urgency",
+              "label_fa": "فوریت ادراری",
+              "via": []
+            },
+            {
+              "symptom_id": "s_cloudy_urine",
+              "label_fa": "ادرار کدر یا بدبو",
+              "via": []
+            },
+            {
+              "symptom_id": "s_hematuria",
+              "label_fa": "خون در ادرار یا ادرار صورتی/قرمز/قهوه‌ای",
+              "via": []
+            }
+          ],
+          "not_asked": [],
+          "conflict": [],
+          "not_covered": [
+            {
+              "symptom_id": "s_bladder_pressure",
+              "label_fa": "درد یا فشار ناحیهٔ مثانه",
+              "via": []
+            }
+          ]
+        }
+      }
+    ],
+    "safety": [
+      {
+        "id": "sf_pain_worsening",
+        "severity": "prompt",
+        "message_fa": "دردی که بدتر می‌شود یا ادامه دارد باید توسط پزشک بررسی شود.",
+        "source_refs": [
+          "src_nhs_app"
+        ],
+        "review_status": "pending_team_review"
+      },
+      {
+        "id": "sf_fever_flank",
+        "severity": "urgent",
+        "message_fa": "تب یا لرز همراه درد پهلو نیاز به ارزیابی پزشکی فوری دارد.",
+        "source_refs": [
+          "src_nhs_kidney_infection",
+          "src_nhs_uti"
+        ],
+        "review_status": "pending_team_review"
+      }
+    ],
+    "answered": 10,
+    "remaining": 6,
+    "disclaimers": {
+      "before_start_fa": "این ابزار تشخیص پزشکی نیست. چند پرسش کوتاه می‌پرسد تا موضوع‌های مرتبط با نشانه‌هایت را نشان دهد. اگر درد شدید یا بدحالی داری، همین حالا کمک پزشکی بگیر.",
+      "during_fa": "پاسخ‌ها فقط در همین صفحه و در حافظهٔ مرورگر می‌مانند و به سرور فرستاده نمی‌شوند.",
+      "result_fa": "این‌ها موضوع‌هایی برای بررسی هستند، نه تشخیص. پزشک بر اساس معاینه تصمیم می‌گیرد چه آزمایش یا تصویربرداری لازم است."
+    },
+    "bundle_version": "0.2.0-draft"
+  }
+}

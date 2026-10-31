@@ -1,0 +1,142 @@
+{
+  "id": "sc06_gastroenteritis_pattern",
+  "source": "docs/symptom-checker/phase-1/scenarios.v1.json",
+  "title_fa": "اسهال و استفراغ با نشانهٔ کم‌آبی",
+  "answers": {
+    "q_pain_present": "yes",
+    "q_pain_location": "other_abdomen",
+    "q_pain_course": "stable",
+    "q_associated_symptoms": [
+      "nausea",
+      "fever"
+    ],
+    "q_urinary_symptoms": [
+      "none"
+    ],
+    "q_flank_radiation": "no",
+    "q_fever_chills": "unknown",
+    "q_diarrhea_vomiting": [
+      "diarrhea",
+      "vomiting"
+    ],
+    "q_keep_fluids": "yes",
+    "q_blood_in_stool": "no",
+    "q_dehydration_signs": [
+      "dry_mouth"
+    ],
+    "q_unbearable_pain": "no",
+    "q_pregnancy_possible": "no"
+  },
+  "result": {
+    "state": "asking",
+    "coverage": {
+      "result": "sufficient",
+      "rule_id": "cv_sufficient",
+      "message_fa": "موضوع‌های مرتبط بر پایهٔ پاسخ‌ها و مسیرهای مستند نمایش داده می‌شوند؛ این‌ها تشخیص نیستند."
+    },
+    "cards_allowed": true,
+    "conditions": [
+      {
+        "id": "gastroenteritis",
+        "name_fa": "التهاب معده و روده (گاستروانتریت)",
+        "article_slug": "gastroenteritis",
+        "link_status": "needs_live_verification",
+        "reasons": [
+          {
+            "path_id": "p_gastro_gi",
+            "note_fa": "اسهال یا استفراغ مسیر گاستروانتریت را باز می‌کند و آپاندیسیت را نمی‌بندد.",
+            "source_refs": [
+              "src_profile_gastro",
+              "src_niddk_gastro"
+            ]
+          }
+        ],
+        "evidence": {
+          "present": [
+            {
+              "symptom_id": "s_diarrhea",
+              "label_fa": "اسهال",
+              "via": [
+                {
+                  "question_id": "q_diarrhea_vomiting",
+                  "option_id": "diarrhea"
+                }
+              ]
+            },
+            {
+              "symptom_id": "s_vomiting",
+              "label_fa": "استفراغ",
+              "via": [
+                {
+                  "question_id": "q_diarrhea_vomiting",
+                  "option_id": "vomiting"
+                }
+              ]
+            },
+            {
+              "symptom_id": "s_nausea",
+              "label_fa": "تهوع",
+              "via": [
+                {
+                  "question_id": "q_associated_symptoms",
+                  "option_id": "nausea"
+                }
+              ]
+            },
+            {
+              "symptom_id": "s_fever",
+              "label_fa": "تب یا احساس تب",
+              "via": [
+                {
+                  "question_id": "q_associated_symptoms",
+                  "option_id": "fever"
+                }
+              ]
+            },
+            {
+              "symptom_id": "s_dehydration",
+              "label_fa": "نشانه‌های کم‌آبی",
+              "via": [
+                {
+                  "question_id": "q_dehydration_signs",
+                  "option_id": "dry_mouth"
+                }
+              ]
+            }
+          ],
+          "absent": [],
+          "unknown": [],
+          "not_reported": [],
+          "not_asked": [],
+          "conflict": [],
+          "not_covered": [
+            {
+              "symptom_id": "s_abdominal_cramp",
+              "label_fa": "درد یا گرفتگی شکم",
+              "via": []
+            }
+          ]
+        }
+      }
+    ],
+    "safety": [
+      {
+        "id": "sf_dehydration",
+        "severity": "prompt",
+        "message_fa": "نشانه‌های کم‌آبی (خشکی دهان، کاهش ادرار، سرگیجه یا ضعف شدید) نیاز به بررسی پزشکی دارد.",
+        "source_refs": [
+          "src_niddk_gastro"
+        ],
+        "review_status": "pending_team_review"
+      }
+    ],
+    "answered": 13,
+    "remaining": 4,
+    "disclaimers": {
+      "before_start_fa": "این ابزار تشخیص پزشکی نیست. چند پرسش کوتاه می‌پرسد تا موضوع‌های مرتبط با نشانه‌هایت را نشان دهد. اگر درد شدید یا بدحالی داری، همین حالا کمک پزشکی بگیر.",
+      "during_fa": "پاسخ‌ها فقط در همین صفحه و در حافظهٔ مرورگر می‌مانند و به سرور فرستاده نمی‌شوند.",
+      "result_fa": "این‌ها موضوع‌هایی برای بررسی هستند، نه تشخیص. پزشک بر اساس معاینه تصمیم می‌گیرد چه آزمایش یا تصویربرداری لازم است."
+    },
+    "bundle_version": "0.2.0-draft"
+  }
+}

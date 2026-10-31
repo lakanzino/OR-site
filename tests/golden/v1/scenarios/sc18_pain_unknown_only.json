@@ -1,0 +1,27 @@
+{
+  "id": "sc18_pain_unknown_only",
+  "source": "docs/symptom-checker/phase-5/scenarios-adversarial.v1.json",
+  "title_fa": "فقط «نمی‌دانم» برای وجود درد",
+  "answers": {
+    "q_pain_present": "unknown"
+  },
+  "result": {
+    "state": "asking",
+    "coverage": {
+      "result": "insufficient",
+      "rule_id": "cv_no_branch",
+      "message_fa": "اطلاعات کافی برای پیشنهاد حتی یک موضوع مرتبط وجود ندارد."
+    },
+    "cards_allowed": false,
+    "conditions": [],
+    "safety": [],
+    "answered": 1,
+    "remaining": 12,
+    "disclaimers": {
+      "before_start_fa": "این ابزار تشخیص پزشکی نیست. چند پرسش کوتاه می‌پرسد تا موضوع‌های مرتبط با نشانه‌هایت را نشان دهد. اگر درد شدید یا بدحالی داری، همین حالا کمک پزشکی بگیر.",
+      "during_fa": "پاسخ‌ها فقط در همین صفحه و در حافظهٔ مرورگر می‌مانند و به سرور فرستاده نمی‌شوند.",
+      "result_fa": "این‌ها موضوع‌هایی برای بررسی هستند، نه تشخیص. پزشک بر اساس معاینه تصمیم می‌گیرد چه آزمایش یا تصویربرداری لازم است."
+    },
+    "bundle_version": "0.2.0-draft"
+  }
+}
