@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 460" width="520" height="460" font-family="Vazirmatn, Tahoma, sans-serif">
+  <rect width="520" height="460" fill="#f4f7fc"/>
+  <g transform="translate(24,20) scale(1.0)">
+    <rect x="0" y="0" width="210" height="420" rx="18" fill="#ffffff" stroke="#dbe4f1"/>
+    <g transform="translate(5,10) scale(0.98)">
+      <!-- پاها -->
+      <g fill="#0f7a63" stroke="#0a1f38" stroke-width="2" stroke-linejoin="round">
+        <rect x="62" y="252" width="34" height="148" rx="10"/>
+        <rect x="104" y="252" width="34" height="148" rx="10"/>
+      </g>
+      <!-- دست‌ها -->
+      <g fill="#d27d00" stroke="#0a1f38" stroke-width="2" stroke-linejoin="round">
+        <path d="M64 88 L42 246 L60 250 L78 100 Z"/>
+        <path d="M136 88 L158 246 L140 250 L122 100 Z"/>
+      </g>
+      <!-- تنه -->
+      <path d="M68 84 H132 L142 206 H58 Z" fill="#0a74d6" stroke="#0a1f38" stroke-width="2" stroke-linejoin="round"/>
+      <!-- لگن -->
+      <rect x="56" y="206" width="88" height="48" rx="12" fill="#d81b60" stroke="#0a1f38" stroke-width="2"/>
+      <!-- سر و گردن -->
+      <circle cx="100" cy="42" r="27" fill="#6d4aff" stroke="#0a1f38" stroke-width="2"/>
+      <rect x="88" y="66" width="24" height="18" rx="6" fill="#6d4aff" stroke="#0a1f38" stroke-width="2"/>
+    </g>
+  </g>
+
+  <g transform="translate(258,44)" font-size="17" fill="#0b1b33">
+    <text x="0" y="0" font-size="20" font-weight="700">پنج ناحیهٔ بدن</text>
+    <g transform="translate(0,34)">
+      <circle cx="10" cy="8" r="8" fill="#6d4aff" stroke="#0a1f38" stroke-width="2"/>
+      <text x="30" y="14">سر، صورت و گردن</text>
+    </g>
+    <g transform="translate(0,68)">
+      <circle cx="10" cy="8" r="8" fill="#0a74d6" stroke="#0a1f38" stroke-width="2"/>
+      <text x="30" y="14">سینه، شکم و پشت</text>
+    </g>
+    <g transform="translate(0,102)">
+      <circle cx="10" cy="8" r="8" fill="#d81b60" stroke="#0a1f38" stroke-width="2"/>
+      <text x="30" y="14">لگن و اندام تناسلی</text>
+    </g>
+    <g transform="translate(0,136)">
+      <circle cx="10" cy="8" r="8" fill="#d27d00" stroke="#0a1f38" stroke-width="2"/>
+      <text x="30" y="14">دست‌ها و بازوها</text>
+    </g>
+    <g transform="translate(0,170)">
+      <circle cx="10" cy="8" r="8" fill="#0f7a63" stroke="#0a1f38" stroke-width="2"/>
+      <text x="30" y="14">پاها و مچ پا</text>
+    </g>
+
+    <text x="0" y="228" font-size="15" fill="#3f5473">بعد از انتخاب ناحیه، زیرناحیه‌ها می‌آیند؛</text>
+    <text x="0" y="252" font-size="15" fill="#3f5473">مثلاً در لگن: ادرار، آلت، بیضه،</text>
+    <text x="0" y="276" font-size="15" fill="#3f5473">فرج و واژن، مقعد.</text>
+    <text x="0" y="318" font-size="14" fill="#7a3d00">رنگ‌ها فقط برای جدا کردن بخش‌ها هستند</text>
+    <text x="0" y="340" font-size="14" fill="#7a3d00">و هیچ معنی تشخیصی ندارند.</text>
+  </g>
+</svg>

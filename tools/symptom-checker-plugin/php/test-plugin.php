@@ -261,7 +261,21 @@ switch ( $scenario ) {
 		boot( $plugin_dir );
 		$slugs = hjsc_topic_slugs();
 		eq( 'appendicitis', $slugs['app'] ?? '', 'the bundle slug is the default mapping' );
-		eq( count( hjsc_bundle_conditions() ), count( $slugs ), 'every condition has a slug' );
+		$mapped   = 0;
+		$unmapped = 0;
+		foreach ( hjsc_bundle_conditions() as $id => $condition ) {
+			if ( null === ( $condition['article_slug'] ?? null ) ) {
+				$unmapped++;
+				eq( 'unmapped', $condition['link_status'] ?? '', "condition without an article must say it is unmapped: {$id}" );
+				ok( ! isset( $slugs[ $id ] ), "an unmapped condition must not get a slug: {$id}" );
+				continue;
+			}
+			$mapped++;
+			eq( $condition['article_slug'], $slugs[ $id ] ?? '', "the slug maps by condition id: {$id}" );
+		}
+		ok( $mapped >= 5, 'the five published topics keep their slugs', (string) $mapped );
+		ok( $unmapped > 0, 'the phase-6 topics are listed honestly as unmapped', (string) $unmapped );
+		eq( $mapped, count( $slugs ), 'no slug exists for a condition that is not mapped' );
 		break;
 
 	case 'slugs-filter':
@@ -283,8 +297,8 @@ switch ( $scenario ) {
 		add_disease( 'appendicitis' );
 
 		$config = hjsc_config();
-		eq( '0.2.0-draft', $config['bundleVersion'], 'the bundle version is read from the shipped file' );
-		ok( str_ends_with( $config['bundleUrl'], 'assets/data/knowledge-bundle.v1.json' ), 'bundle URL points inside the plugin' );
+		eq( '3.0.0-draft', $config['bundleVersion'], 'the bundle version is read from the shipped file' );
+		ok( str_ends_with( $config['bundleUrl'], 'assets/data/knowledge-bundle.v3.json' ), 'bundle URL points inside the plugin' );
 		ok( str_ends_with( $config['evidenceUrl'], 'assets/engine/data/evidence-map.v1.json' ), 'evidence URL points inside the plugin' );
 		ok( is_object( $config['topicLinks'] ), 'topic links are an object even when empty' );
 		eq( 'https://example.test/disease/appendicitis/', $config['topicLinks']->app ?? '', 'resolved links reach the browser' );
@@ -495,7 +509,7 @@ switch ( $scenario ) {
 		boot( $plugin_dir );
 		$source = hjsc_bundle_source();
 		eq( 'package', $source['source'], 'with no uploads the packaged bundle is used' );
-		ok( str_ends_with( hjsc_bundle_url(), 'assets/data/knowledge-bundle.v1.json' ), 'the packaged URL is unchanged', hjsc_bundle_url() );
+		ok( str_ends_with( hjsc_bundle_url(), 'assets/data/knowledge-bundle.v3.json' ), 'the packaged URL is unchanged', hjsc_bundle_url() );
 		ok( '' !== hjsc_bundle_version(), 'the packaged bundle version is readable' );
 		ok( 'upload' !== hjsc_bundle_status()['source'], 'status reports the package as the source' );
 		break;

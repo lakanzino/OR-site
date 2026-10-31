@@ -224,6 +224,68 @@ startButton.click();
 await wait(80);
 check('the first question renders', Boolean(doc.getElementById('question-title')), text(doc.getElementById('app')).slice(0, 70));
 
+// --- gates: sex → body map → area ----------------------------------------
+// The tool now opens wide and narrows down: sex, then a picture of five
+// zones, then the part inside the chosen zone. Only then do the questions of
+// that area begin.
+const pickGate = async (optionId) => {
+  const card = [...doc.querySelectorAll('#app .gate-option')].find((button) => button.dataset.optionId === optionId);
+  if (!card) throw new Error(`gate card missing: ${optionId}`);
+  card.click();
+  const submit = doc.getElementById('submit-answer');
+  const enabled = submit.disabled === false;
+  submit.click();
+  await wait(60);
+  return enabled;
+};
+
+check(
+  'the first screen asks for sex, as cards',
+  doc.querySelector('#app .gate-cards[data-question-id="q_sex"]')?.getAttribute('role') === 'radiogroup'
+    && doc.querySelectorAll('#app .gate-option').length === 3,
+  `${doc.querySelectorAll('#app .gate-option').length} cards`,
+);
+check('a gate card cannot be submitted before it is chosen', doc.getElementById('submit-answer').disabled === true);
+const sexEnabled = await pickGate('male');
+check('choosing a card enables the continue button', sexEnabled);
+
+check(
+  'after sex, the body map asks for the area',
+  Boolean(doc.querySelector('#app .body-figure')) && doc.querySelectorAll('#app .zone-shape').length === 5,
+  `${doc.querySelectorAll('#app .zone-shape').length} zones`,
+);
+const zoneColours = new Set([...doc.querySelectorAll('#app .zone-shape')].map((node) => node.getAttribute('style')));
+check('every body zone has its own colour', zoneColours.size === 5, `${zoneColours.size} colours`);
+check(
+  'the zones are buttons too, so the keyboard and a screen reader can pick them',
+  doc.querySelectorAll('#app .gate-option[data-zone-id]').length === 5,
+);
+check(
+  'the body map says one area at a time for now',
+  text(doc.querySelector('#app .body-hint')).includes('انتخاب کن'),
+);
+doc.querySelector('#app .zone-shape[data-zone="arms"]').dispatchEvent(new window.Event('click', { bubbles: true }));
+await wait(30);
+check(
+  'tapping a zone on the picture selects it in the list',
+  doc.querySelector('#app .gate-option[data-zone-id="arms"]')?.getAttribute('aria-checked') === 'true'
+    && doc.querySelector('#app .zone-shape[data-zone="arms"]')?.classList.contains('selected'),
+);
+
+await pickGate('torso');
+check(
+  'the chosen zone asks which part of it',
+  doc.querySelector('#app .gate-cards')?.dataset.questionId === 'q_area_torso'
+    && doc.querySelectorAll('#app .gate-option').length === 3,
+);
+
+await pickGate('abdomen');
+check(
+  'the path so far is written above the question',
+  text(doc.querySelector('#app .crumbs')).includes('مرد') && text(doc.querySelector('#app .crumbs')).includes('شکم'),
+  text(doc.querySelector('#app .crumbs')),
+);
+
 // --- robot narrator -------------------------------------------------------
 const narrator = doc.querySelector('#app .narrator');
 const narratorFull = narrator?.querySelector('.sr-only')?.textContent ?? '';
@@ -316,9 +378,11 @@ check('walked the questionnaire without a stuck screen', guard < 40, `${submitte
 
 // --- result versus a direct engine replay of the same answers -------------
 const { createSession } = await import(resolve(REPO, 'symptom-checker/engine/src/engine.js'));
-const engine = createSession(readJson('docs/symptom-checker/phase-1/knowledge-bundle.v1.json'), {
-  evidenceMap: readJson('symptom-checker/engine/data/evidence-map.v1.json'),
-});
+const engine = createSession(readJson('docs/symptom-checker/phase-6/knowledge-bundle.v3.json'));
+// The gates were answered before the walk began; the engine needs them too.
+engine.answer('q_sex', 'male');
+engine.answer('q_region', 'torso');
+engine.answer('q_area_torso', 'abdomen');
 for (const [questionId, value] of submitted) engine.answer(questionId, value);
 const expected = engine.result();
 

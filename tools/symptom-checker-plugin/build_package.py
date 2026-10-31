@@ -53,7 +53,7 @@ ASSET_SOURCES = {
     "symptom-checker/engine/src/validate-bundle.js": "engine/src/validate-bundle.js",
     "symptom-checker/engine/src/errors.js": "engine/src/errors.js",
     "symptom-checker/engine/data/evidence-map.v1.json": "engine/data/evidence-map.v1.json",
-    "docs/symptom-checker/phase-1/knowledge-bundle.v1.json": "data/knowledge-bundle.v1.json",
+    "docs/symptom-checker/phase-6/knowledge-bundle.v3.json": "data/knowledge-bundle.v3.json",
 }
 
 # Plugin files copied verbatim (relative to the plugin directory).

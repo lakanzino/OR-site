@@ -67,6 +67,13 @@ jobs:
           node --test symptom-checker/ui/tests/*.test.js
           node symptom-checker/ui/tests/ui-smoke.mjs --all
 
+      - name: body bundle (phase 6)
+        run: |
+          set -eux
+          python3 tools/symptom-checker-content/build_body_bundle.py --check
+          node tools/symptom-checker-content/compare_abdomen.mjs
+          node symptom-checker/ui/tests/genital-walk.mjs
+
       - name: phase-4 shadow study
         run: |
           set -eux

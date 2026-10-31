@@ -32,6 +32,19 @@ function checkRefs(issues, owner, refs, known, label) {
   }
 }
 
+/** `any_of`/`all_of` may nest; the dependency checks want the leaves. */
+function* flattenClauses(clause) {
+  if (Array.isArray(clause?.any_of)) {
+    for (const sub of clause.any_of) yield* flattenClauses(sub);
+    return;
+  }
+  if (Array.isArray(clause?.all_of)) {
+    for (const sub of clause.all_of) yield* flattenClauses(sub);
+    return;
+  }
+  yield clause;
+}
+
 function checkClause(issues, owner, clause, questions) {
   if (!isObject(clause)) {
     issues.push(`${owner}: clause is not an object`);
@@ -140,10 +153,13 @@ export function collectBundleIssues(bundle) {
     }
 
     const visibility = question.visibility ?? {};
-    if (!visibility.always && !Array.isArray(visibility.any_of)) {
+    if (!visibility.always && !Array.isArray(visibility.any_of) && !Array.isArray(visibility.all_of)) {
       issues.push(`${owner}: missing visibility rule`);
     }
-    for (const rule of asArray(visibility.any_of)) {
+    if (Array.isArray(visibility.all_of) && visibility.all_of.length === 0) {
+      issues.push(`${owner}: empty all_of`);
+    }
+    for (const rule of [...asArray(visibility.any_of), ...asArray(visibility.all_of)].flatMap((rule) => [...flattenClauses(rule)])) {
       const dependency = questions.get(rule.question_id);
       if (!dependency) {
         issues.push(`${owner}: visibility references unknown question ${rule.question_id}`);

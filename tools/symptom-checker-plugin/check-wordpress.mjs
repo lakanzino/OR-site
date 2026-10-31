@@ -313,6 +313,37 @@ async function uiCheck(config, options = {}) {
   await new Promise((done) => setTimeout(done, 150));
   check('the first question renders from the packaged bundle', Boolean(doc.getElementById('question-title')));
 
+  // Phase 6: the packaged page opens with the sex gate and the body map, not
+  // with the abdomen. Walk the gates exactly like a visitor would.
+  const pickGate = async (optionId) => {
+    const card = [...doc.querySelectorAll('#app .gate-option')].find((button) => button.dataset.optionId === optionId);
+    if (!card) throw new Error(`gate card missing inside WordPress: ${optionId}`);
+    card.click();
+    doc.getElementById('submit-answer').click();
+    await new Promise((done) => setTimeout(done, 60));
+  };
+  // Only the bundled 3.x content opens with the body. The upload scenario serves
+  // the phase-1 authoring bundle (abdomen only), so the gates are expected to be
+  // absent there — and present in the packaged one.
+  const hasGates = Boolean(doc.querySelector('#app .gate-cards[data-question-id="q_sex"]'));
+  const packaged = (config.bundleStatus?.source ?? 'package') === 'package';
+  check(
+    packaged ? 'the packaged tool starts with the sex gate' : 'an uploaded older bundle skips the body gates',
+    hasGates === packaged,
+    `${hasGates ? 'gates' : 'no gates'} · source ${config.bundleStatus?.source ?? 'package'}`,
+  );
+  if (hasGates) {
+    await pickGate('male');
+    check(
+      'the body map renders inside WordPress, with its five zones',
+      doc.querySelectorAll('#app .zone-shape').length === 5,
+      `${doc.querySelectorAll('#app .zone-shape').length} zones`,
+    );
+    await pickGate('torso');
+    check('the chosen zone offers its parts', doc.querySelectorAll('#app .gate-option').length === 3);
+    await pickGate('abdomen');
+  }
+
   const answers = {
     q_pain_present: 'yes',
     q_pain_location: 'right_lower',
@@ -588,7 +619,7 @@ add_action( 'init', function () {
     info?.home_button?.found === 0,
     `found=${info?.home_button?.found}`,
   );
-  check('the bundle version reaches PHP', info?.bundle === '0.2.0-draft', info?.bundle ?? '');
+  check('the bundle version reaches PHP', info?.bundle === '3.0.0-draft', info?.bundle ?? '');
 
   // 5. published phase: render the page and inspect what WordPress serves
   await startSite(writeBlueprint('published.json', true));
@@ -618,7 +649,7 @@ add_action( 'init', function () {
   const config = configMatch ? JSON.parse(configMatch[1]) : null;
   check('the inline config is printed before the module', Boolean(configMatch) && page.body.indexOf('window.HJ_SC_CONFIG') < page.body.indexOf('<script type="module"'));
   check('the config points inside the plugin', Boolean(config?.bundleUrl?.includes('/wp-content/plugins/hamyar-symptom-checker/assets/')));
-  check('the draft bundle version is exposed', config?.bundleVersion === '0.2.0-draft', config?.bundleVersion ?? '');
+  check('the draft bundle version is exposed', config?.bundleVersion === '3.0.0-draft', config?.bundleVersion ?? '');
   check('the config states the question strategy', config?.questionStrategy === 'static_order', config?.questionStrategy ?? 'missing');
   check('the config states the age gate', config?.minAge === 18, String(config?.minAge ?? 'missing'));
   check('the published article is mapped', Boolean(config?.topicLinks?.app?.endsWith('/disease/appendicitis/')), JSON.stringify(config?.topicLinks ?? {}));

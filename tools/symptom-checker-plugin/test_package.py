@@ -52,7 +52,7 @@ class PackageTests(unittest.TestCase):
             "assets/engine/src/strategy.js",
             "assets/engine/src/profile-match.js",
             "assets/engine/data/evidence-map.v1.json",
-            "assets/data/knowledge-bundle.v1.json",
+            "assets/data/knowledge-bundle.v3.json",
         ):
             self.assertIn(required, names)
 

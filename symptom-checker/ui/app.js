@@ -42,7 +42,7 @@ const QUESTION_STRATEGY = ['static_order', 'adaptive'].includes(config.questionS
   ? config.questionStrategy
   : 'static_order';
 
-const BUNDLE_URL = config.bundleUrl || '../../docs/symptom-checker/phase-1/knowledge-bundle.v1.json';
+const BUNDLE_URL = config.bundleUrl || '../../docs/symptom-checker/phase-6/knowledge-bundle.v3.json';
 const EVIDENCE_URL = config.evidenceUrl || '../engine/data/evidence-map.v1.json';
 const TOPIC_LINKS = (config.topicLinks && typeof config.topicLinks === 'object') ? config.topicLinks : {};
 
@@ -295,8 +295,11 @@ async function loadData() {
 }
 
 function startSession() {
+  // A 2.x bundle carries its evidence inside each option; handing it the old
+  // external map would be a second, older truth.
+  const externalMap = String(state.bundle?.schema_version ?? '').startsWith('2.') ? null : state.evidenceMap;
   state.session = createSession(state.bundle, {
-    evidenceMap: state.evidenceMap,
+    evidenceMap: externalMap,
     questionStrategy: QUESTION_STRATEGY,
   });
   state.error = null;
@@ -535,6 +538,225 @@ function renderUnderage() {
   ]));
 }
 
+
+// --- gates: sex, body map, area ------------------------------------------
+//
+// The first three screens of the tool are questions like any other — the
+// engine validates them and they gate what is asked next — but they are drawn
+// as cards and as a body, not as a list of radio buttons. Nothing here scores
+// or routes anything: the answer is stored by the engine, and the bundle
+// decides which questions become visible.
+
+const ZONES = {
+  head_neck: { color: '#6d4aff' },
+  torso: { color: '#0a74d6' },
+  pelvis: { color: '#d81b60' },
+  arms: { color: '#d27d00' },
+  legs: { color: '#0f7a63' },
+};
+
+const ZONE_OF_AREA = {
+  head: 'head_neck', throat: 'head_neck',
+  chest: 'torso', abdomen: 'torso', back: 'torso',
+  urinary: 'pelvis', penis: 'pelvis', scrotum: 'pelvis', vulva: 'pelvis', genital: 'pelvis', anus: 'pelvis',
+  arm: 'arms', hand: 'arms',
+  thigh_knee: 'legs', lower_foot: 'legs',
+};
+
+const isGateQuestion = (question) => question.id === 'q_sex'
+  || question.id === 'q_region'
+  || question.id.startsWith('q_area_');
+
+function svgEl(tag, attrs) {
+  const node = document.createElementNS(SVG_NS, tag);
+  for (const [key, value] of Object.entries(attrs)) {
+    if (value !== undefined && value !== null) node.setAttribute(key, String(value));
+  }
+  return node;
+}
+
+/**
+ * One selectable card. `role="radio"` inside a `role="radiogroup"` is what makes
+ * the picture and the list behave like the radio buttons they are, for a screen
+ * reader and for the keyboard alike.
+ */
+function gateCard(option, { color, title } = {}) {
+  const button = el('button', {
+    type: 'button',
+    class: 'gate-option',
+    role: 'radio',
+    'aria-checked': 'false',
+    style: color ? `--zone:${color}` : undefined,
+  }, [
+    el('span', { class: 'gate-title', text: title ?? option.label_fa }),
+  ]);
+  button.dataset.optionId = option.id;
+  return button;
+}
+
+function gateGroup(question, build, onSelect) {
+  const group = el('div', {
+    class: 'gate-cards',
+    role: 'radiogroup',
+    'aria-labelledby': 'question-title',
+  });
+  group.dataset.questionId = question.id;
+  const cards = new Map();
+  const labels = new Map(question.options.map((option) => [option.id, option.label_fa]));
+
+  const select = (id) => {
+    state.draft = { kind: 'single', value: id };
+    for (const [optionId, button] of cards) {
+      const on = optionId === id;
+      button.setAttribute('aria-checked', on ? 'true' : 'false');
+      button.classList.toggle('selected', on);
+    }
+    updateSubmitState();
+    announce(`${labels.get(id) ?? id} انتخاب شد`);
+    onSelect?.(id);
+  };
+
+  for (const option of question.options) {
+    const { button, extra } = build(option);
+    button.addEventListener('click', () => select(option.id));
+    cards.set(option.id, button);
+    group.append(extra ?? button);
+  }
+
+  // Arrow keys move between the cards, like a native radio group.
+  group.addEventListener('keydown', (event) => {
+    const keys = ['ArrowDown', 'ArrowRight', 'ArrowLeft', 'ArrowUp'];
+    if (!keys.includes(event.key)) return;
+    const ids = question.options.map((option) => option.id);
+    const current = state.draft?.value;
+    const index = Math.max(0, ids.indexOf(current));
+    const step = (event.key === 'ArrowDown' || event.key === 'ArrowRight') ? 1 : -1;
+    const nextId = ids[(index + step + ids.length) % ids.length];
+    event.preventDefault();
+    select(nextId);
+    cards.get(nextId)?.focus?.();
+  });
+
+  return group;
+}
+
+function renderSexGate(question) {
+  return gateGroup(question, (option) => {
+    const color = option.id === 'female' ? '#a5246b' : (option.id === 'male' ? '#1c5fae' : '#607089');
+    const button = gateCard(option, { color });
+    const hint = option.id === 'prefer_not'
+      ? 'پرسش‌های عمومی همین ناحیه پرسیده می‌شود'
+      : 'پرسش‌های همین بدن نمایش داده می‌شود';
+    button.append(el('span', { class: 'gate-hint', text: hint }));
+    return { button };
+  });
+}
+
+/** The picture: five zones, one colour each. Decoration for the eye, buttons for the hand. */
+function bodyFigure(question, onPick) {
+  const svg = svgEl('svg', {
+    viewBox: '0 0 200 420',
+    class: 'body-figure',
+    'aria-hidden': 'true',
+    focusable: 'false',
+  });
+
+  const shapes = {
+    legs: [
+      svgEl('rect', { x: 62, y: 252, width: 34, height: 148, rx: 10 }),
+      svgEl('rect', { x: 104, y: 252, width: 34, height: 148, rx: 10 }),
+    ],
+    arms: [
+      svgEl('path', { d: 'M64 88 L42 246 L60 250 L78 100 Z' }),
+      svgEl('path', { d: 'M136 88 L158 246 L140 250 L122 100 Z' }),
+    ],
+    torso: [svgEl('path', { d: 'M68 84 H132 L142 206 H58 Z' })],
+    pelvis: [svgEl('rect', { x: 56, y: 206, width: 88, height: 48, rx: 12 })],
+    head_neck: [
+      svgEl('circle', { cx: 100, cy: 42, r: 27 }),
+      svgEl('rect', { x: 88, y: 66, width: 24, height: 18, rx: 6 }),
+    ],
+  };
+
+  const groups = new Map();
+  for (const zoneId of ['legs', 'arms', 'torso', 'pelvis', 'head_neck']) {
+    const group = svgEl('g', { class: 'zone-shape', 'data-zone': zoneId, style: `--zone:${ZONES[zoneId].color}` });
+    for (const shape of shapes[zoneId]) group.append(shape);
+    group.addEventListener('click', () => onPick(zoneId));
+    svg.append(group);
+    groups.set(zoneId, group);
+  }
+  return { svg, groups };
+}
+
+function renderRegionGate(question) {
+  let groups = new Map();
+  const highlight = (picked) => {
+    for (const [zoneId, node] of groups) {
+      node.classList.toggle('selected', zoneId === picked);
+      node.classList.toggle('dimmed', Boolean(picked) && zoneId !== picked);
+    }
+  };
+
+  // Clicking a shape on the picture is the same gesture as clicking its card:
+  // the card owns the answer, the picture follows it.
+  const figure = bodyFigure(question, (zoneId) => {
+    document.querySelector(`#app .gate-option[data-zone-id="${zoneId}"]`)?.click?.();
+  });
+  groups = figure.groups;
+  highlight(undefined);
+
+  // Clicking a shape and clicking a card do the same thing, and the picture
+  // follows the choice. No observer: the selection callback is enough.
+  const group = gateGroup(question, (option) => {
+    const zone = ZONES[option.id]?.color;
+    const button = gateCard(option, { color: zone });
+    button.dataset.zoneId = option.id;
+    button.prepend(el('span', { class: 'zone-dot', style: `--zone:${zone}` }));
+    return { button };
+  }, highlight);
+
+  return el('div', { class: 'body-map' }, [
+    figure.svg,
+    el('div', { class: 'zone-list' }, [
+      el('p', { class: 'muted small body-hint', text: 'روی بخش بدن بزن یا از این فهرست انتخاب کن. رنگ‌ها فقط برای جدا کردن بخش‌ها هستند.' }),
+      group,
+    ]),
+  ]);
+}
+
+function renderAreaGate(question) {
+  return gateGroup(question, (option) => {
+    const zone = ZONE_OF_AREA[option.id];
+    const button = gateCard(option, { color: ZONES[zone]?.color });
+    button.prepend(el('span', { class: 'zone-dot', style: `--zone:${ZONES[zone]?.color ?? '#607089'}` }));
+    return { button };
+  });
+}
+
+function renderGateScreen(question) {
+  if (question.id === 'q_sex') return renderSexGate(question);
+  if (question.id === 'q_region') return renderRegionGate(question);
+  return renderAreaGate(question);
+}
+
+/** «۳۲ سال · مرد · لگن و اندام تناسلی» — the path so far, in words. */
+function renderCrumbs() {
+  if (!state.session) return null;
+  const answers = state.session.answers();
+  const parts = [`${formatAge(state.age)} سال`];
+  const gateIds = ['q_sex', 'q_region', 'q_area_head', 'q_area_torso', 'q_area_pelvis_m',
+    'q_area_pelvis_f', 'q_area_pelvis_x', 'q_area_arms', 'q_area_legs'];
+  for (const id of gateIds) {
+    const value = answers[id];
+    if (value === undefined) continue;
+    const label = state.session.question(id).options?.find((option) => option.id === value)?.label_fa;
+    if (label) parts.push(label);
+  }
+  if (parts.length === 1) return null;
+  return el('div', { class: 'crumbs' }, parts.map((part) => el('span', { class: 'crumb', text: part })));
+}
+
 function renderSafetyBanners(container) {
   if (!state.session) return;
   const rules = state.session.safety();
@@ -744,9 +966,10 @@ function renderQuestion() {
         el('div', { class: 'bar' }, [el('div', { class: 'fill', style: `width:${progress.percent}%` })]),
         el('span', { class: 'muted small', text: progress.label }),
       ]),
+      renderCrumbs(),
       el('h1', { class: 'question', tabindex: '-1', id: 'question-title', text: question.text_fa }),
       el('p', { class: 'muted small', text: question.why_fa }),
-      renderNarrator(question),
+      isGateQuestion(question) ? null : renderNarrator(question),
       el('form', {
         onSubmit: (event) => {
           event.preventDefault();
@@ -755,9 +978,9 @@ function renderQuestion() {
       }, [
         el('fieldset', {}, [
           el('legend', { class: 'sr-only', text: question.text_fa }),
-          renderOptions(question),
+          isGateQuestion(question) ? renderGateScreen(question) : renderOptions(question),
         ]),
-        renderNoteField(question),
+        isGateQuestion(question) ? null : renderNoteField(question),
         el('div', { class: 'actions' }, [
           el('button', { id: 'submit-answer', class: 'primary', type: 'submit', text: 'ادامه', disabled: true }),
           el('button', {
