@@ -34,6 +34,9 @@ const WP_SHA256 = {
 };
 const EXPECTED_HASH = WP_SHA256[WP_VERSION] || null;
 const PLAYGROUND_VERSION = '3.1.61';
+// HJ_PHP_VERSION reproduces the PHP build of the hosting account (the live site
+// runs PHP 8.4); without it Playground uses its own default build.
+const PHP_VERSION = process.env.HJ_PHP_VERSION || null;
 const PORT = Number(process.env.HJ_WP_PORT ?? 9411);
 const BASE = `http://127.0.0.1:${PORT}`;
 const keep = process.argv.includes('--keep');
@@ -90,6 +93,7 @@ async function startSite(blueprint) {
       '--blueprint', blueprint,
       '--port', String(PORT),
       '--verbosity', 'quiet',
+      ...(PHP_VERSION ? ['--php', PHP_VERSION] : []),
     ],
     { stdio: ['ignore', 'pipe', 'pipe'] },
   );
@@ -332,6 +336,11 @@ add_action( 'init', function () {
   await startSite(writeBlueprint('draft.json', false));
   let info = await waitForReport();
   check('WordPress booted with the plugin active', Boolean(info) && info.wp === WP_VERSION, info ? `WP ${info.wp} / PHP ${info.php}` : 'no report');
+  if (PHP_VERSION) {
+    // Playground ships a fixed set of PHP builds (8.5.10 today); say out loud
+    // which one actually ran so a claim about the host's PHP stays honest.
+    console.log(`requested PHP ${PHP_VERSION}, running PHP ${info?.php ?? '?'}`);
+  }
   check('activation created the page as a draft', info?.page_status === 'draft', info?.page_status ?? '');
   check(
     'the first admin request finished the setup and cleared the pending note',
