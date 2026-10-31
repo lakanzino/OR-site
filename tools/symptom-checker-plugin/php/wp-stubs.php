@@ -50,6 +50,7 @@ function hj_stub_reset() {
 		'bad_nonce' => array(),
 		'caps'     => array( 'manage_options' ),
 		'shortcodes' => array(),
+		'submenu'    => array(),
 		'settings'   => array(),
 		'sections'   => array(),
 		'fields'     => array(),
@@ -375,7 +376,16 @@ function add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $call
 }
 
 function add_submenu_page( $parent, $page_title, $menu_title, $capability, $menu_slug, $callback = '' ) {
-	return add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $callback );
+	// WordPress keeps submenus in their own bucket; the top-level count must not
+	// grow when a screen adds one.
+	$GLOBALS['hj_stub']['submenu'][ $parent ][] = array(
+		'page_title' => $page_title,
+		'menu_title' => $menu_title,
+		'capability' => $capability,
+		'slug'       => $menu_slug,
+		'callback'   => $callback,
+	);
+	return $menu_slug;
 }
 
 function admin_url( $path = '' ) {

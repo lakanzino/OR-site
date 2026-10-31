@@ -417,7 +417,7 @@ function hjsc_render_tool() {
 		}, 8000);
 	})();
 	</script>
-	<script type="module" src="<?php echo esc_url( $src ); ?>"></script>
+	<script type="module" id="hj-sc-app-js" src="<?php echo esc_url( $src ); ?>"></script>
 	<?php
 	return (string) ob_get_clean();
 }

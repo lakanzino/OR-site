@@ -515,6 +515,7 @@ foreach ( (array) ( $GLOBALS['submenu'][ HJ_SC_ADMIN_SLUG ] ?? array() ) as $sub
         $settings_menu = true;
     }
 }
+do_action( 'admin_init' );
 ob_start();
 hjsc_settings_render();
 $settings_html = ob_get_clean();
@@ -550,7 +551,7 @@ file_put_contents( '/wordpress/hj-admin.json', wp_json_encode( array(
     'page_content'     => $page_content ?? '',
     'settings_menu'    => (bool) ( $settings_menu ?? false ),
     'settings_bytes'   => strlen( $settings_html ?? '' ),
-    'settings_field'   => false !== strpos( $settings_html ?? '', HJ_SC_SETTINGS_OPTION ),
+    'settings_field'   => false !== strpos( $settings_html ?? '', 'name="' . HJ_SC_SETTINGS_OPTION . '[title_fa]"' ),
     'config_title'     => $config_texts['title'] ?? '',
     'config_default_age' => $config_texts['defaultAge'] ?? 0,
     'saved_count'      => isset( $saved['conditions'] ) ? count( $saved['conditions'] ) : 0,
@@ -731,12 +732,14 @@ add_action( 'init', function () {
   );
   const page = await text('/symptom-checker/');
   check('the checker page returns 200', page.status === 200);
-  check('the plugin template is used', ['id="app"', 'id="safety"', 'id="live"'].every((needle) => page.body.includes(needle)));
+  check('the tool markup is on the page', ['id="app"', 'id="safety"', 'id="live"'].every((needle) => page.body.includes(needle)));
   check('the page is noindex, nofollow', page.body.includes('noindex') && page.body.includes('nofollow'));
   const scriptTags = [...page.body.matchAll(/<script\b[^>]*>/gi)].map((match) => match[0]);
   // Newer cores print their own module scripts (speculation rules, block
   // assets), so the check looks at *our* tag instead of counting module tags.
-  const ourScriptTag = scriptTags.find((tag) => tag.includes('id="hj-sc-app-js"')) ?? '';
+  const ourScriptTag = scriptTags.find((tag) => tag.includes('id="hj-sc-app-js"'))
+    ?? scriptTags.find((tag) => tag.includes('assets/ui/app.js'))
+    ?? '';
   check(
     'the entry script is a module',
     /\btype="module"/.test(ourScriptTag),
@@ -746,7 +749,11 @@ add_action( 'init', function () {
 
   const configMatch = page.body.match(/window\.HJ_SC_CONFIG = (\{.*?\});/s);
   const config = configMatch ? JSON.parse(configMatch[1]) : null;
-  check('the inline config is printed before the module', Boolean(configMatch) && page.body.indexOf('window.HJ_SC_CONFIG') < page.body.indexOf('<script type="module"'));
+  check(
+    'the inline config is printed before the module',
+    Boolean(configMatch) && ourScriptTag !== ''
+      && page.body.indexOf('window.HJ_SC_CONFIG') < page.body.indexOf(ourScriptTag),
+  );
   check('the config points inside the plugin', Boolean(config?.bundleUrl?.includes('/wp-content/plugins/hamyar-symptom-checker/assets/')));
   check('the draft bundle version is exposed', config?.bundleVersion === '3.0.0-draft', config?.bundleVersion ?? '');
   check('the config states the question strategy', config?.questionStrategy === 'static_order', config?.questionStrategy ?? 'missing');

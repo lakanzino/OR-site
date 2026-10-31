@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'HJ_SC_SETTINGS_OPTION', 'hj_sc_display_settings' );
+define( 'HJ_SC_SETTINGS_SLUG', 'hj-sc-settings' );
 
 /**
  * The texts the owner may change, with the wording the plugin ships.

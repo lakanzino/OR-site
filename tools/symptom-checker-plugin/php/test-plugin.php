@@ -442,6 +442,18 @@ switch ( $scenario ) {
 		eq( 'hjsc_sanitize_settings', $GLOBALS['hj_stub']['settings'][ HJ_SC_SETTINGS_OPTION ]['args']['sanitize_callback'] ?? '', 'the option always goes through its sanitiser' );
 		ok( count( $GLOBALS['hj_stub']['fields'] ) >= 9, 'the screen exposes the texts, the age and the switch', (string) count( $GLOBALS['hj_stub']['fields'] ) );
 
+		hj_stub_run_action( 'admin_menu' );
+		$submenu = $GLOBALS['hj_stub']['submenu'][ HJ_SC_ADMIN_SLUG ] ?? array();
+		ok(
+			'1' === (string) count( $submenu ) && HJ_SC_SETTINGS_SLUG === ( $submenu[0]['slug'] ?? '' ),
+			'the settings screen sits under the checker menu',
+			wp_json_encode( $submenu )
+		);
+		ok(
+			count( $GLOBALS['hj_stub']['menu'] ) === 1,
+			'and it does not add a second top-level menu'
+		);
+
 		$clean = hjsc_sanitize_settings(
 			array(
 				'title_fa'      => '  <script>alert(1)</script>عنوان تازه ',

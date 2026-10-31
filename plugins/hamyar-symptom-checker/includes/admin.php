@@ -93,6 +93,17 @@ function hjsc_admin_menu() {
 		'dashicons-search',
 		58
 	);
+
+	// 0.1.14: the display settings live next to the content screen, because the
+	// owner opens both from the same menu.
+	add_submenu_page(
+		HJ_SC_ADMIN_SLUG,
+		'تنظیمات نمایش',
+		'تنظیمات نمایش',
+		hjsc_admin_capability(),
+		HJ_SC_SETTINGS_SLUG,
+		'hjsc_settings_render'
+	);
 }
 add_action( 'admin_menu', 'hjsc_admin_menu' );
 
