@@ -16,13 +16,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! function_exists( 'hj_sc_fatal_catcher_write' ) ) {
+if ( ! function_exists( 'hjsc_fatal_catcher_write' ) ) {
 	/**
 	 * Write one fatal error block to wp-content/hj-sc-fatal.log.
 	 *
 	 * @param array $error Result of error_get_last().
 	 */
-	function hj_sc_fatal_catcher_write( $error ) {
+	function hjsc_fatal_catcher_write( $error ) {
 		$content_dir = defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : dirname( __DIR__ );
 		$log_file    = $content_dir . '/hj-sc-fatal.log';
 
@@ -58,7 +58,7 @@ if ( ! function_exists( 'hj_sc_fatal_catcher_write' ) ) {
 	/**
 	 * Shutdown hook: the fatal error is only visible at the very end.
 	 */
-	function hj_sc_fatal_catcher() {
+	function hjsc_fatal_catcher() {
 		$error = error_get_last();
 		if ( ! is_array( $error ) ) {
 			return;
@@ -69,8 +69,8 @@ if ( ! function_exists( 'hj_sc_fatal_catcher_write' ) ) {
 			return;
 		}
 
-		hj_sc_fatal_catcher_write( $error );
+		hjsc_fatal_catcher_write( $error );
 	}
 
-	register_shutdown_function( 'hj_sc_fatal_catcher' );
+	register_shutdown_function( 'hjsc_fatal_catcher' );
 }

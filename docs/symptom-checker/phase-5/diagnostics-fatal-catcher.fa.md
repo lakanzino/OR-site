@@ -60,3 +60,24 @@ active: litespeed-cache/litespeed-cache.php, google-site-kit/google-site-kit.php
 | اجرای یک خطای مرگبار عمدی | متن، فایل، خط، URL، نسخهٔ PHP/وردپرس/افزونه و فهرست افزونه‌های فعال ثبت شد |
 
 این آزمون روی شبیه‌ساز است، نه سایت شما؛ سازوکار `register_shutdown_function` روی هاست واقعی باید یک‌بار با همان خطای واقعی دیده شود.
+
+## ۷. نتیجهٔ واقعی روی سایت (۲۰۲۶-۱۰-۳۱)
+
+ابزار همین کار را کرد؛ بلوکی که از `wp-content/hj-sc-fatal.log` برگشت:
+
+```text
+[2026-10-31 09:46:05] FATAL type=64
+message: Cannot redeclare function hj_sc_enqueue_assets()
+         (previously declared in …/themes/lax-theme-child/inc/symptom-checker-test.php:53)
+file: …/plugins/hamyar-symptom-checker/includes/page.php
+line: 234
+request: /wp-admin/plugins.php?action=activate&plugin=hamyar-symptom-checker%2F…
+php: 8.4.27 | wp: 7.1.4 | checker: 0.1.2
+active: google-site-kit, hj-fatal-catcher, litespeed-cache, updraftplus
+```
+
+- `checker: 0.1.2` یعنی افزونه در همان درخواست بارگذاری شده بود، پس خطا **داخل خود افزونه** بود، نه در افزونه‌های دیگر.
+- علت: هم‌نامی تابع با پوسته. اصلاح در نسخهٔ ۰.۱.۳: [راهنما](release-0.1.3.fa.md).
+- `type=64` یعنی `E_COMPILE_ERROR` (خطای زمان کامپایل) — همان چیزی که ۰.۱.۲ نمی‌توانست بگیرد و گزارش پیشخوان هم برایش ساخته نمی‌شد، چون افزونه هرگز به‌طور کامل بارگذاری نشد.
+
+**درس:** هر ابزار تشخیصی که به‌صورت افزونه نصب می‌شود، باید *قبل* از آزمایش فعال باشد؛ وگرنه همان اتفاقی می‌افتد که این‌جا افتاد. نسخهٔ mu-plugin این مشکل را ندارد.
