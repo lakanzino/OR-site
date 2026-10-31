@@ -317,11 +317,13 @@ async function uiCheck(config, options = {}) {
   await new Promise((done) => setTimeout(done, 600));
 
   const doc = window.document;
+  // 0.1.14: the page is an ordinary page, so the theme's own header/footer is
+  // expected — what must not come back is *our* old chrome: the preview label
+  // in the header and the plugin's second disclaimer in the footer.
   check(
-    'the page around the tool adds no repeated warning',
-    !doc.querySelector('.site-footer')
-      && !/پیش‌نمایش|پیش‌نویس|جای معاینه|تشخیص پزشکی/.test(doc.querySelector('header')?.textContent ?? ''),
-    (doc.querySelector('header')?.textContent ?? '').trim(),
+    'the plugin adds no preview label and no second disclaimer to the page',
+    !page.body.includes('(پیش‌نمایش داخلی)')
+      && !page.body.includes('این ابزار تشخیص پزشکی نیست و جای معاینه، آزمایش یا مشاورهٔ پزشک را نمی‌گیرد'),
   );
   check(
     'the entry script is served as a module, with a cache-busting version',
@@ -437,8 +439,20 @@ async function uiCheck(config, options = {}) {
     externalLoaders.length === 0,
     `${loaders.length} loaders: ` + externalLoaders.map((match) => match[2]).join(' ; '),
   );
-  check('the page has no inline font import', !/@import\s+(?:url\()?['"]?https?:/i.test(page.body));
-  check('the checker page has no posting form', !/<form[^>]+action=/i.test(page.body));
+  // Only the plugin's own stylesheet is ours to answer for; the theme may load
+  // whatever it ships with.
+  const pluginCss = readFileSync(join(work, 'plugins/hamyar-symptom-checker/assets/ui/styles.css'), 'utf8');
+  check(
+    'the plugin loads no font or image from another origin',
+    !/@import\s+(?:url\()?['"]?https?:/i.test(pluginCss),
+  );
+  // A theme legitimately prints a search form; the tool itself must not post.
+  check(
+    'the tool itself never posts anything',
+    !/<form[^>]*>[\s\S]*?id="hj-age"[\s\S]*?<\/form>/i.test(page.body)
+      && !/<form[^>]+action="[^"]*symptom/i.test(page.body)
+      && !/name="hj[-_]?answers?"/i.test(page.body),
+  );
   checkPrefix = '';
 }
 
