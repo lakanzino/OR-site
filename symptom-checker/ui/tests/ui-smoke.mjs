@@ -1,0 +1,255 @@
+/**
+ * Headless end-to-end smoke test for the phase-3 demo UI.
+ *
+ * Loads the real `index.html`, runs the real `app.js` in jsdom, answers the
+ * questionnaire the way a person would (clicking the actual inputs), and then
+ * compares what the UI rendered with a direct replay of the same answers
+ * through the phase-2 engine. Nothing here is a browser: layout, CSS and real
+ * screen-reader behaviour still need a human check in a real browser.
+ *
+ * Usage:
+ *   npm install --no-save jsdom
+ *   node tests/ui-smoke.mjs            # one scenario (default: sc10)
+ *   node tests/ui-smoke.mjs sc09       # any prefix of a scenario id
+ *   node tests/ui-smoke.mjs --all      # every scenario in scenarios.v1.json
+ *
+ * jsdom is optional: without it this file prints SKIP and exits 0, so the
+ * dependency-free `node --test` suite stays green.
+ */
+import { readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+const UI = resolve(HERE, '..');
+const REPO = resolve(UI, '../..');
+
+const readJson = (path) => JSON.parse(readFileSync(resolve(REPO, path), 'utf8'));
+const scenariosFile = readJson('docs/symptom-checker/phase-1/scenarios.v1.json');
+
+const arg = process.argv[2] ?? 'sc10';
+
+if (arg === '--all') {
+  let failed = 0;
+  for (const scenario of scenariosFile.scenarios) {
+    const run = spawnSync(process.execPath, [fileURLToPath(import.meta.url), scenario.id], {
+      stdio: 'inherit',
+    });
+    if (run.status !== 0) failed += 1;
+  }
+  console.log(`\n${scenariosFile.scenarios.length - failed}/${scenariosFile.scenarios.length} scenarios clean`);
+  process.exit(failed ? 1 : 0);
+}
+
+let JSDOM;
+let VirtualConsole;
+try {
+  ({ JSDOM, VirtualConsole } = await import('jsdom'));
+} catch {
+  console.log('SKIP  ui-smoke needs jsdom: run `npm install --no-save jsdom` first');
+  process.exit(0);
+}
+
+const scenario = scenariosFile.scenarios.find((item) => item.id === arg || item.id.startsWith(arg));
+if (!scenario) {
+  console.error(`unknown scenario: ${arg}`);
+  process.exit(2);
+}
+
+const errors = [];
+const virtualConsole = new VirtualConsole();
+virtualConsole.on('jsdomError', (error) => errors.push(`jsdomError: ${error.message}`));
+virtualConsole.on('error', (...args) => errors.push(`console.error: ${args.join(' ')}`));
+
+const dom = new JSDOM(readFileSync(resolve(UI, 'index.html'), 'utf8'), {
+  url: 'http://demo.local/symptom-checker/ui/index.html',
+  runScripts: 'outside-only',
+  pretendToBeVisual: true,
+  virtualConsole,
+});
+const { window } = dom;
+
+const fetched = [];
+window.fetch = async (url) => {
+  fetched.push(String(url));
+  const path = new URL(url, window.location.href).pathname;
+  try {
+    const text = readFileSync(resolve(REPO, `.${path}`), 'utf8');
+    return {
+      ok: true,
+      status: 200,
+      async json() { return JSON.parse(text); },
+      async text() { return text; },
+    };
+  } catch {
+    return {
+      ok: false,
+      status: 404,
+      async json() { throw new Error('404'); },
+      async text() { return ''; },
+    };
+  }
+};
+
+globalThis.window = window;
+globalThis.document = window.document;
+globalThis.fetch = window.fetch;
+globalThis.location = window.location;
+
+const wait = (ms) => new Promise((done) => setTimeout(done, ms));
+process.on('unhandledRejection', (error) => errors.push(`unhandledRejection: ${error?.message ?? error}`));
+
+await import(resolve(UI, 'app.js'));
+await wait(300);
+
+const doc = window.document;
+const text = (node = doc.body) => node.textContent.replace(/\s+/g, ' ').trim();
+
+const checks = [];
+function check(label, ok, detail = '') {
+  checks.push({ label, ok });
+  console.log(`${ok ? 'PASS' : 'FAIL'}  ${label}${detail ? ` — ${detail}` : ''}`);
+}
+
+// --- intro ---------------------------------------------------------------
+const startButton = [...doc.querySelectorAll('#app button')].find((button) => button.textContent.includes('شروع'));
+check('intro renders with the demo badges', Boolean(startButton) && text().includes('نمایشی') && text().includes('بدون ذخیره‌سازی'));
+startButton.click();
+await wait(80);
+check('the first question renders', Boolean(doc.getElementById('question-title')), text(doc.getElementById('app')).slice(0, 70));
+
+// --- walk the questionnaire like a person ---------------------------------
+const submitted = [];
+let guard = 0;
+while (guard++ < 40 && doc.getElementById('question-title')) {
+  const name = [...doc.querySelectorAll('#app input')].map((input) => input.name).find(Boolean);
+  const questionId = name.replace(/^q-/, '');
+  const value = scenario.answers[questionId] ?? 'unknown';
+  const numberInput = doc.querySelector(`#app input[type="number"][name="${name}"]`);
+  const unknownBox = doc.querySelector('#app input[type="checkbox"][id$="-unknown"]');
+  const option = (id) => doc.querySelector(`#app input[name="${name}"][value="${id}"]`);
+
+  if (value === 'unknown' && numberInput) unknownBox.click();
+  else if (value === 'unknown') option('unknown').click();
+  else if (numberInput) {
+    numberInput.value = String(value);
+    numberInput.dispatchEvent(new window.Event('input', { bubbles: true }));
+  } else if (Array.isArray(value)) {
+    for (const id of value) option(id).click();
+  } else {
+    option(value).click();
+  }
+
+  const inputs = [...doc.querySelectorAll(`#app input[name="${name}"]`)];
+  const isMulti = !numberInput && inputs[0]?.type === 'checkbox';
+  const recorded = isMulti ? inputs.filter((input) => input.checked).map((input) => input.value) : value;
+  submitted.push([questionId, recorded]);
+
+  const submit = doc.getElementById('submit-answer');
+  if (!submit || submit.disabled) throw new Error(`submit stayed disabled for ${questionId}`);
+  submit.click();
+  await wait(50);
+}
+check('walked the questionnaire without a stuck screen', guard < 40, `${submitted.length} answers`);
+
+// --- result versus a direct engine replay of the same answers -------------
+const { createSession } = await import(resolve(REPO, 'symptom-checker/engine/src/engine.js'));
+const engine = createSession(readJson('docs/symptom-checker/phase-1/knowledge-bundle.v1.json'), {
+  evidenceMap: readJson('symptom-checker/engine/data/evidence-map.v1.json'),
+});
+for (const [questionId, value] of submitted) engine.answer(questionId, value);
+const expected = engine.result();
+
+const cardNames = [...doc.querySelectorAll('#app article.card')].map((card) => card.querySelector('h2')?.textContent ?? '');
+const coverage = doc.querySelector('#app .coverage');
+check(
+  'coverage matches the engine',
+  coverage?.className === `coverage ${expected.coverage.result}`,
+  `${coverage?.className} / engine ${expected.coverage.result}`,
+);
+check(
+  'cards match the engine conditions exactly',
+  JSON.stringify(cardNames) === JSON.stringify(expected.conditions.map((condition) => condition.name_fa)),
+  cardNames.length ? cardNames.join(' | ') : '(no cards)',
+);
+check(
+  'cards render only when the engine allows them',
+  expected.cards_allowed ? cardNames.length > 0 : cardNames.length === 0,
+  `cards_allowed=${expected.cards_allowed}`,
+);
+
+// --- safety --------------------------------------------------------------
+const safety = doc.getElementById('safety');
+check(
+  'safety banners match the engine rules',
+  expected.safety.length ? safety.hidden === false : safety.hidden === true,
+  expected.safety.map((rule) => rule.id).join(', ') || 'no rules',
+);
+check(
+  'urgent rules appear first',
+  !expected.safety.some((rule) => rule.severity === 'urgent') || Boolean(safety.querySelector('.safety.urgent')),
+);
+
+// --- wording -------------------------------------------------------------
+const resultText = [...doc.querySelectorAll('#app article.card, #app .coverage, #app .muted-card')]
+  .map((node) => node.textContent)
+  .join(' ');
+const banned = [/٪/, /\d+\s*درصد/, /احتمال (ابتلا|بیماری|بالا|زیاد)/, /امتیاز/, /probability/i, /score/i];
+check('no probability or score wording in the result body', !banned.some((pattern) => pattern.test(resultText)));
+
+const groupTitles = [...doc.querySelectorAll('#app .evidence dt .group-title')];
+const emptyGroup = [...doc.querySelectorAll('#app .evidence dd')]
+  .some((node) => node.textContent.includes('موردی در این گروه نیست'));
+check('evidence groups render only when non-empty', groupTitles.length === 0 || !emptyGroup, `${groupTitles.length} groups`);
+
+// --- edit / restart ------------------------------------------------------
+const editAll = [...doc.querySelectorAll('#app button')].find((button) => button.textContent.includes('ویرایش پاسخ‌ها'));
+editAll?.click();
+await wait(50);
+const editor = doc.querySelector('#app details.editor');
+check('the edit list opens from the result screen', Boolean(editor) && editor.open, `${editor?.querySelectorAll('.edit-row').length} rows`);
+
+const rows = [...editor.querySelectorAll('.edit-row')];
+const lastRow = rows[rows.length - 1];
+const editedQuestion = lastRow.querySelector('.edit-question').textContent;
+lastRow.querySelector('button').click();
+await wait(50);
+check(
+  'editing a previous answer re-opens that question',
+  doc.getElementById('question-title')?.textContent === editedQuestion,
+  editedQuestion.slice(0, 50),
+);
+
+const editName = doc.querySelector('#app input').name;
+const editValue = scenario.answers[editName.replace(/^q-/, '')] ?? 'unknown';
+const editNumber = doc.querySelector(`#app input[type="number"][name="${editName}"]`);
+if (editValue === 'unknown' && editNumber) doc.querySelector('#app input[type="checkbox"][id$="-unknown"]').click();
+else if (editValue === 'unknown') doc.querySelector(`#app input[name="${editName}"][value="unknown"]`).click();
+else if (editNumber) {
+  editNumber.value = String(editValue);
+  editNumber.dispatchEvent(new window.Event('input', { bubbles: true }));
+} else if (Array.isArray(editValue)) {
+  for (const id of editValue) doc.querySelector(`#app input[name="${editName}"][value="${id}"]`).click();
+} else {
+  doc.querySelector(`#app input[name="${editName}"][value="${editValue}"]`).click();
+}
+doc.getElementById('submit-answer').click();
+await wait(60);
+check('re-answering the last question returns to the result', Boolean(doc.querySelector('#app .coverage')));
+
+const restart = [...doc.querySelectorAll('#app button')].find((button) => button.textContent.includes('شروع دوباره'));
+check('the result offers a restart', Boolean(restart));
+restart?.click();
+await wait(60);
+check('restart clears the session', text(doc.getElementById('app')).includes('پاسخ‌داده‌شده ۰ از'), text(doc.getElementById('app')).slice(0, 40));
+check('restart hides the previous safety banners', doc.getElementById('safety').hidden === true);
+
+// --- privacy -------------------------------------------------------------
+check('only the two local data files were fetched', fetched.length === 2, fetched.join(' ; '));
+check('nothing written to localStorage', window.localStorage.length === 0, `${window.localStorage.length} keys`);
+check('no console errors or uncaught exceptions', errors.length === 0, errors.slice(0, 2).join(' || '));
+
+const failed = checks.filter((item) => !item.ok);
+console.log(`\n${checks.length - failed.length}/${checks.length} checks passed for ${scenario.id}`);
+process.exitCode = failed.length ? 1 : 0;
