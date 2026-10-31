@@ -245,9 +245,32 @@ switch ( $scenario ) {
 		ok( is_object( $config['topicLinks'] ), 'topic links are an object even when empty' );
 		eq( 'https://example.test/disease/appendicitis/', $config['topicLinks']->app ?? '', 'resolved links reach the browser' );
 
+		eq( 'static_order', $config['questionStrategy'], 'the default question strategy is static_order' );
+
 		$json = hjsc_config_json();
 		ok( false === stripos( $json, '</script' ), 'config JSON cannot break out of the script tag' );
 		ok( false !== strpos( $json, '\u003C' ) || false === stripos( $json, '<' ), 'angle brackets are hex-escaped' );
+		break;
+
+	case 'strategy':
+		boot( $plugin_dir );
+		eq( 'static_order', hjsc_question_strategy(), 'without a filter the order is the one the tool always used' );
+
+		add_filter(
+			'hjsc_question_strategy',
+			static function () {
+				return 'adaptive';
+			}
+		);
+		eq( 'adaptive', hjsc_config()['questionStrategy'], 'a filter may pick the adaptive ordering (skeleton in phase 2)' );
+
+		add_filter(
+			'hjsc_question_strategy',
+			static function () {
+				return 'by_vibes';
+			}
+		);
+		eq( 'static_order', hjsc_config()['questionStrategy'], 'an unknown name falls back instead of breaking the page' );
 		break;
 
 	case 'escaping':

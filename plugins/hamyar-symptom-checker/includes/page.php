@@ -203,6 +203,21 @@ function hjsc_asset_url( $relative ) {
 }
 
 /**
+ * Which question ordering the engine uses.
+ *
+ * Configuration only: a filter may change it (`hjsc_question_strategy`), the
+ * page never can, and nothing a visitor answers touches it. An unknown name
+ * falls back to `static_order`, because a typo in a filter must never leave the
+ * questionnaire without a question.
+ *
+ * @return string
+ */
+function hjsc_question_strategy() {
+	$strategy = (string) apply_filters( 'hjsc_question_strategy', 'static_order' );
+	return in_array( $strategy, array( 'static_order', 'adaptive' ), true ) ? $strategy : 'static_order';
+}
+
+/**
  * Configuration handed to the browser. Everything here is public data: the
  * draft bundle, the evidence map and the resolved article links.
  *
@@ -210,7 +225,8 @@ function hjsc_asset_url( $relative ) {
  */
 function hjsc_config() {
 	return array(
-		'pluginVersion' => HJ_SC_VERSION,
+		'pluginVersion'    => HJ_SC_VERSION,
+		'questionStrategy' => hjsc_question_strategy(),
 		'bundleVersion' => hjsc_bundle_version(),
 		'bundleUrl'     => hjsc_asset_url( 'data/knowledge-bundle.v1.json' ),
 		'evidenceUrl'   => hjsc_asset_url( 'engine/data/evidence-map.v1.json' ),
