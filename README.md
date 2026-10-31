@@ -29,6 +29,8 @@
 
 افزونهٔ وردپرس [`plugins/hamyar-symptom-guide/`](plugins/hamyar-symptom-guide/) برگه‌ای مستقل و پیش‌نویس بدون شورت‌کد برای بررسی و انتشار می‌سازد. راهنمای نصب و محدودیت‌ها در README افزونه است.
 
+**فاز ۳ (رابط نمایشی) کامل شد:** نمونهٔ داخلی [`symptom-checker/ui/`](symptom-checker/ui/) همان موتور فاز ۲ را آفلاین در مرورگر اجرا می‌کند: کارت موضوع، هشدار فوری، «اطلاعات کافی نیست»، تفکیک هفت‌گروهی شواهد، ویرایش پاسخ و شروع دوباره؛ برچسب صریح «نمایشی / دادهٔ پیش‌نویس / بدون ذخیره‌سازی» و بدون اتصال به سایت. اجرا: `cd symptom-checker/ui && npm run serve` و باز کردن `http://localhost:8080/symptom-checker/ui/`؛ آزمون: `node --test` و `node tests/ui-smoke.mjs --all` (۱۰ آزمون واحد و ۲۲۸ بررسی سرتاسری). [گزارش فاز ۳](docs/symptom-checker/phase-3-report.fa.md)
+
 **فاز ۲ (موتور) کامل شد:** موتور مستقل و بدون وردپرس در [`symptom-checker/engine/`](symptom-checker/engine/) با ۳۸ آزمون Node — شامل اجرای همان ۱۲ سناریوی فاز ۱ — و تفکیک شواهد هفت‌گانه. اجرا: `cd symptom-checker/engine && node --test` و `node bin/demo.js sc05`. [گزارش فاز ۲](docs/symptom-checker/phase-2-report.fa.md)
 
 **فاز ۱ (داده و سؤال) شروع شد:** بستهٔ دانش پیش‌نویس خوشهٔ درد شکم/پهلو با قرارداد schema، ۱۷ سؤال مشترک، ۵ موضوع، لایهٔ ایمنی مستقل و ۱۲ سناریوی آزمون در [`docs/symptom-checker/phase-1/`](docs/symptom-checker/phase-1/) است؛ اعتبارسنج و ۲۱ آزمون خودکار: `python3 tools/symptom-checker-audit/validate_phase1.py` و `python3 tools/symptom-checker-audit/test_phase1.py`. هیچ انتشار یا صفحهٔ عمومی از این بسته ساخته نشده و تأیید محتوایی تیم باز است. [گزارش فاز ۱](docs/symptom-checker/phase-1-report.fa.md)
