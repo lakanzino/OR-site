@@ -45,6 +45,22 @@ const work = mkdtempSync(join(tmpdir(), 'hj-sc-wp-'));
 let server = null;
 const results = [];
 
+/** `3.0.0-draft` → `3.0.1-draft`; the dashboard never overwrites a version. */
+function bumpDraftVersion(version) {
+  const match = String(version ?? '').match(/^(\d+)\.(\d+)\.(\d+)(-.+)?$/);
+  if (!match) throw new Error(`unexpected bundle version: ${version}`);
+  return `${match[1]}.${match[2]}.${Number(match[3]) + 1}${match[4] ?? ''}`;
+}
+
+/** The one knowledge bundle the built package ships (its name carries no version). */
+function packagedBundlePath() {
+  const dir = join(work, 'plugins/hamyar-symptom-checker/assets/data');
+  const file = readdirSync(dir).find((name) => /^knowledge-bundle\..*\.json$/.test(name));
+  if (!file) throw new Error('the package ships no knowledge bundle');
+  return join(dir, file);
+}
+
+
 // A second UI run (phase 5-a) reports the same assertions under another banner,
 // so the log never shows two identical lines with different meanings.
 let checkPrefix = '';
@@ -313,6 +329,37 @@ async function uiCheck(config, options = {}) {
   await new Promise((done) => setTimeout(done, 150));
   check('the first question renders from the packaged bundle', Boolean(doc.getElementById('question-title')));
 
+  // Phase 6: the packaged page opens with the sex gate and the body map, not
+  // with the abdomen. Walk the gates exactly like a visitor would.
+  const pickGate = async (optionId) => {
+    const card = [...doc.querySelectorAll('#app .gate-option')].find((button) => button.dataset.optionId === optionId);
+    if (!card) throw new Error(`gate card missing inside WordPress: ${optionId}`);
+    card.click();
+    doc.getElementById('submit-answer').click();
+    await new Promise((done) => setTimeout(done, 60));
+  };
+  // Only the bundled 3.x content opens with the body. The upload scenario serves
+  // the phase-1 authoring bundle (abdomen only), so the gates are expected to be
+  // absent there — and present in the packaged one.
+  const hasGates = Boolean(doc.querySelector('#app .gate-cards[data-question-id="q_sex"]'));
+  const packaged = (config.bundleStatus?.source ?? 'package') === 'package';
+  check(
+    packaged ? 'the packaged tool starts with the sex gate' : 'an uploaded older bundle skips the body gates',
+    hasGates === packaged,
+    `${hasGates ? 'gates' : 'no gates'} · source ${config.bundleStatus?.source ?? 'package'}`,
+  );
+  if (hasGates) {
+    await pickGate('male');
+    check(
+      'the body map renders inside WordPress, with its five zones',
+      doc.querySelectorAll('#app .zone-shape').length === 5,
+      `${doc.querySelectorAll('#app .zone-shape').length} zones`,
+    );
+    await pickGate('torso');
+    check('the chosen zone offers its parts', doc.querySelectorAll('#app .gate-option').length === 3);
+    await pickGate('abdomen');
+  }
+
   const answers = {
     q_pain_present: 'yes',
     q_pain_location: 'right_lower',
@@ -468,13 +515,17 @@ file_put_contents( '/wordpress/hj-admin.json', wp_json_encode( array(
   check('the overview carries a nonce', data?.overview_nonce === true);
   check('the overview offers a bundle upload', data?.overview_upload === true);
   check('saving a text edit succeeds', data?.save_result === 'saved', data?.save_result ?? 'no result');
+  // "Bumped" means the next patch of whatever bundle is active — not a frozen
+  // string. Hard-coding 0.2.1 silently pinned this scenario to phase-1 content.
+  const packagedBundle = JSON.parse(readFileSync(packagedBundlePath(), 'utf8'));
+  const expectedVersion = bumpDraftVersion(packagedBundle.bundle_version);
   check(
     'the saved file follows the upload contract',
-    /^knowledge-bundle\.0\.2\.1-draft\.[0-9a-f]{8}\.json$/.test(String(data?.option ?? '')),
-    data?.option ?? '',
+    new RegExp(`^knowledge-bundle\\.${expectedVersion.replace(/\./g, '\\.')}\\.[0-9a-f]{8}\\.json$`).test(String(data?.option ?? '')),
+    `${data?.option ?? ''} (expected ${expectedVersion})`,
   );
   check('the edited file exists in uploads/hj-sc', data?.file_exists === true);
-  check('the new version is bumped, not overwritten', data?.saved_version === '0.2.1-draft', data?.saved_version ?? '');
+  check('the new version is bumped, not overwritten', data?.saved_version === expectedVersion, `${data?.saved_version ?? ''} (expected ${expectedVersion})`);
   check('the edited text is in the new bundle', data?.saved_condition === 'ویرایش آزمایشی از پیشخوان', data?.saved_condition ?? '');
   check('the edit changed no condition count', data?.saved_count === data?.base_count, `${data?.saved_count} vs ${data?.base_count}`);
   check('the bundle inside the plugin is untouched', data?.package_unchanged === true);
@@ -490,7 +541,7 @@ file_put_contents( '/wordpress/hj-admin.json', wp_json_encode( array(
   );
   check('the cache buster is the hash of the new file', String(config?.bundleUrl ?? '').includes(`ver=${String(data?.option ?? '').match(/\.([0-9a-f]{8})\.json$/)?.[1]}`), config?.bundleUrl ?? '');
   check('the page still renders the checker', page.status === 200 && page.body.includes('id="app"'));
-  check('the edited version reaches the page config', config?.bundleStatus?.version === '0.2.1-draft', config?.bundleStatus?.version ?? '');
+  check('the edited version reaches the page config', config?.bundleStatus?.version === expectedVersion, `${config?.bundleStatus?.version ?? ''} (expected ${expectedVersion})`);
   const served = await fetch(config?.bundleUrl ?? `${BASE}/missing.json`);
   const servedJson = served.status === 200 ? await served.json() : null;
   check('the served bundle carries the edited condition', servedJson?.conditions?.[0]?.name_fa === 'ویرایش آزمایشی از پیشخوان', servedJson?.conditions?.[0]?.name_fa ?? '');
@@ -588,7 +639,7 @@ add_action( 'init', function () {
     info?.home_button?.found === 0,
     `found=${info?.home_button?.found}`,
   );
-  check('the bundle version reaches PHP', info?.bundle === '0.2.0-draft', info?.bundle ?? '');
+  check('the bundle version reaches PHP', info?.bundle === '3.0.0-draft', info?.bundle ?? '');
 
   // 5. published phase: render the page and inspect what WordPress serves
   await startSite(writeBlueprint('published.json', true));
@@ -618,7 +669,7 @@ add_action( 'init', function () {
   const config = configMatch ? JSON.parse(configMatch[1]) : null;
   check('the inline config is printed before the module', Boolean(configMatch) && page.body.indexOf('window.HJ_SC_CONFIG') < page.body.indexOf('<script type="module"'));
   check('the config points inside the plugin', Boolean(config?.bundleUrl?.includes('/wp-content/plugins/hamyar-symptom-checker/assets/')));
-  check('the draft bundle version is exposed', config?.bundleVersion === '0.2.0-draft', config?.bundleVersion ?? '');
+  check('the draft bundle version is exposed', config?.bundleVersion === '3.0.0-draft', config?.bundleVersion ?? '');
   check('the config states the question strategy', config?.questionStrategy === 'static_order', config?.questionStrategy ?? 'missing');
   check('the config states the age gate', config?.minAge === 18, String(config?.minAge ?? 'missing'));
   check('the published article is mapped', Boolean(config?.topicLinks?.app?.endsWith('/disease/appendicitis/')), JSON.stringify(config?.topicLinks ?? {}));

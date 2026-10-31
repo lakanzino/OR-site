@@ -78,7 +78,7 @@ function hjsc_upload_url() {
  * @return string
  */
 function hjsc_package_bundle_path() {
-	return HJ_SC_DIR . 'assets/data/knowledge-bundle.v1.json';
+	return HJ_SC_DIR . 'assets/data/knowledge-bundle.v3.json';
 }
 
 /**
@@ -232,8 +232,8 @@ function hjsc_bundle_source() {
 	$package = hjsc_bundle_file_info( hjsc_package_bundle_path() );
 	$source  = array(
 		'path'           => hjsc_package_bundle_path(),
-		'name'           => 'knowledge-bundle.v1.json',
-		'url'            => HJ_SC_URL . 'assets/data/knowledge-bundle.v1.json',
+		'name'           => 'knowledge-bundle.v3.json',
+		'url'            => HJ_SC_URL . 'assets/data/knowledge-bundle.v3.json',
 		'source'         => 'package',
 		'sha8'           => null === $package ? '' : $package['sha8'],
 		'bundle_version' => null === $package ? '' : $package['bundle_version'],

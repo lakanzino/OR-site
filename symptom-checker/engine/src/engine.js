@@ -31,15 +31,41 @@ import { profileMatchFor } from './profile-match.js';
 const asArray = (value) => (Array.isArray(value) ? value : []);
 const clone = (value) => JSON.parse(JSON.stringify(value));
 
+/**
+ * One visibility clause: the question it depends on, and the answers that make
+ * the dependent question appear.
+ */
+function visibilityRuleMatches(rule, answers) {
+  // A clause may nest: `any_of`/`all_of` inside an `all_of` is how a body area
+  // says «this area AND (one of these earlier answers)».
+  if (Array.isArray(rule?.any_of)) return rule.any_of.some((sub) => visibilityRuleMatches(sub, answers));
+  if (Array.isArray(rule?.all_of)) return rule.all_of.every((sub) => visibilityRuleMatches(sub, answers));
+  const given = answers[rule?.question_id];
+  if (given === undefined) return false;
+  const list = Array.isArray(given) ? given : [given];
+  return asArray(rule?.answers).some((answer) => list.includes(answer));
+}
+
+/**
+ * Visibility is a data question, so the engine reads it as one:
+ *
+ *   always   the question is always asked (the opening questions of a path);
+ *   any_of   asked when at least one clause matches (today's rules);
+ *   all_of   asked only when every clause matches — how a body area gates its
+ *            own questions, where «the area is this» AND «the earlier question
+ *            was answered like that» must both hold.
+ *
+ * `all_of` was added for phase 6 and is purely additive: a bundle without it
+ * behaves exactly as before, which the golden snapshots keep proving.
+ */
 function questionIsVisible(question, answers) {
   const visibility = question.visibility ?? {};
   if (visibility.always) return true;
-  return asArray(visibility.any_of).some((rule) => {
-    const given = answers[rule.question_id];
-    if (given === undefined) return false;
-    const list = Array.isArray(given) ? given : [given];
-    return asArray(rule.answers).some((answer) => list.includes(answer));
-  });
+  if (Array.isArray(visibility.all_of)) {
+    return visibility.all_of.length > 0
+      && visibility.all_of.every((rule) => visibilityRuleMatches(rule, answers));
+  }
+  return asArray(visibility.any_of).some((rule) => visibilityRuleMatches(rule, answers));
 }
 
 /**
