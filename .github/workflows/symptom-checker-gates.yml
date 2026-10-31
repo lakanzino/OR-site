@@ -129,6 +129,9 @@ jobs:
           HJ_WP_VERSION: ${{ matrix.wp }}
           GH_TOKEN: ${{ github.token }}
         run: |
+          # GitHub runs `bash -e`: without `set +e` a failing harness would
+          # abort the script before it could report *why* it failed.
+          set +e
           set -o pipefail
           node tools/symptom-checker-plugin/check-wordpress.mjs 2>&1 | tee /tmp/wp.log
           status=$?
