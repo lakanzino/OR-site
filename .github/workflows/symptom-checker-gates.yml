@@ -131,7 +131,10 @@ jobs:
           set -o pipefail
           node tools/symptom-checker-plugin/check-wordpress.mjs 2>&1 | tee /tmp/wp.log
           status=$?
-          # A failing check must say *which* check failed. The log is not always
-          # downloadable, but annotations always are.
-          grep -E '^(FAIL|ERROR)' /tmp/wp.log | head -20 | sed 's/^/::error::/' || true
+          # A failing run must say *why*. The log is not always downloadable,
+          # but annotations always are.
+          if [ "$status" -ne 0 ]; then
+            grep -E '^(FAIL|ERROR)' /tmp/wp.log | head -10 | sed 's/^/::error::/' || true
+            tail -n 12 /tmp/wp.log | cut -c1-260 | sed 's/^/::error::tail: /' || true
+          fi
           exit $status
