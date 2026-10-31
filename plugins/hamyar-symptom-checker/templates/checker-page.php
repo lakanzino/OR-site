@@ -28,7 +28,7 @@ if ( function_exists( 'wp_body_open' ) ) {
 
 <header class="site-header">
 	<div class="wrap">
-		<p class="brand">همیار جراحی — دستیار نشانه‌ها (پیش‌نمایش داخلی)</p>
+		<p class="brand">همیار جراحی</p>
 	</div>
 </header>
 
@@ -42,11 +42,6 @@ if ( function_exists( 'wp_body_open' ) ) {
 		<p class="notice">برای استفاده از این ابزار باید جاوااسکریپت مرورگر روشن باشد.</p>
 	</noscript>
 </main>
-
-<footer class="site-footer wrap">
-	<p>این ابزار تشخیص پزشکی نیست و جای معاینه، آزمایش یا مشاورهٔ پزشک را نمی‌گیرد.</p>
-	<p>در درد شدید یا بدحالی، همین حالا کمک پزشکی بگیر.</p>
-</footer>
 
 <?php wp_footer(); ?>
 </body>

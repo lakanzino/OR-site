@@ -10,14 +10,12 @@ import { createSession } from '../engine/src/engine.js';
 import {
   AGE_DEFAULT,
   AGE_MAX,
-  AGE_MIN,
-  ageAfterDrag,
+  ageFromText,
   ageIsSupported,
+  bumpAge,
   clampAge,
-  describeAge,
   formatAge,
   minAgeFrom,
-  turnForAge,
 } from './age-gate.js';
 import { FALLBACK_HELP, QUESTION_HELP } from './question-help.js';
 import {
@@ -331,13 +329,23 @@ function render() {
   stopTyping();
   state.narratorStart = null;
   clear(app);
-  if (state.screen === 'loading') return renderLoading();
-  if (state.screen === 'error') return renderError();
-  if (state.screen === 'intro') return renderIntro();
-  if (state.screen === 'underage') return renderUnderage();
-  if (state.screen === 'question') return renderQuestion();
-  if (state.screen === 'result') return renderResult();
-  return undefined;
+  // A screen that throws used to leave a dead button and an unchanged page —
+  // the visitor pressed «شروع» and nothing happened. Now the failure is shown.
+  try {
+    if (state.screen === 'loading') return renderLoading();
+    if (state.screen === 'error') return renderError();
+    if (state.screen === 'intro') return renderIntro();
+    if (state.screen === 'underage') return renderUnderage();
+    if (state.screen === 'question') return renderQuestion();
+    if (state.screen === 'result') return renderResult();
+    return undefined;
+  } catch (error) {
+    if (typeof console !== 'undefined') console.error('hj-sc render failed', error);
+    state.error = `نمایش این صفحه انجام نشد: ${error?.message ?? error}`;
+    state.screen = 'error';
+    clear(app);
+    return renderError();
+  }
 }
 
 function renderLoading() {
@@ -356,8 +364,71 @@ function renderError() {
   ]));
 }
 
+/** The one sentence the page is allowed to repeat, at the bottom, in yellow. */
+const INTRO_WARNING = 'این ارزیابی هرگز جای معاینهٔ پزشکی نیست و فقط احتمال بیماری را به شما می‌گوید؛ حرف قطعی و صحیح را از پزشک درمانگر بخواهید.';
+
+/**
+ * The sources that back the medical content: the real, external pages the
+ * statements were taken from. Internal mirrors of the repository are not
+ * sources a visitor can check, so they stay out of this list.
+ */
+function externalSources(bundle) {
+  const list = Array.isArray(bundle?.sources) ? bundle.sources : [];
+  return list
+    .filter((source) => typeof source?.url === 'string'
+      && /^https?:\/\//.test(source.url)
+      && !/github\.com|lakanzino/i.test(source.url))
+    .map((source) => ({
+      title: source.title_fa || source.publisher || source.url,
+      url: source.url,
+      host: (() => {
+        try {
+          return new URL(source.url).host.replace(/^www\./, '');
+        } catch {
+          return '';
+        }
+      })(),
+      publisher: source.publisher ?? '',
+    }))
+    .sort((left, right) => String(left.publisher).localeCompare(String(right.publisher), 'fa')
+      || String(left.title).localeCompare(String(right.title), 'fa'));
+}
+
+/**
+ * Start: only the age is looked at, and only to answer «is this tool for you».
+ */
+function begin() {
+  const field = app.querySelector('#hj-age');
+  const typed = field ? ageFromText(field.value) : state.age;
+  if (typed === null) {
+    const hint = app.querySelector('#hj-age-hint');
+    if (hint) {
+      hint.classList.add('is-bad');
+      hint.textContent = 'سن را با عدد بنویسید؛ مثلاً ۳۰.';
+    }
+    field?.focus();
+    return;
+  }
+  state.age = typed;
+  if (field) field.value = formatAge(state.age);
+  if (!ageIsSupported(state.age, state.minAge)) {
+    state.screen = 'underage';
+    render();
+    return;
+  }
+  try {
+    startSession();
+  } catch (error) {
+    if (typeof console !== 'undefined') console.error('hj-sc start failed', error);
+    state.error = `شروع پرسش‌ها انجام نشد: ${error?.message ?? error}`;
+    state.screen = 'error';
+    render();
+  }
+}
+
 function renderIntro() {
-  const disclaimers = state.bundle.disclaimers ?? {};
+  const sources = externalSources(state.bundle);
+  const version = typeof config.pluginVersion === 'string' ? config.pluginVersion : '';
 
   // The turning hologram stands above the card, on its own, so it can never sit
   // on top of the title (it did, on a phone, until 0.1.11). Decoration only.
@@ -365,161 +436,118 @@ function renderIntro() {
     el('div', { class: 'hero-figure' }),
   ]));
 
-  app.append(el('section', { class: 'card intro-card' }, [
-    el('h1', { text: 'همیار نشانه‌ها — نمونهٔ نمایشی' }),
-    el('p', { class: 'badge-line' }, [
-      el('span', { class: 'badge warn', text: 'نمایشی' }),
-      el('span', { class: 'badge', text: 'دادهٔ پیش‌نویس، منتشر نشده' }),
-      el('span', { class: 'badge', text: 'بدون ذخیره‌سازی' }),
+  app.append(el('section', { class: 'card intro-card workspace' }, [
+    el('div', { class: 'workspace__bar' }, [
+      el('span', { class: 'workspace__lamp', 'aria-hidden': 'true' }),
+      el('span', { class: 'workspace__id', text: 'HJ · SC' }),
+      version ? el('span', { class: 'workspace__ver', text: `v${version}` }) : null,
+      el('span', { class: 'workspace__tag', text: 'ارزیابی احتمالی' }),
     ]),
-    el('p', {
-      class: 'notice-card',
-      role: 'note',
-      text: 'این برگه پیش‌نمایش است و دادهٔ آن پیش‌نویس و منتشرنشده؛ پاسخ‌ها ذخیره یا ارسال نمی‌شوند.',
-    }),
-    el('p', { class: 'lead', text: disclaimers.before_start_fa ?? '' }),
-    el('ul', { class: 'facts' }, [
-      el('li', { text: 'پاسخ‌ها فقط در حافظهٔ همین صفحه می‌مانند و با بستن صفحه پاک می‌شوند.' }),
-      el('li', { text: 'خروجی، «موضوع‌های مرتبط» است؛ نه تشخیص، نه احتمال و نه درصد.' }),
-      el('li', { text: 'اگر درد شدید یا بدحالی داری، منتظر پایان پرسش‌ها نمان و کمک پزشکی بگیر.' }),
+    el('div', { class: 'workspace__body' }, [
+      el('h1', { class: 'workspace__title', text: 'این یک ربات اختصاصی ارزیابی احتمالی بیماری در فرد است.' }),
+      el('p', {
+        class: 'workspace__lead',
+        text: 'هرچه اطلاعات و علامت‌های بیماری خود را درست انتخاب کنید، جواب دقیق‌تری دریافت می‌کنید.',
+      }),
+      renderAgeField(),
+      el('button', { class: 'primary start-button', text: 'شروع', onClick: begin }),
+      sources.length
+        ? el('section', { class: 'sources' }, [
+          el('h2', { class: 'sources__title', text: 'منابع علمی' }),
+          el('p', {
+            class: 'sources__lead',
+            text: `این ربات از اطلاعات علمی و پزشکی این ${formatAge(sources.length)} منبع معتبر جهانی ساخته شده است:`,
+          }),
+          el('ul', { class: 'sources__list' }, sources.map((source) => el('li', { class: 'sources__item' }, [
+            el('a', {
+              href: source.url,
+              target: '_blank',
+              rel: 'noopener noreferrer',
+              title: source.url,
+              text: source.title,
+            }),
+            el('span', { class: 'sources__host', text: source.host }),
+          ]))),
+        ])
+        : null,
+      el('p', { class: 'warn-box', role: 'note', text: INTRO_WARNING }),
     ]),
-    renderAgeGate(),
-    el('button', {
-      class: 'primary start-button',
-      text: 'شروع پرسش‌ها',
-      onClick: () => {
-        // The bundle covers adults only. This is the one place the age decides
-        // anything, and it decides between «continue» and «not built for you».
-        if (!ageIsSupported(state.age, state.minAge)) {
-          state.screen = 'underage';
-          render();
-          return;
-        }
-        startSession();
-      },
-    }),
   ]));
 }
 
 /**
- * The hand-turned dial that sets the age.
+ * The age field: three digits at most, a ± pair, and the arrow keys.
  *
- * A gear, not a number field: the visitor drags it, scrolls it, taps ± or uses
- * the arrow keys, and the readout moves with it. `role="slider"` is what makes
- * it work for a screen reader and a keyboard; the drag is the extra, not the
- * only way in.
+ * It opens on 30 — the middle of the adult range — so the page is usable by a
+ * thumb without touching it at all, and every keypress lands on the year the
+ * visitor sees. Typed Persian digits are read as numbers; the caret is never
+ * moved while the visitor is typing.
  */
-function renderAgeGate() {
-  const dial = el('div', {
-    class: 'age-dial',
-    role: 'slider',
-    tabindex: '0',
+function renderAgeField() {
+  const hintText = `سن به سال؛ عددی بین ${formatAge(state.minAge)} تا ${formatAge(AGE_MAX)}.`;
+  const hint = el('p', { class: 'age-field__hint', id: 'hj-age-hint', text: hintText });
+  const input = el('input', {
+    id: 'hj-age',
+    class: 'age-input__box',
+    type: 'text',
+    inputmode: 'numeric',
+    autocomplete: 'off',
+    maxlength: '3',
+    value: formatAge(state.age),
+    'aria-describedby': 'hj-age-hint',
     'aria-label': 'سن',
-    'aria-valuemin': String(AGE_MIN),
-    'aria-valuemax': String(AGE_MAX),
-    'aria-valuenow': String(state.age),
-    'aria-valuetext': describeAge(state.age),
-  }, [
-    el('span', { class: 'age-dial__gear', 'aria-hidden': 'true' }),
-    el('span', { class: 'age-dial__readout' }, [
-      el('span', { class: 'age-dial__value', text: formatAge(state.age) }),
-      el('span', { class: 'age-dial__unit', text: 'سال' }),
-    ]),
-  ]);
+  });
 
-  const valueNode = dial.querySelector('.age-dial__value');
-
-  const paint = (next) => {
+  const commit = (next) => {
     state.age = clampAge(next);
-    valueNode.textContent = formatAge(state.age);
-    dial.setAttribute('aria-valuenow', String(state.age));
-    dial.setAttribute('aria-valuetext', describeAge(state.age));
-    dial.style.setProperty('--age-turn', `${turnForAge(state.age)}deg`);
+    input.value = formatAge(state.age);
+    hint.classList.remove('is-bad');
+    hint.textContent = hintText;
   };
+  const read = () => ageFromText(input.value);
 
-  const pointerAngle = (event) => {
-    const box = dial.getBoundingClientRect();
-    const dx = event.clientX - (box.left + box.width / 2);
-    const dy = event.clientY - (box.top + box.height / 2);
-    // 0° at the top, clockwise — the way the gear is drawn.
-    return (Math.atan2(dx, -dy) * 180) / Math.PI;
-  };
-
-  let drag = null;
-  dial.addEventListener('pointerdown', (event) => {
-    if (event.button !== undefined && event.button !== 0) return;
-    drag = { angle: pointerAngle(event), age: state.age };
-    if (typeof dial.setPointerCapture === 'function') {
-      try {
-        dial.setPointerCapture(event.pointerId);
-      } catch {
-        // A pointer that vanished mid-press is not worth failing over.
-      }
-    }
-    event.preventDefault();
-  });
-  dial.addEventListener('pointermove', (event) => {
-    if (!drag) return;
-    paint(ageAfterDrag(drag.age, drag.angle, pointerAngle(event)));
-    event.preventDefault();
-  });
-  const endDrag = () => {
-    drag = null;
-  };
-  dial.addEventListener('pointerup', endDrag);
-  dial.addEventListener('pointercancel', endDrag);
-  dial.addEventListener('pointerleave', (event) => {
-    if (event.buttons === 0) endDrag();
-  });
-
-  dial.addEventListener('wheel', (event) => {
-    paint(state.age + (event.deltaY < 0 ? 1 : -1));
-    event.preventDefault();
-  }, { passive: false });
-
-  dial.addEventListener('keydown', (event) => {
-    const step = { ArrowUp: 1, ArrowRight: 1, PageUp: 5, ArrowDown: -1, ArrowLeft: -1, PageDown: -5 }[event.key];
-    if (step) {
-      paint(state.age + step);
-      event.preventDefault();
-      return;
-    }
-    if (event.key === 'Home') {
-      paint(AGE_MIN);
-      event.preventDefault();
-    } else if (event.key === 'End') {
-      paint(AGE_MAX);
-      event.preventDefault();
+  input.addEventListener('input', () => {
+    const typed = read();
+    if (typed !== null) {
+      state.age = typed;
+      hint.classList.remove('is-bad');
+      hint.textContent = hintText;
     }
   });
-
-  const stepButton = (delta, label, text) => el('button', {
-    type: 'button',
-    class: 'age-step',
-    text,
-    'aria-label': label,
-    onClick: () => paint(state.age + delta),
+  input.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowUp') {
+      commit(bumpAge(read() ?? state.age, 1));
+      event.preventDefault();
+    } else if (event.key === 'ArrowDown') {
+      commit(bumpAge(read() ?? state.age, -1));
+      event.preventDefault();
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      begin();
+    }
   });
+  input.addEventListener('blur', () => commit(read() ?? state.age));
 
-  paint(state.age);
-
-  return el('div', { class: 'age-gate' }, [
-    el('h2', { class: 'age-gate__title', text: 'اول سنت را تنظیم کن' }),
-    el('p', {
-      class: 'age-gate__lead',
-      text: 'چرخ‌دنده را با انگشت بچرخان یا از دکمه‌ها استفاده کن؛ عدد بالای آن تغییر می‌کند.',
-    }),
-    el('div', { class: 'age-gate__body' }, [
-      dial,
-      el('div', { class: 'age-gate__side' }, [
-        stepButton(1, 'یک سال بیشتر', '+'),
-        stepButton(-1, 'یک سال کمتر', '−'),
-      ]),
+  return el('div', { class: 'age-field' }, [
+    el('label', { class: 'age-field__label', for: 'hj-age', text: 'سن' }),
+    el('div', { class: 'age-field__row' }, [
+      el('button', {
+        type: 'button',
+        class: 'age-step',
+        text: '−',
+        'aria-label': 'یک سال کمتر',
+        onClick: () => commit(bumpAge(read() ?? state.age, -1)),
+      }),
+      input,
+      el('button', {
+        type: 'button',
+        class: 'age-step',
+        text: '+',
+        'aria-label': 'یک سال بیشتر',
+        onClick: () => commit(bumpAge(read() ?? state.age, 1)),
+      }),
     ]),
-    el('p', {
-      class: 'age-gate__note',
-      text: 'سن فقط در حافظهٔ همین صفحه می‌ماند؛ نه ذخیره می‌شود و نه ارسال.',
-    }),
+    hint,
   ]);
 }
 
@@ -531,9 +559,8 @@ function renderUnderage() {
 
   app.append(el('section', { class: 'card stop-card' }, [
     el('h1', { text: 'این ابزار برای بزرگسالان است' }),
-    el('p', { class: 'lead', text: `سن واردشده ${formatAge(state.age)} سال است. ${exclusion ?? 'این بسته کودکان و نوجوانان زیر ۱۸ سال را پوشش نمی‌دهد.'}` }),
-    el('p', { text: 'الگوی نشانه‌ها در کودک و نوجوان می‌تواند متفاوت باشد؛ لطفاً با پزشک یا مرکز درمانی تماس بگیر.' }),
-    el('p', { class: 'muted', text: 'اگر درد شدید یا بدحالی وجود دارد، همین حالا کمک پزشکی بگیر.' }),
+    el('p', { class: 'lead', text: `سنی که وارد کردید ${formatAge(state.age)} سال است. ${exclusion ?? 'این ابزار کودکان و نوجوانان زیر ۱۸ سال را پوشش نمی‌دهد.'}` }),
+    el('p', { text: 'برای کودک و نوجوان با پزشک یا مرکز درمانی تماس بگیرید.' }),
     el('button', { class: 'ghost', text: 'تغییر سن', onClick: () => { state.screen = 'intro'; render(); } }),
   ]));
 }
