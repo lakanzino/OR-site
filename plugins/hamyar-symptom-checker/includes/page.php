@@ -74,7 +74,7 @@ function hjsc_try_create_page() {
 
 		$page_id = wp_insert_post(
 			array(
-				'post_title'     => 'دستیار نشانه‌ها (پیش‌نمایش داخلی)',
+				'post_title'     => 'ارزیابی احتمالی بیماری',
 				'post_name'      => HJ_SC_PAGE_SLUG,
 				'post_content'   => '',
 				'post_status'    => 'draft',

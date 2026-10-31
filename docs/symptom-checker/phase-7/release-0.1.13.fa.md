@@ -8,8 +8,8 @@
 | --- | --- |
 | فایل | `releases/hamyar-symptom-checker-0.1.13.zip` |
 | تعداد فایل | **۲۶** |
-| اندازه | ۱۳۶٬۵۳۱ بایت |
-| SHA-256 | `32edad82e3ade492656b7659f4bb09be80c7e2fc787ab6e6ae71abe9e3969d9c` |
+| اندازه | ۱۳۶٬۳۲۳ بایت |
+| SHA-256 | `4d95fbebe0600ea3af04299374c5ed7c04f7b4aaf87bfb1bcfff9fcb26f295f8` |
 | لینک دانلود (پس از ادغام) | `https://github.com/lakanzino/OR-site/raw/refs/heads/main/releases/hamyar-symptom-checker-0.1.13.zip` |
 | نسخهٔ بازگشتی | `.../releases/hamyar-symptom-checker-0.1.12.zip` |
 

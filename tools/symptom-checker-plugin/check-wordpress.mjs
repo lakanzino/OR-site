@@ -317,6 +317,12 @@ async function uiCheck(config, options = {}) {
   await new Promise((done) => setTimeout(done, 600));
 
   const doc = window.document;
+  check(
+    'the page around the tool adds no repeated warning',
+    !doc.querySelector('.site-footer')
+      && !/پیش‌نمایش|پیش‌نویس|جای معاینه|تشخیص پزشکی/.test(doc.querySelector('header')?.textContent ?? ''),
+    (doc.querySelector('header')?.textContent ?? '').trim(),
+  );
   check('packaged UI boots inside WordPress', Boolean(doc.querySelector('#app button')));
   const start = [...doc.querySelectorAll('#app button')].find((button) => button.textContent.includes('شروع'));
   check('the start button is rendered', Boolean(start));
