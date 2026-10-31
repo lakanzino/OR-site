@@ -57,7 +57,7 @@ async function boot(texts, label) {
   const { window } = dom;
 
   window.HJ_SC_CONFIG = {
-    pluginVersion: '0.1.14',
+    pluginVersion: '0.1.15',
     minAge: 18,
     bundleUrl: 'https://example.test/assets/data/knowledge-bundle.v3.json',
     evidenceUrl: 'https://example.test/assets/engine/data/evidence-map.v1.json',

@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import io
 import json
+import posixpath
 import sys
 import tempfile
 import unittest
@@ -90,8 +91,55 @@ class PackageTests(unittest.TestCase):
         for target, meta in self.package.sources.items():
             source = build.REPO / meta["source"]
             bundled = self.package.files[f"assets/{target}"]
-            self.assertEqual(source.read_bytes(), bundled, f"{target} differs from {meta['source']}")
+            if target.endswith(".js"):
+                # JS is copied with its internal imports content-addressed
+                # (`?ver=<sha8>`); stripping those queries must give back the
+                # repository source byte for byte.
+                stripped = build.IMPORT_SPECIFIER.sub(
+                    lambda match: f"{match.group(1)}{match.group(2)}{match.group(3)}{match.group(2)}",
+                    bundled.decode("utf-8"),
+                ).encode("utf-8")
+                self.assertEqual(source.read_bytes(), stripped, f"{target} differs from {meta['source']}")
+            else:
+                self.assertEqual(source.read_bytes(), bundled, f"{target} differs from {meta['source']}")
             self.assertEqual(build.sha256(bundled), meta["sha256"], target)
+
+    def test_internal_imports_are_content_addressed(self) -> None:
+        """Every internal import carries the sha8 of the file it resolves to.
+
+        A cache (browser or LiteSpeed) keys a module by its URL; without a
+        query an upgraded package can boot a new entry script against an old
+        cached module — the missing-export outage of 0.1.14. The query makes
+        that mixture impossible and lets the page watchdog hash-check what
+        the server serves.
+        """
+        manifest = json.loads(self.package.files["assets/SOURCES.json"])["asset_sources"]
+        seen = 0
+        for name in self.package.files:
+            if not name.startswith("assets/") or not name.endswith(".js"):
+                continue
+            body = self.package.files[name].decode("utf-8")
+            directory = posixpath.dirname(name[len("assets/") :])
+            for match in build.IMPORT_SPECIFIER.finditer(body):
+                seen += 1
+                spec = match.group(3)
+                query = match.group(4)
+                self.assertIsNotNone(query, f"{name}: import {spec} ships without a cache-buster")
+                target = posixpath.normpath(posixpath.join(directory, spec))
+                self.assertIn(target, manifest, f"{name}: import {spec} leaves the package")
+                self.assertEqual(
+                    query,
+                    f"?ver={manifest[target]['sha256'][:8]}",
+                    f"{name}: import {spec} does not carry the sha8 of {target}",
+                )
+        self.assertGreater(seen, 0, "the module graph has no internal import at all?")
+
+    def test_repository_sources_stay_plain(self) -> None:
+        """The dev demo and the node tests run the sources without queries."""
+        for relative in ("symptom-checker/ui/app.js", "symptom-checker/engine/src/engine.js"):
+            text = (build.REPO / relative).read_text(encoding="utf-8")
+            for match in build.IMPORT_SPECIFIER.finditer(text):
+                self.assertIsNone(match.group(4), f"{relative} must stay query-free")
 
     def test_manifest_covers_every_asset(self) -> None:
         manifest = json.loads(self.package.files["assets/SOURCES.json"])

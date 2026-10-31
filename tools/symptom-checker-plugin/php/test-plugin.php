@@ -175,6 +175,40 @@ switch ( $scenario ) {
 		ok( ! get_option( HJ_SC_ACTIVATION_PENDING ), 'the plugin stops retrying after three attempts' );
 		break;
 
+	case 'legacy-rename':
+		hj_stub_reset();
+		require_once $plugin_dir . 'hamyar-symptom-checker.php';
+
+		// A page the plugin created under the old preview label gets the
+		// public title back, because a normal page prints its title as h1.
+		hjsc_activate();
+		hjsc_maybe_finish_activation();
+		$page_id = (int) get_option( HJ_SC_PAGE_OPTION );
+		wp_update_post( array( 'ID' => $page_id, 'post_title' => 'دستیار نشانه‌ها (پیش‌نمایش داخلی)' ) );
+		hjsc_maybe_rename_legacy_page();
+		eq( 'ارزیابی احتمالی بیماری', get_post( $page_id )->post_title, 'a plugin page still carrying the preview label is renamed' );
+
+		// A title without the label — including one the owner chose — is kept.
+		wp_update_post( array( 'ID' => $page_id, 'post_title' => 'عنوان دلخواه مدیر' ) );
+		hjsc_maybe_rename_legacy_page();
+		eq( 'عنوان دلخواه مدیر', get_post( $page_id )->post_title, 'a title without the preview label is left alone' );
+
+		// A page the owner created (no plugin meta) is never touched, even
+		// when its own title happens to contain the old label.
+		hj_stub_reset();
+		$owner = wp_insert_post(
+			array(
+				'post_type'   => 'page',
+				'post_name'   => 'mine',
+				'post_status' => 'publish',
+				'post_title'  => 'پیش‌نمایش طرح من',
+			)
+		);
+		update_option( HJ_SC_PAGE_OPTION, $owner );
+		hjsc_maybe_rename_legacy_page();
+		eq( 'پیش‌نمایش طرح من', get_post( $owner )->post_title, 'an owner page keeps its title even with the label' );
+		break;
+
 	case 'notice':
 		hj_stub_reset();
 		require_once $plugin_dir . 'hamyar-symptom-checker.php';

@@ -148,6 +148,38 @@ function hjsc_maybe_finish_activation() {
 }
 add_action( 'admin_init', 'hjsc_maybe_finish_activation' );
 
+/**
+ * Rename a plugin-created page that still carries the old preview label.
+ *
+ * Pages created before 0.1.14 were titled «دستیار نشانه‌ها (پیش‌نمایش داخلی)»,
+ * and a normal page prints that title as its h1 — so visitors read «internal
+ * preview» on a public tool. The title is the owner's to edit, therefore this
+ * touches only a page the plugin itself created (its meta says so) and only
+ * while the old label is still in the title; anything the owner wrote stays.
+ */
+function hjsc_maybe_rename_legacy_page() {
+	$page_id = hjsc_page_id();
+	if ( $page_id <= 0 ) {
+		return;
+	}
+	$post = get_post( $page_id );
+	if ( ! $post || 'page' !== $post->post_type ) {
+		return;
+	}
+	if ( '' === (string) get_post_meta( $page_id, '_hj_symptom_checker', true ) ) {
+		return; // Not a page this plugin created: the title belongs to the owner.
+	}
+	if ( false === strpos( (string) $post->post_title, 'پیش‌نمایش' ) ) {
+		return; // Already renamed, or the owner chose another title.
+	}
+	wp_update_post(
+		array(
+			'ID'         => $page_id,
+			'post_title' => 'ارزیابی احتمالی بیماری',
+		)
+	);
+}
+add_action( 'admin_init', 'hjsc_maybe_rename_legacy_page' );
 
 
 
@@ -230,6 +262,52 @@ function hjsc_asset_url_with_version( $relative ) {
 }
 
 /**
+ * The shipped assets with the hash each one must serve, for the watchdog.
+ *
+ * `SOURCES.json` is written by the build from the packaged bytes, and the
+ * packaged imports carry the same sha8 as their `?ver=` query. Each entry also
+ * carries the sha8 of the file *on this server's disk*, read once per request
+ * in PHP: when a half-replaced upload leaves an old module behind, the watchdog
+ * can name the file on the page — with no network call from the browser, so
+ * the privacy contract (two data fetches, nothing else, ever) stays exact.
+ *
+ * @return array<int,array{name:string,url:string,sha8:string,disk:string}>
+ */
+function hjsc_asset_manifest() {
+	static $manifest = null;
+	if ( null !== $manifest ) {
+		return $manifest;
+	}
+	$manifest = array();
+	$path     = HJ_SC_DIR . 'assets/SOURCES.json';
+	$decoded  = is_readable( $path )
+		? json_decode( (string) file_get_contents( $path ), true ) // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- local file, no remote request.
+		: null;
+	$sources  = is_array( $decoded ) && isset( $decoded['asset_sources'] ) && is_array( $decoded['asset_sources'] )
+		? $decoded['asset_sources']
+		: array();
+	foreach ( $sources as $relative => $info ) {
+		if ( ! is_string( $relative ) || ! is_array( $info ) || ! isset( $info['sha256'] ) ) {
+			continue;
+		}
+		if ( ! preg_match( '/\.(js|css)$/', $relative ) ) {
+			continue;
+		}
+		$sha8  = substr( (string) $info['sha256'], 0, 8 );
+		$on_disk = HJ_SC_DIR . 'assets/' . ltrim( $relative, '/' );
+		$digest  = is_readable( $on_disk ) ? hash_file( 'sha256', $on_disk ) : '';
+		$manifest[] = array(
+			'name' => $relative,
+			// The same URL the packaged imports resolve to, query included.
+			'url'  => hjsc_asset_url( $relative ) . '?ver=' . $sha8,
+			'sha8' => $sha8,
+			'disk' => '' === $digest ? 'missing' : substr( $digest, 0, 8 ),
+		);
+	}
+	return $manifest;
+}
+
+/**
  * Which question ordering the engine uses.
  *
  * Configuration only: a filter may change it (`hjsc_question_strategy`), the
@@ -281,6 +359,7 @@ function hjsc_config() {
 		'evidenceUrl'   => hjsc_asset_url( 'engine/data/evidence-map.v1.json' ),
 		'topicLinks'    => (object) hjsc_topic_links(),
 		'texts'         => hjsc_public_texts(),
+		'assets'        => hjsc_asset_manifest(),
 	);
 }
 
@@ -414,7 +493,34 @@ function hjsc_render_tool() {
 			hint.textContent = 'صفحه را کامل تازه کن (Ctrl+F5 یا پاک کردن کش مرورگر). اگر همین ماند، همین متن را برای پشتیبانی بفرست.';
 			box.appendChild(hint);
 			app.appendChild(box);
+			diagnose(box);
 		}, 8000);
+
+		/*
+		 * Why did the boot fail? The config carries, for every shipped asset,
+		 * the hash the package promised and the hash of the file on this
+		 * server's disk (PHP read both while rendering). A half-replaced
+		 * upload or an old file left beside a new one then names itself on
+		 * the page — with no network call, so the privacy contract holds.
+		 */
+		function diagnose(box) {
+			var manifest = (window.HJ_SC_CONFIG && window.HJ_SC_CONFIG.assets) || [];
+			if (!manifest.length) { return; }
+			var wrong = [];
+			for (var i = 0; i < manifest.length; i += 1) {
+				if (manifest[i].disk !== manifest[i].sha8) {
+					wrong.push(manifest[i].name + ': ' + manifest[i].disk);
+				}
+			}
+			var line = document.createElement('p');
+			if (wrong.length) {
+				line.textContent = 'پرونده‌هایی که در پوشهٔ افزونه با بستهٔ نصب‌شده یکی نیستند: ' + wrong.join('، ')
+					+ ' — افزونه را با zip همین نسخه دوباره نصب کنید («جایگزین نسخهٔ فعلی») و سپس در LiteSpeed گزینهٔ Purge All را بزنید.';
+			} else {
+				line.textContent = 'فایل‌ها روی سرور با بسته یکی هستند؛ یک کش میانی (مرورگر یا LiteSpeed) نسخهٔ کهنه داده است. Ctrl+F5 بزنید و اگر نرفت، در LiteSpeed گزینهٔ Purge All را اجرا کنید.';
+			}
+			box.appendChild(line);
+		}
 	})();
 	</script>
 	<script type="module" id="hj-sc-app-js" src="<?php echo esc_url( $src ); ?>"></script>

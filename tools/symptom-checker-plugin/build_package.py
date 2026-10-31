@@ -21,6 +21,7 @@ import argparse
 import hashlib
 import io
 import json
+import posixpath
 import re
 import sys
 import tempfile
@@ -85,6 +86,77 @@ def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+# Every internal edge of the ES-module graph: `import … from './x.js'`,
+# `export … from './x.js'` and dynamic `import('./x.js')`. Group 3 is the path,
+# group 4 an already present `?ver=` query (never in repository sources).
+IMPORT_SPECIFIER = re.compile(
+    r"(\bfrom\s*|\bimport\s*\(\s*)(['\"])(\.{1,2}/[^'\"]+\.js)(\?ver=[0-9a-f]{8})?\2"
+)
+
+
+def _import_targets(body: str, directory: str) -> list[str]:
+    """Package-relative paths this module imports, resolved from its folder."""
+    targets = []
+    for match in IMPORT_SPECIFIER.finditer(body):
+        targets.append(posixpath.normpath(posixpath.join(directory, match.group(3))))
+    return targets
+
+
+def address_imports(package: "Package") -> None:
+    """Pin every internal import to the exact bytes it was built with.
+
+    A browser — or LiteSpeed in front of it — keys a module by its URL. An
+    internal import without a query means an upgraded package can boot a
+    *new* `app.js` against an *old* `age-gate.js` that a cache still holds:
+    the missing-export failure that took the live tool down on 0.1.14 even
+    after a purge. Appending `?ver=<sha8 of the target file>` makes every
+    edge of the module graph content-addressed: new bytes, new URL, cold
+    cache, and a stale file can never satisfy a new import.
+
+    The token is the sha8 the file really ships with (the same one
+    `SOURCES.json` records), so the watchdog on the page can compare what
+    the server serves with what the package promised. Files are rewritten
+    leaves-first, because a file's own hash changes when its imports do.
+    Repository sources stay plain; only the package is rewritten.
+    """
+    js_files = sorted(
+        name[len("assets/"):]
+        for name in package.files
+        if name.startswith("assets/") and name.endswith(".js")
+    )
+    bodies = {
+        relative: package.files[f"assets/{relative}"].decode("utf-8")
+        for relative in js_files
+    }
+    graph = {relative: _import_targets(bodies[relative], posixpath.dirname(relative)) for relative in js_files}
+    for relative, targets in graph.items():
+        for target in targets:
+            if target not in graph:
+                raise BuildError(f"assets/{relative}: import of {target} does not resolve inside the package")
+
+    final: dict[str, str] = {}
+    pending = set(js_files)
+    while pending:
+        ready = sorted(
+            relative for relative in pending if all(target in final for target in graph[relative])
+        )
+        if not ready:
+            raise BuildError(f"import cycle inside the package: {sorted(pending)}")
+        for relative in ready:
+            body = bodies[relative]
+
+            def repl(match: re.Match) -> str:
+                target = posixpath.normpath(posixpath.join(posixpath.dirname(relative), match.group(3)))
+                return f"{match.group(1)}{match.group(2)}{match.group(3)}?ver={final[target][:8]}{match.group(2)}"
+
+            body = IMPORT_SPECIFIER.sub(repl, body)
+            data = body.encode("utf-8")
+            package.files[f"assets/{relative}"] = data
+            package.sources[relative]["sha256"] = sha256(data)
+            final[relative] = package.sources[relative]["sha256"]
+            pending.discard(relative)
+
+
 @dataclass
 class Package:
     version: str
@@ -126,6 +198,10 @@ def collect() -> Package:
         data = source.read_bytes()
         package.files[f"assets/{target}"] = data
         package.sources[target] = {"source": relative, "sha256": sha256(data)}
+
+    # Content-address every internal import before the manifest is written,
+    # so SOURCES.json records the bytes the site will actually serve.
+    address_imports(package)
 
     package.files["assets/SOURCES.json"] = (
         json.dumps(package.manifest(), ensure_ascii=False, indent=2, sort_keys=True) + "\n"
