@@ -13,6 +13,7 @@ __pycache__/
 
 # جاوااسکریپت — وابستگی‌های نصب‌شده هرگز نباید کامیت شوند
 node_modules/
+node_modules
 
 # پوشهٔ موقت دانلود از Google Drive (کپی نهایی در docs/ می‌ماند)
 google_drive/

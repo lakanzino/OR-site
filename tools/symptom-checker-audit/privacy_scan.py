@@ -48,6 +48,7 @@ SHIPPED_FILES = [
     "symptom-checker/engine/src/validate-bundle.js",
     "symptom-checker/engine/src/errors.js",
     "plugins/hamyar-symptom-checker/hamyar-symptom-checker.php",
+    "plugins/hamyar-symptom-checker/includes/admin.php",
     "plugins/hamyar-symptom-checker/includes/mapping.php",
     "plugins/hamyar-symptom-checker/includes/page.php",
     "plugins/hamyar-symptom-checker/templates/checker-page.php",
@@ -69,6 +70,16 @@ URL_LITERAL = re.compile(r"https?://")
 # XML namespace identifiers are plain strings, never fetched. Only these exact
 # URIs are exempt from the "no absolute URL" rule; anything else still fails.
 NAMESPACE_URIS = ("http://www.w3.org/2000/svg", "http://www.w3.org/1999/xlink")
+
+# A wp-admin screen posts back to itself; that is the WordPress pattern, not a
+# leak. The exemption is one file, it covers only `method="post"` (never an
+# external `action=`), and every other rule still applies to that file.
+POSTING_FORMS_ALLOWED = ("includes/admin.php",)
+
+
+def forms_may_post(name: str) -> bool:
+    return any(name.endswith(allowed) for allowed in POSTING_FORMS_ALLOWED)
+
 
 RULES = {
     "storage": [
@@ -184,6 +195,8 @@ def scan_text(name: str, text: str) -> list[Finding]:
     code = _strip_comments(text)
 
     for rule, patterns in RULES.items():
+        if rule == "forms" and forms_may_post(name):
+            patterns = [item for item in patterns if item != r"method\s*=\s*['\"]post"]
         for pattern in patterns:
             for match in re.finditer(pattern, code):
                 line = code[: match.start()].count("\n") + 1

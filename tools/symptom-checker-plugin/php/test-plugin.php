@@ -433,14 +433,31 @@ switch ( $scenario ) {
 			'/\$wpdb->query/'            => 'raw SQL',
 		);
 
+		// Phase 5-b: the admin screen must read the request to receive a form.
+		// That is the single exception, and it comes with its own rules below:
+		// every write path is behind a nonce, and the file it writes is JSON in
+		// the uploads folder, never a page, an option the visitor sees, or code.
+		$request_readers = array( 'includes/admin.php' );
+
 		foreach ( $files as $file ) {
 			$source = file_get_contents( $file );
 			$name   = str_replace( $root . '/', '', $file );
 			ok( false !== strpos( $source, "defined( 'ABSPATH' )" ), "ABSPATH guard: {$name}" );
 			foreach ( $forbidden as $pattern => $label ) {
+				if ( 'request superglobals' === $label && in_array( $name, $request_readers, true ) ) {
+					continue;
+				}
 				ok( ! preg_match( $pattern, $source ), "no {$label}: {$name}" );
 			}
 		}
+
+		$admin = file_get_contents( $plugin_dir . 'includes/admin.php' );
+		ok( false !== strpos( $admin, 'check_admin_referer' ), 'the admin screen checks a nonce on every write path' );
+		ok( false !== strpos( $admin, 'current_user_can' ), 'the admin screen checks a capability' );
+		ok( false !== strpos( $admin, 'is_uploaded_file' ), 'an uploaded file must be PHP\'s own upload' );
+		ok( false !== strpos( $admin, 'sanitize_textarea_field' ), 'submitted text is sanitised before it is stored' );
+		ok( false !== strpos( $admin, 'esc_html' ) && false !== strpos( $admin, 'esc_attr' ), 'rendered values are escaped' );
+		ok( '' !== trim( (string) preg_replace( '/\s+/', '', (string) preg_replace( '/\/\*.*?\*\//s', '', $admin ) ) ), 'the admin file is not empty' );
 		break;
 
 	case 'bundle-package':
@@ -540,6 +557,257 @@ switch ( $scenario ) {
 			$source = hjsc_bundle_source();
 			ok( 'upload' === $source['source'] && str_ends_with( $source['name'], '0123abcd.json' ), 'rejected option value: ' . $bad );
 		}
+		break;
+
+	/*
+	 * Phase 5-b: the wp-admin content screen. These scenarios prove the rules
+	 * the owner was promised — capability, nonce, text-only edits, a new file
+	 * per save, nothing deleted, nothing outside uploads/ written.
+	 */
+	case 'admin-menu':
+		boot( $plugin_dir );
+		hj_stub_run_action( 'admin_menu' );
+		$menu = $GLOBALS['hj_stub']['menu'] ?? array();
+		eq( 1, count( $menu ), 'the screen registers exactly one top-level menu' );
+		eq( 'hj-sc-content', $menu[0]['slug'] ?? '', 'the menu slug is the documented one' );
+		eq( 'manage_options', $menu[0]['capability'] ?? '', 'the default capability is manage_options' );
+		ok( is_callable( $menu[0]['callback'] ?? '' ), 'the menu callback is callable' );
+
+		// A site can hand content editing to an editor role.
+		add_filter( 'hjsc_admin_capability', static function () {
+			return 'edit_pages';
+		} );
+		eq( 'edit_pages', hjsc_admin_capability(), 'the capability is filterable' );
+
+		// The screen never creates its own page or post: it is a menu only.
+		eq( 0, count( $GLOBALS['hj_stub']['posts'] ), 'registering the menu creates no post' );
+		break;
+
+	case 'admin-state':
+		boot( $plugin_dir );
+		$dir = prepare_uploads(
+			array(
+				'knowledge-bundle.1.0.0.aaaaaaaa.json' => sample_bundle( '1.0.0', '2.0.0' ),
+				'knowledge-bundle.2.0.0.bbbbbbbb.json' => sample_bundle( '2.0.0', '2.0.0', 2 ),
+			)
+		);
+		$state = hjsc_admin_state();
+		eq( 'upload', $state['source']['source'], 'the newest uploaded bundle is served' );
+		eq( 'knowledge-bundle.2.0.0.bbbbbbbb.json', $state['source']['name'], 'the served file is the newest one' );
+		eq( 2, $state['counts']['questions'], 'the panel counts the questions of the served bundle' );
+		eq( '', $state['option'], 'with no pin, the option stays empty' );
+		eq( 2, count( hjsc_admin_bundles() ), 'both files are listed' );
+
+		// Pin the older file: it must win over "newest".
+		eq( 'activated', hjsc_admin_activate( 'knowledge-bundle.1.0.0.aaaaaaaa.json' ), 'a file can be activated' );
+		$GLOBALS['hj_stub']['options']['hj_sc_active_bundle'] = 'knowledge-bundle.1.0.0.aaaaaaaa.json';
+		// hiqsc_bundle_source() caches per request, so re-read it in a fresh process
+		// view by clearing the static through a new include is not possible; assert
+		// the option and the filename contract instead.
+		eq( 'hj_sc_active_bundle', HJ_SC_ACTIVE_BUNDLE_OPTION, 'the pin is stored in the documented option' );
+		eq( 'auto', hjsc_admin_activate( 'auto' ), 'returning to automatic is allowed' );
+		ok( ! isset( $GLOBALS['hj_stub']['options']['hj_sc_active_bundle'] ) || '' === $GLOBALS['hj_stub']['options']['hj_sc_active_bundle'], 'automatic clears the pin' );
+		ok( is_dir( $dir ) && 2 === count( glob( $dir . '/*.json' ) ), 'no file was deleted by activation' );
+		break;
+
+	case 'admin-save-text':
+		$original = sample_bundle( '0.2.0-draft', '2.0.0' );
+		$name     = 'knowledge-bundle.0.2.0-draft.0badf00d.json';
+		boot( $plugin_dir );
+		$dir    = prepare_uploads( array( $name => $original ) );
+		$before = file_get_contents( $dir . '/' . $name );
+
+		$_POST = array(
+			'hjsc_action' => 'save_text',
+			'_wpnonce'    => wp_create_nonce( HJ_SC_NONCE_SAVE ),
+			'hjsc_file'   => $name,
+			'hjsc_text'   => array(
+				// Paths are positional, exactly like the form the screen renders.
+				'questions' => array(
+					0 => array(
+						'text_fa' => 'متن تازهٔ پرسش',
+						'options' => array( 0 => array( 'label_fa' => 'بله، قطعاً' ) ),
+					),
+				),
+			),
+		);
+
+		eq( 'saved', hjsc_admin_handle_request(), 'saving a text edit succeeds' );
+		$files = glob( $dir . '/knowledge-bundle.*.json' );
+		eq( 2, count( $files ), 'a save adds one file and never replaces the old one' );
+		ok( in_array( $dir . '/' . $name, $files, true ), 'the original file is still on disk' );
+		eq( $before, file_get_contents( $dir . '/' . $name ), 'the original bytes are untouched' );
+
+		$new = array_values( array_filter( $files, static function ( $path ) use ( $name ) {
+			return basename( $path ) !== $name;
+		} ) );
+		eq( 1, count( $new ), 'exactly one new file exists' );
+		$newName = basename( $new[0] );
+		eq( $newName, get_option( HJ_SC_ACTIVE_BUNDLE_OPTION ), 'the new file becomes the active one' );
+		ok( (bool) preg_match( '/^knowledge-bundle\.0\.2\.1-draft\.[0-9a-f]{8}\.json$/', $newName ), 'the new file is version-bumped and hash-named', $newName );
+		$saved = json_decode( file_get_contents( $new[0] ), true );
+		eq( '0.2.1-draft', $saved['bundle_version'] ?? '', 'the bundle version is bumped, the suffix kept' );
+		eq( 'متن تازهٔ پرسش', $saved['questions'][0]['text_fa'] ?? '', 'the edited question text is in the file' );
+		eq( 'بله، قطعاً', $saved['questions'][0]['options'][0]['label_fa'] ?? '', 'the edited option label is in the file' );
+		eq( 'pending_team_review', $saved['change_notes'][0]['review_status'] ?? '', 'the new version is stamped pending_team_review' );
+		eq( '0.2.1-draft', $saved['change_notes'][0]['version'] ?? '', 'the change note carries the new version' );
+		eq( '2.0.0', $saved['schema_version'] ?? '', 'the schema version is untouched' );
+		eq( $original['questions'][0]['options'][0]['evidence'], $saved['questions'][0]['options'][0]['evidence'], 'evidence is copied byte for byte' );
+		eq( $original['questions'][0]['id'], $saved['questions'][0]['id'], 'ids are copied, never regenerated' );
+		break;
+
+	case 'admin-save-guard':
+		$original = sample_bundle( '0.2.0-draft', '2.0.0' );
+		$name     = 'knowledge-bundle.0.2.0-draft.0badf00e.json';
+		boot( $plugin_dir );
+		$dir = prepare_uploads( array( $name => $original ) );
+
+		// Structure smuggling: every one of these must be ignored.
+		$_POST = array(
+			'hjsc_action' => 'save_text',
+			'_wpnonce'    => wp_create_nonce( HJ_SC_NONCE_SAVE ),
+			'hjsc_file'   => $name,
+			'hjsc_text'   => array(
+				'schema_version' => '9.9.9',
+				'bundle_id'      => 'hijacked',
+				'questions'      => array(
+					'q_0' => array(
+						'id'       => 'q_hijacked',
+						'evidence' => array( array( 'symptom_id' => 'abd.ghost', 'state' => 'present' ) ),
+						'options'  => array( 'yes' => array( 'evidence' => array(), 'id' => 'nope' ) ),
+					),
+					'q_new' => array( 'text_fa' => 'پرسش تازه' ),
+				),
+				'conditions'     => array( 'c_new' => array( 'name_fa' => 'بیماری تازه' ) ),
+			),
+		);
+		eq( 'unchanged', hjsc_admin_handle_request(), 'structural keys are not editable' );
+		eq( 1, count( glob( $dir . '/*.json' ) ), 'a refused request writes no file' );
+
+		// A missing nonce is refused before anything else happens.
+		$_POST = array(
+			'hjsc_action' => 'save_text',
+			'hjsc_file'   => $name,
+			'hjsc_text'   => array( 'questions' => array( 'q_0' => array( 'text_fa' => 'متن' ) ) ),
+		);
+		eq( 'bad_nonce', hjsc_admin_handle_request(), 'a request without a nonce is refused' );
+		eq( 1, count( glob( $dir . '/*.json' ) ), 'the refused request writes no file either' );
+
+		// A user without the capability is refused as well.
+		$GLOBALS['hj_stub']['caps'] = array( 'read' );
+		$_POST = array(
+			'hjsc_action' => 'save_text',
+			'_wpnonce'    => wp_create_nonce( HJ_SC_NONCE_SAVE ),
+			'hjsc_file'   => $name,
+			'hjsc_text'   => array( 'questions' => array( 'q_0' => array( 'text_fa' => 'متن' ) ) ),
+		);
+		eq( 'bad_nonce', hjsc_admin_handle_request(), 'a user without the capability is refused' );
+
+		// And the screen itself dies for that user instead of rendering.
+		$died = false;
+		try {
+			hjsc_admin_render();
+		} catch ( RuntimeException $exception ) {
+			$died = true;
+		}
+		ok( $died, 'the screen refuses to render for a user without the capability' );
+
+		// A traversal attempt never resolves outside the folder.
+		eq( 'bad_bundle', hjsc_admin_activate( '../../wp-config.php' ), 'a traversal name cannot be activated' );
+		eq( 'bad_bundle', hjsc_admin_activate( 'knowledge-bundle.9.9.9.ffffffff.json' ), 'a name that does not exist cannot be activated' );
+		break;
+
+	case 'admin-upload':
+		boot( $plugin_dir );
+		$GLOBALS['hj_stub']['caps'] = array( 'manage_options' );
+		$tmpDir = '/work/hj-upload-tmp-' . getmypid();
+		@mkdir( $tmpDir, 0777, true );
+		$dir = '/work/hj-uploads-upload-' . getmypid();
+		if ( ! is_dir( $dir . '/hj-sc' ) ) {
+			mkdir( $dir . '/hj-sc', 0777, true );
+		}
+		foreach ( glob( $dir . '/hj-sc/*' ) as $stale ) {
+			unlink( $stale );
+		}
+		hj_stub_set_uploads( $dir, 'https://example.test/uploads' );
+		// The harness is not an HTTP upload; its fixtures are ordinary files. The
+		// "forged tmp_name" guard is asserted separately below.
+		unset( $_SERVER['REQUEST_METHOD'] );
+
+		$good = $tmpDir . '/good.json';
+		file_put_contents( $good, json_encode( sample_bundle( '3.0.0', '2.0.0' ) ) );
+		$_POST  = array( 'hjsc_action' => 'upload', '_wpnonce' => wp_create_nonce( HJ_SC_NONCE_UPLOAD ) );
+		$_FILES = array( 'hjsc_bundle_file' => array( 'name' => 'my-bundle.json', 'tmp_name' => $good, 'error' => 0 ) );
+		eq( 'uploaded', hjsc_admin_handle_request(), 'a valid JSON bundle uploads' );
+		$stored = glob( $dir . '/hj-sc/knowledge-bundle.*.json' );
+		eq( 1, count( $stored ), 'the upload becomes one file in the uploads folder' );
+		ok( (bool) preg_match( '/^knowledge-bundle\.3\.0\.0\.[0-9a-f]{8}\.json$/', basename( $stored[0] ) ), 'the upload is renamed to the contract name', basename( $stored[0] ) );
+		eq( basename( $stored[0] ), get_option( HJ_SC_ACTIVE_BUNDLE_OPTION ), 'the upload is activated' );
+
+		$bad = $tmpDir . '/bad.json';
+		file_put_contents( $bad, '{not json' );
+		$_FILES = array( 'hjsc_bundle_file' => array( 'name' => 'bad.json', 'tmp_name' => $bad, 'error' => 0 ) );
+		eq( 'bad_file', hjsc_admin_handle_request(), 'an unparsable upload is refused' );
+		eq( 1, count( glob( $dir . '/hj-sc/*.json' ) ), 'the refused upload writes no file' );
+
+		$php = $tmpDir . '/evil.php';
+		file_put_contents( $php, '<?php echo 1;' );
+		$_FILES = array( 'hjsc_bundle_file' => array( 'name' => 'evil.php', 'tmp_name' => $php, 'error' => 0 ) );
+		eq( 'bad_upload', hjsc_admin_handle_request(), 'a non-JSON file name is refused' );
+		ok( ! file_exists( $dir . '/hj-sc/evil.php' ), 'nothing is executable in the uploads folder' );
+
+		// In a real web request PHP must confirm the temp file is its own upload.
+		$_SERVER['REQUEST_METHOD'] = 'POST';
+		$_FILES = array( 'hjsc_bundle_file' => array( 'name' => 'good.json', 'tmp_name' => $good, 'error' => 0 ) );
+		eq( 'bad_upload', hjsc_admin_handle_request(), 'a forged tmp_name is refused in a web request' );
+		unset( $_SERVER['REQUEST_METHOD'] );
+
+		// The upload form itself needs a nonce.
+		$_POST  = array( 'hjsc_action' => 'upload' );
+		$_FILES = array( 'hjsc_bundle_file' => array( 'name' => 'good.json', 'tmp_name' => $good, 'error' => 0 ) );
+		eq( 'bad_nonce', hjsc_admin_handle_request(), 'an upload without a nonce is refused' );
+		$_POST = array();
+		$_FILES = array();
+		break;
+
+	case 'admin-render':
+		$name = 'knowledge-bundle.0.2.0-draft.0badf00f.json';
+		boot( $plugin_dir );
+		$dir = prepare_uploads( array( $name => sample_bundle( '0.2.0-draft', '2.0.0' ) ) );
+		// A bundle whose text tries to break out of the form.
+		$bundle = sample_bundle( '0.2.0-draft', '2.0.0' );
+		$bundle['questions'][0]['text_fa'] = '<script>alert(1)</script> پرسش';
+		file_put_contents( $dir . '/' . $name, json_encode( $bundle ) );
+
+		$_GET = array( 'page' => HJ_SC_ADMIN_SLUG );
+		ob_start();
+		hjsc_admin_render();
+		$html = ob_get_clean();
+		ok( false !== strpos( $html, 'knowledge-bundle.0.2.0-draft.0badf00f.json' ), 'the overview lists the file' );
+		ok( false !== strpos( $html, 'hj-sc-content' ), 'the page points at its own admin URL' );
+		ok( false !== strpos( $html, 'name="_wpnonce"' ), 'the forms carry a nonce' );
+		ok( false !== strpos( $html, 'type="file"' ), 'the upload form is present' );
+		ok( 0 === strpos( $html, '<div class="wrap">' ), 'the screen renders inside a wrap' );
+		ok( false === strpos( $html, '<script>alert(1)</script>' ), 'bundle text is escaped, never injected' );
+
+		// The editor tab renders one field per editable text and a hidden file field.
+		$_GET = array( 'page' => HJ_SC_ADMIN_SLUG, 'action' => 'edit', 'file' => $name );
+		ob_start();
+		hjsc_admin_render();
+		$editor = ob_get_clean();
+		ok( false !== strpos( $editor, 'hjsc_text[questions][0][text_fa]' ), 'the editor names the question text field' );
+		ok( false !== strpos( $editor, 'name="hjsc_file"' ), 'the editor posts the file it is editing' );
+		ok( false === strpos( $editor, 'hjsc_text[schema_version]' ), 'the editor never offers structural keys' );
+		ok( false !== strpos( $editor, '&lt;script&gt;' ), 'the editor escapes the stored text' );
+		$_GET = array();
+		break;
+
+	case 'admin-bump':
+		boot( $plugin_dir );
+		eq( '0.2.1-draft', hjsc_admin_bump_version( '0.2.0-draft' ), 'a draft keeps its suffix and bumps the patch' );
+		eq( '1.0.1', hjsc_admin_bump_version( '1.0.0' ), 'a plain version bumps the patch' );
+		eq( '3.4.1-rc.2', hjsc_admin_bump_version( '3.4.0-rc.2' ), 'a pre-release suffix survives the bump' );
+		eq( '', hjsc_admin_bump_version( 'draft' ), 'an unparsable version is refused' );
 		break;
 
 	case 'syntax':

@@ -120,7 +120,7 @@ async function statusOf(path) {
   return response.status;
 }
 
-function writeBlueprint(name, publishPage) {
+function writeBlueprint(name, publishPage, extraPhp = '') {
   const php = `<?php
 require_once '/wordpress/wp-load.php';
 if ( ! post_type_exists( 'disease' ) ) {
@@ -166,6 +166,7 @@ file_put_contents( '/wordpress/hj-check.json', wp_json_encode( array(
         'url' => $hj_lookup ? get_permalink( $hj_lookup[0] ) : '',
     ),
 ), JSON_UNESCAPED_UNICODE ) );
+${extraPhp}
 `;
   const blueprint = {
     steps: [
@@ -379,6 +380,127 @@ async function uiCheck(config, options = {}) {
   checkPrefix = '';
 }
 
+/**
+ * Phase 5-b end to end: the owner edits text in wp-admin, and the site serves
+ * the new version — with the old file untouched and no code change.
+ */
+async function adminChecks() {
+  const php = `
+// The blueprint runs in a front-end bootstrap, so wp-admin's own helpers are
+// not loaded. Load them the way an admin request would.
+require_once ABSPATH . 'wp-admin/includes/admin.php';
+$admin_error = null;
+try {
+wp_set_current_user( 1 );
+$admin_can = hjsc_admin_user_can();
+do_action( 'admin_menu' );
+$menu_hit = array();
+foreach ( (array) $GLOBALS['menu'] as $item ) {
+    if ( isset( $item[2] ) && HJ_SC_ADMIN_SLUG === $item[2] ) {
+        $menu_hit = $item;
+    }
+}
+$_GET = array( 'page' => HJ_SC_ADMIN_SLUG );
+ob_start();
+hjsc_admin_render();
+$overview = ob_get_clean();
+$package_before = hash_file( 'sha256', hjsc_package_bundle_path() );
+$base = hjsc_bundle();
+$base_conditions = isset( $base['conditions'] ) ? count( $base['conditions'] ) : 0;
+$_POST = array(
+    'hjsc_action' => 'save_text',
+    '_wpnonce'    => wp_create_nonce( HJ_SC_NONCE_SAVE ),
+    'hjsc_text'   => array( 'conditions' => array( 0 => array( 'name_fa' => 'ویرایش آزمایشی از پیشخوان' ) ) ),
+);
+// WordPress reads $_REQUEST, which PHP fills before any code runs; a blueprint
+// assigns $_POST afterwards, so mirror it the way a real POST would arrive.
+$_REQUEST = $_POST;
+$save = hjsc_admin_handle_request();
+$_POST = array();
+$_REQUEST = array();
+$option = (string) get_option( HJ_SC_ACTIVE_BUNDLE_OPTION, '' );
+$path = hjsc_upload_dir() . $option;
+$saved = ( '' !== $option && is_readable( $path ) ) ? hjsc_read_json_file( $path ) : array();
+$package_after = hash_file( 'sha256', hjsc_package_bundle_path() );
+$subscriber = wp_insert_user( array( 'user_login' => 'hjsc_sub_' . wp_rand( 1000, 9999 ), 'user_pass' => wp_generate_password(), 'user_email' => 'sub' . wp_rand( 1000, 9999 ) . '@example.test', 'role' => 'subscriber' ) );
+$subscriber_can = null;
+if ( ! is_wp_error( $subscriber ) ) {
+    wp_set_current_user( $subscriber );
+    $subscriber_can = hjsc_admin_user_can();
+    wp_set_current_user( 1 );
+}
+} catch ( Throwable $e ) {
+    $admin_error = get_class( $e ) . ': ' . $e->getMessage();
+}
+file_put_contents( '/wordpress/hj-admin.json', wp_json_encode( array(
+    'error'            => $admin_error,
+    'admin_can'        => $admin_can,
+    'menu_slug'        => isset( $menu_hit[2] ) ? $menu_hit[2] : '',
+    'menu_capability'  => isset( $menu_hit[1] ) ? $menu_hit[1] : '',
+    'overview_bytes'   => strlen( $overview ),
+    'overview_nonce'   => false !== strpos( $overview, 'name="_wpnonce"' ),
+    'overview_upload'  => false !== strpos( $overview, 'type="file"' ),
+    'save_result'      => $save,
+    'option'           => $option,
+    'file_exists'      => ( '' !== $option && is_readable( $path ) ),
+    'saved_version'    => isset( $saved['bundle_version'] ) ? $saved['bundle_version'] : '',
+    'saved_condition'  => isset( $saved['conditions'][0]['name_fa'] ) ? $saved['conditions'][0]['name_fa'] : '',
+    'saved_count'      => isset( $saved['conditions'] ) ? count( $saved['conditions'] ) : 0,
+    'base_count'       => $base_conditions,
+    'package_unchanged' => $package_before === $package_after,
+    'subscriber_can'   => $subscriber_can,
+    'uploads_dir'      => hjsc_upload_dir(),
+), JSON_UNESCAPED_UNICODE ) );
+`;
+  await startSite(writeBlueprint('admin.json', true, php));
+  const adminPath = join(work, `wordpress/WordPress-${WP_VERSION}/hj-admin.json`);
+  const started = Date.now();
+  while (Date.now() - started < 120000 && !existsSync(adminPath)) {
+    await new Promise((done) => setTimeout(done, 500));
+  }
+  const data = existsSync(adminPath) ? JSON.parse(readFileSync(adminPath, 'utf8')) : null;
+  check('the admin blueprint finished without a fatal', Boolean(data) && data.error === null, String(data?.error ?? 'no report'));
+  check('the admin screen is registered for the owner', Boolean(data) && data.menu_slug === 'hj-sc-content', data?.menu_slug ?? 'no report');
+  check('the admin screen requires manage_options by default', data?.menu_capability === 'manage_options', data?.menu_capability ?? '');
+  check('the owner can open the content screen', data?.admin_can === true);
+  check('a subscriber cannot open the content screen', data?.subscriber_can === false, String(data?.subscriber_can));
+  check('the overview renders', (data?.overview_bytes ?? 0) > 800, `${data?.overview_bytes ?? 0} bytes`);
+  check('the overview carries a nonce', data?.overview_nonce === true);
+  check('the overview offers a bundle upload', data?.overview_upload === true);
+  check('saving a text edit succeeds', data?.save_result === 'saved', data?.save_result ?? 'no result');
+  check(
+    'the saved file follows the upload contract',
+    /^knowledge-bundle\.0\.2\.1-draft\.[0-9a-f]{8}\.json$/.test(String(data?.option ?? '')),
+    data?.option ?? '',
+  );
+  check('the edited file exists in uploads/hj-sc', data?.file_exists === true);
+  check('the new version is bumped, not overwritten', data?.saved_version === '0.2.1-draft', data?.saved_version ?? '');
+  check('the edited text is in the new bundle', data?.saved_condition === 'ویرایش آزمایشی از پیشخوان', data?.saved_condition ?? '');
+  check('the edit changed no condition count', data?.saved_count === data?.base_count, `${data?.saved_count} vs ${data?.base_count}`);
+  check('the bundle inside the plugin is untouched', data?.package_unchanged === true);
+
+  // What a visitor now receives.
+  const page = await text('/symptom-checker/');
+  const match = page.body.match(/window\.HJ_SC_CONFIG = (\{.*?\});/s);
+  const config = match ? JSON.parse(match[1]) : null;
+  check(
+    'the checker now serves the dashboard-edited bundle',
+    config?.bundleStatus?.source === 'upload' && String(config?.bundleUrl ?? '').includes(String(data?.option ?? 'x')),
+    `${config?.bundleStatus?.source ?? 'none'} ${config?.bundleUrl ?? ''}`,
+  );
+  check('the cache buster is the hash of the new file', String(config?.bundleUrl ?? '').includes(`ver=${String(data?.option ?? '').match(/\.([0-9a-f]{8})\.json$/)?.[1]}`), config?.bundleUrl ?? '');
+  check('the page still renders the checker', page.status === 200 && page.body.includes('id="app"'));
+  check('the edited version reaches the page config', config?.bundleStatus?.version === '0.2.1-draft', config?.bundleStatus?.version ?? '');
+  const served = await fetch(config?.bundleUrl ?? `${BASE}/missing.json`);
+  const servedJson = served.status === 200 ? await served.json() : null;
+  check('the served bundle carries the edited condition', servedJson?.conditions?.[0]?.name_fa === 'ویرایش آزمایشی از پیشخوان', servedJson?.conditions?.[0]?.name_fa ?? '');
+  check('the served bundle keeps its questions', Array.isArray(servedJson?.questions) && servedJson.questions.length > 0, String(servedJson?.questions?.length ?? 0));
+
+  // The admin screen itself is not public.
+  const direct = await fetch(`${BASE}/wp-admin/admin.php?page=hj-sc-content`, { redirect: 'manual' });
+  check('wp-admin is not reachable for a visitor', [302, 301, 403].includes(direct.status), String(direct.status));
+}
+
 let exitCode = 0;
 try {
   console.log(`work dir: ${work}`);
@@ -532,6 +654,9 @@ add_action( 'init', function () {
 
   // 7. phase 5-a: publish content without publishing the plugin
   await bundlePublishChecks();
+
+  // 8. phase 5-b: edit content in wp-admin, then check what a visitor gets
+  await adminChecks();
 } catch (error) {
   console.error(`\nERROR ${error?.message ?? error}`);
   exitCode = 1;

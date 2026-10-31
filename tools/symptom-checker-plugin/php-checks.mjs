@@ -128,6 +128,13 @@ const scenarios = [
   'enqueue',
   'robots',
   'template',
+  'admin-menu',
+  'admin-state',
+  'admin-save-text',
+  'admin-save-guard',
+  'admin-upload',
+  'admin-render',
+  'admin-bump',
 ];
 
 const requested = process.argv.slice(2);
