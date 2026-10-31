@@ -26,8 +26,13 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, '../..');
-const WP_VERSION = '6.8.3';
-const WP_SHA256 = '96ddc66e09427764dc7671361ef27542dcf642d820d4280307d32913208dca3f';
+// HJ_WP_VERSION lets the same harness run against another WordPress release, so
+// a host that runs a newer core can be reproduced before shipping a fix.
+const WP_VERSION = process.env.HJ_WP_VERSION || '6.8.3';
+const WP_SHA256 = {
+  '6.8.3': '96ddc66e09427764dc7671361ef27542dcf642d820d4280307d32913208dca3f',
+};
+const EXPECTED_HASH = WP_SHA256[WP_VERSION] || null;
 const PLAYGROUND_VERSION = '3.1.61';
 const PORT = Number(process.env.HJ_WP_PORT ?? 9411);
 const BASE = `http://127.0.0.1:${PORT}`;
@@ -298,7 +303,10 @@ try {
   run('curl', ['--fail', '--location', '--silent', '--show-error', '--max-time', '300',
     '-o', zipPath, `https://codeload.github.com/WordPress/WordPress/zip/refs/tags/${WP_VERSION}`]);
   const digest = createHash('sha256').update(readFileSync(zipPath)).digest('hex');
-  if (digest !== WP_SHA256) throw new Error(`WordPress zip hash mismatch: ${digest}`);
+  if (EXPECTED_HASH && digest !== EXPECTED_HASH) {
+    throw new Error(`WordPress zip hash mismatch: ${digest}`);
+  }
+  if (!EXPECTED_HASH) console.log(`no pinned hash for ${WP_VERSION}; using digest ${digest}`);
   mkdirSync(join(work, 'wordpress'), { recursive: true });
   run('python3', ['-c', 'import zipfile,sys; zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])', zipPath, join(work, 'wordpress')]);
   mkdirSync(join(work, 'plugins'), { recursive: true });
@@ -346,7 +354,15 @@ add_action( 'init', function () {
   check('the checker page returns 200', page.status === 200);
   check('the plugin template is used', ['id="app"', 'id="safety"', 'id="live"'].every((needle) => page.body.includes(needle)));
   check('the page is noindex, nofollow', page.body.includes('noindex') && page.body.includes('nofollow'));
-  check('the entry script is a module', (page.body.match(/type="module"/g) ?? []).length === 1);
+  const scriptTags = [...page.body.matchAll(/<script\b[^>]*>/gi)].map((match) => match[0]);
+  // Newer cores print their own module scripts (speculation rules, block
+  // assets), so the check looks at *our* tag instead of counting module tags.
+  const ourScriptTag = scriptTags.find((tag) => tag.includes('id="hj-sc-app-js"')) ?? '';
+  check(
+    'the entry script is a module',
+    /\btype="module"/.test(ourScriptTag),
+    ourScriptTag || scriptTags.join(' | '),
+  );
   check('the page is neither a shortcode nor an iframe', !page.body.includes('<iframe') && !page.body.includes('shortcode'));
 
   const configMatch = page.body.match(/window\.HJ_SC_CONFIG = (\{.*?\});/s);
