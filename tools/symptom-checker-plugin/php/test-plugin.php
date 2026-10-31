@@ -69,15 +69,25 @@ switch ( $scenario ) {
 		hj_stub_reset();
 		require_once $plugin_dir . 'hamyar-symptom-checker.php';
 
+		// Activation itself must be a no-op apart from the pending note: that is
+		// what keeps a slow or memory-hungry site from rolling it back.
 		hj_sc_activate();
+		ok( (bool) get_option( HJ_SC_ACTIVATION_PENDING ), 'activation leaves a pending note' );
+		eq( 0, count( $GLOBALS['hj_stub']['posts'] ), 'activation creates no page by itself' );
+
+		// The next admin request builds the page.
+		hj_sc_maybe_finish_activation();
 		$first = (int) get_option( HJ_SC_PAGE_OPTION );
-		ok( $first > 0, 'activation stores the page id' );
+		ok( $first > 0, 'the next admin request stores the page id' );
 		$page = get_post( $first );
 		ok( $page instanceof WP_Post && 'page' === $page->post_type, 'the created post is a page' );
 		eq( 'draft', $page->post_status, 'the page is created as a draft, never public' );
 		eq( HJ_SC_PAGE_SLUG, $page->post_name, 'the page slug is the documented one' );
+		ok( ! get_option( HJ_SC_ACTIVATION_PENDING ), 'the pending note is cleared' );
 
+		hj_sc_maybe_finish_activation();
 		hj_sc_activate();
+		hj_sc_maybe_finish_activation();
 		eq( 1, count( $GLOBALS['hj_stub']['posts'] ), 'activation never creates a second page' );
 
 		// An existing page with the same slug is adopted, not overwritten.
@@ -92,10 +102,68 @@ switch ( $scenario ) {
 			)
 		);
 		hj_sc_activate();
+		hj_sc_maybe_finish_activation();
 		eq( $existing, (int) get_option( HJ_SC_PAGE_OPTION ), 'an existing page is adopted' );
 		eq( 1, count( $GLOBALS['hj_stub']['posts'] ), 'no extra page is created' );
 		eq( 'publish', get_post( $existing )->post_status, 'the existing page status is left untouched' );
 		eq( 'محتوای دستی', get_post( $existing )->post_content, 'the existing page content is left untouched' );
+		break;
+
+	case 'activation-error':
+		hj_stub_reset();
+		require_once $plugin_dir . 'hamyar-symptom-checker.php';
+
+		hj_sc_activate();
+		$GLOBALS['hj_stub']['fail_insert'] = true;
+		hj_sc_maybe_finish_activation();
+
+		$error = get_option( HJ_SC_LAST_ERROR, array() );
+		ok( is_array( $error ) && ! empty( $error['message'] ), 'a failing insert is recorded, not thrown' );
+		ok( false !== strpos( (string) ( $error['message'] ?? '' ), 'simulated database failure' ), 'the real reason is kept', (string) ( $error['message'] ?? '' ) );
+		eq( 0, count( $GLOBALS['hj_stub']['posts'] ), 'no half-created page is left behind' );
+		ok( (bool) get_option( HJ_SC_ACTIVATION_PENDING ), 'the pending note stays for the next attempt' );
+		eq( 1, (int) get_option( 'hj_sc_activation_attempts', 0 ), 'the attempt is counted' );
+
+		// Three failures stop the retry loop instead of hammering the site.
+		hj_sc_maybe_finish_activation();
+		hj_sc_maybe_finish_activation();
+		hj_sc_maybe_finish_activation();
+		ok( ! get_option( HJ_SC_ACTIVATION_PENDING ), 'the plugin stops retrying after three attempts' );
+		break;
+
+	case 'notice':
+		hj_stub_reset();
+		require_once $plugin_dir . 'hamyar-symptom-checker.php';
+
+		ob_start();
+		hj_sc_activation_notice();
+		$quiet = ob_get_clean();
+		eq( '', $quiet, 'no notice when everything is fine' );
+
+		update_option(
+			HJ_SC_LAST_ERROR,
+			array(
+				'message' => 'simulated database failure',
+				'file'    => '/wp-content/plugins/hamyar-symptom-checker/includes/page.php',
+				'line'    => 123,
+			)
+		);
+		ob_start();
+		hj_sc_activation_notice();
+		$html = ob_get_clean();
+		ok( false !== strpos( $html, 'simulated database failure' ), 'the notice shows the stored error' );
+		ok( false !== strpos( $html, 'includes/page.php:123' ), 'the notice shows the file and line' );
+		ok( false !== strpos( $html, 'php: ' ) && false !== strpos( $html, 'wp: ' ), 'the notice shows php/wp versions' );
+		ok( false !== strpos( $html, 'هیچ افزونهٔ دیگری' ), 'the notice tells the owner not to delete other plugins' );
+
+		// Once the page exists the stale message clears itself.
+		$page_id = wp_insert_post( array( 'post_type' => 'page', 'post_name' => HJ_SC_PAGE_SLUG, 'post_status' => 'draft' ) );
+		update_option( HJ_SC_PAGE_OPTION, $page_id );
+		ob_start();
+		hj_sc_activation_notice();
+		$after = ob_get_clean();
+		eq( '', $after, 'the notice disappears after a successful setup' );
+		eq( false, get_option( HJ_SC_LAST_ERROR, false ), 'the stale error is deleted' );
 		break;
 
 	case 'mapping':

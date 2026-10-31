@@ -116,6 +116,9 @@ $existing = get_page_by_path( 'appendicitis', OBJECT, 'disease' );
 $published = $existing ? $existing->ID : wp_insert_post( array( 'post_type' => 'disease', 'post_status' => 'publish', 'post_title' => 'آپاندیسیت', 'post_name' => 'appendicitis', 'meta_input' => array( '_hj_disease_seed_id' => 'appendicitis' ) ), true );
 $draft = get_page_by_path( 'kidney-stones', OBJECT, 'disease' );
 $draft_id = $draft ? $draft->ID : wp_insert_post( array( 'post_type' => 'disease', 'post_status' => 'draft', 'post_title' => 'سنگ کلیه', 'post_name' => 'kidney-stones' ), true );
+// The page is created on the first admin request after activation, so this
+// script fires that hook exactly like wp-admin would.
+do_action( 'admin_init' );
 $page = (int) get_option( 'hj_symptom_checker_page_id' );
 if ( ${publishPage ? 'true' : 'false'} ) {
     wp_update_post( array( 'ID' => $page, 'post_status' => 'publish' ) );
@@ -131,6 +134,8 @@ file_put_contents( '/wordpress/hj-check.json', wp_json_encode( array(
     'draft_status' => get_post_status( $draft_id ),
     'links' => hj_sc_topic_links(),
     'bundle' => hj_sc_bundle_version(),
+    'pending' => (bool) get_option( 'hj_sc_activation_pending' ),
+    'activation_error' => get_option( 'hj_sc_last_error', null ),
 ), JSON_UNESCAPED_UNICODE ) );
 `;
   const blueprint = {
@@ -320,6 +325,16 @@ add_action( 'init', function () {
   let info = await waitForReport();
   check('WordPress booted with the plugin active', Boolean(info) && info.wp === WP_VERSION, info ? `WP ${info.wp} / PHP ${info.php}` : 'no report');
   check('activation created the page as a draft', info?.page_status === 'draft', info?.page_status ?? '');
+  check(
+    'the first admin request finished the setup and cleared the pending note',
+    info?.pending === false,
+    `pending=${info?.pending}`,
+  );
+  check(
+    'no activation error was recorded',
+    info?.activation_error === null,
+    JSON.stringify(info?.activation_error ?? null).slice(0, 200),
+  );
   check('the draft page is not reachable for a visitor', (await statusOf(`/?page_id=${info?.page_id ?? 0}`)) === 404);
   check('the bundle version reaches PHP', info?.bundle === '0.2.0-draft', info?.bundle ?? '');
 
