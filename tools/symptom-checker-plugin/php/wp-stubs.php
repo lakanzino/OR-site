@@ -211,6 +211,16 @@ function get_post( $id ) {
 	return $GLOBALS['hj_stub']['posts'][ (int) $id ] ?? null;
 }
 
+function get_post_meta( $id, $key = '', $single = false ) {
+	$post   = get_post( (int) $id );
+	$meta   = is_object( $post ) && isset( $post->meta ) && is_array( $post->meta ) ? $post->meta : array();
+	$values = array_key_exists( $key, $meta ) ? $meta[ $key ] : '';
+	if ( $single ) {
+		return is_array( $values ) ? ( $values[0] ?? '' ) : $values;
+	}
+	return is_array( $values ) ? $values : array( $values );
+}
+
 function get_page_by_path( $slug, $output = OBJECT, $post_type = 'page' ) {
 	foreach ( $GLOBALS['hj_stub']['posts'] as $post ) {
 		if ( $post->post_type === $post_type && $post->post_name === $slug ) {

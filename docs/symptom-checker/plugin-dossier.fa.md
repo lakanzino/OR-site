@@ -17,9 +17,12 @@
 | ۰.۱.۹ | `releases/hamyar-symptom-checker-0.1.9.zip` | ۲۴ فایل (۱ فایل تازه: `includes/admin.php`) | ویرایش محتوا در پیشخوان (فاز ۵-ب) |
 | ۰.۱.۱۰ | `releases/hamyar-symptom-checker-0.1.10.zip` | ۲۵ فایل (۱ فایل تازه: `assets/engine/src/adaptive.js`)<br>sha256 `f670d9b4a92552a833bc54d75da6b555e6f3e98b4bec14762824cbece015655a` | ترتیب تطبیقی در حالت سایه (فاز ۴)؛ رفتار بازدیدکننده بی‌تغییر |
 | ۰.۱.۱۱ | `releases/hamyar-symptom-checker-0.1.11.zip` | ۲۶ فایل (۱ فایل تازه: `assets/ui/age-gate.js`)<br>sha256 `15180ef5ed746424d9a5dca07b36d61864ca89575587674db6028c9f79abdb82` | اصلاح موبایل + دروازهٔ سن |
-| **۰.۱.۱۲** | `releases/hamyar-symptom-checker-0.1.12.zip` | ۲۶ فایل (بستهٔ دانش جایگزین شد: `assets/data/knowledge-bundle.v3.json`)<br>sha256 `22b626787317874e3c6ebd6cbb6cbff0d0728353f689874482f7e5365adb9798` | **تازه** — شروع از ناحیهٔ بدن + بخش تناسلی کامل |
+| ۰.۱.۱۲ | `releases/hamyar-symptom-checker-0.1.12.zip` | ۲۶ فایل (بستهٔ دانش جایگزین شد: `assets/data/knowledge-bundle.v3.json`)<br>sha256 `22b626787317874e3c6ebd6cbb6cbff0d0728353f689874482f7e5365adb9798` | شروع از ناحیهٔ بدن + بخش تناسلی کامل |
+| ۰.۱.۱۳ | `releases/hamyar-symptom-checker-0.1.13.zip` | ۲۶ فایل<br>sha256 `4d95fbeb…95f8` | سنِ عددی، صفحهٔ اولِ تمیز، منابع با لینک |
+| ۰.۱.۱۴ | `releases/hamyar-symptom-checker-0.1.14.zip` | ۲۷ فایل، ۱۴۳٬۶۲۹ بایت<br>sha256 `dfcf6730…b7b1` | برگهٔ معمولی، تنظیمات در wp-admin، رفع صفحهٔ خالی |
+| **۰.۱.۱۵** | `releases/hamyar-symptom-checker-0.1.15.zip` | ۲۷ فایل، ۱۴۵٬۳۴۸ بایت<br>sha256 `cc46c17d1fa9be4e97e0163e34b72f3ba60c9c90d9dd8d28689b09efdea32e8a` | **تازه** — نشانی محتوایی برای هر ایمپورت داخلی (`?ver=<sha8>`)، نگهبانِ تشخیص فایل کهنه بدون درخواست شبکه، تغییر نام برگهٔ میراثی از برچسب «پیش‌نمایش داخلی» |
 
-- راهنمای نصب و بازگشت ۰.۱.۱۴: [`docs/symptom-checker/phase-8/release-0.1.14.fa.md`](phase-8/release-0.1.14.fa.md) (۰.۱.۱۳: [`release-0.1.13.fa.md`](phase-7/release-0.1.13.fa.md) · ۰.۱.۱۲: [`release-0.1.12.fa.md`](phase-6/release-0.1.12.fa.md))
+- راهنمای نصب و بازگشت ۰.۱.۱۵: [`docs/symptom-checker/phase-8/release-0.1.15.fa.md`](phase-8/release-0.1.15.fa.md) (۰.۱.۱۴: [`release-0.1.14.fa.md`](phase-8/release-0.1.14.fa.md) · ۰.۱.۱۳: [`release-0.1.13.fa.md`](phase-7/release-0.1.13.fa.md) · ۰.۱.۱۲: [`release-0.1.12.fa.md`](phase-6/release-0.1.12.fa.md))
 - فاز ۸ — برگهٔ معمولی و تنظیمات: [`phase-8/report.fa.md`](phase-8/report.fa.md)
 - فاز ۷ — صفحهٔ اول و سن: [`phase-7/report.fa.md`](phase-7/report.fa.md)
 - فاز ۶ — ناحیه‌محور: [`phase-6/report.fa.md`](phase-6/report.fa.md) · [`phase-6/body-map.fa.md`](phase-6/body-map.fa.md)

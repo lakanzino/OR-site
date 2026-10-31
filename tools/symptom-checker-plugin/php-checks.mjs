@@ -108,6 +108,7 @@ const scenarios = [
   'guards',
   'activation',
   'activation-error',
+  'legacy-rename',
   'notice',
   'mapping',
   'mapping-nodisease',

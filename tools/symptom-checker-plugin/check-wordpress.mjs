@@ -336,6 +336,40 @@ async function uiCheck(config, options = {}) {
     'a watchdog is printed so a boot failure is written on the page, not swallowed',
     page.body.includes('ابزار در این مرورگر بالا نیامد'),
   );
+  // 0.1.15: every internal import is content-addressed (`?ver=<sha8>` of the
+  // file it resolves to), so no cache tier can boot a new entry script against
+  // an old module — the mixture that took the live tool down on 0.1.14. The
+  // config carries the same hashes so the watchdog can name a stale file.
+  const manifest = Array.isArray(config?.assets) ? config.assets : [];
+  check(
+    'the page config carries the asset manifest with sha8 hashes',
+    manifest.length > 0
+      && manifest.every((item) => item.name && item.url && /^[0-9a-f]{8}$/.test(String(item.sha8 ?? ''))),
+    `${manifest.length} assets`,
+  );
+  check(
+    'every installed file matches the manifest on disk (watchdog can name a stale one)',
+    manifest.length > 0 && manifest.every((item) => item.disk === item.sha8),
+    manifest.filter((item) => item.disk !== item.sha8).map((item) => `${item.name}:${item.disk}`).join(', ') || 'all match',
+  );
+  const servedApp = await fetch(manifest.find((item) => item.name === 'ui/app.js')?.url ?? `${BASE}/missing.js`);
+  const servedAppBody = await servedApp.text();
+  const internalImports = [...servedAppBody.matchAll(/from '(\.[^']+\.js)(\?ver=([0-9a-f]{8}))?'/g)];
+  check(
+    'every internal import of the served entry script carries its sha8',
+    internalImports.length > 0 && internalImports.every((match) => Boolean(match[2])),
+    internalImports.map((match) => match[1] + (match[2] ?? ' (no ver)')).join(', '),
+  );
+  for (const match of internalImports) {
+    const resolved = new URL(match[1], `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/ui/app.js`);
+    const name = resolved.pathname.split('/assets/')[1] ?? match[1];
+    const target = manifest.find((item) => item.name === name);
+    check(
+      `the cache-buster of ${match[1]} is the hash of the file itself`,
+      Boolean(target) && target.sha8 === match[3],
+      `${match[3] ?? '-'} vs ${target?.sha8 ?? '-'}`,
+    );
+  }
   check('packaged UI boots inside WordPress', Boolean(doc.querySelector('#app button')));
   const start = [...doc.querySelectorAll('#app button')].find((button) => button.textContent.includes('شروع'));
   check('the start button is rendered', Boolean(start));
