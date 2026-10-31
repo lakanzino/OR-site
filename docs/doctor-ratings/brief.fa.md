@@ -102,6 +102,7 @@
 | ۵ (آستانهٔ ۵ رأی) | همان قالب: summary فقط وقتی `count >= 5` | همان فایل |
 | ۶ (تست staging) | چک‌لیست راهنما | [`runbook.fa.md`](runbook.fa.md) |
 | ۷ (صفحه‌های سیاست + منوی فوتر) | ساخت صفحه‌ها از متن [`policies-draft.fa.md`](policies-draft.fa.md) **فقط پس از بررسی وکیل** | راهنما |
+| پژوهش همتاها و چارچوب حقوقی (Healthgrades، HealthPartners، RateMDs، دکترتو، دکترسنج، BGH/Jameda، FTC) | سند پژوهشی + ۱۲ تصمیم نگاشت‌شده | [`benchmark-research.fa.md`](benchmark-research.fa.md) |
 
 **یادداشت‌های فنی ثبت‌شده:**
 
