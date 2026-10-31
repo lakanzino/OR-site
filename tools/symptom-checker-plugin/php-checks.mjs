@@ -114,6 +114,7 @@ const scenarios = [
   'slugs',
   'slugs-filter',
   'config',
+  'strategy',
   'escaping',
   'enqueue',
   'robots',

@@ -24,6 +24,12 @@ const config = (typeof window !== 'undefined' && window.HJ_SC_CONFIG && typeof w
   ? window.HJ_SC_CONFIG
   : {};
 
+// Configuration, never a user choice: the host may ask for another ordering.
+// An unknown value falls back to the order the tool has always used.
+const QUESTION_STRATEGY = ['static_order', 'adaptive'].includes(config.questionStrategy)
+  ? config.questionStrategy
+  : 'static_order';
+
 const BUNDLE_URL = config.bundleUrl || '../../docs/symptom-checker/phase-1/knowledge-bundle.v1.json';
 const EVIDENCE_URL = config.evidenceUrl || '../engine/data/evidence-map.v1.json';
 const TOPIC_LINKS = (config.topicLinks && typeof config.topicLinks === 'object') ? config.topicLinks : {};
@@ -273,7 +279,10 @@ async function loadData() {
 }
 
 function startSession() {
-  state.session = createSession(state.bundle, { evidenceMap: state.evidenceMap });
+  state.session = createSession(state.bundle, {
+    evidenceMap: state.evidenceMap,
+    questionStrategy: QUESTION_STRATEGY,
+  });
   state.error = null;
   state.showEditor = false;
   state.conflictQuestions = new Set();

@@ -13,9 +13,9 @@
  *   condition       `profile[]` → `symptom_links[]` (order preserved)
  *   `overrides`     → `paths` (the rules a matrix cannot express)
  *
- * `level` (typical|possible|rare|not_expected) is carried by the bundle but not
- * consumed yet: phases 2–4 give it meaning (`profile_match`, adaptive order).
- * Until then every row behaves exactly like the v1 link it came from.
+ * `level` (typical|possible|rare|not_expected) is carried through on each link so
+ * `profile_match` can use it (phase 2). Cards, coverage and safety still ignore
+ * it entirely: opening a branch stays a question of `overrides`/paths.
  */
 
 export const V2_SCHEMA_PREFIX = '2.';
@@ -72,6 +72,9 @@ export function bundleToEngineShape(bundle) {
       symptom_links: (Array.isArray(condition.profile) ? condition.profile : (condition.symptom_links ?? [])).map(
         (row) => ({
           symptom_id: translateSymptomId(ids, row.symptom_id),
+          // Carried for `profile_match` (phase 2). v1 links had no level and were
+          // all written as the typical picture, so a missing level means typical.
+          level: row.level ?? 'typical',
           profile_line: row.profile_line,
           source_refs: row.source_refs ?? [],
         }),

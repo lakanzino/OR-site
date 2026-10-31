@@ -494,3 +494,10 @@ python3 tools/symptom-checker-plugin/check-name-collisions.py
 - **اثبات:** هر ۲۵ سناریو و ۵۰۰۰ مسیر تصادفی با بستهٔ v2 همان `result()` را می‌دهند که در `tests/golden/v1/` قفل شده است.
 
 جدول «چه چیزی می‌شکند» در بخش ۸ برای افزودن بیماری، از فاز ۳ به بعد کوتاه‌تر می‌شود؛ تا آن زمان مسیر رسمی همچنان همان مسیر v1 است. جزئیات: [گزارش فاز ۱](../phase-1/schema-v2-report.fa.md).
+
+### پس از فاز ۲ — موتور قابل‌پیکربندی
+
+- **`symptom-checker/engine/src/load-bundle.js`** تنها جای تشخیص v1/v2 است؛ بقیهٔ موتور یک مدل می‌بیند.
+- **`symptom-checker/engine/src/strategy.js`** ترتیب پرسش را از موتور جدا می‌کند؛ `static_order` همان رفتار امروز است و `adaptive` تا فاز ۴ فقط نام دارد.
+- **`symptom-checker/engine/src/profile-match.js`** گروه کیفی سه‌کلمه‌ای را می‌سازد؛ پیش‌فرض خاموش و پنهان از رابط.
+- شکل `result()` و مدار کارت/پوشش/ایمنی دست نخورده است. جزئیات: [گزارش فاز ۲](../phase-2/configurable-engine-report.fa.md).

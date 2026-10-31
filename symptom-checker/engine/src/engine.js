@@ -17,15 +17,15 @@
 
 import {
   AnswerValidationError,
-  BundleValidationError,
-  BundleVersionError,
   QuestionNotVisibleError,
+  QuestionStrategyError,
   SessionStoppedError,
   UnknownQuestionError,
 } from './errors.js';
-import { SUPPORTED_SCHEMA_VERSION, collectBundleIssues } from './validate-bundle.js';
-import { buildEvidence, validateEvidenceMap } from './evidence.js';
-import { bundleToEngineShape, evidenceMapFromBundle, isV2Bundle } from './adapter.js';
+import { buildEvidence } from './evidence.js';
+import { loadBundle } from './load-bundle.js';
+import { resolveStrategy, strategyState } from './strategy.js';
+import { profileMatchFor } from './profile-match.js';
 
 const asArray = (value) => (Array.isArray(value) ? value : []);
 const clone = (value) => JSON.parse(JSON.stringify(value));
@@ -124,24 +124,25 @@ function validateAnswer(question, value) {
   return value;
 }
 
-export function createSession(source, { evidenceMap = null } = {}) {
-  // A schema-2.0.0 bundle (disease × symptom matrix) is read through the
-  // adapter; the v1 shape keeps working unchanged. The rest of this file only
-  // ever sees the v1 shape, so derivation cannot drift between the two.
-  const isV2 = isV2Bundle(source);
-  const bundle = isV2 ? bundleToEngineShape(source) : source;
-  const map = evidenceMap ?? (isV2 ? evidenceMapFromBundle(source) : null);
-
-  if (bundle?.schema_version !== SUPPORTED_SCHEMA_VERSION) {
-    throw new BundleVersionError(source?.schema_version, SUPPORTED_SCHEMA_VERSION);
-  }
-  const issues = collectBundleIssues(bundle);
-  if (issues.length) throw new BundleValidationError(issues);
-
-  if (map) {
-    const mapIssues = validateEvidenceMap(bundle, map);
-    if (mapIssues.length) throw new BundleValidationError(mapIssues);
-  }
+export function createSession(
+  source,
+  {
+    evidenceMap = null,
+    // Configuration, not UI: `static_order` is today's behaviour and the
+    // default. A host may also pass a function of its own.
+    questionStrategy = 'static_order',
+    selectNextQuestion = null,
+    // `profile_match` is opt-in until phase 6 shows it; with the flag off the
+    // result is exactly the object it has always been.
+    profileMatch = false,
+  } = {},
+) {
+  // One loader for both bundle shapes: after this line everything below works
+  // on a single model, so a second format cannot change what the engine does.
+  const loaded = loadBundle(source, { evidenceMap });
+  const bundle = loaded.bundle;
+  const map = loaded.evidenceMap;
+  const strategy = resolveStrategy(selectNextQuestion ?? questionStrategy);
 
   const questions = asArray(bundle.questions).slice().sort((a, b) => a.ask_order - b.ask_order);
   const questionById = new Map(questions.map((question) => [question.id, question]));
@@ -238,7 +239,10 @@ export function createSession(source, { evidenceMap = null } = {}) {
     bundleId: bundle.bundle_id,
     bundleVersion: bundle.bundle_version,
     // Report the schema the caller handed in, not the internal shape.
-    schemaVersion: source.schema_version,
+    schemaVersion: loaded.schemaVersion,
+    bundleFormat: loaded.format,
+    strategy: strategy.name,
+    profileMatch: Boolean(profileMatch),
     hasEvidenceMap: Boolean(map),
 
     get state() {
@@ -265,14 +269,33 @@ export function createSession(source, { evidenceMap = null } = {}) {
         .map((question) => clone(question));
     },
 
-    /** Next unanswered, visible question in ask_order; null when finished or stopped. */
+    /**
+     * Next question, chosen by the configured strategy (default: first unanswered
+     * visible question in ask_order — exactly the pre-phase-2 behaviour).
+     * Null when the questionnaire is finished or the session reached a safe stop.
+     */
     nextQuestion() {
       const derived = derive();
       if (derived.stopped) return null;
-      const question = questions.find(
+      const eligible = questions.filter(
         (item) => questionIsVisible(item, answers) && answers[item.id] === undefined,
       );
-      return question ? clone(question) : null;
+      if (eligible.length === 0) return null;
+
+      const picked = strategy.select(strategyState({ answers, derived, eligible, clone }));
+      if (picked === null || picked === undefined) return null;
+
+      const id = typeof picked === 'string' ? picked : picked.id;
+      const question = questionById.get(id);
+      if (!question) {
+        throw new QuestionStrategyError(strategy.name, `unknown question "${id}"`);
+      }
+      // A strategy may re-order; it may never ask something the bundle hides or
+      // something already answered.
+      if (!eligible.some((item) => item.id === id)) {
+        throw new QuestionStrategyError(strategy.name, `question "${id}" is not askable right now`);
+      }
+      return clone(question);
     },
 
     canAnswer(id) {
@@ -355,7 +378,7 @@ export function createSession(source, { evidenceMap = null } = {}) {
       const cardsAllowed = derived.coverage.result === 'sufficient';
       const evidence = cardsAllowed ? session.evidence() : {};
 
-      return {
+      const result = {
         state: derived.stopped ? 'stopped' : 'asking',
         coverage: derived.coverage,
         cards_allowed: cardsAllowed,
@@ -377,6 +400,15 @@ export function createSession(source, { evidenceMap = null } = {}) {
         disclaimers: clone(bundle.disclaimers ?? {}),
         bundle_version: bundle.bundle_version,
       };
+
+      // Added field only, and only when the host asks for it: with the flag off
+      // the object above is byte-identical to the pre-phase-2 result.
+      if (profileMatch) {
+        result.profile_match = cardsAllowed
+          ? profileMatchFor([...derived.paths.keys()], conditions, evidence)
+          : {};
+      }
+      return result;
     },
 
     snapshot() {

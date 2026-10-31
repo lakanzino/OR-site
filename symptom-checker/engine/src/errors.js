@@ -71,3 +71,30 @@ export class SessionStoppedError extends SymptomEngineError {
     this.name = 'SessionStoppedError';
   }
 }
+
+/**
+ * The question-selection strategy asked for does not exist, or returned
+ * something the engine must never ask (unknown id, hidden question, a question
+ * that was already answered). A strategy is a hook, not a way around the
+ * bundle's own rules.
+ */
+export class QuestionStrategyError extends SymptomEngineError {
+  constructor(strategy, reason, details = {}) {
+    super('QUESTION_STRATEGY_INVALID', `Invalid question strategy (${strategy}): ${reason}`, {
+      strategy,
+      reason,
+      ...details,
+    });
+    this.name = 'QuestionStrategyError';
+  }
+}
+
+/** The loader was handed something that is not a bundle object at all. */
+export class BundleFormatError extends SymptomEngineError {
+  constructor(received) {
+    super('BUNDLE_FORMAT_INVALID', `A knowledge bundle object was expected, got ${received}`, {
+      received,
+    });
+    this.name = 'BundleFormatError';
+  }
+}

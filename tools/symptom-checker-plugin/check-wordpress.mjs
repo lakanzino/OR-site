@@ -423,6 +423,7 @@ add_action( 'init', function () {
   check('the inline config is printed before the module', Boolean(configMatch) && page.body.indexOf('window.HJ_SC_CONFIG') < page.body.indexOf('<script type="module"'));
   check('the config points inside the plugin', Boolean(config?.bundleUrl?.includes('/wp-content/plugins/hamyar-symptom-checker/assets/')));
   check('the draft bundle version is exposed', config?.bundleVersion === '0.2.0-draft', config?.bundleVersion ?? '');
+  check('the config states the question strategy', config?.questionStrategy === 'static_order', config?.questionStrategy ?? 'missing');
   check('the published article is mapped', Boolean(config?.topicLinks?.app?.endsWith('/disease/appendicitis/')), JSON.stringify(config?.topicLinks ?? {}));
   check('the draft article is not mapped', !('kidney_stone' in (config?.topicLinks ?? {})));
 
@@ -436,6 +437,9 @@ add_action( 'init', function () {
     `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/ui/anatomy-hero.jpg`,
     `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/engine/src/engine.js`,
     `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/engine/src/adapter.js`,
+    `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/engine/src/load-bundle.js`,
+    `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/engine/src/strategy.js`,
+    `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/engine/src/profile-match.js`,
     `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/engine/src/evidence.js`,
     `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/engine/src/validate-bundle.js`,
     `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/engine/src/errors.js`,

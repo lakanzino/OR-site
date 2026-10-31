@@ -131,7 +131,32 @@ for (let index = 0; index < limit; index += 1) {
   compare(`random path ${index}`, stored.result, session.result());
 }
 
-// --- 4. optional differential run on fresh random paths ---------------------
+// --- 4. profile_match: the phase-2 field, tested on its own ------------------
+// The flag is off by default, so the frozen comparison above never sees the
+// field. Here both shapes turn it on and must agree — and the value must be one
+// of the three words, never a number.
+const PROFILE_MATCH_LEVELS = ['strong', 'partial', 'weak'];
+const profileLimit = quick ? 50 : 200;
+const profileCases = [
+  ...scenarioIds.map((id) => ({ label: `scenario ${id}`, answers: readJson(`tests/golden/v1/scenarios/${id}.json`).answers })),
+  ...lines.slice(0, profileLimit).map((line, index) => ({ label: `random path ${index}`, answers: JSON.parse(line).answers })),
+];
+for (const item of profileCases) {
+  const fromV1 = createSession(bundleV1, { evidenceMap: map, profileMatch: true });
+  const fromV2 = createSession(bundleV2, { profileMatch: true });
+  applyAnswers(fromV1, item.answers);
+  applyAnswers(fromV2, item.answers);
+  const one = fromV1.result();
+  const two = fromV2.result();
+  compare(`${item.label} profile_match (v1 vs v2)`, one.profile_match, two.profile_match);
+  for (const [conditionId, level] of Object.entries(one.profile_match ?? {})) {
+    if (!PROFILE_MATCH_LEVELS.includes(level)) {
+      fail(`${item.label} profile_match ${conditionId}`, 'value', PROFILE_MATCH_LEVELS.join('|'), level);
+    }
+  }
+}
+
+// --- 5. optional differential run on fresh random paths ---------------------
 if (differential) {
   const mapV1 = readJson(MAP_PATH);
   const randomV1 = mulberry32(randomSeed);
@@ -148,6 +173,7 @@ if (differential) {
 const summary = {
   scenarios: scenarioIds.length,
   random_paths: limit,
+  profile_match_cases: profileCases.length,
   differential: differential ? { count: randomCount, seed: randomSeed } : null,
   evidence_entries: rebuilt.entries.length,
   failures,
@@ -165,7 +191,7 @@ if (asJson) {
   console.log(
     failures.length
       ? `MISMATCH — ${failures.length} difference(s) between the v2 bundle and tests/golden/v1`
-      : `OK schema 2.0.0 reproduces tests/golden/v1 exactly: ${scenarioIds.length} scenarios + ${limit} random paths, ${rebuilt.entries.length} evidence rows` +
+      : `OK schema 2.0.0 reproduces tests/golden/v1 exactly: ${scenarioIds.length} scenarios + ${limit} random paths, ${rebuilt.entries.length} evidence rows; profile_match identical on ${profileCases.length} cases` +
         (differential ? ` — plus ${randomCount} fresh paths (seed ${randomSeed}) identical on v1 and v2` : ''),
   );
 }
