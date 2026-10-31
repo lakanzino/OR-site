@@ -1,0 +1,40 @@
+{
+  "name": "lax-robot",
+  "version": "0.1.0",
+  "date": "2026-10-31",
+  "repo": "lakanzino/OR-site",
+  "head": "c966f19",
+  "note_fa": "فهرست فایل‌های این سند با اندازه و sha256. نام ابزار = نام پوشه = نسخه.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3923,
+      "sha256": "5ea52aeb727c2bbeb0b9cd66008520497ff07b7ed045786ebb4299b6d964dfaa"
+    },
+    {
+      "path": "architecture.fa.md",
+      "bytes": 9883,
+      "sha256": "710153231242a276cf8c13b793a9e6d0352b60dd8c7d297c7d84ed049f31e0d3"
+    },
+    {
+      "path": "development-log.fa.md",
+      "bytes": 10085,
+      "sha256": "a6f02c64b9360e3dc29474f8cb13f209000c3e023de5e679bd957e031899605c"
+    },
+    {
+      "path": "tools/symptom-checker-author-0.1.0/README.md",
+      "bytes": 2746,
+      "sha256": "09d2e25f649d4ba313cb04583309f641438aa33519032208e81b1bda6c054b85"
+    },
+    {
+      "path": "tools/symptom-checker-engine-0.1.7/README.md",
+      "bytes": 2473,
+      "sha256": "86cd12f72888a10d90c88f8f247c0fc60e026a11bb68d66d0f0a5115ae149c50"
+    },
+    {
+      "path": "tools/symptom-checker-ui-0.1.7/README.md",
+      "bytes": 2043,
+      "sha256": "2c3498662bcd90c16c97fcceed6a31f1d9e4cb8e6f4c372a317fba02357bcc1b"
+    }
+  ]
+}
