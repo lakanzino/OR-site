@@ -38,7 +38,10 @@ ZIP_TIMESTAMP = (2026, 1, 1, 0, 0, 0)
 ASSET_SOURCES = {
     "symptom-checker/ui/app.js": "ui/app.js",
     "symptom-checker/ui/view-model.js": "ui/view-model.js",
+    "symptom-checker/ui/question-help.js": "ui/question-help.js",
     "symptom-checker/ui/styles.css": "ui/styles.css",
+    # styles.css loads it with a relative url(), so it must sit beside the CSS.
+    "symptom-checker/ui/anatomy-hero.jpg": "ui/anatomy-hero.jpg",
     "symptom-checker/engine/src/engine.js": "engine/src/engine.js",
     "symptom-checker/engine/src/evidence.js": "engine/src/evidence.js",
     "symptom-checker/engine/src/validate-bundle.js": "engine/src/validate-bundle.js",

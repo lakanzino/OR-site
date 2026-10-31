@@ -7,6 +7,7 @@
  */
 
 import { createSession } from '../engine/src/engine.js';
+import { FALLBACK_HELP, QUESTION_HELP } from './question-help.js';
 import {
   buildProgress,
   buildResultView,
@@ -36,6 +37,13 @@ const state = {
   error: null,
   draft: null,
   showEditor: false,
+  // Free-text notes written under the options. Memory only: they are never
+  // passed to the engine and never leave this page.
+  notes: {},
+  noteDraft: '',
+  // Active typing timer for the robot explanation, cleared on every render.
+  typing: null,
+  narratorStart: null,
   // Questions whose answers contradict each other in the current result.
   conflictQuestions: new Set(),
 };
@@ -74,6 +82,183 @@ function announce(message) {
   }, 50);
 }
 
+// --- robot narrator -------------------------------------------------------
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+function prefersReducedMotion() {
+  return typeof window.matchMedia === 'function'
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function stopTyping() {
+  if (!state.typing) return;
+  window.clearInterval(state.typing.timer);
+  state.typing = null;
+}
+
+/**
+ * Types `text` into `target` over roughly `durationMs`, then calls `onDone`.
+ * The animation is decoration only: `renderNarrator` also writes the whole
+ * sentence once into an `.sr-only` paragraph, so a screen reader reads it
+ * normally instead of character by character.
+ */
+function typeText(target, text, { durationMs = 2500, onDone } = {}) {
+  stopTyping();
+  const caret = el('span', { class: 'caret', 'aria-hidden': 'true' });
+  target.textContent = '';
+  target.append(caret);
+
+  const finish = () => {
+    stopTyping();
+    target.textContent = text;
+    onDone?.();
+  };
+
+  if (!text || prefersReducedMotion()) {
+    finish();
+    return;
+  }
+
+  // 14–38 ms per character keeps the whole sentence inside ~2.5 seconds.
+  const step = Math.min(38, Math.max(14, Math.round(durationMs / Math.max(text.length, 1))));
+  let index = 0;
+  const timer = window.setInterval(() => {
+    index += 1;
+    target.textContent = text.slice(0, index);
+    target.append(caret);
+    if (index >= text.length) finish();
+  }, step);
+  state.typing = { timer, finish };
+}
+
+function skipTyping() {
+  state.typing?.finish();
+}
+
+/** Inline SVG robot head — static markup, no data injected. */
+function robotAvatar() {
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 48 48');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
+  const add = (tag, attrs) => {
+    const node = document.createElementNS(SVG_NS, tag);
+    for (const [key, value] of Object.entries(attrs)) node.setAttribute(key, value);
+    svg.append(node);
+  };
+  add('rect', { x: '9', y: '15', width: '30', height: '23', rx: '8', fill: '#ffffff', stroke: '#041d47', 'stroke-width': '2.4' });
+  add('rect', { x: '6', y: '21', width: '4', height: '8', rx: '2', fill: '#041d47' });
+  add('rect', { x: '38', y: '21', width: '4', height: '8', rx: '2', fill: '#041d47' });
+  add('path', { d: 'M24 9v6', stroke: '#041d47', 'stroke-width': '2.4', 'stroke-linecap': 'round' });
+  add('circle', { cx: '24', cy: '7', r: '2.8', fill: '#ff6a00' });
+  add('circle', { cx: '18.5', cy: '24', r: '3.1', fill: '#0b47a1' });
+  add('circle', { cx: '29.5', cy: '24', r: '3.1', fill: '#0b47a1' });
+  add('rect', { x: '18', y: '31', width: '12', height: '3.4', rx: '1.7', fill: '#e85d00' });
+  return svg;
+}
+
+function helpFor(question) {
+  return QUESTION_HELP[question.id] ?? FALLBACK_HELP;
+}
+
+/** The "if it feels like this → pick that" list, built only from real options. */
+function narratorGuide(question, help) {
+  const options = question.options ?? [];
+  const items = [];
+
+  for (const option of options) {
+    if (option.id === 'unknown') continue;
+    const line = help.options?.[option.id];
+    if (line) items.push(el('li', { text: line }));
+  }
+  if (!items.length) return null;
+
+  const unknownOption = options.find((option) => option.id === 'unknown');
+  if (unknownOption) {
+    items.unshift(el('li', { text: 'اگر یکی از این‌ها با حالت امروزت می‌خواند، همان را انتخاب کن:' }));
+    // The unknown line is styled as a rule, not as one more choice. The
+    // fallback uses the real label, so the text always matches the option.
+    items.push(el('li', {
+      class: 'unknown-rule',
+      text: help.options?.unknown
+        ?? `اگر هیچ‌کدام نمی‌خواند یا شک داری، «${unknownOption.label_fa}» را انتخاب کن.`,
+    }));
+  }
+
+  return el('ul', { class: 'narrator-guide' }, items);
+}
+
+function renderNarrator(question) {
+  const help = helpFor(question);
+  const text = help.intro;
+  const guide = narratorGuide(question, help);
+
+  const textNode = el('p', { class: 'narrator-text', 'aria-hidden': 'true' });
+  const skipHolder = el('div', { class: 'narrator-skip' });
+  const guideHolder = el('div');
+
+  const node = el('div', { class: 'narrator' }, [
+    el('div', { class: 'narrator-avatar' }, [robotAvatar()]),
+    el('div', { class: 'narrator-body' }, [
+      el('p', { class: 'narrator-title', text: 'راهنمای انتخاب گزینه' }),
+      el('p', { class: 'sr-only', text }),
+      textNode,
+      guideHolder,
+      skipHolder,
+    ]),
+  ]);
+
+  state.narratorStart = () => {
+    if (!guide) return;
+    const skipButton = el('button', {
+      type: 'button',
+      text: 'نمایش کامل متن',
+      onClick: () => skipTyping(),
+    });
+    skipHolder.append(skipButton);
+    typeText(textNode, text, {
+      durationMs: 2500,
+      onDone: () => {
+        skipHolder.textContent = '';
+        guideHolder.append(guide);
+      },
+    });
+  };
+
+  return node;
+}
+
+// --- free-text notes ------------------------------------------------------
+function syncNoteField(isUnknown) {
+  const field = document.querySelector('.note-field');
+  if (!field) return;
+  field.classList.toggle('is-unknown', Boolean(isUnknown));
+}
+
+function renderNoteField(question) {
+  const id = `note-${question.id}`;
+  const textarea = el('textarea', {
+    id,
+    maxlength: 500,
+    rows: 3,
+    placeholder: 'مثلاً: دردی که فقط وقتی خم می‌شوم حس می‌شود و در گزینه‌ها نیست.',
+  });
+  textarea.value = state.noteDraft ?? '';
+  textarea.addEventListener('input', () => {
+    state.noteDraft = textarea.value;
+  });
+
+  return el('div', { class: 'note-field' }, [
+    el('label', { for: id, text: 'چیزی هست که در گزینه‌ها نیست؟' }),
+    textarea,
+    el('p', {
+      class: 'note-hint',
+      text: 'این یادداشت هیچ تأثیری روی پرسش‌های بعدی، مسیر ابزار و نتیجه ندارد. جایی ارسال نمی‌شود و فقط تا پایان همین صفحه می‌ماند.',
+    }),
+  ]);
+}
+
+
 // --- data ----------------------------------------------------------------
 async function loadData() {
   const [bundleResponse, evidenceResponse] = await Promise.all([
@@ -92,6 +277,8 @@ function startSession() {
   state.error = null;
   state.showEditor = false;
   state.conflictQuestions = new Set();
+  state.notes = {};
+  state.noteDraft = '';
   state.screen = 'question';
   state.draft = null;
   renderSafetyBanners(safetyRegion);
@@ -113,6 +300,8 @@ function goToNextQuestion() {
 
 // --- rendering -----------------------------------------------------------
 function render() {
+  stopTyping();
+  state.narratorStart = null;
   clear(app);
   if (state.screen === 'loading') return renderLoading();
   if (state.screen === 'error') return renderError();
@@ -140,7 +329,9 @@ function renderError() {
 
 function renderIntro() {
   const disclaimers = state.bundle.disclaimers ?? {};
-  app.append(el('section', { class: 'card' }, [
+  app.append(el('section', { class: 'card intro-card' }, [
+    // Decorative hologram: no text, hidden from assistive tech.
+    el('div', { class: 'hero-figure', 'aria-hidden': 'true' }),
     el('h1', { text: 'همیار نشانه‌ها — نمونهٔ نمایشی' }),
     el('p', { class: 'badge-line' }, [
       el('span', { class: 'badge warn', text: 'نمایشی' }),
@@ -205,6 +396,7 @@ function renderScaleInput(question) {
   unknown.addEventListener('change', () => {
     input.disabled = unknown.checked;
     state.draft = unknown.checked ? { kind: 'scale', value: 'unknown' } : { kind: 'scale', value: null };
+    syncNoteField(unknown.checked);
     updateSubmitState();
   });
 
@@ -249,8 +441,10 @@ function renderOptions(question) {
         }
         const values = inputs.filter((item) => item.input.checked).map((item) => item.option.id);
         state.draft = { kind: 'multi', value: values };
+        syncNoteField(values.includes('unknown'));
       } else {
         state.draft = { kind: 'single', value: option.id };
+        syncNoteField(option.id === 'unknown');
       }
       updateSubmitState();
     });
@@ -279,6 +473,13 @@ function submitAnswer() {
   const question = state.current;
   const draft = state.draft;
   if (!question || !draft) return;
+
+  // The free-text note is kept beside the answer for the closing summary only.
+  // It is never passed to session.answer(): the engine sees the option alone.
+  const note = (state.noteDraft ?? '').trim();
+  if (note) state.notes[question.id] = note;
+  else delete state.notes[question.id];
+  state.noteDraft = '';
 
   const value = draft.kind === 'multi' ? draft.value : draft.value;
   try {
@@ -320,6 +521,7 @@ function renderEditor() {
           state.screen = 'question';
           state.current = question;
           state.draft = null;
+          state.noteDraft = state.notes[questionId] ?? '';
           state.showEditor = false;
           renderSafetyBanners(safetyRegion);
           render();
@@ -357,6 +559,7 @@ function renderQuestion() {
       ]),
       el('h1', { class: 'question', tabindex: '-1', id: 'question-title', text: question.text_fa }),
       el('p', { class: 'muted small', text: question.why_fa }),
+      renderNarrator(question),
       el('form', {
         onSubmit: (event) => {
           event.preventDefault();
@@ -367,6 +570,7 @@ function renderQuestion() {
           el('legend', { class: 'sr-only', text: question.text_fa }),
           renderOptions(question),
         ]),
+        renderNoteField(question),
         el('div', { class: 'actions' }, [
           el('button', { id: 'submit-answer', class: 'primary', type: 'submit', text: 'ادامه', disabled: true }),
           el('button', {
@@ -375,6 +579,8 @@ function renderQuestion() {
             text: 'بازگشت',
             disabled: !state.session.canUndo(),
             onClick: () => {
+              if (state.current) delete state.notes[state.current.id];
+              state.noteDraft = '';
               state.session.undo();
               state.showEditor = false;
               renderSafetyBanners(safetyRegion);
@@ -389,6 +595,7 @@ function renderQuestion() {
   );
 
   document.getElementById('question-title')?.focus?.();
+  state.narratorStart?.();
 }
 
 function pushProgress(percent) {
@@ -460,6 +667,30 @@ function openConflictEditor() {
   announce('پاسخ‌هایی که با هم نمی‌خوانند مشخص شدند؛ یکی را اصلاح کنید.');
 }
 
+function renderNotesSummary() {
+  const entries = Object.entries(state.notes);
+  if (!entries.length) return null;
+
+  return el('section', { class: 'card notes-summary' }, [
+    el('h2', { text: 'یادداشت‌های شما' }),
+    el('p', {
+      class: 'small',
+      text: 'این‌ها همان چیزهایی است که در گزینه‌ها نبود. نه پرسشی را تغییر داده‌اند و نه در نتیجه اثری داشته‌اند.',
+    }),
+    el('ul', {}, entries.map(([questionId, note]) => {
+      const question = state.session.question(questionId);
+      return el('li', {}, [
+        el('strong', { text: `${question?.text_fa ?? questionId}: ` }),
+        el('span', { text: note }),
+      ]);
+    })),
+    el('p', {
+      class: 'small muted',
+      text: 'در این نسخه یادداشت‌ها هیچ‌جا ارسال یا ذخیره نمی‌شوند و با بستن صفحه پاک می‌شوند.',
+    }),
+  ]);
+}
+
 function renderResult() {
   const result = state.session.result();
   const view = buildResultView(result, { topicLinks: TOPIC_LINKS });
@@ -487,6 +718,9 @@ function renderResult() {
       renderEditor(),
     ]),
   );
+
+  const notesSummary = renderNotesSummary();
+  if (notesSummary) app.append(notesSummary);
 
   for (const card of view.cards) app.append(renderCard(card));
 

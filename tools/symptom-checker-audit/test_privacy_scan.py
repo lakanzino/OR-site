@@ -66,6 +66,17 @@ class ScannerRuleTests(unittest.TestCase):
         self.assertRule("const url = 'https://example.org/answers';", "remote_literal")
         self.assertRule("<script src=\"https://cdn.example.org/x.js\"></script>", "remote_assets")
 
+    def test_xml_namespace_is_not_a_remote_url(self) -> None:
+        # The SVG namespace is an identifier string, not a request.
+        findings = scan.scan_text(
+            "symptom-checker/ui/app.js",
+            "const SVG_NS = 'http://www.w3.org/2000/svg';\nsvg.setAttribute('xmlns', SVG_NS);",
+        )
+        self.assertFalse([item for item in findings if item.rule == "remote_literal"], findings)
+        # The exemption is exact: a look-alike host is still a finding.
+        self.assertRule("const x = 'http://www.w3.org/2000/svg.evil.example/x';", "remote_literal")
+        self.assertRule("const x = 'http://www.w3.org/2000/svg?collect=1';", "remote_literal")
+
     def test_unknown_fetch_target_is_detected(self) -> None:
         self.assertRule("fetch('https://example.org/answers');", "network")
         self.assertRule("fetch('/api/answers', { method: 'POST' });", "network")
