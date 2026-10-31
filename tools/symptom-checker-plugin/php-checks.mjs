@@ -70,6 +70,8 @@ const scenarios = [
   'syntax',
   'guards',
   'activation',
+  'activation-error',
+  'notice',
   'mapping',
   'mapping-nodisease',
   'slugs',

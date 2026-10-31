@@ -71,6 +71,12 @@ class WP_Error {
 		$this->code    = $code;
 		$this->message = $message;
 	}
+	public function get_error_message() {
+		return (string) $this->message;
+	}
+	public function get_error_code() {
+		return (string) $this->code;
+	}
 }
 
 function is_wp_error( $thing ) {
@@ -115,6 +121,19 @@ function do_action( $tag, ...$args ) {
 	$GLOBALS['hj_stub']['actions'][ $tag ][] = $args;
 }
 
+function delete_option( $name ) {
+	unset( $GLOBALS['hj_stub']['options'][ $name ] );
+	return true;
+}
+
+function current_user_can( $capability ) {
+	return in_array( $capability, $GLOBALS['hj_stub']['caps'] ?? array( 'manage_options' ), true );
+}
+
+function get_bloginfo( $what = '' ) {
+	return 'version' === $what ? ( $GLOBALS['hj_stub']['wp_version'] ?? '6.8.3' ) : '';
+}
+
 function get_option( $name, $default = false ) {
 	return array_key_exists( $name, $GLOBALS['hj_stub']['options'] ) ? $GLOBALS['hj_stub']['options'][ $name ] : $default;
 }
@@ -138,6 +157,9 @@ function get_page_by_path( $slug, $output = OBJECT, $post_type = 'page' ) {
 }
 
 function wp_insert_post( $data, $wp_error = false ) {
+	if ( ! empty( $GLOBALS['hj_stub']['fail_insert'] ) ) {
+		return new WP_Error( 'db_insert_error', 'simulated database failure' );
+	}
 	$id = $GLOBALS['hj_stub']['next_id']++;
 
 	$post = new WP_Post(
@@ -170,8 +192,11 @@ function get_posts( $args = array() ) {
 		if ( isset( $args['post_type'] ) && $post->post_type !== $args['post_type'] ) {
 			continue;
 		}
-		if ( isset( $args['post_status'] ) && $post->post_status !== $args['post_status'] ) {
-			continue;
+		if ( isset( $args['post_status'] ) ) {
+			$wanted = (array) $args['post_status'];
+			if ( ! in_array( 'any', $wanted, true ) && ! in_array( $post->post_status, $wanted, true ) ) {
+				continue;
+			}
 		}
 		if ( isset( $args['name'] ) && $post->post_name !== $args['name'] ) {
 			continue;

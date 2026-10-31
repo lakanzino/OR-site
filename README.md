@@ -29,6 +29,8 @@
 
 افزونهٔ وردپرس [`plugins/hamyar-symptom-guide/`](plugins/hamyar-symptom-guide/) برگه‌ای مستقل و پیش‌نویس بدون شورت‌کد برای بررسی و انتشار می‌سازد. راهنمای نصب و محدودیت‌ها در README افزونه است.
 
+**نسخهٔ ۰.۱.۲ افزونه — نصب مطمئن:** پس از آنکه فعال‌سازی ۰.۱.۱ روی سایت با پیام «مشکل جدی» شکست خورد، فعال‌سازی بی‌خطر شد (ساخت برگه در پیشخوان بعدی)، فایل‌ها با نگهبان بارگذاری می‌شوند و هر خطا در پیشخوان با فایل/خط/نسخه‌ها گزارش می‌شود. بسته: [`releases/hamyar-symptom-checker-0.1.2.zip`](releases/hamyar-symptom-checker-0.1.2.zip). [راهنمای نصب و عیب‌یابی](docs/symptom-checker/phase-5/release-0.1.2.fa.md)
+
 **نسخهٔ ۰.۱.۱ افزونه — چهار شکاف اصلاح شد:** متن پایان پرسش‌نامه، دکمهٔ اصلاح تناقض، گزینه و قاعدهٔ فوری «ناتوانی در دفع ادرار»، و نمایش پرسش‌های کم‌آبی با تب/استفراغ. بسته: [`releases/hamyar-symptom-checker-0.1.1.zip`](releases/hamyar-symptom-checker-0.1.1.zip) (دادهٔ `0.2.0-draft`). ۸۱ آزمون موتور، ۲۵ سناریو، ۳۴/۳۴ وردپرس محلی، ۱۲/۱۲ + ۱۳/۱۳ سناریوی رابط. [راهنمای نصب و بازبینی](docs/symptom-checker/phase-5/release-0.1.1.fa.md)
 
 **فاز ۵ (آزمون ایمنی و محرمانگی) انجام شد — بازبینی انسانی باز است:** ۱۰ سناریوی حاشیه‌ای، ماتریس ۷ قاعدهٔ ایمنی، بازرس محرمانگی ایستا و دو آزمون محرمانگی زمان‌اجرا (رابط و وردپرس محلی) اضافه شد؛ ۷۶ آزمون موتور، ۶۴ آزمون دروازهٔ تألیف و ۳۴/۳۴ بررسی وردپرس. اجرا: `cd symptom-checker/engine && node --test`، `python3 tools/symptom-checker-audit/privacy_scan.py --zip releases/hamyar-symptom-checker-0.1.0.zip` و `node symptom-checker/ui/tests/ui-smoke.mjs --scenarios docs/symptom-checker/phase-5/scenarios-adversarial.v1.json --all`. چک‌لیست بازبینی انسانی: [`docs/symptom-checker/phase-5/ui-review-checklist.fa.md`](docs/symptom-checker/phase-5/ui-review-checklist.fa.md). [گزارش فاز ۵](docs/symptom-checker/phase-5-report.fa.md)
