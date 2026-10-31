@@ -1,0 +1,771 @@
+{
+  "bundles": [
+    {
+      "name": "shipped-v1",
+      "safety_matrix": [
+        {
+          "rule": "sf_severe_pain",
+          "severity": "urgent",
+          "static": true,
+          "adaptive": true
+        },
+        {
+          "rule": "sf_cannot_urinate",
+          "severity": "urgent",
+          "static": true,
+          "adaptive": true
+        },
+        {
+          "rule": "sf_pain_worsening",
+          "severity": "prompt",
+          "static": true,
+          "adaptive": true
+        },
+        {
+          "rule": "sf_fever_flank",
+          "severity": "urgent",
+          "static": true,
+          "adaptive": true
+        },
+        {
+          "rule": "sf_cannot_keep_fluids",
+          "severity": "prompt",
+          "static": true,
+          "adaptive": true
+        },
+        {
+          "rule": "sf_dehydration",
+          "severity": "prompt",
+          "static": true,
+          "adaptive": true
+        },
+        {
+          "rule": "sf_blood_in_stool",
+          "severity": "prompt",
+          "static": true,
+          "adaptive": true
+        },
+        {
+          "rule": "sf_pregnancy_out_of_scope",
+          "severity": "urgent",
+          "static": true,
+          "adaptive": true
+        }
+      ],
+      "conditions": 5,
+      "questions": 17,
+      "personas": 205,
+      "perCondition": [
+        {
+          "condition": "app",
+          "name_fa": "آپاندیسیت",
+          "static_to_card": 2,
+          "literal_to_card": 9,
+          "base_screen_to_card": 7,
+          "adaptive_to_card": 9,
+          "static_questions": 17,
+          "literal_questions": 17,
+          "base_screen_questions": 17,
+          "static_safety": [
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "literal_safety": [
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "base_screen_safety": [
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "cards_static": [
+            "app",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_literal": [
+            "app",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_base_screen": [
+            "app",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "literal_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_keep_fluids",
+            "q_blood_in_stool"
+          ],
+          "base_screen_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_dehydration_signs",
+            "q_pain_present"
+          ]
+        },
+        {
+          "condition": "kidney_stone",
+          "name_fa": "سنگ کلیه",
+          "static_to_card": 2,
+          "literal_to_card": 8,
+          "base_screen_to_card": 7,
+          "adaptive_to_card": 8,
+          "static_questions": 16,
+          "literal_questions": 16,
+          "base_screen_questions": 16,
+          "static_safety": [
+            "sf_cannot_urinate",
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "literal_safety": [
+            "sf_cannot_urinate",
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "base_screen_safety": [
+            "sf_cannot_urinate",
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "cards_static": [
+            "kidney_stone",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_literal": [
+            "kidney_stone",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_base_screen": [
+            "kidney_stone",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "literal_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_keep_fluids",
+            "q_dehydration_signs"
+          ],
+          "base_screen_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_dehydration_signs",
+            "q_pain_present"
+          ]
+        },
+        {
+          "condition": "kidney_infection",
+          "name_fa": "عفونت کلیه (پیلونفریت)",
+          "static_to_card": 11,
+          "literal_to_card": 8,
+          "base_screen_to_card": 7,
+          "adaptive_to_card": 8,
+          "static_questions": 16,
+          "literal_questions": 16,
+          "base_screen_questions": 16,
+          "static_safety": [
+            "sf_pain_worsening",
+            "sf_fever_flank",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "literal_safety": [
+            "sf_pain_worsening",
+            "sf_fever_flank",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "base_screen_safety": [
+            "sf_pain_worsening",
+            "sf_fever_flank",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "cards_static": [
+            "kidney_stone",
+            "kidney_infection",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_literal": [
+            "kidney_stone",
+            "kidney_infection",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_base_screen": [
+            "kidney_stone",
+            "kidney_infection",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "literal_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_keep_fluids",
+            "q_dehydration_signs"
+          ],
+          "base_screen_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_dehydration_signs",
+            "q_pain_present"
+          ]
+        },
+        {
+          "condition": "urinary_tract",
+          "name_fa": "عفونت مجاری ادراری",
+          "static_to_card": 2,
+          "literal_to_card": 1,
+          "base_screen_to_card": 1,
+          "adaptive_to_card": 1,
+          "static_questions": 8,
+          "literal_questions": 8,
+          "base_screen_questions": 8,
+          "static_safety": [
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "literal_safety": [
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "base_screen_safety": [
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "cards_static": [
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_literal": [
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_base_screen": [
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "literal_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_keep_fluids",
+            "q_blood_in_stool"
+          ],
+          "base_screen_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_dehydration_signs",
+            "q_pain_present"
+          ]
+        },
+        {
+          "condition": "gastroenteritis",
+          "name_fa": "التهاب معده و روده (گاستروانتریت)",
+          "static_to_card": 4,
+          "literal_to_card": 4,
+          "base_screen_to_card": 4,
+          "adaptive_to_card": 4,
+          "static_questions": 8,
+          "literal_questions": 8,
+          "base_screen_questions": 8,
+          "static_safety": [
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "literal_safety": [
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "base_screen_safety": [
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "cards_static": [
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_literal": [
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_base_screen": [
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "literal_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_keep_fluids",
+            "q_blood_in_stool"
+          ],
+          "base_screen_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_dehydration_signs",
+            "q_pain_present"
+          ]
+        }
+      ],
+      "totals": {
+        "mean_questions_static": 12.25,
+        "mean_questions_literal": 12.25,
+        "mean_questions_base_screen": 12.25,
+        "static_to_card_max": 11,
+        "literal_to_card_max": 9,
+        "base_screen_to_card_max": 7,
+        "static_misses": 21,
+        "literal_misses": 21,
+        "base_screen_misses": 21,
+        "safety_rules_lost": 0,
+        "base_screen_safety_rules_lost": 0
+      }
+    },
+    {
+      "name": "cholecystitis-v2",
+      "safety_matrix": [
+        {
+          "rule": "sf_severe_pain",
+          "severity": "urgent",
+          "static": true,
+          "adaptive": true
+        },
+        {
+          "rule": "sf_cannot_urinate",
+          "severity": "urgent",
+          "static": true,
+          "adaptive": true
+        },
+        {
+          "rule": "sf_pain_worsening",
+          "severity": "prompt",
+          "static": true,
+          "adaptive": true
+        },
+        {
+          "rule": "sf_fever_flank",
+          "severity": "urgent",
+          "static": true,
+          "adaptive": true
+        },
+        {
+          "rule": "sf_cannot_keep_fluids",
+          "severity": "prompt",
+          "static": true,
+          "adaptive": true
+        },
+        {
+          "rule": "sf_dehydration",
+          "severity": "prompt",
+          "static": true,
+          "adaptive": true
+        },
+        {
+          "rule": "sf_blood_in_stool",
+          "severity": "prompt",
+          "static": true,
+          "adaptive": true
+        },
+        {
+          "rule": "sf_pregnancy_out_of_scope",
+          "severity": "urgent",
+          "static": true,
+          "adaptive": true
+        }
+      ],
+      "conditions": 6,
+      "questions": 18,
+      "personas": 206,
+      "perCondition": [
+        {
+          "condition": "app",
+          "name_fa": "آپاندیسیت",
+          "static_to_card": 2,
+          "literal_to_card": 9,
+          "base_screen_to_card": 6,
+          "adaptive_to_card": 9,
+          "static_questions": 18,
+          "literal_questions": 18,
+          "base_screen_questions": 18,
+          "static_safety": [
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "literal_safety": [
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "base_screen_safety": [
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "cards_static": [
+            "app",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_literal": [
+            "app",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_base_screen": [
+            "app",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "literal_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_keep_fluids",
+            "q_blood_in_stool"
+          ],
+          "base_screen_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_pain_present",
+            "q_pain_location"
+          ]
+        },
+        {
+          "condition": "kidney_stone",
+          "name_fa": "سنگ کلیه",
+          "static_to_card": 2,
+          "literal_to_card": 8,
+          "base_screen_to_card": 6,
+          "adaptive_to_card": 8,
+          "static_questions": 17,
+          "literal_questions": 17,
+          "base_screen_questions": 17,
+          "static_safety": [
+            "sf_cannot_urinate",
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "literal_safety": [
+            "sf_cannot_urinate",
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "base_screen_safety": [
+            "sf_cannot_urinate",
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "cards_static": [
+            "kidney_stone",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_literal": [
+            "kidney_stone",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_base_screen": [
+            "kidney_stone",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "literal_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_keep_fluids",
+            "q_dehydration_signs"
+          ],
+          "base_screen_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_pain_present",
+            "q_pain_location"
+          ]
+        },
+        {
+          "condition": "kidney_infection",
+          "name_fa": "عفونت کلیه (پیلونفریت)",
+          "static_to_card": 12,
+          "literal_to_card": 8,
+          "base_screen_to_card": 6,
+          "adaptive_to_card": 8,
+          "static_questions": 17,
+          "literal_questions": 17,
+          "base_screen_questions": 17,
+          "static_safety": [
+            "sf_pain_worsening",
+            "sf_fever_flank",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "literal_safety": [
+            "sf_pain_worsening",
+            "sf_fever_flank",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "base_screen_safety": [
+            "sf_pain_worsening",
+            "sf_fever_flank",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "cards_static": [
+            "kidney_stone",
+            "kidney_infection",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_literal": [
+            "kidney_stone",
+            "kidney_infection",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_base_screen": [
+            "kidney_stone",
+            "kidney_infection",
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "literal_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_keep_fluids",
+            "q_dehydration_signs"
+          ],
+          "base_screen_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_pain_present",
+            "q_pain_location"
+          ]
+        },
+        {
+          "condition": "urinary_tract",
+          "name_fa": "عفونت مجاری ادراری",
+          "static_to_card": 2,
+          "literal_to_card": 1,
+          "base_screen_to_card": 1,
+          "adaptive_to_card": 1,
+          "static_questions": 8,
+          "literal_questions": 8,
+          "base_screen_questions": 8,
+          "static_safety": [
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "literal_safety": [
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "base_screen_safety": [
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "cards_static": [
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_literal": [
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_base_screen": [
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "literal_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_keep_fluids",
+            "q_blood_in_stool"
+          ],
+          "base_screen_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_pain_present",
+            "q_dehydration_signs"
+          ]
+        },
+        {
+          "condition": "gastroenteritis",
+          "name_fa": "التهاب معده و روده (گاستروانتریت)",
+          "static_to_card": 4,
+          "literal_to_card": 4,
+          "base_screen_to_card": 4,
+          "adaptive_to_card": 4,
+          "static_questions": 8,
+          "literal_questions": 8,
+          "base_screen_questions": 8,
+          "static_safety": [
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "literal_safety": [
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "base_screen_safety": [
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "cards_static": [
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_literal": [
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "cards_base_screen": [
+            "urinary_tract",
+            "gastroenteritis"
+          ],
+          "literal_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_keep_fluids",
+            "q_blood_in_stool"
+          ],
+          "base_screen_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_pain_present",
+            "q_dehydration_signs"
+          ]
+        },
+        {
+          "condition": "chole",
+          "name_fa": "کوله‌سیستیت (التهاب کیسهٔ صفرا)",
+          "static_to_card": 5,
+          "literal_to_card": 15,
+          "base_screen_to_card": 10,
+          "adaptive_to_card": 15,
+          "static_questions": 18,
+          "literal_questions": 18,
+          "base_screen_questions": 18,
+          "static_safety": [
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "literal_safety": [
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "base_screen_safety": [
+            "sf_pain_worsening",
+            "sf_cannot_keep_fluids",
+            "sf_dehydration"
+          ],
+          "cards_static": [
+            "kidney_stone",
+            "urinary_tract",
+            "gastroenteritis",
+            "chole"
+          ],
+          "cards_literal": [
+            "kidney_stone",
+            "urinary_tract",
+            "gastroenteritis",
+            "chole"
+          ],
+          "cards_base_screen": [
+            "kidney_stone",
+            "urinary_tract",
+            "gastroenteritis",
+            "chole"
+          ],
+          "literal_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_keep_fluids",
+            "q_blood_in_stool"
+          ],
+          "base_screen_first_questions": [
+            "q_urinary_symptoms",
+            "q_fever_chills",
+            "q_pregnancy_possible",
+            "q_diarrhea_vomiting",
+            "q_pain_present",
+            "q_pain_location"
+          ]
+        }
+      ],
+      "totals": {
+        "mean_questions_static": 13.7,
+        "mean_questions_literal": 13.7,
+        "mean_questions_base_screen": 13.7,
+        "static_to_card_max": 12,
+        "literal_to_card_max": 15,
+        "base_screen_to_card_max": 10,
+        "static_misses": 19,
+        "literal_misses": 19,
+        "base_screen_misses": 19,
+        "safety_rules_lost": 0,
+        "base_screen_safety_rules_lost": 0
+      }
+    }
+  ],
+  "generated": "2026-10-31"
+}

@@ -20,6 +20,7 @@
  * page, and never by an answer.
  */
 
+import { chooseAdaptive } from './adaptive.js';
 import { QuestionStrategyError } from './errors.js';
 
 export const STATIC_ORDER = 'static_order';
@@ -34,11 +35,12 @@ export const CUSTOM = 'custom';
 const staticOrder = (state) => state.nextInOrder();
 
 /**
- * Skeleton only. Phase 4 replaces this body with the adaptive ordering and the
- * `N` switch criterion; today it must return exactly the static order, and the
- * tests pin that so nobody mistakes the empty shell for a working feature.
+ * Phase 4: the adaptive order. It is a real strategy now, but nothing switches
+ * to it by itself — the page still configures `static_order`, and the shadow
+ * trace (see `engine.js`) records what this would have asked *without* asking
+ * it. The switch criterion lives in `docs/symptom-checker/phase-4-adaptive/`.
  */
-const adaptive = (state) => state.nextInOrder();
+const adaptive = (state) => chooseAdaptive(state.knowledge, state).question;
 
 export const BUILT_IN_STRATEGIES = [STATIC_ORDER, ADAPTIVE];
 
@@ -77,7 +79,7 @@ export function resolveStrategy(questionStrategy) {
 }
 
 /** The state a strategy receives. Copies only — a strategy cannot mutate a session. */
-export function strategyState({ answers, derived, eligible, clone }) {
+export function strategyState({ answers, derived, eligible, clone, knowledge = null }) {
   return {
     answers: clone(answers),
     derived: clone({
@@ -85,8 +87,14 @@ export function strategyState({ answers, derived, eligible, clone }) {
       branchCount: derived.branchCount,
       coverage: derived.coverage,
       safety: derived.safety,
+      // Conditions that already have a card: their documented paths are spent,
+      // so the adaptive order stops counting them as separations to win.
+      open: [...derived.paths.keys()],
     }),
     eligible: eligible.map((question) => clone(question)),
+    // Read-only model of the bundle, for strategies that need to compare
+    // candidates. Never copied: a strategy may read it, never write it.
+    knowledge,
     asked: Object.keys(answers),
     nextInOrder: () => (eligible[0] ? clone(eligible[0]) : null),
   };

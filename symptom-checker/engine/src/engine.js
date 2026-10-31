@@ -22,6 +22,7 @@ import {
   SessionStoppedError,
   UnknownQuestionError,
 } from './errors.js';
+import { buildKnowledge, chooseAdaptive } from './adaptive.js';
 import { buildEvidence } from './evidence.js';
 import { loadBundle } from './load-bundle.js';
 import { resolveStrategy, strategyState } from './strategy.js';
@@ -132,6 +133,10 @@ export function createSession(
     // default. A host may also pass a function of its own.
     questionStrategy = 'static_order',
     selectNextQuestion = null,
+    // Phase 4: computed on every question and recorded, never asked. The
+    // visitor keeps seeing `questionStrategy`; the trace is for the study and
+    // for tests. A broken shadow can never break the questionnaire.
+    shadowStrategy = null,
     // `profile_match` is opt-in until phase 6 shows it; with the flag off the
     // result is exactly the object it has always been.
     profileMatch = false,
@@ -143,6 +148,10 @@ export function createSession(
   const bundle = loaded.bundle;
   const map = loaded.evidenceMap;
   const strategy = resolveStrategy(selectNextQuestion ?? questionStrategy);
+  const shadow = shadowStrategy === null ? null : resolveStrategy(shadowStrategy);
+  const knowledge = buildKnowledge(loaded.bundle, asArray(map?.entries));
+  const shadowTrace = [];
+  const SHADOW_TRACE_LIMIT = 200;
 
   const questions = asArray(bundle.questions).slice().sort((a, b) => a.ask_order - b.ask_order);
   const questionById = new Map(questions.map((question) => [question.id, question]));
@@ -234,6 +243,34 @@ export function createSession(
     if (history.length > 50) history.shift();
   }
 
+  /**
+   * Record what the shadow strategy would ask *next*. Runs after the real
+   * choice has been made and never changes it; every failure is trapped into the
+   * trace, because a study must not be able to break the questionnaire.
+   */
+  function recordShadow(staticId, state) {
+    if (!shadow || shadowTrace.length >= SHADOW_TRACE_LIMIT) return;
+    const entry = { step: shadowTrace.length + 1, static: staticId, shadow: null, differs: false, reason: null };
+    try {
+      if (shadow.name === 'adaptive') {
+        const pick = chooseAdaptive(knowledge, state);
+        entry.shadow = pick.question?.id ?? null;
+        entry.reason = pick.reason;
+      } else {
+        const picked = shadow.select(state);
+        entry.shadow = picked === null || picked === undefined ? null : (typeof picked === 'string' ? picked : picked.id);
+      }
+      if (entry.shadow !== null && !state.eligible.some((item) => item.id === entry.shadow)) {
+        entry.error = `shadow picked a question that is not askable: ${entry.shadow}`;
+        entry.shadow = null;
+      }
+      entry.differs = entry.shadow !== null && entry.shadow !== staticId;
+    } catch (error) {
+      entry.error = String(error?.message ?? error);
+    }
+    shadowTrace.push(entry);
+  }
+
   // --- public API -------------------------------------------------------
   const session = {
     bundleId: bundle.bundle_id,
@@ -242,6 +279,7 @@ export function createSession(
     schemaVersion: loaded.schemaVersion,
     bundleFormat: loaded.format,
     strategy: strategy.name,
+    shadowStrategy: shadow ? shadow.name : null,
     profileMatch: Boolean(profileMatch),
     hasEvidenceMap: Boolean(map),
 
@@ -255,6 +293,15 @@ export function createSession(
 
     inactiveAnswers() {
       return clone(inactive);
+    },
+
+    /**
+     * What the shadow strategy would have asked, step by step. Empty when no
+     * shadow is configured. Purely local: the trace is never stored, logged to a
+     * server, or sent anywhere — it exists for tests and for the phase-4 study.
+     */
+    shadowTrace() {
+      return clone(shadowTrace);
     },
 
     question(id) {
@@ -282,7 +329,8 @@ export function createSession(
       );
       if (eligible.length === 0) return null;
 
-      const picked = strategy.select(strategyState({ answers, derived, eligible, clone }));
+      const state = strategyState({ answers, derived, eligible, clone, knowledge });
+      const picked = strategy.select(state);
       if (picked === null || picked === undefined) return null;
 
       const id = typeof picked === 'string' ? picked : picked.id;
@@ -295,6 +343,7 @@ export function createSession(
       if (!eligible.some((item) => item.id === id)) {
         throw new QuestionStrategyError(strategy.name, `question "${id}" is not askable right now`);
       }
+      recordShadow(id, state);
       return clone(question);
     },
 
