@@ -39,10 +39,22 @@ export function sortSafety(rules = []) {
 }
 
 /**
+ * Only absolute http(s) links survive. Everything else (javascript:, data:,
+ * relative, empty) is dropped so a bad mapping can never inject a link.
+ */
+export function safeHttpUrl(value) {
+  if (typeof value !== 'string') return '';
+  const trimmed = value.trim();
+  return /^https?:\/\/[^\s]+$/i.test(trimmed) ? trimmed : '';
+}
+
+/**
  * @param {object} result engine `session.result()`
+ * @param {{topicLinks?: Record<string, string>}} [options] condition id → published article URL
  * @returns {{showCards: boolean, coverage: object, cards: Array, safety: Array, emptyMessage: string, disclaimer: string}}
  */
-export function buildResultView(result) {
+export function buildResultView(result, options = {}) {
+  const topicLinks = options.topicLinks ?? {};
   const showCards = Boolean(result?.cards_allowed) && Array.isArray(result?.conditions) && result.conditions.length > 0;
 
   return {
@@ -55,6 +67,7 @@ export function buildResultView(result) {
           name_fa: card.name_fa,
           article_slug: card.article_slug,
           link_status: card.link_status,
+          link: safeHttpUrl(topicLinks[card.id]),
           reasons: card.reasons ?? [],
           groups: evidenceGroups(card.evidence).filter((group) => group.items.length > 0),
         }))

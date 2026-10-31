@@ -14,8 +14,18 @@ import {
   hasUrgent,
 } from './view-model.js';
 
-const BUNDLE_URL = '../../docs/symptom-checker/phase-1/knowledge-bundle.v1.json';
-const EVIDENCE_URL = '../engine/data/evidence-map.v1.json';
+/**
+ * The dev demo runs from the repository with no config. Inside WordPress the
+ * plugin injects `window.HJ_SC_CONFIG` with absolute asset URLs and the
+ * resolved article links; nothing else about this file changes there.
+ */
+const config = (typeof window !== 'undefined' && window.HJ_SC_CONFIG && typeof window.HJ_SC_CONFIG === 'object')
+  ? window.HJ_SC_CONFIG
+  : {};
+
+const BUNDLE_URL = config.bundleUrl || '../../docs/symptom-checker/phase-1/knowledge-bundle.v1.json';
+const EVIDENCE_URL = config.evidenceUrl || '../engine/data/evidence-map.v1.json';
+const TOPIC_LINKS = (config.topicLinks && typeof config.topicLinks === 'object') ? config.topicLinks : {};
 
 const state = {
   bundle: null,
@@ -396,15 +406,17 @@ function renderCard(card) {
         ? el('ul', { class: 'chips' }, group.items.map((item) => el('li', { text: item.label_fa })))
         : el('span', { class: 'muted small', text: 'موردی در این گروه نیست' })),
     ])),
-    card.link_status === 'needs_live_verification'
-      ? el('p', { class: 'muted small', text: 'پیوند مقالهٔ این موضوع هنوز تأیید نشده است؛ در این نمونه هیچ لینکی نمایش داده نمی‌شود.' })
-      : null,
+    card.link
+      ? el('p', { class: 'topic-link' }, [
+        el('a', { href: card.link, rel: 'noopener', text: 'مطالعهٔ مقالهٔ مرتبط در دانشنامه' }),
+      ])
+      : el('p', { class: 'muted small', text: 'پیوند مقالهٔ این موضوع تأیید نشده است؛ تا تأیید، هیچ لینکی نمایش داده نمی‌شود.' }),
   ]);
 }
 
 function renderResult() {
   const result = state.session.result();
-  const view = buildResultView(result);
+  const view = buildResultView(result, { topicLinks: TOPIC_LINKS });
   pushProgress(100);
 
   const heading = view.showCards ? 'موضوع‌های مرتبط با پاسخ‌های شما' : 'نتیجه‌ای برای نمایش نیست';

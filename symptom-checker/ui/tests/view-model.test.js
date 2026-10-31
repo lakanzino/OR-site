@@ -13,6 +13,7 @@ import {
   describeAnswer,
   evidenceGroups,
   hasUrgent,
+  safeHttpUrl,
   sortSafety,
 } from '../view-model.js';
 
@@ -141,4 +142,29 @@ test('result view never contains probability, percentage or score wording', () =
   for (const forbidden of ['درصد', '٪', 'احتمال', 'امتیاز', 'probability', 'score']) {
     assert.ok(!text.includes(forbidden), `forbidden wording: ${forbidden}`);
   }
+});
+
+test('article links are rendered only for absolute http(s) URLs', () => {
+  const view = buildResultView(baseResult(), {
+    topicLinks: {
+      app: 'https://hamyarjarahi.ir/disease/appendicitis/',
+      kidney_stone: 'javascript:alert(1)',
+      kidney_infection: '/relative/path',
+      urinary_tract: '  https://example.test/x?a=1  ',
+    },
+  });
+  assert.equal(view.cards[0].link, 'https://hamyarjarahi.ir/disease/appendicitis/');
+  assert.equal(safeHttpUrl('javascript:alert(1)'), '');
+  assert.equal(safeHttpUrl('/relative/path'), '');
+  assert.equal(safeHttpUrl('data:text/html,<script>'), '');
+  assert.equal(safeHttpUrl(''), '');
+  assert.equal(safeHttpUrl(undefined), '');
+  assert.equal(safeHttpUrl('  https://example.test/x?a=1  '), 'https://example.test/x?a=1');
+});
+
+test('without a resolved mapping every card stays link-free', () => {
+  const view = buildResultView(baseResult());
+  assert.equal(view.cards[0].link, '');
+  const withEmptyMap = buildResultView(baseResult(), { topicLinks: {} });
+  assert.equal(withEmptyMap.cards[0].link, '');
 });
