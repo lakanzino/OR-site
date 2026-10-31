@@ -1,0 +1,255 @@
+{
+  "scenario_version": "1.0.0",
+  "bundle_id": "symptom-checker.abdomen.v1",
+  "bundle_version": "0.1.0-draft",
+  "created": "2026-10-31",
+  "purpose_fa": "سناریوهای فاز ۵: موارد حاشیه‌ای، متناقض، ناکافی، خارج از پوشش و هم‌پوشانی شاخه‌ها. این سناریوها ایمنی رفتاری را می‌سنجند، نه دقت بالینی.",
+  "semantics": {
+    "answers": "هر کلید، شناسهٔ یک سؤال در knowledge-bundle.v1.json است. مقدار برای boolean3 و single یک رشته، برای multi آرایه و برای scale عدد یا «unknown» است.",
+    "expected": "انتظارهای ثبت‌شده از پیش. آزمون engine و اعتبارسنج پایتون هر دو باید به همین مقادیر برسند؛ اگر یکی نرسید، اختلاف گزارش می‌شود.",
+    "conflicts": "نشانه‌هایی که انتظار داریم در کارت‌ها با وضعیت «پاسخ متناقض» دیده شوند (فقط وقتی کارتی نمایش داده شود)."
+  },
+  "scenarios": [
+    {
+      "id": "sc13_severe_pain_without_any_branch",
+      "title_fa": "درد غیرقابل تحمل بدون هیچ شاخهٔ باز",
+      "purpose": "هشدار فوری باید مستقل از کارت‌ها و مستقل از کفایت داده نمایش داده شود.",
+      "answers": {
+        "q_pain_present": "yes",
+        "q_pain_location": "other_abdomen",
+        "q_pain_onset": "today",
+        "q_pain_course": "better",
+        "q_pain_severity": 9,
+        "q_pain_worse_movement": "no",
+        "q_unbearable_pain": "yes",
+        "q_associated_symptoms": ["none"],
+        "q_urinary_symptoms": ["none"],
+        "q_flank_radiation": "no",
+        "q_fever_chills": "no",
+        "q_diarrhea_vomiting": ["none"],
+        "q_pregnancy_possible": "no"
+      },
+      "expected": {
+        "branches_open": [],
+        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection", "urinary_tract", "gastroenteritis"],
+        "safety_flags": ["sf_severe_pain"],
+        "coverage": "insufficient",
+        "result_cards_allowed": false,
+        "conflicts": [],
+        "notes_fa": "پوشش ناکافی است و هیچ کارتی ساخته نمی‌شود، اما هشدار «فوری» باید دیده شود. آزمون رابطهٔ معکوس کارت و هشدار است."
+      }
+    },
+    {
+      "id": "sc14_no_pain_no_other_symptoms",
+      "title_fa": "بدون درد و بدون نشانهٔ دیگر",
+      "purpose": "پاسخ «خیر» صریح نباید به نتیجه یا هشدار تبدیل شود.",
+      "answers": {
+        "q_pain_present": "no",
+        "q_urinary_symptoms": ["none"],
+        "q_diarrhea_vomiting": ["none"],
+        "q_pregnancy_possible": "no"
+      },
+      "expected": {
+        "branches_open": [],
+        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection", "urinary_tract", "gastroenteritis"],
+        "safety_flags": [],
+        "coverage": "insufficient",
+        "result_cards_allowed": false,
+        "conflicts": [],
+        "notes_fa": "«خیر» صریح با «پاسخ نداده» یکی گرفته نمی‌شود، ولی هر دو به «اطلاعات کافی نیست» می‌رسند."
+      }
+    },
+    {
+      "id": "sc15_no_pain_but_urinary_signs",
+      "title_fa": "بدون درد شکم، فقط نشانه‌های ادراری",
+      "purpose": "مسیر بدون درد نباید دور ریخته شود و نباید به شاخهٔ آپاندیسیت وصل شود.",
+      "answers": {
+        "q_pain_present": "no",
+        "q_urinary_symptoms": ["dysuria", "frequency"],
+        "q_diarrhea_vomiting": ["none"],
+        "q_pregnancy_possible": "no"
+      },
+      "expected": {
+        "branches_open": ["urinary_tract"],
+        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection", "gastroenteritis"],
+        "safety_flags": [],
+        "coverage": "sufficient",
+        "result_cards_allowed": true,
+        "conflicts": [],
+        "notes_fa": "یک کارت ادراری، بدون هیچ هشدار؛ «درد ندارم» به معنی رد بیماری نیست."
+      }
+    },
+    {
+      "id": "sc16_flank_fever_with_bloody_urine",
+      "title_fa": "درد پهلو با تب و خون در ادرار",
+      "purpose": "شاخه‌های موازی سنگ و عفونت کلیه با هم باز شوند و نشانهٔ ادراری شاخهٔ سوم را هم اضافه کند.",
+      "answers": {
+        "q_pain_present": "yes",
+        "q_pain_location": "flank_or_back",
+        "q_pain_onset": "today",
+        "q_pain_course": "intermittent",
+        "q_pain_severity": 7,
+        "q_pain_worse_movement": "no",
+        "q_associated_symptoms": ["nausea"],
+        "q_urinary_symptoms": ["blood_urine"],
+        "q_flank_radiation": "yes",
+        "q_fever_chills": "yes",
+        "q_diarrhea_vomiting": ["none"],
+        "q_pregnancy_possible": "no"
+      },
+      "expected": {
+        "branches_open": ["kidney_stone", "kidney_infection", "urinary_tract"],
+        "branches_must_not_open": ["app", "gastroenteritis"],
+        "safety_flags": ["sf_fever_flank"],
+        "coverage": "sufficient",
+        "result_cards_allowed": true,
+        "conflicts": [],
+        "notes_fa": "سه شاخهٔ موازی؛ هشدار تب+پهلو هم‌زمان و مستقل از کارت‌ها. آپاندیسیت نباید باز شود."
+      }
+    },
+    {
+      "id": "sc17_pregnancy_with_severe_worsening_pain",
+      "title_fa": "احتمال بارداری همراه درد شدید و بدترشونده",
+      "purpose": "توقف امن نباید هشدارهای دیگر را خاموش کند.",
+      "answers": {
+        "q_pain_present": "yes",
+        "q_pain_course": "worse",
+        "q_unbearable_pain": "yes",
+        "q_pregnancy_possible": "prefer_not"
+      },
+      "expected": {
+        "branches_open": [],
+        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection", "urinary_tract", "gastroenteritis"],
+        "safety_flags": ["sf_severe_pain", "sf_pain_worsening", "sf_pregnancy_out_of_scope"],
+        "coverage": "out_of_scope",
+        "result_cards_allowed": false,
+        "conflicts": [],
+        "notes_fa": "«ترجیح می‌دهم نگویم» هم به توقف امن می‌رسد. هر سه هشدار باید هم‌زمان دیده شوند و هیچ کارتی ساخته نشود."
+      }
+    },
+    {
+      "id": "sc18_pain_unknown_only",
+      "title_fa": "فقط «نمی‌دانم» برای وجود درد",
+      "purpose": "«نمی‌دانم» نه شاخه باز می‌کند نه به «خیر» تبدیل می‌شود.",
+      "answers": {
+        "q_pain_present": "unknown"
+      },
+      "expected": {
+        "branches_open": [],
+        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection", "urinary_tract", "gastroenteritis"],
+        "safety_flags": [],
+        "coverage": "insufficient",
+        "result_cards_allowed": false,
+        "conflicts": [],
+        "notes_fa": "سؤال بعدی (محل درد) با «نمی‌دانم» مجاز است، اما این پاسخ هیچ مسیری را باز نمی‌کند."
+      }
+    },
+    {
+      "id": "sc19_conflicting_fever_answers",
+      "title_fa": "پاسخ متناقض درباره تب",
+      "purpose": "تناقض پنهان نشود و کارت بدون هیچ ادعای احتمالی، تناقض را نشان دهد.",
+      "answers": {
+        "q_pain_present": "yes",
+        "q_pain_location": "right_lower",
+        "q_pain_migrated_rlq": "yes",
+        "q_pain_onset": "today",
+        "q_pain_course": "worse",
+        "q_pain_severity": 7,
+        "q_pain_worse_movement": "yes",
+        "q_associated_symptoms": ["fever"],
+        "q_urinary_symptoms": ["none"],
+        "q_flank_radiation": "no",
+        "q_fever_chills": "no",
+        "q_diarrhea_vomiting": ["none"],
+        "q_unbearable_pain": "no",
+        "q_pregnancy_possible": "no"
+      },
+      "expected": {
+        "branches_open": ["app"],
+        "branches_must_not_open": ["kidney_stone", "kidney_infection", "gastroenteritis"],
+        "safety_flags": ["sf_pain_worsening"],
+        "coverage": "sufficient",
+        "result_cards_allowed": true,
+        "conflicts": ["s_fever"],
+        "notes_fa": "یک پاسخ تب را مثبت و پاسخ دیگر منفی می‌گوید؛ نشانهٔ تب باید در گروه «پاسخ متناقض» بیاید، نه در «گزارش‌شده»."
+      }
+    },
+    {
+      "id": "sc20_gastro_and_urinary_overlap",
+      "title_fa": "هم‌پوشانی گوارشی و ادراری بدون آپاندیسیت",
+      "purpose": "باز شدن یک شاخه نباید شاخهٔ دیگر را ببندد یا آپاندیسیت را باز کند.",
+      "answers": {
+        "q_pain_present": "yes",
+        "q_pain_location": "other_abdomen",
+        "q_pain_onset": "two_three_days",
+        "q_pain_course": "stable",
+        "q_pain_severity": 5,
+        "q_associated_symptoms": ["diarrhea", "nausea"],
+        "q_urinary_symptoms": ["dysuria", "urgency"],
+        "q_flank_radiation": "no",
+        "q_fever_chills": "no",
+        "q_diarrhea_vomiting": ["diarrhea", "vomiting"],
+        "q_keep_fluids": "yes",
+        "q_blood_in_stool": "no",
+        "q_dehydration_signs": ["none"],
+        "q_unbearable_pain": "no",
+        "q_pregnancy_possible": "no"
+      },
+      "expected": {
+        "branches_open": ["urinary_tract", "gastroenteritis"],
+        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection"],
+        "safety_flags": [],
+        "coverage": "sufficient",
+        "result_cards_allowed": true,
+        "conflicts": [],
+        "notes_fa": "دو کارت موازی و بدون هشدار؛ مایعات قابل نگه‌داشتن است و نشانهٔ کم‌آبی گزارش نشده."
+      }
+    },
+    {
+      "id": "sc21_everything_unknown_with_unsure_pregnancy",
+      "title_fa": "همه‌چیز «نمی‌دانم» و بارداری «مطمئن نیستم»",
+      "purpose": "توقف امن باید بر دادهٔ ناکافی مقدم باشد و هیچ کارتی نسازد.",
+      "answers": {
+        "q_pain_present": "unknown",
+        "q_pain_location": "unknown",
+        "q_pain_migrated_rlq": "unknown",
+        "q_pain_onset": "unknown",
+        "q_pain_course": "unknown",
+        "q_pain_worse_movement": "unknown",
+        "q_associated_symptoms": ["unknown"],
+        "q_urinary_symptoms": ["unknown"],
+        "q_flank_radiation": "unknown",
+        "q_fever_chills": "unknown",
+        "q_diarrhea_vomiting": ["unknown"],
+        "q_unbearable_pain": "unknown",
+        "q_pregnancy_possible": "unsure"
+      },
+      "expected": {
+        "branches_open": [],
+        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection", "urinary_tract", "gastroenteritis"],
+        "safety_flags": ["sf_pregnancy_out_of_scope"],
+        "coverage": "out_of_scope",
+        "result_cards_allowed": false,
+        "conflicts": [],
+        "notes_fa": "«مطمئن نیستم» هم خارج از پوشش است؛ پیام باید راه ارجاع بدهد، نه فهرست موضوع."
+      }
+    },
+    {
+      "id": "sc22_only_pain_present_answered",
+      "title_fa": "فقط پاسخ «درد دارم»",
+      "purpose": "پاسخ ناقص نباید به شاخه یا هشدار ساختگی برسد.",
+      "answers": {
+        "q_pain_present": "yes"
+      },
+      "expected": {
+        "branches_open": [],
+        "branches_must_not_open": ["app", "kidney_stone", "kidney_infection", "urinary_tract", "gastroenteritis"],
+        "safety_flags": [],
+        "coverage": "insufficient",
+        "result_cards_allowed": false,
+        "conflicts": [],
+        "notes_fa": "هیچ محلی گزارش نشده؛ «درد دارم» به‌تنهایی هیچ موضوعی نمی‌سازد."
+      }
+    }
+  ]
+}
