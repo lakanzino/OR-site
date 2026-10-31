@@ -290,6 +290,7 @@ switch ( $scenario ) {
 		eq( 'https://example.test/disease/appendicitis/', $config['topicLinks']->app ?? '', 'resolved links reach the browser' );
 
 		eq( 'static_order', $config['questionStrategy'], 'the default question strategy is static_order' );
+		eq( 18, $config['minAge'], 'the age gate starts at the adult scope of the bundle' );
 
 		$json = hjsc_config_json();
 		ok( false === stripos( $json, '</script' ), 'config JSON cannot break out of the script tag' );
@@ -315,6 +316,36 @@ switch ( $scenario ) {
 			}
 		);
 		eq( 'static_order', hjsc_config()['questionStrategy'], 'an unknown name falls back instead of breaking the page' );
+		break;
+
+	case 'min-age':
+		boot( $plugin_dir );
+		eq( 18, hjsc_min_age(), 'without a filter the tool is for adults' );
+		eq( 18, hjsc_config()['minAge'], 'the browser gets the same number the PHP decides' );
+
+		add_filter(
+			'hjsc_min_age',
+			static function () {
+				return 21;
+			}
+		);
+		eq( 21, hjsc_config()['minAge'], 'a host may raise the gate' );
+
+		add_filter(
+			'hjsc_min_age',
+			static function () {
+				return 0;
+			}
+		);
+		eq( 18, hjsc_config()['minAge'], 'a filter cannot let a child through' );
+
+		add_filter(
+			'hjsc_min_age',
+			static function () {
+				return 500;
+			}
+		);
+		eq( 18, hjsc_config()['minAge'], 'nor block every adult' );
 		break;
 
 	case 'escaping':

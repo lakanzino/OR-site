@@ -7,6 +7,18 @@
  */
 
 import { createSession } from '../engine/src/engine.js';
+import {
+  AGE_DEFAULT,
+  AGE_MAX,
+  AGE_MIN,
+  ageAfterDrag,
+  ageIsSupported,
+  clampAge,
+  describeAge,
+  formatAge,
+  minAgeFrom,
+  turnForAge,
+} from './age-gate.js';
 import { FALLBACK_HELP, QUESTION_HELP } from './question-help.js';
 import {
   buildProgress,
@@ -35,6 +47,10 @@ const EVIDENCE_URL = config.evidenceUrl || '../engine/data/evidence-map.v1.json'
 const TOPIC_LINKS = (config.topicLinks && typeof config.topicLinks === 'object') ? config.topicLinks : {};
 
 const state = {
+  // The age gate opens the tool. Memory only: it never reaches the engine and
+  // never leaves the page.
+  age: AGE_DEFAULT,
+  minAge: minAgeFrom(config),
   bundle: null,
   evidenceMap: null,
   session: null,
@@ -315,6 +331,7 @@ function render() {
   if (state.screen === 'loading') return renderLoading();
   if (state.screen === 'error') return renderError();
   if (state.screen === 'intro') return renderIntro();
+  if (state.screen === 'underage') return renderUnderage();
   if (state.screen === 'question') return renderQuestion();
   if (state.screen === 'result') return renderResult();
   return undefined;
@@ -338,22 +355,183 @@ function renderError() {
 
 function renderIntro() {
   const disclaimers = state.bundle.disclaimers ?? {};
+
+  // The turning hologram stands above the card, on its own, so it can never sit
+  // on top of the title (it did, on a phone, until 0.1.11). Decoration only.
+  app.append(el('figure', { class: 'hero-stage', 'aria-hidden': 'true' }, [
+    el('div', { class: 'hero-figure' }),
+  ]));
+
   app.append(el('section', { class: 'card intro-card' }, [
-    // Decorative hologram: no text, hidden from assistive tech.
-    el('div', { class: 'hero-figure', 'aria-hidden': 'true' }),
     el('h1', { text: 'همیار نشانه‌ها — نمونهٔ نمایشی' }),
     el('p', { class: 'badge-line' }, [
       el('span', { class: 'badge warn', text: 'نمایشی' }),
       el('span', { class: 'badge', text: 'دادهٔ پیش‌نویس، منتشر نشده' }),
       el('span', { class: 'badge', text: 'بدون ذخیره‌سازی' }),
     ]),
+    el('p', {
+      class: 'notice-card',
+      role: 'note',
+      text: 'این برگه پیش‌نمایش است و دادهٔ آن پیش‌نویس و منتشرنشده؛ پاسخ‌ها ذخیره یا ارسال نمی‌شوند.',
+    }),
     el('p', { class: 'lead', text: disclaimers.before_start_fa ?? '' }),
     el('ul', { class: 'facts' }, [
       el('li', { text: 'پاسخ‌ها فقط در حافظهٔ همین صفحه می‌مانند و با بستن صفحه پاک می‌شوند.' }),
       el('li', { text: 'خروجی، «موضوع‌های مرتبط» است؛ نه تشخیص، نه احتمال و نه درصد.' }),
       el('li', { text: 'اگر درد شدید یا بدحالی داری، منتظر پایان پرسش‌ها نمان و کمک پزشکی بگیر.' }),
     ]),
-    el('button', { class: 'primary', text: 'شروع', onClick: startSession }),
+    renderAgeGate(),
+    el('button', {
+      class: 'primary start-button',
+      text: 'شروع پرسش‌ها',
+      onClick: () => {
+        // The bundle covers adults only. This is the one place the age decides
+        // anything, and it decides between «continue» and «not built for you».
+        if (!ageIsSupported(state.age, state.minAge)) {
+          state.screen = 'underage';
+          render();
+          return;
+        }
+        startSession();
+      },
+    }),
+  ]));
+}
+
+/**
+ * The hand-turned dial that sets the age.
+ *
+ * A gear, not a number field: the visitor drags it, scrolls it, taps ± or uses
+ * the arrow keys, and the readout moves with it. `role="slider"` is what makes
+ * it work for a screen reader and a keyboard; the drag is the extra, not the
+ * only way in.
+ */
+function renderAgeGate() {
+  const dial = el('div', {
+    class: 'age-dial',
+    role: 'slider',
+    tabindex: '0',
+    'aria-label': 'سن',
+    'aria-valuemin': String(AGE_MIN),
+    'aria-valuemax': String(AGE_MAX),
+    'aria-valuenow': String(state.age),
+    'aria-valuetext': describeAge(state.age),
+  }, [
+    el('span', { class: 'age-dial__gear', 'aria-hidden': 'true' }),
+    el('span', { class: 'age-dial__readout' }, [
+      el('span', { class: 'age-dial__value', text: formatAge(state.age) }),
+      el('span', { class: 'age-dial__unit', text: 'سال' }),
+    ]),
+  ]);
+
+  const valueNode = dial.querySelector('.age-dial__value');
+
+  const paint = (next) => {
+    state.age = clampAge(next);
+    valueNode.textContent = formatAge(state.age);
+    dial.setAttribute('aria-valuenow', String(state.age));
+    dial.setAttribute('aria-valuetext', describeAge(state.age));
+    dial.style.setProperty('--age-turn', `${turnForAge(state.age)}deg`);
+  };
+
+  const pointerAngle = (event) => {
+    const box = dial.getBoundingClientRect();
+    const dx = event.clientX - (box.left + box.width / 2);
+    const dy = event.clientY - (box.top + box.height / 2);
+    // 0° at the top, clockwise — the way the gear is drawn.
+    return (Math.atan2(dx, -dy) * 180) / Math.PI;
+  };
+
+  let drag = null;
+  dial.addEventListener('pointerdown', (event) => {
+    if (event.button !== undefined && event.button !== 0) return;
+    drag = { angle: pointerAngle(event), age: state.age };
+    if (typeof dial.setPointerCapture === 'function') {
+      try {
+        dial.setPointerCapture(event.pointerId);
+      } catch {
+        // A pointer that vanished mid-press is not worth failing over.
+      }
+    }
+    event.preventDefault();
+  });
+  dial.addEventListener('pointermove', (event) => {
+    if (!drag) return;
+    paint(ageAfterDrag(drag.age, drag.angle, pointerAngle(event)));
+    event.preventDefault();
+  });
+  const endDrag = () => {
+    drag = null;
+  };
+  dial.addEventListener('pointerup', endDrag);
+  dial.addEventListener('pointercancel', endDrag);
+  dial.addEventListener('pointerleave', (event) => {
+    if (event.buttons === 0) endDrag();
+  });
+
+  dial.addEventListener('wheel', (event) => {
+    paint(state.age + (event.deltaY < 0 ? 1 : -1));
+    event.preventDefault();
+  }, { passive: false });
+
+  dial.addEventListener('keydown', (event) => {
+    const step = { ArrowUp: 1, ArrowRight: 1, PageUp: 5, ArrowDown: -1, ArrowLeft: -1, PageDown: -5 }[event.key];
+    if (step) {
+      paint(state.age + step);
+      event.preventDefault();
+      return;
+    }
+    if (event.key === 'Home') {
+      paint(AGE_MIN);
+      event.preventDefault();
+    } else if (event.key === 'End') {
+      paint(AGE_MAX);
+      event.preventDefault();
+    }
+  });
+
+  const stepButton = (delta, label, text) => el('button', {
+    type: 'button',
+    class: 'age-step',
+    text,
+    'aria-label': label,
+    onClick: () => paint(state.age + delta),
+  });
+
+  paint(state.age);
+
+  return el('div', { class: 'age-gate' }, [
+    el('h2', { class: 'age-gate__title', text: 'اول سنت را تنظیم کن' }),
+    el('p', {
+      class: 'age-gate__lead',
+      text: 'چرخ‌دنده را با انگشت بچرخان یا از دکمه‌ها استفاده کن؛ عدد بالای آن تغییر می‌کند.',
+    }),
+    el('div', { class: 'age-gate__body' }, [
+      dial,
+      el('div', { class: 'age-gate__side' }, [
+        stepButton(1, 'یک سال بیشتر', '+'),
+        stepButton(-1, 'یک سال کمتر', '−'),
+      ]),
+    ]),
+    el('p', {
+      class: 'age-gate__note',
+      text: 'سن فقط در حافظهٔ همین صفحه می‌ماند؛ نه ذخیره می‌شود و نه ارسال.',
+    }),
+  ]);
+}
+
+function renderUnderage() {
+  const scope = state.bundle?.scope ?? {};
+  const exclusion = Array.isArray(scope.excluded_by_design)
+    ? scope.excluded_by_design.find((line) => typeof line === 'string' && /۱۸|کودک|نوجوان/.test(line))
+    : null;
+
+  app.append(el('section', { class: 'card stop-card' }, [
+    el('h1', { text: 'این ابزار برای بزرگسالان است' }),
+    el('p', { class: 'lead', text: `سن واردشده ${formatAge(state.age)} سال است. ${exclusion ?? 'این بسته کودکان و نوجوانان زیر ۱۸ سال را پوشش نمی‌دهد.'}` }),
+    el('p', { text: 'الگوی نشانه‌ها در کودک و نوجوان می‌تواند متفاوت باشد؛ لطفاً با پزشک یا مرکز درمانی تماس بگیر.' }),
+    el('p', { class: 'muted', text: 'اگر درد شدید یا بدحالی وجود دارد، همین حالا کمک پزشکی بگیر.' }),
+    el('button', { class: 'ghost', text: 'تغییر سن', onClick: () => { state.screen = 'intro'; render(); } }),
   ]));
 }
 
