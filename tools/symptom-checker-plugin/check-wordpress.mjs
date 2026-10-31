@@ -327,7 +327,9 @@ async function uiCheck(config, options = {}) {
   );
   check(
     'the entry script is served as a module, with a cache-busting version',
-    /<script type="module" src="[^"]*ui\/app\.js\?ver=[^"]+"><\/script>/.test(page.body),
+    // Attributes may come in any order; what matters is one tag that is a
+    // module, carries our id, and points at the versioned entry file.
+    /<script\b(?=[^>]*\bid="hj-sc-app-js")(?=[^>]*\btype="module")(?=[^>]*\bsrc="[^"]*ui\/app\.js\?ver=[^"]+")[^>]*><\/script>/.test(page.body),
     (page.body.match(/<script[^>]*ui\/app\.js[^>]*>/) ?? ['missing'])[0],
   );
   check(
