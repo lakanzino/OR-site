@@ -218,6 +218,22 @@ function hjsc_question_strategy() {
 }
 
 /**
+ * Smallest age the tool accepts.
+ *
+ * The bundle covers adults only: `scope.excluded_by_design` names under-18
+ * explicitly, and every wording decision is written for an adult. The number
+ * lives here — one place, filterable — so the browser never keeps its own copy
+ * of a rule the content decides. A host may raise it; a broken value can never
+ * let a child through.
+ *
+ * @return int
+ */
+function hjsc_min_age() {
+	$age = (int) apply_filters( 'hjsc_min_age', 18 );
+	return ( $age >= 1 && $age <= 100 ) ? $age : 18;
+}
+
+/**
  * Configuration handed to the browser. Everything here is public data: the
  * draft bundle, the evidence map and the resolved article links.
  *
@@ -227,6 +243,7 @@ function hjsc_config() {
 	return array(
 		'pluginVersion'    => HJ_SC_VERSION,
 		'questionStrategy' => hjsc_question_strategy(),
+		'minAge'        => hjsc_min_age(),
 		'bundleVersion' => hjsc_bundle_version(),
 		'bundleUrl'     => hjsc_bundle_url(),
 		'bundleStatus'  => hjsc_bundle_status(),

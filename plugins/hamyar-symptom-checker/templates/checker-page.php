@@ -29,10 +29,6 @@ if ( function_exists( 'wp_body_open' ) ) {
 <header class="site-header">
 	<div class="wrap">
 		<p class="brand">همیار جراحی — دستیار نشانه‌ها (پیش‌نمایش داخلی)</p>
-		<p class="notice" role="note">
-			این برگه <strong>پیش‌نمایش</strong> است و دادهٔ آن <strong>پیش‌نویس</strong> و منتشرنشده است.
-			پاسخ‌ها ذخیره یا ارسال نمی‌شوند.
-		</p>
 	</div>
 </header>
 

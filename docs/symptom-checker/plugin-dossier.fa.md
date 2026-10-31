@@ -2,7 +2,7 @@
 
 این سند، فهرست و راهنمای پروندهٔ افزونه است: همان ساختاری که در Google Drive هم ساخته شده (پوشهٔ «افزونهٔ دستیار نشانه‌ها — همیار جراحی»). هر بخش، سند اصلی خودش را در همین مخزن دارد؛ اینجا فقط نقشه است تا هیچ‌چیز گم نشود.
 
-نسخهٔ جاری: **۰.۱.۱۰** · تاریخ: ۳۱ اکتبر ۲۰۲۶
+نسخهٔ جاری: **۰.۱.۱۱** · تاریخ: ۳۱ اکتبر ۲۰۲۶
 
 ---
 
@@ -15,9 +15,11 @@
 | ۰.۱.۴ – ۰.۱.۷ | `releases/hamyar-symptom-checker-0.1.7.zip` | ۲۲ فایل، ۸۸٬۴۱۸ بایت | در `main`، روی سایت زنده تأیید نشده |
 | ۰.۱.۸ | `releases/hamyar-symptom-checker-0.1.8.zip` | ۲۳ فایل، ۹۲٬۱۳۱ بایت<br>sha256 `df5e798ed214b9cb1075096340bc4e1afec1a61ee35975b217c43e34f8e18bc4` | انتشار محتوا بدون ریلیز (فاز ۵-الف)؛ نصب‌نشده |
 | ۰.۱.۹ | `releases/hamyar-symptom-checker-0.1.9.zip` | ۲۴ فایل (۱ فایل تازه: `includes/admin.php`) | ویرایش محتوا در پیشخوان (فاز ۵-ب) |
-| **۰.۱.۱۰** | `releases/hamyar-symptom-checker-0.1.10.zip` | ۲۵ فایل (۱ فایل تازه: `assets/engine/src/adaptive.js`)<br>sha256 `f670d9b4a92552a833bc54d75da6b555e6f3e98b4bec14762824cbece015655a` | **تازه** — ترتیب تطبیقی در حالت سایه (فاز ۴)؛ رفتار بازدیدکننده بی‌تغییر |
+| ۰.۱.۱۰ | `releases/hamyar-symptom-checker-0.1.10.zip` | ۲۵ فایل (۱ فایل تازه: `assets/engine/src/adaptive.js`)<br>sha256 `f670d9b4a92552a833bc54d75da6b555e6f3e98b4bec14762824cbece015655a` | ترتیب تطبیقی در حالت سایه (فاز ۴)؛ رفتار بازدیدکننده بی‌تغییر |
+| **۰.۱.۱۱** | `releases/hamyar-symptom-checker-0.1.11.zip` | ۲۶ فایل (۱ فایل تازه: `assets/ui/age-gate.js`)<br>sha256 `15180ef5ed746424d9a5dca07b36d61864ca89575587674db6028c9f79abdb82` | **تازه** — اصلاح موبایل + دروازهٔ سن |
 
-- راهنمای نصب و بازگشت ۰.۱.۱۰: [`docs/symptom-checker/phase-5/release-0.1.10.fa.md`](phase-5/release-0.1.10.fa.md) (۰.۱.۹: [`release-0.1.9.fa.md`](phase-5/release-0.1.9.fa.md))
+- راهنمای نصب و بازگشت ۰.۱.۱۱: [`docs/symptom-checker/phase-5/release-0.1.11.fa.md`](phase-5/release-0.1.11.fa.md) (۰.۱.۱۰: [`release-0.1.10.fa.md`](phase-5/release-0.1.10.fa.md))
+- اصلاح موبایل و دروازهٔ سن: [`docs/symptom-checker/phase-5/mobile-and-age-gate.fa.md`](phase-5/mobile-and-age-gate.fa.md) (۰.۱.۹: [`release-0.1.9.fa.md`](phase-5/release-0.1.9.fa.md))
 - مطالعهٔ فاز ۴ (سایه، اعداد، تصمیم سوئیچ‌نکردن): [`docs/symptom-checker/phase-4-adaptive/shadow-study.fa.md`](phase-4-adaptive/shadow-study.fa.md)
 - **صفحهٔ محتوا در پیشخوان:** پیشخوان ← «دستیار نشانه‌ها» (`admin.php?page=hj-sc-content`) — وضعیت، فعال‌سازی/بازگشت، بارگذاری و ویرایش متن. [گزارش فاز ۵-ب](phase-5/admin-content-editor.fa.md)
 - پیش از هر نصب: پشتیبان کامل (فایل‌ها + دیتابیس). هر ریلیز تصمیم خودش را دارد.

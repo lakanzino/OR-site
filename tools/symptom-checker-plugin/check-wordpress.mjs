@@ -620,6 +620,7 @@ add_action( 'init', function () {
   check('the config points inside the plugin', Boolean(config?.bundleUrl?.includes('/wp-content/plugins/hamyar-symptom-checker/assets/')));
   check('the draft bundle version is exposed', config?.bundleVersion === '0.2.0-draft', config?.bundleVersion ?? '');
   check('the config states the question strategy', config?.questionStrategy === 'static_order', config?.questionStrategy ?? 'missing');
+  check('the config states the age gate', config?.minAge === 18, String(config?.minAge ?? 'missing'));
   check('the published article is mapped', Boolean(config?.topicLinks?.app?.endsWith('/disease/appendicitis/')), JSON.stringify(config?.topicLinks ?? {}));
   check('the draft article is not mapped', !('kidney_stone' in (config?.topicLinks ?? {})));
 

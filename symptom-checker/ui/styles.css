@@ -36,7 +36,10 @@
 
 html, body { margin: 0; padding: 0; }
 
-body {
+/* The page class is deliberate: on WordPress the active theme also styles
+   `body`, and without this the cream theme background won and every white label
+   became invisible (reported from the live site, fixed in 0.1.11). */
+body.hj-sc-page {
   background: linear-gradient(180deg, var(--blue) 0%, var(--blue) 38%, var(--blue-deep) 100%);
   background-attachment: fixed;
   color: var(--paper);
@@ -62,16 +65,44 @@ body {
 }
 .skip-link:focus { inset-inline-start: 12px; }
 
-/* سربرگ: متن سفید درشت روی آبی */
-.site-header {
+/* سربرگ: نوار تیرهٔ یک‌دست، بی‌وابسته به زمینهٔ پوسته.
+   `.site-header` نام رایج پوسته است؛ پیشوند `body.hj-sc-page` جلوی برداشتن
+   پس‌زمینهٔ سفید پوسته را می‌گیرد (همان اشکالی که در موبایل متن را سفید روی
+   سفید می‌کرد). */
+body.hj-sc-page .site-header {
+  position: static;
   border-bottom: 1px solid rgba(255, 255, 255, 0.35);
-  background: rgba(4, 29, 71, 0.55);
+  background: linear-gradient(180deg, #0a3f8f 0%, var(--blue-ink) 100%);
+  box-shadow: none;
   padding: 14px 0;
   margin-bottom: 22px;
 }
 .brand { margin: 0; font-weight: 800; color: #ffffff; font-size: 16px; letter-spacing: 0.2px; }
-.notice { margin: 6px 0 0; color: #eaf1fd; font-size: 14px; }
-.notice strong { color: #ffd7b0; }
+
+/* یادداشت «پیش‌نمایش» یک کارت روشن با متن تیره است تا روی هر زمینه‌ای خوانده شود */
+.notice {
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+  border-inline-start: 4px solid var(--orange);
+  border-radius: 10px;
+  background: var(--orange-soft);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+.notice strong { color: var(--orange-ink); }
+
+/* همان یادداشت، داخل کارت معرفی */
+.notice-card {
+  margin: 10px 0 16px;
+  padding: 10px 12px;
+  border-inline-start: 4px solid var(--orange);
+  border-radius: 10px;
+  background: var(--orange-soft);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+}
 
 /* کارت‌ها: روشن با متن تیرهٔ پرکنتراست */
 .card {
@@ -419,15 +450,17 @@ fieldset { border: 0; margin: 0; padding: 0; }
 .error { border: 2px solid #a3251c; background: var(--urgent-soft); color: #4a0d09; }
 .error h1 { color: var(--urgent); }
 
-/* مجسمهٔ سه‌بعدی در گوشهٔ صفحهٔ اصلی */
-.intro-card { padding-inline-end: 220px; padding-inline-start: 22px; }
+/* مجسمهٔ سه‌بعدی — بالای کارت، نه روی عنوان */
+.hero-stage {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 16px;
+}
 .hero-figure {
-  position: absolute;
-  inset-inline-end: 18px;
-  inset-block-start: 18px;
-  width: 180px;
-  height: 180px;
-  border-radius: 18px;
+  position: relative;
+  width: clamp(150px, 44vw, 220px);
+  aspect-ratio: 1 / 1;
+  border-radius: 20px;
   background-image: url("anatomy-hero.jpg");
   background-size: cover;
   background-position: center;
@@ -468,16 +501,19 @@ fieldset { border: 0; margin: 0; padding: 0; }
 }
 
 /* پاورقی */
-.site-footer {
+body.hj-sc-page .site-footer {
   border-top: 1px solid rgba(255, 255, 255, 0.35);
+  background: var(--blue-ink);
+  border-radius: 16px;
   margin-top: 34px;
+  margin-bottom: 18px;
   padding: 18px;
   color: #eaf1fd;
   font-size: 13.5px;
   font-weight: 600;
   text-align: center;
 }
-.site-footer p { margin: 4px 0; }
+body.hj-sc-page .site-footer p { margin: 4px 0; }
 
 .sr-only {
   position: absolute;
@@ -496,8 +532,7 @@ fieldset { border: 0; margin: 0; padding: 0; }
 }
 
 @media (max-width: 720px) {
-  .intro-card { padding-inline-end: 22px; padding-block-start: 168px; }
-  .hero-figure { width: 148px; height: 148px; inset-inline: 50%; margin-inline-start: -74px; inset-block-start: 14px; }
+  .hero-figure { width: clamp(132px, 52vw, 180px); }
 }
 
 @media (max-width: 480px) {
@@ -510,6 +545,101 @@ fieldset { border: 0; margin: 0; padding: 0; }
   .narrator-avatar { width: 46px; height: 46px; }
 }
 
+
+/* ---------- دروازهٔ سن: چرخ‌دندهٔ دستی ---------- */
+.age-gate {
+  margin: 22px 0 8px;
+  padding: 16px 14px 14px;
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--paper-2);
+}
+.age-gate__title { margin: 0 0 6px; font-size: 18px; color: var(--blue-ink); }
+.age-gate__lead { margin: 0 0 14px; font-size: 14.5px; color: var(--ink-soft); font-weight: 600; }
+.age-gate__body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+.age-gate__side { display: flex; flex-direction: column; gap: 12px; }
+.age-gate__note { margin: 14px 0 0; font-size: 13px; font-weight: 600; color: var(--muted); }
+
+.age-step {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  padding: 0;
+  border: 2px solid var(--line-strong);
+  border-radius: 16px;
+  background: var(--paper-2);
+  color: var(--blue-ink);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+.age-step:hover:not(:disabled) { border-color: var(--orange-strong); background: var(--orange-soft); transform: translateY(-1px); }
+.age-step:active:not(:disabled) { transform: translateY(1px); }
+
+/* چرخ‌دنده: نشانگر دستی سن. --age-turn را جاوااسکریپت ست می‌کند. */
+.age-dial {
+  --age-turn: 0deg;
+  position: relative;
+  width: 172px;
+  height: 172px;
+  min-width: 172px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 38%, #ffffff 0%, #e9f1ff 58%, #d3e2f8 100%);
+  border: 2px solid var(--line-strong);
+  box-shadow: inset 0 0 20px rgba(11, 71, 161, 0.14), 0 12px 26px rgba(2, 17, 45, 0.16);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.age-dial:active { cursor: grabbing; }
+.age-dial:focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
+
+.age-dial__gear {
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, var(--orange) 0deg 8deg, transparent 8deg 18deg);
+  -webkit-mask: radial-gradient(circle, transparent 57%, #000 58%, #000 80%, transparent 81%);
+  mask: radial-gradient(circle, transparent 57%, #000 58%, #000 80%, transparent 81%);
+  transform: rotate(var(--age-turn));
+  transition: transform 180ms ease-out;
+  opacity: 0.92;
+  pointer-events: none;
+}
+.age-dial__readout {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  pointer-events: none;
+}
+.age-dial__value {
+  font-size: 46px;
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--blue-ink);
+  font-variant-numeric: tabular-nums;
+}
+.age-dial__unit { font-size: 14px; font-weight: 700; color: var(--muted); }
+
+@media (max-width: 480px) {
+  .age-gate { padding: 14px 10px 12px; }
+  .age-gate__body { gap: 12px; }
+  .age-dial { width: 150px; height: 150px; min-width: 150px; }
+  .age-dial__value { font-size: 40px; }
+  .age-step { width: 50px; height: 50px; min-width: 50px; font-size: 23px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
@@ -519,4 +649,5 @@ fieldset { border: 0; margin: 0; padding: 0; }
   }
   button:hover:not(:disabled) { transform: none; }
   .hero-figure { animation: none; transform: perspective(700px) rotateY(-12deg); }
+  .age-dial__gear { transition: none; }
 }

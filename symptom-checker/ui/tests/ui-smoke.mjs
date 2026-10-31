@@ -149,8 +149,77 @@ function check(label, ok, detail = '') {
 }
 
 // --- intro ---------------------------------------------------------------
-const startButton = [...doc.querySelectorAll('#app button')].find((button) => button.textContent.includes('شروع'));
+const findButton = (label) => [...doc.querySelectorAll('#app button')].find((button) => button.textContent.includes(label));
+let startButton = findButton('شروع');
 check('intro renders with the demo badges', Boolean(startButton) && text().includes('نمایشی') && text().includes('بدون ذخیره‌سازی'));
+
+// The turning hologram must be its own block above the card: on a phone it used
+// to be absolutely positioned inside the card and sat on top of the title.
+const heroStage = doc.querySelector('#app .hero-stage');
+const introCard = doc.querySelector('#app .intro-card');
+check(
+  'the hologram sits above the card, not on the title',
+  Boolean(heroStage) && Boolean(introCard)
+    && (heroStage.compareDocumentPosition(introCard) & window.Node.DOCUMENT_POSITION_FOLLOWING) !== 0,
+  heroStage && introCard ? 'stage precedes card' : 'missing',
+);
+check(
+  'the hologram is decoration only',
+  heroStage?.getAttribute('aria-hidden') === 'true' && heroStage.textContent.trim() === '',
+);
+
+// The preview note moved out of the page header (white on cream there) and into
+// the card, where it is dark text on a warm background.
+check(
+  'the preview note lives in the card, not the page header',
+  !doc.querySelector('header .notice') && Boolean(doc.querySelector('#app .intro-card .notice-card')),
+  doc.querySelector('#app .intro-card .notice-card')?.textContent.slice(0, 40) ?? 'missing',
+);
+
+// --- age gate -------------------------------------------------------------
+const dial = doc.querySelector('#app .age-dial');
+check(
+  'the age dial is a slider with a visible value',
+  dial?.getAttribute('role') === 'slider'
+    && dial.getAttribute('aria-valuemin') === '1'
+    && dial.getAttribute('aria-valuenow') === '30'
+    && /سال/.test(dial.getAttribute('aria-valuetext') ?? '')
+    && dial.textContent.includes('۳۰'),
+  dial ? `now=${dial.getAttribute('aria-valuenow')}` : 'missing',
+);
+check('the dial is reachable by keyboard', dial?.getAttribute('tabindex') === '0');
+
+const press = (key) => dial.dispatchEvent(new window.KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
+dial.focus();
+press('Home');
+for (let step = 0; step < 16; step += 1) press('ArrowUp');
+check('turning the dial to 17 works by keyboard', dial.getAttribute('aria-valuenow') === '17');
+
+const fetchesBeforeStart = fetched.length;
+startButton.click();
+await wait(80);
+check(
+  'under 18 the tool stops before asking anything',
+  Boolean(doc.querySelector('#app .stop-card')) && !doc.getElementById('question-title'),
+  text(doc.querySelector('#app .stop-card')).slice(0, 60),
+);
+check(
+  'the stop screen says why, in the bundle\'s own words',
+  /۱۸|کودک|نوجوان/.test(text(doc.querySelector('#app .stop-card'))),
+);
+check('touching the dial sent nothing anywhere', fetched.length === fetchesBeforeStart);
+
+findButton('تغییر سن').click();
+await wait(80);
+const dialAgain = doc.querySelector('#app .age-dial');
+dialAgain.focus();
+dialAgain.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Home', bubbles: true, cancelable: true }));
+for (let step = 0; step < 29; step += 1) {
+  dialAgain.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true, cancelable: true }));
+}
+check('the dial can be turned back to an adult age', dialAgain.getAttribute('aria-valuenow') === '30');
+
+startButton = findButton('شروع');
 startButton.click();
 await wait(80);
 check('the first question renders', Boolean(doc.getElementById('question-title')), text(doc.getElementById('app')).slice(0, 70));
