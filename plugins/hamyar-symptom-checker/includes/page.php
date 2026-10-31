@@ -76,7 +76,7 @@ function hjsc_try_create_page() {
 			array(
 				'post_title'     => 'ارزیابی احتمالی بیماری',
 				'post_name'      => HJ_SC_PAGE_SLUG,
-				'post_content'   => '',
+				'post_content'   => '[hamyar_symptom_checker]',
 				'post_status'    => 'draft',
 				'post_type'      => 'page',
 				'comment_status' => 'closed',
@@ -162,7 +162,13 @@ function hjsc_is_checker_page() {
 		return false;
 	}
 	$page_id = hjsc_page_id();
-	return $page_id > 0 && (int) get_queried_object_id() === $page_id;
+	if ( $page_id > 0 && (int) get_queried_object_id() === $page_id ) {
+		return true;
+	}
+	// The owner may drop the shortcode on any page; that page gets the assets too.
+	$post = function_exists( 'get_queried_object' ) ? get_queried_object() : null;
+	return is_object( $post ) && isset( $post->post_content )
+		&& has_shortcode( (string) $post->post_content, 'hamyar_symptom_checker' );
 }
 
 /**
@@ -173,6 +179,15 @@ function hjsc_is_checker_page() {
  */
 function hjsc_template_include( $template ) {
 	if ( ! hjsc_is_checker_page() ) {
+		return $template;
+	}
+	// A page that holds the shortcode is a *normal* page: theme header, theme
+	// footer, the editor content — exactly what the owner asked to edit. The
+	// plugin template stays only for a page that has no shortcode yet (an older
+	// install, before this version), so it never breaks an existing page.
+	$page_id = hjsc_page_id();
+	$post    = $page_id > 0 ? get_post( $page_id ) : null;
+	if ( $post && has_shortcode( (string) $post->post_content, 'hamyar_symptom_checker' ) ) {
 		return $template;
 	}
 	$own = HJ_SC_DIR . 'templates/checker-page.php';
@@ -203,6 +218,18 @@ function hjsc_asset_url( $relative ) {
 }
 
 /**
+ * Asset URL with the cache-busting version attached.
+ *
+ * @param string $relative Path inside `assets/`.
+ * @return string
+ */
+function hjsc_asset_url_with_version( $relative ) {
+	$url = hjsc_asset_url( $relative );
+	$sep = false === strpos( $url, '?' ) ? '?' : '&';
+	return $url . $sep . 'ver=' . rawurlencode( hjsc_asset_version( $relative ) );
+}
+
+/**
  * Which question ordering the engine uses.
  *
  * Configuration only: a filter may change it (`hjsc_question_strategy`), the
@@ -229,7 +256,11 @@ function hjsc_question_strategy() {
  * @return int
  */
 function hjsc_min_age() {
-	$age = (int) apply_filters( 'hjsc_min_age', 18 );
+	$stored = function_exists( 'hjsc_setting' ) ? (int) hjsc_setting( 'min_age' ) : 18;
+	if ( $stored < 1 || $stored > 100 ) {
+		$stored = 18;
+	}
+	$age = (int) apply_filters( 'hjsc_min_age', $stored );
 	return ( $age >= 1 && $age <= 100 ) ? $age : 18;
 }
 
@@ -249,6 +280,37 @@ function hjsc_config() {
 		'bundleStatus'  => hjsc_bundle_status(),
 		'evidenceUrl'   => hjsc_asset_url( 'engine/data/evidence-map.v1.json' ),
 		'topicLinks'    => (object) hjsc_topic_links(),
+		'texts'         => hjsc_public_texts(),
+	);
+}
+
+/**
+ * What the visitor reads before the first question — straight from wp-admin.
+ *
+ * @return array<string,mixed>
+ */
+function hjsc_public_texts() {
+	$fallback = array(
+		'title'         => 'این یک ربات اختصاصی ارزیابی احتمالی بیماری در فرد است.',
+		'lead'          => 'هرچه اطلاعات و علامت‌های بیماری خود را درست انتخاب کنید، جواب دقیق‌تری دریافت می‌کنید.',
+		'warning'       => 'این ارزیابی هرگز جای معاینهٔ پزشکی نیست و فقط احتمال بیماری را به شما می‌گوید؛ حرف قطعی و صحیح را از پزشک درمانگر بخواهید.',
+		'sourcesTitle'  => 'منابع علمی',
+		'showSources'   => true,
+		'emergencyNote' => 'اگر درد شدید یا بدحالی وجود دارد، همین حالا با اورژانس تماس بگیرید.',
+		'defaultAge'    => 30,
+	);
+	if ( ! function_exists( 'hjsc_settings' ) ) {
+		return $fallback;
+	}
+	$settings = hjsc_settings();
+	return array(
+		'title'         => (string) $settings['title_fa'],
+		'lead'          => (string) $settings['lead_fa'],
+		'warning'       => (string) $settings['warning_fa'],
+		'sourcesTitle'  => (string) $settings['sources_title'],
+		'showSources'   => (bool) $settings['show_sources'],
+		'emergencyNote' => (string) $settings['emergency_note'],
+		'defaultAge'    => (int) $settings['default_age'],
 	);
 }
 
@@ -270,57 +332,125 @@ function hjsc_enqueue_assets() {
 		return;
 	}
 
+	// Only the stylesheet is enqueued: the entry script is an ES module and is
+	// printed by hjsc_render_tool() with type="module" on the tag itself. That
+	// used to be a `script_loader_tag` rewrite, which a caching/optimisation
+	// plugin could undo — and then the page sat on «در حال بارگذاری…» forever
+	// because a classic <script> cannot run `import`.
 	wp_enqueue_style(
 		'hj-sc-ui',
 		hjsc_asset_url( 'ui/styles.css' ),
 		array(),
 		hjsc_asset_version( 'ui/styles.css' )
 	);
-
-	wp_enqueue_script(
-		'hj-sc-app',
-		hjsc_asset_url( 'ui/app.js' ),
-		array(),
-		hjsc_asset_version( 'ui/app.js' ),
-		true
-	);
-
-	wp_add_inline_script( 'hj-sc-app', 'window.HJ_SC_CONFIG = ' . hjsc_config_json() . ';', 'before' );
-
-	add_filter( 'script_loader_tag', 'hjsc_module_script_tag', 10, 3 );
 }
 add_action( 'wp_enqueue_scripts', 'hjsc_enqueue_assets' );
 
 /**
- * The entry file is an ES module; WordPress does not add `type="module"` itself.
+ * Shortcode: `[hamyar_symptom_checker]` inside any normal page.
  *
- * @param string $tag    Script tag markup.
- * @param string $handle Script handle.
- * @param string $src    Script source URL.
  * @return string
  */
-function hjsc_module_script_tag( $tag, $handle, $src ) {
-	if ( 'hj-sc-app' !== $handle ) {
-		return $tag;
+function hjsc_shortcode() {
+	return hjsc_render_tool();
+}
+add_shortcode( 'hamyar_symptom_checker', 'hjsc_shortcode' );
+
+/**
+ * The tool's markup: one container, the config, a watchdog, and the module.
+ *
+ * @return string
+ */
+function hjsc_render_tool() {
+	if ( function_exists( 'hjsc_setting' ) && ! hjsc_setting( 'enabled' ) ) {
+		return '<section class="card"><p>این ابزار موقتاً خاموش است.</p></section>';
 	}
 
-	// WordPress wraps the inline "before" data into the same tag string, so the
-	// tag must be *amended*, never replaced: adding type="module" to the entry
-	// script only keeps the config script (and any future inline data) intact.
-	$updated = preg_replace_callback(
-		'/<script\b(?=[^>]*\bid="hj-sc-app-js")/i',
-		static function () {
-			return '<script type="module"';
-		},
-		$tag,
-		1
-	);
+	$src     = hjsc_asset_url_with_version( 'ui/app.js' );
+	$config  = hjsc_config_json();
+	$version = HJ_SC_VERSION;
 
-	return is_string( $updated ) ? $updated : $tag;
+	ob_start();
+	?>
+	<div id="safety" hidden></div>
+	<div id="app" class="hj-sc-app">
+		<p class="muted hj-sc-boot">در حال بارگذاری…</p>
+	</div>
+	<div id="live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+	<noscript>
+		<p class="notice">برای استفاده از این ابزار باید جاوااسکریپت مرورگر روشن باشد.</p>
+	</noscript>
+	<script>window.HJ_SC_CONFIG = <?php echo $config; // phpcs:ignore WordPress.Security.EscapeOutput -- JSON_HEX_TAG/HEX_QUOT already applied in hjsc_config_json(). ?>;</script>
+	<script>
+	(function () {
+		var errors = [];
+		window.__hjscErrors = errors;
+		window.addEventListener('error', function (event) {
+			errors.push((event && (event.message || event.type)) || 'error');
+		}, true);
+		window.addEventListener('unhandledrejection', function (event) {
+			var reason = event && event.reason;
+			errors.push('promise: ' + ((reason && reason.message) || reason));
+		});
+		setTimeout(function () {
+			var app = document.getElementById('app');
+			if (!app || app.querySelector('.card')) { return; }
+			while (app.firstChild) { app.removeChild(app.firstChild); }
+			var box = document.createElement('div');
+			box.className = 'card error';
+			var title = document.createElement('h1');
+			title.textContent = 'ابزار در این مرورگر بالا نیامد';
+			box.appendChild(title);
+			var meta = document.createElement('p');
+			meta.textContent = 'نسخهٔ <?php echo esc_html( $version ); ?> · فایل رابط: <?php echo esc_html( $src ); ?>';
+			box.appendChild(meta);
+			if (errors.length) {
+				var detail = document.createElement('p');
+				detail.textContent = 'خطای مرورگر: ' + errors.slice(0, 3).join(' | ');
+				box.appendChild(detail);
+			}
+			var hint = document.createElement('p');
+			hint.className = 'muted';
+			hint.textContent = 'صفحه را کامل تازه کن (Ctrl+F5 یا پاک کردن کش مرورگر). اگر همین ماند، همین متن را برای پشتیبانی بفرست.';
+			box.appendChild(hint);
+			app.appendChild(box);
+		}, 8000);
+	})();
+	</script>
+	<script type="module" id="hj-sc-app-js" src="<?php echo esc_url( $src ); ?>"></script>
+	<?php
+	return (string) ob_get_clean();
 }
 
 /**
- * Keep the preview page out of search engines even if it is published by mistake.
+ * Give an older install the shortcode, so its page becomes an ordinary page.
+ *
+ * Only when the editor is empty: text the owner wrote is never touched.
+ */
+function hjsc_maybe_seed_shortcode() {
+	$page_id = hjsc_page_id();
+	if ( $page_id <= 0 ) {
+		return;
+	}
+	$post = get_post( $page_id );
+	if ( ! $post ) {
+		return;
+	}
+	$content = (string) $post->post_content;
+	if ( has_shortcode( $content, 'hamyar_symptom_checker' ) || '' !== trim( wp_strip_all_tags( $content ) ) ) {
+		return;
+	}
+	wp_update_post(
+		array(
+			'ID'           => $page_id,
+			'post_content' => '[hamyar_symptom_checker]',
+		)
+	);
+}
+add_action( 'admin_init', 'hjsc_maybe_seed_shortcode', 20 );
+
+/**
+ * Keep the checker page out of search engines even if it is published by mistake.
  *
  * @param array<string,bool> $robots Robots directives.
  * @return array<string,bool>

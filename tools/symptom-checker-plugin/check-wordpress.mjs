@@ -317,11 +317,24 @@ async function uiCheck(config, options = {}) {
   await new Promise((done) => setTimeout(done, 600));
 
   const doc = window.document;
+  // 0.1.14: the page is an ordinary page, so the theme's own header/footer is
+  // expected — what must not come back is *our* old chrome: the preview label
+  // in the header and the plugin's second disclaimer in the footer.
   check(
-    'the page around the tool adds no repeated warning',
-    !doc.querySelector('.site-footer')
-      && !/پیش‌نمایش|پیش‌نویس|جای معاینه|تشخیص پزشکی/.test(doc.querySelector('header')?.textContent ?? ''),
-    (doc.querySelector('header')?.textContent ?? '').trim(),
+    'the plugin adds no preview label and no second disclaimer to the page',
+    !page.body.includes('(پیش‌نمایش داخلی)')
+      && !page.body.includes('این ابزار تشخیص پزشکی نیست و جای معاینه، آزمایش یا مشاورهٔ پزشک را نمی‌گیرد'),
+  );
+  check(
+    'the entry script is served as a module, with a cache-busting version',
+    // Attributes may come in any order; what matters is one tag that is a
+    // module, carries our id, and points at the versioned entry file.
+    /<script\b(?=[^>]*\bid="hj-sc-app-js")(?=[^>]*\btype="module")(?=[^>]*\bsrc="[^"]*ui\/app\.js\?ver=[^"]+")[^>]*><\/script>/.test(page.body),
+    (page.body.match(/<script[^>]*ui\/app\.js[^>]*>/) ?? ['missing'])[0],
+  );
+  check(
+    'a watchdog is printed so a boot failure is written on the page, not swallowed',
+    page.body.includes('ابزار در این مرورگر بالا نیامد'),
   );
   check('packaged UI boots inside WordPress', Boolean(doc.querySelector('#app button')));
   const start = [...doc.querySelectorAll('#app button')].find((button) => button.textContent.includes('شروع'));
@@ -428,8 +441,20 @@ async function uiCheck(config, options = {}) {
     externalLoaders.length === 0,
     `${loaders.length} loaders: ` + externalLoaders.map((match) => match[2]).join(' ; '),
   );
-  check('the page has no inline font import', !/@import\s+(?:url\()?['"]?https?:/i.test(page.body));
-  check('the checker page has no posting form', !/<form[^>]+action=/i.test(page.body));
+  // Only the plugin's own stylesheet is ours to answer for; the theme may load
+  // whatever it ships with.
+  const pluginCss = readFileSync(join(work, 'plugins/hamyar-symptom-checker/assets/ui/styles.css'), 'utf8');
+  check(
+    'the plugin loads no font or image from another origin',
+    !/@import\s+(?:url\()?['"]?https?:/i.test(pluginCss),
+  );
+  // A theme legitimately prints a search form; the tool itself must not post.
+  check(
+    'the tool itself never posts anything',
+    !/<form[^>]*>[\s\S]*?id="hj-age"[\s\S]*?<\/form>/i.test(page.body)
+      && !/<form[^>]+action="[^"]*symptom/i.test(page.body)
+      && !/name="hj[-_]?answers?"/i.test(page.body),
+  );
   checkPrefix = '';
 }
 
@@ -482,6 +507,33 @@ if ( ! is_wp_error( $subscriber ) ) {
     $subscriber_can = hjsc_admin_user_can();
     wp_set_current_user( 1 );
 }
+// 0.1.14 — the page is a normal page (shortcode in the editor), and the owner
+// has a settings screen of his own.
+$page_object  = get_post( hjsc_page_id() );
+$page_content = $page_object ? (string) $page_object->post_content : '';
+$settings_menu = false;
+foreach ( (array) ( $GLOBALS['submenu'][ HJ_SC_ADMIN_SLUG ] ?? array() ) as $sub ) {
+    if ( isset( $sub[2] ) && 'hj-sc-settings' === $sub[2] ) {
+        $settings_menu = true;
+    }
+}
+do_action( 'admin_init' );
+ob_start();
+hjsc_settings_render();
+$settings_html = ob_get_clean();
+$clean = hjsc_sanitize_settings( array(
+    'title_fa'      => 'عنوانی که از پیشخوان نوشتم',
+    'lead_fa'       => 'توضیحی که از پیشخوان نوشتم',
+    'warning_fa'    => 'هشداری که از پیشخوان نوشتم',
+    'sources_title' => 'منابع',
+    'min_age'       => '18',
+    'default_age'   => '33',
+    'show_sources'  => '1',
+    'enabled'       => '1',
+    'emergency_note' => 'زنگ بزن',
+) );
+update_option( HJ_SC_SETTINGS_OPTION, $clean );
+$config_texts = hjsc_config()['texts'];
 } catch ( Throwable $e ) {
     $admin_error = get_class( $e ) . ': ' . $e->getMessage();
 }
@@ -498,6 +550,12 @@ file_put_contents( '/wordpress/hj-admin.json', wp_json_encode( array(
     'file_exists'      => ( '' !== $option && is_readable( $path ) ),
     'saved_version'    => isset( $saved['bundle_version'] ) ? $saved['bundle_version'] : '',
     'saved_condition'  => isset( $saved['conditions'][0]['name_fa'] ) ? $saved['conditions'][0]['name_fa'] : '',
+    'page_content'     => $page_content ?? '',
+    'settings_menu'    => (bool) ( $settings_menu ?? false ),
+    'settings_bytes'   => strlen( $settings_html ?? '' ),
+    'settings_field'   => false !== strpos( $settings_html ?? '', 'name="' . HJ_SC_SETTINGS_OPTION . '[title_fa]"' ),
+    'config_title'     => $config_texts['title'] ?? '',
+    'config_default_age' => $config_texts['defaultAge'] ?? 0,
     'saved_count'      => isset( $saved['conditions'] ) ? count( $saved['conditions'] ) : 0,
     'base_count'       => $base_conditions,
     'package_unchanged' => $package_before === $package_after,
@@ -520,6 +578,19 @@ file_put_contents( '/wordpress/hj-admin.json', wp_json_encode( array(
   check('the overview renders', (data?.overview_bytes ?? 0) > 800, `${data?.overview_bytes ?? 0} bytes`);
   check('the overview carries a nonce', data?.overview_nonce === true);
   check('the overview offers a bundle upload', data?.overview_upload === true);
+  check(
+    'the page the owner edits is a normal page, with the shortcode in the editor',
+    String(data?.page_content ?? '').includes('[hamyar_symptom_checker]'),
+    String(data?.page_content ?? '').slice(0, 40),
+  );
+  check('the settings screen sits under the checker menu', data?.settings_menu === true);
+  check(
+    'the settings screen renders its fields',
+    (data?.settings_bytes ?? 0) > 800 && data?.settings_field === true,
+    `${data?.settings_bytes ?? 0} bytes`,
+  );
+  check('the saved title reaches the page config', data?.config_title === 'عنوانی که از پیشخوان نوشتم', data?.config_title ?? '');
+  check('the saved opening age reaches the page config', Number(data?.config_default_age) === 33, String(data?.config_default_age ?? ''));
   check('saving a text edit succeeds', data?.save_result === 'saved', data?.save_result ?? 'no result');
   // "Bumped" means the next patch of whatever bundle is active — not a frozen
   // string. Hard-coding 0.2.1 silently pinned this scenario to phase-1 content.
@@ -540,6 +611,11 @@ file_put_contents( '/wordpress/hj-admin.json', wp_json_encode( array(
   const page = await text('/symptom-checker/');
   const match = page.body.match(/window\.HJ_SC_CONFIG = (\{.*?\});/s);
   const config = match ? JSON.parse(match[1]) : null;
+  check(
+    'the page serves the title the owner saved in settings',
+    String(page.body).includes('عنوانی که از پیشخوان نوشتم'),
+    'config title',
+  );
   check(
     'the checker now serves the dashboard-edited bundle',
     config?.bundleStatus?.source === 'upload' && String(config?.bundleUrl ?? '').includes(String(data?.option ?? 'x')),
@@ -658,12 +734,14 @@ add_action( 'init', function () {
   );
   const page = await text('/symptom-checker/');
   check('the checker page returns 200', page.status === 200);
-  check('the plugin template is used', ['id="app"', 'id="safety"', 'id="live"'].every((needle) => page.body.includes(needle)));
+  check('the tool markup is on the page', ['id="app"', 'id="safety"', 'id="live"'].every((needle) => page.body.includes(needle)));
   check('the page is noindex, nofollow', page.body.includes('noindex') && page.body.includes('nofollow'));
   const scriptTags = [...page.body.matchAll(/<script\b[^>]*>/gi)].map((match) => match[0]);
   // Newer cores print their own module scripts (speculation rules, block
   // assets), so the check looks at *our* tag instead of counting module tags.
-  const ourScriptTag = scriptTags.find((tag) => tag.includes('id="hj-sc-app-js"')) ?? '';
+  const ourScriptTag = scriptTags.find((tag) => tag.includes('id="hj-sc-app-js"'))
+    ?? scriptTags.find((tag) => tag.includes('assets/ui/app.js'))
+    ?? '';
   check(
     'the entry script is a module',
     /\btype="module"/.test(ourScriptTag),
@@ -673,7 +751,11 @@ add_action( 'init', function () {
 
   const configMatch = page.body.match(/window\.HJ_SC_CONFIG = (\{.*?\});/s);
   const config = configMatch ? JSON.parse(configMatch[1]) : null;
-  check('the inline config is printed before the module', Boolean(configMatch) && page.body.indexOf('window.HJ_SC_CONFIG') < page.body.indexOf('<script type="module"'));
+  check(
+    'the inline config is printed before the module',
+    Boolean(configMatch) && ourScriptTag !== ''
+      && page.body.indexOf('window.HJ_SC_CONFIG') < page.body.indexOf(ourScriptTag),
+  );
   check('the config points inside the plugin', Boolean(config?.bundleUrl?.includes('/wp-content/plugins/hamyar-symptom-checker/assets/')));
   check('the draft bundle version is exposed', config?.bundleVersion === '3.0.0-draft', config?.bundleVersion ?? '');
   check('the config states the question strategy', config?.questionStrategy === 'static_order', config?.questionStrategy ?? 'missing');

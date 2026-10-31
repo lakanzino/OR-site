@@ -2,7 +2,7 @@
 /**
  * Plugin Name: همیار جراحی — دستیار نشانه‌ها (پیش‌نمایش)
  * Description: برگهٔ مستقل و غیرعمومی برای اجرای «دستیار نشانه‌ها» روی موتور مستقل پروژه. بستهٔ دانش و موتور از داخل همین افزونه بارگذاری می‌شوند و پاسخ‌های کاربر هیچ‌گاه به سرور فرستاده یا ذخیره نمی‌شوند.
- * Version: 0.1.13
+ * Version: 0.1.14
  * Requires at least: 6.4
  * Requires PHP: 8.0
  * Author: همیار جراحی
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'HJ_SC_VERSION', '0.1.13' );
+define( 'HJ_SC_VERSION', '0.1.14' );
 define( 'HJ_SC_FILE', __FILE__ );
 define( 'HJ_SC_DIR', plugin_dir_path( __FILE__ ) );
 define( 'HJ_SC_URL', plugin_dir_url( __FILE__ ) );
@@ -64,6 +64,7 @@ function hjsc_missing_files() {
 		'includes/bundle-source.php',
 		'includes/mapping.php',
 		'includes/page.php',
+		'includes/settings.php',
 		'templates/checker-page.php',
 		'assets/README.md',
 		'assets/SOURCES.json',
@@ -74,6 +75,7 @@ function hjsc_missing_files() {
 		'assets/engine/src/validate-bundle.js',
 		'assets/engine/src/errors.js',
 		'assets/ui/app.js',
+		'assets/ui/age-gate.js',
 		'assets/ui/view-model.js',
 		'assets/ui/question-help.js',
 		'assets/ui/styles.css',
@@ -174,7 +176,7 @@ add_action( 'admin_notices', 'hjsc_activation_notice' );
  * must not turn into "the plugin triggered a fatal error": the plugin loads,
  * says which file is missing, and the rest of the site keeps working.
  */
-$hj_sc_include_files = array( 'includes/admin.php', 'includes/bundle-source.php', 'includes/mapping.php', 'includes/page.php' );
+$hj_sc_include_files = array( 'includes/admin.php', 'includes/bundle-source.php', 'includes/mapping.php', 'includes/page.php', 'includes/settings.php' );
 $hj_sc_include_missing = array();
 foreach ( $hj_sc_include_files as $hj_sc_relative ) {
 	$hj_sc_path = HJ_SC_DIR . $hj_sc_relative;

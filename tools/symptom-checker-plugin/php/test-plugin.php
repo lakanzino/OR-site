@@ -392,21 +392,23 @@ switch ( $scenario ) {
 		hjsc_enqueue_assets();
 
 		ok( isset( $GLOBALS['hj_stub']['styles']['hj-sc-ui'] ), 'the stylesheet is enqueued on the checker page' );
-		ok( isset( $GLOBALS['hj_stub']['scripts']['hj-sc-app'] ), 'the app script is enqueued on the checker page' );
-		$inline = $GLOBALS['hj_stub']['inline']['hj-sc-app'][0] ?? array();
-		eq( 'before', $inline['position'] ?? '', 'the config runs before the module' );
-		ok( 0 === strpos( $inline['data'] ?? '', 'window.HJ_SC_CONFIG = {' ), 'the config is injected as a global' );
-		ok( isset( $GLOBALS['hj_stub']['filters']['script_loader_tag'] ), 'the module tag filter is registered on this page only' );
+		eq( array(), $GLOBALS['hj_stub']['scripts'], 'the entry module is printed in the markup, not enqueued' );
 
-		// WordPress builds one string: [inline before] <script src id="handle-js"></script>.
-		$wp_tag = '<script id="hj-sc-app-js-before">window.HJ_SC_CONFIG = {"a":1};</script>' . "\n"
-			. '<script src="https://example.test/a.js" id="hj-sc-app-js"></script>';
-		$tag    = hjsc_module_script_tag( $wp_tag, 'hj-sc-app', 'https://example.test/a.js' );
-		ok( false !== strpos( $tag, 'type="module"' ), 'the entry script is loaded as a module' );
-		ok( false !== strpos( $tag, 'HJ_SC_CONFIG' ), 'the inline config survives the tag filter' );
-		ok( false !== strpos( $tag, 'https://example.test/a.js' ), 'the entry script keeps its URL' );
-		ok( 1 === substr_count( $tag, 'type="module"' ), 'only the entry script becomes a module' );
-		eq( '<script src="x"></script>', hjsc_module_script_tag( '<script src="x"></script>', 'other-handle', 'y' ), 'other scripts are untouched' );
+		$markup = hjsc_render_tool();
+		ok( false !== strpos( $markup, 'id="app"' ), 'the container is in the markup' );
+		ok( false !== strpos( $markup, 'type="module"' ), 'the entry script tag says type="module"' );
+		ok(
+			(bool) preg_match( '~src="[^"]*ui/app\.js\?ver=[^"]+"~', $markup ),
+			'the module URL carries a cache-busting version',
+			$markup
+		);
+		ok( false !== strpos( $markup, 'window.HJ_SC_CONFIG = {' ), 'the config is printed for the module' );
+		ok(
+			strpos( $markup, 'HJ_SC_CONFIG' ) < strpos( $markup, 'type="module"' ),
+			'the config comes before the module that reads it'
+		);
+		ok( false !== strpos( $markup, 'ابزار در این مرورگر بالا نیامد' ), 'a watchdog names the failure instead of a silent spinner' );
+		ok( false !== strpos( $markup, '<noscript>' ), 'the no-JavaScript case is still explained' );
 
 		// A different page must stay clean.
 		hj_stub_reset();
@@ -424,6 +426,106 @@ switch ( $scenario ) {
 		hjsc_enqueue_assets();
 		eq( array(), $GLOBALS['hj_stub']['styles'], 'other pages get no checker stylesheet' );
 		eq( array(), $GLOBALS['hj_stub']['scripts'], 'other pages get no checker script' );
+		break;
+
+	case 'settings':
+		boot( $plugin_dir );
+
+		$defaults = hjsc_settings_defaults();
+		eq( 'این یک ربات اختصاصی ارزیابی احتمالی بیماری در فرد است.', hjsc_setting( 'title_fa' ), 'the shipped title is the default' );
+		eq( 18, hjsc_config()['minAge'], 'the age gate starts at 18 by default' );
+		eq( 30, hjsc_config()['texts']['defaultAge'], 'the age field opens on 30' );
+		eq( true, hjsc_config()['texts']['showSources'], 'the source list is shown by default' );
+
+		hj_stub_run_action( 'admin_init' );
+		ok( isset( $GLOBALS['hj_stub']['settings'][ HJ_SC_SETTINGS_OPTION ] ), 'the option is registered with the Settings API' );
+		eq( 'hjsc_sanitize_settings', $GLOBALS['hj_stub']['settings'][ HJ_SC_SETTINGS_OPTION ]['args']['sanitize_callback'] ?? '', 'the option always goes through its sanitiser' );
+		ok( count( $GLOBALS['hj_stub']['fields'] ) >= 9, 'the screen exposes the texts, the age and the switch', (string) count( $GLOBALS['hj_stub']['fields'] ) );
+
+		hj_stub_run_action( 'admin_menu' );
+		$submenu = $GLOBALS['hj_stub']['submenu'][ HJ_SC_ADMIN_SLUG ] ?? array();
+		ok(
+			'1' === (string) count( $submenu ) && HJ_SC_SETTINGS_SLUG === ( $submenu[0]['slug'] ?? '' ),
+			'the settings screen sits under the checker menu',
+			wp_json_encode( $submenu )
+		);
+		ok(
+			count( $GLOBALS['hj_stub']['menu'] ) === 1,
+			'and it does not add a second top-level menu'
+		);
+
+		$clean = hjsc_sanitize_settings(
+			array(
+				'title_fa'      => '  <script>alert(1)</script>عنوان تازه ',
+				'lead_fa'       => '   ',
+				'warning_fa'    => 'هشدار تست',
+				'sources_title' => 'منابع',
+				'min_age'       => '200',
+				'default_age'   => '5',
+				'show_sources'  => '',
+				'enabled'       => '1',
+				'emergency_note' => 'زنگ بزن',
+			)
+		);
+		eq( 'عنوان تازه', trim( $clean['title_fa'] ), 'script tags never reach the page' );
+		eq( $defaults['lead_fa'], $clean['lead_fa'], 'an empty text falls back to the shipped wording' );
+		eq( 100, $clean['min_age'], 'the minimum age is clamped to the field travel' );
+		ok( $clean['default_age'] >= $clean['min_age'], 'the opening age can never be below the minimum' );
+		eq( false, $clean['show_sources'], 'an unchecked box turns the source list off' );
+		eq( true, $clean['enabled'], 'the tool stays on unless the box is cleared' );
+
+		update_option( HJ_SC_SETTINGS_OPTION, $clean );
+		eq( 'عنوان تازه', hjsc_config()['texts']['title'], 'the browser gets the saved title' );
+		eq( false, hjsc_config()['texts']['showSources'], 'the browser gets the saved source switch' );
+		eq( 100, hjsc_config()['minAge'], 'the browser gets the saved age gate' );
+
+		update_option( HJ_SC_SETTINGS_OPTION, array_merge( $clean, array( 'enabled' => false ) ) );
+		$off = hjsc_render_tool();
+		ok( false !== strpos( $off, 'موقتاً خاموش' ), 'a switched-off tool says so in one line' );
+		ok( false === strpos( $off, 'type="module"' ), 'and loads nothing' );
+		break;
+
+	case 'shortcode':
+		boot( $plugin_dir );
+
+		ok( shortcode_exists( 'hamyar_symptom_checker' ), 'the shortcode is registered' );
+		$html = hjsc_shortcode();
+		ok( false !== strpos( $html, 'id="app"' ), 'the shortcode renders the container' );
+		ok( false !== strpos( $html, 'type="module"' ), 'and the module tag' );
+
+		$page_id = wp_insert_post(
+			array(
+				'post_type'    => 'page',
+				'post_name'    => HJ_SC_PAGE_SLUG,
+				'post_status'  => 'publish',
+				'post_content' => '',
+			)
+		);
+		update_option( HJ_SC_PAGE_OPTION, $page_id );
+		hj_stub_run_action( 'admin_init' );
+		eq( '[hamyar_symptom_checker]', get_post( $page_id )->post_content, 'an older empty page is migrated to the shortcode' );
+
+		$mine = wp_insert_post(
+			array(
+				'post_type'    => 'page',
+				'post_name'    => 'mine',
+				'post_status'  => 'publish',
+				'post_content' => 'متن خودم',
+			)
+		);
+		update_option( HJ_SC_PAGE_OPTION, $mine );
+		hj_stub_run_action( 'admin_init' );
+		eq( 'متن خودم', get_post( $mine )->post_content, 'text the owner wrote is never rewritten' );
+
+		$GLOBALS['hj_stub']['is_page'] = true;
+		$GLOBALS['hj_stub']['queried'] = $page_id;
+		eq( 'theme.php', hjsc_template_include( 'theme.php' ), 'a page with the shortcode keeps the theme template' );
+
+		$GLOBALS['hj_stub']['queried'] = $mine;
+		ok(
+			str_ends_with( (string) hjsc_template_include( 'theme.php' ), 'templates/checker-page.php' ),
+			'a page without the shortcode keeps the plugin template'
+		);
 		break;
 
 	case 'robots':
@@ -450,11 +552,15 @@ switch ( $scenario ) {
 
 	case 'template':
 		$template = file_get_contents( $plugin_dir . 'templates/checker-page.php' );
-		foreach ( array( 'wp_head();', 'wp_footer();', 'id="app"', 'id="safety"', 'id="live"', 'aria-live="polite"', 'body_class', 'skip-link' ) as $needle ) {
+		// 0.1.14: the container ids moved into hjsc_render_tool(), which the
+		// shortcode and this template both call — checked in the `enqueue`
+		// scenario against the real output.
+		foreach ( array( 'wp_head();', 'wp_footer();', 'body_class', 'skip-link', 'hjsc_render_tool()' ) as $needle ) {
 			ok( false !== strpos( $template, $needle ), "template contains {$needle}" );
 		}
 		ok( false !== strpos( $template, "defined( 'ABSPATH' )" ), 'the template refuses direct access' );
-		ok( false === strpos( $template, 'add_shortcode' ) && false === stripos( $template, '<iframe' ), 'the template is neither a shortcode nor an iframe' );
+		ok( false === strpos( $template, 'add_shortcode' ) && false === stripos( $template, '<iframe' ), 'the fallback template registers nothing and embeds nothing' );
+		ok( false !== strpos( $template, 'hjsc_render_tool()' ), 'the fallback template renders the same markup as the shortcode' );
 		break;
 
 	case 'guards':
@@ -472,7 +578,6 @@ switch ( $scenario ) {
 		$forbidden = array(
 			'/\beval\s*\(/'              => 'eval()',
 			'/\$_GET|\$_POST|\$_REQUEST|\$_COOKIE/' => 'request superglobals',
-			'/add_shortcode\s*\(/'       => 'shortcode registration',
 			'/register_rest_route\s*\(/' => 'REST endpoint',
 			'/wp_remote_|curl_init\s*\(/' => 'outbound HTTP call',
 			'/\$wpdb->query/'            => 'raw SQL',
@@ -483,6 +588,7 @@ switch ( $scenario ) {
 		// every write path is behind a nonce, and the file it writes is JSON in
 		// the uploads folder, never a page, an option the visitor sees, or code.
 		$request_readers = array( 'includes/admin.php' );
+		$shortcode_files = array( 'includes/page.php' );
 
 		foreach ( $files as $file ) {
 			$source = file_get_contents( $file );
@@ -493,6 +599,24 @@ switch ( $scenario ) {
 					continue;
 				}
 				ok( ! preg_match( $pattern, $source ), "no {$label}: {$name}" );
+			}
+			// 0.1.14: the owner asked for a normal, editable page, and in
+			// WordPress that is a shortcode. Exactly one, in one file.
+			$has_shortcode = (bool) preg_match( '/add_shortcode\s*\(/', $source );
+			ok(
+				! $has_shortcode || in_array( $name, $shortcode_files, true ),
+				"no unexpected shortcode registration: {$name}"
+			);
+			if ( $has_shortcode ) {
+				eq(
+					1,
+					preg_match_all( '/add_shortcode\s*\(/', $source ),
+					'the checker registers exactly one shortcode'
+				);
+				ok(
+					false !== strpos( $source, "'hamyar_symptom_checker'" ),
+					'the shortcode keeps its documented name'
+				);
 			}
 		}
 

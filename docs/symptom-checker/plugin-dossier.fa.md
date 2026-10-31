@@ -2,7 +2,7 @@
 
 این سند، فهرست و راهنمای پروندهٔ افزونه است: همان ساختاری که در Google Drive هم ساخته شده (پوشهٔ «افزونهٔ دستیار نشانه‌ها — همیار جراحی»). هر بخش، سند اصلی خودش را در همین مخزن دارد؛ اینجا فقط نقشه است تا هیچ‌چیز گم نشود.
 
-نسخهٔ جاری: **۰.۱.۱۳** · تاریخ: ۳۱ اکتبر ۲۰۲۶
+نسخهٔ جاری: **۰.۱.۱۴** · تاریخ: ۳۱ اکتبر ۲۰۲۶
 
 ---
 
@@ -19,7 +19,8 @@
 | ۰.۱.۱۱ | `releases/hamyar-symptom-checker-0.1.11.zip` | ۲۶ فایل (۱ فایل تازه: `assets/ui/age-gate.js`)<br>sha256 `15180ef5ed746424d9a5dca07b36d61864ca89575587674db6028c9f79abdb82` | اصلاح موبایل + دروازهٔ سن |
 | **۰.۱.۱۲** | `releases/hamyar-symptom-checker-0.1.12.zip` | ۲۶ فایل (بستهٔ دانش جایگزین شد: `assets/data/knowledge-bundle.v3.json`)<br>sha256 `22b626787317874e3c6ebd6cbb6cbff0d0728353f689874482f7e5365adb9798` | **تازه** — شروع از ناحیهٔ بدن + بخش تناسلی کامل |
 
-- راهنمای نصب و بازگشت ۰.۱.۱۳: [`docs/symptom-checker/phase-7/release-0.1.13.fa.md`](phase-7/release-0.1.13.fa.md) (۰.۱.۱۲: [`release-0.1.12.fa.md`](phase-6/release-0.1.12.fa.md) · ۰.۱.۱۱: [`release-0.1.11.fa.md`](phase-5/release-0.1.11.fa.md))
+- راهنمای نصب و بازگشت ۰.۱.۱۴: [`docs/symptom-checker/phase-8/release-0.1.14.fa.md`](phase-8/release-0.1.14.fa.md) (۰.۱.۱۳: [`release-0.1.13.fa.md`](phase-7/release-0.1.13.fa.md) · ۰.۱.۱۲: [`release-0.1.12.fa.md`](phase-6/release-0.1.12.fa.md))
+- فاز ۸ — برگهٔ معمولی و تنظیمات: [`phase-8/report.fa.md`](phase-8/report.fa.md)
 - فاز ۷ — صفحهٔ اول و سن: [`phase-7/report.fa.md`](phase-7/report.fa.md)
 - فاز ۶ — ناحیه‌محور: [`phase-6/report.fa.md`](phase-6/report.fa.md) · [`phase-6/body-map.fa.md`](phase-6/body-map.fa.md)
 - اصلاح موبایل و دروازهٔ سن: [`docs/symptom-checker/phase-5/mobile-and-age-gate.fa.md`](phase-5/mobile-and-age-gate.fa.md) (۰.۱.۹: [`release-0.1.9.fa.md`](phase-5/release-0.1.9.fa.md))

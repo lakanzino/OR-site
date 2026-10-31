@@ -33,14 +33,7 @@ if ( function_exists( 'wp_body_open' ) ) {
 </header>
 
 <main class="wrap">
-	<div id="safety" hidden></div>
-	<div id="app">
-		<p class="muted">در حال بارگذاری…</p>
-	</div>
-	<div id="live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
-	<noscript>
-		<p class="notice">برای استفاده از این ابزار باید جاوااسکریپت مرورگر روشن باشد.</p>
-	</noscript>
+	<?php echo hjsc_render_tool(); // phpcs:ignore WordPress.Security.EscapeOutput -- built with esc_* inside the renderer. ?>
 </main>
 
 <?php wp_footer(); ?>

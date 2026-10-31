@@ -110,6 +110,9 @@ jobs:
   wordpress:
     name: WordPress ${{ matrix.wp }} (Playground)
     runs-on: ubuntu-latest
+    # A failing run posts its tail as a commit comment; that writes to the repo.
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -127,4 +130,18 @@ jobs:
       - name: wordpress checks
         env:
           HJ_WP_VERSION: ${{ matrix.wp }}
-        run: node tools/symptom-checker-plugin/check-wordpress.mjs
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # GitHub runs `bash -e`: without `set +e` a failing harness would
+          # abort the script before it could report *why* it failed.
+          set +e
+          set -o pipefail
+          node tools/symptom-checker-plugin/check-wordpress.mjs 2>&1 | tee /tmp/wp.log
+          status=$?
+          # A failing run must say *why*. The job log is not always reachable,
+          # but a commit comment always is — and it carries the whole tail.
+          if [ "$status" -ne 0 ]; then
+            grep -E '^(FAIL|ERROR)' /tmp/wp.log | head -6 | cut -c1-280 | sed 's/^/::error::/' || true
+            tail -n 6 /tmp/wp.log | cut -c1-280 | sed 's/^/::error::tail: /' || true
+          fi
+          exit $status
