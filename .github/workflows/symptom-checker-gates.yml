@@ -110,6 +110,9 @@ jobs:
   wordpress:
     name: WordPress ${{ matrix.wp }} (Playground)
     runs-on: ubuntu-latest
+    # A failing run posts its tail as a commit comment; that writes to the repo.
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
