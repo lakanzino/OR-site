@@ -45,6 +45,22 @@ const work = mkdtempSync(join(tmpdir(), 'hj-sc-wp-'));
 let server = null;
 const results = [];
 
+/** `3.0.0-draft` → `3.0.1-draft`; the dashboard never overwrites a version. */
+function bumpDraftVersion(version) {
+  const match = String(version ?? '').match(/^(\d+)\.(\d+)\.(\d+)(-.+)?$/);
+  if (!match) throw new Error(`unexpected bundle version: ${version}`);
+  return `${match[1]}.${match[2]}.${Number(match[3]) + 1}${match[4] ?? ''}`;
+}
+
+/** The one knowledge bundle the built package ships (its name carries no version). */
+function packagedBundlePath() {
+  const dir = join(work, 'plugins/hamyar-symptom-checker/assets/data');
+  const file = readdirSync(dir).find((name) => /^knowledge-bundle\..*\.json$/.test(name));
+  if (!file) throw new Error('the package ships no knowledge bundle');
+  return join(dir, file);
+}
+
+
 // A second UI run (phase 5-a) reports the same assertions under another banner,
 // so the log never shows two identical lines with different meanings.
 let checkPrefix = '';
@@ -499,13 +515,17 @@ file_put_contents( '/wordpress/hj-admin.json', wp_json_encode( array(
   check('the overview carries a nonce', data?.overview_nonce === true);
   check('the overview offers a bundle upload', data?.overview_upload === true);
   check('saving a text edit succeeds', data?.save_result === 'saved', data?.save_result ?? 'no result');
+  // "Bumped" means the next patch of whatever bundle is active — not a frozen
+  // string. Hard-coding 0.2.1 silently pinned this scenario to phase-1 content.
+  const packagedBundle = JSON.parse(readFileSync(packagedBundlePath(), 'utf8'));
+  const expectedVersion = bumpDraftVersion(packagedBundle.bundle_version);
   check(
     'the saved file follows the upload contract',
-    /^knowledge-bundle\.0\.2\.1-draft\.[0-9a-f]{8}\.json$/.test(String(data?.option ?? '')),
-    data?.option ?? '',
+    new RegExp(`^knowledge-bundle\\.${expectedVersion.replace(/\./g, '\\.')}\\.[0-9a-f]{8}\\.json$`).test(String(data?.option ?? '')),
+    `${data?.option ?? ''} (expected ${expectedVersion})`,
   );
   check('the edited file exists in uploads/hj-sc', data?.file_exists === true);
-  check('the new version is bumped, not overwritten', data?.saved_version === '0.2.1-draft', data?.saved_version ?? '');
+  check('the new version is bumped, not overwritten', data?.saved_version === expectedVersion, `${data?.saved_version ?? ''} (expected ${expectedVersion})`);
   check('the edited text is in the new bundle', data?.saved_condition === 'ویرایش آزمایشی از پیشخوان', data?.saved_condition ?? '');
   check('the edit changed no condition count', data?.saved_count === data?.base_count, `${data?.saved_count} vs ${data?.base_count}`);
   check('the bundle inside the plugin is untouched', data?.package_unchanged === true);
@@ -521,7 +541,7 @@ file_put_contents( '/wordpress/hj-admin.json', wp_json_encode( array(
   );
   check('the cache buster is the hash of the new file', String(config?.bundleUrl ?? '').includes(`ver=${String(data?.option ?? '').match(/\.([0-9a-f]{8})\.json$/)?.[1]}`), config?.bundleUrl ?? '');
   check('the page still renders the checker', page.status === 200 && page.body.includes('id="app"'));
-  check('the edited version reaches the page config', config?.bundleStatus?.version === '0.2.1-draft', config?.bundleStatus?.version ?? '');
+  check('the edited version reaches the page config', config?.bundleStatus?.version === expectedVersion, `${config?.bundleStatus?.version ?? ''} (expected ${expectedVersion})`);
   const served = await fetch(config?.bundleUrl ?? `${BASE}/missing.json`);
   const servedJson = served.status === 200 ? await served.json() : null;
   check('the served bundle carries the edited condition', servedJson?.conditions?.[0]?.name_fa === 'ویرایش آزمایشی از پیشخوان', servedJson?.conditions?.[0]?.name_fa ?? '');
