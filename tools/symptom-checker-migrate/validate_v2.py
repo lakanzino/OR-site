@@ -35,6 +35,7 @@ DEFAULT_BUNDLE = "docs/symptom-checker/phase-1/knowledge-bundle.v2.json"
 SCHEMA_PATH = "docs/symptom-checker/schema/knowledge-bundle.v2.schema.json"
 
 SYMPTOM_ID = re.compile(r"^[a-z]{2,5}\.[a-z0-9_]+$")
+LINK_STATUSES = ("needs_live_verification", "verified_published", "unmapped")
 FORBIDDEN_KEYS = re.compile(r"(probab|likelih|percent|score|weight|confidence|odds)", re.I)
 
 
@@ -208,6 +209,11 @@ def validate(bundle: dict, schema: dict) -> Report:
         check_required(report, owner, condition, requirements["condition"])
         if not condition.get("review_status"):
             report.error(f"{owner}: missing review_status")
+        profile_ref = condition.get("profile_ref")
+        if not isinstance(profile_ref, str) or "#" not in profile_ref:
+            report.error(f"{owner}: profile_ref must point to a profile id")
+        if condition.get("link_status") not in LINK_STATUSES:
+            report.error(f"{owner}: invalid link_status")
         profile = condition.get("profile", [])
         if not profile:
             report.error(f"{owner}: empty profile")

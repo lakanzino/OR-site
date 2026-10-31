@@ -1,0 +1,14 @@
+{
+  "id": "abd.pain_after_meal",
+  "cluster": "abd",
+  "label_fa": "درد شکم بعد از وعدهٔ غذایی سنگین",
+  "synonyms": [
+    "درد بعد از غذا",
+    "درد شب بعد از شام"
+  ],
+  "category": "pain",
+  "source_refs": [
+    "src_niddk_gallstones"
+  ],
+  "_note_fa": "شناسهٔ تازهٔ این نمونه؛ در کاتالوگ فعلی نشانه‌ای برای «درد بعد از غذا» نبود."
+}

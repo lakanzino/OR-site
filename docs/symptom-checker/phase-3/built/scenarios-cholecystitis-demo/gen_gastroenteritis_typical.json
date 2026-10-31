@@ -1,0 +1,47 @@
+{
+  "id": "gen_gastroenteritis_typical",
+  "generated_from": {
+    "condition_id": "gastroenteritis",
+    "persona": "typical"
+  },
+  "title_fa": "شخصیت typical برای التهاب معده و روده (گاستروانتریت)",
+  "answers": {
+    "q_pain_present": "unknown",
+    "q_pain_location": "unknown",
+    "q_pain_migrated_rlq": "unknown",
+    "q_pain_onset": "unknown",
+    "q_pain_course": "unknown",
+    "q_pain_worse_movement": "unknown",
+    "q_associated_symptoms": [
+      "nausea",
+      "vomiting",
+      "fever",
+      "diarrhea"
+    ],
+    "q_urinary_symptoms": [
+      "unknown"
+    ],
+    "q_flank_radiation": "unknown",
+    "q_fever_chills": "yes",
+    "q_diarrhea_vomiting": [
+      "diarrhea",
+      "vomiting"
+    ],
+    "q_keep_fluids": "unknown",
+    "q_blood_in_stool": "unknown",
+    "q_dehydration_signs": [
+      "thirst",
+      "dry_mouth",
+      "little_urine",
+      "dizziness"
+    ],
+    "q_unbearable_pain": "unknown",
+    "q_pregnancy_possible": "no"
+  },
+  "expected": {
+    "must_open": [
+      "gastroenteritis"
+    ],
+    "must_not_open": []
+  }
+}

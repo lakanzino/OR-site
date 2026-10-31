@@ -1,0 +1,45 @@
+{
+  "id": "gen_kidney_stone_typical",
+  "generated_from": {
+    "condition_id": "kidney_stone",
+    "persona": "typical"
+  },
+  "title_fa": "شخصیت typical برای سنگ کلیه",
+  "answers": {
+    "q_pain_present": "unknown",
+    "q_pain_location": "flank_or_back",
+    "q_pain_migrated_rlq": "unknown",
+    "q_pain_onset": "unknown",
+    "q_pain_course": "unknown",
+    "q_pain_worse_movement": "unknown",
+    "q_associated_symptoms": [
+      "nausea",
+      "vomiting"
+    ],
+    "q_urinary_symptoms": [
+      "dysuria",
+      "frequency",
+      "urgency",
+      "blood_urine",
+      "cloudy_odor",
+      "retention"
+    ],
+    "q_flank_radiation": "yes",
+    "q_fever_chills": "unknown",
+    "q_diarrhea_vomiting": [
+      "vomiting"
+    ],
+    "q_keep_fluids": "unknown",
+    "q_dehydration_signs": [
+      "unknown"
+    ],
+    "q_unbearable_pain": "unknown",
+    "q_pregnancy_possible": "no"
+  },
+  "expected": {
+    "must_open": [
+      "kidney_stone"
+    ],
+    "must_not_open": []
+  }
+}

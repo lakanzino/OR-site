@@ -1,0 +1,18 @@
+[
+  {
+    "id": "p_chole_after_meal",
+    "condition_id": "chole",
+    "when": [
+      {
+        "question_id": "q_pain_after_meal",
+        "answers": [
+          "yes"
+        ]
+      }
+    ],
+    "note_fa": "دردی که بعد از وعدهٔ غذایی سنگین آمده، مسیر کیسهٔ صفرا را باز می‌کند؛ تشخیص نیست.",
+    "source_refs": [
+      "src_niddk_gallstones"
+    ]
+  }
+]
