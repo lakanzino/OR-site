@@ -4,8 +4,8 @@
  * Three promises are pinned here:
  *   1. `loadBundle()` turns both bundle shapes into one model, and refuses
  *      anything else;
- *   2. the question order is injectable, `static_order` is the default and
- *      `adaptive` is today an empty shell that must behave exactly like it;
+ *   2. the question order is injectable, `static_order` is the default, and
+ *      `adaptive` is a real strategy that only a configuration may switch to;
  *   3. `profile_match` appears only when asked for, never carries a number, and
  *      «نمی‌دانم» never removes a card.
  */
@@ -100,9 +100,14 @@ test('both built-in strategies exist', () => {
   assert.equal(resolveStrategy(ADAPTIVE).name, ADAPTIVE);
 });
 
-test('adaptive is still an empty shell and must behave exactly like static_order', () => {
-  // Phase 4 implements the adaptive order. Until then this test is the guard
-  // that nobody mistakes the skeleton for a working feature.
+test('adaptive is a working strategy, and no visitor is switched to it', () => {
+  // Phase 4 filled the adaptive order in. What must stay pinned is the other
+  // half of the promise: the engine's default is still `static_order`, and a
+  // session that was configured with `adaptive` derives exactly the same result
+  // from the same answers — order changes what is asked when, never what it
+  // means.
+  assert.equal(createSession(bundleV1, { evidenceMap }).strategy, STATIC_ORDER);
+
   for (const scenario of scenarios.slice(0, 6)) {
     const fromStatic = play(createSession(bundleV1, { evidenceMap }), scenario, bundleV1);
     const fromAdaptive = play(
@@ -114,6 +119,13 @@ test('adaptive is still an empty shell and must behave exactly like static_order
     assert.deepEqual(fromAdaptive.answers(), fromStatic.answers(), scenario.id);
     assert.deepEqual(fromAdaptive.result(), fromStatic.result(), scenario.id);
   }
+
+  // The two orders really are different — otherwise the test above would prove
+  // nothing. The static order starts with the pain question, the adaptive one
+  // with the safety net.
+  const staticFirst = createSession(bundleV1, { evidenceMap }).nextQuestion().id;
+  const adaptiveFirst = createSession(bundleV1, { evidenceMap, questionStrategy: ADAPTIVE }).nextQuestion().id;
+  assert.notEqual(adaptiveFirst, staticFirst);
 });
 
 test('the question order comes from the strategy, not from the engine', () => {

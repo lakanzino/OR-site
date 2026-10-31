@@ -2,7 +2,7 @@
 /**
  * Plugin Name: همیار جراحی — دستیار نشانه‌ها (پیش‌نمایش)
  * Description: برگهٔ مستقل و غیرعمومی برای اجرای «دستیار نشانه‌ها» روی موتور مستقل پروژه. بستهٔ دانش و موتور از داخل همین افزونه بارگذاری می‌شوند و پاسخ‌های کاربر هیچ‌گاه به سرور فرستاده یا ذخیره نمی‌شوند.
- * Version: 0.1.9
+ * Version: 0.1.10
  * Requires at least: 6.4
  * Requires PHP: 8.0
  * Author: همیار جراحی
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'HJ_SC_VERSION', '0.1.9' );
+define( 'HJ_SC_VERSION', '0.1.10' );
 define( 'HJ_SC_FILE', __FILE__ );
 define( 'HJ_SC_DIR', plugin_dir_path( __FILE__ ) );
 define( 'HJ_SC_URL', plugin_dir_url( __FILE__ ) );
