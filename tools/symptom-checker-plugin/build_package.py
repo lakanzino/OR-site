@@ -43,6 +43,7 @@ ASSET_SOURCES = {
     # styles.css loads it with a relative url(), so it must sit beside the CSS.
     "symptom-checker/ui/anatomy-hero.jpg": "ui/anatomy-hero.jpg",
     "symptom-checker/engine/src/engine.js": "engine/src/engine.js",
+    "symptom-checker/engine/src/adapter.js": "engine/src/adapter.js",
     "symptom-checker/engine/src/evidence.js": "engine/src/evidence.js",
     "symptom-checker/engine/src/validate-bundle.js": "engine/src/validate-bundle.js",
     "symptom-checker/engine/src/errors.js": "engine/src/errors.js",

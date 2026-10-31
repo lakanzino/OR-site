@@ -25,6 +25,7 @@ import {
 } from './errors.js';
 import { SUPPORTED_SCHEMA_VERSION, collectBundleIssues } from './validate-bundle.js';
 import { buildEvidence, validateEvidenceMap } from './evidence.js';
+import { bundleToEngineShape, evidenceMapFromBundle, isV2Bundle } from './adapter.js';
 
 const asArray = (value) => (Array.isArray(value) ? value : []);
 const clone = (value) => JSON.parse(JSON.stringify(value));
@@ -123,15 +124,22 @@ function validateAnswer(question, value) {
   return value;
 }
 
-export function createSession(bundle, { evidenceMap = null } = {}) {
+export function createSession(source, { evidenceMap = null } = {}) {
+  // A schema-2.0.0 bundle (disease × symptom matrix) is read through the
+  // adapter; the v1 shape keeps working unchanged. The rest of this file only
+  // ever sees the v1 shape, so derivation cannot drift between the two.
+  const isV2 = isV2Bundle(source);
+  const bundle = isV2 ? bundleToEngineShape(source) : source;
+  const map = evidenceMap ?? (isV2 ? evidenceMapFromBundle(source) : null);
+
   if (bundle?.schema_version !== SUPPORTED_SCHEMA_VERSION) {
-    throw new BundleVersionError(bundle?.schema_version, SUPPORTED_SCHEMA_VERSION);
+    throw new BundleVersionError(source?.schema_version, SUPPORTED_SCHEMA_VERSION);
   }
   const issues = collectBundleIssues(bundle);
   if (issues.length) throw new BundleValidationError(issues);
 
-  if (evidenceMap) {
-    const mapIssues = validateEvidenceMap(bundle, evidenceMap);
+  if (map) {
+    const mapIssues = validateEvidenceMap(bundle, map);
     if (mapIssues.length) throw new BundleValidationError(mapIssues);
   }
 
@@ -229,8 +237,9 @@ export function createSession(bundle, { evidenceMap = null } = {}) {
   const session = {
     bundleId: bundle.bundle_id,
     bundleVersion: bundle.bundle_version,
-    schemaVersion: bundle.schema_version,
-    hasEvidenceMap: Boolean(evidenceMap),
+    // Report the schema the caller handed in, not the internal shape.
+    schemaVersion: source.schema_version,
+    hasEvidenceMap: Boolean(map),
 
     get state() {
       return derive().stopped ? 'stopped' : 'asking';
@@ -333,7 +342,7 @@ export function createSession(bundle, { evidenceMap = null } = {}) {
     },
 
     evidence() {
-      const built = buildEvidence(bundle, evidenceMap, answers);
+      const built = buildEvidence(bundle, map, answers);
       return Object.fromEntries([...built.entries()].map(([id, groups]) => [id, clone(groups)]));
     },
 

@@ -1,0 +1,112 @@
+name: symptom-checker gates
+
+# The owner's runbook requires every gate to run on each pull request plus a
+# nightly run on freshly generated/random scenarios. Everything here is a
+# command that is also documented in the reports, so a red run can be
+# reproduced locally with the same line.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 2 * * *' # nightly, 02:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  gates:
+    name: fast gates (no network-heavy harnesses)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: install jsdom (UI smoke needs a DOM)
+        run: npm install --no-save --no-audit --no-fund jsdom
+
+      - name: python gates
+        run: |
+          set -eux
+          python3 -m unittest discover -s tools/tests -p 'test_*.py'
+          python3 -m unittest discover -s tools/symptom-checker-plugin -p 'test_*.py'
+          python3 -m unittest discover -s tools/symptom-checker-migrate -p 'test_*.py'
+          python3 -m unittest discover -s tools/symptom-checker-audit -p 'test_*.py'
+
+      - name: bundle and schema gates
+        run: |
+          set -eux
+          python3 tools/symptom-checker-audit/validate_phase1.py
+          python3 tools/symptom-checker-migrate/v1_to_v2.py --check
+          python3 tools/symptom-checker-migrate/validate_v2.py
+          python3 tools/symptom-checker-plugin/check-name-collisions.py
+          python3 tools/symptom-checker-plugin/build_package.py --check
+          python3 tools/symptom-checker-audit/privacy_scan.py
+
+      - name: engine and UI tests
+        run: |
+          set -eux
+          node --test symptom-checker/engine/tests/*.test.js
+          node --test symptom-checker/ui/tests/*.test.js
+          node symptom-checker/ui/tests/ui-smoke.mjs --all
+
+      - name: golden snapshots and v2 equivalence
+        run: |
+          set -eux
+          node tools/symptom-checker-golden/golden.mjs verify
+          node tools/symptom-checker-migrate/equivalence.mjs
+
+      - name: nightly differential run on fresh random paths
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          set -eux
+          node tools/symptom-checker-migrate/equivalence.mjs --quick --random --count 5000 --seed "$(date +%s)"
+
+  php:
+    name: PHP checks (WebAssembly, real PHP parser)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: install php-wasm
+        run: npm install --no-save --no-audit --no-fund @php-wasm/node @php-wasm/universal
+      - name: php checks
+        run: node tools/symptom-checker-plugin/php-checks.mjs
+
+  wordpress:
+    name: WordPress ${{ matrix.wp }} (Playground)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        wp: ['6.8.3', '7.1.4']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: install jsdom
+        run: npm install --no-save --no-audit --no-fund jsdom
+      - name: wordpress checks
+        env:
+          HJ_WP_VERSION: ${{ matrix.wp }}
+        run: node tools/symptom-checker-plugin/check-wordpress.mjs
