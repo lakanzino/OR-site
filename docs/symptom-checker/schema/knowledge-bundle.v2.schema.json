@@ -1,0 +1,384 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hamyarjarahi.ir/schema/knowledge-bundle.v2.schema.json",
+  "title": "بستهٔ دانش دستیار نشانه‌ها — schema 2.0.0",
+  "description": "شکل ماتریس بیماری × نشانه. نسخهٔ ساختار (schema_version) از نسخهٔ محتوا (bundle_version) جداست: تغییر ساختار، نسخهٔ محتوا را جابه‌جا نمی‌کند و برعکس. هر متن بالینی باید source_refs داشته باشد و محتوای تأییدنشده review_status: pending_team_review بگیرد.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "bundle_id",
+    "bundle_version",
+    "status",
+    "locale",
+    "created",
+    "scope",
+    "answer_states",
+    "symptom_clusters",
+    "sources",
+    "symptoms",
+    "questions",
+    "conditions",
+    "overrides",
+    "safety_rules",
+    "coverage_rules",
+    "disclaimers"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2.0.0",
+      "description": "نسخهٔ ساختار. هر تغییر شکلی که خوانندهٔ قدیمی را می‌شکند، این عدد را بالا می‌برد."
+    },
+    "bundle_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9.-]+$" },
+    "bundle_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[a-z0-9.-]+)?$",
+      "description": "نسخهٔ محتوا. مهاجرت قالبی آن را تغییر نمی‌دهد."
+    },
+    "status": { "enum": ["draft", "review", "published"] },
+    "locale": { "type": "string" },
+    "created": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "migrated_from": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "اختیاری — فقط برای ردیابی مهاجرت."
+    },
+    "migration_notes_fa": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "scope": {
+      "type": "object",
+      "required": ["cluster", "conditions_in_scope"],
+      "additionalProperties": true,
+      "properties": {
+        "cluster": { "type": "string", "minLength": 1 },
+        "first_path": { "type": "string" },
+        "conditions_in_scope": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "excluded_by_design": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "answer_states": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "symptom_clusters": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label_fa"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z]{2,5}$" },
+          "label_fa": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/source" }
+    },
+    "symptoms": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/symptom" }
+    },
+    "questions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/question" }
+    },
+    "conditions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/condition" }
+    },
+    "overrides": {
+      "type": "array",
+      "description": "قواعد خاصی که ماتریس به‌تنهایی بیان نمی‌کند؛ در v1 همان paths بودند.",
+      "items": { "$ref": "#/$defs/override" }
+    },
+    "safety_rules": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/safetyRule" }
+    },
+    "coverage_rules": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/coverageRule" }
+    },
+    "disclaimers": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "change_notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["version", "date", "changes_fa"],
+        "additionalProperties": true,
+        "properties": {
+          "version": { "type": "string" },
+          "date": { "type": "string" },
+          "changes_fa": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "title_fa", "accessed"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^src_[a-z0-9_]+$" },
+        "kind": { "type": "string", "minLength": 1 },
+        "title_fa": { "type": "string", "minLength": 1 },
+        "publisher": { "type": "string" },
+        "ref": { "type": "string" },
+        "url": { "type": "string" },
+        "accessed": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+      }
+    },
+    "symptom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "cluster", "label_fa"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z]{2,5}\\.[a-z0-9_]+$",
+          "description": "شناسهٔ پیشونددار خوشه، مثل abd.pain_rlq. بریدن یا تغییرش شکننده است؛ نشانه فقط deprecated می‌شود."
+        },
+        "legacy_id": { "type": "string", "pattern": "^[a-zA-Z0-9_.]+$" },
+        "cluster": { "type": "string", "pattern": "^[a-z]{2,5}$" },
+        "label_fa": { "type": "string", "minLength": 1 },
+        "synonyms": { "type": "array", "items": { "type": "string" } },
+        "category": { "type": ["string", "null"] },
+        "deprecated": {
+          "type": "boolean",
+          "description": "حذف ممنوع است؛ یک نسخه deprecated می‌ماند و بعد برداشته می‌شود."
+        },
+        "source_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symptom_id", "state"],
+      "properties": {
+        "symptom_id": { "type": "string", "pattern": "^[a-z]{2,5}\\.[a-z0-9_]+$" },
+        "state": { "enum": ["present", "absent"] }
+      }
+    },
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label_fa"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-zA-Z0-9_]+$" },
+        "label_fa": { "type": "string", "minLength": 1 },
+        "exclusive": { "type": "boolean" },
+        "evidence": {
+          "type": "array",
+          "description": "این گزینه چه چیزی را دربارهٔ کدام نشانه‌ها می‌گوید. خالی یعنی «هیچ چیز».",
+          "items": { "$ref": "#/$defs/evidence" }
+        }
+      }
+    },
+    "clause": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "any_of": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/clause" }
+        },
+        "all_of": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/clause" },
+          "description": "برای فازهای بعد؛ در v1 وجود ندارد."
+        },
+        "always": {
+          "const": true,
+          "description": "همیشه پرسیده می‌شود؛ در v1 برای پرسش نخست به کار رفته است."
+        },
+        "question_id": { "type": "string" },
+        "answers": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "branches_open_min": { "type": "integer", "minimum": 0 },
+        "branches_open_max": { "type": "integer", "minimum": 0 },
+        "unanswered_min": { "type": "integer", "minimum": 0 },
+        "unanswered_max": { "type": "integer", "minimum": 0 }
+      },
+      "oneOf": [
+        { "required": ["always"] },
+        { "required": ["any_of"] },
+        { "required": ["all_of"] },
+        { "required": ["question_id", "answers"] },
+        { "required": ["branches_open_min"] },
+        { "required": ["branches_open_max"] },
+        { "required": ["unanswered_min"] },
+        { "required": ["unanswered_max"] }
+      ]
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text_fa", "type", "ask_order", "visibility", "source_refs"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^q_[a-z0-9_]+$" },
+        "text_fa": { "type": "string", "minLength": 1 },
+        "why_fa": { "type": "string" },
+        "type": { "enum": ["boolean3", "single", "multi", "scale"] },
+        "options": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/option" }
+        },
+        "min": { "type": "integer" },
+        "max": { "type": "integer" },
+        "allow_unknown": { "type": "boolean" },
+        "state_labels": {
+          "type": "object",
+          "description": "برچسب فارسی گزینه‌ها وقتی کلمهٔ خام (yes/no) کافی نیست؛ متن نمایشی است، نه دادهٔ موتور.",
+          "additionalProperties": { "type": "string" }
+        },
+        "ask_order": { "type": "integer", "minimum": 0 },
+        "visibility": { "$ref": "#/$defs/clause" },
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "review_status": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "scale" } }, "required": ["type"] },
+          "then": { "required": ["min", "max"] }
+        },
+        {
+          "if": { "properties": { "type": { "enum": ["boolean3", "single", "multi"] } }, "required": ["type"] },
+          "then": { "required": ["options"] }
+        }
+      ]
+    },
+    "profileRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["symptom_id", "level", "profile_line", "source_refs"],
+      "properties": {
+        "symptom_id": { "type": "string", "pattern": "^[a-z]{2,5}\\.[a-z0-9_]+$" },
+        "level": {
+          "enum": ["typical", "possible", "rare", "not_expected"],
+          "description": "چقدر این نشانه با این بیماری می‌خواند. نه عدد است، نه احتمال."
+        },
+        "profile_line": {
+          "type": "string",
+          "minLength": 1,
+          "description": "جملهٔ آمادهٔ نمایش؛ باید از منبع بیاید، نه ساختهٔ موتور."
+        },
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "review_status": { "type": "string" }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "name_fa", "article_slug", "profile", "review_status"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+        "name_fa": { "type": "string", "minLength": 1 },
+        "article_slug": { "type": ["string", "null"] },
+        "profile_ref": { "type": ["string", "null"] },
+        "link_status": { "type": ["string", "null"] },
+        "profile": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/profileRow" }
+        },
+        "red_flag_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "review_status": { "type": "string" },
+        "deprecated": { "type": "boolean" }
+      }
+    },
+    "override": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "condition_id", "when"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^p_[a-z0-9_]+$" },
+        "condition_id": { "type": "string" },
+        "when": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/clause" }
+        },
+        "note_fa": { "type": "string" },
+        "source_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "safetyRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "when", "severity", "message_fa", "source_refs"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^sf_[a-z0-9_]+$" },
+        "when": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/clause" }
+        },
+        "severity": { "enum": ["urgent", "attention", "prompt"] },
+        "message_fa": { "type": "string", "minLength": 1 },
+        "source_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" }
+        },
+        "review_status": { "type": "string" }
+      }
+    },
+    "coverageRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "when", "result", "message_fa"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^cv_[a-z0-9_]+$" },
+        "when": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/clause" }
+        },
+        "result": { "enum": ["sufficient", "insufficient", "out_of_scope"] },
+        "message_fa": { "type": "string", "minLength": 1 },
+        "source_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

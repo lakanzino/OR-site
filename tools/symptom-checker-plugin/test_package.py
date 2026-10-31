@@ -47,6 +47,7 @@ class PackageTests(unittest.TestCase):
             "assets/ui/styles.css",
             "assets/ui/anatomy-hero.jpg",
             "assets/engine/src/engine.js",
+            "assets/engine/src/adapter.js",
             "assets/engine/data/evidence-map.v1.json",
             "assets/data/knowledge-bundle.v1.json",
         ):

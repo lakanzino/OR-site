@@ -435,6 +435,7 @@ add_action( 'init', function () {
     `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/ui/styles.css`,
     `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/ui/anatomy-hero.jpg`,
     `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/engine/src/engine.js`,
+    `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/engine/src/adapter.js`,
     `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/engine/src/evidence.js`,
     `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/engine/src/validate-bundle.js`,
     `${BASE}/wp-content/plugins/hamyar-symptom-checker/assets/engine/src/errors.js`,
