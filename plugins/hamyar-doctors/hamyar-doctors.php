@@ -82,6 +82,9 @@ if ( ! function_exists( 'hj_doctors_default_photo_url' ) ) {
 	 * @return string
 	 */
 	function hj_doctors_default_photo_url() {
+		// بخش ۱۴ — اگر فالبک بخش ۱۴ فعال باشد، اولویت با همان است (آپلودی → اتاق عمل → SVG).
+		if ( function_exists( 'hj_doctor_fallback_photo_url' ) ) { return hj_doctor_fallback_photo_url(); }
+
 		$rel  = 'assets/img/doctor-default.jpg';
 		$path = hj_doctors_path( $rel );
 
@@ -184,6 +187,8 @@ final class HJ_Doctors {
 			'includes/rest-api.php',       // بخش ۱۱ — REST API عمومی hj/v1 (خودش بوت می‌شود).
 			'includes/shortcodes.php',     // بخش ۱۲ — شورت‌کد [hj_doctor_card] و کارت ویجت مستقل.
 			'includes/embed.php',          // بخش ۱۲ — باکس جاسازی + نقاط پایانی iframe/اسکریپت (/?hj_widget=…).
+			'includes/seed-data.php',      // بخش ۱۴ — ابزار ورود داده‌ها + تصویر پیش‌فرض اتاق عمل (خودش بوت می‌شود).
+			'includes/hooks.php',          // بخش ۱۵ — قلاب‌های آمادهٔ نوبت‌دهی آینده (آخرین ماژول، خودش بوت می‌شود).
 		);
 
 		foreach ( $files as $file ) {

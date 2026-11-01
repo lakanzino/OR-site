@@ -1,0 +1,68 @@
+{
+  "comment": "نمونهٔ پزشک دمو برای پر کردن یک پروفایل جهت نمایش شکل پلتفرم پزشکان. همهٔ داده‌ها ساختگی‌اند (شماره‌تلفن، کد نظام، آدرس). ایجنت این داده‌ها را به‌صورت دستی در پیشخوان می‌سازد: پزشکان ← افزودن پزشک ← ... یا با Import.",
+  "post": {
+    "post_type": "doctor",
+    "post_status": "publish",
+    "post_title": "دکتر دمو — پزشک عمومی",
+    "post_name": "dr-demo-general",
+    "post_content": "پروفایل نمونهٔ پزشک عمومی برای نمایش شکل پلتفرم پزشکان در صفحهٔ اول و آرشیو."
+  },
+  "terms": {
+    "specialty": [
+      "پزشکی عمومی"
+    ],
+    "province": [
+      "تهران"
+    ],
+    "city": [
+      "تهران"
+    ]
+  },
+  "meta": {
+    "name_fa": "دکتر دمو",
+    "name_en": "Dr. Demo",
+    "specialty_fa": "پزشکی عمومی",
+    "specialty_en": "General Medicine",
+    "bio_fa": "این یک بیوی نمونه و ساختگی است تا شکل کارت و پروفایل پزشک در پلتفرم دیده شود و ایرادات آن معلوم شود.",
+    "bio_en": "This is a fictional sample bio to preview the doctor card and profile layout.",
+    "medical_license": "000000",
+    "experience_years": 8,
+    "education": "دکترای پزشکی عمومی — دانشگاه علوم پزشکی تهران (نمونه)",
+    "surgeries_performed": "بیش از ۱۰۰ عمل (نمونه)",
+    "phone_clinic": "02100000000",
+    "phone_mobile": "09120000000",
+    "address_clinic": "تهران، خیابان نمونه، پلاک ۰ (ساختگی)",
+    "address_hospital": "بیمارستان نمونه (ساختگی)",
+    "map_link": "",
+    "profile_photo": "",
+    "working_hours": [
+      {
+        "day_of_week": "شنبه",
+        "is_closed": false,
+        "start_time": "09:00",
+        "end_time": "13:00"
+      },
+      {
+        "day_of_week": "یکشنبه",
+        "is_closed": false,
+        "start_time": "09:00",
+        "end_time": "13:00"
+      },
+      {
+        "day_of_week": "دوشنبه",
+        "is_closed": false,
+        "start_time": "16:00",
+        "end_time": "20:00"
+      },
+      {
+        "day_of_week": "سه‌شنبه",
+        "is_closed": true,
+        "start_time": "",
+        "end_time": ""
+      }
+    ]
+  },
+  "featured_image": "",
+  "featured_image_note": "بدون تصویر → تصویر پیش‌فرض (operating-room.jpg یا آواتار) نمایش داده می‌شود.",
+  "visibility": "publish و profile_hidden=0 → در REST و آرشیو عمومی دیده می‌شود."
+}
