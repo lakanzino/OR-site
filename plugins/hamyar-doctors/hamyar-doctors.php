@@ -164,6 +164,12 @@ final class HJ_Doctors {
 	 * اکسترکت نصفه هم صفحه را سفید نکند.
 	 */
 	private function includes() {
+		// escape hatch: با این ثابت هیچ ماژولی لود نمی‌شود تا اگر فایلی خطا
+		// داد، سایت با حذف/جایگزینی همان فایل درست شود (صفحهٔ سفید نمی‌ماند).
+		if ( defined( 'HJ_DOCTORS_SAFE_MODE' ) && HJ_DOCTORS_SAFE_MODE ) {
+			return;
+		}
+
 		$files = array(
 			'includes/roles.php',        // بخش ۴ — نقش پزشک، capabilityها و قفل پیشخوان.
 			'includes/security.php',     // بخش ۴ — primitiveهای سقف حجم و rate limit.
@@ -171,6 +177,7 @@ final class HJ_Doctors {
 			'includes/cpt.php',          // بخش ۲ — نوع محتوای پزشک.
 			'includes/acf-fields.php',   // بخش ۳ — زمینه‌های نمایه.
 			'includes/dashboard.php',    // بخش ۴ — صفحهٔ /my-profile/ و شورت‌کد شروع.
+			'includes/auth-google.php',  // بخش ۵ — پل ورود با گوگل (Nextend).
 		);
 
 		foreach ( $files as $file ) {
