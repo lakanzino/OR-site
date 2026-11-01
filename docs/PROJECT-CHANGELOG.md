@@ -1,9 +1,26 @@
 # چنج‌لاگ کامل پروژه — قالب والد و فرزند سایت آموزشی اتاق عمل (همیار جراحی)
 
 رویدادها و نسخه‌های پروژه بر پایهٔ Keep a Changelog ثبت می‌شوند؛ شماره‌های قدیمی تاریخچه‌اند و لزوماً وضعیت جاری نیستند.
-آخرین به‌روزرسانی: **۲۰۲۶-۱۰-۳۱**. سربرگ‌های شاخهٔ اصلی: والد `lax-theme` **1.0.1** و فرزند `lax-theme-child` **0.26.6**؛ آخرین ریلیز گیت‌هاب [`child-v0.30.1`](https://github.com/lakanzino/OR-site/releases/tag/child-v0.30.1) است که سورس شاخهٔ اصلی با آن یکسان نیست (تگ روی کامیت مخصوص انتشار نشسته است). **آخرین نصب تأییدشده: `0.30.1` روی سایت زنده — ۳۱ اکتبر ۲۰۲۶** با تصویر صفحهٔ بررسی همگام‌سازی ([گزارش شاهد](reports/child-v0301-install-confirmed-2026-10-31.fa.md)). جزئیات و محدودیت‌های ابزار علائم: [گزارش ۳۰ اکتبر](reports/symptom-checker-version-audit-2026-10-30.fa.md) و [گزارش فاز ۱](symptom-checker/phase-1-report.fa.md).
+آخرین به‌روزرسانی: **۲۰۲۶-۱۱-۰۱**. سربرگ‌های شاخهٔ اصلی: والد `lax-theme` **1.0.1** و فرزند `lax-theme-child` **0.26.6**؛ آخرین ریلیز گیت‌هاب [`child-v0.30.1`](https://github.com/lakanzino/OR-site/releases/tag/child-v0.30.1) است که سورس شاخهٔ اصلی با آن یکسان نیست (تگ روی کامیت مخصوص انتشار نشسته است). **آخرین نصب تأییدشده: `0.30.1` روی سایت زنده — ۳۱ اکتبر ۲۰۲۶** با تصویر صفحهٔ بررسی همگام‌سازی ([گزارش شاهد](reports/child-v0301-install-confirmed-2026-10-31.fa.md)). جزئیات و محدودیت‌های ابزار علائم: [گزارش ۳۰ اکتبر](reports/symptom-checker-version-audit-2026-10-30.fa.md) و [گزارش فاز ۱](symptom-checker/phase-1-report.fa.md).
 
 ---
+
+## [همیار پزشک‌ها — بخش ۴ با فایل بازیابی‌شدهٔ نشست قدیمی (`HJ_Doctors_Roles`)] — 2026-11-01
+
+- **فایل اصلی بخش ۴ نشست قدیمی وصل شد:** `includes/roles.php` — کلاس `HJ_Doctors_Roles` عیناً همان طراحی قدیمی: نقش پزشک بدون `edit_posts`/`publish_posts`/`upload_files`؛ ویرایش نمایهٔ خودی فقط از مسیر `map_meta_cap` با `hj_edit_own_doctor_profile`؛ capهای سطح مدیر (`hj_manage_doctors`، `hj_approve_profiles`، `hj_manage_ratings`، `hj_view_all_rating_stats`، `hj_view_analytics`) به‌صورت پویا به دارندگان `manage_options` (بدون نوشتن در نقش مدیر)؛ مالکیت = `post_author` یا متا `hj_doctor_post_id`؛ قفل کامل پیشخوان به نفع `/my-profile/`؛ whitelist نوع فایل + سقف ۲ مگابایت + rate limit بارگذاری؛ helperهای عمومی (`hj_doctors_get_profile_id`، `hj_doctors_user_owns_profile`، `hj_doctors_user_can_manage`، `hj_doctors_assign_doctor_role` برای ورود Google بخش ۵ و…).
+- **وابستگی‌های جاافتادهٔ آن فایل ساخته شد:** `hj_doctors_log()` در فایل اصلی (بی‌صدا: فقط گزینهٔ `hj_doctors_log`، و `error_log` تنها با `HJ_DOCTORS_DEBUG`)؛ `includes/security.php` تازه = `hj_sec_max_upload_bytes()` و `hj_sec_rate_limit()` با transient.
+- **`includes/dashboard.php` (شروع ناحیهٔ پزشک):** صفحهٔ `/my-profile/` روی فعال‌سازی در صورت نبودن ساخته می‌شود تا قفل پیشخوان هرگز به ۴۰۴ نفرستد؛ شورت‌کد `[hj_doctors_dashboard]` کارت موقت (عکس، وضعیت، کد نظام پزشکی، لینک نمایهٔ عمومی) را رندر می‌کند و `login_redirect` پزشک را مستقیم به ناحیهٔ خودش می‌برد. فرم کامل ویرایش = بخش بعدی.
+- **هم‌راستاسازی با مدل cap جدید:** `includes/cpt.php` دیگر `capability_type` سفارشی ندارد (core caps برای مدیر/سردبیر، بدون نوشتن در نقش‌ها)؛ سانیتایز بخش ۳ به‌جای cap حذف‌شدهٔ `edit_doctor` از `edit_post` (رد‌شده از map_meta_cap نقش‌ها) استفاده می‌کند؛ `includes/capabilities.php` بازسازی‌شدهٔ قبلی حذف شد (طرح قدیمی جای آن را گرفت).
+- **آزمون‌ها:** `tools/php-check.py` روی ۷/۷ فایل PHP · JSON گروه زمینه بدون تغییر و معتبر · صفر `error_log` در مسیر عادی.
+
+## [همیار پزشک‌ها 0.1.0 — بخش‌های ۱ تا ۴ (بازسازی نشست قدیمی + ادامه)] — 2026-11-01
+
+- **بازسازی بخش‌های ۱ تا ۳** که فقط روی سندباکس نشست قدیمی بودند و هرگز push نشده بودند: `plugins/hamyar-doctors/hamyar-doctors.php` با helperهای `hj_doctors_path/url` و `hj_to_en_digits` و `hj_doctors_default_photo_url` (همه با نگهبان `function_exists` تا collision ندهند) + کلاس اصلی؛ `includes/taxonomies.php` و `includes/cpt.php` (بخش ۲: تخصص/شهر و نوع محتوای `doctor` با `capability_type` سفارشی)؛ `includes/acf-fields.php` + `acf-json/group_hj_doctor_profile.json` (بخش ۳: گروه زمینه فقط JSON محلی، بدون Sync دستی، سانیتایز ارقام و نشانی روی ذخیره).
+- **رفع یک باگ ظریف اسنیپت قدیمی:** در `hj_to_en_digits` آرایهٔ جستجو ۲۰ عضو داشت (فارسی + عربی) ولی جایگزین ۱۰ تا؛ یعنی ارقام عربی به رشتهٔ خالی تبدیل می‌شدند. حالا آرایهٔ جایگزین هم دوتایی است (`array_merge( $en, $en )`) و هر دو مجموعه درست نگاشت می‌شوند.
+- **بخش ۴ (۲ فایل) ساخته شد:** `includes/capabilities.php` — نقش `doctor` («پزشک») و capabilityهای نوع محتوا، نصب روی فعال‌سازی و ارتقا، `hj_doctors_uninstall_roles()` برای پاک‌سازی؛ `includes/security.php` — نگهبان `map_meta_cap` (نقش پزشک هرگز پزشک دیگر را ویرایش/حذف نمی‌کند)، محدودکردن پیشخوان به `profile.php`/`post.php`/رسانه، تمیزکردن نوار مدیریت + میان‌بر «ویرایش نمایهٔ پزشک»، و کش کاربر→نوشته با پاک‌سازی روی ذخیره.
+- **دارایی:** `assets/img/doctor-default.jpg` (جای‌نگهدار تخت و خنثی) تا `hj_doctors_default_photo_url()` هیچ‌وقت خالی برنگرداند.
+- **اسناد:** `plugins/hamyar-doctors/README.md` با جدول بخش‌ها، چک‌لیست پس از جایگذاری (Purge All LiteSpeed، تست ویرایش پزشک نمونه، خالی‌ماندن `debug.log`) و مسیر Rollback (حذف/rename دو فایل `acf-fields.php` + JSON).
+- **آزمون‌ها:** `tools/php-check.py` روی ۶/۶ فایل PHP (بدون باینری PHP در این محیط، مثل روال قدیمی) · `json.tool` روی JSON گروه زمینه · بدون هیچ `error_log`/خروجی در کل افزونه.
 
 ## [ابزار علائم — فاز ۸: برگهٔ معمولی، تنظیمات در دسترس، رفع صفحهٔ خالی (۰.۱.۱۴)] — 2026-10-31
 
