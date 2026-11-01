@@ -242,3 +242,29 @@
 .hj-hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; overflow: hidden; }
 .hj-vote-msg { border-inline-start: 4px solid #16a34a; background: #f0fdf4; padding: .5rem .9rem; border-radius: 8px; font-size: .9rem; margin: 0 0 .8rem; }
 .hj-vote-msg.err { border-color: #dc2626; background: #fef2f2; }
+
+/* ---------- directory listing cards (archive/specialty) ---------- */
+
+.hjd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.hjd-card { --acc: #38bdf8; display: flex; flex-direction: column; gap: 6px; padding: 16px; border: 1px solid var(--line, #e2e8f0); border-radius: 14px; background: linear-gradient(160deg, #0b1220, #101c33); color: #e2e8f0; text-decoration: none; box-shadow: 0 6px 20px rgba(2, 6, 23, .25); position: relative; overflow: hidden; }
+.hjd-card::before { content: ""; position: absolute; inset-block-start: 0; inset-inline: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--acc), transparent); }
+.hjd-card:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(2, 6, 23, .35); }
+.hjd-name { font-weight: 800; color: #f8fafc; font-size: 1.02rem; }
+.hjd-card .hjw-chip { margin-inline-start: 0; align-self: flex-start; }
+.hjd-stars { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hjd-count { font-size: .74rem; color: #94a3b8; }
+.hjd-code { font-family: ui-monospace, Consolas, monospace; font-size: .72rem; color: #94a3b8; letter-spacing: .04em; }
+.hjd-loc { font-size: .8rem; color: #cbd5e1; }
+.hjd-cta { margin: 2rem 0 0; padding: 1.2rem 1.4rem; border: 1px dashed #0a2f6b; border-radius: 14px; background: #eff6ff; }
+.hjd-cta p { margin: .4rem 0 .8rem; font-size: .9rem; color: #334155; }
+.hjd-cta-btn { display: inline-block; background: #0a2f6b; color: #fff; font-weight: 700; border-radius: 10px; padding: .55rem 1.4rem; text-decoration: none; }
+.hjd-cta-btn:hover { filter: brightness(1.15); }
+
+/* ---------- article → specialty cross-link box ---------- */
+
+.hj-sp-box { margin: 1.4rem 0 0; padding: .9rem 1.1rem; border: 1px solid #e2e8f0; border-inline-start: 4px solid #0a2f6b; border-radius: 10px; background: #f8fafc; font-size: .9rem; color: #334155; }
+.hj-sp-box strong { display: block; margin-bottom: .35rem; color: #0a2f6b; }
+.hj-sp-link { display: inline-block; margin: 0 .6rem .3rem 0; padding: .25rem .8rem; border: 1px solid #0a2f6b; border-radius: 999px; color: #0a2f6b; font-weight: 700; text-decoration: none; background: #fff; }
+.hj-sp-link:hover { background: #0a2f6b; color: #fff; }
+.hj-sp-count { font-weight: 400; font-size: .8rem; color: inherit; opacity: .8; }
+.hj-sp-note { display: block; margin-top: .3rem; font-size: .78rem; color: #64748b; }

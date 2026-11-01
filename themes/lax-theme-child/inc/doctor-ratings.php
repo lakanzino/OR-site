@@ -581,6 +581,19 @@ function hj_doctor_votes_render_page(): void {
 			$counts = $wpdb->get_row( "SELECT SUM(status='pending') AS p, SUM(status='approved') AS a, SUM(status='archived') AS r, COUNT(*) AS t FROM {$table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$rows   = is_array( $rows ) ? $rows : array();
 			?>
+			<?php
+			$hj_demo = get_posts( array( 'post_type' => 'doctor', 'post_status' => 'any', 'numberposts' => -1, 'fields' => 'ids', 'meta_key' => '_hj_demo' ) );
+			if ( $hj_demo ) :
+				?>
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:14px">
+					<input type="hidden" name="action" value="hj_doctor_demo_remove">
+					<?php wp_nonce_field( 'hj_doctor_demo_remove' ); ?>
+					<p style="background:#fff8e5;border:1px solid #f0c36d;border-radius:8px;padding:.6rem .9rem">
+						<?php echo (int) count( $hj_demo ); ?> پزشک نمونه (صوری) در سایت هست.
+						<button class="button" onclick="return confirm('پزشکان نمونه و رأی‌هایشان حذف شوند؟');">حذف پزشکان نمونه</button>
+					</p>
+				</form>
+			<?php endif; ?>
 			<form id="hj-filter-form" method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" style="margin-top:14px">
 				<input type="hidden" name="page" value="hj-doctor-votes">
 				<input type="hidden" name="tab" value="votes">

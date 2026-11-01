@@ -90,6 +90,9 @@ if ( is_readable( get_stylesheet_directory() . '/inc/doctor-ratings.php' ) ) {
 if ( is_readable( get_stylesheet_directory() . '/inc/doctor-profile.php' ) ) {
 	require_once get_stylesheet_directory() . '/inc/doctor-profile.php';
 }
+if ( is_readable( get_stylesheet_directory() . '/inc/doctor-directory.php' ) ) {
+	require_once get_stylesheet_directory() . '/inc/doctor-directory.php';
+}
 
 /** Presentation-only Soft UI tokens, editor styles and local-font preload. */
 require_once get_stylesheet_directory() . '/inc/soft-ui.php';

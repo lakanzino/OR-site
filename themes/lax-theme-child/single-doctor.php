@@ -51,12 +51,19 @@ $hj_has_widgets = function_exists( 'hj_doctor_widget' );
 </style>
 <div class="container orsite-article-wrap hj-doctor-page" style="padding-top:1.75rem;padding-bottom:3rem"><main id="primary">
 <?php while ( have_posts() ) : the_post(); ?>
-<nav class="orsite-breadcrumb" aria-label="مسیر صفحه"><a href="<?php echo esc_url( home_url( '/' ) ); ?>">خانه</a><?php $hj_archive = get_post_type_archive_link( 'doctor' ); if ( $hj_archive ) : ?> / <a href="<?php echo esc_url( $hj_archive ) ); ?>">پزشکان</a><?php endif; ?></nav>
+<nav class="orsite-breadcrumb" aria-label="مسیر صفحه"><a href="<?php echo esc_url( home_url( '/' ) ); ?>">خانه</a><?php $hj_archive = get_post_type_archive_link( 'doctor' ); if ( $hj_archive ) : ?> / <a href="<?php echo esc_url( $hj_archive ); ?>">پزشکان</a><?php endif; ?></nav>
 <article <?php post_class( 'hj-doctor-entry' ); ?>>
 	<h1 class="hj-sr-only"><?php the_title(); ?> — پروفایل پزشک</h1>
 
 	<?php if ( $hj_has_widgets ) : ?>
 		<?php echo hj_doctor_widget( (int) get_the_ID(), 'full' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fully escaped inside the builder. ?>
+		<?php
+		$hj_sp_terms = get_the_terms( (int) get_the_ID(), 'specialty' );
+		$hj_sp_term  = ( is_array( $hj_sp_terms ) && $hj_sp_terms ) ? $hj_sp_terms[0] : null;
+		if ( $hj_sp_term && ! is_wp_error( $hj_sp_term ) ) :
+			?>
+			<p class="hj-dp-note"><a href="<?php echo esc_url( (string) get_term_link( $hj_sp_term ) ); ?>">مشاهدهٔ همهٔ پزشکان و جراحان رشتهٔ <?php echo esc_html( $hj_sp_term->name ); ?></a></p>
+		<?php endif; ?>
 		<p class="hj-dp-note">امتیازها نظر شخصی کاربران‌اند و توصیهٔ پزشکی نیستند؛ این صفحه جایگزین مشورت پزشکی نیست.</p>
 	<?php else : ?>
 		<header class="hj-dp-box hj-dp-head">
