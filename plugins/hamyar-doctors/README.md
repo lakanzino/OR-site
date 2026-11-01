@@ -7,9 +7,9 @@
 | بخش | فایل | محتوا |
 | --- | --- | --- |
 | ۱ | `hamyar-doctors.php` | helperها (`hj_doctors_path/url`، `hj_to_en_digits`، `hj_doctors_default_photo_url` همگی با نگهبان `function_exists`) + کلاس اصلی و قلاب فعال/غیرفعال |
-| ۲ | `includes/taxonomies.php` + `includes/cpt.php` | taxonomyهای `doctor_specialty` / `doctor_city` و نوع محتوای `doctor` با `capability_type` سفارشی |
+| ۲ | `includes/taxonomies.php` + `includes/cpt.php` | taxonomyهای `doctor_specialty` / `doctor_city` و نوع محتوای `doctor` با `map_meta_cap` روشن (بدون capability_type سفارشی، طبق مدل بخش ۴) |
 | ۳ | `includes/acf-fields.php` + `acf-json/group_hj_doctor_profile.json` | گروه زمینهٔ «اطلاعات پزشک» فقط به‌صورت JSON محلی؛ این فایل مسیرهای save/load را نشانه می‌گیرد و روی ذخیره سانیتایز می‌کند |
-| ۴ | `includes/capabilities.php` + `includes/security.php` | نقش `doctor` و capabilityها + اجرای دسترسی (نگهبان `map_meta_cap`، محدودکردن پیشخوان، نوار مدیریت، کش کاربر→نوشته) |
+| ۴ | `includes/roles.php` + `includes/security.php` + `includes/dashboard.php` | کلاس `HJ_Doctors_Roles` (نقش پزشک بدون edit_posts، capهای سطح مدیر به‌صورت پویا برای دارندگان `manage_options`، مالکیت = نویسنده یا متا `hj_doctor_post_id`، قفل پیشخوان به نفع `/my-profile/`، سقف نوع/حجم/تعداد بارگذاری) + primitiveهای `hj_sec_*` + صفحهٔ ناحیه پزشک و شورت‌کد شروع |
 | دارایی | `assets/img/doctor-default.jpg` | عکس پیش‌فرض نمایه که `hj_doctors_default_photo_url()` برمی‌گرداند |
 
 ## زمینه‌های نمایه
@@ -20,13 +20,14 @@
 ## نصب و فعال‌سازی
 
 1. پوشهٔ `hamyar-doctors` را در `wp-content/plugins/` بگذارید (یا از ZIP ریلیز نصب کنید).
-2. افزونه را فعال کنید: نقش `doctor` و capabilityها ساخته و rewriteها flush می‌شوند.
-3. برای هر پزشک: یک کاربر با نقش «پزشک» بسازید و نوشتهٔ پزشک او را با **نویسنده = همان کاربر** ایجاد کنید؛ دسترسی خودش خودکار فقط همین نوشته است.
+2. افزونه را فعال کنید: نقش `doctor` ساخته می‌شود (با hash-check، بدون نوشتن cap در نقش مدیر)، صفحهٔ `/my-profile/` در صورت نبودن ساخته و rewriteها flush می‌شوند.
+3. برای هر پزشک: یک کاربر با نقش «پزشک» بسازید و نوشتهٔ پزشک او را با **نویسنده = همان کاربر** ایجاد کنید (یا متا `hj_doctor_post_id` را بگذارید)؛ دسترسی خودش خودکار فقط همین نمایه است و پیشخوان به روی او بسته می‌شود.
 
 ## Rollback
 
 - فقط زمینه‌ها: حذف/rename کردن `includes/acf-fields.php` + پوشهٔ `acf-json/` کافی است (گروه زمینه فقط آنجا زندگی می‌کند).
-- کل افزونه: غیرفعال‌سازی داده‌ها را نگه می‌دارد؛ برای برداشتن نقش و capabilityها `hj_doctors_uninstall_roles()` را صدا بزنید.
+- فقط قفل پیشخوان: `add_filter( 'hj_doctors_block_wp_admin', '__return_false' );` در یک mu-plugin یا قالب.
+- کل افزونه: غیرفعال‌سازی داده‌ها را نگه می‌دارد؛ برای پاک‌سازی نقش: `remove_role( 'doctor' )` و حذف گزینه‌های `hj_doctors_roles_hash`، `hj_doctors_role_caps_added`، `hj_doctors_log` و `hj_doctors_dashboard_page`.
 
 ## چک‌لیست بعد از جایگذاری روی سرور
 

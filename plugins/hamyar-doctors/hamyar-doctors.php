@@ -89,6 +89,32 @@ if ( ! function_exists( 'hj_doctors_default_photo_url' ) ) {
 	}
 }
 
+if ( ! function_exists( 'hj_doctors_log' ) ) {
+	/**
+	 * ثبت رویدادهای داخلی افزونه بدون لمس debug.log.
+	 *
+	 * پیام‌ها فقط در گزینهٔ hj_doctors_log نگه داشته می‌شوند (۲۰ تای آخر)؛
+	 * error_log فقط وقتی روشن است که HJ_DOCTORS_DEBUG صریحاً true تعریف شده
+	 * باشد، پس در حالت عادی حتی یک خط به debug.log نوشته نمی‌شود.
+	 *
+	 * @param string $message پیام رویداد.
+	 */
+	function hj_doctors_log( $message ) {
+		if ( defined( 'HJ_DOCTORS_DEBUG' ) && HJ_DOCTORS_DEBUG ) {
+			error_log( '[hamyar-doctors] ' . (string) $message );
+		}
+
+		$log   = get_option( 'hj_doctors_log', array() );
+		$log   = is_array( $log ) ? $log : array();
+		$log[] = array(
+			'time'    => gmdate( 'c' ),
+			'message' => (string) $message,
+		);
+
+		update_option( 'hj_doctors_log', array_slice( $log, -20 ), false );
+	}
+}
+
 /* -------------------------------------------------------------------------
  * کلاس اصلی: بارگذاری بخش‌ها و قلاب‌های فعال/غیرفعال
  * ---------------------------------------------------------------------- */
@@ -139,11 +165,12 @@ final class HJ_Doctors {
 	 */
 	private function includes() {
 		$files = array(
-			'includes/capabilities.php', // بخش ۴ — نقش و capabilityها.
+			'includes/roles.php',        // بخش ۴ — نقش پزشک، capabilityها و قفل پیشخوان.
+			'includes/security.php',     // بخش ۴ — primitiveهای سقف حجم و rate limit.
 			'includes/taxonomies.php',   // بخش ۲ — تخصص و شهر.
 			'includes/cpt.php',          // بخش ۲ — نوع محتوای پزشک.
 			'includes/acf-fields.php',   // بخش ۳ — زمینه‌های نمایه.
-			'includes/security.php',     // بخش ۴ — دسترسی نقش پزشک.
+			'includes/dashboard.php',    // بخش ۴ — صفحهٔ /my-profile/ و شورت‌کد شروع.
 		);
 
 		foreach ( $files as $file ) {
@@ -158,14 +185,17 @@ final class HJ_Doctors {
 	 * فعال‌سازی: نقش‌ها، capabilityها و rewriteها.
 	 */
 	public static function activate() {
-		if ( function_exists( 'hj_doctors_install_roles' ) ) {
-			hj_doctors_install_roles();
+		if ( class_exists( 'HJ_Doctors_Roles' ) ) {
+			HJ_Doctors_Roles::sync_role();
 		}
 		if ( function_exists( 'hj_doctors_register_taxonomies' ) ) {
 			hj_doctors_register_taxonomies();
 		}
 		if ( function_exists( 'hj_doctors_register_post_type' ) ) {
 			hj_doctors_register_post_type();
+		}
+		if ( function_exists( 'hj_doctors_ensure_dashboard_page' ) ) {
+			hj_doctors_ensure_dashboard_page();
 		}
 
 		flush_rewrite_rules();
@@ -186,8 +216,8 @@ final class HJ_Doctors {
 		if ( HJ_DOCTORS_VERSION === get_option( HJ_DOCTORS_VERSION_OPTION ) ) {
 			return;
 		}
-		if ( function_exists( 'hj_doctors_install_roles' ) ) {
-			hj_doctors_install_roles();
+		if ( class_exists( 'HJ_Doctors_Roles' ) ) {
+			HJ_Doctors_Roles::sync_role();
 		}
 		update_option( HJ_DOCTORS_VERSION_OPTION, HJ_DOCTORS_VERSION );
 	}

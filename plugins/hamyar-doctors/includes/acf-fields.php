@@ -71,7 +71,8 @@ function hj_doctors_sanitize_fields( $post_id ) {
 	if ( ! $post || HJ_DOCTORS_CPT !== $post->post_type ) {
 		return; // گزینه‌ها، ترم‌ها و کاربرها اینجا کاری ندارند.
 	}
-	if ( ! current_user_can( 'edit_doctor', $post->ID ) ) {
+	// edit_post از map_meta_cap نقش‌ها (roles.php) رد می‌شود: پزشک فقط نمایهٔ خودش.
+	if ( ! current_user_can( 'edit_post', $post->ID ) ) {
 		return;
 	}
 

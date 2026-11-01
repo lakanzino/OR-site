@@ -2,8 +2,9 @@
 /**
  * بخش ۲ (فایل ۲): نوع محتوای «پزشک».
  *
- * capability_type سفارشی (doctor/doctors) با map_meta_cap روشن است تا
- * بخش ۴ بتواند دسترسی نقش پزشک را فقط به نمایهٔ خودش محدود کند.
+ * map_meta_cap روشن است تا بخش ۴ (includes/roles.php) بتواند دسترسی نقش
+ * پزشک را فقط به نمایهٔ خودش محدود کند؛ capability_type سفارشی عمداً
+ * تعریف نمی‌شود تا هیچ cap اضافه‌ای در نقش‌های موجود نوشته نشود.
  *
  * @package HamyarDoctors
  */
@@ -61,8 +62,9 @@ function hj_doctors_register_post_type() {
 			'menu_position' => 26,
 			'taxonomies'    => array_keys( hj_doctors_taxonomy_map() ),
 			'supports'      => array( 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'revisions', 'custom-fields' ),
-			// بخش ۴: capabilityهای سفارشی تا نقش پزشک فقط نمایهٔ خودش را ببیند.
-			'capability_type' => array( 'doctor', 'doctors' ),
+			// بخش ۴: دسترسی‌های hj_* و مالکیت نمایه در includes/roles.php مدیریت
+			// می‌شود (map_meta_cap). capability_type سفارشی عمداً نیست تا چیزی
+			// در نقش مدیر/سردبیر نوشته نشود و core caps همان‌ها کار کند.
 			'map_meta_cap'    => true,
 		)
 	);
