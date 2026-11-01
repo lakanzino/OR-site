@@ -181,6 +181,7 @@ final class HJ_Doctors {
 			'includes/archive-render.php', // بخش ۸ — آرشیو پزشکان و صفحات تخصص/استان/شهر/نوع تخصص.
 			'includes/rating-bridge.php',  // بخش ۹ — پل بومی امتیازها (جدول hj_doctor_votes).
 			'includes/search-filters.php', // بخش ۱۰ — جست‌وجوی هوشمند، جست‌وجوی هدر و پل FacetWP.
+			'includes/rest-api.php',       // بخش ۱۱ — REST API عمومی hj/v1 (خودش بوت می‌شود).
 		);
 
 		foreach ( $files as $file ) {
