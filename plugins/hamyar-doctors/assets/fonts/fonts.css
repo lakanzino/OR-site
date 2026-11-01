@@ -1,0 +1,29 @@
+/* Hamyar Doctors — fonts.css (local mode). Files must sit next to this file. */
+
+@font-face{
+
+  font-family:'Vazirmatn';
+
+  font-style:normal;
+
+  font-weight:100 900;
+
+  font-display:swap;
+
+  src:url('Vazirmatn-Variable.woff2') format('woff2');
+
+}
+
+@font-face{
+
+  font-family:'Inter';
+
+  font-style:normal;
+
+  font-weight:100 900;
+
+  font-display:swap;
+
+  src:url('Inter-Variable.woff2') format('woff2');
+
+}

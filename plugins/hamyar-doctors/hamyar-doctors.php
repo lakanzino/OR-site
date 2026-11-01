@@ -184,6 +184,7 @@ final class HJ_Doctors {
 			'includes/rest-api.php',       // بخش ۱۱ — REST API عمومی hj/v1 (خودش بوت می‌شود).
 			'includes/shortcodes.php',     // بخش ۱۲ — شورت‌کد [hj_doctor_card] و کارت ویجت مستقل.
 			'includes/embed.php',          // بخش ۱۲ — باکس جاسازی + نقاط پایانی iframe/اسکریپت (/?hj_widget=…).
+			'includes/theme-layer.php',    // بخش ۱۳ — لایهٔ تم Medical Premium (فونت‌ها، دارک‌مود، فرم بدون پاپ‌آپ).
 		);
 
 		foreach ( $files as $file ) {

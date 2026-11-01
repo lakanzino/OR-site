@@ -1,0 +1,253 @@
+/* ==========================================================================
+
+   Hamyar Doctors — theme.css (Section 13) · Medical Premium
+
+   Loaded only on plugin pages (body.hj-scope). No global tag selectors:
+
+   every rule is scoped to the plugin wrappers.
+
+   Breakpoints used across the plugin: <520 mobile · 520–900 tablet · >900 two columns.
+
+   Fonts are the only place where !important is used on purpose (so the approved
+
+   section CSS cannot override the brand fonts).
+
+   ========================================================================== */
+
+
+
+:root{
+
+  /* palette */
+
+  --hj-navy-900:#061A2E;
+
+  --hj-navy-700:#0F3556;
+
+  --hj-teal-400:#14C8C0;
+
+  --hj-teal-600:#0EA5A0;
+
+  --hj-muted-500:#6B7C8F;
+
+  --hj-mist-50:#F4F8FB;
+
+  --hj-mist-100:#EAF1F6;
+
+  --hj-line-200:#E3ECF2;
+
+
+
+  /* semantic (light) */
+
+  --hj-bg:#F4F8FB;
+
+  --hj-surface:#FFFFFF;
+
+  --hj-surface-2:#EAF1F6;
+
+  --hj-line:#E3ECF2;
+
+  --hj-text:#061A2E;
+
+  --hj-text-2:#0F3556;
+
+  --hj-muted:#6B7C8F;
+
+  --hj-accent:#0EA5A0;
+
+  --hj-accent-hi:#14C8C0;
+
+  --hj-on-accent:#061A2E;
+
+  --hj-focus:#14C8C0;
+
+  --hj-error:#B42342; /* used only for form-field validation */
+
+
+
+  /* shape */
+
+  --hj-radius-s:8px;
+
+  --hj-radius-m:12px;
+
+  --hj-radius-l:16px;
+
+  --hj-shadow:0 6px 20px rgba(6,26,46,.07);
+
+
+
+  /* fonts */
+
+  --hj-font-fa:'Vazirmatn','Inter',Tahoma,'Segoe UI',system-ui,-apple-system,sans-serif;
+
+  --hj-font-en:'Inter','Vazirmatn',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+
+  --hj-font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+
+
+  /* weights 300–800 */
+
+  --hj-w-light:300;
+
+  --hj-w-regular:400;
+
+  --hj-w-medium:500;
+
+  --hj-w-semibold:600;
+
+  --hj-w-bold:700;
+
+  --hj-w-heavy:800;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   Fonts: Persian = Vazirmatn, English/LTR = Inter, code = monospace
+
+   -------------------------------------------------------------------------- */
+
+:is(.hj-pr-wrap,.hj-ar-wrap,.hj-eb,[class*="hj-dash"],[id^="hj-dash"]),
+
+:is(.hj-pr-wrap,.hj-ar-wrap,.hj-eb,[class*="hj-dash"],[id^="hj-dash"]) *{
+
+  font-family:var(--hj-font-fa) !important;
+
+}
+
+
+
+:is(.hj-pr-wrap,.hj-ar-wrap,.hj-eb,[class*="hj-dash"],[id^="hj-dash"]) :is([lang="en"],[dir="ltr"],.hj-en,[class$="-en"],[class*="-en "],[class*="-en-"]),
+
+:is(.hj-pr-wrap,.hj-ar-wrap,.hj-eb,[class*="hj-dash"],[id^="hj-dash"]) :is([lang="en"],[dir="ltr"],.hj-en,[class$="-en"],[class*="-en "],[class*="-en-"]) *{
+
+  font-family:var(--hj-font-en) !important;
+
+}
+
+
+
+:is(.hj-pr-wrap,.hj-ar-wrap,.hj-eb,[class*="hj-dash"],[id^="hj-dash"]) :is(code,pre,kbd,samp,.hj-eb-code){
+
+  font-family:var(--hj-font-mono) !important;
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   Focus, selection, hidden, motion
+
+   -------------------------------------------------------------------------- */
+
+:is(.hj-pr-wrap,.hj-ar-wrap,.hj-eb,[class*="hj-dash"],[id^="hj-dash"]) :is(a,button,input,select,textarea,summary,[tabindex]):focus-visible{
+
+  outline:2px solid var(--hj-focus);
+
+  outline-offset:2px;
+
+}
+
+:is(.hj-pr-wrap,.hj-ar-wrap,.hj-eb,[class*="hj-dash"],[id^="hj-dash"]) ::selection{
+
+  background:rgba(20,200,192,.28);
+
+  color:inherit;
+
+}
+
+:is(.hj-pr-wrap,.hj-ar-wrap,.hj-eb,[class*="hj-dash"],[id^="hj-dash"]) [hidden]{
+
+  display:none !important;
+
+}
+
+
+
+@media (prefers-reduced-motion:reduce){
+
+  :is(.hj-pr-wrap,.hj-ar-wrap,.hj-eb,[class*="hj-dash"],[id^="hj-dash"]),
+
+  :is(.hj-pr-wrap,.hj-ar-wrap,.hj-eb,[class*="hj-dash"],[id^="hj-dash"]) *{
+
+    animation-duration:.001ms !important;
+
+    animation-iteration-count:1 !important;
+
+    transition-duration:.001ms !important;
+
+    scroll-behavior:auto !important;
+
+  }
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   Inline field message (replaces the browser's validation bubble; see theme.js)
+
+   -------------------------------------------------------------------------- */
+
+.hj-field-error{
+
+  display:block;
+
+  margin-top:6px;
+
+  font-family:var(--hj-font-fa);
+
+  font-size:12.5px;
+
+  line-height:1.6;
+
+  font-weight:500;
+
+  color:var(--hj-error);
+
+}
+
+.hj-field-error[hidden]{display:none}
+
+:is(.hj-pr-wrap,.hj-ar-wrap,.hj-eb,[class*="hj-dash"],[id^="hj-dash"]) [aria-invalid="true"]{
+
+  border-color:var(--hj-error) !important;
+
+  box-shadow:0 0 0 3px rgba(180,35,66,.12);
+
+}
+
+
+
+/* --------------------------------------------------------------------------
+
+   Utilities (hj- prefix)
+
+   -------------------------------------------------------------------------- */
+
+.hj-sr-only{
+
+  position:absolute;
+
+  width:1px;height:1px;
+
+  margin:-1px;padding:0;
+
+  overflow:hidden;
+
+  clip:rect(0,0,0,0);
+
+  white-space:nowrap;
+
+  border:0;
+
+}
+
+.hj-en{direction:ltr;unicode-bidi:isolate}
