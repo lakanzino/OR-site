@@ -1,7 +1,8 @@
 <?php
 /**
  * Single doctor profile (child override): «technology» profile widget,
- * star-only rating via Site Reviews, and embed/edit tools.
+ * star-only rating via the native engine (inc/doctor-ratings.php — zero
+ * plugins), and embed/edit tools.
  *
  * Rules from the owner's brief (docs/doctor-ratings/brief.fa.md, §1) and the
  * 2026-11-01 profile decisions (docs/doctor-ratings/profile-rollout.fa.md,
@@ -16,8 +17,8 @@
  * - no legal text on this page — the «قوانین» link lives in the footer menu;
  * - the doctor (author) and the site admin see an edit link + ready-made
  *   advertising embed codes (strip/full widgets) for other websites;
- * - if Site Reviews is not active, the rating block disappears entirely
- *   (an unregistered shortcode must never print itself raw).
+ * - if inc/doctor-ratings.php is missing, the rating block disappears
+ *   entirely (function_exists guard — nothing raw can print).
  *
  * Page styles are scoped to .hj-doctor-page; widget styles live in
  * assets/css/doctor-widgets.css (enqueued by inc/doctor-profile.php).
@@ -28,8 +29,7 @@
 defined( 'ABSPATH' ) || exit;
 get_header();
 
-$hj_doctor_min_votes = 5;
-$hj_has_widgets      = function_exists( 'hj_doctor_widget' );
+$hj_has_widgets = function_exists( 'hj_doctor_widget' );
 ?>
 <style>
 .hj-doctor-page{--ink:#0f172a;--line:#e2e8f0;--muted:#64748b;--navy:#0a2f6b;color:var(--ink);line-height:1.9}
@@ -38,7 +38,7 @@ $hj_has_widgets      = function_exists( 'hj_doctor_widget' );
 .hj-doctor-page .hj-dp-photo{width:96px;height:96px;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
 .hj-doctor-page h1{font-size:1.6rem;margin:0 0 .35rem;color:var(--navy)}
 .hj-doctor-page .hj-dp-muted{color:var(--muted);font-size:.9rem;margin:.5rem 0 0}
-.hj-doctor-page .hj-dp-stars .glrs-summary,.hj-doctor-page .glrs-form{max-width:520px}
+.hj-doctor-page .hj-dp-stars{max-width:560px}
 .hj-doctor-page .hj-dp-note{font-size:.85rem;color:var(--muted)}
 .hj-doctor-page .hjw{margin:0 0 1rem}
 .hj-doctor-page .hj-sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -76,16 +76,11 @@ $hj_has_widgets      = function_exists( 'hj_doctor_widget' );
 		</div>
 	<?php endif; ?>
 
-	<?php if ( shortcode_exists( 'site_reviews_form' ) ) : ?>
+	<?php if ( function_exists( 'hj_doctor_vote_form' ) ) : ?>
 		<section class="hj-dp-box hj-dp-stars" aria-label="امتیازدهی به پزشک">
-			<?php
-			$hj_rating = function_exists( 'glsr_get_rating' ) ? glsr_get_rating( get_the_ID() ) : null;
-			$hj_votes  = is_object( $hj_rating ) && isset( $hj_rating->count ) ? (int) $hj_rating->count : 0;
-			if ( $hj_votes < $hj_doctor_min_votes && ! $hj_has_widgets ) :
-				?>
-				<p class="hj-dp-muted">میانگین امتیاز پس از رسیدن به حداقل <?php echo (int) $hj_doctor_min_votes; ?> رأی نمایش داده می‌شود.</p>
-			<?php endif; ?>
-			<?php echo do_shortcode( '[site_reviews_form assigned_posts="' . (int) get_the_ID() . '" hide="title,content,name,email"]' ); ?>
+			<?php echo hj_doctor_vote_messages(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside. ?>
+			<?php echo hj_doctor_summary_html( (int) get_the_ID() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside. ?>
+			<?php echo hj_doctor_vote_form( (int) get_the_ID() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped inside. ?>
 		</section>
 	<?php endif; ?>
 

@@ -12,7 +12,7 @@
  *  - each profile shows its ready-made advertising embed codes (strip +
  *    full widgets) to paste into other websites;
  *  - stars/dates of individual votes are managed by the admin in wp-admin →
- *    Site Reviews → Reviews (linked below for admins).
+ *    همیار جراحی → آرای پزشکان (native engine, no plugins).
  *
  * Page setup: create a page (e.g. /my-profile/), assign this template.
  *
@@ -212,7 +212,7 @@ $hj_messages = array(
 		<div class="hj-box">
 			<h2 style="font-size:1.1rem;margin:0 0 .4rem">دسترسی‌های مدیر سایت</h2>
 			<ul class="hj-note">
-				<li><strong>ستاره و تاریخ رأی‌ها:</strong> پیشخوان وردپرس → <a href="<?php echo esc_url( admin_url( 'admin.php?page=site-reviews' ) ); ?>">Site Reviews → Reviews</a> — ویرایش امتیاز/تاریخ هر رأی، افزودن یا حذف رأی (طبق سند آرای اولیه).</li>
+				<li><strong>ستاره و تاریخ رأی‌ها:</strong> پیشخوان وردپرس → <a href="<?php echo esc_url( admin_url( 'admin.php?page=hj-doctor-votes' ) ); ?>">همیار جراحی → آرای پزشکان</a> — تأیید/بایگانی، ویرایش امتیاز و تاریخ هر رأی، افزودن رأی، ورود CSV و ساخت آرای اولیهٔ رندوم.</li>
 				<li><strong>ویرایش کامل هر پروفایل:</strong> همان فهرست بالا (همهٔ پروفایل‌ها برای شماست) یا <a href="<?php echo esc_url( admin_url( 'edit.php?post_type=doctor' ) ); ?>">پیشخوان → پزشکان</a>.</li>
 				<li><strong>حساب متخصصان:</strong> ساخت/حذف اکانت در <a href="<?php echo esc_url( admin_url( 'users.php' ) ); ?>">کاربران</a> — حق کامل با مدیر وبسایت است؛ با حذف اکانت، پروفایل‌ها باقی می‌مانند (نویسندهٔ آن‌ها قابل تغییر است).</li>
 				<li><strong>تأیید پروفایل‌های در انتظار:</strong> وضعیت «در انتظار تأیید» را از پیشخوان → پزشکان منتشر کنید.</li>

@@ -84,6 +84,9 @@ require_once get_stylesheet_directory() . '/inc/performance.php';
  * widgets and the specialty taxonomy. Optional include so a file-by-file
  * update never fatals before the new file has been copied.
  */
+if ( is_readable( get_stylesheet_directory() . '/inc/doctor-ratings.php' ) ) {
+	require_once get_stylesheet_directory() . '/inc/doctor-ratings.php';
+}
 if ( is_readable( get_stylesheet_directory() . '/inc/doctor-profile.php' ) ) {
 	require_once get_stylesheet_directory() . '/inc/doctor-profile.php';
 }

@@ -105,8 +105,8 @@
 	inset-inline-start: 0;
 	overflow: hidden;
 	white-space: nowrap;
-	color: var(--acc);
-	text-shadow: 0 0 12px color-mix(in srgb, var(--acc) 55%, transparent);
+	color: var(--acc, #f59e0b);
+	text-shadow: 0 0 12px rgba(245, 158, 11, .35);
 }
 .hjw-count { font-size: .74rem; color: var(--muted); }
 .hjw-novotes { font-size: .74rem; color: var(--muted); }
@@ -223,3 +223,22 @@
 	.hjw-head-text .hjw-name { font-size: 1.05rem; }
 	.hjw-strip { min-width: 220px; }
 }
+
+/* ---------- on-page vote form + summary (light background) ---------- */
+
+.hj-rate-summary { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 .6rem; }
+.hj-rate-summary .hjw-stars { font-size: 1.15rem; --acc: #f59e0b; }
+.hj-rate-summary-text { font-size: .88rem; color: #475569; }
+.hj-rate { margin: .4rem 0 0; }
+.hj-rate fieldset { border: 0; padding: 0; margin: 0 0 .5rem; }
+.hj-rate legend { font-weight: 700; font-size: .92rem; margin-bottom: .3rem; color: #0f172a; }
+.hj-rate-row { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 2px; direction: ltr; }
+.hj-rate-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.hj-rate-row label { font-size: 1.9rem; line-height: 1; color: #cbd5e1; cursor: pointer; transition: color .12s, transform .12s; }
+.hj-rate-row label:hover, .hj-rate-row label.on { color: #f59e0b; transform: scale(1.08); }
+.hj-rate-submit { border: 0; border-radius: 10px; background: #0a2f6b; color: #fff; font: inherit; font-weight: 700; padding: .5rem 1.4rem; cursor: pointer; }
+.hj-rate-submit:hover { filter: brightness(1.15); }
+.hj-rate-note { font-size: .78rem; color: #64748b; margin: .5rem 0 0; }
+.hj-hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; overflow: hidden; }
+.hj-vote-msg { border-inline-start: 4px solid #16a34a; background: #f0fdf4; padding: .5rem .9rem; border-radius: 8px; font-size: .9rem; margin: 0 0 .8rem; }
+.hj-vote-msg.err { border-color: #dc2626; background: #fef2f2; }

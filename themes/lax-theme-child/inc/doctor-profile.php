@@ -16,11 +16,12 @@
  *  - every profile exposes a ready-made embed URL — `?embed=strip` and
  *    `?embed=full` — that renders a standalone widget, safe to iframe into
  *    other websites (e.g. a city portal listing its local surgeons);
- *  - stars shown in widgets come from Site Reviews when active (guarded);
- *    the average appears only from 5 votes (same threshold as the page).
+ *  - stars shown in widgets come from the native rating engine
+ *    (inc/doctor-ratings.php, no plugins); the average appears only from
+ *    5 votes (same threshold as the page).
  *
  * Votes themselves (count, rating value, dates) are managed by the admin in
- * wp-admin → Site Reviews → Reviews; this file never edits reviews.
+ * wp-admin → همیار جراحی → آرای پزشکان; this file never edits votes.
  *
  * @package Lax_Theme_Child
  * @since   0.27.0
@@ -278,9 +279,9 @@ function hj_doctor_widget_data( int $post_id ): array {
 	$keys   = hj_doctor_meta_keys();
 	$terms  = get_the_terms( $post_id, 'specialty' );
 	$term   = ( is_array( $terms ) && $terms ) ? $terms[0] : null;
-	$rating = function_exists( 'glsr_get_rating' ) ? glsr_get_rating( $post_id ) : null;
-	$count  = ( is_object( $rating ) && isset( $rating->count ) ) ? (int) $rating->count : 0;
-	$avg    = ( is_object( $rating ) && isset( $rating->average ) ) ? (float) $rating->average : 0.0;
+	$rating = function_exists( 'hj_doctor_rating' ) ? hj_doctor_rating( $post_id ) : array( 'count' => 0, 'average' => 0.0 );
+	$count  = (int) $rating['count'];
+	$avg    = (float) $rating['average'];
 
 	return array(
 		'id'       => $post_id,
