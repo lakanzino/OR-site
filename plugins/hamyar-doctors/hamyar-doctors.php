@@ -178,6 +178,7 @@ final class HJ_Doctors {
 			'includes/acf-fields.php',   // بخش ۳ — زمینه‌های نمایه.
 			'includes/dashboard.php',    // بخش ۴ — صفحهٔ /my-profile/ و شورت‌کد شروع.
 			'includes/auth-google.php',  // بخش ۵ — پل ورود با گوگل (Nextend).
+			'includes/archive-render.php', // بخش ۸ — آرشیو پزشکان و صفحات تخصص/استان/شهر/نوع تخصص.
 		);
 
 		foreach ( $files as $file ) {
