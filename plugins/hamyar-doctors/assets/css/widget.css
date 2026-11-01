@@ -1,0 +1,611 @@
+/* ==========================================================================
+
+   Hamyar Doctors — widget.css (Section 12)
+
+   Rules: every selector starts with .hj-wd / .hj-wd-wrap / .hj-wd-frame /
+
+   .hj-wd-page / .hj-eb. No global tag selectors (body, a, h*, img ...).
+
+   Palette: navy #061A2E–#0F3556, teal #14C8C0–#0EA5A0, muted #6B7C8F, white cards.
+
+   ========================================================================== */
+
+
+
+/* ---------- wrapper + container (responds to its own width) ---------- */
+
+.hj-wd-wrap{
+
+  display:block;
+
+  width:100%;
+
+  max-width:560px;
+
+  min-width:min(100%,220px);
+
+  margin:0 auto;
+
+  container-type:inline-size;
+
+  container-name:hj-wd;
+
+}
+
+.hj-wd-wrap,
+
+.hj-wd-wrap *{box-sizing:border-box}
+
+
+
+/* ---------- iframe page helpers (classes on our own page only) ---------- */
+
+.hj-wd-frame{margin:0;padding:0;background:transparent}
+
+.hj-wd-page{display:block;padding:6px;box-sizing:border-box}
+
+
+
+/* ---------- card shell: isolated from host-site inheritance ---------- */
+
+.hj-wd{
+
+  all:initial;
+
+  display:block;
+
+  box-sizing:border-box;
+
+  direction:rtl;
+
+  text-align:start;
+
+  font-family:'Vazirmatn','Inter',Tahoma,'Segoe UI',system-ui,-apple-system,sans-serif;
+
+  font-size:16px;
+
+  line-height:1.55;
+
+  font-weight:400;
+
+  color:#061A2E;
+
+  background:#fff;
+
+  border:1px solid #E3ECF2;
+
+  border-radius:16px;
+
+  box-shadow:0 6px 20px rgba(6,26,46,.07);
+
+  overflow:hidden;
+
+  -webkit-text-size-adjust:100%;
+
+  transition:box-shadow .2s ease,transform .2s ease;
+
+}
+
+.hj-wd:hover{box-shadow:0 10px 28px rgba(6,26,46,.12);transform:translateY(-2px)}
+
+
+
+/* scoped reset of everything inside the card */
+
+.hj-wd *{
+
+  margin:0;padding:0;border:0;background:none;box-shadow:none;
+
+  text-decoration:none;font-family:inherit;font-style:normal;
+
+  letter-spacing:normal;text-transform:none;text-indent:0;
+
+  float:none;max-width:none;min-width:0;
+
+}
+
+.hj-wd *::before,
+
+.hj-wd *::after{content:none;display:none}
+
+
+
+/* ---------- link = whole card (vertical by default) ---------- */
+
+.hj-wd .hj-wd-link{
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  gap:12px;
+
+  padding:20px 16px 18px;
+
+  text-align:center;
+
+  color:inherit;
+
+  cursor:pointer;
+
+  -webkit-tap-highlight-color:transparent;
+
+}
+
+.hj-wd .hj-wd-link:hover,
+
+.hj-wd .hj-wd-link:focus,
+
+.hj-wd .hj-wd-link:visited{color:inherit;text-decoration:none}
+
+.hj-wd .hj-wd-link:focus-visible{outline:2px solid #14C8C0;outline-offset:-4px;border-radius:16px}
+
+
+
+/* ---------- photo ---------- */
+
+.hj-wd .hj-wd-photo{
+
+  display:block;
+
+  flex:none;
+
+  width:88px;
+
+  height:88px;
+
+  padding:3px;
+
+  border-radius:50%;
+
+  background:linear-gradient(135deg,#14C8C0,#0EA5A0);
+
+}
+
+.hj-wd .hj-wd-img{
+
+  display:block;
+
+  width:100%;
+
+  height:100%;
+
+  border:2px solid #fff;
+
+  border-radius:50%;
+
+  object-fit:cover;
+
+  background:#EAF1F6;
+
+}
+
+
+
+/* ---------- text body ---------- */
+
+.hj-wd .hj-wd-body{
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  gap:4px;
+
+  flex:1 1 auto;
+
+  min-width:0;
+
+  max-width:100%;
+
+}
+
+.hj-wd .hj-wd-name{
+
+  display:block;
+
+  max-width:100%;
+
+  font-size:19px;
+
+  line-height:1.45;
+
+  font-weight:800;
+
+  color:#061A2E;
+
+  overflow-wrap:anywhere;
+
+}
+
+.hj-wd .hj-wd-spec{
+
+  display:block;
+
+  max-width:100%;
+
+  font-size:14.5px;
+
+  line-height:1.5;
+
+  font-weight:600;
+
+  color:#0F3556;
+
+  overflow-wrap:anywhere;
+
+}
+
+/* English side: small, LTR, Latin font */
+
+.hj-wd .hj-wd-en,
+
+.hj-wd .hj-wd-name--en{
+
+  direction:ltr;
+
+  unicode-bidi:isolate;
+
+  font-family:'Inter','Vazirmatn',system-ui,-apple-system,'Segoe UI',sans-serif;
+
+}
+
+.hj-wd .hj-wd-en{
+
+  display:block;
+
+  max-width:100%;
+
+  font-size:12.5px;
+
+  line-height:1.4;
+
+  font-weight:500;
+
+  color:#6B7C8F;
+
+  overflow-wrap:anywhere;
+
+}
+
+.hj-wd .hj-wd-loc{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:5px;
+
+  max-width:100%;
+
+  font-size:13px;
+
+  line-height:1.5;
+
+  font-weight:400;
+
+  color:#6B7C8F;
+
+}
+
+.hj-wd .hj-wd-pin{
+
+  flex:none;
+
+  width:14px;
+
+  height:14px;
+
+  fill:none;
+
+  stroke:currentColor;
+
+  stroke-width:1.6;
+
+}
+
+
+
+/* ---------- rating ---------- */
+
+.hj-wd .hj-wd-rating{display:flex;align-items:center;gap:7px;margin-top:4px}
+
+.hj-wd .hj-wd-stars{position:relative;display:block;flex:none;width:80px;height:16px}
+
+.hj-wd .hj-wd-row{display:flex;flex-wrap:nowrap;width:80px;height:16px}
+
+.hj-wd .hj-wd-clip{position:absolute;top:0;right:0;display:block;height:16px;overflow:hidden}
+
+.hj-wd .hj-wd-row--fg{flex:none}
+
+.hj-wd .hj-wd-star{display:block;flex:none;width:16px;height:16px}
+
+.hj-wd .hj-wd-row--bg .hj-wd-star{fill:#D6E3EC}
+
+.hj-wd .hj-wd-row--fg .hj-wd-star{fill:#14C8C0}
+
+.hj-wd .hj-wd-rate-num{font-size:14px;line-height:1.4;font-weight:700;color:#061A2E}
+
+.hj-wd .hj-wd-rate-cnt{font-size:12px;line-height:1.4;font-weight:400;color:#6B7C8F}
+
+
+
+/* ---------- call to action ---------- */
+
+.hj-wd .hj-wd-cta{
+
+  display:inline-flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:6px;
+
+  margin-top:10px;
+
+  padding:9px 18px;
+
+  border-radius:999px;
+
+  background:linear-gradient(135deg,#14C8C0,#0EA5A0);
+
+  color:#061A2E;
+
+  font-size:13.5px;
+
+  line-height:1.4;
+
+  font-weight:700;
+
+  transition:filter .2s ease;
+
+}
+
+.hj-wd .hj-wd-link:hover .hj-wd-cta{filter:brightness(1.06)}
+
+.hj-wd .hj-wd-chev{
+
+  width:14px;
+
+  height:14px;
+
+  fill:none;
+
+  stroke:currentColor;
+
+  stroke-width:2;
+
+  stroke-linecap:round;
+
+  stroke-linejoin:round;
+
+}
+
+
+
+/* ---------- forced horizontal ---------- */
+
+.hj-wd.hj-wd--h .hj-wd-link{flex-direction:row;align-items:center;gap:16px;padding:16px 18px;text-align:start}
+
+.hj-wd.hj-wd--h .hj-wd-photo{width:96px;height:96px}
+
+.hj-wd.hj-wd--h .hj-wd-body{align-items:flex-start}
+
+.hj-wd.hj-wd--h .hj-wd-en{text-align:right}
+
+
+
+/* ---------- auto: wide container -> horizontal (middle of the page) ---------- */
+
+@container hj-wd (min-width:400px){
+
+  .hj-wd.hj-wd--auto .hj-wd-link{flex-direction:row;align-items:center;gap:16px;padding:16px 18px;text-align:start}
+
+  .hj-wd.hj-wd--auto .hj-wd-photo{width:96px;height:96px}
+
+  .hj-wd.hj-wd--auto .hj-wd-body{align-items:flex-start}
+
+  .hj-wd.hj-wd--auto .hj-wd-en{text-align:right}
+
+}
+
+
+
+/* ---------- very narrow container (small sidebars) ---------- */
+
+@container hj-wd (max-width:230px){
+
+  .hj-wd .hj-wd-link{padding:16px 12px 14px}
+
+  .hj-wd .hj-wd-name{font-size:17px}
+
+  .hj-wd .hj-wd-cta{padding:8px 14px;font-size:13px}
+
+}
+
+
+
+@media (prefers-reduced-motion:reduce){
+
+  .hj-wd{transition:none}
+
+  .hj-wd:hover{transform:none}
+
+}
+
+
+
+/* ==========================================================================
+
+   Embed box (shown on the doctor profile)
+
+   ========================================================================== */
+
+.hj-eb{
+
+  all:initial;
+
+  display:block;
+
+  box-sizing:border-box;
+
+  direction:rtl;
+
+  text-align:start;
+
+  font-family:'Vazirmatn','Inter',Tahoma,'Segoe UI',system-ui,-apple-system,sans-serif;
+
+  font-size:15px;
+
+  line-height:1.6;
+
+  font-weight:400;
+
+  color:#061A2E;
+
+  background:#fff;
+
+  border:1px solid #E3ECF2;
+
+  border-radius:16px;
+
+  padding:18px;
+
+  margin:20px 0;
+
+}
+
+.hj-eb *{box-sizing:border-box;font-family:inherit}
+
+.hj-eb .hj-eb-title{display:block;margin:0 0 4px;font-size:16.5px;line-height:1.5;font-weight:700;color:#0F3556}
+
+.hj-eb .hj-eb-title--sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.hj-eb .hj-eb-sub{display:block;margin:0 0 14px;font-size:13px;line-height:1.6;color:#6B7C8F}
+
+
+
+.hj-eb .hj-eb-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 10px}
+
+.hj-eb .hj-eb-tabs{display:inline-flex;gap:2px;padding:3px;background:#EEF4F8;border-radius:10px}
+
+.hj-eb .hj-eb-tab{
+
+  -webkit-appearance:none;appearance:none;
+
+  margin:0;border:0;box-shadow:none;
+
+  padding:7px 12px;border-radius:8px;
+
+  background:transparent;color:#0F3556;
+
+  font-family:inherit;font-size:13px;line-height:1.4;font-weight:600;
+
+  text-transform:none;letter-spacing:normal;cursor:pointer;
+
+}
+
+.hj-eb .hj-eb-tab.is-active{background:#fff;color:#061A2E;box-shadow:0 1px 3px rgba(6,26,46,.12)}
+
+.hj-eb .hj-eb-tab:focus-visible,
+
+.hj-eb .hj-eb-sel:focus-visible,
+
+.hj-eb .hj-eb-copy:focus-visible{outline:2px solid #14C8C0;outline-offset:2px}
+
+.hj-eb .hj-eb-lbl{font-size:13px;font-weight:600;color:#6B7C8F}
+
+.hj-eb .hj-eb-sel{
+
+  margin:0;padding:6px 10px;height:auto;
+
+  border:1px solid #D3E0E9;border-radius:8px;
+
+  background:#fff;color:#0F3556;
+
+  font-family:inherit;font-size:13px;line-height:1.4;box-shadow:none;
+
+}
+
+
+
+.hj-eb .hj-eb-code{
+
+  display:block;
+
+  width:100%;
+
+  min-height:92px;
+
+  margin:0;
+
+  padding:12px;
+
+  resize:vertical;
+
+  direction:ltr;
+
+  text-align:left;
+
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+
+  font-size:12.5px;
+
+  line-height:1.6;
+
+  color:#D9F7F5;
+
+  background:#061A2E;
+
+  border:1px solid #0F3556;
+
+  border-radius:10px;
+
+  box-shadow:none;
+
+}
+
+.hj-eb .hj-eb-code:focus{outline:2px solid #14C8C0;outline-offset:1px}
+
+
+
+.hj-eb .hj-eb-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:12px}
+
+.hj-eb .hj-eb-copy{
+
+  -webkit-appearance:none;appearance:none;
+
+  margin:0;border:0;box-shadow:none;
+
+  padding:9px 22px;border-radius:999px;
+
+  background:linear-gradient(135deg,#14C8C0,#0EA5A0);color:#061A2E;
+
+  font-family:inherit;font-size:13.5px;line-height:1.4;font-weight:700;
+
+  text-transform:none;letter-spacing:normal;cursor:pointer;
+
+  transition:filter .2s ease;
+
+}
+
+.hj-eb .hj-eb-copy:hover{filter:brightness(1.06)}
+
+.hj-eb.is-copied .hj-eb-copy{background:#061A2E;color:#14C8C0}
+
+.hj-eb .hj-eb-msg{font-size:12.5px;line-height:1.5;color:#0F3556}
+
+.hj-eb.is-failed .hj-eb-msg{color:#6B7C8F}
+
+
+
+/* without JS: hide controls that need it, keep the textarea readable */
+
+.hj-eb.hj-eb--nojs .hj-eb-bar,
+
+.hj-eb.hj-eb--nojs .hj-eb-actions{display:none}
