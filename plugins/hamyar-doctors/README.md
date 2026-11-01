@@ -1,0 +1,46 @@
+# همیار پزشک‌ها (hamyar-doctors)
+
+افزونهٔ مستقل «پزشک‌ها» برای سایت همیار جراحی: نوع محتوای `doctor` با taxonomyهای تخصص و شهر، زمینه‌های نمایه با JSON محلی ACF (بدون Sync دستی) و نقش «پزشک» که فقط به نمایهٔ خودش دسترسی دارد. مستقل از قالب فرزند است و در حالت عادی حتی یک خط به `debug.log` نمی‌نویسد.
+
+## ساختار (بخش‌ها)
+
+| بخش | فایل | محتوا |
+| --- | --- | --- |
+| ۱ | `hamyar-doctors.php` | helperها (`hj_doctors_path/url`، `hj_to_en_digits`، `hj_doctors_default_photo_url` همگی با نگهبان `function_exists`) + کلاس اصلی و قلاب فعال/غیرفعال |
+| ۲ | `includes/taxonomies.php` + `includes/cpt.php` | taxonomyهای `doctor_specialty` / `doctor_city` و نوع محتوای `doctor` با `capability_type` سفارشی |
+| ۳ | `includes/acf-fields.php` + `acf-json/group_hj_doctor_profile.json` | گروه زمینهٔ «اطلاعات پزشک» فقط به‌صورت JSON محلی؛ این فایل مسیرهای save/load را نشانه می‌گیرد و روی ذخیره سانیتایز می‌کند |
+| ۴ | `includes/capabilities.php` + `includes/security.php` | نقش `doctor` و capabilityها + اجرای دسترسی (نگهبان `map_meta_cap`، محدودکردن پیشخوان، نوار مدیریت، کش کاربر→نوشته) |
+| دارایی | `assets/img/doctor-default.jpg` | عکس پیش‌فرض نمایه که `hj_doctors_default_photo_url()` برمی‌گرداند |
+
+## زمینه‌های نمایه
+
+`hj_medical_code` (کد نظام پزشکی، ارقام فارسی/عربی خودکار به لاتین)، `hj_phone`، `hj_address`، `hj_work_hours`، `hj_education`، `hj_profile_url`، `hj_accepts_new`.
+خواندن در قالب: `hj_doctors_field( 'hj_phone', $post_id )` و تصویر: `hj_doctors_photo_url( $post_id )` — بدون ACF هم خطا نمی‌دهند.
+
+## نصب و فعال‌سازی
+
+1. پوشهٔ `hamyar-doctors` را در `wp-content/plugins/` بگذارید (یا از ZIP ریلیز نصب کنید).
+2. افزونه را فعال کنید: نقش `doctor` و capabilityها ساخته و rewriteها flush می‌شوند.
+3. برای هر پزشک: یک کاربر با نقش «پزشک» بسازید و نوشتهٔ پزشک او را با **نویسنده = همان کاربر** ایجاد کنید؛ دسترسی خودش خودکار فقط همین نوشته است.
+
+## Rollback
+
+- فقط زمینه‌ها: حذف/rename کردن `includes/acf-fields.php` + پوشهٔ `acf-json/` کافی است (گروه زمینه فقط آنجا زندگی می‌کند).
+- کل افزونه: غیرفعال‌سازی داده‌ها را نگه می‌دارد؛ برای برداشتن نقش و capabilityها `hj_doctors_uninstall_roles()` را صدا بزنید.
+
+## چک‌لیست بعد از جایگذاری روی سرور
+
+- فروش/نوبت‌دهی دستی لازم نیست؛ Sync های ACF فقط در `acf-json/` پایین می‌آیند، نه قالب فرزند.
+- Purge All LiteSpeed بعد از جایگذاری.
+- تست ویرایش یک پزشک نمونه (همهٔ تب‌ها) و یک کاربر با نقش پزشک: باید فقط نمایهٔ خودش را ببیند و پیشخوان به `profile.php` برگردد.
+- `debug.log` باید خالی بماند.
+- فهرست کاری برای مدیر: ساخت تخصص/شهر، افزودن پزشک، بررسی بایگانی `/doctors/`.
+
+## آزمون‌ها
+
+محیط گیت‌هاب باینری PHP ندارد؛ مثل بقیهٔ پروژه با `tools/php-check.py` (بررسی توازن پرانتز/رشته/تگ) و `python3 -m json.tool` برای JSON بررسی می‌شود:
+
+```bash
+python3 tools/php-check.py plugins/hamyar-doctors/*.php plugins/hamyar-doctors/includes/*.php
+python3 -m json.tool plugins/hamyar-doctors/acf-json/group_hj_doctor_profile.json > /dev/null
+```

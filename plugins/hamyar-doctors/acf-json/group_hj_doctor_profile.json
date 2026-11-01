@@ -1,0 +1,162 @@
+{
+    "key": "group_hj_doctor_profile",
+    "title": "اطلاعات پزشک",
+    "fields": [
+        {
+            "key": "field_hj_medical_code",
+            "label": "کد نظام پزشکی",
+            "name": "hj_medical_code",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "فقط رقم؛ ارقام فارسی و عربی هنگام ذخیره خودکار به لاتین تبدیل می‌شوند.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_hj_phone",
+            "label": "شماره تماس",
+            "name": "hj_phone",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "شمارهٔ مطب یا منشی؛ با ارقام لاتین ذخیره می‌شود.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "02112345678",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_hj_address",
+            "label": "نشانی مطب",
+            "name": "hj_address",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "rows": 3,
+            "placeholder": "",
+            "new_lines": "br"
+        },
+        {
+            "key": "field_hj_work_hours",
+            "label": "ساعت‌های حضور",
+            "name": "hj_work_hours",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "روزها و ساعت‌ها را خط‌به‌خط بنویسید.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "rows": 3,
+            "placeholder": "شنبه تا چهارشنبه، ۹ تا ۱۷",
+            "new_lines": "br"
+        },
+        {
+            "key": "field_hj_education",
+            "label": "دانش‌نامه‌ها و سوابق",
+            "name": "hj_education",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "هر دانش‌نامه یا سابقهٔ کاری در یک خط.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "rows": 4,
+            "placeholder": "",
+            "new_lines": "br"
+        },
+        {
+            "key": "field_hj_profile_url",
+            "label": "صفحهٔ نوبت‌دهی",
+            "name": "hj_profile_url",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "نشانی کامل سامانهٔ نوبت‌دهی بیرون از سایت.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https:\/\/"
+        },
+        {
+            "key": "field_hj_accepts_new",
+            "label": "پذیرش بیمار جدید",
+            "name": "hj_accepts_new",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "message": "این پزشک بیمار جدید می‌پذیرد.",
+            "default_value": 0,
+            "ui": 1,
+            "ui_on_text": "می‌پذیرد",
+            "ui_off_text": "نمی‌پذیرد"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "doctor"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "زمینه‌های نمایهٔ پزشک — همیار پزشک‌ها",
+    "show_in_rest": 0,
+    "modified": 1793491200
+}
