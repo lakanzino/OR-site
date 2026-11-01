@@ -1,0 +1,215 @@
+/* ==========================================================================
+
+   Hamyar Doctors — theme-dark.css (Section 13)
+
+   Loaded only when: HJ_DARK_MODE='auto' (media: prefers-color-scheme: dark)
+
+   or admin preview ?hj_theme=dark. The widget (section 12) stays light on purpose.
+
+
+
+   The approved CSS of sections 6–8 uses fixed colors, so this file is heuristic:
+
+   it flattens backgrounds inside the plugin wrappers, makes text inherit a light
+
+   color, then re-applies surfaces on card/box/panel-like classes.
+
+   If one element is unreadable, add its class to the "exceptions" block at the bottom.
+
+   ========================================================================== */
+
+
+
+html body.hj-scope:not(.hj-theme-light){
+
+  --hj-bg:#061A2E;
+
+  --hj-surface:#0B2742;
+
+  --hj-surface-2:#0F3556;
+
+  --hj-line:#1B4165;
+
+  --hj-text:#E8F1F7;
+
+  --hj-text-2:#C5D6E3;
+
+  --hj-muted:#8FA3B5;
+
+  --hj-accent:#14C8C0;
+
+  --hj-accent-hi:#5FE3DC;
+
+  --hj-focus:#14C8C0;
+
+  --hj-error:#F28BA0;
+
+  --hj-shadow:0 6px 20px rgba(0,0,0,.35);
+
+}
+
+
+
+/* 1) outer panel of each section */
+
+html body.hj-scope:not(.hj-theme-light) :is(.hj-pr-wrap,.hj-ar-wrap,[class*="hj-dash"],[id^="hj-dash"]){
+
+  background-color:var(--hj-bg) !important;
+
+  color:var(--hj-text) !important;
+
+  color-scheme:dark;
+
+}
+
+
+
+/* 2) flatten inner backgrounds + inherit light text (chips, badges, buttons, bars… keep their own look) */
+
+html body.hj-scope:not(.hj-theme-light) :is(.hj-pr-wrap,.hj-ar-wrap,[class*="hj-dash"],[id^="hj-dash"])
+
+:is(div,section,article,aside,header,footer,main,nav,ul,ol,li,dl,dt,dd,figure,figcaption,form,fieldset,legend,label,details,summary,table,thead,tbody,tfoot,tr,th,td,blockquote,p,h1,h2,h3,h4,h5,h6,span,strong,b,em,small,time,address,cite)
+
+:not(:is([class*="btn"],[class*="button"],[class*="cta"],[class*="chip"],[class*="badge"],[class*="tag"],[class*="pill"],[class$="-bar"],[class*="-bar "],[class*="progress"],[class*="fill"],[class*="dot"],[class*="status"],[class*="avatar"],[class*="photo"],[class*="star"],[class*="swatch"],[class*="submit"],[class*="icon"],.hj-eb,.hj-eb *)){
+
+  background-color:transparent !important;
+
+  border-color:var(--hj-line) !important;
+
+  color:inherit !important;
+
+}
+
+
+
+/* 3) surfaces */
+
+html body.hj-scope:not(.hj-theme-light) :is(.hj-pr-wrap,.hj-ar-wrap,[class*="hj-dash"],[id^="hj-dash"])
+
+:is(div,section,article,aside,details,form,fieldset,li,a,table)
+
+:is([class*="card"],[class*="box"],[class*="panel"],[class*="tile"],[class*="block"],[class*="widget"],[class*="hero"],[class*="modal"],[class*="sidebar"]):not(.hj-eb):not(.hj-eb *){
+
+  background-color:var(--hj-surface) !important;
+
+  border-color:var(--hj-line) !important;
+
+  color:var(--hj-text) !important;
+
+}
+
+
+
+/* 4) muted text */
+
+html body.hj-scope:not(.hj-theme-light) :is(.hj-pr-wrap,.hj-ar-wrap,[class*="hj-dash"],[id^="hj-dash"])
+
+:is([class*="muted"],[class*="meta"],[class*="hint"],[class*="help"],[class*="caption"])
+
+:is(div,span,p,small,li,time,label,em,dd,dt,td,figcaption){
+
+  color:var(--hj-muted) !important;
+
+}
+
+
+
+/* 5) links: accent, but whole-card links keep normal text color */
+
+html body.hj-scope:not(.hj-theme-light) :is(.hj-pr-wrap,.hj-ar-wrap,[class*="hj-dash"],[id^="hj-dash"])
+
+a:not(:is([class*="btn"],[class*="button"],[class*="cta"],[class*="chip"],[class*="badge"],[class*="tag"],[class*="pill"],[class*="submit"])){
+
+  color:var(--hj-accent-hi) !important;
+
+}
+
+html body.hj-scope:not(.hj-theme-light) :is(.hj-pr-wrap,.hj-ar-wrap,[class*="hj-dash"],[id^="hj-dash"])
+
+a:is([class*="card"],[class*="tile"],[class*="box"],[class*="panel"]){
+
+  color:var(--hj-text) !important;
+
+}
+
+
+
+/* 6) form controls */
+
+html body.hj-scope:not(.hj-theme-light) :is(.hj-pr-wrap,.hj-ar-wrap,[class*="hj-dash"],[id^="hj-dash"])
+
+:is(input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="file"]):not([type="range"]),select,textarea):not(.hj-eb-code){
+
+  background-color:var(--hj-surface-2) !important;
+
+  color:var(--hj-text) !important;
+
+  border-color:var(--hj-line) !important;
+
+}
+
+html body.hj-scope:not(.hj-theme-light) :is(.hj-pr-wrap,.hj-ar-wrap,[class*="hj-dash"],[id^="hj-dash"]) ::placeholder{
+
+  color:var(--hj-muted) !important;
+
+  opacity:1;
+
+}
+
+
+
+/* 7) misc */
+
+html body.hj-scope:not(.hj-theme-light) :is(.hj-pr-wrap,.hj-ar-wrap,[class*="hj-dash"],[id^="hj-dash"]) hr{
+
+  border-color:var(--hj-line) !important;
+
+  background-color:var(--hj-line) !important;
+
+}
+
+html body.hj-scope:not(.hj-theme-light) :is(.hj-pr-wrap,.hj-ar-wrap,[class*="hj-dash"],[id^="hj-dash"]) img{
+
+  filter:brightness(.92);
+
+}
+
+
+
+/* 8) embed box (section 12) inside the profile */
+
+html body.hj-scope:not(.hj-theme-light) .hj-eb{
+
+  background-color:var(--hj-surface);
+
+  border-color:var(--hj-line);
+
+  color:var(--hj-text);
+
+}
+
+html body.hj-scope:not(.hj-theme-light) .hj-eb .hj-eb-title{color:var(--hj-text)}
+
+html body.hj-scope:not(.hj-theme-light) .hj-eb .hj-eb-sub,
+
+html body.hj-scope:not(.hj-theme-light) .hj-eb .hj-eb-lbl{color:var(--hj-muted)}
+
+html body.hj-scope:not(.hj-theme-light) .hj-eb .hj-eb-msg{color:var(--hj-text-2)}
+
+html body.hj-scope:not(.hj-theme-light) .hj-eb .hj-eb-tabs{background-color:var(--hj-surface-2)}
+
+html body.hj-scope:not(.hj-theme-light) .hj-eb .hj-eb-tab{color:var(--hj-text-2)}
+
+html body.hj-scope:not(.hj-theme-light) .hj-eb .hj-eb-tab.is-active{background-color:var(--hj-bg);color:var(--hj-text)}
+
+html body.hj-scope:not(.hj-theme-light) .hj-eb .hj-eb-sel{background-color:var(--hj-surface-2);color:var(--hj-text);border-color:var(--hj-line)}
+
+html body.hj-scope:not(.hj-theme-light) .hj-eb .hj-eb-code{border-color:var(--hj-line)}
+
+
+
+/* 9) exceptions: add your own fixes below (example)
+
+html body.hj-scope:not(.hj-theme-light) .hj-pr-example{color:var(--hj-text) !important}
+
+*/
