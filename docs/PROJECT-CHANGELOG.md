@@ -5,6 +5,14 @@
 
 ---
 
+## [همیار پزشک‌ها — بخش ۷: صفحهٔ عمومی تک‌پزشک (Medical Premium)] — 2026-11-02
+
+- **`includes/profile-render.php` (عیناً از سند بخش ۷):** رندر عمومی `/doctor/<slug>/` با قوانین سند — فیلد خالی هرگز چاپ نمی‌شود؛ فارسی بزرگ با ارقام فارسی و انگلیسی کوچک LTR با ارقام لاتین؛ مدارک خصوصی و فیلدهای سیستمی هرگز رندر نمی‌شوند؛ غیرعمومی برای بازدیدکننده ۴۰۴ و برای صاحب/مدیر پیش‌نمایش با noindex (فیلتر `wp_robots`)؛ JSON-LD نوع Physician فقط با فیلدهای پر و امتیاز فقط با حداقل ۵ رأی تأییدشده (`hj_pr_min_votes`)؛ هوک‌های `hj_doctor_after_schedule`، `hj_doctor_rating_box`، `hj_doctor_embed_box` و فیلترهای `hj_doctor_rating_box_html` / `hj_pr_rating_shortcode` (پل رتبه‌دهی فعلی تا آمدن بخش ۹)؛ صفحهٔ وضعیت فقط-مدیر `admin-post.php?action=hj_pr_status[&id=…]`.
+- **`assets/css/profile.css` عیناً:** تم Medical Premium (سرمه‌ای/فیروزه‌ای، Vazirmatn+Inter با fallback سیستم تا بخش ۱۳)، ستاره‌ها با `--hj-fill`، بریک‌پوینت‌های ۵۲۰/۹۰۰ و `prefers-reduced-motion`.
+- **`themes/lax-theme-child/single-doctor.php` (بازسازی‌شده؛ فایل سوم سند در پیام نیفتاده بود):** پل قالب فرزند طبق قواعد سند — افزونه غیرفعال ⇒ `single.php` معمولی؛ پزشک غیرعمومی ⇒ ۴۰۴ واقعی برای بازدیدکننده؛ پیش‌نمایش صاحب/مدیر با `nocache_headers()`؛ در غیر این صورت `hj_doctor_profile_html()` داخل `.hj-pr-wrap` بین `get_header()/get_footer()`. بازگشت فوری = حذف همین یک فایل.
+- **helperهای فرض‌شدهٔ بخش ۳ ساخته شدند:** `hj_dp_is_public($id)` و `hj_dp_photo_url($id)` در `acf-fields.php` (پیوست `profile_photo` → تصویر شاخص → عکس پیش‌فرض) تا امضاهای مورد اتکای بخش‌های ۶ و ۷ واقعی باشند؛ لودر حالا `includes/profile-render.php` را می‌خواند.
+- **آزمون‌ها:** `tools/php-check.py` روی ۱۰/۱۰ فایل PHP افزونه + قالب فرزند · بررسی ایستا؛ تست زنده: صفحهٔ وضعیت `hj_pr_status`، بررسی ۴۰۴ بودن پزشک پیش‌نویس برای بازدیدکننده و پیش‌نمایش صاحب، و برگشت قالب والد با حذف `single-doctor.php`.
+
 ## [همیار پزشک‌ها — بخش ۶: داشبورد پزشک در /my-profile/ (سه فایل)] — 2026-11-02
 
 - **`includes/dashboard.php` + `assets/js/dashboard.js` + `assets/css/dashboard.css`:** داشبورد مینیمال دوستونی طبق سند بخش ۶ — فرم پنج‌بلوکی دوزبانه، ذخیرهٔ AJAX با نمایش خطا فقط زیر همان فیلد (بدون نوتیس جدا)، پیش‌نمایش زنده، نوار تکمیل پروفایل، «ارسال برای بررسی» و گردش تأیید مدیر (row action + ستون «وضعیت پروفایل»)؛ امتیازها فقط‌خواندنی و بدون ذکر قوانین؛ هوک‌های `hj_doctor_dashboard_appointments`/`hj_doctor_dashboard_widgets` برای بخش‌های بعدی.

@@ -123,6 +123,49 @@ if ( ! function_exists( 'hj_doctors_field' ) ) {
 	}
 }
 
+if ( ! function_exists( 'hj_dp_is_public' ) ) {
+	/**
+	 * آیا پروفایل پزشک عمومی است؟ (بخش‌های ۶ و ۷ به این امضا تکیه می‌کنند)
+	 *
+	 * @param int $id شناسهٔ نوشتهٔ پزشک.
+	 * @return bool
+	 */
+	function hj_dp_is_public( $id ) {
+		$id = (int) $id;
+		if ( ! $id || HJ_DOCTORS_CPT !== get_post_type( $id ) ) {
+			return false;
+		}
+		return 'publish' === get_post_status( $id );
+	}
+}
+
+if ( ! function_exists( 'hj_dp_photo_url' ) ) {
+	/**
+	 * عکس پروفایل: پیوست ACF → تصویر شاخص → عکس پیش‌فرض بسته.
+	 *
+	 * @param int    $id   شناسهٔ نوشتهٔ پزشک.
+	 * @param string $size اندازهٔ تصویر وردپرس.
+	 * @return string
+	 */
+	function hj_dp_photo_url( $id, $size = 'medium_large' ) {
+		$id  = (int) $id;
+		$aid = (int) get_post_meta( $id, 'profile_photo', true );
+		if ( $aid && 'attachment' === get_post_type( $aid ) ) {
+			$u = wp_get_attachment_image_url( $aid, $size );
+			if ( is_string( $u ) && '' !== $u ) {
+				return $u;
+			}
+		}
+		if ( $id && has_post_thumbnail( $id ) ) {
+			$u = get_the_post_thumbnail_url( $id, $size );
+			if ( is_string( $u ) && '' !== $u ) {
+				return $u;
+			}
+		}
+		return hj_doctors_default_photo_url();
+	}
+}
+
 if ( ! function_exists( 'hj_doctors_photo_url' ) ) {
 	/**
 	 * تصویر شاخص پزشک یا عکس پیش‌فرض بسته.
