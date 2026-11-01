@@ -179,6 +179,7 @@ final class HJ_Doctors {
 			'includes/dashboard.php',    // بخش ۴ — صفحهٔ /my-profile/ و شورت‌کد شروع.
 			'includes/auth-google.php',  // بخش ۵ — پل ورود با گوگل (Nextend).
 			'includes/archive-render.php', // بخش ۸ — آرشیو پزشکان و صفحات تخصص/استان/شهر/نوع تخصص.
+			'includes/rating-bridge.php',  // بخش ۹ — پل بومی امتیازها (جدول hj_doctor_votes).
 		);
 
 		foreach ( $files as $file ) {
