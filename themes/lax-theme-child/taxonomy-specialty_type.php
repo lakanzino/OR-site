@@ -12,4 +12,10 @@ if ( ! function_exists( 'hj_doctor_archive_html' ) ) {
 	return;
 }
 
-echo hj_doctor_archive_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside the plugin renderer.
+get_header();
+?>
+<div class="hj-ar-wrap">
+<?php echo hj_doctor_archive_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside the plugin renderer. ?>
+</div>
+<?php
+get_footer();

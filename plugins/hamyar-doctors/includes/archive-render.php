@@ -436,9 +436,7 @@ final class HJ_Doctors_Archive_Render {
 
 
     /* ================================================================== */
-
     /* Visibility of a single profile (re-checked at render time)         */
-
     /* ================================================================== */
 
 
@@ -493,14 +491,12 @@ final class HJ_Doctors_Archive_Render {
 
 
     /* ================================================================== */
-
     /* Assets / body class / robots                                        */
-
     /* ================================================================== */
 
 
 
-    public static function enqueue() {
+    private static function ensure_assets() {
 
         if (self::$css_done) {
 
@@ -512,9 +508,17 @@ final class HJ_Doctors_Archive_Render {
 
         wp_register_style('hj-ar-css', hj_doctors_url('assets/css/archive.css'), array(), HJ_DOCTORS_VERSION);
 
+        wp_enqueue_style('hj-ar-css');
+
+    }
+
+
+
+    public static function enqueue() {
+
         if (self::is_listing()) {
 
-            wp_enqueue_style('hj-ar-css');
+            self::ensure_assets();
 
         }
 
@@ -560,171 +564,44 @@ final class HJ_Doctors_Archive_Render {
 
 
     /* ================================================================== */
-
-    /* Admin status page — wp-admin/admin-post.php?action=hj_ar_status     */
-
+    /* Rendering helpers                                                   */
     /* ================================================================== */
 
 
 
-    public static function admin_status() {
+    private static function archive_url() {
 
-        if (!current_user_can('manage_options')) {
+        $u = get_post_type_archive_link('doctor');
 
-            wp_die('دسترسی غیرمجاز', '', array('response' => 403));
-
-        }
-
-        global $wpdb;
-
-        $lines = array();
-
-        $ok = function ($label, $cond) use (&$lines) {
-
-            $lines[] = sprintf('%-46s %s', $label, $cond ? 'OK' : 'MISSING');
-
-        };
-
-        $val = function ($label, $value) use (&$lines) {
-
-            $lines[] = sprintf('%-46s %s', $label, (string) $value);
-
-        };
-
-        $lines[] = 'Hamyar Doctors - archive status (section 8)';
-
-        $lines[] = 'Generated: ' . gmdate('Y-m-d H:i:s') . ' UTC';
-
-        $lines[] = '';
-
-        $val('Plugin version', defined('HJ_DOCTORS_VERSION') ? HJ_DOCTORS_VERSION : '?');
-
-        $ok('Post type "doctor" registered', post_type_exists('doctor'));
-
-        $val('Archive URL', (string) get_post_type_archive_link('doctor'));
-
-        foreach (self::taxes() as $tax) {
-
-            $ok("Taxonomy {$tax} registered", taxonomy_exists($tax));
-
-            $n = get_terms(array('taxonomy' => $tax, 'hide_empty' => false, 'fields' => 'count'));
-
-            $val("  terms in {$tax}", is_wp_error($n) ? 'error' : (int) $n);
-
-        }
-
-        $lines[] = '';
-
-        $val('per_page (hj_ar_per_page)', self::per_page());
-
-        $val('use_facetwp (hj_ar_use_facetwp)', self::use_facetwp() ? 'true' : 'false');
-
-        $val('show_basic_filters', apply_filters('hj_ar_show_basic_filters', true) ? 'true' : 'false');
-
-        $val('sort_options (hj_ar_sort_options)', implode(', ', array_keys(self::sort_options())));
-
-        $val('default_sort (hj_ar_default_sort)', (string) apply_filters('hj_ar_default_sort', 'name'));
-
-        $hidden_vals = self::hidden_status_values();
-
-        $val('hidden_status_values', $hidden_vals ? implode(', ', $hidden_vals) : '(none)');
-
-        $ok('filter hj_doctor_rating_stats attached', false !== has_filter('hj_doctor_rating_stats'));
-
-        $ok('filter hj_ar_use_facetwp attached', false !== has_filter('hj_ar_use_facetwp'));
-
-        $ok('filter hj_ar_show_basic_filters attached', false !== has_filter('hj_ar_show_basic_filters'));
-
-        $ok('filter hj_doctor_card_extra_html attached', false !== has_filter('hj_doctor_card_extra_html'));
-
-        $ok('action hj_doctor_archive_filters attached', false !== has_action('hj_doctor_archive_filters'));
-
-        $ok('action hj_ar_apply_sort attached', false !== has_action('hj_ar_apply_sort'));
-
-        $lines[] = '';
-
-        $pc = wp_count_posts('doctor');
-
-        foreach (array('publish', 'draft', 'pending', 'private', 'trash') as $st) {
-
-            $val("posts {$st}", isset($pc->$st) ? (int) $pc->$st : 0);
-
-        }
-
-        $rows = $wpdb->get_results(
-
-            $wpdb->prepare(
-
-                "SELECT pm.meta_key, pm.meta_value, COUNT(*) AS c
-                 FROM {$wpdb->postmeta} pm
-                 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
-                 WHERE p.post_type = %s AND pm.meta_key IN ('profile_hidden', 'profile_status')
-                 GROUP BY pm.meta_key, pm.meta_value
-                 ORDER BY pm.meta_key, pm.meta_value",
-
-                'doctor'
-
-            )
-
-        );
-
-        if ($rows) {
-
-            foreach ($rows as $r) {
-
-                $val('meta ' . $r->meta_key . ' = ' . ('' === $r->meta_value ? "''" : $r->meta_value), (int) $r->c);
-
-            }
-
-        } else {
-
-            $val('meta profile_hidden/profile_status', 'none');
-
-        }
-
-        $pub = new WP_Query(array(
-
-            'post_type'      => 'doctor',
-
-            'post_status'    => 'publish',
-
-            'posts_per_page' => 1,
-
-            'fields'         => 'ids',
-
-            'meta_query'     => self::visibility_meta_query(),
-
-        ));
-
-        $val('public doctors (archive meta query)', (int) $pub->found_posts);
-
-        if (get_post(114)) {
-
-            $val('hj_dp_is_public(114)', hj_dp_is_public(114) ? 'true' : 'false');
-
-        }
-
-        $lines[] = '';
-
-        $lines[] = 'Status page: wp-admin/admin-post.php?action=hj_ar_status';
-
-        nocache_headers();
-
-        header('Content-Type: text/plain; charset=utf-8');
-
-        echo esc_html(implode("\n", $lines));
-
-        exit;
+        return (is_string($u) && '' !== $u) ? $u : home_url('/');
 
     }
 
 
 
-    /* ================================================================== */
+    private static function terms_for($tax, $args = array()) {
 
-    /* Rendering helpers                                                   */
+        if (!taxonomy_exists($tax)) {
 
-    /* ================================================================== */
+            return array();
+
+        }
+
+        $terms = get_terms(array_merge(array(
+
+            'taxonomy'   => $tax,
+
+            'hide_empty' => true,
+
+            'orderby'    => 'name',
+
+            'order'      => 'ASC',
+
+        ), $args));
+
+        return is_wp_error($terms) ? array() : $terms;
+
+    }
 
 
 
@@ -806,235 +683,9 @@ final class HJ_Doctors_Archive_Render {
 
 
 
-    /** Heading parts for the current listing. */
-
-    private static function heading() {
-
-        $base = array('kicker' => '', 'title' => 'آرشیو پزشکان', 'back' => '');
-
-        if (is_post_type_archive('doctor')) {
-
-            return $base;
-
-        }
-
-        $term = get_queried_object();
-
-        if ($term instanceof WP_Term) {
-
-            $kickers = array(
-
-                'specialty'      => 'رشتهٔ',
-
-                'specialty_type' => 'نوع تخصص',
-
-                'province'       => 'استان',
-
-                'city'           => 'شهر',
-
-            );
-
-            return array(
-
-                'kicker' => isset($kickers[$term->taxonomy]) ? $kickers[$term->taxonomy] : '',
-
-                'title'  => $term->name,
-
-                'back'   => (string) get_post_type_archive_link('doctor'),
-
-            );
-
-        }
-
-        return $base;
-
-    }
-
-
-
-    /** Specialty chips above the filter bar. */
-
-    private static function chips_html() {
-
-        $terms = get_terms(array(
-
-            'taxonomy' => 'specialty',
-
-            'hide_empty' => true,
-
-            'orderby'    => 'name',
-
-            'order'      => 'ASC',
-
-            'number'     => 40,
-
-        ));
-
-        if (is_wp_error($terms) || empty($terms)) {
-
-            return '';
-
-        }
-
-        $active = self::qparam('hj_specialty');
-
-        $qo = get_queried_object();
-
-        if ($qo instanceof WP_Term && 'specialty' === $qo->taxonomy) {
-
-            $active = $qo->slug;
-
-        }
-
-        $base       = (string) get_post_type_archive_link('doctor');
-
-        $all_active = ('' === $active) && is_post_type_archive('doctor');
-
-        $h = '<nav class="hj-ar__chips" aria-label="دسته‌بندی بر اساس تخصص"><ul>';
-
-        $h .= '<li><a class="hj-ar__chip' . ($all_active ? ' is-active' : '') . '" href="' . esc_url($base) . '">همهٔ تخصص‌ها</a></li>';
-
-        foreach ($terms as $t) {
-
-            $cls = ($t->slug === $active) ? 'hj-ar__chip is-active' : 'hj-ar__chip';
-
-            $h .= '<li><a class="' . esc_attr($cls) . '" href="' . esc_url(get_term_link($t)) . '">'
-
-                . esc_html($t->name)
-
-                . ' <span class="hj-ar__chip-count">' . esc_html(self::fa($t->count)) . '</span></a></li>';
-
-        }
-
-        $h .= '</ul></nav>';
-
-        return $h;
-
-    }
-
-
-
-    private static function select_html($name, $label, $terms, $current, $placeholder) {
-
-        if (is_wp_error($terms)) {
-
-            $terms = array();
-
-        }
-
-        $id = 'hj-ar-' . $name;
-
-        $h = '<div class="hj-ar__field"><label for="' . esc_attr($id) . '">' . esc_html($label) . '</label>'
-
-            . '<select id="' . esc_attr($id) . '" name="' . esc_attr($name) . '">'
-
-            . '<option value="">' . esc_html($placeholder) . '</option>';
-
-        foreach ($terms as $t) {
-
-            $h .= '<option value="' . esc_attr($t->slug) . '"' . selected($t->slug, $current, false) . '>' . esc_html($t->name) . '</option>';
-
-        }
-
-        $h .= '</select></div>';
-
-        return $h;
-
-    }
-
-
-
-    /**
-     * Basic no-JS GET filter bar. Section 10 hides it through
-     * hj_ar_show_basic_filters and prints FacetWP at
-     * hj_doctor_archive_filters instead.
-     */
-
-    private static function filters_html() {
-
-        if (!apply_filters('hj_ar_show_basic_filters', true)) {
-
-            return '';
-
-        }
-
-        $params = array('hj_q', 'hj_specialty', 'hj_province', 'hj_city', 'hj_type', 'hj_sort', 'paged');
-
-        $action = remove_query_arg($params);
-
-        $q    = self::qtext();
-
-        $spec = self::qparam('hj_specialty');
-
-        $prov = self::qparam('hj_province');
-
-        $city = self::qparam('hj_city');
-
-        $sort = self::current_sort();
-
-        $specialties = get_terms(array('taxonomy' => 'specialty', 'hide_empty' => true, 'orderby' => 'name', 'order' => 'ASC'));
-
-        $provinces   = get_terms(array('taxonomy' => 'province', 'hide_empty' => true, 'orderby' => 'name', 'order' => 'ASC'));
-
-        // City list is populated for the chosen province after "apply".
-
-        $city_args = array('taxonomy' => 'city', 'hide_empty' => true, 'orderby' => 'name', 'order' => 'ASC');
-
-        if ('' !== $prov) {
-
-            $pterm = get_term_by('slug', $prov, 'province');
-
-            if ($pterm && !is_wp_error($pterm)) {
-
-                $city_args['meta_query'] = array(
-
-                    array('key' => 'hj_province_id', 'value' => (string) (int) $pterm->term_id, 'compare' => '='),
-
-                );
-
-            }
-
-        }
-
-        $cities = get_terms($city_args);
-
-        $h = '<form class="hj-ar__filters" method="get" action="' . esc_url($action) . '">';
-
-        $h .= '<div class="hj-ar__field"><label for="hj-ar-hj_q">جست‌وجوی نام پزشک</label>'
-
-            . '<input type="search" id="hj-ar-hj_q" name="hj_q" value="' . esc_attr($q) . '" placeholder="نام فارسی پزشک" maxlength="60"></div>';
-
-        $h .= self::select_html('hj_specialty', 'تخصص', $specialties, $spec, 'همهٔ تخصص‌ها');
-
-        $h .= self::select_html('hj_province', 'استان', $provinces, $prov, 'همهٔ استان‌ها');
-
-        $h .= self::select_html('hj_city', 'شهر', $cities, $city, 'همهٔ شهرها');
-
-        $h .= '<div class="hj-ar__field"><label for="hj-ar-hj_sort">مرتب‌سازی</label>'
-
-            . '<select id="hj-ar-hj_sort" name="hj_sort">';
-
-        foreach (self::sort_options() as $k => $label) {
-
-            $h .= '<option value="' . esc_attr($k) . '"' . selected($k, $sort, false) . '>' . esc_html($label) . '</option>';
-
-        }
-
-        $h .= '</select></div>';
-
-        $h .= '<div class="hj-ar__actions"><button type="submit" class="hj-ar__submit">اعمال فیلتر</button>';
-
-        if (self::has_filters()) {
-
-            $h .= '<a class="hj-ar__clear" href="' . esc_url($action) . '">پاک کردن فیلترها</a>';
-
-        }
-
-        $h .= '</div></form>';
-
-        return $h;
-
-    }
+    /* ================================================================== */
+    /* Doctor card                                                         */
+    /* ================================================================== */
 
 
 
@@ -1065,21 +716,17 @@ final class HJ_Doctors_Archive_Render {
 
         }
 
+        $fill   = min(100, max(0, (int) round(($avg / 5) * 100)));
+
         $avg_fa = str_replace('.', '٫', self::fa(number_format($avg, 1)));
 
-        return '<span class="hj-doc-card__rating">★ ' . esc_html($avg_fa)
+        return '<span class="hj-ar-stars" style="--hj-fill: ' . $fill . '%" aria-hidden="true"><i>★★★★★</i></span>'
 
-            . ' <span class="hj-doc-card__votes">(' . esc_html(self::fa($approved)) . ' رأی)</span></span>';
+            . '<b>' . esc_html($avg_fa) . '</b>'
+
+            . '<span class="hj-ar-card__muted">(' . esc_html(self::fa($approved)) . ' رأی)</span>';
 
     }
-
-
-
-    /* ================================================================== */
-
-    /* Card + archive                                                      */
-
-    /* ================================================================== */
 
 
 
@@ -1090,7 +737,7 @@ final class HJ_Doctors_Archive_Render {
      * @return string HTML (empty string when the profile is not public).
      */
 
-    public static function card_html($id) {
+    public static function card($id) {
 
         $id = (int) $id;
 
@@ -1126,7 +773,17 @@ final class HJ_Doctors_Archive_Render {
 
             foreach ($spec_terms as $t) {
 
-                $parts[] = '<a href="' . esc_url(get_term_link($t)) . '">' . esc_html($t->name) . '</a>';
+                $lnk = get_term_link($t);
+
+                if (is_wp_error($lnk)) {
+
+                    $parts[] = esc_html($t->name);
+
+                } else {
+
+                    $parts[] = '<a href="' . esc_url($lnk) . '">' . esc_html($t->name) . '</a>';
+
+                }
 
             }
 
@@ -1138,13 +795,13 @@ final class HJ_Doctors_Archive_Render {
 
         }
 
-        $meta_parts = array();
+        $meta = array();
 
         $cities = self::term_names($id, 'city');
 
         if ($cities) {
 
-            $meta_parts[] = '<span class="hj-doc-card__city">شهر: ' . esc_html(implode('، ', $cities)) . '</span>';
+            $meta[] = '<li>شهر: ' . esc_html(implode('، ', $cities)) . '</li>';
 
         }
 
@@ -1152,7 +809,7 @@ final class HJ_Doctors_Archive_Render {
 
         if ($provinces) {
 
-            $meta_parts[] = '<span class="hj-doc-card__province">استان: ' . esc_html(implode('، ', $provinces)) . '</span>';
+            $meta[] = '<li>استان: ' . esc_html(implode('، ', $provinces)) . '</li>';
 
         }
 
@@ -1160,11 +817,17 @@ final class HJ_Doctors_Archive_Render {
 
         if ('' !== $exp) {
 
-            $meta_parts[] = '<span class="hj-doc-card__exp">سابقه: ' . esc_html(self::fa($exp)) . ' سال</span>';
+            $meta[] = '<li>سابقه: ' . esc_html(self::fa($exp)) . ' سال</li>';
 
         }
 
-        $rating = self::rating_html($id);
+        if ($verified) {
+
+            $meta[] = '<li class="hj-ar-card__verified">✓ تأییدشده</li>';
+
+        }
+
+        $rate  = self::rating_html($id);
 
         $extra = apply_filters('hj_doctor_card_extra_html', '', $id);
 
@@ -1172,65 +835,55 @@ final class HJ_Doctors_Archive_Render {
 
         ?>
 
-        <article class="hj-doc-card">
+        <article class="hj-ar-card">
 
-            <a class="hj-doc-card__photo" href="<?php echo esc_url($permalink); ?>" tabindex="-1" aria-hidden="true">
+            <div class="hj-ar-card__top">
 
                 <?php if ('' !== $photo) : ?>
 
-                    <img src="<?php echo esc_url($photo); ?>" alt="<?php echo esc_attr('عکس ' . $name_fa); ?>" loading="lazy">
+                    <a class="hj-ar-card__photo" href="<?php echo esc_url($permalink); ?>" tabindex="-1" aria-hidden="true"><img src="<?php echo esc_url($photo); ?>" alt="<?php echo esc_attr('عکس ' . $name_fa); ?>" loading="lazy"></a>
 
                 <?php endif; ?>
 
-            </a>
+                <div class="hj-ar-card__body">
 
-            <div class="hj-doc-card__body">
+                    <h2 class="hj-ar-card__name"><a href="<?php echo esc_url($permalink); ?>"><?php echo esc_html($name_fa); ?></a></h2>
 
-                <h2 class="hj-doc-card__name">
+                    <?php if ('' !== $name_en) : ?>
 
-                    <a href="<?php echo esc_url($permalink); ?>"><?php echo esc_html($name_fa); ?></a>
-
-                    <?php if ($verified) : ?>
-
-                        <span class="hj-doc-card__badge" title="پروفایل توسط مدیر تأیید شده است">✓ تأییدشده</span>
+                        <p class="hj-ar-card__name-en" dir="ltr"><?php echo esc_html($name_en); ?></p>
 
                     <?php endif; ?>
 
-                </h2>
+                    <?php if ('' !== $spec_html) : ?>
 
-                <?php if ('' !== $name_en) : ?>
+                        <p class="hj-ar-card__spec"><?php echo $spec_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built from escaped term names above. ?></p>
 
-                    <p class="hj-doc-card__name-en" dir="ltr"><?php echo esc_html($name_en); ?></p>
+                    <?php endif; ?>
 
-                <?php endif; ?>
+                    <?php if ($meta) : ?>
 
-                <?php if ('' !== $spec_html) : ?>
+                        <ul class="hj-ar-card__meta"><?php echo implode('', $meta); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Items escaped above. ?></ul>
 
-                    <p class="hj-doc-card__spec"><?php echo $spec_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Built from escaped term names above. ?></p>
+                    <?php endif; ?>
 
-                <?php endif; ?>
+                    <?php if ('' !== $rate) : ?>
 
-                <?php if ($meta_parts) : ?>
+                        <div class="hj-ar-card__rate"><?php echo $rate; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside rating_html(). ?></div>
 
-                    <p class="hj-doc-card__meta"><?php echo implode(' ', $meta_parts); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Parts are escaped above. ?></p>
+                    <?php endif; ?>
 
-                <?php endif; ?>
+                    <?php if (is_string($extra) && '' !== $extra) : ?>
 
-                <?php if ('' !== $rating) : ?>
+                        <div class="hj-ar-card__extra"><?php echo $extra; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Provided by the hj_doctor_card_extra_html filter. ?></div>
 
-                    <p class="hj-doc-card__rating-line"><?php echo $rating; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside rating_html(). ?></p>
+                    <?php endif; ?>
 
-                <?php endif; ?>
-
-                <?php if (is_string($extra) && '' !== $extra) : ?>
-
-                    <div class="hj-doc-card__extra"><?php echo $extra; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Provided by the hj_doctor_card_extra_html filter. ?></div>
-
-                <?php endif; ?>
-
-                <a class="hj-doc-card__btn" href="<?php echo esc_url($permalink); ?>">مشاهدهٔ پروفایل</a>
+                </div>
 
             </div>
+
+            <a class="hj-ar-card__cta" href="<?php echo esc_url($permalink); ?>">مشاهدهٔ پروفایل</a>
 
         </article>
 
@@ -1242,55 +895,175 @@ final class HJ_Doctors_Archive_Render {
 
 
 
-    private static function grid_html() {
+    /* ================================================================== */
 
-        if (!have_posts()) {
+    /* Filter bar (fallback until FacetWP, section 10)                     */
 
-            return '<div class="hj-ar__empty"><p>پزشکی با این فیلترها یافت نشد.</p></div>';
+    /* ================================================================== */
 
-        }
 
-        $h = '<div class="hj-ar__grid">';
 
-        while (have_posts()) {
+    private static function selected() {
 
-            the_post();
+        $sel = array();
 
-            $id = get_the_ID();
+        $q   = get_queried_object();
 
-            // Re-check visibility at display time (belt and braces).
+        foreach (self::filter_map() as $param => $tax) {
 
-            if (!hj_dp_is_public($id)) {
+            $v = self::qparam($param);
 
-                continue;
+            if ($v === '' && $q instanceof WP_Term && $q->taxonomy === $tax) {
+
+                $v = $q->slug;
 
             }
 
-            $h .= self::card_html($id);
+            $sel[$param] = $v;
 
         }
 
-        $h .= '</div>';
+        if ($sel['hj_city'] !== '' && $sel['hj_province'] === '' && function_exists('hj_get_city_province_id')) {
 
-        ob_start();
+            $c = get_term_by('slug', $sel['hj_city'], 'city');
 
-        the_posts_pagination(array(
+            if ($c && !is_wp_error($c)) {
 
-            'prev_text' => '‹ قبلی',
+                $pid = (int) hj_get_city_province_id($c->term_id);
 
-            'next_text' => 'بعدی ›',
+                if ($pid) {
 
-            'mid_size'  => 1,
+                    $p = get_term($pid, 'province');
 
-        ));
+                    if ($p && !is_wp_error($p)) {
 
-        $pag = trim(ob_get_clean());
+                        $sel['hj_province'] = $p->slug;
 
-        if ('' !== $pag) {
+                    }
 
-            $h .= '<div class="hj-ar__pagination">' . $pag . '</div>';
+                }
+
+            }
 
         }
+
+        return $sel;
+
+    }
+
+
+
+    private static function select($name, $label, $options, $selected, $placeholder) {
+
+        $h  = '<div class="hj-ar__field"><label for="hj-ar-' . esc_attr($name) . '">' . esc_html($label) . '</label>';
+
+        $h .= '<select id="hj-ar-' . esc_attr($name) . '" name="' . esc_attr($name) . '">';
+
+        $h .= '<option value="">' . esc_html($placeholder) . '</option>';
+
+        foreach ($options as $val => $text) {
+
+            $h .= '<option value="' . esc_attr($val) . '"' . selected((string) $selected, (string) $val, false) . '>' . esc_html($text) . '</option>';
+
+        }
+
+        return $h . '</select></div>';
+
+    }
+
+
+
+    private static function terms_to_options($terms) {
+
+        $o = array();
+
+        foreach ($terms as $t) {
+
+            $o[$t->slug] = $t->name;
+
+        }
+
+        return $o;
+
+    }
+
+
+
+    private static function filter_bar() {
+
+        $sel = self::selected();
+
+
+
+        $h  = '<form class="hj-ar__filters" method="get" action="' . esc_url(self::archive_url()) . '" role="search" aria-label="فیلتر پزشکان">';
+
+        $h .= '<div class="hj-ar__field hj-ar__field--q"><label for="hj-ar-q">جست‌وجوی نام</label>'
+
+            . '<input id="hj-ar-q" type="search" name="hj_q" value="' . esc_attr(self::qtext()) . '" maxlength="60" autocomplete="off"></div>';
+
+
+
+        $h .= self::select('hj_specialty', 'تخصص', self::terms_to_options(self::terms_for('specialty')), $sel['hj_specialty'], 'همه');
+
+
+
+        $types = self::terms_for('specialty_type');
+
+        if ($types) {
+
+            $h .= self::select('hj_type', 'نوع تخصص', self::terms_to_options($types), $sel['hj_type'], 'همه');
+
+        }
+
+
+
+        $provs = self::terms_for('province');
+
+        if ($provs) {
+
+            $h .= self::select('hj_province', 'استان', self::terms_to_options($provs), $sel['hj_province'], 'همه');
+
+        }
+
+
+
+        if ($sel['hj_province'] !== '') {
+
+            $p = get_term_by('slug', $sel['hj_province'], 'province');
+
+            if ($p && !is_wp_error($p)) {
+
+                $cities = self::terms_for('city', array(
+
+                    'meta_query' => array(array('key' => 'hj_province_id', 'value' => (int) $p->term_id, 'type' => 'NUMERIC')),
+
+                ));
+
+                if ($cities) {
+
+                    $h .= self::select('hj_city', 'شهر', self::terms_to_options($cities), $sel['hj_city'], 'همه');
+
+                }
+
+            }
+
+        }
+
+
+
+        $h .= self::select('hj_sort', 'مرتب‌سازی', self::sort_options(), self::current_sort(), 'پیش‌فرض');
+
+
+
+        $h .= '<div class="hj-ar__actions"><button type="submit" class="hj-ar__btn">اعمال فیلتر</button>';
+
+        if (self::has_filters()) {
+
+            $h .= '<a class="hj-ar__reset" href="' . esc_url(self::archive_url()) . '">پاک کردن</a>';
+
+        }
+
+        $h .= '</div></form>';
 
         return $h;
 
@@ -1298,112 +1071,467 @@ final class HJ_Doctors_Archive_Render {
 
 
 
-    /**
-     * Full listing page (header + content + footer) as one HTML string.
-     *
-     * @return string
-     */
+    /* ================================================================== */
 
-    public static function archive_html() {
+    /* Pagination                                                          */
+
+    /* ================================================================== */
+
+
+
+    private static function pagination($paged, $max) {
+
+        if ($max < 2) {
+
+            return '';
+
+        }
+
+        $paged = max(1, (int) $paged);
+
+        $pages = array();
+
+        for ($i = 1; $i <= $max; $i++) {
+
+            if ($i === 1 || $i === $max || abs($i - $paged) <= 2) {
+
+                $pages[] = $i;
+
+            }
+
+        }
+
+        $h  = '<nav class="hj-ar__pager" aria-label="صفحه‌بندی"><ul>';
+
+        if ($paged > 1) {
+
+            $h .= '<li><a href="' . esc_url(get_pagenum_link($paged - 1)) . '" rel="prev">قبلی</a></li>';
+
+        }
+
+        $last = 0;
+
+        foreach ($pages as $p) {
+
+            if ($last && $p - $last > 1) {
+
+                $h .= '<li class="hj-ar__gap" aria-hidden="true">…</li>';
+
+            }
+
+            if ($p === $paged) {
+
+                $h .= '<li><span class="is-current" aria-current="page">' . esc_html(self::fa($p)) . '</span></li>';
+
+            } else {
+
+                $h .= '<li><a href="' . esc_url(get_pagenum_link($p)) . '">' . esc_html(self::fa($p)) . '</a></li>';
+
+            }
+
+            $last = $p;
+
+        }
+
+        if ($paged < $max) {
+
+            $h .= '<li><a href="' . esc_url(get_pagenum_link($paged + 1)) . '" rel="next">بعدی</a></li>';
+
+        }
+
+        return $h . '</ul></nav>';
+
+    }
+
+
+
+    /* ================================================================== */
+
+    /* Page                                                                */
+
+    /* ================================================================== */
+
+
+
+    private static function heading() {
+
+        $q = get_queried_object();
+
+        if ($q instanceof WP_Term && !is_wp_error($q)) {
+
+            switch ($q->taxonomy) {
+
+                case 'province':
+
+                    return 'پزشکان استان ' . $q->name;
+
+                case 'city':
+
+                    return 'پزشکان شهر ' . $q->name;
+
+                default:
+
+                    return 'پزشکان ' . $q->name;
+
+            }
+
+        }
+
+        return 'پزشکان و جراحان';
+
+    }
+
+
+
+    public static function render_page() {
+
+        self::ensure_assets();
 
         global $wp_query;
 
-        $found = ($wp_query instanceof WP_Query && isset($wp_query->found_posts)) ? (int) $wp_query->found_posts : 0;
 
-        $head = self::heading();
+
+        $q       = get_queried_object();
+
+        $is_term = ($q instanceof WP_Term && !is_wp_error($q));
+
+        $total   = (int) $wp_query->found_posts;
+
+        $paged   = max(1, (int) get_query_var('paged'));
+
+        $fwp     = self::use_facetwp();
+
+
+
+        $chips = self::terms_for('specialty');
+
+
 
         ob_start();
 
-        get_header();
+        ?>
+
+<section class="hj-ar" dir="rtl" lang="fa">
+
+
+
+  <nav class="hj-ar__crumbs" aria-label="مسیر صفحه">
+
+    <a href="<?php echo esc_url(home_url('/')); ?>">خانه</a>
+
+    <span aria-hidden="true">‹</span>
+
+    <?php if ($is_term) : ?>
+
+      <a href="<?php echo esc_url(self::archive_url()); ?>">پزشکان</a>
+
+      <span aria-hidden="true">‹</span>
+
+      <span><?php echo esc_html($q->name); ?></span>
+
+    <?php else : ?>
+
+      <span>پزشکان</span>
+
+    <?php endif; ?>
+
+  </nav>
+
+
+
+  <header class="hj-ar__head">
+
+    <h1 class="hj-ar__title"><?php echo esc_html(self::heading()); ?></h1>
+
+    <?php if ($total > 0) : ?>
+
+      <p class="hj-ar__count"><?php echo esc_html(self::fa($total)); ?> پزشک</p>
+
+    <?php endif; ?>
+
+    <?php
+
+    if ($is_term) {
+
+        $desc = term_description();
+
+        if (is_string($desc) && trim(wp_strip_all_tags($desc)) !== '') {
+
+            echo '<div class="hj-ar__desc">' . wp_kses_post($desc) . '</div>';
+
+        }
+
+    }
+
+    ?>
+
+  </header>
+
+
+
+  <?php if ($chips) : ?>
+
+  <nav class="hj-ar__chips" aria-label="تخصص‌ها">
+
+    <a class="hj-ar__chip<?php echo (!$is_term || $q->taxonomy !== 'specialty') ? ' is-active' : ''; ?>" href="<?php echo esc_url(self::archive_url()); ?>">همه</a>
+
+    <?php foreach ($chips as $t) :
+
+        $lnk = get_term_link($t);
+
+        if (is_wp_error($lnk)) {
+
+            continue;
+
+        }
+
+        $active = ($is_term && $q->taxonomy === 'specialty' && (int) $q->term_id === (int) $t->term_id);
 
         ?>
 
-        <div class="container hj-ar-wrap">
+      <a class="hj-ar__chip<?php echo $active ? ' is-active' : ''; ?>" href="<?php echo esc_url($lnk); ?>"><?php echo esc_html($t->name); ?></a>
 
-            <main id="primary" class="hj-ar">
+    <?php endforeach; ?>
 
-                <header class="hj-ar__header">
+  </nav>
 
-                    <?php if ('' !== $head['back']) : ?>
+  <?php endif; ?>
 
-                        <a class="hj-ar__back" href="<?php echo esc_url($head['back']); ?>">← همهٔ پزشکان</a>
 
-                    <?php endif; ?>
 
-                    <?php if ('' !== $head['kicker']) : ?>
+  <?php
 
-                        <p class="hj-ar__kicker"><?php echo esc_html($head['kicker']); ?></p>
+  ob_start();
 
-                    <?php endif; ?>
+  do_action('hj_doctor_archive_filters');
 
-                    <h1 class="hj-ar__title"><?php echo esc_html($head['title']); ?></h1>
+  $hook_filters = trim((string) ob_get_clean());
 
-                    <p class="hj-ar__count"><?php echo esc_html(self::fa($found) . ' پزشک'); ?></p>
+  if ($hook_filters !== '') {
 
-                </header>
+      echo '<div class="hj-ar__facets">' . $hook_filters . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput -- hook output (section 10)
 
-                <?php echo self::chips_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside. ?>
+  }
 
-                <div class="hj-ar__filterbar">
+  if (apply_filters('hj_ar_show_basic_filters', true)) {
 
-                    <?php do_action('hj_doctor_archive_filters'); ?>
+      echo self::filter_bar(); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside
 
-                    <?php echo self::filters_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside. ?>
+  }
 
-                </div>
+  ?>
 
-                <?php echo self::grid_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped inside. ?>
 
-            </main>
 
-        </div>
+  <div class="hj-ar__results<?php echo $fwp ? ' facetwp-template' : ''; ?>" id="hj-ar-results">
+
+    <?php
+
+    $shown = 0;
+
+    if (have_posts()) {
+
+        echo '<div class="hj-ar__grid">';
+
+        while (have_posts()) {
+
+            the_post();
+
+            $pid = get_the_ID();
+
+            if (!self::is_public($pid)) {
+
+                continue;
+
+            }
+
+            echo self::card($pid); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside
+
+            $shown++;
+
+        }
+
+        echo '</div>';
+
+    }
+
+    if ($shown === 0) {
+
+        echo '<div class="hj-ar__empty"><p>' . (self::has_filters() ? 'پزشکی با این مشخصات پیدا نشد.' : 'هنوز پزشکی در این بخش ثبت نشده است.') . '</p>';
+
+        if (self::has_filters() || $is_term) {
+
+            echo '<a class="hj-ar__btn" href="' . esc_url(self::archive_url()) . '">نمایش همهٔ پزشکان</a>';
+
+        }
+
+        echo '</div>';
+
+    }
+
+    echo self::pagination($paged, (int) $wp_query->max_num_pages); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside
+
+    ?>
+
+  </div>
+
+</section>
 
         <?php
-
-        get_footer();
 
         return ob_get_clean();
 
     }
 
+
+
+    /* ================================================================== */
+
+    /* Admin-only status page                                              */
+
+    /* /wp-admin/admin-post.php?action=hj_ar_status                        */
+
+    /* ================================================================== */
+
+
+
+    public static function admin_status() {
+
+        if (!current_user_can('manage_options')) {
+
+            wp_die('دسترسی غیرمجاز', '', array('response' => 403));
+
+        }
+
+        $L = array();
+
+
+
+        $L[] = 'Child templates:';
+
+        foreach (array('archive-doctor.php', 'taxonomy-specialty.php', 'taxonomy-province.php', 'taxonomy-city.php', 'taxonomy-specialty_type.php') as $f) {
+
+            $p   = locate_template($f);
+
+            $L[] = sprintf('  %-30s %s', $f, $p ? 'OK' : 'NOT FOUND');
+
+        }
+
+        $L[] = 'Archive URL: ' . self::archive_url();
+
+        $L[] = 'Per page: ' . self::per_page() . '   | default sort: ' . self::current_sort();
+
+        $L[] = 'FacetWP active: ' . (defined('FACETWP_VERSION') ? 'yes' : 'no') . '   | hj_ar_use_facetwp: ' . (self::use_facetwp() ? 'on' : 'off');
+
+        $L[] = 'Hidden profile_status values: ' . implode(', ', self::hidden_status_values());
+
+        $L[] = '';
+
+
+
+        $published = get_posts(array('post_type' => 'doctor', 'post_status' => 'publish', 'numberposts' => -1, 'fields' => 'ids'));
+
+        $by_query  = get_posts(array(
+
+            'post_type'   => 'doctor', 'post_status' => 'publish', 'numberposts' => -1, 'fields' => 'ids',
+
+            'meta_query'  => self::visibility_meta_query(),
+
+        ));
+
+        $by_func = array();
+
+        foreach ($published as $id) {
+
+            if (self::is_public($id)) {
+
+                $by_func[] = $id;
+
+            }
+
+        }
+
+        $L[] = 'Published doctors: ' . count($published);
+
+        $L[] = 'Public by archive query: ' . count($by_query);
+
+        $L[] = 'Public by hj_dp_is_public(): ' . count($by_func) . (function_exists('hj_dp_is_public') ? '' : '  (function missing; fallback = post_status)');
+
+        $diff = array_merge(array_diff($by_query, $by_func), array_diff($by_func, $by_query));
+
+        $L[]  = 'Mismatch IDs (query vs function): ' . ($diff ? implode(', ', $diff) : 'none');
+
+        $L[]  = '';
+
+
+
+        $expected = array('orthopedics', 'urology', 'ophthalmology', 'cardiology', 'neurosurgery', 'gynecology', 'ent', 'dermatology', 'general-surgery', 'cosmetic', 'anesthesiology');
+
+        $L[] = 'Specialty terms (slug → count):';
+
+        foreach ($expected as $slug) {
+
+            $t   = get_term_by('slug', $slug, 'specialty');
+
+            $L[] = sprintf('  %-18s %s', $slug, ($t && !is_wp_error($t)) ? (int) $t->count : 'MISSING');
+
+        }
+
+        foreach (array('province', 'city', 'specialty_type') as $tax) {
+
+            $c   = wp_count_terms(array('taxonomy' => $tax, 'hide_empty' => false));
+
+            $L[] = 'Terms in ' . $tax . ': ' . (is_wp_error($c) ? 'n/a' : (int) $c);
+
+        }
+
+
+
+        nocache_headers();
+
+        header('Content-Type: text/plain; charset=utf-8');
+
+        echo esc_html(implode("\n", $L));
+
+        exit;
+
+    }
+
 }
 
-endif;
+
 
 HJ_Doctors_Archive_Render::init();
 
-if (!function_exists('hj_doctor_archive_html')) {
 
-    /**
-     * Full doctor listing page (archive + specialty/province/city/type).
-     *
-     * @return string
-     */
+
+/** Full archive page HTML (already escaped). Uses the main query. */
+
+if (!function_exists('hj_doctor_archive_html')) {
 
     function hj_doctor_archive_html() {
 
-        return HJ_Doctors_Archive_Render::archive_html();
+        return HJ_Doctors_Archive_Render::render_page();
 
     }
 
 }
+
+
+
+/** One doctor card (already escaped). */
 
 if (!function_exists('hj_doctor_card_html')) {
 
-    /**
-     * HTML of one doctor card; empty when the profile is not public.
-     *
-     * @param int $id Post ID.
-     * @return string
-     */
-
     function hj_doctor_card_html($id) {
 
-        return HJ_Doctors_Archive_Render::card_html($id);
+        return HJ_Doctors_Archive_Render::card($id);
 
     }
 
 }
+
+
 
 if (!function_exists('hj_dp_is_public')) {
 
@@ -1421,3 +1549,7 @@ if (!function_exists('hj_dp_is_public')) {
     }
 
 }
+
+
+
+endif;
