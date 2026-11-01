@@ -431,6 +431,52 @@ $hj_faqs = array(
 			<p class="hj-faq-more"><a class="hj-text-link" href="<?php echo esc_url( hj_page_url( 'faq' ) ); ?>">همه‌ی پرسش‌های متداول درباره‌ی همیار جراحی</a></p>
 		</section>
 
+		<?php
+		// پلتفرم پزشکان و جراحان — ثبت‌نام با گوگل + CTA داشبورد + نمونهٔ زندهٔ یک پروفایل.
+		$hj_doc_archive = function_exists( 'get_post_type_archive_link' ) ? get_post_type_archive_link( 'doctor' ) : '';
+		if ( ! $hj_doc_archive ) { $hj_doc_archive = home_url( '/doctors/' ); }
+		$hj_dash = function_exists( 'hj_doctors_dashboard_url' ) ? hj_doctors_dashboard_url() : home_url( '/my-profile/' );
+		$hj_demo_ids = get_posts(
+			array(
+				'post_type'      => 'doctor',
+				'post_status'    => 'publish',
+				'posts_per_page' => 1,
+				'orderby'        => 'ID',
+				'order'          => 'ASC',
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+			)
+		);
+		?>
+		<section id="hj-doctors" class="hj-home-section hj-doctors-band" aria-labelledby="hj-doctors-title">
+			<div class="hj-home-section__head">
+				<h2 id="hj-doctors-title">پلتفرم پزشکان و جراحان</h2>
+				<p>پزشکان با حساب گوگل وارد می‌شوند و پروفایل عمومی خود را می‌سازند؛ هر چیز عمومی در آرشیو پزشکان دیده می‌شود و داده‌های حساس (شمارهٔ نظام، تلفن، آدرس) هرگز منتشر نمی‌شود.
+			</div>
+			<div class="hj-doctors-band__grid">
+				<div class="hj-doctors-band__info">
+					<ul>
+						<li><strong>ثبت‌نام و ورود با گوگل</strong> — بدون پسورد جداگانه.</li>
+						<li>پروفایل عمومی: نام، تخصص، استان و شهر، ساعات کاری و امتیاز — بدون شمارهٔ نظام، تلفن و آدرس.</li>
+						<li>هر پزشک فقط پروفایل خودش را ویرایش می‌کند؛ پیشخوان وردپرس برای نقش پزشک بسته است.</li>
+					</ul>
+					<div class="hj-doctors-band__actions">
+						<?php echo do_shortcode( '[hj_google_login]' ); ?>
+						<a class="hj-button" href="<?php echo esc_url( $hj_dash ); ?>">ورود پزشک / ثبت‌نام جراح</a>
+						<a class="hj-button hj-button--ghost" href="<?php echo esc_url( $hj_doc_archive ); ?>">آرشیو پزشکان</a>
+					</div>
+				</div>
+				<div class="hj-doctors-band__sample">
+					<h3>نمونهٔ یک پروفایل پزشک</h3>
+					<?php if ( $hj_demo_ids ) : ?>
+						<?php echo do_shortcode( '[hj_doctor_card id="' . (int) $hj_demo_ids[0] . '"]' ); ?>
+					<?php else : ?>
+						<p>هنوز پزشک منتشرشده‌ای نیست؛ با ثبت‌نام اولین پزشک، کارت پروفایل او اینجا نمایش داده می‌شود.</p>
+					<?php endif; ?>
+				</div>
+			</div>
+		</section>
+
 		<section class="hj-contact-band" aria-labelledby="hj-contact-title">
 			<div>
 				<h2 id="hj-contact-title">موضوعی هست که باید درباره‌اش بنویسیم؟</h2>
