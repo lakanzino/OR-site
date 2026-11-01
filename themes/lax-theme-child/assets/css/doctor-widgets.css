@@ -1,0 +1,225 @@
+/* -------------------------------------------------------------------------
+ * Doctor profile widgets — «technology» design language (child 0.27.0).
+ * Two models, both embeddable on other sites via ?embed=strip|full:
+ *   .hjw-full  — large card: photo, name, specialty chip, stars, meta grid,
+ *                short bio, brand footer.
+ *   .hjw-strip — compact bar for small places: name + medical-council code +
+ *                stars + specialty chip + links.
+ * The specialty is visible in the design: an accent color per specialty slug
+ * (.sp-*) drives the glow, chip, star fill and links.
+ * Self-contained: no dependency on the parent theme's stylesheet.
+ * ---------------------------------------------------------------------- */
+
+.hjw {
+	--acc: #38bdf8; /* default accent (sky) */
+	--bg1: #0b1220;
+	--bg2: #101c33;
+	--line: rgba(148, 163, 184, .22);
+	--ink: #e2e8f0;
+	--muted: #94a3b8;
+	position: relative;
+	overflow: hidden;
+	direction: rtl;
+	font-family: Vazirmatn, "Segoe UI", Tahoma, sans-serif;
+	color: var(--ink);
+	background:
+		repeating-linear-gradient(0deg, transparent 0 23px, rgba(148,163,184,.05) 23px 24px),
+		repeating-linear-gradient(90deg, transparent 0 23px, rgba(148,163,184,.05) 23px 24px),
+		linear-gradient(135deg, var(--bg1), var(--bg2));
+	border: 1px solid var(--line);
+	border-radius: 16px;
+	box-shadow: 0 8px 30px rgba(2, 6, 23, .35);
+	box-sizing: border-box;
+}
+.hjw *, .hjw *::before, .hjw *::after { box-sizing: border-box; }
+
+/* accent line on top */
+.hjw::before {
+	content: "";
+	position: absolute;
+	inset-block-start: 0;
+	inset-inline: 0;
+	height: 3px;
+	background: linear-gradient(90deg, transparent, var(--acc), transparent);
+	opacity: .9;
+}
+.hjw-glow {
+	position: absolute;
+	inset-block-start: -60px;
+	inset-inline-end: -60px;
+	width: 180px;
+	height: 180px;
+	border-radius: 50%;
+	background: radial-gradient(circle, var(--acc), transparent 65%);
+	opacity: .16;
+	pointer-events: none;
+}
+
+/* specialty accents — the specialty shows in the design */
+.hjw.sp-general-surgery  { --acc: #38bdf8; }
+.hjw.sp-orthopedics      { --acc: #60a5fa; }
+.hjw.sp-ophthalmology    { --acc: #22d3ee; }
+.hjw.sp-cosmetic,
+.hjw.sp-plastic          { --acc: #f472b6; }
+.hjw.sp-gynecology       { --acc: #fb7185; }
+.hjw.sp-neurosurgery     { --acc: #a78bfa; }
+.hjw.sp-ent              { --acc: #34d399; }
+.hjw.sp-cardiology       { --acc: #f87171; }
+.hjw.sp-urology          { --acc: #2dd4bf; }
+.hjw.sp-dermatology      { --acc: #fbbf24; }
+.hjw.sp-anesthesiology   { --acc: #94a3b8; }
+.hjw.sp-radiology        { --acc: #818cf8; }
+
+/* ---------- shared bits ---------- */
+
+.hjw-name {
+	display: block;
+	font-weight: 800;
+	letter-spacing: -.01em;
+	color: #f8fafc;
+}
+.hjw-chip {
+	display: inline-block;
+	margin-inline-start: 6px;
+	padding: 2px 10px;
+	border: 1px solid var(--acc);
+	border-radius: 999px;
+	color: var(--acc);
+	font-size: .72rem;
+	font-weight: 700;
+	background: rgba(2, 6, 23, .35);
+	white-space: nowrap;
+}
+.hjw-starsrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hjw-stars {
+	position: relative;
+	display: inline-block;
+	font-size: 1rem;
+	line-height: 1;
+	letter-spacing: 2px;
+}
+.hjw-stars-bg { color: rgba(148, 163, 184, .35); }
+.hjw-stars-fill {
+	position: absolute;
+	inset-block-start: 0;
+	inset-inline-start: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	color: var(--acc);
+	text-shadow: 0 0 12px color-mix(in srgb, var(--acc) 55%, transparent);
+}
+.hjw-count { font-size: .74rem; color: var(--muted); }
+.hjw-novotes { font-size: .74rem; color: var(--muted); }
+.hjw-code {
+	font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+	font-size: .72rem;
+	color: var(--muted);
+	letter-spacing: .04em;
+}
+.hjw-mono { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; letter-spacing: .04em; }
+.hjw-brand {
+	font-size: .68rem;
+	color: var(--muted);
+	text-decoration: none;
+	border-block-start: 1px solid transparent;
+}
+.hjw-brand:hover { color: var(--acc); }
+.hjw-link {
+	color: var(--acc);
+	font-size: .78rem;
+	font-weight: 700;
+	text-decoration: none;
+}
+.hjw-link:hover { text-decoration: underline; }
+
+/* ---------- full card ---------- */
+
+.hjw-full { max-width: 520px; padding: 22px 22px 14px; }
+.hjw-head { display: flex; gap: 14px; align-items: flex-start; }
+.hjw-photo {
+	width: 84px;
+	height: 84px;
+	flex: 0 0 auto;
+	object-fit: cover;
+	border-radius: 14px;
+	border: 1px solid var(--line);
+	box-shadow: 0 0 0 3px rgba(56, 189, 248, .08);
+}
+.hjw-photo-initial {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 2rem;
+	font-weight: 800;
+	color: var(--acc);
+	background: rgba(2, 6, 23, .45);
+}
+.hjw-head-text { min-width: 0; }
+.hjw-head-text .hjw-name { font-size: 1.25rem; margin-block-end: 6px; }
+.hjw-head-text .hjw-starsrow { margin-block-start: 8px; }
+
+.hjw-meta {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 8px 14px;
+	margin: 16px 0 0;
+	padding: 12px 14px;
+	border: 1px solid var(--line);
+	border-radius: 12px;
+	background: rgba(2, 6, 23, .3);
+}
+.hjw-meta-item { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.hjw-meta-label { font-size: .68rem; color: var(--muted); }
+.hjw-meta-value { font-size: .84rem; color: var(--ink); overflow-wrap: anywhere; }
+
+.hjw-bio {
+	margin: 12px 0 0;
+	font-size: .82rem;
+	line-height: 1.9;
+	color: #cbd5e1;
+}
+.hjw-foot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	margin-block-start: 14px;
+	padding-block-start: 10px;
+	border-block-start: 1px dashed var(--line);
+}
+
+/* ---------- strip widget ---------- */
+
+.hjw-strip {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	max-width: 340px;
+	min-width: 250px;
+	padding: 12px 14px;
+	border-radius: 12px;
+}
+.hjw-strip-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.hjw-strip-main .hjw-name { font-size: .92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hjw-strip-main .hjw-stars { font-size: .82rem; }
+.hjw-strip-side {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 5px;
+	flex: 0 0 auto;
+}
+.hjw-strip-side .hjw-chip { margin-inline-start: 0; font-size: .64rem; }
+
+/* ---------- embed document ---------- */
+
+.hjw-body { margin: 0; padding: 6px; background: transparent; }
+.hjw-embed .hjw-full, .hjw-embed .hjw-strip { max-width: none; box-shadow: none; }
+
+@media (max-width: 380px) {
+	.hjw-full { padding: 16px; }
+	.hjw-photo { width: 64px; height: 64px; }
+	.hjw-head-text .hjw-name { font-size: 1.05rem; }
+	.hjw-strip { min-width: 220px; }
+}

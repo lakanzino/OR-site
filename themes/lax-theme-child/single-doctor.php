@@ -1,16 +1,26 @@
 <?php
 /**
- * Single doctor profile (child override): star-only rating via Site Reviews.
+ * Single doctor profile (child override): «technology» profile widget,
+ * star-only rating via Site Reviews, and embed/edit tools.
  *
- * Rules from the owner's brief (docs/doctor-ratings/brief.fa.md, §1):
+ * Rules from the owner's brief (docs/doctor-ratings/brief.fa.md, §1) and the
+ * 2026-11-01 profile decisions (docs/doctor-ratings/profile-rollout.fa.md,
+ * docs/doctor-ratings/profile-widgets.fa.md):
  * - stars only: the review form hides every text field (title, content,
  *   name, email); the public review list is never rendered;
- * - the average (summary) appears only once the doctor has at least 5 votes;
+ * - the average appears only once the doctor has at least 5 votes (the
+ *   widget enforces the same threshold);
+ * - profile fields (degree, medical-council code, location, short bio) come
+ *   from post meta and render as the full technology-style card; the classic
+ *   light header stays as a fallback if inc/doctor-profile.php is missing;
  * - no legal text on this page — the «قوانین» link lives in the footer menu;
+ * - the doctor (author) and the site admin see an edit link + ready-made
+ *   advertising embed codes (strip/full widgets) for other websites;
  * - if Site Reviews is not active, the rating block disappears entirely
  *   (an unregistered shortcode must never print itself raw).
  *
- * Styles are scoped to .hj-doctor-page so the rest of the site is unaffected.
+ * Page styles are scoped to .hj-doctor-page; widget styles live in
+ * assets/css/doctor-widgets.css (enqueued by inc/doctor-profile.php).
  *
  * @package Lax_Theme_Child
  */
@@ -19,6 +29,7 @@ defined( 'ABSPATH' ) || exit;
 get_header();
 
 $hj_doctor_min_votes = 5;
+$hj_has_widgets      = function_exists( 'hj_doctor_widget' );
 ?>
 <style>
 .hj-doctor-page{--ink:#0f172a;--line:#e2e8f0;--muted:#64748b;--navy:#0a2f6b;color:var(--ink);line-height:1.9}
@@ -29,38 +40,89 @@ $hj_doctor_min_votes = 5;
 .hj-doctor-page .hj-dp-muted{color:var(--muted);font-size:.9rem;margin:.5rem 0 0}
 .hj-doctor-page .hj-dp-stars .glrs-summary,.hj-doctor-page .glrs-form{max-width:520px}
 .hj-doctor-page .hj-dp-note{font-size:.85rem;color:var(--muted)}
+.hj-doctor-page .hjw{margin:0 0 1rem}
+.hj-doctor-page .hj-sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hj-doctor-page .hj-dp-tools label{display:block;font-weight:700;font-size:.85rem;margin:.6rem 0 .2rem}
+.hj-doctor-page .hj-dp-tools .hj-embed-row{display:flex;gap:.5rem;align-items:flex-start}
+.hj-doctor-page .hj-dp-tools textarea{flex:1;min-height:56px;font-family:ui-monospace,Consolas,monospace;font-size:.75rem;direction:ltr;text-align:left;color:#334155;background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:.5rem}
+.hj-doctor-page .hj-dp-tools .hj-btn{border:0;border-radius:8px;background:#334155;color:#fff;font:inherit;font-size:.8rem;font-weight:700;padding:.35rem .9rem;cursor:pointer}
+.hj-doctor-page .hj-dp-tools .hj-btn.primary{background:var(--navy);padding:.5rem 1.2rem}
 @media (max-width:480px){.hj-doctor-page .hj-dp-photo{width:72px;height:72px}}
 </style>
 <div class="container orsite-article-wrap hj-doctor-page" style="padding-top:1.75rem;padding-bottom:3rem"><main id="primary">
 <?php while ( have_posts() ) : the_post(); ?>
-<nav class="orsite-breadcrumb" aria-label="مسیر صفحه"><a href="<?php echo esc_url( home_url( '/' ) ); ?>">خانه</a><?php $hj_archive = get_post_type_archive_link( 'doctor' ); if ( $hj_archive ) : ?> / <a href="<?php echo esc_url( $hj_archive ); ?>">پزشکان</a><?php endif; ?></nav>
+<nav class="orsite-breadcrumb" aria-label="مسیر صفحه"><a href="<?php echo esc_url( home_url( '/' ) ); ?>">خانه</a><?php $hj_archive = get_post_type_archive_link( 'doctor' ); if ( $hj_archive ) : ?> / <a href="<?php echo esc_url( $hj_archive ) ); ?>">پزشکان</a><?php endif; ?></nav>
 <article <?php post_class( 'hj-doctor-entry' ); ?>>
-	<header class="hj-dp-box hj-dp-head">
-		<?php if ( has_post_thumbnail() ) : ?>
-			<?php the_post_thumbnail( 'medium', array( 'class' => 'hj-dp-photo' ) ); ?>
-		<?php endif; ?>
-		<div>
-			<h1><?php the_title(); ?></h1>
-			<p class="hj-dp-note">امتیازها نظر شخصی کاربران‌اند و توصیهٔ پزشکی نیستند؛ این صفحه جایگزین مشورت پزشکی نیست.</p>
-		</div>
-	</header>
+	<h1 class="hj-sr-only"><?php the_title(); ?> — پروفایل پزشک</h1>
 
-	<div class="hj-dp-box entry-content">
-		<?php the_content(); ?>
-	</div>
+	<?php if ( $hj_has_widgets ) : ?>
+		<?php echo hj_doctor_widget( (int) get_the_ID(), 'full' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- fully escaped inside the builder. ?>
+		<p class="hj-dp-note">امتیازها نظر شخصی کاربران‌اند و توصیهٔ پزشکی نیستند؛ این صفحه جایگزین مشورت پزشکی نیست.</p>
+	<?php else : ?>
+		<header class="hj-dp-box hj-dp-head">
+			<?php if ( has_post_thumbnail() ) : ?>
+				<?php the_post_thumbnail( 'medium', array( 'class' => 'hj-dp-photo' ) ); ?>
+			<?php endif; ?>
+			<div>
+				<h1><?php the_title(); ?></h1>
+				<p class="hj-dp-note">امتیازها نظر شخصی کاربران‌اند و توصیهٔ پزشکی نیستند؛ این صفحه جایگزین مشورت پزشکی نیست.</p>
+			</div>
+		</header>
+	<?php endif; ?>
+
+	<?php if ( '' !== trim( (string) get_the_content() ) ) : ?>
+		<div class="hj-dp-box entry-content">
+			<?php the_content(); ?>
+		</div>
+	<?php endif; ?>
 
 	<?php if ( shortcode_exists( 'site_reviews_form' ) ) : ?>
 		<section class="hj-dp-box hj-dp-stars" aria-label="امتیازدهی به پزشک">
 			<?php
 			$hj_rating = function_exists( 'glsr_get_rating' ) ? glsr_get_rating( get_the_ID() ) : null;
 			$hj_votes  = is_object( $hj_rating ) && isset( $hj_rating->count ) ? (int) $hj_rating->count : 0;
-			if ( $hj_votes >= $hj_doctor_min_votes ) :
-				echo do_shortcode( '[site_reviews_summary assigned_posts="' . (int) get_the_ID() . '"]' );
-			else :
+			if ( $hj_votes < $hj_doctor_min_votes && ! $hj_has_widgets ) :
 				?>
 				<p class="hj-dp-muted">میانگین امتیاز پس از رسیدن به حداقل <?php echo (int) $hj_doctor_min_votes; ?> رأی نمایش داده می‌شود.</p>
 			<?php endif; ?>
 			<?php echo do_shortcode( '[site_reviews_form assigned_posts="' . (int) get_the_ID() . '" hide="title,content,name,email"]' ); ?>
+		</section>
+	<?php endif; ?>
+
+	<?php
+	// Edit + advertising embed tools: only for the site admin or the doctor.
+	if ( $hj_has_widgets && function_exists( 'hj_doctor_user_can_edit' ) && hj_doctor_user_can_edit( (int) get_the_ID() ) ) :
+		?>
+		<section class="hj-dp-box hj-dp-tools" aria-label="ابزارهای پروفایل">
+			<strong>ابزارهای پروفایل (فقط شما و مدیر سایت این بخش را می‌بینید)</strong>
+			<p>
+				<a class="hj-btn primary" href="<?php echo esc_url( function_exists( 'hj_doctor_dashboard_url' ) ? add_query_arg( 'doctor', (int) get_the_ID(), hj_doctor_dashboard_url() ) : admin_url( 'post.php?post=' . (int) get_the_ID() . '&action=edit' ) ); ?>">ویرایش پروفایل</a>
+				<?php if ( current_user_can( 'manage_options' ) ) : ?>
+					<a class="hj-btn" href="<?php echo esc_url( (string) get_edit_post_link() ); ?>">ویرایش در پیشخوان</a>
+				<?php endif; ?>
+			</p>
+			<label>کد تبلیغاتی ویجت نواری (برای سایت‌های دیگر)</label>
+			<div class="hj-embed-row">
+				<textarea readonly onclick="this.select()"><?php echo esc_textarea( hj_doctor_embed_code( (int) get_the_ID(), 'strip' ) ); ?></textarea>
+				<button type="button" class="hj-btn hj-copy">کپی</button>
+			</div>
+			<label>کد تبلیغاتی ویجت بزرگ</label>
+			<div class="hj-embed-row">
+				<textarea readonly onclick="this.select()"><?php echo esc_textarea( hj_doctor_embed_code( (int) get_the_ID(), 'full' ) ); ?></textarea>
+				<button type="button" class="hj-btn hj-copy">کپی</button>
+			</div>
+			<script>
+			document.querySelectorAll('.hj-doctor-page .hj-copy').forEach(function (btn) {
+				btn.addEventListener('click', function () {
+					var ta = btn.parentElement.querySelector('textarea');
+					ta.select();
+					if (navigator.clipboard) { navigator.clipboard.writeText(ta.value); }
+					try { document.execCommand('copy'); } catch (e) {}
+					btn.textContent = 'کپی شد ✓';
+					setTimeout(function () { btn.textContent = 'کپی'; }, 1600);
+				});
+			});
+			</script>
 		</section>
 	<?php endif; ?>
 </article>
