@@ -33,17 +33,19 @@ if ( ! function_exists( 'hj_sec_rate_limit' ) ) {
 	 * شمارش با هر صدا زدن زیاد می‌شود و پس از پایان بازه خودکار صفر می‌شود
 	 * (انقضای transient). هیچ جدولی ساخته نمی‌شود و چیزی لاگ نمی‌شود.
 	 *
-	 * @param string $action نام عمل مانند 'doctor_upload'.
-	 * @param int    $limit  حداکثر تعداد مجاز در بازه.
-	 * @param int    $window بازه به ثانیه مانند HOUR_IN_SECONDS.
+	 * @param string $action   نام عمل مانند 'doctor_upload'.
+	 * @param int    $limit    حداکثر تعداد مجاز در بازه.
+	 * @param int    $window   بازه به ثانیه مانند HOUR_IN_SECONDS.
+	 * @param bool   $by_ip    حتی اگر کاربر لاگین است، کلید را IP بگذار
+	 *                         (برای ثبت‌نام که کاربر همین الان لاگین می‌شود).
 	 * @return bool true یعنی هنوز جا هست؛ false یعنی سقف رد شده.
 	 */
-	function hj_sec_rate_limit( $action, $limit, $window ) {
+	function hj_sec_rate_limit( $action, $limit, $window, $by_ip = false ) {
 		$limit  = max( 1, (int) $limit );
 		$window = max( 1, (int) $window );
 
 		$user_id = (int) get_current_user_id();
-		if ( $user_id ) {
+		if ( $user_id && ! $by_ip ) {
 			$who = 'u' . $user_id;
 		} else {
 			$ip  = isset( $_SERVER['REMOTE_ADDR'] ) ? (string) $_SERVER['REMOTE_ADDR'] : '';

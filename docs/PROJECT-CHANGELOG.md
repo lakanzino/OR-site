@@ -5,6 +5,16 @@
 
 ---
 
+## [همیار پزشک‌ها — بخش ۵: ورود با گوگل (پل Nextend Social Login)] — 2026-11-02
+
+- **`includes/auth-google.php`:** ورود/ثبت‌نام پزشک با گوگل بدون سیستم رمز تازه. ورودی پزشکان `/?hj_google_start=1` کوکی نیت امضاشده (`hj_doc_intent`، HMAC-SHA256 با `wp_salt('auth')`، TTL ۳۰ دقیقه، SameSite=Lax، httponly) می‌گذارد و به `wp-login.php?loginSocial=google` می‌فرستد؛ پس از ثبت‌نام/ورود گوگل با نیت → `hj_doctors_assign_doctor_role` + فرود در `/my-profile/`. بیمار بدون نیت دست‌نخورده می‌ماند؛ ادمین/ویراستار هرگز تنزل نمی‌گیرند.
+- **هوک‌ها و لایه‌های پشتیبان:** `nsl_register_new_user` و `nsl_login` + فیلترهای `nsl_login_redirect_url`/`nsl_registration_redirect_url` (نام‌ها از مستندات Nextend، اجرا نشده)؛ سه لایهٔ پشتیبان ریدایرکت: پارامتر `redirect`، فیلتر `login_redirect` (اولویت ۲۰) و Fixed redirect در Nextend. آداپتور عمومی برای PeproDev و هر افزونهٔ دیگر: `do_action('hj_doctors_google_user_ready', $user_id, $is_new)`؛ فیلتر `hj_doctors_google_require_intent` برای سخت‌گیری/آسانی نیت.
+- **سقف‌ها:** ورودی ۳۰ در ساعت به ازای IP؛ ثبت‌نام ۱۰ در ساعت به ازای IP — اگر پر شود کاربر ساخته می‌ماند، متا `hj_role_pending` می‌گیرد و نقش در ورود بعدی داده می‌شود؛ خطا فقط لاگ.
+- **راستی‌آزمایی پیش‌فرض‌های بخش ۵ دربارهٔ بخش ۴:** `hj_sec_rate_limit` درست بود (`true` = مجاز)؛ ولی کلیدش برای کاربر لاگین‌شده per-user بود و لحظهٔ ثبت‌نام کاربر همین الان لاگین می‌شود، پس آرگومان اختیاری چهارم `$by_ip` اضافه شد و بخش ۵ برای `signup` و `google_start` از آن استفاده می‌کند تا سقف واقعاً per-IP بماند.
+- **لودر و escape hatch:** `includes/auth-google.php` به فهرست شامل‌ها اضافه شد؛ `HJ_DOCTORS_SAFE_MODE` در `wp-config.php` حالا همهٔ ماژول‌ها را لود نمی‌کند (بازیابی از صفحهٔ سفید بدون حذف افزونه).
+- **ابزارها:** شورت‌کد `[hj_google_login]` + `hj_doctors_google_login_button()`/`hj_doctors_google_start_url()` برای قالب؛ صفحهٔ وضعیت فقط-مدیر `admin-post.php?action=hj_auth_status` (خروجی text/plain با ردیف‌های OK/MISSING شامل فعال‌بودن Nextend، هوک‌ها، نقش doctor، صفحهٔ /my-profile/، HTTPS، PHP≥7.3 و Redirect URI مورد انتظار).
+- **آزمون‌ها:** `tools/php-check.py` روی ۸/۸ فایل PHP · بدون باینری PHP/Nextend/Google Cloud در این محیط، پس بررسی ایستا بود؛ تست‌های زنده (مسیر اصلی با پنجرهٔ ناشناس + تست‌های منفی بیمار و ادمین) در چک‌لیست سرور ماند.
+
 ## [همیار پزشک‌ها — بخش ۴ با فایل بازیابی‌شدهٔ نشست قدیمی (`HJ_Doctors_Roles`)] — 2026-11-01
 
 - **فایل اصلی بخش ۴ نشست قدیمی وصل شد:** `includes/roles.php` — کلاس `HJ_Doctors_Roles` عیناً همان طراحی قدیمی: نقش پزشک بدون `edit_posts`/`publish_posts`/`upload_files`؛ ویرایش نمایهٔ خودی فقط از مسیر `map_meta_cap` با `hj_edit_own_doctor_profile`؛ capهای سطح مدیر (`hj_manage_doctors`، `hj_approve_profiles`، `hj_manage_ratings`، `hj_view_all_rating_stats`، `hj_view_analytics`) به‌صورت پویا به دارندگان `manage_options` (بدون نوشتن در نقش مدیر)؛ مالکیت = `post_author` یا متا `hj_doctor_post_id`؛ قفل کامل پیشخوان به نفع `/my-profile/`؛ whitelist نوع فایل + سقف ۲ مگابایت + rate limit بارگذاری؛ helperهای عمومی (`hj_doctors_get_profile_id`، `hj_doctors_user_owns_profile`، `hj_doctors_user_can_manage`، `hj_doctors_assign_doctor_role` برای ورود Google بخش ۵ و…).
