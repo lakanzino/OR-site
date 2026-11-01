@@ -78,6 +78,22 @@ require_once get_stylesheet_directory() . '/inc/medical-boxes.php';
 require_once get_stylesheet_directory() . '/inc/schema-procedure.php';
 require_once get_stylesheet_directory() . '/inc/performance.php';
 
+/**
+ * Doctor profiles (unreleased; planned child 0.27.0): editable profile cards
+ * with meta fields, front-end doctor dashboard, embeddable strip/full
+ * widgets and the specialty taxonomy. Optional include so a file-by-file
+ * update never fatals before the new file has been copied.
+ */
+if ( is_readable( get_stylesheet_directory() . '/inc/doctor-ratings.php' ) ) {
+	require_once get_stylesheet_directory() . '/inc/doctor-ratings.php';
+}
+if ( is_readable( get_stylesheet_directory() . '/inc/doctor-profile.php' ) ) {
+	require_once get_stylesheet_directory() . '/inc/doctor-profile.php';
+}
+if ( is_readable( get_stylesheet_directory() . '/inc/doctor-directory.php' ) ) {
+	require_once get_stylesheet_directory() . '/inc/doctor-directory.php';
+}
+
 /** Presentation-only Soft UI tokens, editor styles and local-font preload. */
 require_once get_stylesheet_directory() . '/inc/soft-ui.php';
 
