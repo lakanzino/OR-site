@@ -7,16 +7,27 @@
 | بخش | فایل | محتوا |
 | --- | --- | --- |
 | ۱ | `hamyar-doctors.php` | helperها (`hj_doctors_path/url`، `hj_to_en_digits`، `hj_doctors_default_photo_url` همگی با نگهبان `function_exists`) + کلاس اصلی و قلاب فعال/غیرفعال |
-| ۲ | `includes/taxonomies.php` + `includes/cpt.php` | taxonomyهای `doctor_specialty` / `doctor_city` و نوع محتوای `doctor` با `map_meta_cap` روشن (بدون capability_type سفارشی، طبق مدل بخش ۴) |
+| ۲ | `includes/taxonomies.php` + `includes/cpt.php` | چهار taxonomy طرح واقعی: `specialty_type`، `specialty` (متا `hj_specialty_type_id`)، `province`، `city` (متا `hj_province_id`) + نوع محتوای `doctor` با `map_meta_cap` روشن |
 | ۳ | `includes/acf-fields.php` + `acf-json/group_hj_doctor_profile.json` | گروه زمینهٔ «اطلاعات پزشک» فقط به‌صورت JSON محلی؛ این فایل مسیرهای save/load را نشانه می‌گیرد و روی ذخیره سانیتایز می‌کند |
 | ۴ | `includes/roles.php` + `includes/security.php` + `includes/dashboard.php` | کلاس `HJ_Doctors_Roles` (نقش پزشک بدون edit_posts، capهای سطح مدیر به‌صورت پویا برای دارندگان `manage_options`، مالکیت = نویسنده یا متا `hj_doctor_post_id`، قفل پیشخوان به نفع `/my-profile/`، سقف نوع/حجم/تعداد بارگذاری) + primitiveهای `hj_sec_*` + صفحهٔ ناحیه پزشک و شورت‌کد شروع |
 | ۵ | `includes/auth-google.php` | پل ورود/ثبت‌نام با گوگل روی Nextend Social Login: کوکی نیت امضاشده (`hj_doc_intent`، HMAC با `wp_salt`، ۳۰ دقیقه)، ورودی پزشکان `/?hj_google_start=1`، هوک‌های `nsl_register_new_user`/`nsl_login` + آداپتور عمومی `hj_doctors_google_user_ready`، شورت‌کد `[hj_google_login]` و صفحهٔ وضعیت فقط-مدیر `admin-post.php?action=hj_auth_status` |
+| ۶ | `includes/dashboard.php` + `assets/js/dashboard.js` + `assets/css/dashboard.css` | داشبورد مینیمال `/my-profile/`: فرم پنج‌بلوکی دوزبانه، ذخیرهٔ AJAX با خطای زیر همان فیلد، پیش‌نمایش زنده، نوار تکمیل، «ارسال برای بررسی» و گردش تأیید مدیر، عکس پروفایل و مدارک خصوصی در `uploads/hj-private/p<ID>/` |
 | دارایی | `assets/img/doctor-default.jpg` | عکس پیش‌فرض نمایه که `hj_doctors_default_photo_url()` برمی‌گرداند |
 
-## زمینه‌های نمایه
+## زمینه‌های نمایه (طرح دوزبانهٔ بخش ۶)
 
-`hj_medical_code` (کد نظام پزشکی، ارقام فارسی/عربی خودکار به لاتین)، `hj_phone`، `hj_address`، `hj_work_hours`، `hj_education`، `hj_profile_url`، `hj_accepts_new`.
-خواندن در قالب: `hj_doctors_field( 'hj_phone', $post_id )` و تصویر: `hj_doctors_photo_url( $post_id )` — بدون ACF هم خطا نمی‌دهند.
+`name_fa`/`name_en`، `specialty_fa`/`specialty_en`، `bio_fa`/`bio_en`، `medical_license` (ارقام فارسی/عربی خودکار به لاتین)، `experience_years`، `education`، `surgeries_performed`، `phone_clinic`، `phone_mobile`، `address_clinic`، `address_hospital`، `map_link` (فقط https از گوگل‌مپ/نشان/بلد)، `profile_photo` (شناسهٔ پیوست) و تکرارشوندهٔ `working_hours` (زیرفیلدهای `day_of_week`، `is_closed`، `start_time`، `end_time`).
+خواندن در قالب: `hj_doctors_field( 'phone_clinic', $post_id )` و تصویر: `hj_doctors_photo_url( $post_id )` — بدون ACF هم خطا نمی‌دهند.
+
+## داشبورد /my-profile/ (بخش ۶)
+
+- پنج بلوک فرم (اطلاعات پایه دوزبانه، تخصص و سوابق، تماس و نشانی، ساعات کاری، مدارک) + ستون کناری (پیش‌نمایش زنده، وضعیت/تکمیل، امتیاز فقط‌خواندنی).
+- ذخیره/عکس/مدرک/ارسال همه AJAX با نانس `hj_dash_nonce` و ریت‌لیمیت به ازای کاربر؛ خطاها فقط زیر همان فیلد.
+- اولین ذخیره، پست `doctor` پیش‌نویس می‌سازد و `post_author` + متای کاربر `hj_doctor_post_id` را ثبت می‌کند.
+- گردش تأیید: پزشک → `pending`؛ مدیر از لیست پزشکان «تأیید و انتشار» / «نیازمند اصلاح» (ستون «وضعیت پروفایل» هم هست).
+- مدارک خصوصی‌اند: `uploads/hj-private/p<ID>/` با نام تصادفی + `.htaccess` مسدود؛ دانلود فقط با نانس برای صاحب پروفایل یا تأییدکننده. روی Nginx قانون deny برای `/wp-content/uploads/hj-private/` فراموش نشود.
+- صفحهٔ وضعیت مدیر: `wp-admin/admin-post.php?action=hj_dash_status` (ساختار جدول آرا، کلیدهای متای قدیمی، مقادیر روزهای هفته).
+- هوک‌های توسعه: `hj_doctor_dashboard_appointments`، `hj_doctor_dashboard_widgets`، `hj_dash_days`، `hj_dash_max_specialties`، `hj_dash_max_docs`، `hj_doctors_map_hosts`.
 
 ## نصب و فعال‌سازی
 
