@@ -182,6 +182,8 @@ final class HJ_Doctors {
 			'includes/rating-bridge.php',  // بخش ۹ — پل بومی امتیازها (جدول hj_doctor_votes).
 			'includes/search-filters.php', // بخش ۱۰ — جست‌وجوی هوشمند، جست‌وجوی هدر و پل FacetWP.
 			'includes/rest-api.php',       // بخش ۱۱ — REST API عمومی hj/v1 (خودش بوت می‌شود).
+			'includes/shortcodes.php',     // بخش ۱۲ — شورت‌کد [hj_doctor_card] و کارت ویجت مستقل.
+			'includes/embed.php',          // بخش ۱۲ — باکس جاسازی + نقاط پایانی iframe/اسکریپت (/?hj_widget=…).
 		);
 
 		foreach ( $files as $file ) {
