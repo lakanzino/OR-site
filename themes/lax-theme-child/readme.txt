@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.26.6
+Stable tag: 0.33.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.33.1 =
+* صفحه نخست بلوکی و قابل ویرایش با بخش بیماران، جراحان و ورود گوگل؛ فعال‌سازی از نمایش ← صفحه نخست ایستا.
+* ورود و پروفایل نیازمند افزونه‌های همیار پزشک‌ها و Nextend و پیکربندی گوگل است.
 
 = 0.26.6 =
 * پیشخوان: فهرست هدف با خروجی زنده تطبیق داده شد (۷۳ منتشرشده، ۱۱۰ باقی‌مانده از ۱۸۴). بدون تغییر کد نمایش.

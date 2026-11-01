@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.26.6' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.33.1' );
 }
 
 /**
@@ -237,17 +237,6 @@ function lax_theme_child_assets() {
 		lax_theme_child_asset_ver( 'assets/css/soft-ui.css' )
 	);
 
-	// Enhance the two care selectors only on the homepage. Native selects remain
-	// usable if the script cannot run; the clinical data and result stay intact.
-	if ( is_front_page() ) {
-		wp_enqueue_script(
-			'lax-theme-child-care-select',
-			get_stylesheet_directory_uri() . '/assets/js/care-select.js',
-			array(),
-			lax_theme_child_asset_ver( 'assets/js/care-select.js' ),
-			true
-		);
-	}
 
 	// Let headings wrap at readable sizes instead of shrinking them on load.
 	wp_enqueue_script(
@@ -275,3 +264,11 @@ function lax_theme_child_assets() {
 	);
 }
 add_action( 'wp_enqueue_scripts', 'lax_theme_child_assets', 20 );
+
+/** Editable static homepage installer and presentation. */
+// Updates copy files individually; do not fatal if the new helper has not arrived yet.
+$hj_static_home_path = get_stylesheet_directory() . '/inc/static-home.php';
+clearstatcache( true, $hj_static_home_path );
+if ( is_readable( $hj_static_home_path ) ) {
+	@include_once $hj_static_home_path; // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+}

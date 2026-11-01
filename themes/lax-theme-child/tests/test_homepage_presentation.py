@@ -17,26 +17,41 @@ def source(path):
 
 
 class HomepagePresentationTest(unittest.TestCase):
-    def test_hero_copy_and_actions(self):
+    def test_front_page_renders_editable_page(self):
         home = source("front-page.php")
-        self.assertIn("آنچه برای مراقبت‌های قبل و بعد از جراحی باید بدانید", home)
-        self.assertIn("ابزار هوشمند ارزیابی علائم بیماری", home)
-        self.assertIn("شروع از راهنمای بیمار", home)
-        self.assertIn("شناخت اتاق عمل و تیم", home)
-        self.assertNotIn("hj-home-hero__chips", home)
-        self.assertNotIn("$hj_popular", home)
+        self.assertIn("the_content()", home)
+        self.assertIn("get_option( 'show_on_front' )", home)
+        self.assertNotIn("new WP_Query", home)
+        self.assertNotIn("hj-home-hero", home)
 
-    def test_glossary_topics_and_partial_update_guards(self):
-        home = source("front-page.php")
-        functions = source("functions.php")
-        self.assertIn("function_exists( 'hj_home_glossary_topics' )", home)
-        self.assertIn("function_exists( 'hj_home_specialty_label' )", home)
-        self.assertIn("'/inc/homepage-ui.php'", functions)
-        self.assertIn("clearstatcache( true, $hj_homepage_ui_path )", functions)
-        self.assertIn("is_readable( $hj_homepage_ui_path )", functions)
-        self.assertIn("@include_once $hj_homepage_ui_path", functions)
-        self.assertIn("hj-glossary-topic-list", home)
-        self.assertNotIn("hj_glossary_get_featured_terms", home)
+    def test_starter_is_editable_and_links_to_existing_flows(self):
+        starter = source("homepage/starter.html")
+        install = source("inc/static-home.php")
+        for label in ("راهنمای بیمار", "ثبت‌نام جراحان", "ورود به پروفایل", "ورود با گوگل"):
+            self.assertIn(label, starter)
+        for token in ("GUIDES", "SURGERIES", "DOCTORS", "SIGNUP", "PROFILE", "GOOGLE", "IMAGE"):
+            self.assertIn("{{" + token + "}}", starter)
+            self.assertIn("{{" + token + "}}", install)
+        self.assertIn("hj_google_start", install)
+        self.assertIn("loginSocial", install)
+        self.assertIn("current_user_can( 'manage_options' )", install)
+        self.assertIn("check_admin_referer", install)
+        self.assertIn("wp_insert_post", install)
+        self.assertNotIn("wp_update_post", install)
+        self.assertIn("'page_on_front'", install)
+        self.assertIn("'show_on_front'", install)
+
+    def test_block_markup_balanced(self):
+        import re
+        starter = source("homepage/starter.html")
+        stack = []
+        for closing, name in re.findall(r"<!--\s*(/?)wp:([a-z]+)(?:\s+.*?)?\s*-->", starter):
+            if closing:
+                self.assertTrue(stack)
+                self.assertEqual(stack.pop(), name)
+            else:
+                stack.append(name)
+        self.assertFalse(stack)
 
     def test_full_card_title_and_mobile_single_line(self):
         card = source("template-parts/article-card.php")
@@ -52,7 +67,6 @@ class HomepagePresentationTest(unittest.TestCase):
 
     def test_only_the_global_footer_warning_is_removed(self):
         self.assertNotIn("hj-emergency--above-footer", source("footer.php"))
-        self.assertIn("hj-care-tool__flag", source("front-page.php"))
         self.assertIn("hj-box--", source("inc/medical-boxes.php"))
 
 

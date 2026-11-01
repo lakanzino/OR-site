@@ -117,7 +117,8 @@ class ReleaseVersionsTest(unittest.TestCase):
         functions = (CHILD / "functions.php").read_text(encoding="utf-8")
         front_page = (CHILD / "front-page.php").read_text(encoding="utf-8")
         self.assertIn("is_readable( get_stylesheet_directory() . '/inc/care-tool.php' )", functions)
-        self.assertGreaterEqual(front_page.count("function_exists( 'hj_care_option_label' )"), 2)
+        self.assertIn("the_content()", front_page)
+        self.assertIn("is_readable( $hj_static_home_path )", functions)
 
     def test_theme_histories_are_complete_unique_and_ordered(self):
         changelog = re.findall(rf"^## \[({VERSION})\]", self.child_changelog, re.MULTILINE)

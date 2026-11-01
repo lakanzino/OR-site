@@ -1,0 +1,62 @@
+/* Scoped to the editable landing blocks; other pages and dashboard stay untouched. */
+.hj-static-home { background: #fff; padding: 30px 20px 80px; }
+.hj-home-setup-message { max-width: 1100px; margin: 4rem auto; }
+.hj-landing { --landing-ink: #183740; --landing-muted: #657b80; --landing-green: #216c61; max-width: 1180px !important; margin: 0 auto; color: var(--landing-ink); direction: rtl; }
+.hj-landing * { box-sizing: border-box; }
+.hj-landing h1, .hj-landing h2, .hj-landing h3, .hj-landing p { margin: 0; }
+.hj-landing h1, .hj-landing h2, .hj-landing h3 { color: var(--landing-ink); letter-spacing: -.035em; }
+.hj-landing a { text-decoration: none; }
+.hj-landing a:focus-visible { outline: 3px solid #176d62; outline-offset: 4px; }
+.hj-landing-hero { min-height: 510px; display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; overflow: hidden; border: 1px solid #e4eeeb; border-radius: 32px; background: linear-gradient(120deg, #f6fbf9, #eff7f6 55%, #f3f0fc); box-shadow: 0 25px 60px rgba(29, 65, 68, .14); }
+.hj-landing-hero-copy { padding: 64px clamp(28px, 5vw, 68px); position: relative; z-index: 1; }
+.hj-landing .hj-landing-eyebrow { color: #338477; font-size: 13px; font-weight: 800; letter-spacing: .02em; margin-bottom: 20px; }
+.hj-landing h1 { font-size: clamp(34px, 4vw, 54px); line-height: 1.55; font-weight: 800; }
+.hj-landing h1 mark { color: #468f81; background: none; }
+.hj-landing .hj-landing-lead { color: #647c7d; line-height: 2.2; max-width: 520px; margin-top: 19px; font-size: 15px; }
+.hj-landing .hj-landing-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+.hj-landing .wp-block-button__link { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 23px; min-height: 50px; border-radius: 12px; font-size: 14px; font-weight: 700; line-height: 1.5; transition: transform .2s, box-shadow .2s; }
+.hj-landing .wp-block-button__link:hover { transform: translateY(-2px); }
+.hj-landing .hj-btn-primary .wp-block-button__link { background: #226d61; color: #fff; box-shadow: 0 10px 24px rgba(34,109,97,.25); }
+.hj-landing .hj-btn-secondary .wp-block-button__link, .hj-landing .hj-btn-google .wp-block-button__link { background: #fff; color: #294b4b; border: 1px solid #dceae6; box-shadow: 0 8px 22px rgba(30,65,65,.08); }
+.hj-landing .hj-landing-note { margin-top: 28px; font-size: 12px; color: #78918d; }
+.hj-landing-hero-art { align-self: stretch; display: flex; align-items: center; justify-content: center; position: relative; min-width: 0; }
+.hj-landing .hj-landing-image { width: 100%; margin: 0; }
+.hj-landing .hj-landing-image img { width: 100%; height: 510px; object-fit: cover; display: block; mix-blend-mode: multiply; }
+.hj-landing .hj-landing-art-label { position: absolute; bottom: 45px; right: 0; background: rgba(255,255,255,.92); border: 1px solid white; border-radius: 16px; padding: 15px 19px; font-size: 13px; font-weight: 800; box-shadow: 0 18px 40px rgba(31,66,68,.16); }
+.hj-landing .hj-landing-art-label small { color: #8b9b9b; font-size: 11px; font-weight: 400; }
+.hj-landing-intro { text-align: center; margin: 90px auto 32px; }
+.hj-landing-intro .hj-landing-eyebrow { margin-bottom: 10px; }
+.hj-landing h2 { font-size: clamp(26px, 3vw, 36px); line-height: 1.6; }
+.hj-landing-intro > p:last-child, .hj-login-copy > p:last-child { color: var(--landing-muted); margin-top: 8px; font-size: 14px; line-height: 2; }
+.hj-landing-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 20px; }
+.hj-landing-card { background: #fff; border: 1px solid #edf2f0; border-radius: 22px; padding: 30px; box-shadow: 0 18px 45px rgba(31,65,67,.10); }
+.hj-landing .hj-card-icon, .hj-landing .hj-feature-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 15px; font-size: 21px; color: #398b7a; background: #e3f5ee; margin-bottom: 22px; }
+.hj-landing .hj-card-lilac .hj-card-icon { color: #8271b3; background: #eeebfb; }
+.hj-landing .hj-card-peach .hj-card-icon { color: #c58873; background: #fff0e9; }
+.hj-landing h3 { font-size: 18px; line-height: 1.6; }
+.hj-landing-card > p:not(.hj-card-icon):not(.hj-card-link), .hj-feature > p:last-child { color: var(--landing-muted); font-size: 14px; line-height: 2; margin-top: 10px; }
+.hj-landing .hj-card-link { margin-top: 25px; font-size: 13px; font-weight: 800; }
+.hj-landing .hj-card-link a { color: #317c70; }
+.hj-landing-surgeon { margin-top: 90px; display: grid; grid-template-columns: 1fr .95fr; gap: 48px; align-items: center; border-radius: 28px; padding: clamp(28px,5vw,60px); background: #f1f6f5; border: 1px solid #e4efeb; }
+.hj-surgeon-copy > p:not(.hj-landing-eyebrow) { max-width: 470px; margin-top: 14px; color: var(--landing-muted); line-height: 2.1; font-size: 14px; }
+.hj-surgeon-features { display: grid; gap: 15px; }
+.hj-feature { background: #fff; border-radius: 18px; padding: 22px; box-shadow: 0 14px 35px rgba(35,75,69,.1); }
+.hj-landing .hj-feature-icon { float: right; margin: 0 0 0 18px; background: #edf1ff; color: #7f85b8; }
+.hj-feature h3 { font-size: 15px; }
+.hj-landing .hj-feature > p:last-child { margin-top: 4px; font-size: 13px; }
+.hj-landing-login { margin-top: 35px; padding: 36px 42px; border: 1px solid #efeaf4; border-radius: 24px; background: #faf7fd; box-shadow: 0 18px 40px rgba(66,54,85,.08); display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.hj-login-copy .hj-landing-eyebrow { margin-bottom: 8px; }
+.hj-landing-login .hj-landing-actions { margin: 0; flex-shrink: 0; }
+.hj-google-g { font: 800 20px Arial, sans-serif; color: #4285f4; }
+.hj-landing .hj-landing-disclaimer { text-align: center; color: #7e8f8c; font-size: 12px; line-height: 2; margin: 48px 0 0; }
+@media (max-width: 800px) {
+ .hj-landing-hero { grid-template-columns: 1fr; }
+ .hj-landing-hero-copy { padding: 40px 28px 15px; }
+ .hj-landing .hj-landing-image img { height: 330px; }
+ .hj-landing .hj-landing-art-label { right: 24px; bottom: 24px; }
+ .hj-landing-grid { grid-template-columns: 1fr; }
+ .hj-landing-intro { margin-top: 60px; }
+ .hj-landing-surgeon { grid-template-columns: 1fr; margin-top: 60px; gap: 28px; }
+ .hj-landing-login { align-items: flex-start; flex-direction: column; padding: 28px; }
+}
+@media (prefers-reduced-motion: reduce) { .hj-landing .wp-block-button__link { transition: none; } }
