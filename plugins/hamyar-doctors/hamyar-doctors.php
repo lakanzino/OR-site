@@ -180,6 +180,7 @@ final class HJ_Doctors {
 			'includes/auth-google.php',  // بخش ۵ — پل ورود با گوگل (Nextend).
 			'includes/archive-render.php', // بخش ۸ — آرشیو پزشکان و صفحات تخصص/استان/شهر/نوع تخصص.
 			'includes/rating-bridge.php',  // بخش ۹ — پل بومی امتیازها (جدول hj_doctor_votes).
+			'includes/search-filters.php', // بخش ۱۰ — جست‌وجوی هوشمند، جست‌وجوی هدر و پل FacetWP.
 		);
 
 		foreach ( $files as $file ) {

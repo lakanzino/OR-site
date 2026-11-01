@@ -1375,6 +1375,8 @@ final class HJ_Doctors_Archive_Render {
 
   </div>
 
+  <?php do_action('hj_doctor_archive_after_results'); // section 10 (FacetWP pager) ?>
+
 </section>
 
         <?php
