@@ -1,143 +1,242 @@
 {
     "key": "group_hj_doctor_profile",
-    "title": "اطلاعات پزشک",
+    "title": "اطلاعات پزشک (دوزبانه)",
     "fields": [
         {
-            "key": "field_hj_medical_code",
-            "label": "کد نظام پزشکی",
-            "name": "hj_medical_code",
-            "aria-label": "",
+            "key": "field_hj_name_fa",
+            "label": "نام و نام خانوادگی",
+            "name": "name_fa",
             "type": "text",
-            "instructions": "فقط رقم؛ ارقام فارسی و عربی هنگام ذخیره خودکار به لاتین تبدیل می‌شوند.",
             "required": 0,
             "conditional_logic": 0,
-            "wrapper": {
-                "width": "50",
-                "class": "",
-                "id": ""
-            },
+            "wrapper": { "width": "50", "class": "", "id": "" },
             "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
+            "maxlength": 80
         },
         {
-            "key": "field_hj_phone",
-            "label": "شماره تماس",
-            "name": "hj_phone",
-            "aria-label": "",
+            "key": "field_hj_name_en",
+            "label": "Full name",
+            "name": "name_en",
             "type": "text",
-            "instructions": "شمارهٔ مطب یا منشی؛ با ارقام لاتین ذخیره می‌شود.",
             "required": 0,
             "conditional_logic": 0,
-            "wrapper": {
-                "width": "50",
-                "class": "",
-                "id": ""
-            },
+            "wrapper": { "width": "50", "class": "", "id": "" },
             "default_value": "",
-            "maxlength": "",
-            "placeholder": "02112345678",
-            "prepend": "",
-            "append": ""
+            "maxlength": 80
         },
         {
-            "key": "field_hj_address",
-            "label": "نشانی مطب",
-            "name": "hj_address",
-            "aria-label": "",
+            "key": "field_hj_specialty_fa",
+            "label": "عنوان تخصص",
+            "name": "specialty_fa",
+            "type": "text",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": { "width": "50", "class": "", "id": "" },
+            "default_value": "",
+            "maxlength": 80
+        },
+        {
+            "key": "field_hj_specialty_en",
+            "label": "Specialty title",
+            "name": "specialty_en",
+            "type": "text",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": { "width": "50", "class": "", "id": "" },
+            "default_value": "",
+            "maxlength": 80
+        },
+        {
+            "key": "field_hj_bio_fa",
+            "label": "معرفی کوتاه",
+            "name": "bio_fa",
             "type": "textarea",
-            "instructions": "",
             "required": 0,
             "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
+            "wrapper": { "width": "50", "class": "", "id": "" },
             "default_value": "",
-            "maxlength": "",
-            "rows": 3,
-            "placeholder": "",
+            "rows": 5,
             "new_lines": "br"
         },
         {
-            "key": "field_hj_work_hours",
-            "label": "ساعت‌های حضور",
-            "name": "hj_work_hours",
-            "aria-label": "",
+            "key": "field_hj_bio_en",
+            "label": "Short bio",
+            "name": "bio_en",
             "type": "textarea",
-            "instructions": "روزها و ساعت‌ها را خط‌به‌خط بنویسید.",
             "required": 0,
             "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
+            "wrapper": { "width": "50", "class": "", "id": "" },
             "default_value": "",
-            "maxlength": "",
-            "rows": 3,
-            "placeholder": "شنبه تا چهارشنبه، ۹ تا ۱۷",
+            "rows": 5,
             "new_lines": "br"
+        },
+        {
+            "key": "field_hj_medical_license",
+            "label": "شمارهٔ نظام پزشکی",
+            "name": "medical_license",
+            "type": "text",
+            "instructions": "با ارقام لاتین ذخیره می‌شود.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": { "width": "50", "class": "", "id": "" },
+            "default_value": "",
+            "maxlength": 24
+        },
+        {
+            "key": "field_hj_experience_years",
+            "label": "سابقهٔ کار (سال)",
+            "name": "experience_years",
+            "type": "text",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": { "width": "50", "class": "", "id": "" },
+            "default_value": "",
+            "maxlength": 3
         },
         {
             "key": "field_hj_education",
-            "label": "دانش‌نامه‌ها و سوابق",
-            "name": "hj_education",
-            "aria-label": "",
+            "label": "تحصیلات و دوره‌ها",
+            "name": "education",
             "type": "textarea",
-            "instructions": "هر دانش‌نامه یا سابقهٔ کاری در یک خط.",
             "required": 0,
             "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
+            "wrapper": { "width": "", "class": "", "id": "" },
             "default_value": "",
-            "maxlength": "",
             "rows": 4,
-            "placeholder": "",
+            "maxlength": 1500,
             "new_lines": "br"
         },
         {
-            "key": "field_hj_profile_url",
-            "label": "صفحهٔ نوبت‌دهی",
-            "name": "hj_profile_url",
-            "aria-label": "",
-            "type": "url",
-            "instructions": "نشانی کامل سامانهٔ نوبت‌دهی بیرون از سایت.",
+            "key": "field_hj_surgeries_performed",
+            "label": "جراحی‌های انجام‌شده",
+            "name": "surgeries_performed",
+            "type": "textarea",
+            "instructions": "هر مورد در یک خط.",
             "required": 0,
             "conditional_logic": 0,
-            "wrapper": {
-                "width": "50",
-                "class": "",
-                "id": ""
-            },
+            "wrapper": { "width": "", "class": "", "id": "" },
+            "default_value": "",
+            "rows": 4,
+            "maxlength": 7000,
+            "new_lines": "br"
+        },
+        {
+            "key": "field_hj_phone_clinic",
+            "label": "تلفن مطب",
+            "name": "phone_clinic",
+            "type": "text",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": { "width": "50", "class": "", "id": "" },
+            "default_value": "",
+            "maxlength": 20
+        },
+        {
+            "key": "field_hj_phone_mobile",
+            "label": "موبایل",
+            "name": "phone_mobile",
+            "type": "text",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": { "width": "50", "class": "", "id": "" },
+            "default_value": "",
+            "maxlength": 20
+        },
+        {
+            "key": "field_hj_address_clinic",
+            "label": "نشانی مطب",
+            "name": "address_clinic",
+            "type": "text",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": { "width": "50", "class": "", "id": "" },
+            "default_value": "",
+            "maxlength": 250
+        },
+        {
+            "key": "field_hj_address_hospital",
+            "label": "نشانی بیمارستان",
+            "name": "address_hospital",
+            "type": "text",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": { "width": "50", "class": "", "id": "" },
+            "default_value": "",
+            "maxlength": 250
+        },
+        {
+            "key": "field_hj_map_link",
+            "label": "لینک نقشه",
+            "name": "map_link",
+            "type": "url",
+            "instructions": "فقط https از گوگل‌مپ، نشان یا بلد.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": { "width": "", "class": "", "id": "" },
             "default_value": "",
             "placeholder": "https:\/\/"
         },
         {
-            "key": "field_hj_accepts_new",
-            "label": "پذیرش بیمار جدید",
-            "name": "hj_accepts_new",
-            "aria-label": "",
-            "type": "true_false",
-            "instructions": "",
+            "key": "field_hj_profile_photo",
+            "label": "شناسهٔ پیوست عکس پروفایل",
+            "name": "profile_photo",
+            "type": "number",
+            "instructions": "توسط داشبورد پر می‌شود؛ دستی تغییر ندهید.",
             "required": 0,
             "conditional_logic": 0,
-            "wrapper": {
-                "width": "50",
-                "class": "",
-                "id": ""
-            },
-            "message": "این پزشک بیمار جدید می‌پذیرد.",
-            "default_value": 0,
-            "ui": 1,
-            "ui_on_text": "می‌پذیرد",
-            "ui_off_text": "نمی‌پذیرد"
+            "wrapper": { "width": "50", "class": "", "id": "" },
+            "default_value": ""
+        },
+        {
+            "key": "field_hj_working_hours",
+            "label": "ساعات کاری",
+            "name": "working_hours",
+            "type": "repeater",
+            "instructions": "هر ردیف یک روز هفته؛ توسط داشبورد پر می‌شود.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": { "width": "", "class": "", "id": "" },
+            "layout": "table",
+            "button_label": "افزودن روز",
+            "min": "",
+            "max": 7,
+            "sub_fields": [
+                {
+                    "key": "field_hj_wh_day",
+                    "label": "روز هفته",
+                    "name": "day_of_week",
+                    "type": "text",
+                    "wrapper": { "width": "25", "class": "", "id": "" },
+                    "default_value": ""
+                },
+                {
+                    "key": "field_hj_wh_closed",
+                    "label": "تعطیل",
+                    "name": "is_closed",
+                    "type": "true_false",
+                    "wrapper": { "width": "15", "class": "", "id": "" },
+                    "default_value": 0,
+                    "ui": 0
+                },
+                {
+                    "key": "field_hj_wh_start",
+                    "label": "شروع",
+                    "name": "start_time",
+                    "type": "text",
+                    "wrapper": { "width": "30", "class": "", "id": "" },
+                    "default_value": "",
+                    "placeholder": "H:i:s"
+                },
+                {
+                    "key": "field_hj_wh_end",
+                    "label": "پایان",
+                    "name": "end_time",
+                    "type": "text",
+                    "wrapper": { "width": "30", "class": "", "id": "" },
+                    "default_value": "",
+                    "placeholder": "H:i:s"
+                }
+            ]
         }
     ],
     "location": [
@@ -156,7 +255,7 @@
     "instruction_placement": "label",
     "hide_on_screen": "",
     "active": true,
-    "description": "زمینه‌های نمایهٔ پزشک — همیار پزشک‌ها",
+    "description": "زمینه‌های دوزبانهٔ نمایه پزشک — همیار پزشک‌ها (طرح بخش ۶)",
     "show_in_rest": 0,
-    "modified": 1793491200
+    "modified": 1793577600
 }

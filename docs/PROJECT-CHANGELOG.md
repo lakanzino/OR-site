@@ -5,6 +5,17 @@
 
 ---
 
+## [همیار پزشک‌ها — بخش ۶: داشبورد پزشک در /my-profile/ (سه فایل)] — 2026-11-02
+
+- **`includes/dashboard.php` + `assets/js/dashboard.js` + `assets/css/dashboard.css`:** داشبورد مینیمال دوستونی طبق سند بخش ۶ — فرم پنج‌بلوکی دوزبانه، ذخیرهٔ AJAX با نمایش خطا فقط زیر همان فیلد (بدون نوتیس جدا)، پیش‌نمایش زنده، نوار تکمیل پروفایل، «ارسال برای بررسی» و گردش تأیید مدیر (row action + ستون «وضعیت پروفایل»)؛ امتیازها فقط‌خواندنی و بدون ذکر قوانین؛ هوک‌های `hj_doctor_dashboard_appointments`/`hj_doctor_dashboard_widgets` برای بخش‌های بعدی.
+- **متن ارسالی بخش ۶ از میانهٔ فایل شروع شده بود** (سر کلاس و دو فایل JS/CSS نیفتاده بود): سرِ کلاس (ثابت‌ها، init و هوک‌ها، گارد صفحه، helperهای خواندن/نوشتن ACF، تکمیل/وضعیت، خوانندهٔ جدول آرا، سازنده‌های فیلد) و هر دو فایل دارایی از قراردادهای همین کد بازسازی شدند؛ دنبالهٔ موجود (render، AJAXها، مدارک خصوصی، moderation، صفحهٔ وضعیت) عیناً نشست.
+- **طرح واقعی taxonomyها جایگزین بازسازی حدسی شد:** `specialty_type`، `specialty` (متا `hj_specialty_type_id`)، `province`، `city` (متا `hj_province_id`) به‌جای `doctor_specialty`/`doctor_city` + helperهای `hj_get_city_province_id()` و `hj_doctors_sync_province_from_city()`؛ داشبورد و بخش ۱۴ همین کلیدها را می‌خوانند.
+- **گروه ACF بخش ۳ هم‌راستا شد:** فیلدهای دوزبانه (`name_fa`… `bio_en`)، `medical_license`، `experience_years`، `education`، `surgeries_performed`، تلفن/نشانی‌ها، `map_link`، `profile_photo` و تکرارشوندهٔ `working_hours` با زیرفیلدهای `day_of_week/is_closed/start_time/end_time`؛ سانیتایز بخش ۳ روی نام‌های تازه.
+- **primitiveهای بارگذاری در `security.php`:** `hj_sec_clean()`، `hj_sec_validate_upload()` (finfo + سقف ۲/۵ مگابایت) و `hj_sec_private_dir()` (ساخت `uploads/hj-private` با `.htaccess` مسدود و `index.php`)؛ آرگومان `$scope` رشته‌ای `hj_sec_rate_limit` که در گام بخش ۵ اضافه شد، اینجا برای ریت‌لیمیت به ازای کاربر استفاده می‌شود.
+- **مدارک در ACF نیستند:** متا `hj_private_docs` + فایل تصادفی در `uploads/hj-private/p<ID>/` با `chmod 0640`؛ دانلود فقط با نانس `hj_doc_dl_<pid>_<id>` برای صاحب پروفایل یا تأییدکننده؛ پاک‌سازی خودکار هنگام حذف نوشته. یادآوری Nginx: deny روی `/wp-content/uploads/hj-private/`.
+- **جایگزینی starter بخش ۴:** `includes/dashboard.php` قبلی (کارت موقت) با این فایل جایگزین شد؛ bootstrap صفحهٔ `/my-profile/` و `login_redirect` پزشک در دنبالهٔ همین فایل نگه داشته شدند تا فعال‌سازی همچنان صفحه را بسازد.
+- **آزمون‌ها:** `tools/php-check.py` روی ۸/۸ فایل PHP · `node --check` روی JS · `json.tool` روی گروه ACF · بدون وردپرس/ACF Pro در این محیط، پس بررسی ایستا بود؛ تست زنده با کاربر `test-doctor` و افزونه‌های `fileinfo`/GD در چک‌لیست سرور.
+
 ## [همیار پزشک‌ها — بخش ۵: ورود با گوگل (پل Nextend Social Login)] — 2026-11-02
 
 - **`includes/auth-google.php`:** ورود/ثبت‌نام پزشک با گوگل بدون سیستم رمز تازه. ورودی پزشکان `/?hj_google_start=1` کوکی نیت امضاشده (`hj_doc_intent`، HMAC-SHA256 با `wp_salt('auth')`، TTL ۳۰ دقیقه، SameSite=Lax، httponly) می‌گذارد و به `wp-login.php?loginSocial=google` می‌فرستد؛ پس از ثبت‌نام/ورود گوگل با نیت → `hj_doctors_assign_doctor_role` + فرود در `/my-profile/`. بیمار بدون نیت دست‌نخورده می‌ماند؛ ادمین/ویراستار هرگز تنزل نمی‌گیرند.

@@ -76,7 +76,7 @@ function hj_doctors_sanitize_fields( $post_id ) {
 		return;
 	}
 
-	$digit_fields = array( 'hj_medical_code', 'hj_phone' );
+	$digit_fields = array( 'medical_license', 'phone_clinic', 'phone_mobile' );
 	foreach ( $digit_fields as $field ) {
 		$raw = get_field( $field, $post->ID );
 		if ( null === $raw || '' === $raw || is_array( $raw ) ) {
@@ -88,11 +88,11 @@ function hj_doctors_sanitize_fields( $post_id ) {
 		}
 	}
 
-	$url = get_field( 'hj_profile_url', $post->ID );
+	$url = get_field( 'map_link', $post->ID );
 	if ( is_string( $url ) && '' !== $url ) {
 		$clean = esc_url_raw( trim( $url ) );
 		if ( $clean !== $url ) {
-			update_field( 'hj_profile_url', $clean, $post->ID );
+			update_field( 'map_link', $clean, $post->ID );
 		}
 	}
 }
