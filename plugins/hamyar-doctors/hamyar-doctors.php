@@ -2,7 +2,7 @@
 /**
  * Plugin Name: همیار پزشک‌ها
  * Description: نوع محتوای «پزشک» با تخصص و شهر، زمینه‌های نمایه (JSON محلی ACF بدون Sync دستی) و دسترسی نقشِ پزشک فقط به نمایهٔ خودش؛ مستقل از قالب فرزند و بی‌صدا در debug.log.
- * Version: 0.1.1
+ * Version: 0.2.0
  * Requires at least: 6.4
  * Requires PHP: 8.0
  * Author: همیار جراحی
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'HJ_DOCTORS_VERSION', '0.1.1' );
+define( 'HJ_DOCTORS_VERSION', '0.2.0' );
 define( 'HJ_DOCTORS_FILE', __FILE__ );
 define( 'HJ_DOCTORS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'HJ_DOCTORS_URL', plugin_dir_url( __FILE__ ) );
@@ -175,6 +175,9 @@ final class HJ_Doctors {
 			'includes/cpt.php',          // بخش ۲ — نوع محتوای پزشک.
 			'includes/acf-fields.php',   // بخش ۳ — زمینه‌های نمایه.
 			'includes/dashboard.php',    // بخش ۴ — صفحهٔ /my-profile/ و شورت‌کد شروع.
+			'includes/member-account.php', // حساب عمومی مستقل از ناحیه پزشکان.
+			'includes/magazine.php',       // اشتراک اختیاری مجله.
+			'includes/review-admin.php',   // صف بررسی و ویرایش پزشکان.
 			'includes/auth-google.php',  // بخش ۵ — پل ورود با گوگل (Nextend).
 			'includes/archive-render.php', // بخش ۸ — آرشیو پزشکان و صفحات تخصص/استان/شهر/نوع تخصص.
 			'includes/rating-bridge.php',  // بخش ۹ — پل بومی امتیازها (جدول hj_doctor_votes).
@@ -211,6 +214,7 @@ final class HJ_Doctors {
 			hj_doctors_ensure_dashboard_page();
 		}
 
+		if ( function_exists( 'hj_member_ensure_account_page' ) ) { hj_member_ensure_account_page(); }
 		flush_rewrite_rules();
 		update_option( HJ_DOCTORS_VERSION_OPTION, HJ_DOCTORS_VERSION );
 	}
@@ -235,6 +239,7 @@ final class HJ_Doctors {
 		if ( function_exists( 'hj_doctors_ensure_dashboard_page' ) ) {
 			hj_doctors_ensure_dashboard_page();
 		}
+		if ( function_exists( 'hj_member_ensure_account_page' ) ) { hj_member_ensure_account_page(); }
 		update_option( HJ_DOCTORS_VERSION_OPTION, HJ_DOCTORS_VERSION );
 	}
 

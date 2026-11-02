@@ -291,7 +291,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			}
 			if ( function_exists( 'get_field' ) ) {
 				$v = get_field( $key, (int) $pid );
-				if ( null !== $v ) {
+				if ( null !== $v && false !== $v ) {
 					return $v;
 				}
 			}
@@ -299,9 +299,12 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 		}
 
 		private static function set( $pid, $key, $value ) {
-			if ( function_exists( 'update_field' ) ) {
-				update_field( $key, $value, (int) $pid );
-				return;
+			if ( function_exists( 'update_field' ) && function_exists( 'acf_get_field' ) ) {
+				$field = acf_get_field( $key );
+				if ( is_array( $field ) && ! empty( $field['key'] ) ) {
+					update_field( $field['key'], $value, (int) $pid );
+					return;
+				}
 			}
 			update_post_meta( (int) $pid, $key, $value );
 		}
@@ -1351,10 +1354,11 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			if ( ! $c['can_submit'] ) {
 				self::fail( 'برای ارسال، این موارد را تکمیل کنید: ' . implode( '، ', $c['missing'] ), 422, array( 'missing' => $c['missing'] ) );
 			}
-			self::write_status( $pid, 'pending' );
 			if ( get_post_status( $pid ) !== 'publish' ) {
-				wp_update_post( array( 'ID' => $pid, 'post_status' => 'pending' ) );
+				$result = wp_update_post( array( 'ID' => $pid, 'post_status' => 'pending' ), true );
+				if ( is_wp_error( $result ) || ! $result ) { self::fail( 'ارسال برای بررسی ناموفق بود؛ دوباره تلاش کنید.', 500 ); }
 			}
+			self::write_status( $pid, 'pending' );
 			self::ok( self::state( $pid ) );
 		}
 

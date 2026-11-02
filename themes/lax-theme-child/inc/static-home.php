@@ -78,7 +78,7 @@ function hj_static_home_create_page() {
 		'{{GOOGLE}}' => add_query_arg( 'loginSocial', 'google', site_url( 'wp-login.php' ) ),
 		'{{IMAGE}}' => get_stylesheet_directory_uri() . '/assets/images/home-medical-tech.png',
 	);
-	$starter = strtr( $starter, array_map( 'esc_url', $urls ) );
+	$starter = hj_static_magazine_block() . strtr( $starter, array_map( 'esc_url', $urls ) );
 	$slug = defined( 'HJ_SC_PAGE_SLUG' ) ? HJ_SC_PAGE_SLUG : 'symptom-checker';
 	$pages = get_posts( array( 'post_type' => 'page', 'post_status' => 'publish', 'name' => $slug, 'numberposts' => 1 ) );
 	$button = '';
@@ -88,7 +88,7 @@ function hj_static_home_create_page() {
 	$starter = str_replace( '{{SYMPTOM_BUTTON}}', $button, $starter );
 	return wp_insert_post( array(
 		'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'صفحه نخست',
-		'post_content' => wp_slash( $starter ), 'meta_input' => array( '_hj_static_home_revision' => '0.33.2' ),
+		'post_content' => wp_slash( $starter ), 'meta_input' => array( '_hj_static_home_revision' => '0.33.2', '_hj_magazine_section_added' => 1 ),
 	), true );
 }
 
@@ -128,3 +128,37 @@ function hj_static_home_styles() {
 }
 add_action( 'wp_enqueue_scripts', function () { if ( is_front_page() ) { hj_static_home_styles(); } }, 100 );
 add_action( 'enqueue_block_editor_assets', 'hj_static_home_styles' );
+
+/** Add only the new editable section to the selected front page, once. */
+function hj_static_magazine_block() {
+	return '<!-- wp:group {"className":"hj-magazine-section","layout":{"type":"constrained"}} -->' . "\n"
+		. '<div class="wp-block-group hj-magazine-section">' . "\n"
+		. '<!-- wp:paragraph {"className":"hj-magazine-eyebrow"} --><p class="hj-magazine-eyebrow">نامه‌ای از همیار جراحی</p><!-- /wp:paragraph -->' . "\n"
+		. '<!-- wp:heading {"level":2} --><h2 class="wp-block-heading">اشتراک رایگان مجله اینترنتی همیارجراحی، تنها با یک جیمیل</h2><!-- /wp:heading -->' . "\n"
+		. '<!-- wp:paragraph --><p>برای دریافت خبرهای مجله، ایمیل خود را وارد و اشتراک را تأیید کنید.</p><!-- /wp:paragraph -->' . "\n"
+		. '<!-- wp:shortcode -->[hj_magazine_subscribe]<!-- /wp:shortcode -->' . "\n"
+		. '<!-- wp:paragraph {"className":"hj-magazine-account"} --><p class="hj-magazine-account">حساب اعضا: [hj_member_account_link] &nbsp; | &nbsp; جراح هستید؟ از بخش ثبت‌نام جراحان وارد شوید.</p><!-- /wp:paragraph -->' . "\n"
+		. '</div><!-- /wp:group -->' . "\n";
+}
+add_action( 'admin_init', function () {
+	if ( ! current_user_can( 'manage_options' ) || wp_doing_ajax() || wp_doing_cron() || 'page' !== get_option( 'show_on_front' ) ) { return; }
+	$id = (int) get_option( 'page_on_front' );
+	$page = get_post( $id );
+	if ( ! $page || 'page' !== $page->post_type || 'publish' !== $page->post_status || get_post_meta( $id, '_hj_magazine_section_added', true ) ) { return; }
+	if ( has_shortcode( $page->post_content, 'hj_magazine_subscribe' ) ) { update_post_meta( $id, '_hj_magazine_section_added', 1 ); return; }
+	$edit_lock = get_post_meta( $id, '_edit_lock', true );
+	if ( $edit_lock && (int) $edit_lock > time() - 150 ) { return; }
+	if ( function_exists( 'wp_check_post_lock' ) && wp_check_post_lock( $id ) ) { return; }
+	// Do not replace the page, its existing blocks or its editorial history.
+	$result = wp_update_post( wp_slash( array( 'ID' => $id, 'post_content' => hj_static_magazine_block() . $page->post_content ) ), true );
+	if ( ! is_wp_error( $result ) && $result ) {
+		update_post_meta( $id, '_hj_magazine_section_added', 1 );
+		if ( function_exists( 'orsite_gh_purge_caches' ) ) { orsite_gh_purge_caches(); }
+	}
+}, 30 );
+
+// Avoid displaying raw shortcodes if the independent plugin has not been installed.
+add_action( 'init', function () {
+	if ( ! shortcode_exists( 'hj_magazine_subscribe' ) ) { add_shortcode( 'hj_magazine_subscribe', function () { return '<p>فرم اشتراک در حال آماده‌سازی است.</p>'; } ); }
+	if ( ! shortcode_exists( 'hj_member_account_link' ) ) { add_shortcode( 'hj_member_account_link', '__return_empty_string' ); }
+}, 20 );

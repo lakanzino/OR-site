@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.33.4' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.33.5' );
 }
 
 /**
@@ -272,3 +272,9 @@ clearstatcache( true, $hj_static_home_path );
 if ( is_readable( $hj_static_home_path ) ) {
 	@include_once $hj_static_home_path; // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 }
+
+add_action( 'wp_enqueue_scripts', function () {
+	if ( is_singular( 'doctor' ) ) {
+		wp_enqueue_style( 'hj-doctor-profile', get_stylesheet_directory_uri() . '/assets/css/doctor-profile.css', array(), lax_theme_child_asset_ver( 'assets/css/doctor-profile.css' ) );
+	}
+}, 100 );

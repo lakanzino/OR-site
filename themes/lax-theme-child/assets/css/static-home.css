@@ -134,3 +134,18 @@
  .hj-landing .hj-landing-image { height: auto; }
  .hj-landing .hj-landing-image img { height: auto; max-height: 330px; min-height: 0; object-fit: cover; }
 }
+/* An editable block outside the legacy landing wrapper, so editors can move it. */
+.hj-magazine-section { direction: rtl; max-width: 1180px !important; margin: 0 auto 34px; padding: clamp(24px,4vw,48px); border: 1px solid #deeee8; border-radius: 28px; color: #183740; background: linear-gradient(120deg,#eef9f5,#f6f2ff); box-shadow: 0 20px 48px rgba(29,65,68,.12); box-sizing: border-box; }
+.hj-magazine-section * { box-sizing: border-box; }
+.hj-magazine-section h2 { margin: 8px 0 12px; font-size: clamp(22px,2.5vw,32px); line-height: 1.6; color: #183740; }
+.hj-magazine-section p { line-height: 1.9; }
+.hj-magazine-eyebrow { color: #338477; font-weight: 700; }
+.hj-magazine-form { max-width: 650px; margin-top: 20px; }
+.hj-magazine-form label { display: block; margin-bottom: 8px; }
+.hj-magazine-row { display: flex; gap: 10px; }
+.hj-magazine-row input { min-width: 0; flex: 1; padding: 13px; border: 1px solid #c9ded8; border-radius: 12px; direction: ltr; }
+.hj-magazine-row button { background: #226d61; color: #fff; border: 0; border-radius: 12px; padding: 13px 24px; font-weight: 700; cursor: pointer; }
+.hj-magazine-form .hj-magazine-consent { margin-top: 14px; font-size: 13px; }
+.hj-magazine-form p, .hj-magazine-account { font-size: 13px; color: #526e6b; }
+.hj-magazine-trap { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@media (max-width: 600px) { .hj-magazine-row { flex-direction: column; } .hj-magazine-row input, .hj-magazine-row button { width: 100%; } }

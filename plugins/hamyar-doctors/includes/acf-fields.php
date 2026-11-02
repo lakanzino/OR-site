@@ -114,12 +114,13 @@ if ( ! function_exists( 'hj_doctors_field' ) ) {
 		}
 		if ( function_exists( 'get_field' ) ) {
 			$value = get_field( $selector, $post_id );
-			if ( null !== $value && '' !== $value ) {
+			if ( null !== $value && false !== $value && '' !== $value ) {
 				return $value;
 			}
 		}
 
-		return $default;
+		$value = get_post_meta( $post_id, $selector, true );
+		return '' !== $value ? $value : $default;
 	}
 }
 
