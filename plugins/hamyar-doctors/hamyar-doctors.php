@@ -2,7 +2,7 @@
 /**
  * Plugin Name: همیار پزشک‌ها
  * Description: نوع محتوای «پزشک» با تخصص و شهر، زمینه‌های نمایه (JSON محلی ACF بدون Sync دستی) و دسترسی نقشِ پزشک فقط به نمایهٔ خودش؛ مستقل از قالب فرزند و بی‌صدا در debug.log.
- * Version: 0.3.0
+ * Version: 0.3.1
  * Requires at least: 6.4
  * Requires PHP: 8.0
  * Author: همیار جراحی
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'HJ_DOCTORS_VERSION', '0.3.0' );
+define( 'HJ_DOCTORS_VERSION', '0.3.1' );
 define( 'HJ_DOCTORS_FILE', __FILE__ );
 define( 'HJ_DOCTORS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'HJ_DOCTORS_URL', plugin_dir_url( __FILE__ ) );
@@ -171,9 +171,9 @@ final class HJ_Doctors {
 		$files = array(
 			'includes/roles.php',        // بخش ۴ — نقش پزشک، capabilityها و قفل پیشخوان.
 			'includes/security.php',     // بخش ۴ — primitiveهای سقف حجم و rate limit.
-			'includes/taxonomies.php',   // بخش ۲ — تخصص و شهر.
-			'includes/iran-locations-seeder.php', // بخش ۱۴ — سیدر ۳۱ استان، شهر و تخصص‌های الجراحی.
-		'includes/cpt.php',          // بخش ۲ — نوع محتوای پزشک.
+		'includes/taxonomies.php',   // بخش ۲ — تخصص و شهر (قبل از cpt.php لود می‌شود).
+		'includes/cpt.php',          // بخش ۲ — نوع محتوای پزشک (قبل از ماژول‌های ارتقایی).
+		'includes/iran-locations-seeder.php', // بخش ۱۴ — سیدر ۳۱ استان، شهر و تخصص‌های الجراحی.
 		'includes/monetization-vip.php',     // بخش ۲ — superficie تجاری، ستاره‌دار/VIP و سقف سلأت.
 		'includes/tech-navigator.php',
 		'includes/profile-render.php',       // بخش ۳ — ناوبر دو楽ته جراحان با AJAX.

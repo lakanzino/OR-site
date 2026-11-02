@@ -37,7 +37,7 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 			return self::$instance;
 		}
 
-		private function __construct() {
+		public function __construct() {
 			// شورت‌کد نمایش پروفایل: [hj_doctor_profile id="123"]
 			add_shortcode( 'hj_doctor_profile', array( $this, 'shortcode_profile' ) );
 
