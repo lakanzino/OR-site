@@ -1,11 +1,11 @@
 <?php
 
 /**
- * ماژول ۲: lượt تجاری، ستاره‌دار/VIP، محدودیت سلأت جراحان.
+ * ماژول ۲: سطح تجاری، ستاره‌دار/VIP، محدودیت ظرفیت اسلات جراحان.
  *
  * - ۳ سطح تجاری: basic، starred، vip
  * - متاباکس مدیریت در صفحه ویرایش پزشک
- * - depletion-toggle سریع در جدول edit.php
+ * - تغییر سریع سطح از ستون جدول edit.php
  * - توابع کمکی hj_get_surgeon_commercial_data() و hj_get_city_slot_limit()
  *
  * @package HamyarDoctors
@@ -194,7 +194,7 @@ if ( ! function_exists( 'hj_get_surgeon_commercial_data' ) ) {
 	/**
 	 * برگرداندن داده‌های تجاری یک جراح با لحاظ تاریخ انقضا.
 	 *
-	 * @param int $post_id شناسهٔ نوشتهٔเภت.
+	 * @param int $post_id شناسهٔ نوشتهٔ پزشک.
 	 * @return array{tier,is_starred,is_vip,badge,booking_url,priority}
 	 */
 	function hj_get_surgeon_commercial_data( $post_id ) {
