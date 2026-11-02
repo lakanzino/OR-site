@@ -1,13 +1,20 @@
 <?php
 /**
- * بخش ۱۴: سیدر استان‌ها، شهرها و تخصص‌های الجراحی ایران.
+ * بخش ۱۴: سیدر استان‌ها، شهرستان‌ها و تخصص‌های جراحی ایران.
  *
- * - ۳۱ استان ایران با شهرستان‌های اصلی (شهر)
- * - هر شهر به ترم استان والد وصل می‌شود (متای hj_parent_province_id)
- * - شهرهای بزرگ فلش می‌شوند (متای hj_is_major_city = ۱) برای محدودیت سلأت جراحان
- * - گروه تخصص‌های الجراحی هسته‌ای (specialty_type → specialty)
- * - اجرای یکباره از طریق آپشن hj_iran_locations_seeded_v1
- * - دکمه اجرا مجدد در ابزارهای مدیریت (Tools)
+ * نسخهٔ بازنویسی‌شدهٔ ۰.۳.۱ — داده‌های ساختگی نسخهٔ قبل حذف و با نام‌های
+ * واقعی شهرستان‌ها جایگزین شده است.
+ *
+ * - ۳۱ استان رسمی ایران
+ * - شهرستان‌های شناخته‌شدهٔ هر استان با نگاشت به استان والد
+ * - شهرهای بزرگ (کلان‌شهر) با متای hj_is_major_city = ۱ برای سقف جایگاه جراحان
+ * - درخت تخصص‌های جراحی (specialty_type → specialty)
+ * - اجرای یک‌باره از طریق آپشن hj_iran_locations_seeded_v1
+ * - دکمهٔ اجرای مجدد در ابزارهای مدیریت (Tools → سیدینگ ایران)
+ *
+ * نکتهٔ سازگاری: هر شهر هم با کلید تازهٔ hj_province_id (که archive-render و
+ * dashboard می‌خوانند) و هم با کلید قدیمی hj_parent_province_id (که
+ * tech-navigator نسخهٔ قبل می‌خواند) به استان خود وصل می‌شود.
  *
  * @package HamyarDoctors
  */
@@ -16,17 +23,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/************************************************************************
- * ۱. ثبت متای ترم (شهر → استان والد و فلش شهر بزرگ)
- ************************************************************************/
+/* -------------------------------------------------------------------------
+ * ۱. ثبت متای ترم
+ * ---------------------------------------------------------------------- */
 
 if ( ! function_exists( 'hj_iran_register_term_meta' ) ) {
 	/**
-	 * ثبت کلیدهای متای ترم برای شهر و تخصص.
-	 * فقط کاربران با manage_options می‌توانند نوشته کنند.
+	 * ثبت کلیدهای متای ترم برای شهر.
+	 *
+	 * hj_province_id در includes/taxonomies.php ثبت شده است و اینجا تکرار
+	 * نمی‌شود؛ فقط کلید قدیمی و فلش شهر بزرگ اینجا ثبت می‌شوند.
 	 */
 	function hj_iran_register_term_meta() {
-		// شهر → شناسه ترم استان والد
 		register_meta(
 			'term',
 			'hj_parent_province_id',
@@ -34,14 +42,13 @@ if ( ! function_exists( 'hj_iran_register_term_meta' ) ) {
 				'type'              => 'integer',
 				'single'            => true,
 				'sanitize_callback' => 'absint',
-				'auth_callback'     => function () {
+				'auth_callback'     => static function () {
 					return current_user_can( 'manage_options' );
 				},
 				'show_in_rest'      => false,
 			)
 		);
 
-		// شهر بزرگ (بیش از ۲ جراح در هر تخصص)
 		register_meta(
 			'term',
 			'hj_is_major_city',
@@ -49,7 +56,7 @@ if ( ! function_exists( 'hj_iran_register_term_meta' ) ) {
 				'type'              => 'integer',
 				'single'            => true,
 				'sanitize_callback' => 'absint',
-				'auth_callback'     => function () {
+				'auth_callback'     => static function () {
 					return current_user_can( 'manage_options' );
 				},
 				'show_in_rest'      => false,
@@ -59,314 +66,603 @@ if ( ! function_exists( 'hj_iran_register_term_meta' ) ) {
 	add_action( 'init', 'hj_iran_register_term_meta' );
 }
 
-/************************************************************************
- * ۲. دیتاست استان‌ها، شهرها و تخصص‌های الجراحی
- ************************************************************************/
+/* -------------------------------------------------------------------------
+ * ۲. دادهٔ مرجع: استان‌ها، شهرستان‌ها و تخصص‌ها
+ * ---------------------------------------------------------------------- */
 
 if ( ! function_exists( 'hj_iran_locations_data' ) ) {
 	/**
-	 * برگرداندن دیتاست ۳۱ استان، شهرها و تخصص‌های الجراحی هسته‌ای.
+	 * دادهٔ کامل استان‌ها، شهرستان‌ها و تخصص‌های جراحی.
 	 *
-	 * @return array[provinces, cities, major_cities, specialty_types, specialties]
+	 * @return array{provinces:array,major_cities:array,specialty_types:array,specialties:array}
 	 */
 	function hj_iran_locations_data() {
 		$provinces = array(
-			array( 'name' => 'تهران',         'slug' => 'tehran' ),
-			array( 'name' => 'اصفهان',        'slug' => 'isfahan' ),
-			array( 'name' => 'آذربایجان شرقی', 'slug' => 'east-azerbaijan' ),
-			array( 'name' => 'آذربایجان غربی', 'slug' => 'west-azerbaijan' ),
-			array( 'name' => 'اردبیل',         'slug' => 'ardabil' ),
-			array( 'name' => 'ایلام',           'slug' => 'ilam' ),
-			array( 'name' => 'بوشهر',           'slug' => 'bushehr' ),
-			array( 'name' => 'چهارمحال و بختیاری', 'slug' => 'chaharmahal-bakhtiari' ),
-			array( 'name' => 'خراسان شمالی',   'slug' => 'north-khorasan' ),
-			array( 'name' => 'خراسان رضوی',    'slug' => 'razavi-khorasan' ),
-			array( 'name' => 'خراسان جنوبی',   'slug' => 'south-khorasan' ),
-			array( 'name' => 'خوزستان',        'slug' => 'khuzestan' ),
-			array( 'name' => 'زنجان',           'slug' => 'zanjan' ),
-			array( 'name' => 'سمنان',           'slug' => 'semnan' ),
-			array( 'name' => 'سیستان و بلوچستان', 'slug' => 'sistan-baluchestan' ),
-			array( 'name' => 'فارس',            'slug' => 'fars' ),
-			array( 'name' => 'قزوین',           'slug' => 'qazvin' ),
-			array( 'name' => 'قم',              'slug' => 'qom' ),
-			array( 'name' => 'کردستان',         'slug' => 'kurdistan' ),
-			array( 'name' => 'کرمان',           'slug' => 'kerman' ),
-			array( 'name' => 'کرمانشاه',        'slug' => 'kermanshah' ),
-			array( 'name' => 'کهگیلویه و بختیاری', 'slug' => 'kohgiluyeh-boyer-ahmad' ),
-			array( 'name' => 'گلستان',          'slug' => 'golestan' ),
-			array( 'name' => 'گیلان',           'slug' => 'gilan' ),
-			array( 'name' => 'لرستان',          'slug' => 'lorestan' ),
-			array( 'name' => 'مازندران',        'slug' => 'mazandaran' ),
-			array( 'name' => 'مرکزی',           'slug' => 'markazi' ),
-			array( 'name' => 'هرمزگان',         'slug' => 'hormozgan' ),
-			array( 'name' => 'همدان',           'slug' => 'hamedan' ),
-			array( 'name' => 'یزد',             'slug' => 'yazd' ),
-			array( 'name' => 'البرز',           'slug' => 'alborz' ),
+			array(
+				'name'   => 'تهران',
+				'slug'   => 'tehran',
+				'cities' => array( 'تهران', 'ری', 'شمیرانات', 'اسلامشهر', 'شهریار', 'رباط‌کریم', 'ورامین', 'پاکدشت', 'قرچک', 'پردیس', 'دماوند', 'فیروزکوه', 'ملارد', 'قدس', 'بهارستان' ),
+			),
+			array(
+				'name'   => 'اصفهان',
+				'slug'   => 'isfahan',
+				'cities' => array( 'اصفهان', 'کاشان', 'نجف‌آباد', 'خمینی‌شهر', 'شهرضا', 'گلپایگان', 'خوانسار', 'نطنز', 'سمیرم', 'فلاورجان', 'لنجان', 'مبارکه', 'آران و بیدگل', 'اردستان', 'نائین' ),
+			),
+			array(
+				'name'   => 'آذربایجان شرقی',
+				'slug'   => 'east-azerbaijan',
+				'cities' => array( 'تبریز', 'مراغه', 'مرند', 'اهر', 'سراب', 'میانه', 'بناب', 'آذرشهر', 'جلفا', 'کلیبر', 'ملکان', 'هشترود', 'بستان‌آباد', 'اسکو', 'شبستر' ),
+			),
+			array(
+				'name'   => 'آذربایجان غربی',
+				'slug'   => 'west-azerbaijan',
+				'cities' => array( 'ارومیه', 'خوی', 'مهاباد', 'میاندوآب', 'بوکان', 'سلماس', 'نقده', 'پیرانشهر', 'سردشت', 'ماکو', 'شاهیندژ', 'تکاب', 'چالدران', 'اشنویه' ),
+			),
+			array(
+				'name'   => 'اردبیل',
+				'slug'   => 'ardabil',
+				'cities' => array( 'اردبیل', 'مشگین‌شهر', 'پارس‌آباد', 'خلخال', 'گرمی', 'بیله‌سوار', 'نیر', 'کوثر', 'سرعین', 'نمین' ),
+			),
+			array(
+				'name'   => 'ایلام',
+				'slug'   => 'ilam',
+				'cities' => array( 'ایلام', 'دهلران', 'آبدانان', 'دره‌شهر', 'ملکشاهی', 'چرداول', 'ایوان', 'مهران', 'بدره', 'سیروان' ),
+			),
+			array(
+				'name'   => 'بوشهر',
+				'slug'   => 'bushehr',
+				'cities' => array( 'بوشهر', 'برازجان', 'گناوه', 'دیلم', 'کنگان', 'دیر', 'جم', 'عسلویه', 'تنگستان', 'دشتی' ),
+			),
+			array(
+				'name'   => 'چهارمحال و بختیاری',
+				'slug'   => 'chaharmahal-bakhtiari',
+				'cities' => array( 'شهرکرد', 'بروجن', 'لردگان', 'فارسان', 'اردل', 'کیار', 'کوهرنگ', 'سامان', 'بن', 'خانمیرزا' ),
+			),
+			array(
+				'name'   => 'خراسان شمالی',
+				'slug'   => 'north-khorasan',
+				'cities' => array( 'بجنورد', 'شیروان', 'اسفراین', 'جاجرم', 'مانه و سملقان', 'گرمه', 'راز و جرگلان', 'فاروج' ),
+			),
+			array(
+				'name'   => 'خراسان رضوی',
+				'slug'   => 'razavi-khorasan',
+				'cities' => array( 'مشهد', 'نیشابور', 'سبزوار', 'تربت حیدریه', 'تربت جام', 'کاشمر', 'قوچان', 'گناباد', 'چناران', 'درگز', 'خواف', 'بردسکن', 'سرخس', 'فریمان', 'جغتای' ),
+			),
+			array(
+				'name'   => 'خراسان جنوبی',
+				'slug'   => 'south-khorasan',
+				'cities' => array( 'بیرجند', 'قائن', 'نهبندان', 'سربیشه', 'درمیان', 'بشرویه', 'فردوس', 'طبس', 'خوسف' ),
+			),
+			array(
+				'name'   => 'خوزستان',
+				'slug'   => 'khuzestan',
+				'cities' => array( 'اهواز', 'آبادان', 'خرمشهر', 'دزفول', 'مسجدسلیمان', 'بهبهان', 'شوشتر', 'شوش', 'اندیمشک', 'ایذه', 'باغملک', 'رامهرمز', 'ماهشهر', 'امیدیه', 'هندیجان' ),
+			),
+			array(
+				'name'   => 'زنجان',
+				'slug'   => 'zanjan',
+				'cities' => array( 'زنجان', 'ابهر', 'خدابنده', 'خرمدره', 'ایجرود', 'طارم', 'ماهنشان', 'سلطانیه' ),
+			),
+			array(
+				'name'   => 'سمنان',
+				'slug'   => 'semnan',
+				'cities' => array( 'سمنان', 'شاهرود', 'دامغان', 'گرمسار', 'مهدی‌شهر', 'میامی', 'آرادان' ),
+			),
+			array(
+				'name'   => 'سیستان و بلوچستان',
+				'slug'   => 'sistan-baluchestan',
+				'cities' => array( 'زاهدان', 'چابهار', 'ایرانشهر', 'نیک‌شهر', 'سراوان', 'زابل', 'خاش', 'سرباز', 'کنارک', 'میرجاوه', 'هیرمند' ),
+			),
+			array(
+				'name'   => 'فارس',
+				'slug'   => 'fars',
+				'cities' => array( 'شیراز', 'مرودشت', 'جهرم', 'فیروزآباد', 'کازرون', 'داراب', 'لار', 'آباده', 'نی‌ریز', 'صفاشهر', 'قیر و کارزین', 'استهبان', 'اقلید' ),
+			),
+			array(
+				'name'   => 'قزوین',
+				'slug'   => 'qazvin',
+				'cities' => array( 'قزوین', 'تاکستان', 'آبیک', 'بوئین‌زهرا', 'آوج', 'البرز', 'محمدیه' ),
+			),
+			array(
+				'name'   => 'قم',
+				'slug'   => 'qom',
+				'cities' => array( 'قم', 'کهک', 'سلفچگان', 'دستجرد', 'جعفریه' ),
+			),
+			array(
+				'name'   => 'کردستان',
+				'slug'   => 'kurdistan',
+				'cities' => array( 'سنندج', 'بانه', 'سقز', 'مریوان', 'دیواندره', 'قروه', 'بیجار', 'کامیاران', 'سروآباد', 'دهگلان' ),
+			),
+			array(
+				'name'   => 'کرمان',
+				'slug'   => 'kerman',
+				'cities' => array( 'کرمان', 'بم', 'جیرفت', 'رفسنجان', 'سیرجان', 'بافت', 'کهنوج', 'بردسیر', 'زرند', 'شهربابک', 'راور', 'رودبار جنوب' ),
+			),
+			array(
+				'name'   => 'کرمانشاه',
+				'slug'   => 'kermanshah',
+				'cities' => array( 'کرمانشاه', 'اسلام‌آباد غرب', 'سنقر', 'پاوه', 'روانسر', 'جوانرود', 'کنگاور', 'هرسین', 'صحنه', 'قصر شیرین', 'گیلانغرب', 'سرپل ذهاب' ),
+			),
+			array(
+				'name'   => 'کهگیلویه و بویراحمد',
+				'slug'   => 'kohgiluyeh-boyer-ahmad',
+				'cities' => array( 'یاسوج', 'دهدشت', 'گچساران', 'لنده', 'سی‌سخت', 'باشت', 'چرام', 'بهمئی' ),
+			),
+			array(
+				'name'   => 'گلستان',
+				'slug'   => 'golestan',
+				'cities' => array( 'گرگان', 'گنبد کاووس', 'بندر ترکمن', 'آق‌قلا', 'علی‌آباد کتول', 'کردکوی', 'بندر گز', 'مینودشت', 'آزادشهر', 'گمیشان', 'رامیان', 'کلاله', 'مراوه‌تپه' ),
+			),
+			array(
+				'name'   => 'گیلان',
+				'slug'   => 'gilan',
+				'cities' => array( 'رشت', 'لاهیجان', 'بندر انزلی', 'تالش', 'آستارا', 'رودبار', 'فومن', 'صومعه‌سرا', 'آستانه اشرفیه', 'لنگرود', 'رودسر', 'ماسال', 'شفت', 'سیاهکل' ),
+			),
+			array(
+				'name'   => 'لرستان',
+				'slug'   => 'lorestan',
+				'cities' => array( 'خرم‌آباد', 'بروجرد', 'دورود', 'ازنا', 'الیگودرز', 'کوهدشت', 'پل‌دختر', 'نورآباد', 'الشتر', 'چگنی' ),
+			),
+			array(
+				'name'   => 'مازندران',
+				'slug'   => 'mazandaran',
+				'cities' => array( 'ساری', 'بابل', 'قائم‌شهر', 'آمل', 'نوشهر', 'چالوس', 'بهشهر', 'رامسر', 'تنکابن', 'نور', 'فریدونکنار', 'جویبار', 'محمودآباد', 'گلوگاه' ),
+			),
+			array(
+				'name'   => 'مرکزی',
+				'slug'   => 'markazi',
+				'cities' => array( 'اراک', 'ساوه', 'خمین', 'محلات', 'فراهان', 'شازند', 'تفرش', 'آشتیان', 'زرندیه', 'دلیجان', 'کمیجان', 'خنداب' ),
+			),
+			array(
+				'name'   => 'هرمزگان',
+				'slug'   => 'hormozgan',
+				'cities' => array( 'بندرعباس', 'قشم', 'بندر لنگه', 'میناب', 'بستک', 'پارسیان', 'حاجی‌آباد', 'رودان', 'جاسک', 'بندر خمیر' ),
+			),
+			array(
+				'name'   => 'همدان',
+				'slug'   => 'hamedan',
+				'cities' => array( 'همدان', 'ملایر', 'نهاوند', 'اسدآباد', 'تویسرکان', 'کبودراهنگ', 'بهار', 'رزن', 'فامنین' ),
+			),
+			array(
+				'name'   => 'یزد',
+				'slug'   => 'yazd',
+				'cities' => array( 'یزد', 'میبد', 'اردکان', 'تفت', 'مهریز', 'بافق', 'ابرکوه', 'خاتم', 'اشکذر', 'بهاباد' ),
+			),
+			array(
+				'name'   => 'البرز',
+				'slug'   => 'alborz',
+				'cities' => array( 'کرج', 'فردیس', 'نظرآباد', 'هشتگرد', 'اشتهارد', 'طالقان', 'چهارباغ', 'محمدشهر' ),
+			),
 		);
 
-		// کلید provinces = اندیس آرایه بالا (۰-based). هر ساب‌آرایه: لیست شهری است.
-		$cities = array(
-			0  => array( 'تهران', 'ری', 'دماوند', 'واریمن', 'فیروزکوه' ),                    // تهران
-			1  => array( 'اصفهان', 'کاشان', 'نجف‌آباد', 'خمینی‌شهر', 'آران و بیدگل' ),      // اصفهان
-			2  => array( 'تبریز', 'مراغه', 'مرند', 'اهر', 'سراب' ),                          // آذربایجان شرقی
-			3  => array( 'ارومیه', 'خوی', 'مهاباد', 'میاندوآب', 'بوکان' ),                    // آذربایجان غربی
-			4  => array( 'اردبیل', 'مشگین‌شهر', 'نیر', 'پارس‌آباد', 'خلخال' ),              // اردبیل
-			5  => array( 'ایلام', 'دردان', 'ملكشاهی', 'آبدانان', 'دلوان' ),                  // ایلام
-			6  => array( 'بوشهر', 'داییر', 'گنانوه', 'کنگان', 'دلوار' ),                    // بوشهر
-			7  => array( 'شهرکرد', 'لردگان', 'اردل', 'بروجن', 'فارسان' ),                  // چهارمحال و بختیاری
-			8  => array( 'بجنورد', 'شیروان', 'اسفراین', 'جاجرم', 'مانه و سملقان' ),         // خراسان شمالی
-			9  => array( 'مشهد', 'نیشابور', 'سبزوار', 'تربت جام', 'کاشمر' ),                // خراسان رضوی
-			10 => array( 'بیرجند', 'قاین', 'خوسف', 'نهبندان', 'درمیان' ),                  // خراسان جنوبی
-			11 => array( 'اهواز', 'آبادان', 'دزفول', 'خرمشهر', 'مسجد سلیمان' ),            // خوزستان
-			12 => array( 'زنجان', 'آبهر', 'خدابنده', 'جرمزی', 'صائقین' ),                 // زنجان
-			13 => array( 'سمنان', 'شاهرود', 'دامغان', 'گرمسار', 'مهدی‌شهر' ),              // سمنان
-			14 => array( 'زاهدان', 'چابهار', 'ایرانشهر', 'نکشهر', 'هیرمند' ),             // سیستان و بلوچستان
-			15 => array( 'شیراز', 'مرودشت', 'جهرم', 'فیروزآباد', 'کازرون' ),              // فارس
-			16 => array( 'قزوین', 'تکستان', 'آبیک', 'بوئین‌زهرا', 'البرز' ),               // قزوین
-			17 => array( 'قم', 'کهک', 'صباسان', 'ج_method' => 'ج_method' ),              // قم
-			18 => array( 'سنندج', 'بوجهنور', 'سقز', 'مریوان', 'دیواندره' ),               // کردستان
-			19 => array( 'کرمان', 'بم', 'جیرفت', 'رفسنجان', 'بافت' ),                      // کرمان
-			20 => array( 'کرمانشاه', 'اسلام‌آباد غرب', 'سنقر', 'پاوه', 'رAbove' => 'رAbove' ), // کرمانشاه
-			21 => array( 'یاسوج', 'دهدشت', 'گچساران', 'لنده', 'استرگاه' ),                // کهگیلویه و بختیاری
-			22 => array( 'گرگان', 'گمیشان', 'گنبد کاووس', 'بندر ترکمن', 'آق قلا' ),        // گلستان
-			23 => array( 'رشت', 'لاهیجان', 'تالش', 'انزلی', 'رودبار' ),                   // گیلان
-			24 => array( 'خرم‌آباد', 'بروجرد', 'دورود', 'ازنا', 'الیگودرز' ),             // لرستان
-			25 => array( 'ساری', 'بابل', 'قائم‌شهر', 'نوشهر', 'آمل' ),                     // مازندران
-			26 => array( 'اراک', 'خمین', 'مهلت', 'ساوه', 'فراهان' ),                     // مرکزی
-			27 => array( 'بندر عباس', 'قشم', 'بندر لنگه', 'میناب', 'بندرکنگ' ),          // هرمزگان
-			28 => array( 'همدان', 'ملایر', 'اسدآباد', 'تویسرکان', 'کبیراحنگ' ),          // همدان
-			29 => array( 'یزد', 'میبد', 'اردکان', 'تفت', 'خرمناq' => 'خرمناq' ),          // یزد
-			30 => array( 'کرج', 'طالقان', 'نظرآباد', 'محمدشهر', 'هشتجرد' ),               // البرز
-		);
-
+		// کلان‌شهرها: سقف جایگاه در این شهرها بالاتر است (hj_get_city_slot_limit).
 		$major_cities = array(
-			'تهران', 'مشهد', 'اصفهان', 'شیراز', 'تبریز', 'کرج', 'اهواز', 'قم', 'کرمانشاه', 'ارومیه', 'رشت',
+			'تهران',
+			'مشهد',
+			'اصفهان',
+			'شیراز',
+			'تبریز',
+			'کرج',
+			'اهواز',
+			'قم',
+			'کرمانشاه',
+			'ارومیه',
+			'رشت',
+			'ساری',
 		);
 
 		$specialty_types = array(
 			'جراحی عمومی',
 			'جراحی قلب و عروق',
 			'جراحی مغز و اعصاب',
-			'جراحی آرتوپدیک',
-			'جراحی زیبایی و بازسازی',
-			'جراحی کودکان',
 			'جراحی استخوان و مفاصل',
+			'جراحی زیبایی و ترمیمی',
+			'جراحی کودکان',
+			'جراحی اورولوژی',
+			'جراحی گوش، حلق و بینی',
+			'جراحی چشم',
+			'جراحی زنان و زایمان',
 		);
 
 		$specialties = array(
-			'جراحی عمومی'              => array( 'جراحی عمومی', 'جراحی سینه', 'جراحی معده و روده' ),
-			'جراحی قلب و عروق'         => array( 'جراحی قلب', 'جراحی عروق', 'جراحی شریان' ),
-			'جراحی مغز و اعصاب'        => array( 'جراحی مغز', 'جراحی عصب', 'جراحی ستون فقرات' ),
-			'جراحی آرتوپدیک'           => array( 'جراحی مفاصل', 'جراحی استخوان', 'جراحی کمر وдуش' ),
-			'جراحی زیبایی و بازسازی'   => array( 'جراحی زیبایی', 'جراحی بازسازی', 'جراحی بینی' ),
-			'جراحی کودکان'             => array( 'جراحی کودکان', 'جراحی خلقی', 'جراحی نوزاد' ),
-			'جراحی استخوان و مفاصل'    => array( 'جراحی استخوان', 'جراحی مفصل', 'جراحی فشار' ),
+			'جراحی عمومی'                 => array( 'جراحی عمومی', 'جراحی سینه', 'جراحی گوارش', 'جراحی کبد و صفرا', 'جراحی تیروئید' ),
+			'جراحی قلب و عروق'            => array( 'جراحی قلب باز', 'جراحی عروق کرونر', 'جراحی دریچهٔ قلب', 'جراحی آئورت', 'جراحی عروق محیطی' ),
+			'جراحی مغز و اعصاب'           => array( 'جراحی مغز', 'جراحی ستون فقرات', 'جراحی قاعدهٔ جمجمه', 'جراحی صرع', 'جراحی اعصاب محیطی' ),
+			'جراحی استخوان و مفاصل'       => array( 'جراحی زانو', 'جراحی لگن', 'جراحی شانه', 'جراحی مچ پا', 'جراحی دست' ),
+			'جراحی زیبایی و ترمیمی'       => array( 'جراحی بینی', 'جراحی پلک', 'جراحی لیفت صورت', 'جراحی سینهٔ زیبایی', 'جراحی ترمیمی سوختگی' ),
+			'جراحی کودکان'                => array( 'جراحی نوزادان', 'جراحی اطفال', 'جراحی اورولوژی کودکان', 'جراحی گوارش کودکان' ),
+			'جراحی اورولوژی'              => array( 'جراحی کلیه', 'جراحی پروستات', 'جراحی مثانه', 'جراحی سنگ کلیه', 'جراحی ناباروری مردان' ),
+			'جراحی گوش، حلق و بینی'       => array( 'جراحی سینوس', 'جراحی لوزه', 'جراحی گوش میانی', 'جراحی سر و گردن' ),
+			'جراحی چشم'                   => array( 'جراحی آب مروارید', 'جراحی شبکیه', 'جراحی لیزیک', 'جراحی گلوکوم' ),
+			'جراحی زنان و زایمان'         => array( 'جراحی هیسترکتومی', 'جراحی لاپاراسکوپی زنان', 'جراحی ناباروری', 'جراحی سرطان زنان' ),
 		);
 
 		return array(
-			'provinces'      => $provinces,
-			'cities'         => $cities,
-			'major_cities'   => $major_cities,
-			'specialty_types'=> $specialty_types,
-			'specialties'    => $specialties,
+			'provinces'       => $provinces,
+			'major_cities'    => $major_cities,
+			'specialty_types' => $specialty_types,
+			'specialties'     => $specialties,
 		);
 	}
 }
 
-/************************************************************************
- * ۳. تابع سیدر (یکباره)
- ************************************************************************/
+/* -------------------------------------------------------------------------
+ * ۳. اسلاگ‌ساز فارسی (لاتین‌نویسی) برای URLهای خوانا
+ * ---------------------------------------------------------------------- */
+
+if ( ! function_exists( 'hj_iran_slugify' ) ) {
+	/**
+	 * تبدیل نام فارسی به اسلاگ لاتین.
+	 *
+	 * sanitize_title() روی متن فارسی اسلاگ درصدیِ زشت می‌سازد؛ این تابع
+	 * آوانگاری ساده می‌دهد تا نشانی‌هایی مثل /city/tehran/ ساخته شود.
+	 *
+	 * @param string $name     نام فارسی.
+	 * @param string $fallback پیشوند جایگزین اگر نتیجه خالی بود.
+	 * @return string
+	 */
+	function hj_iran_slugify( $name, $fallback = 'item' ) {
+		$name = (string) $name;
+
+		$map = array(
+			'آ' => 'a', 'ا' => 'a', 'أ' => 'a', 'إ' => 'e', 'ٱ' => 'a',
+			'ب' => 'b', 'پ' => 'p', 'ت' => 't', 'ث' => 's', 'ج' => 'j',
+			'چ' => 'ch', 'ح' => 'h', 'خ' => 'kh', 'د' => 'd', 'ذ' => 'z',
+			'ر' => 'r', 'ز' => 'z', 'ژ' => 'zh', 'س' => 's', 'ش' => 'sh',
+			'ص' => 's', 'ض' => 'z', 'ط' => 't', 'ظ' => 'z', 'ع' => 'a',
+			'غ' => 'gh', 'ف' => 'f', 'ق' => 'gh', 'ک' => 'k', 'ك' => 'k',
+			'گ' => 'g', 'ل' => 'l', 'م' => 'm', 'ن' => 'n', 'و' => 'v',
+			'ؤ' => 'o', 'ه' => 'h', 'ة' => 'h', 'ی' => 'y', 'ي' => 'y',
+			'ئ' => 'y', 'ء' => '', 'ى' => 'y', 'ٔ' => '', '‌' => '-',
+			'۰' => '0', '۱' => '1', '۲' => '2', '۳' => '3', '۴' => '4',
+			'۵' => '5', '۶' => '6', '۷' => '7', '۸' => '8', '۹' => '9',
+			'٠' => '0', '١' => '1', '٢' => '2', '٣' => '3', '٤' => '4',
+			'٥' => '5', '٦' => '6', '٧' => '7', '٨' => '8', '٩' => '9',
+		);
+
+		$slug = strtr( $name, $map );
+		$slug = strtolower( $slug );
+		$slug = preg_replace( '/[\x{200C}\x{200D}]/u', '-', $slug ); // نیم‌فاصله و اتصال‌دهنده
+		$slug = preg_replace( '/[^a-z0-9]+/u', '-', $slug );
+		$slug = trim( (string) $slug, '-' );
+
+		if ( '' === $slug ) {
+			$slug = $fallback;
+		}
+
+		return $slug;
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * ۴. ابزارهای درج ترم
+ * ---------------------------------------------------------------------- */
+
+if ( ! function_exists( 'hj_iran_ensure_term' ) ) {
+	/**
+	 * مطمئن می‌شود یک ترم با این اسلاگ وجود دارد.
+	 *
+	 * @param string $name        نام ترم.
+	 * @param string $taxonomy    نام تاکسونومی.
+	 * @param string $slug        اسلاگ لاتین.
+	 * @param string $description توضیح.
+	 * @return array{term_id:int,created:bool}
+	 */
+	function hj_iran_ensure_term( $name, $taxonomy, $slug, $description = '' ) {
+		$slug = sanitize_title( (string) $slug );
+		if ( '' === $slug ) {
+			return array(
+				'term_id' => 0,
+				'created' => false,
+			);
+		}
+
+		$existing = term_exists( $slug, $taxonomy );
+		if ( $existing ) {
+			$term_id = is_array( $existing ) ? (int) $existing['term_id'] : (int) $existing;
+
+			return array(
+				'term_id' => $term_id,
+				'created' => false,
+			);
+		}
+
+		$result = wp_insert_term(
+			$name,
+			$taxonomy,
+			array(
+				'slug'        => $slug,
+				'description' => $description,
+			)
+		);
+
+		if ( is_wp_error( $result ) ) {
+			// نام تکراری با اسلاگ دیگر: همان ترم موجود را برمی‌گردانیم.
+			$by_name = get_term_by( 'name', $name, $taxonomy );
+			if ( $by_name instanceof WP_Term ) {
+				return array(
+					'term_id' => (int) $by_name->term_id,
+					'created' => false,
+				);
+			}
+
+			return array(
+				'term_id' => 0,
+				'created' => false,
+			);
+		}
+
+		return array(
+			'term_id' => isset( $result['term_id'] ) ? (int) $result['term_id'] : 0,
+			'created' => true,
+		);
+	}
+}
+
+if ( ! function_exists( 'hj_iran_ensure_city_term' ) ) {
+	/**
+	 * درج/بازیابی ترم شهر با اسلاگ یکتا در محدوده همان استان.
+	 *
+	 * اگر شهر هم‌نامی در استانی دیگر با همین اسلاگ وجود داشته باشد، پسوند
+	 * استان به اسلاگ اضافه می‌شود تا ترم‌ها قاطی نشوند.
+	 *
+	 * @param string $name        نام شهر.
+	 * @param int    $province_id شناسهٔ ترم استان.
+	 * @param string $prov_slug   اسلاگ استان.
+	 * @return array{term_id:int,created:bool}
+	 */
+	function hj_iran_ensure_city_term( $name, $province_id, $prov_slug ) {
+		$base = hj_iran_slugify( $name, 'city' );
+		$slug = $base;
+		$try  = 0;
+
+		while ( $try < 30 ) {
+			$existing = term_exists( $slug, 'city' );
+			if ( ! $existing ) {
+				break;
+			}
+
+			$existing_id = is_array( $existing ) ? (int) $existing['term_id'] : (int) $existing;
+			$owner       = hj_iran_get_city_province_id( $existing_id );
+
+			// همان ترم این استان (یا ترمی که هنوز به استانی وصل نشده) → استفادهٔ مجدد.
+			if ( 0 === $owner || (int) $owner === (int) $province_id ) {
+				return array(
+					'term_id' => $existing_id,
+					'created' => false,
+				);
+			}
+
+			$try++;
+			$slug = $base . '-' . $prov_slug;
+			if ( $try > 1 ) {
+				$slug = $base . '-' . $prov_slug . '-' . $try;
+			}
+		}
+
+		return hj_iran_ensure_term( $name, 'city', $slug, 'شهر ' . $name );
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * ۵. سیدر (یک‌باره و قابل تکرار)
+ * ---------------------------------------------------------------------- */
 
 if ( ! function_exists( 'hj_iran_locations_seed' ) ) {
 	/**
-	 * ایجاد ترم‌های استان، شهر و تخصص اگر وجود نداشته باشند.
-	 * findings: اگر ترم وجود داشته باشد از قبلی استفاده می‌شود.
+	 * ایجاد ترم‌های استان، شهر، نوع تخصص و رشته اگر وجود نداشته باشند.
 	 *
-	 * @return array{'ok'=>bool,'message'=>string}
+	 * تکرارپذیر است: ترم‌های موجود بازاستفاده می‌شوند و متای آن‌ها
+	 * به‌روزرسانی می‌شود.
+	 *
+	 * @return array{ok:bool,message:string,created:array}
 	 */
 	function hj_iran_locations_seed() {
-		$data   = hj_iran_locations_data();
+		$data      = hj_iran_locations_data();
 		$provinces = $data['provinces'];
-		$cities    = $data['cities'];
 		$major     = $data['major_cities'];
 		$types     = $data['specialty_types'];
 		$specs     = $data['specialties'];
 
-		$created_provinces = 0;
-		$created_cities    = 0;
-		$created_types     = 0;
-		$created_specs     = 0;
+		$created = array(
+			'provinces' => 0,
+			'cities'    => 0,
+			'types'     => 0,
+			'specs'     => 0,
+		);
 
 		// --- استان‌ها ---
-		$province_term_ids = array();
-		foreach ( $provinces as $prov ) {
-			$slug = sanitize_title( $prov['slug'] );
-			if ( term_exists( $slug, 'province' ) ) {
-				$term = get_term_by( 'slug', $slug, 'province' );
-				$province_term_ids[] = (int) $term->term_id;
-				continue;
+		$province_ids = array();
+
+		foreach ( $provinces as $province ) {
+			$term = hj_iran_ensure_term(
+				$province['name'],
+				'province',
+				$province['slug'],
+				'استان ' . $province['name']
+			);
+
+			if ( $term['created'] ) {
+				$created['provinces']++;
 			}
-			$res = wp_insert_term( $prov['name'], 'province', array(
-				'slug'        => $slug,
-				'description' => 'استان ' . $prov['name'],
-			) );
-			if ( is_wp_error( $res ) || empty( $res['term_id'] ) ) {
-				continue;
+
+			if ( $term['term_id'] > 0 ) {
+				$province_ids[ $province['slug'] ] = (int) $term['term_id'];
 			}
-			$province_term_ids[] = (int) $res['term_id'];
-			$created_provinces++;
 		}
 
-		// --- شهرها ---
-		foreach ( $cities as $province_index => $city_list ) {
-			$province_id = isset( $province_term_ids[$province_index] ) ? (int) $province_term_ids[$province_index] : 0;
-			foreach ( (array) $city_list as $city_name ) {
-				$city_name = (string) $city_name;
-				if ( $city_name === '' ) {
-					continue;
-				}
-				// اگر مقدار حاوی کاراکتر غیر UTF-8 یا englischen باشد، رد می‌کنیم
-				if ( preg_match( '/[^[:alnum:][:space:]‌‌ـذةةءإأآؤئىيكىوآأإءぁ-ゔー々-ヶー]/u', $city_name ) ) {
-					continue;
-				}
-				$slug = sanitize_title( $city_name );
-				if ( term_exists( $slug, 'city' ) ) {
-					$term = get_term_by( 'slug', $slug, 'city' );
-					$city_id = (int) $term->term_id;
-				} else {
-					$res = wp_insert_term( $city_name, 'city', array(
-						'slug'        => $slug,
-						'description' => 'شهر ' . $city_name . ' در استان ' . ( isset( $provinces[$province_index]['name'] ) ? $provinces[$province_index]['name'] : '' ),
-					) );
-					if ( is_wp_error( $res ) || empty( $res['term_id'] ) ) {
-						continue;
-					}
-					$city_id = (int) $res['term_id'];
-					$created_cities++;
+		// --- شهرستان‌ها ---
+		foreach ( $provinces as $province ) {
+			$province_id = isset( $province_ids[ $province['slug'] ] ) ? (int) $province_ids[ $province['slug'] ] : 0;
+
+			if ( $province_id <= 0 ) {
+				continue;
+			}
+
+			foreach ( $province['cities'] as $city_name ) {
+				$city = hj_iran_ensure_city_term( $city_name, $province_id, $province['slug'] );
+
+				if ( $city['created'] ) {
+					$created['cities']++;
 				}
 
-				// اتصال شهر به استان والد
-				if ( $province_id > 0 ) {
-					update_term_meta( $city_id, 'hj_parent_province_id', $province_id );
+				$city_id = (int) $city['term_id'];
+				if ( $city_id <= 0 ) {
+					continue;
 				}
 
-				// فلش شهر بزرگ
-				if ( in_array( $city_name, $major, true ) ) {
-					update_term_meta( $city_id, 'hj_is_major_city', 1 );
-				}
+				// هر دو کلید نوشته می‌شود: کلید تازه برای archive/dashboard و
+				// کلید قدیمی برای سازگاری با نسخهٔ پیشین tech-navigator.
+				update_term_meta( $city_id, 'hj_province_id', $province_id );
+				update_term_meta( $city_id, 'hj_parent_province_id', $province_id );
+
+				$is_major = in_array( $city_name, $major, true ) ? 1 : 0;
+				update_term_meta( $city_id, 'hj_is_major_city', $is_major );
 			}
 		}
 
 		// --- انواع تخصص ---
-		$type_term_ids = array();
-		foreach ( $types as $type_name ) {
-			$slug = sanitize_title( $type_name );
-			if ( term_exists( $slug, 'specialty_type' ) ) {
-				$term = get_term_by( 'slug', $slug, 'specialty_type' );
-				$type_term_ids[$type_name] = (int) $term->term_id;
-				continue;
+		$type_ids = array();
+
+		foreach ( $types as $index => $type_name ) {
+			$term = hj_iran_ensure_term(
+				$type_name,
+				'specialty_type',
+				hj_iran_slugify( $type_name, 'specialty-type-' . ( $index + 1 ) ),
+				'نوع تخصص: ' . $type_name
+			);
+
+			if ( $term['created'] ) {
+				$created['types']++;
 			}
-			$res = wp_insert_term( $type_name, 'specialty_type', array(
-				'slug'        => $slug,
-				'description' => 'نوع تخصص: ' . $type_name,
-			) );
-			if ( is_wp_error( $res ) || empty( $res['term_id'] ) ) {
-				continue;
+
+			if ( $term['term_id'] > 0 ) {
+				$type_ids[ $type_name ] = (int) $term['term_id'];
 			}
-			$type_term_ids[$type_name] = (int) $res['term_id'];
-			$created_types++;
 		}
 
-		// --- تخصص‌ها (رشته‌ها) ---
+		// --- رشته‌ها (تخصص‌های جراحی) ---
+		$order = 0;
+
 		foreach ( $specs as $type_name => $spec_list ) {
-			$type_id = isset( $type_term_ids[$type_name] ) ? (int) $type_term_ids[$type_name] : 0;
+			$type_id = isset( $type_ids[ $type_name ] ) ? (int) $type_ids[ $type_name ] : 0;
+
 			foreach ( (array) $spec_list as $spec_name ) {
-				$spec_name = (string) $spec_name;
-				if ( $spec_name === '' ) {
-					continue;
-				}
-				$slug = sanitize_title( $spec_name );
-				if ( term_exists( $slug, 'specialty' ) ) {
-					$term = get_term_by( 'slug', $slug, 'specialty' );
-					$spec_id = (int) $term->term_id;
-				} else {
-					$res = wp_insert_term( $spec_name, 'specialty', array(
-						'slug'        => $slug,
-						'description' => 'رشته: ' . $spec_name . ' در گروه ' . $type_name,
-					) );
-					if ( is_wp_error( $res ) || empty( $res['term_id'] ) ) {
-						continue;
-					}
-					$spec_id = (int) $res['term_id'];
-					$created_specs++;
+				$order++;
+
+				$term = hj_iran_ensure_term(
+					$spec_name,
+					'specialty',
+					hj_iran_slugify( $spec_name, 'specialty-' . $order ),
+					'رشته: ' . $spec_name . ( '' !== $type_name ? ' — گروه ' . $type_name : '' )
+				);
+
+				if ( $term['created'] ) {
+					$created['specs']++;
 				}
 
-				// اتصال رشته به نوع تخصص
+				$spec_id = (int) $term['term_id'];
+				if ( $spec_id <= 0 ) {
+					continue;
+				}
+
 				if ( $type_id > 0 ) {
 					update_term_meta( $spec_id, 'hj_specialty_type_id', $type_id );
 				}
+
+				update_term_meta( $spec_id, 'hj_spec_order', $order );
 			}
 		}
 
 		update_option( 'hj_iran_locations_seeded_v1', 1 );
+		delete_option( 'hj_iran_locations_last_seed' );
+		update_option(
+			'hj_iran_locations_last_seed',
+			array(
+				'time'    => time(),
+				'created' => $created,
+			),
+			false
+		);
 
 		return array(
-			'ok'           => true,
-			'message'      => 'سیدینگ با موفقیت انجام شد.',
-			'created'      => array(
-				'provinces' => $created_provinces,
-				'cities'    => $created_cities,
-				'types'     => $created_types,
-				'specs'     => $created_specs,
-			),
+			'ok'      => true,
+			'message' => 'سیدینگ استان‌ها، شهرستان‌ها و تخصص‌ها با موفقیت انجام شد.',
+			'created' => $created,
 		);
 	}
 }
 
-/************************************************************************
- * ۴. اجرا خودکار یکباره (admin_init)
- ************************************************************************/
+/* -------------------------------------------------------------------------
+ * ۶. اجرای خودکار یک‌باره + اعلان ادمین
+ * ---------------------------------------------------------------------- */
 
 if ( ! function_exists( 'hj_iran_locations_auto_seed' ) ) {
+	/**
+	 * اجرای خودکار سیدینگ یک‌بار برای مدیر.
+	 */
 	function hj_iran_locations_auto_seed() {
 		if ( get_option( 'hj_iran_locations_seeded_v1' ) ) {
 			return;
 		}
+
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
+
 		$result = hj_iran_locations_seed();
-		if ( ! empty( $result['message'] ) ) {
-			add_admin_notice( esc_html( $result['message'] ) );
-		}
+
+		// پیام برای نمایش در admin_notices؛ در admin_init چاپ نمی‌کنیم.
+		set_transient( 'hj_iran_locations_notice', (string) $result['message'], 300 );
 	}
 	add_action( 'admin_init', 'hj_iran_locations_auto_seed' );
 }
 
 if ( ! function_exists( 'hj_iran_locations_add_admin_notice' ) ) {
-	function hj_iran_locations_add_admin_notice( $message ) {
-		echo '<div class="notice notice-success is-dismissible"><p>' . $message . '</p></div>';
+	/**
+	 * چاپ اعلان موفقیت سیدینگ (فقط مدیر، فقط یک‌بار).
+	 */
+	function hj_iran_locations_add_admin_notice() {
+		$message = get_transient( 'hj_iran_locations_notice' );
+
+		if ( ! $message || ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		delete_transient( 'hj_iran_locations_notice' );
+
+		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( (string) $message ) . '</p></div>';
 	}
+	add_action( 'admin_notices', 'hj_iran_locations_add_admin_notice' );
 }
 
-/************************************************************************
- * ۵. فیلدهای ادمین در صفحه افزودن/ویرایش شهر (تکسونومی city)
- ************************************************************************/
+/* -------------------------------------------------------------------------
+ * ۷. فیلدهای ادمین شهر (تاکسونومی city)
+ * ---------------------------------------------------------------------- */
 
 if ( ! function_exists( 'hj_iran_locations_city_add_form_fields' ) ) {
 	/**
-	 * نمایش فیلدهای父 استان و فلش شهر بزرگ در فرم افزودن شهر.
+	 * فیلدهای استان والد و کلان‌شهر در فرم افزودن شهر.
 	 */
 	function hj_iran_locations_city_add_form_fields() {
+		$provinces = get_terms(
+			array(
+				'taxonomy'   => 'province',
+				'hide_empty' => false,
+				'orderby'    => 'name',
+				'order'      => 'ASC',
+			)
+		);
+
 		wp_nonce_field( 'hj_iran_city_meta', 'hj_iran_city_meta_nonce' );
+
 		echo '<div class="form-field">';
-		echo '<label>' . esc_html__( 'استان والد', 'hamyar-doctors' ) . '</label>';
-		echo '<select name="hj_parent_province_id">';
+		echo '<label for="hj_parent_province_id">' . esc_html__( 'استان والد', 'hamyar-doctors' ) . '</label>';
+		echo '<select name="hj_parent_province_id" id="hj_parent_province_id">';
 		echo '<option value="0">' . esc_html__( 'انتخاب نشده', 'hamyar-doctors' ) . '</option>';
-		$provinces = get_terms( 'province', array( 'hide_empty' => false, 'orderby' => 'name', 'order' => 'ASC' ) );
 		if ( ! is_wp_error( $provinces ) ) {
-			foreach ( $provinces as $prov ) {
-				echo '<option value="' . esc_attr( (int) $prov->term_id ) . '">' . esc_html( $prov->name ) . '</option>';
+			foreach ( $provinces as $province ) {
+				echo '<option value="' . esc_attr( (int) $province->term_id ) . '">' . esc_html( $province->name ) . '</option>';
 			}
 		}
 		echo '</select>';
@@ -375,10 +671,10 @@ if ( ! function_exists( 'hj_iran_locations_city_add_form_fields' ) ) {
 
 		echo '<div class="form-field">';
 		echo '<label>';
-		echo '<input type="checkbox" name="hj_is_major_city" value="1">';
-		echo esc_html__( 'شهر بزرگ (بیش از ۲ جراح در هر تخصص)', 'hamyar-doctors' );
+		echo '<input type="checkbox" name="hj_is_major_city" value="1"> ';
+		echo esc_html__( 'کلان‌شهر (سقف جایگاه بالاتر از ۲ جراح در هر تخصص)', 'hamyar-doctors' );
 		echo '</label>';
-		echo '<p class="description">' . esc_html__( 'اگر تیک شود، محدودیت سلأت ۲ نفره برای این شهر غیرفعال می‌شود.', 'hamyar-doctors' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'اگر تیک شود، محدودیت ۲ نفرهٔ هر تخصص برای این شهر برداشته می‌شود.', 'hamyar-doctors' ) . '</p>';
 		echo '</div>';
 	}
 	add_action( 'city_add_form_fields', 'hj_iran_locations_city_add_form_fields' );
@@ -386,72 +682,102 @@ if ( ! function_exists( 'hj_iran_locations_city_add_form_fields' ) ) {
 
 if ( ! function_exists( 'hj_iran_locations_city_edit_form_fields' ) ) {
 	/**
-	 * نمایش فیلدها در فرم ویرایش شهر.
+	 * فیلدهای استان والد و کلان‌شهر در فرم ویرایش شهر.
+	 *
+	 * @param WP_Term $term ترم در حال ویرایش.
 	 */
 	function hj_iran_locations_city_edit_form_fields( $term ) {
 		$term_id   = (int) $term->term_id;
-		$parent_id = (int) get_term_meta( $term_id, 'hj_parent_province_id', true );
-		$is_major  = (int) get_term_meta( $term_id, 'hj_is_major_city', true );
+		$parent_id = hj_iran_get_city_province_id( $term_id );
+		$is_major  = hj_iran_is_major_city( $term_id );
+
+		$provinces = get_terms(
+			array(
+				'taxonomy'   => 'province',
+				'hide_empty' => false,
+				'orderby'    => 'name',
+				'order'      => 'ASC',
+			)
+		);
+
 		wp_nonce_field( 'hj_iran_city_meta', 'hj_iran_city_meta_nonce' );
-		echo '<div class="form-field">';
-		echo '<label>' . esc_html__( 'استان والد', 'hamyar-doctors' ) . '</label>';
-		echo '<select name="hj_parent_province_id">';
-		echo '<option value="0" ' . ( $parent_id === 0 ? 'selected' : '' ) . '>' . esc_html__( 'انتخاب نشده', 'hamyar-doctors' ) . '</option>';
-		$provinces = get_terms( 'province', array( 'hide_empty' => false, 'orderby' => 'name', 'order' => 'ASC' ) );
+
+		echo '<tr class="form-field">';
+		echo '<th scope="row"><label for="hj_parent_province_id">' . esc_html__( 'استان والد', 'hamyar-doctors' ) . '</label></th>';
+		echo '<td>';
+		echo '<select name="hj_parent_province_id" id="hj_parent_province_id">';
+		echo '<option value="0" ' . selected( 0, $parent_id, false ) . '>' . esc_html__( 'انتخاب نشده', 'hamyar-doctors' ) . '</option>';
 		if ( ! is_wp_error( $provinces ) ) {
-			foreach ( $provinces as $prov ) {
-				$selected = ( $parent_id === (int) $prov->term_id ) ? 'selected' : '';
-				echo '<option value="' . esc_attr( (int) $prov->term_id ) . '" ' . $selected . '>' . esc_html( $prov->name ) . '</option>';
+			foreach ( $provinces as $province ) {
+				echo '<option value="' . esc_attr( (int) $province->term_id ) . '" ' . selected( (int) $province->term_id, $parent_id, false ) . '>' . esc_html( $province->name ) . '</option>';
 			}
 		}
 		echo '</select>';
 		echo '<p class="description">' . esc_html__( 'استانی را که این شهر به آن وابسته است انتخاب کنید.', 'hamyar-doctors' ) . '</p>';
-		echo '</div>';
+		echo '</td>';
+		echo '</tr>';
 
-		echo '<div class="form-field">';
+		echo '<tr class="form-field">';
+		echo '<th scope="row">' . esc_html__( 'کلان‌شهر', 'hamyar-doctors' ) . '</th>';
+		echo '<td>';
 		echo '<label>';
-		echo '<input type="checkbox" name="hj_is_major_city" value="1" ' . ( $is_major === 1 ? 'checked' : '' ) . '>';
-		echo esc_html__( 'شهر بزرگ (بیش از ۲ جراح در هر تخصص)', 'hamyar-doctors' );
+		echo '<input type="checkbox" name="hj_is_major_city" value="1" ' . checked( 1, (int) $is_major, false ) . '> ';
+		echo esc_html__( 'کلان‌شهر (سقف جایگاه بالاتر از ۲ جراح در هر تخصص)', 'hamyar-doctors' );
 		echo '</label>';
-		echo '<p class="description">' . esc_html__( 'اگر تیک شود، محدودیت سلأت ۲ نفره برای این شهر غیرفعال می‌شود.', 'hamyar-doctors' ) . '</p>';
-		echo '</div>';
+		echo '<p class="description">' . esc_html__( 'اگر تیک شود، محدودیت ۲ نفرهٔ هر تخصص برای این شهر برداشته می‌شود.', 'hamyar-doctors' ) . '</p>';
+		echo '</td>';
+		echo '</tr>';
 	}
 	add_action( 'city_edit_form_fields', 'hj_iran_locations_city_edit_form_fields', 10, 1 );
 }
 
 if ( ! function_exists( 'hj_iran_locations_save_city_meta' ) ) {
 	/**
-	 * ذخیره متای شهر در هنگام ایجاد/ویرایش.
+	 * ذخیرهٔ متای شهر هنگام ایجاد/ویرایش.
+	 *
+	 * @param int    $term_id شناسهٔ ترم.
+	 * @param string $tt_id   اسلاگ تاکسونومی.
 	 */
 	function hj_iran_locations_save_city_meta( $term_id, $tt_id ) {
-		if ( ! isset( $_POST['hj_iran_city_meta_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['hj_iran_city_meta_nonce'] ) ), 'hj_iran_city_meta' ) ) {
+		unset( $tt_id ); // قلاب created_city/edited_city خودش مخصوص تاکسونومی city است.
+
+		if ( ! isset( $_POST['hj_iran_city_meta_nonce'] ) ) {
 			return;
 		}
+
+		$nonce = sanitize_text_field( wp_unslash( $_POST['hj_iran_city_meta_nonce'] ) );
+
+		if ( ! wp_verify_nonce( $nonce, 'hj_iran_city_meta' ) ) {
+			return;
+		}
+
 		if ( ! current_user_can( 'manage_options' ) ) {
-			return;
-		}
-		if ( $tt_id !== 'city' ) {
 			return;
 		}
 
 		$term_id = (int) $term_id;
 
 		if ( isset( $_POST['hj_parent_province_id'] ) ) {
-			update_term_meta( $term_id, 'hj_parent_province_id', absint( wp_unslash( $_POST['hj_parent_province_id'] ) ) );
+			$province_id = absint( wp_unslash( $_POST['hj_parent_province_id'] ) );
+			update_term_meta( $term_id, 'hj_province_id', $province_id );
+			update_term_meta( $term_id, 'hj_parent_province_id', $province_id );
 		}
 
 		$is_major = ! empty( $_POST['hj_is_major_city'] ) ? 1 : 0;
 		update_term_meta( $term_id, 'hj_is_major_city', $is_major );
 	}
 	add_action( 'created_city', 'hj_iran_locations_save_city_meta', 10, 2 );
-	add_action( 'edited_city',  'hj_iran_locations_save_city_meta', 10, 2 );
+	add_action( 'edited_city', 'hj_iran_locations_save_city_meta', 10, 2 );
 }
 
-/************************************************************************
- * ۶. صفحه ابزارها (Tools) برای اجرای مجدد سیدینگ
- ************************************************************************/
+/* -------------------------------------------------------------------------
+ * ۸. صفحهٔ ابزارها (Tools) برای اجرای مجدد سیدینگ
+ * ---------------------------------------------------------------------- */
 
 if ( ! function_exists( 'hj_iran_locations_add_tools_page' ) ) {
+	/**
+	 * افزودن صفحهٔ ابزار سیدینگ ایران.
+	 */
 	function hj_iran_locations_add_tools_page() {
 		add_submenu_page(
 			'tools.php',
@@ -466,78 +792,106 @@ if ( ! function_exists( 'hj_iran_locations_add_tools_page' ) ) {
 }
 
 if ( ! function_exists( 'hj_iran_locations_tools_page_render' ) ) {
+	/**
+	 * رندر صفحهٔ ابزار سیدینگ.
+	 */
 	function hj_iran_locations_tools_page_render() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'دسترسی غیرمجاز.', 'hamyar-doctors' ) );
 		}
 
-		$seeded = (bool) get_option( 'hj_iran_locations_seeded_v1' );
 		$message = '';
+		$result  = null;
 
-		if ( isset( $_POST['hj_iran_run_seed_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['hj_iran_run_seed_nonce'] ) ), 'hj_iran_run_seed' ) ) {
-			if ( current_user_can( 'manage_options' ) ) {
-				$result = hj_iran_locations_seed();
-				$message = esc_html( $result['message'] );
-				if ( ! $seeded ) {
-					$message .= ' استان: ' . (int) $result['created']['provinces'] . '، شهر: ' . (int) $result['created']['cities'] . '، نوع تخصص: ' . (int) $result['created']['types'] . '، رشته: ' . (int) $result['created']['specs'] . '.';
-				}
+		if ( isset( $_POST['hj_iran_run_seed_nonce'] ) ) {
+			$nonce = sanitize_text_field( wp_unslash( $_POST['hj_iran_run_seed_nonce'] ) );
+
+			if ( wp_verify_nonce( $nonce, 'hj_iran_run_seed' ) ) {
+				$result  = hj_iran_locations_seed();
+				$message = 'استان: ' . (int) $result['created']['provinces']
+					. '، شهر: ' . (int) $result['created']['cities']
+					. '، نوع تخصص: ' . (int) $result['created']['types']
+					. '، رشته: ' . (int) $result['created']['specs'] . '.';
 			}
 		}
 
-		echo '<div class="wrap">';
-		echo '<h1>' . esc_html__( 'سیدینگ استان‌ها، شهرها و تخصص‌های ایران', 'hamyar-doctors' ) . '</h1>';
+		$last_seed = get_option( 'hj_iran_locations_last_seed', array() );
 
-		if ( $message !== '' ) {
-			echo '<div class="notice notice-success is-dismissible"><p>' . $message . '</p></div>';
+		echo '<div class="wrap">';
+		echo '<h1>' . esc_html__( 'سیدینگ استان‌ها، شهرستان‌ها و تخصص‌های ایران', 'hamyar-doctors' ) . '</h1>';
+
+		if ( '' !== $message && is_array( $result ) ) {
+			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $result['message'] . ' ' . $message ) . '</p></div>';
 		}
 
-		echo '<p>' . esc_html__( 'این صفحه تمام ۳۱ استان ایران، شهرهای اصلی هر استان و تخصص‌های الجراحی هسته‌ای را به صورت ترم در تکسونومی‌های specialty_type، specialty، province و city ایجاد می‌کند. هر شهر به استان والد خود وصل شده و شهرهای بزرگ فلش می‌شوند.', 'hamyar-doctors' ) . '</p>';
+		echo '<p>' . esc_html__( 'این صفحه ۳۱ استان ایران، شهرستان‌های هر استان و درخت تخصص‌های جراحی را به‌صورت ترم در تاکسونومی‌های specialty_type، specialty، province و city ایجاد می‌کند. هر شهر به استان والد وصل شده و کلان‌شهرها علامت‌گذاری می‌شوند.', 'hamyar-doctors' ) . '</p>';
 
-		$status_text = $seeded ? esc_html__( 'بله — انجام شده است.', 'hamyar-doctors' ) : esc_html__( 'خیر — هنوز انجام نشده است.', 'hamyar-doctors' );
-		echo '<p><strong>' . esc_html__( 'وضعیت سيدینگ:', 'hamyar-doctors' ) . '</strong> ' . $status_text . '</p>';
+		$seeded      = (bool) get_option( 'hj_iran_locations_seeded_v1' );
+		$status_text = $seeded
+			? esc_html__( 'بله — انجام شده است.', 'hamyar-doctors' )
+			: esc_html__( 'خیر — هنوز انجام نشده است.', 'hamyar-doctors' );
+
+		echo '<p><strong>' . esc_html__( 'وضعیت سیدینگ:', 'hamyar-doctors' ) . '</strong> ' . $status_text . '</p>';
+
+		if ( is_array( $last_seed ) && ! empty( $last_seed['time'] ) ) {
+			echo '<p><strong>' . esc_html__( 'آخرین اجرا:', 'hamyar-doctors' ) . '</strong> '
+				. esc_html( date_i18n( 'Y/m/d H:i', (int) $last_seed['time'] ) ) . '</p>';
+		}
 
 		echo '<form method="post">';
 		wp_nonce_field( 'hj_iran_run_seed', 'hj_iran_run_seed_nonce' );
-		echo '<button type="button" class="button button-primary" onclick="confirmSeed(this.form)">' . esc_html__( 'اجرا/اجرا مجدد سيدینگ', 'hamyar-doctors' ) . '</button>';
+		echo '<button type="submit" class="button button-primary" onclick="return confirm('
+			. esc_attr( wp_json_encode( __( 'اجرای مجدد سیدینگ؟ ترم‌های موجود تکرار نمی‌شوند.', 'hamyar-doctors' ) ) )
+			. ');">' . esc_html__( 'اجرا / اجرای مجدد سیدینگ', 'hamyar-doctors' ) . '</button>';
 		echo '</form>';
 
-		echo '<p>' . esc_html__( 'بعد از اجرا، می‌توانید در منوی Druck‌ها (Posts) → دسته‌بندی‌ها → شهر، استان والد و فلش «شهر بزرگ» را برای هر شهر ویرایش کنید.', 'hamyar-doctors' ) . '</p>';
+		echo '<p>' . esc_html__( 'بعد از اجرا می‌توانید در «پزشک‌ها → شهر» استان والد و علامت کلان‌شهر را برای هر شهر ویرایش کنید.', 'hamyar-doctors' ) . '</p>';
 
-		echo '<script>
-		function confirmSeed(form) {
-			if (confirm(\'' . esc_js__( 'آیا از انجام مجدد سيدینگ مطمئن هستید؟ ترم‌های قبلی تکرار نمی‌شوند.' ) . '\')) {
-				form.submit();
-			}
-		}
-		</script>';
+		/**
+		 * قلاب افزودن بخش‌های تکمیلی به صفحهٔ ابزار سیدینگ.
+		 *
+		 * @param bool $seeded وضعیت سیدینگ.
+		 */
+		do_action( 'hj_iran_tools_extra', $seeded );
+
 		echo '</div>';
 	}
 }
 
-/************************************************************************
- * ۷. Helper عمومی: بررسی فلش شهر بزرگ
- ************************************************************************/
+/* -------------------------------------------------------------------------
+ * ۹. توابع کمکی عمومی
+ * ---------------------------------------------------------------------- */
 
 if ( ! function_exists( 'hj_iran_is_major_city' ) ) {
 	/**
-	 * بررسی اینکه شهر به‌عنوان شهر بزرگ علامت‌گذاری شده است یا خیر.
+	 * آیا این شهر به‌عنوان کلان‌شهر علامت‌گذاری شده است؟
 	 *
-	 * @param int $city_id شناسه ترم شهر.
+	 * @param int $city_id شناسهٔ ترم شهر.
 	 * @return bool
 	 */
 	function hj_iran_is_major_city( $city_id ) {
-		return (int) get_term_meta( (int) $city_id, 'hj_is_major_city', true ) === 1;
+		return 1 === (int) get_term_meta( (int) $city_id, 'hj_is_major_city', true );
 	}
 }
 
 if ( ! function_exists( 'hj_iran_get_city_province_id' ) ) {
 	/**
-	 * شناسه ترم استان والد یک شهر.
+	 * شناسهٔ ترم استان والد یک شهر.
 	 *
-	 * @param int $city_id شناسه ترم شهر.
+	 * کلید تازهٔ hj_province_id اولویت دارد و در صورت خالی بودن، کلید قدیمی
+	 * hj_parent_province_id خوانده می‌شود.
+	 *
+	 * @param int $city_id شناسهٔ ترم شهر.
 	 * @return int
 	 */
 	function hj_iran_get_city_province_id( $city_id ) {
-		return (int) get_term_meta( (int) $city_id, 'hj_parent_province_id', true );
+		$city_id = (int) $city_id;
+
+		$province_id = (int) get_term_meta( $city_id, 'hj_province_id', true );
+		if ( $province_id > 0 ) {
+			return $province_id;
+		}
+
+		return (int) get_term_meta( $city_id, 'hj_parent_province_id', true );
 	}
 }
