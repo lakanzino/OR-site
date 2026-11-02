@@ -12,6 +12,7 @@
 | ۴ | `includes/roles.php` + `includes/security.php` + `includes/dashboard.php` | کلاس `HJ_Doctors_Roles` (نقش پزشک بدون edit_posts، capهای سطح مدیر به‌صورت پویا برای دارندگان `manage_options`، مالکیت = نویسنده یا متا `hj_doctor_post_id`، قفل پیشخوان به نفع `/my-profile/`، سقف نوع/حجم/تعداد بارگذاری) + primitiveهای `hj_sec_*` + صفحهٔ ناحیه پزشک و شورت‌کد شروع |
 | ۵ | `includes/auth-google.php` | پل ورود/ثبت‌نام با گوگل روی Nextend Social Login: کوکی نیت امضاشده (`hj_doc_intent`، HMAC با `wp_salt`، ۳۰ دقیقه)، ورودی پزشکان `/?hj_google_start=1`، هوک‌های `nsl_register_new_user`/`nsl_login` + آداپتور عمومی `hj_doctors_google_user_ready`، شورت‌کد `[hj_google_login]` و صفحهٔ وضعیت فقط-مدیر `admin-post.php?action=hj_auth_status` |
 | ۶ | `includes/dashboard.php` + `assets/js/dashboard.js` + `assets/css/dashboard.css` | داشبورد مینیمال `/my-profile/`: فرم پنج‌بلوکی دوزبانه، ذخیرهٔ AJAX با خطای زیر همان فیلد، پیش‌نمایش زنده، نوار تکمیل، «ارسال برای بررسی» و گردش تأیید مدیر، عکس پروفایل و مدارک خصوصی در `uploads/hj-private/p<ID>/` |
+| ۱۳ | `includes/responsive.php` + `assets/css/site-responsive.css` | لایهٔ ریسپانسیو سراسری سایت: آخرین شیت با اولویت `999`، پوشش سربرگ/ناوبری، جدول‌ها، فرم‌ها، مقالات، کارت‌های سه‌تایی صفحهٔ نخست، پروفایل پزشک، راهنمای جراحی و داشبورد `/my-profile/` |
 | دارایی | `assets/img/doctor-default.jpg` | عکس پیش‌فرض نمایه که `hj_doctors_default_photo_url()` برمی‌گرداند |
 
 ## زمینه‌های نمایه (طرح دوزبانهٔ بخش ۶)
@@ -28,6 +29,15 @@
 - مدارک در `uploads/hj-private/p<ID>/` نگهداری می‌شوند؛ دانلود از طریق افزونه به نانس و مجوز نیاز دارد. اما `.htaccess` فقط در Apache با تنظیم مناسب مؤثر است و در Nginx به‌تنهایی محافظت نمی‌کند. پیش از بارگذاری مدارک واقعی، مسدود بودن دسترسی مستقیم HTTP به کل مسیر خصوصی را روی سرور و CDN بررسی کنید؛ برای Nginx قانون deny لازم است. مدارک قبلی نیز باید بررسی و محافظت شوند.
 - صفحهٔ وضعیت مدیر: `wp-admin/admin-post.php?action=hj_dash_status` (ساختار جدول آرا، کلیدهای متای قدیمی، مقادیر روزهای هفته).
 - هوک‌های توسعه: `hj_doctor_dashboard_appointments`، `hj_doctor_dashboard_widgets`، `hj_dash_days`، `hj_dash_max_specialties`، `hj_dash_max_docs`، `hj_doctors_map_hosts`.
+
+## ریسپانسیو سراسری سایت (بخش ۱۳ — نسخهٔ ۰٫۳٫۵)
+
+- `assets/css/site-responsive.css` یک شیت کامل و مشترک است که **آخر از همه** (`wp_enqueue_scripts` با اولویت `999`) بارگذاری می‌شود تا روی استایل‌های قالب و شیت‌های صفحه‌ای (مثل `static-home.css`) بنشیند.
+- چون از داخل افزونه بارگذاری می‌شود، اصلاح موبایل با **به‌روزرسانی افزونه** روی سایت می‌نشیند و نیازی به تعویض قالب نیست. اگر قالب فرزند نسخهٔ هم‌نام خودش را داشته باشد (handle `lax-theme-responsive`)، افزونه دوباره بارگذاری نمی‌کند.
+- پوشش: `viewport`/`text-size-adjust`، جلوگیری از سرریز افقی، `min-width:0` روی شبکه‌ها، جدول‌های اسکرول‌شو، فونت ۱۶ پیکسلی ورودی‌ها در iOS، هدف لمسی ۴۴ پیکسلی ناوبری و دکمه‌ها، پابرگ تک‌ستونی، تایپوگرافی و ستون‌های بلوک‌های وردپرس، ابزارک‌ها/صفحه‌بندی/دیدگاه‌ها و نوارهای افقی.
+- داشبورد: در `≤900px` تک‌ستونی با `minmax(0,1fr)` (نه `1fr` که کف min-content دارد)، و در `≤640px` ردیف ساعات کاری از پنج ستون به «نام روز + دو بازه در دو خط» تبدیل می‌شود؛ ورودی‌های `type=time` تمام‌عرض می‌شوند.
+- صفحهٔ نخست: سه کارت در **همهٔ عرض‌ها** سه‌ستونی می‌مانند (`repeat(3, minmax(0,1fr))`) و فقط پدینگ/فونت/آیکون با `clamp()` کوچک می‌شوند؛ هیچ نقطه‌ای به دو یا یک ستون نمی‌شکند.
+- کل کادر کلیک‌پذیر است: `.hj-landing-card{position:relative}` + `.hj-card-link a::after{position:absolute;inset:0}` — بدون تغییر مارک‌آپ، پس محتوای ذخیره‌شدهٔ برگهٔ نخست نیازی به بازدرج ندارد.
 
 ## نصب و فعال‌سازی
 

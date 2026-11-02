@@ -307,3 +307,114 @@
 	.hj-dash__hrow { grid-template-columns: 64px auto 1fr auto 1fr; }
 	.hj-dash__hrow .hj-dash__err { grid-column: 1 / -1; }
 }
+
+/* ------------------------------------------------------------------
+ * ریسپانسیو داشبورد (۰٫۳٫۵)
+ *
+ * در موبایل داشبورد نباید به دو ستون یا به ردیف پنج‌ستونی ساعات کاری
+ * بچسبد؛ همین‌جا هم مستقل از قالب سایت اصلاح شده است.
+ * ------------------------------------------------------------------ */
+
+.hj-dash,
+.hj-dash * {
+	min-width: 0;
+}
+
+.hj-dash__grid,
+.hj-dash__pair,
+.hj-dash__hrow {
+	min-width: 0;
+}
+
+.hj-dash__title,
+.hj-dash__name,
+.hj-dash__who,
+.hj-dash__card h2,
+.hj-dash__card h3 {
+	overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+	.hj-dash {
+		max-width: 100%;
+		padding: 12px 10px 40px;
+	}
+
+	.hj-dash__grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.hj-dash__side {
+		position: static;
+		width: 100%;
+	}
+
+	.hj-dash__card {
+		padding: 14px;
+		border-radius: 10px;
+	}
+}
+
+@media (max-width: 640px) {
+	.hj-dash__pair {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.hj-dash__hrow {
+		grid-template-columns: auto minmax(0, 1fr);
+		gap: 6px 8px;
+	}
+
+	.hj-dash__hrow input[type="time"] {
+		width: 100%;
+		min-width: 0;
+	}
+
+	.hj-dash__hrow .hj-dash__err {
+		grid-column: 1 / -1;
+	}
+
+	.hj-dash__head {
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.hj-dash__title {
+		font-size: 1.02rem;
+	}
+
+	.hj-dash__avatar--lg {
+		width: 72px;
+		height: 72px;
+	}
+
+	.hj-dash__field input,
+	.hj-dash__field select,
+	.hj-dash__field textarea {
+		width: 100%;
+		max-width: 100%;
+		font-size: 16px;
+	}
+}
+
+@media (max-width: 640px) {
+	.hj-dash__photo {
+		flex-wrap: wrap;
+		align-items: flex-start;
+	}
+
+	.hj-dash__photo-actions {
+		flex: 1 1 150px;
+	}
+
+	.hj-dash__docs-wrap {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.hj-dash__bar,
+	.hj-dash__preview {
+		max-width: 100%;
+	}
+}

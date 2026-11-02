@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.33.6
+Stable tag: 0.33.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,11 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.33.7 =
+* شیت سراسری responsive.css (اولویت ۹۹) برای موبایل همهٔ بخش‌های سایت.
+* کارت‌های صفحهٔ نخست در هر عرضی سه‌ستونی می‌مانند؛ کل کادر لینک است.
+* داشبورد /my-profile/ در موبایل تک‌ستونی و ردیف ساعات کاری دوخطی می‌شود.
 
 = 0.33.6 =
 * چیدمان تازه صفحه نخست و ویترین پویا برای پروفایل‌های منتشر و تأییدشده، با حفظ برگه قبلی.
