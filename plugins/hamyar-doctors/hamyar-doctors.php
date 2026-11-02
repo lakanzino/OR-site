@@ -197,6 +197,39 @@ final class HJ_Doctors {
 				require_once $path;
 			}
 		}
+
+		// --- بارگذاری ماژول‌های ارتقایافته ناوبری تکنولوژیک، ۳۱ استان و سیستم درآمدزایی VIP ---
+		if ( ! defined( 'HJ_DOCTORS_SAFE_MODE' ) || ! HJ_DOCTORS_SAFE_MODE ) {
+
+			$hj_upgraded_modules = array(
+
+				'includes/core-patches.php',
+
+				'includes/admin-settings.php',
+
+				'includes/iran-locations-seeder.php',
+
+				'includes/monetization-vip.php',
+
+				'includes/tech-navigator.php',
+
+				'includes/profile-render.php',
+
+			);
+
+			foreach ( $hj_upgraded_modules as $hj_mod_file ) {
+
+				$hj_mod_path = plugin_dir_path( __FILE__ ) . $hj_mod_file;
+
+				if ( file_exists( $hj_mod_path ) ) {
+
+					require_once $hj_mod_path;
+
+				}
+
+			}
+
+		}
 	}
 
 	/**
