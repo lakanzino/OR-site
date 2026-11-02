@@ -37,7 +37,9 @@ class HomepagePresentationTest(unittest.TestCase):
         self.assertIn("current_user_can( 'manage_options' )", install)
         self.assertIn("check_admin_referer", install)
         self.assertIn("wp_insert_post", install)
-        self.assertNotIn("wp_update_post", install)
+        self.assertNotIn("wp_update_post", install.split("function hj_static_home_create_page()", 1)[1].split("/** One-time upgrade", 1)[0])
+        self.assertIn("hj_static_magazine_block", install)
+        self.assertIn("_hj_magazine_section_added", install)
         self.assertIn("'page_on_front'", install)
         self.assertIn("'show_on_front'", install)
 
