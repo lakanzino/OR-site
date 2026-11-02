@@ -149,3 +149,19 @@
 .hj-magazine-form p, .hj-magazine-account { font-size: 13px; color: #526e6b; }
 .hj-magazine-trap { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 @media (max-width: 600px) { .hj-magazine-row { flex-direction: column; } .hj-magazine-row input, .hj-magazine-row button { width: 100%; } }
+
+/* Approved profile showcase: three on desktop, one on mobile. */
+.hj-home-surgeons { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 20px; }
+.hj-surgeon-card { min-width: 0; padding: 28px; border: 1px solid #e3eeea; background: #fff; border-radius: 22px; box-shadow: 0 18px 45px rgba(31,65,67,.10); overflow-wrap: anywhere; }
+.hj-surgeon-card__photo, .hj-surgeon-card__placeholder { display: grid; place-items: center; width: 84px; height: 84px; border-radius: 22px; object-fit: cover; background: #e3f5ee; color: #398b7a; font-size: 28px; margin-bottom: 18px; }
+.hj-landing .hj-surgeon-card h3 { margin: 0; }
+.hj-landing .hj-surgeon-card p { margin: 10px 0 0; color: #657b80; line-height: 1.9; }
+.hj-surgeon-card a, .hj-surgeons-more a, .hj-surgeons-empty a { display: inline-block; margin-top: 18px; color: #216c61; font-weight: 700; }
+.hj-surgeons-more { text-align: center; }
+.hj-surgeons-empty { padding: 26px; background: #f6fbf9; border: 1px solid #e3eeea; border-radius: 20px; color: #405c5a; }
+@media (min-width: 769px) and (max-width: 1050px) { .hj-home-surgeons { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 768px) { .hj-home-surgeons { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+.hj-landing-surgeon .hj-google-btn { display:inline-flex; align-items:center; gap:9px; margin-top:12px; padding:11px 18px; border:1px solid #d5e6e2; border-radius:12px; background:#fff; color:#17635d; font-weight:700; text-decoration:none; box-shadow:0 8px 20px rgba(31,78,72,.08); }
+.hj-landing-surgeon .hj-google-btn:hover { background:#f6fbfa; }

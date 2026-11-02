@@ -17,6 +17,10 @@ function hj_static_home_admin() {
 		<?php if ( ! empty( $previous['page_on_front'] ) && 'page' === $previous['show_on_front'] ) : ?>
 			<p>برگهٔ نخست قبلی: <a href="<?php echo esc_url( get_edit_post_link( (int) $previous['page_on_front'], 'raw' ) ); ?>">ویرایش برگه قبلی</a></p>
 		<?php endif; ?>
+		<?php $previous_0336 = get_option( 'hj_static_home_0336_previous', array() ); ?>
+		<?php if ( ! empty( $previous_0336['page_on_front'] ) && 'page' === $previous_0336['show_on_front'] ) : ?>
+			<p>برگهٔ پیش از چیدمان جدید: <a href="<?php echo esc_url( get_edit_post_link( (int) $previous_0336['page_on_front'], 'raw' ) ); ?>">ویرایش برگه قبلی</a>؛ برای بازگرداندن آن، از تنظیمات ← خواندن استفاده کنید.</p>
+		<?php endif; ?>
 		<p>متن‌ها، دکمه‌ها، پیوندها و تصویر را در ویرایشگر برگه تغییر دهید. سربرگ و فهرست‌ها از بخش نمایش مدیریت می‌شوند.</p>
 		<p>ورود گوگل و ثبت‌نام جراحان به فعال بودن افزونه همیار پزشک‌ها و Nextend Social Login و پیکربندی Google OAuth نیاز دارند. پروفایل جراحان در برگهٔ افزونه مدیریت می‌شود.</p>
 		<?php if ( $id && get_post_status( $id ) && 'trash' !== get_post_status( $id ) ) : ?>
@@ -53,7 +57,7 @@ function hj_install_static_home() {
 }
 
 /** Create a new editable page; never write over an existing page. */
-function hj_static_home_create_page() {
+function hj_static_home_create_page( $magazine = null, $source = 0 ) {
 	$file = get_stylesheet_directory() . '/homepage/starter.html';
 	if ( ! is_readable( $file ) ) { return new WP_Error( 'hj_home_missing', 'Homepage starter not available.' ); }
 	$starter = file_get_contents( $file );
@@ -66,29 +70,20 @@ function hj_static_home_create_page() {
 		'{{BEFORE}}' => hj_term_url( 'guide_stage', 'before', 'patient_guide' ),
 		'{{DURING}}' => hj_term_url( 'guide_stage', 'during', 'patient_guide' ),
 		'{{AFTER}}' => hj_term_url( 'guide_stage', 'after', 'patient_guide' ),
-		'{{CARE}}' => hj_term_url( 'guide_stage', 'after', 'patient_guide' ),
 		'{{OR}}' => get_post_type_archive_link( 'or_environment' ) ?: home_url( '/or-environment/' ),
 		'{{DISEASES}}' => get_post_type_archive_link( 'disease' ) ?: home_url( '/diseases/' ),
 		'{{GLOSSARY}}' => get_post_type_archive_link( 'glossary' ) ?: home_url( '/glossary/' ),
 		'{{STUDENTS}}' => get_post_type_archive_link( 'student_content' ) ?: home_url( '/student/' ),
 		'{{FAQ}}' => hj_page_url( 'faq' ),
 		'{{CONTACT}}' => hj_page_url( 'contact' ),
-		'{{SIGNUP}}' => add_query_arg( 'hj_google_start', '1', home_url( '/' ) ),
 		'{{PROFILE}}' => function_exists( 'hj_doctors_dashboard_url' ) ? hj_doctors_dashboard_url() : home_url( '/my-profile/' ),
-		'{{GOOGLE}}' => add_query_arg( 'loginSocial', 'google', site_url( 'wp-login.php' ) ),
 		'{{IMAGE}}' => get_stylesheet_directory_uri() . '/assets/images/home-medical-tech.png',
 	);
-	$starter = hj_static_magazine_block() . strtr( $starter, array_map( 'esc_url', $urls ) );
-	$slug = defined( 'HJ_SC_PAGE_SLUG' ) ? HJ_SC_PAGE_SLUG : 'symptom-checker';
-	$pages = get_posts( array( 'post_type' => 'page', 'post_status' => 'publish', 'name' => $slug, 'numberposts' => 1 ) );
-	$button = '';
-	if ( $pages ) {
-		$button = '<!-- wp:button {"className":"hj-btn-secondary"} --><div class="wp-block-button hj-btn-secondary"><a class="wp-block-button__link wp-element-button" href="' . esc_url( get_permalink( $pages[0] ) ) . '">ارزیابی علائم ←</a></div><!-- /wp:button -->';
-	}
-	$starter = str_replace( '{{SYMPTOM_BUTTON}}', $button, $starter );
+	$starter = strtr( $starter, array_map( 'esc_url', $urls ) );
+	$starter = str_replace( '{{MAGAZINE}}', null === $magazine ? hj_static_magazine_block() : $magazine, $starter );
 	return wp_insert_post( array(
 		'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'صفحه نخست',
-		'post_content' => wp_slash( $starter ), 'meta_input' => array( '_hj_static_home_revision' => '0.33.2', '_hj_magazine_section_added' => 1 ),
+		'post_content' => wp_slash( $starter ), 'meta_input' => array( '_hj_static_home_revision' => '0.33.2', '_hj_static_home_layout' => '0.33.6', '_hj_home_source' => (int) $source, '_hj_magazine_section_added' => 1 ),
 	), true );
 }
 
@@ -162,3 +157,46 @@ add_action( 'init', function () {
 	if ( ! shortcode_exists( 'hj_magazine_subscribe' ) ) { add_shortcode( 'hj_magazine_subscribe', function () { return '<p>فرم اشتراک در حال آماده‌سازی است.</p>'; } ); }
 	if ( ! shortcode_exists( 'hj_member_account_link' ) ) { add_shortcode( 'hj_member_account_link', '__return_empty_string' ); }
 }, 20 );
+
+/** Move to a new editable page while leaving the previously selected page intact. */
+function hj_static_home_upgrade_0336() {
+	if ( ! current_user_can( 'manage_options' ) || get_option( 'hj_static_home_0336_done' ) || wp_doing_ajax() || wp_doing_cron() || 'page' !== get_option( 'show_on_front' ) ) { return; }
+	$old_id = (int) get_option( 'page_on_front' );
+	$page = get_post( $old_id );
+	if ( ! $page || 'page' !== $page->post_type || 'publish' !== $page->post_status ) { return; }
+	if ( '0.33.6' === get_post_meta( $old_id, '_hj_static_home_layout', true ) ) { update_option( 'hj_static_home_0336_done', 1, false ); return; }
+	$edit_lock = get_post_meta( $old_id, '_edit_lock', true );
+	if ( $edit_lock && (int) $edit_lock > time() - 150 ) { return; }
+	$lock = (int) get_option( 'hj_static_home_0336_lock', 0 );
+	if ( $lock && $lock < time() - 300 ) { delete_option( 'hj_static_home_0336_lock' ); }
+	if ( ! add_option( 'hj_static_home_0336_lock', time(), '', 'no' ) ) { return; }
+	// Preserve an existing editable newsletter section, including editorial edits.
+	$magazine = null;
+	if ( function_exists( 'parse_blocks' ) && function_exists( 'serialize_block' ) ) {
+		foreach ( parse_blocks( $page->post_content ) as $block ) {
+			$classes = isset( $block['attrs']['className'] ) && is_string( $block['attrs']['className'] ) ? preg_split( '/\s+/', $block['attrs']['className'] ) : array();
+			if ( in_array( 'hj-magazine-section', $classes, true ) ) { $magazine = serialize_block( $block ); break; }
+		}
+	}
+	$existing = get_posts( array( 'post_type' => 'page', 'post_status' => 'publish', 'numberposts' => 1, 'fields' => 'ids', 'meta_query' => array(
+		array( 'key' => '_hj_static_home_layout', 'value' => '0.33.6' ),
+		array( 'key' => '_hj_home_source', 'value' => $old_id ),
+	) ) );
+	$id = $existing ? (int) $existing[0] : hj_static_home_create_page( $magazine, $old_id );
+	if ( is_wp_error( $id ) || ! $id ) { update_option( 'hj_static_home_0336_error', 1, false ); delete_option( 'hj_static_home_0336_lock' ); return; }
+	// Do not switch away from a front page an editor selected during creation.
+	if ( (int) get_option( 'page_on_front' ) !== $old_id || 'page' !== get_option( 'show_on_front' ) ) { delete_option( 'hj_static_home_0336_lock' ); return; }
+	update_option( 'hj_static_home_0336_previous', array( 'show_on_front' => 'page', 'page_on_front' => $old_id ), false );
+	update_option( 'hj_static_home_page_id', $id );
+	update_option( 'page_on_front', $id );
+	update_option( 'hj_static_home_0336_done', 1, false );
+	delete_option( 'hj_static_home_0336_error' );
+	delete_option( 'hj_static_home_0336_lock' );
+	if ( function_exists( 'orsite_gh_purge_caches' ) ) { orsite_gh_purge_caches(); }
+}
+add_action( 'admin_init', 'hj_static_home_upgrade_0336', 20 );
+add_action( 'admin_notices', function () {
+	if ( current_user_can( 'manage_options' ) && get_option( 'hj_static_home_0336_error' ) ) {
+		echo '<div class="notice notice-error"><p>' . esc_html__( 'ساخت چیدمان جدید صفحه نخست ناموفق بود؛ صفحه قبلی تغییر نکرده است.', 'lax-theme-child' ) . '</p></div>';
+	}
+} );

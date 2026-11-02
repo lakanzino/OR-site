@@ -27,17 +27,25 @@ class HomepagePresentationTest(unittest.TestCase):
     def test_starter_is_editable_and_links_to_existing_flows(self):
         starter = source("homepage/starter.html")
         install = source("inc/static-home.php")
-        for label in ("راهنمای بیمار", "ثبت‌نام جراحان", "ورود به پروفایل", "ورود با گوگل", "قبل از عمل", "حین عمل", "بعد از عمل و ریکاوری", "اتاق عمل، تیم و تجهیزات", "دانشنامه بیماری‌ها", "واژه‌نامه", "ویژه دانشجویان اتاق عمل", "پرسش‌های متداول"):
+        for label in ("راهنمای بیمار", "ثبت‌نام جراحان", "ورود به پنل پزشک", "قبل از عمل", "حین عمل", "بعد از عمل و ریکاوری", "اتاق عمل، تیم و تجهیزات", "دانشنامه بیماری‌ها", "واژه‌نامه", "ویژه دانشجویان اتاق عمل", "پرسش‌های متداول"):
             self.assertIn(label, starter)
-        for token in ("GUIDES", "SURGERIES", "DOCTORS", "SIGNUP", "PROFILE", "GOOGLE", "IMAGE", "BEFORE", "DURING", "AFTER", "OR", "DISEASES", "GLOSSARY", "STUDENTS", "CARE", "FAQ", "CONTACT", "SYMPTOM_BUTTON"):
+        for token in ("GUIDES", "SURGERIES", "DOCTORS", "PROFILE", "IMAGE", "BEFORE", "DURING", "AFTER", "OR", "DISEASES", "GLOSSARY", "STUDENTS", "FAQ", "CONTACT"):
             self.assertIn("{{" + token + "}}", starter)
             self.assertIn("{{" + token + "}}", install)
-        self.assertIn("hj_google_start", install)
-        self.assertIn("loginSocial", install)
+        self.assertIn("[hj_home_surgeons]", starter)
+        self.assertIn("[hj_home_google]", starter)
+        self.assertIn("[hj_google_login", source("inc/home-surgeons.php"))
+        self.assertLess(starter.index("در کدام مرحله"), starter.index("[hj_home_surgeons]"))
+        self.assertLess(starter.index("[hj_home_surgeons]"), starter.index("hj-landing-surgeon"))
+        self.assertLess(starter.index("hj-landing-surgeon"), starter.index("کاوش در همیار"))
+        self.assertIn("{{MAGAZINE}}", starter)
+        self.assertNotIn("hj-landing-login", starter)
+        self.assertNotIn("hj-landing-tool", starter)
+        self.assertNotIn("[نام پزشک]", starter)
         self.assertIn("current_user_can( 'manage_options' )", install)
         self.assertIn("check_admin_referer", install)
         self.assertIn("wp_insert_post", install)
-        self.assertNotIn("wp_update_post", install.split("function hj_static_home_create_page()", 1)[1].split("/** One-time upgrade", 1)[0])
+        self.assertNotIn("wp_update_post", install.split("function hj_static_home_create_page(", 1)[1].split("/** One-time upgrade", 1)[0])
         self.assertIn("hj_static_magazine_block", install)
         self.assertIn("_hj_magazine_section_added", install)
         self.assertIn("'page_on_front'", install)

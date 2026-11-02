@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.33.5
+Stable tag: 0.33.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.33.6 =
+* چیدمان تازه صفحه نخست و ویترین پویا برای پروفایل‌های منتشر و تأییدشده، با حفظ برگه قبلی.
 
 = 0.33.5 =
 * بخش قابل ویرایش اشتراک مجله و حساب اعضا، همراه قالب صفحه پزشک.

@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.33.5' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.33.6' );
 }
 
 /**
@@ -59,6 +59,9 @@ require_once get_stylesheet_directory() . '/inc/source-whitelist.php';
 require_once get_stylesheet_directory() . '/inc/references-box.php';
 require_once get_stylesheet_directory() . '/inc/faq-accordion.php';
 require_once get_stylesheet_directory() . '/inc/nav-menus.php';
+// Optional while an in-place theme update is copying files.
+$hj_surgeons_path = get_stylesheet_directory() . '/inc/home-surgeons.php';
+if ( is_readable( $hj_surgeons_path ) ) { include_once $hj_surgeons_path; }
 // In-place updates copy files individually: do not break a concurrent request
 // if this optional display helper has not been copied yet.
 if ( is_readable( get_stylesheet_directory() . '/inc/care-tool.php' ) ) {
