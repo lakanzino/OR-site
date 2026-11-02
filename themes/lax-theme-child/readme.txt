@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.33.2
+Stable tag: 0.33.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.33.3 =
+* اصلاح عرض بلوک‌های صفحه نخست و چیدمان ریسپانسیو دسکتاپ، تبلت و موبایل بدون تغییر محتوای برگه.
 
 = 0.33.2 =
 * ساخت و انتخاب یک‌بارهٔ برگه کامل صفحه نخست در نخستین ورود مدیر؛ محتوای قبلی حفظ می‌شود.
