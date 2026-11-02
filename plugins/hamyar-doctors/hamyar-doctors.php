@@ -175,7 +175,8 @@ final class HJ_Doctors {
 			'includes/iran-locations-seeder.php', // بخش ۱۴ — سیدر ۳۱ استان، شهر و تخصص‌های الجراحی.
 		'includes/cpt.php',          // بخش ۲ — نوع محتوای پزشک.
 		'includes/monetization-vip.php',     // بخش ۲ — superficie تجاری، ستاره‌دار/VIP و سقف سلأت.
-		'includes/tech-navigator.php',       // بخش ۳ — ناوبر دو楽ته جراحان با AJAX.
+		'includes/tech-navigator.php',
+		'includes/profile-render.php',       // بخش ۳ — ناوبر دو楽ته جراحان با AJAX.
 			'includes/acf-fields.php',   // بخش ۳ — زمینه‌های نمایه.
 			'includes/dashboard.php',    // بخش ۴ — صفحهٔ /my-profile/ و شورت‌کد شروع.
 			'includes/member-account.php', // حساب عمومی مستقل از ناحیه پزشکان.
