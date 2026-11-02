@@ -172,7 +172,10 @@ final class HJ_Doctors {
 			'includes/roles.php',        // بخش ۴ — نقش پزشک، capabilityها و قفل پیشخوان.
 			'includes/security.php',     // بخش ۴ — primitiveهای سقف حجم و rate limit.
 			'includes/taxonomies.php',   // بخش ۲ — تخصص و شهر.
-			'includes/cpt.php',          // بخش ۲ — نوع محتوای پزشک.
+			'includes/iran-locations-seeder.php', // بخش ۱۴ — سیدر ۳۱ استان، شهر و تخصص‌های الجراحی.
+		'includes/cpt.php',          // بخش ۲ — نوع محتوای پزشک.
+		'includes/monetization-vip.php',     // بخش ۲ — superficie تجاری، ستاره‌دار/VIP و سقف سلأت.
+		'includes/tech-navigator.php',       // بخش ۳ — ناوبر دو楽ته جراحان با AJAX.
 			'includes/acf-fields.php',   // بخش ۳ — زمینه‌های نمایه.
 			'includes/dashboard.php',    // بخش ۴ — صفحهٔ /my-profile/ و شورت‌کد شروع.
 			'includes/member-account.php', // حساب عمومی مستقل از ناحیه پزشکان.
