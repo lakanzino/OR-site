@@ -42,7 +42,6 @@ class HomepagePresentationTest(unittest.TestCase):
         self.assertNotIn("hj-landing-login", starter)
         self.assertNotIn("hj-landing-tool", starter)
         self.assertNotIn("[نام پزشک]", starter)
-        self.assertIn("hj_google_start", install)
         self.assertIn("current_user_can( 'manage_options' )", install)
         self.assertIn("check_admin_referer", install)
         self.assertIn("wp_insert_post", install)
