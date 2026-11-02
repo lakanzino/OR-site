@@ -38,11 +38,10 @@ if ( ! class_exists( 'HJ_Doctors_Auth_Google', false ) ) :
 			// Entry point for the doctor flow.
 			add_action( 'init', array( __CLASS__, 'maybe_start_flow' ), 5 );
 
-			// Nextend hooks (names taken from Nextend docs; see agent note for fallbacks).
+			// Hooks provided by Nextend Social Login.
 			add_action( 'nsl_register_new_user', array( __CLASS__, 'on_nsl_register' ), 10, 2 );
 			add_action( 'nsl_login', array( __CLASS__, 'on_nsl_login' ), 10, 2 );
-			add_filter( 'nsl_login_redirect_url', array( __CLASS__, 'filter_nsl_redirect' ), 10, 2 );
-			add_filter( 'nsl_registration_redirect_url', array( __CLASS__, 'filter_nsl_redirect' ), 10, 2 );
+			add_filter( 'nsl_google_last_location_redirect', array( __CLASS__, 'filter_nsl_redirect' ), 10, 2 );
 
 			// Generic adapter for any other social plugin.
 			add_action( 'hj_doctors_google_user_ready', array( __CLASS__, 'on_generic' ), 10, 2 );
@@ -75,7 +74,9 @@ if ( ! class_exists( 'HJ_Doctors_Auth_Google', false ) ) :
 		}
 
 		private static function provider_active() {
-			return class_exists( 'NextendSocialLogin' );
+			return class_exists( 'NextendSocialLogin' )
+				&& is_callable( array( 'NextendSocialLogin', 'isProviderEnabled' ) )
+				&& NextendSocialLogin::isProviderEnabled( 'google' );
 		}
 
 		private static function is_google( $provider ) {
@@ -108,7 +109,7 @@ if ( ! class_exists( 'HJ_Doctors_Auth_Google', false ) ) :
 					'loginSocial' => 'google',
 					'redirect'    => $redirect,
 				),
-				site_url( 'wp-login.php' )
+				is_callable( array( 'NextendSocialLogin', 'getLoginUrl' ) ) ? NextendSocialLogin::getLoginUrl() : site_url( 'wp-login.php' )
 			);
 		}
 
@@ -205,7 +206,7 @@ if ( ! class_exists( 'HJ_Doctors_Auth_Google', false ) ) :
 			if ( self::provider_active() ) {
 				$target = self::login_url( $dash );
 			} else {
-				self::log( 'Nextend Social Login is not active; falling back to wp-login.php' );
+				self::log( 'Nextend or its Google provider is not enabled; falling back to wp-login.php' );
 				$target = wp_login_url( $dash );
 			}
 
@@ -296,10 +297,7 @@ if ( ! class_exists( 'HJ_Doctors_Auth_Google', false ) ) :
 		/* Redirects                                                           */
 		/* ------------------------------------------------------------------ */
 
-		public static function filter_nsl_redirect( $url, $provider = null ) {
-			if ( null !== $provider && ! self::is_google( $provider ) ) {
-				return $url;
-			}
+		public static function filter_nsl_redirect( $url, $requested = '' ) {
 			if ( self::has_intent() ) {
 				return self::dashboard_url();
 			}
@@ -368,7 +366,7 @@ if ( ! class_exists( 'HJ_Doctors_Auth_Google', false ) ) :
 			};
 
 			$nextend = self::provider_active();
-			$ok( 'Nextend Social Login active', $nextend );
+			$ok( 'Nextend Social Login active', class_exists( 'NextendSocialLogin' ) );
 
 			$google_enabled = false;
 			try {
@@ -383,10 +381,13 @@ if ( ! class_exists( 'HJ_Doctors_Auth_Google', false ) ) :
 
 			$ok( 'Hook nsl_register_new_user attached', false !== has_action( 'nsl_register_new_user', array( __CLASS__, 'on_nsl_register' ) ) );
 			$ok( 'Hook nsl_login attached', false !== has_action( 'nsl_login', array( __CLASS__, 'on_nsl_login' ) ) );
+			$ok( 'Hook nsl_google_last_location_redirect attached', false !== has_filter( 'nsl_google_last_location_redirect', array( __CLASS__, 'filter_nsl_redirect' ) ) );
 			$ok( 'Role "doctor" exists', (bool) get_role( 'doctor' ) );
 			$ok( 'hj_doctors_assign_doctor_role()', function_exists( 'hj_doctors_assign_doctor_role' ) );
 			$ok( 'hj_sec_rate_limit()', function_exists( 'hj_sec_rate_limit' ) );
-			$ok( 'Page /my-profile/ exists', (bool) get_page_by_path( 'my-profile' ) );
+			$page = get_post( (int) get_option( 'hj_doctors_dashboard_page' ) );
+			$ok( 'Dashboard page published with shortcode', $page instanceof WP_Post && 'page' === $page->post_type && 'publish' === $page->post_status && has_shortcode( $page->post_content, 'hj_doctors_dashboard' ) );
+			$lines[] = 'Dashboard URL: ' . self::dashboard_url();
 			$ok( 'HTTPS enabled', is_ssl() );
 			$ok( 'PHP >= 7.3 (cookie SameSite)', PHP_VERSION_ID >= 70300 );
 
