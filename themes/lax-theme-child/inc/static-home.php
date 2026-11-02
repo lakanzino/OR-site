@@ -1,5 +1,5 @@
 <?php
-/** Opt-in installation of an editable, block-based static homepage. */
+/** Installation and editing of the block-based static homepage. */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 add_action( 'admin_menu', function () {
@@ -12,7 +12,11 @@ function hj_static_home_admin() {
 	?>
 	<div class="wrap" dir="rtl">
 		<h1>صفحه نخست ایستا</h1>
-		<p>یک برگه از طرح جدید ساخته و به عنوان صفحه نخست تنظیم می‌شود. صفحه یا تنظیمات قبلی حذف نمی‌شوند؛ می‌توانید از تنظیمات ← خواندن به آن‌ها برگردید.</p>
+		<p>برگهٔ جدید هنگام نخستین ورود مدیر پس از به‌روزرسانی ساخته و انتخاب می‌شود. صفحهٔ قبلی حذف نمی‌شود؛ برای بازگشت از تنظیمات ← خواندن استفاده کنید.</p>
+		<?php $previous = get_option( 'hj_static_home_previous', array() ); ?>
+		<?php if ( ! empty( $previous['page_on_front'] ) && 'page' === $previous['show_on_front'] ) : ?>
+			<p>برگهٔ نخست قبلی: <a href="<?php echo esc_url( get_edit_post_link( (int) $previous['page_on_front'], 'raw' ) ); ?>">ویرایش برگه قبلی</a></p>
+		<?php endif; ?>
 		<p>متن‌ها، دکمه‌ها، پیوندها و تصویر را در ویرایشگر برگه تغییر دهید. سربرگ و فهرست‌ها از بخش نمایش مدیریت می‌شوند.</p>
 		<p>ورود گوگل و ثبت‌نام جراحان به فعال بودن افزونه همیار پزشک‌ها و Nextend Social Login و پیکربندی Google OAuth نیاز دارند. پروفایل جراحان در برگهٔ افزونه مدیریت می‌شود.</p>
 		<?php if ( $id && get_post_status( $id ) && 'trash' !== get_post_status( $id ) ) : ?>
@@ -37,28 +41,87 @@ function hj_install_static_home() {
 		wp_die( esc_html__( 'برگه موجود منتشر نشده است؛ ابتدا آن را منتشر کنید.', 'lax-theme-child' ) );
 	}
 	if ( ! $id || 'page' !== get_post_type( $id ) || 'trash' === get_post_status( $id ) ) {
-		// Never alter an existing page: create a fresh one, even if a similarly named page exists.
-		$starter = file_get_contents( get_stylesheet_directory() . '/homepage/starter.html' );
-		if ( false === $starter ) { wp_die( esc_html__( 'فایل طرح صفحه نخست پیدا نشد.', 'lax-theme-child' ) ); }
-		$urls = array(
-			'{{GUIDES}}' => get_post_type_archive_link( 'patient_guide' ) ?: home_url( '/patient-guide/' ),
-			'{{SURGERIES}}' => get_post_type_archive_link( 'surgery' ) ?: home_url( '/surgery/' ),
-			'{{DOCTORS}}' => get_post_type_archive_link( 'doctor' ) ?: home_url( '/doctors/' ),
-			'{{SIGNUP}}' => add_query_arg( 'hj_google_start', '1', home_url( '/' ) ),
-			'{{PROFILE}}' => function_exists( 'hj_doctors_dashboard_url' ) ? hj_doctors_dashboard_url() : home_url( '/my-profile/' ),
-			'{{GOOGLE}}' => add_query_arg( 'loginSocial', 'google', site_url( 'wp-login.php' ) ),
-			'{{IMAGE}}' => get_stylesheet_directory_uri() . '/assets/images/home-medical-tech.png',
-		);
-		$starter = strtr( $starter, array_map( 'esc_url', $urls ) );
-		$id = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'صفحه نخست', 'post_content' => wp_slash( $starter ) ), true );
+		$id = hj_static_home_create_page();
 		if ( is_wp_error( $id ) || ! $id ) { wp_die( esc_html__( 'ساخت برگه ناموفق بود.', 'lax-theme-child' ) ); }
 		update_option( 'hj_static_home_page_id', $id );
 	}
+
 	update_option( 'page_on_front', $id );
 	update_option( 'show_on_front', 'page' );
 	wp_safe_redirect( get_edit_post_link( $id, 'url' ) );
 	exit;
 }
+
+/** Create a new editable page; never write over an existing page. */
+function hj_static_home_create_page() {
+	$file = get_stylesheet_directory() . '/homepage/starter.html';
+	if ( ! is_readable( $file ) ) { return new WP_Error( 'hj_home_missing', 'Homepage starter not available.' ); }
+	$starter = file_get_contents( $file );
+	if ( false === $starter || false === strpos( $starter, 'hj-home-v0332' ) ) { return new WP_Error( 'hj_home_missing_version', 'Homepage starter is missing or out of date.' ); }
+	$guides = get_post_type_archive_link( 'patient_guide' ) ?: home_url( '/patient-guide/' );
+	$urls = array(
+		'{{GUIDES}}' => $guides,
+		'{{SURGERIES}}' => get_post_type_archive_link( 'surgery' ) ?: home_url( '/surgery/' ),
+		'{{DOCTORS}}' => get_post_type_archive_link( 'doctor' ) ?: home_url( '/doctors/' ),
+		'{{BEFORE}}' => hj_term_url( 'guide_stage', 'before', 'patient_guide' ),
+		'{{DURING}}' => hj_term_url( 'guide_stage', 'during', 'patient_guide' ),
+		'{{AFTER}}' => hj_term_url( 'guide_stage', 'after', 'patient_guide' ),
+		'{{CARE}}' => hj_term_url( 'guide_stage', 'after', 'patient_guide' ),
+		'{{OR}}' => get_post_type_archive_link( 'or_environment' ) ?: home_url( '/or-environment/' ),
+		'{{DISEASES}}' => get_post_type_archive_link( 'disease' ) ?: home_url( '/diseases/' ),
+		'{{GLOSSARY}}' => get_post_type_archive_link( 'glossary' ) ?: home_url( '/glossary/' ),
+		'{{STUDENTS}}' => get_post_type_archive_link( 'student_content' ) ?: home_url( '/student/' ),
+		'{{FAQ}}' => hj_page_url( 'faq' ),
+		'{{CONTACT}}' => hj_page_url( 'contact' ),
+		'{{SIGNUP}}' => add_query_arg( 'hj_google_start', '1', home_url( '/' ) ),
+		'{{PROFILE}}' => function_exists( 'hj_doctors_dashboard_url' ) ? hj_doctors_dashboard_url() : home_url( '/my-profile/' ),
+		'{{GOOGLE}}' => add_query_arg( 'loginSocial', 'google', site_url( 'wp-login.php' ) ),
+		'{{IMAGE}}' => get_stylesheet_directory_uri() . '/assets/images/home-medical-tech.png',
+	);
+	$starter = strtr( $starter, array_map( 'esc_url', $urls ) );
+	$slug = defined( 'HJ_SC_PAGE_SLUG' ) ? HJ_SC_PAGE_SLUG : 'symptom-checker';
+	$pages = get_posts( array( 'post_type' => 'page', 'post_status' => 'publish', 'name' => $slug, 'numberposts' => 1 ) );
+	$button = '';
+	if ( $pages ) {
+		$button = '<!-- wp:button {"className":"hj-btn-secondary"} --><div class="wp-block-button hj-btn-secondary"><a class="wp-block-button__link wp-element-button" href="' . esc_url( get_permalink( $pages[0] ) ) . '">ارزیابی علائم ←</a></div><!-- /wp:button -->';
+	}
+	$starter = str_replace( '{{SYMPTOM_BUTTON}}', $button, $starter );
+	return wp_insert_post( array(
+		'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'صفحه نخست',
+		'post_content' => wp_slash( $starter ), 'meta_input' => array( '_hj_static_home_revision' => '0.33.2' ),
+	), true );
+}
+
+/** One-time upgrade on an administrator request, preserving the previous page. */
+add_action( 'admin_init', 'hj_static_home_upgrade_0332' );
+function hj_static_home_upgrade_0332() {
+	if ( ! current_user_can( 'manage_options' ) || get_option( 'hj_static_home_0332_done' ) || wp_doing_ajax() || wp_doing_cron() ) { return; }
+	$lock = (int) get_option( 'hj_static_home_0332_lock', 0 );
+	if ( $lock && $lock < time() - 300 ) { delete_option( 'hj_static_home_0332_lock' ); }
+	if ( ! add_option( 'hj_static_home_0332_lock', time(), '', 'no' ) ) { return; }
+	// Recover an already-created page if the previous request stopped before completion.
+	$existing = get_posts( array( 'post_type' => 'page', 'post_status' => 'publish', 'meta_key' => '_hj_static_home_revision', 'meta_value' => '0.33.2', 'numberposts' => 1, 'fields' => 'ids' ) );
+	$id = $existing ? (int) $existing[0] : hj_static_home_create_page();
+	if ( is_wp_error( $id ) || ! $id ) {
+		update_option( 'hj_static_home_0332_error', '1', false );
+		delete_option( 'hj_static_home_0332_lock' );
+		return;
+	}
+	// Save the prior selection once so interrupted requests do not replace the backup.
+	add_option( 'hj_static_home_previous', array( 'show_on_front' => get_option( 'show_on_front' ), 'page_on_front' => (int) get_option( 'page_on_front' ) ), '', 'no' );
+	update_option( 'hj_static_home_page_id', $id );
+	update_option( 'page_on_front', $id );
+	update_option( 'show_on_front', 'page' );
+	update_option( 'hj_static_home_0332_done', '1', false );
+	delete_option( 'hj_static_home_0332_error' );
+	delete_option( 'hj_static_home_0332_lock' );
+	if ( function_exists( 'orsite_gh_purge_caches' ) ) { orsite_gh_purge_caches(); }
+}
+
+add_action( 'admin_notices', function () {
+	if ( ! current_user_can( 'manage_options' ) || ! get_option( 'hj_static_home_0332_error' ) ) { return; }
+	echo '<div class="notice notice-error"><p>' . esc_html__( 'ساخت صفحه نخست ناموفق بود. فایل‌های قالب و دسترسی نوشتن وردپرس را بررسی کنید؛ تنظیم صفحه نخست قبلی تغییر نکرده است.', 'lax-theme-child' ) . '</p></div>';
+} );
 
 function hj_static_home_styles() {
 	wp_enqueue_style( 'hj-static-home', get_stylesheet_directory_uri() . '/assets/css/static-home.css', array(), lax_theme_child_asset_ver( 'assets/css/static-home.css' ) );
