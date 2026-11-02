@@ -113,9 +113,9 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 		/**
 		 * انتخاب قالب تک‌جراح.
 		 *
-		 * اگر قالب فعال خودش single-doctor.php داشته باشد، همان اولویت دارد و
-		 * دست‌نخورده برمی‌گردد. در غیر این صورت قالب افزونه استفاده می‌شود تا
-		 * هدر/فوتر و wp_head/wp_footer قالب حفظ شوند.
+		 * قالب افزونه استفاده می‌شود تا هدر/فوتر و wp_head/wp_footer قالب
+		 * حفظ شوند. برای بازگشت به قالب پوسته، فیلتر
+		 * hj_doctors_use_theme_doctor_template را true کنید.
 		 *
 		 * @param string $template مسیر قالب پیشنهادی وردپرس.
 		 * @return string
@@ -125,9 +125,21 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 				return $template;
 			}
 
-			$theme_template = locate_template( array( 'single-doctor.php' ) );
-			if ( $theme_template ) {
-				return $theme_template;
+			/**
+			 * از نسخهٔ ۰.۳.۳ قالب افزونه اولویت دارد تا با به‌روزرسانی
+			 * افزونه، طراحی صفحهٔ پروفایل روی سایت عوض شود و کاربر مجبور
+			 * به ویرایش دستی قالب نباشد. اگر قالبی می‌خواهد قالب خودش را
+			 * داشته باشد، همین فیلتر را true برگرداند.
+			 *
+			 * @param bool $use_theme استفاده از قالب پوسته.
+			 */
+			$use_theme = (bool) apply_filters( 'hj_doctors_use_theme_doctor_template', false );
+
+			if ( $use_theme ) {
+				$theme_template = locate_template( array( 'single-doctor.php' ) );
+				if ( $theme_template ) {
+					return $theme_template;
+				}
 			}
 
 			$plugin_template = HJ_DOCTORS_DIR . 'templates/single-doctor.php';
@@ -418,6 +430,22 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 		 * ستون‌های جدول hj_doctor_votes با SHOW COLUMNS تشخیص داده می‌شوند تا
 		 * اگر نام ستون‌ها (status / comment / created_at) متفاوت بود، به‌جای
 		 * خطای SQL یا نمایش خالی، همان چیزی خوانده شود که واقعاً وجود دارد.
+		 *
+		 * @param int $post_id شناسهٔ پزشک.
+		 * @return array<int,array{author:string,rating:int,comment:string,date:string}>
+		 */
+		/**
+		 * دسترسی عمومی به نظرات تأییدشده (برای صفحهٔ پروفایل تازه).
+		 *
+		 * @param int $post_id شناسهٔ پزشک.
+		 * @return array<int,array{author:string,rating:int,comment:string,date:string}>
+		 */
+		public static function public_reviews( $post_id ) {
+			return self::get_public_reviews( (int) $post_id );
+		}
+
+		/**
+		 * خواندن نظرات تأییدشده از جدول امتیاز.
 		 *
 		 * @param int $post_id شناسهٔ پزشک.
 		 * @return array<int,array{author:string,rating:int,comment:string,date:string}>
