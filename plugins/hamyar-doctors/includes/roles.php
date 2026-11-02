@@ -330,7 +330,10 @@ endif;
 if ( ! function_exists( 'hj_doctors_dashboard_url' ) ) {
 	/** URL of the doctor dashboard (existing page). */
 	function hj_doctors_dashboard_url() {
-		return (string) apply_filters( 'hj_doctors_dashboard_url', home_url( '/my-profile/' ) );
+		$page = get_post( (int) get_option( 'hj_doctors_dashboard_page' ) );
+		$url  = ( $page instanceof WP_Post && 'page' === $page->post_type && 'publish' === $page->post_status )
+			? get_permalink( $page ) : home_url( '/my-profile/' );
+		return (string) apply_filters( 'hj_doctors_dashboard_url', $url ? $url : home_url( '/my-profile/' ) );
 	}
 }
 

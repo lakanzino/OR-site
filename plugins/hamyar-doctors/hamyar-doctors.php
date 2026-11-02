@@ -2,7 +2,7 @@
 /**
  * Plugin Name: همیار پزشک‌ها
  * Description: نوع محتوای «پزشک» با تخصص و شهر، زمینه‌های نمایه (JSON محلی ACF بدون Sync دستی) و دسترسی نقشِ پزشک فقط به نمایهٔ خودش؛ مستقل از قالب فرزند و بی‌صدا در debug.log.
- * Version: 0.1.0
+ * Version: 0.1.1
  * Requires at least: 6.4
  * Requires PHP: 8.0
  * Author: همیار جراحی
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'HJ_DOCTORS_VERSION', '0.1.0' );
+define( 'HJ_DOCTORS_VERSION', '0.1.1' );
 define( 'HJ_DOCTORS_FILE', __FILE__ );
 define( 'HJ_DOCTORS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'HJ_DOCTORS_URL', plugin_dir_url( __FILE__ ) );
@@ -153,8 +153,6 @@ final class HJ_Doctors {
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 		add_action( 'admin_init', array( $this, 'maybe_upgrade' ) );
 
-		register_activation_hook( HJ_DOCTORS_FILE, array( __CLASS__, 'activate' ) );
-		register_deactivation_hook( HJ_DOCTORS_FILE, array( __CLASS__, 'deactivate' ) );
 	}
 
 	/**
@@ -198,6 +196,8 @@ final class HJ_Doctors {
 	 * فعال‌سازی: نقش‌ها، capabilityها و rewriteها.
 	 */
 	public static function activate() {
+		// Activation can load this plugin after plugins_loaded has already fired.
+		self::instance();
 		if ( class_exists( 'HJ_Doctors_Roles' ) ) {
 			HJ_Doctors_Roles::sync_role();
 		}
@@ -232,6 +232,9 @@ final class HJ_Doctors {
 		if ( class_exists( 'HJ_Doctors_Roles' ) ) {
 			HJ_Doctors_Roles::sync_role();
 		}
+		if ( function_exists( 'hj_doctors_ensure_dashboard_page' ) ) {
+			hj_doctors_ensure_dashboard_page();
+		}
 		update_option( HJ_DOCTORS_VERSION_OPTION, HJ_DOCTORS_VERSION );
 	}
 
@@ -256,3 +259,7 @@ function hj_doctors() {
 	return HJ_Doctors::instance();
 }
 add_action( 'plugins_loaded', 'hj_doctors' );
+
+// Register as soon as the plugin file is included, including during activation.
+register_activation_hook( HJ_DOCTORS_FILE, array( 'HJ_Doctors', 'activate' ) );
+register_deactivation_hook( HJ_DOCTORS_FILE, array( 'HJ_Doctors', 'deactivate' ) );

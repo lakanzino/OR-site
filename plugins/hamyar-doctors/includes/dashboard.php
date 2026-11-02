@@ -42,6 +42,11 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			add_action( 'wp_ajax_hj_dash_submit', array( __CLASS__, 'ajax_submit' ) );
 			add_action( 'wp_ajax_hj_doc_download', array( __CLASS__, 'ajax_download' ) );
 
+			add_action( 'admin_post_hj_doctors_join', array( __CLASS__, 'join_doctors' ) );
+			add_action( 'admin_notices', array( __CLASS__, 'dashboard_page_notice' ) );
+			add_action( 'template_redirect', array( __CLASS__, 'redirect_old_dashboard_url' ) );
+			add_action( 'template_redirect', array( __CLASS__, 'prevent_dashboard_cache' ), 0 );
+
 			add_action( 'admin_post_hj_dash_moderate', array( __CLASS__, 'admin_moderate' ) );
 			add_action( 'admin_post_hj_dash_status', array( __CLASS__, 'admin_status' ) );
 
@@ -72,9 +77,64 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 				return $h . '</div>';
 			}
 			if ( ! hj_doctors_user_can_access_dashboard() ) {
+				$user = wp_get_current_user();
+				$replaceable = (array) apply_filters( 'hj_doctors_replaceable_roles', array( 'subscriber' ) );
+				if ( ! array_diff( (array) $user->roles, $replaceable ) ) {
+					return '<div class="hj-dash"><p>' . esc_html__( 'برای ساخت پروفایل پزشک، ثبت‌نام خود را تأیید کنید. پروفایل شما پیش از انتشار بررسی می‌شود.', 'hamyar-doctors' ) . '</p>'
+						. '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="hj_doctors_join">'
+						. wp_nonce_field( 'hj_doctors_join', '_wpnonce', true, false )
+						. '<button type="submit">' . esc_html__( 'ثبت‌نام به عنوان پزشک', 'hamyar-doctors' ) . '</button></form></div>';
+				}
 				return '<div class="hj-dash"><p>' . esc_html__( 'شما دسترسی به داشبورد پزشک ندارید.', 'hamyar-doctors' ) . '</p></div>';
 			}
 			return self::render();
+		}
+
+		/** Explicit, CSRF-protected opt-in for an already signed-in subscriber. */
+		public static function join_doctors() {
+			if ( 'POST' !== ( isset( $_SERVER['REQUEST_METHOD'] ) ? $_SERVER['REQUEST_METHOD'] : '' ) || ! is_user_logged_in() ) {
+				wp_die( 'دسترسی غیرمجاز', '', array( 'response' => 403 ) );
+			}
+			check_admin_referer( 'hj_doctors_join' );
+			if ( ! hj_doctors_assign_doctor_role( get_current_user_id() ) ) {
+				wp_die( 'این حساب امکان ثبت‌نام پزشک ندارد.', '', array( 'response' => 403 ) );
+			}
+			wp_safe_redirect( hj_doctors_dashboard_url() );
+			exit;
+		}
+
+		/** Report a conflicting or empty page without overwriting an editor's work. */
+		public static function dashboard_page_notice() {
+			if ( ! current_user_can( 'manage_options' ) ) {
+				return;
+			}
+			$page = get_post( (int) get_option( 'hj_doctors_dashboard_page' ) );
+			if ( ! ( $page instanceof WP_Post ) || 'page' !== $page->post_type || 'publish' !== $page->post_status || ! has_shortcode( $page->post_content, 'hj_doctors_dashboard' ) ) {
+				echo '<div class="notice notice-warning"><p>' . esc_html__( 'برگهٔ ناحیه پزشک منتشر نشده یا شورت‌کد [hj_doctors_dashboard] در محتوای آن پیدا نشد. برگه را بررسی و در صورت نیاز شورت‌کد را اضافه کنید؛ محتوای موجود تغییر نکرده است.', 'hamyar-doctors' ) . '</p></div>';
+			}
+		}
+
+		/** Dashboard output contains private account data and nonces. */
+		public static function prevent_dashboard_cache() {
+			$id = (int) get_option( 'hj_doctors_dashboard_page' );
+			if ( $id && is_page( $id ) ) {
+				if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+					define( 'DONOTCACHEPAGE', true );
+				}
+				nocache_headers();
+			}
+		}
+
+		/** Preserve old home-page links when the registered page was renamed. */
+		public static function redirect_old_dashboard_url() {
+			global $wp;
+			$page = get_post( (int) get_option( 'hj_doctors_dashboard_page' ) );
+			if ( is_404() && isset( $wp->request ) && 'my-profile' === trim( $wp->request, '/' )
+				&& $page instanceof WP_Post && 'page' === $page->post_type && 'publish' === $page->post_status
+				&& has_shortcode( $page->post_content, 'hj_doctors_dashboard' ) ) {
+				wp_safe_redirect( get_permalink( $page ), 302 );
+				exit;
+			}
 		}
 
 		/**
@@ -1380,7 +1440,10 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			$ok( 'hj_sec_private_dir()', function_exists( 'hj_sec_private_dir' ) );
 			$ok( 'hj_sec_clean()', function_exists( 'hj_sec_clean' ) );
 			$ok( 'hj_doctors_get_profile_id()', function_exists( 'hj_doctors_get_profile_id' ) );
-			$ok( 'Page /my-profile/', (bool) get_page_by_path( 'my-profile' ) );
+			$page = get_post( (int) get_option( 'hj_doctors_dashboard_page' ) );
+			$ok( 'Dashboard page published', $page instanceof WP_Post && 'page' === $page->post_type && 'publish' === $page->post_status );
+			$ok( 'Dashboard shortcode in page content', $page instanceof WP_Post && has_shortcode( $page->post_content, 'hj_doctors_dashboard' ) );
+			$L[] = 'Dashboard URL: ' . hj_doctors_dashboard_url();
 			$ok( 'Taxonomy specialty has terms', (bool) self::terms( 'specialty' ) );
 			$ok( 'Taxonomy province has terms', (bool) self::terms( 'province' ) );
 			$ok( 'Taxonomy city has terms', (bool) self::terms( 'city' ) );
@@ -1439,6 +1502,10 @@ if ( ! function_exists( 'hj_doctors_ensure_dashboard_page' ) ) {
 	 * @return int
 	 */
 	function hj_doctors_ensure_dashboard_page() {
+		$existing = get_post( (int) get_option( 'hj_doctors_dashboard_page' ) );
+		if ( $existing instanceof WP_Post && 'page' === $existing->post_type && 'publish' === $existing->post_status ) {
+			return (int) $existing->ID;
+		}
 		$existing = get_page_by_path( 'my-profile' );
 		if ( $existing instanceof WP_Post ) {
 			update_option( 'hj_doctors_dashboard_page', (int) $existing->ID, false );
