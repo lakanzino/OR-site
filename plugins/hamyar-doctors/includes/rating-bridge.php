@@ -1303,7 +1303,7 @@ JS;
         ?>
 
         <p>
-            <label for="hj-rb-staff">امتیاز nội staff (۰ تا ۵)</label><br>
+            <label for="hj-rb-staff">امتیاز کارکنان (۰ تا ۵)</label><br>
             <input type="number" id="hj-rb-staff" name="<?php echo esc_attr(self::META_STAFF_STARS); ?>" value="<?php echo esc_attr((string) $staff); ?>" min="0" max="5" step="0.5" style="width:100%">
         </p>
 
@@ -1318,7 +1318,7 @@ JS;
         </p>
 
         <p>
-            <label for="hj-rb-override">override نهایی (خالی = tựکار)</label><br>
+            <label for="hj-rb-override">امتیاز نهایی دستی (خالی = خودکار)</label><br>
             <input type="number" id="hj-rb-override" name="<?php echo esc_attr(self::META_OVERRIDE); ?>" value="<?php echo esc_attr((string) $override); ?>" min="1" max="5" step="0.5" style="width:100%">
         </p>
 
@@ -1329,7 +1329,7 @@ JS;
         <?php if (is_array($st)) : ?>
 
             <p style="font-size:12px;color:#666">
-               situasis فعلی: میانگین <?php echo esc_html(self::fa(number_format((float) $st['avg'], 2))); ?> — رأی تأییدشده: <?php echo esc_html(self::fa($st['approved'])); ?> — در انتظار: <?php echo esc_html(self::fa($st['pending'])); ?>
+               وضعیت فعلی: میانگین <?php echo esc_html(self::fa(number_format((float) $st['avg'], 2))); ?> — رأی تأییدشده: <?php echo esc_html(self::fa($st['approved'])); ?> — در انتظار: <?php echo esc_html(self::fa($st['pending'])); ?>
             </p>
 
         <?php endif; ?>

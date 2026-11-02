@@ -1,11 +1,11 @@
 <?php
 /**
- * بخش ۱۴: سیدر استان‌ها، شهرها و تخصص‌های الجراحی ایران.
+ * بخش ۱۴: سیدر استان‌ها، شهرها و تخصص‌های جراحی ایران.
  *
  * - ۳۱ استان ایران با شهرستان‌های اصلی (شهر)
  * - هر شهر به ترم استان والد وصل می‌شود (متای hj_parent_province_id)
- * - شهرهای بزرگ فلش می‌شوند (متای hj_is_major_city = ۱) برای محدودیت سلأت جراحان
- * - گروه تخصص‌های الجراحی هسته‌ای (specialty_type → specialty)
+ * - شهرهای بزرگ علامت‌گذاری می‌شوند (متای hj_is_major_city = ۱) برای محدودیت ظرفیت جراحان
+ * - گروه تخصص‌های جراحی هسته‌ای (specialty_type → specialty)
  * - اجرای یکباره از طریق آپشن hj_iran_locations_seeded_v1
  * - دکمه اجرا مجدد در ابزارهای مدیریت (Tools)
  *
@@ -60,12 +60,12 @@ if ( ! function_exists( 'hj_iran_register_term_meta' ) ) {
 }
 
 /************************************************************************
- * ۲. دیتاست استان‌ها، شهرها و تخصص‌های الجراحی
+ * ۲. دیتاست استان‌ها، شهرها و تخصص‌های جراحی
  ************************************************************************/
 
 if ( ! function_exists( 'hj_iran_locations_data' ) ) {
 	/**
-	 * برگرداندن دیتاست ۳۱ استان، شهرها و تخصص‌های الجراحی هسته‌ای.
+	 * برگرداندن دیتاست ۳۱ استان، شهرها و تخصص‌های جراحی هسته‌ای.
 	 *
 	 * @return array[provinces, cities, major_cities, specialty_types, specialties]
 	 */
@@ -159,8 +159,8 @@ if ( ! function_exists( 'hj_iran_locations_data' ) ) {
 			'جراحی مغز و اعصاب'        => array( 'جراحی مغز', 'جراحی عصب', 'جراحی ستون فقرات' ),
 			'جراحی آرتوپدیک'           => array( 'جراحی مفاصل', 'جراحی استخوان', 'جراحی کمر وдуش' ),
 			'جراحی زیبایی و بازسازی'   => array( 'جراحی زیبایی', 'جراحی بازسازی', 'جراحی بینی' ),
-			'جراحی کودکان'             => array( 'جراحی کودکان', 'جراحی خلقی', 'جراحی نوزاد' ),
-			'جراحی استخوان و مفاصل'    => array( 'جراحی استخوان', 'جراحی مفصل', 'جراحی فشار' ),
+			'جراحی کودکان'             => array( 'جراحی کودکان', 'جراحی مادرزادی', 'جراحی نوزاد' ),
+			'جراحی استخوان و مفاصل'    => array( 'جراحی استخوان', 'جراحی مفصل', 'جراحی زانو' ),
 		);
 
 		return array(
@@ -222,11 +222,11 @@ if ( ! function_exists( 'hj_iran_locations_seed' ) ) {
 			$province_id = isset( $province_term_ids[$province_index] ) ? (int) $province_term_ids[$province_index] : 0;
 			foreach ( (array) $city_list as $city_name ) {
 				$city_name = (string) $city_name;
-				if ( $city_name === '' ) {
+				if ( '' === $city_name ) {
 					continue;
 				}
 				// اگر مقدار حاوی کاراکتر غیر UTF-8 یا englischen باشد، رد می‌کنیم
-				if ( preg_match( '/[^[:alnum:][:space:]‌‌ـذةةءإأآؤئىيكىوآأإءぁ-ゔー々-ヶー]/u', $city_name ) ) {
+				if ( preg_match( '/[^\p{L}\p{M}\s\x{200C}\x{0640}]/u', $city_name ) ) {
 					continue;
 				}
 				$slug = sanitize_title( $city_name );
@@ -337,10 +337,28 @@ if ( ! function_exists( 'hj_iran_locations_auto_seed' ) ) {
 		}
 		$result = hj_iran_locations_seed();
 		if ( ! empty( $result['message'] ) ) {
-			add_admin_notice( esc_html( $result['message'] ) );
+			// پیام را تا نمایش در admin_notices نگه می‌داریم؛ چاپ مستقیم در
+			// admin_init پیش از ارسال هدرها رخ می‌دهد و «headers already sent»
+			// می‌سازد.
+			set_transient( 'hj_iran_locations_seed_notice', (string) $result['message'], 5 * MINUTE_IN_SECONDS );
 		}
 	}
 	add_action( 'admin_init', 'hj_iran_locations_auto_seed' );
+}
+
+if ( ! function_exists( 'hj_iran_locations_seed_notice' ) ) {
+	/**
+	 * نمایش پیام یک‌بارهٔ سیدینگ در اعلان‌های پیشخوان.
+	 */
+	function hj_iran_locations_seed_notice() {
+		$message = get_transient( 'hj_iran_locations_seed_notice' );
+		if ( ! $message ) {
+			return;
+		}
+		delete_transient( 'hj_iran_locations_seed_notice' );
+		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( (string) $message ) . '</p></div>';
+	}
+	add_action( 'admin_notices', 'hj_iran_locations_seed_notice' );
 }
 
 if ( ! function_exists( 'hj_iran_locations_add_admin_notice' ) ) {
@@ -355,7 +373,7 @@ if ( ! function_exists( 'hj_iran_locations_add_admin_notice' ) ) {
 
 if ( ! function_exists( 'hj_iran_locations_city_add_form_fields' ) ) {
 	/**
-	 * نمایش فیلدهای父 استان و فلش شهر بزرگ در فرم افزودن شهر.
+	 * نمایش فیلدهای استان و فلش شهر بزرگ در فرم افزودن شهر.
 	 */
 	function hj_iran_locations_city_add_form_fields() {
 		wp_nonce_field( 'hj_iran_city_meta', 'hj_iran_city_meta_nonce' );
@@ -378,7 +396,7 @@ if ( ! function_exists( 'hj_iran_locations_city_add_form_fields' ) ) {
 		echo '<input type="checkbox" name="hj_is_major_city" value="1">';
 		echo esc_html__( 'شهر بزرگ (بیش از ۲ جراح در هر تخصص)', 'hamyar-doctors' );
 		echo '</label>';
-		echo '<p class="description">' . esc_html__( 'اگر تیک شود، محدودیت سلأت ۲ نفره برای این شهر غیرفعال می‌شود.', 'hamyar-doctors' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'اگر تیک شود، محدودیت ظرفیت ۲ نفره برای این شهر غیرفعال می‌شود.', 'hamyar-doctors' ) . '</p>';
 		echo '</div>';
 	}
 	add_action( 'city_add_form_fields', 'hj_iran_locations_city_add_form_fields' );
@@ -413,7 +431,7 @@ if ( ! function_exists( 'hj_iran_locations_city_edit_form_fields' ) ) {
 		echo '<input type="checkbox" name="hj_is_major_city" value="1" ' . ( $is_major === 1 ? 'checked' : '' ) . '>';
 		echo esc_html__( 'شهر بزرگ (بیش از ۲ جراح در هر تخصص)', 'hamyar-doctors' );
 		echo '</label>';
-		echo '<p class="description">' . esc_html__( 'اگر تیک شود، محدودیت سلأت ۲ نفره برای این شهر غیرفعال می‌شود.', 'hamyar-doctors' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'اگر تیک شود، محدودیت ظرفیت ۲ نفره برای این شهر غیرفعال می‌شود.', 'hamyar-doctors' ) . '</p>';
 		echo '</div>';
 	}
 	add_action( 'city_edit_form_fields', 'hj_iran_locations_city_edit_form_fields', 10, 1 );
@@ -491,21 +509,21 @@ if ( ! function_exists( 'hj_iran_locations_tools_page_render' ) ) {
 			echo '<div class="notice notice-success is-dismissible"><p>' . $message . '</p></div>';
 		}
 
-		echo '<p>' . esc_html__( 'این صفحه تمام ۳۱ استان ایران، شهرهای اصلی هر استان و تخصص‌های الجراحی هسته‌ای را به صورت ترم در تکسونومی‌های specialty_type، specialty، province و city ایجاد می‌کند. هر شهر به استان والد خود وصل شده و شهرهای بزرگ فلش می‌شوند.', 'hamyar-doctors' ) . '</p>';
+		echo '<p>' . esc_html__( 'این صفحه تمام ۳۱ استان ایران، شهرهای اصلی هر استان و تخصص‌های جراحی هسته‌ای را به صورت ترم در تکسونومی‌های specialty_type، specialty، province و city ایجاد می‌کند. هر شهر به استان والد خود وصل شده و شهرهای بزرگ علامت‌گذاری می‌شوند.', 'hamyar-doctors' ) . '</p>';
 
 		$status_text = $seeded ? esc_html__( 'بله — انجام شده است.', 'hamyar-doctors' ) : esc_html__( 'خیر — هنوز انجام نشده است.', 'hamyar-doctors' );
-		echo '<p><strong>' . esc_html__( 'وضعیت سيدینگ:', 'hamyar-doctors' ) . '</strong> ' . $status_text . '</p>';
+		echo '<p><strong>' . esc_html__( 'وضعیت سیدینگ:', 'hamyar-doctors' ) . '</strong> ' . $status_text . '</p>';
 
 		echo '<form method="post">';
 		wp_nonce_field( 'hj_iran_run_seed', 'hj_iran_run_seed_nonce' );
-		echo '<button type="button" class="button button-primary" onclick="confirmSeed(this.form)">' . esc_html__( 'اجرا/اجرا مجدد سيدینگ', 'hamyar-doctors' ) . '</button>';
+		echo '<button type="button" class="button button-primary" onclick="confirmSeed(this.form)">' . esc_html__( 'اجرا/اجرا مجدد سیدینگ', 'hamyar-doctors' ) . '</button>';
 		echo '</form>';
 
-		echo '<p>' . esc_html__( 'بعد از اجرا، می‌توانید در منوی Druck‌ها (Posts) → دسته‌بندی‌ها → شهر، استان والد و فلش «شهر بزرگ» را برای هر شهر ویرایش کنید.', 'hamyar-doctors' ) . '</p>';
+		echo '<p>' . esc_html__( 'بعد از اجرا، می‌توانید در منوی نوشته‌ها (Posts) → دسته‌بندی‌ها → شهر، استان والد و گزینهٔ «شهر بزرگ» را برای هر شهر ویرایش کنید.', 'hamyar-doctors' ) . '</p>';
 
 		echo '<script>
 		function confirmSeed(form) {
-			if (confirm(\'' . esc_js__( 'آیا از انجام مجدد سيدینگ مطمئن هستید؟ ترم‌های قبلی تکرار نمی‌شوند.' ) . '\')) {
+			if (confirm(\'' . esc_js( __( 'آیا از انجام مجدد سیدینگ مطمئن هستید؟ ترم‌های قبلی تکرار نمی‌شوند.', 'hamyar-doctors' ) ) . '\')) {
 				form.submit();
 			}
 		}

@@ -2,12 +2,12 @@
 /**
  * ماژول ۶: قالب پروفایل تک جراح (Single Surgeon Profile).
  *
- * نمایش یکپارچه و پرفरした پروفایل پزشک شامل:
+ * نمایش یکپارچهٔ پروفایل پزشک شامل:
  * - آمار (سابقه، تعداد جراحی، امتیاز)
  * - شمارهٔ نظام پزشکی
  * - تخصص‌ها و رشته‌ها
  * - نشان ستاره‌دار / VIP
- * - octobre ۵ ستاره و نظرات عمومی بیماران
+ * - امتیاز ۵ ستاره و نظرات عمومی بیماران
  *
  * security: nonce، sanitization، escaping، capability check، UTF-8 فارسی.
  *
@@ -41,11 +41,13 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 			// شورت‌کد نمایش پروفایل: [hj_doctor_profile id="123"]
 			add_shortcode( 'hj_doctor_profile', array( $this, 'shortcode_profile' ) );
 
-			// نمایش پروفایل در صفحات تک doctors (template override)
-			add_action( 'template_redirect', array( $this, 'maybe_override_single_doctor' ) );
+			// قالب تک‌پزشک در اختیار قالب سایت می‌ماند (قالب فرزند
+			// single-doctor.php دارد)؛ این ماژول فقط شورت‌کد و تگ قالب
+			// می‌دهد. برای جایگزینی کامل صفحه، فیلتر زیر را true کنید.
+			add_filter( 'template_include', array( $this, 'maybe_use_full_page_template' ), 20 );
 
-			// استایل و اسکریپت صفحه پروفایل
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ), 20 );
+			// ثبت و بارگذاری استایل/اسکریپت فقط در صفحه‌ای که پروفایل دارد
+			add_action( 'wp_enqueue_scripts', array( $this, 'maybe_enqueue_assets' ), 20 );
 
 			// AJAX بارگذاری نظرات
 			add_action( 'wp_ajax_hj_profile_load_reviews', array( $this, 'ajax_load_reviews' ) );
@@ -56,20 +58,57 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 		 * Assets
 		 ********************************************************************/
 
-		public function enqueue_assets() {
-			if ( ! is_singular( 'doctor' ) && ! shortcode_exists( 'hj_doctor_profile' ) ) {
+		/**
+		 * ثبت (بدون صف) دارایی‌های پروفایل تا هر جا لازم شد صف شوند.
+		 */
+		public function register_assets() {
+			if ( wp_style_is( 'hj-profile-css', 'registered' ) ) {
 				return;
 			}
 
 			wp_register_style( 'hj-profile-css', HJ_DOCTORS_URL . 'assets/css/tech-navigator.css', array(), HJ_DOCTORS_VERSION );
-			wp_enqueue_style( 'hj-profile-css' );
-
 			wp_register_script( 'hj-profile-js', HJ_DOCTORS_URL . 'assets/js/tech-navigator.js', array( 'jquery' ), HJ_DOCTORS_VERSION, true );
 			wp_localize_script( 'hj-profile-js', 'HJ_PROFILE_CONFIG', array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'nonce'    => wp_create_nonce( self::NONCE_REVIEWS ),
 			) );
+		}
+
+		/**
+		 * فقط در صفحهٔ پزشک یا برگه‌ای که شورت‌کد پروفایل را دارد صف می‌کند.
+		 */
+		public function maybe_enqueue_assets() {
+			$this->register_assets();
+
+			if ( ! $this->is_profile_view() ) {
+				return;
+			}
+
+			$this->enqueue_assets();
+		}
+
+		/**
+		 * صف‌کردن دارایی‌های پروفایل (از شورت‌کد و تگ قالب هم صدا زده می‌شود).
+		 */
+		public function enqueue_assets() {
+			$this->register_assets();
+			wp_enqueue_style( 'hj-profile-css' );
 			wp_enqueue_script( 'hj-profile-js' );
+		}
+
+		/**
+		 * آیا این درخواست پروفایل پزشک نمایش می‌دهد؟
+		 *
+		 * @return bool
+		 */
+		private function is_profile_view() {
+			if ( is_singular( 'doctor' ) ) {
+				return true;
+			}
+
+			$post = get_post();
+
+			return $post instanceof WP_Post && has_shortcode( (string) $post->post_content, 'hj_doctor_profile' );
 		}
 
 		/********************************************************************
@@ -95,22 +134,31 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 		}
 
 		/********************************************************************
-		 * Single doctor template override
+		 * Optional full-page template (off by default)
 		 ********************************************************************/
 
-		public function maybe_override_single_doctor() {
+		/**
+		 * قالب کامل پروفایل فقط با فیلتر صریح فعال می‌شود.
+		 *
+		 * دلیل: چاپ HTML در template_redirect و exit، هدر/فوتر و
+		 * استایل‌های قالب را حذف می‌کند و صفحهٔ پزشک را بی‌قالب نشان
+		 * می‌دهد. قالب پیش‌فرض سایت دست‌نخورده می‌ماند.
+		 *
+		 * @param string $template مسیر قالب فعلی.
+		 * @return string
+		 */
+		public function maybe_use_full_page_template( $template ) {
 			if ( ! is_singular( 'doctor' ) ) {
-				return;
+				return $template;
 			}
 
-			$id = (int) get_queried_object_id();
-			if ( ! $id ) {
-				return;
+			if ( ! apply_filters( 'hj_profile_use_full_page_template', false ) ) {
+				return $template;
 			}
 
-			$this->enqueue_assets();
-			echo $this->render_profile( $id );
-			exit;
+			$custom = HJ_DOCTORS_DIR . 'templates/single-doctor-profile.php';
+
+			return is_readable( $custom ) ? $custom : $template;
 		}
 
 		/********************************************************************
