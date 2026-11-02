@@ -79,6 +79,21 @@ body .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alig
           assert.equal(actual.cards[0].top, actual.cards[1].top, `${mode} ${width}: cards must share a row`);
           assert.ok(Math.abs(actual.cards[0].left - actual.cards[1].left) > 2, `${mode} ${width}: cards must be in different columns`);
         }
+        if (mode === 'wordpress') {
+          const showcase = await page.evaluate(() => {
+            const grid = document.querySelector('.hj-home-surgeons');
+            if (!grid) return null;
+            const cards = [...grid.querySelectorAll('.hj-surgeon-card')].map(el => {
+              const r = el.getBoundingClientRect(); return {top: Math.round(r.top), width: r.width};
+            });
+            return {columns: getComputedStyle(grid).gridTemplateColumns.split(' ').length, width: grid.getBoundingClientRect().width, cards};
+          });
+          if (showcase && showcase.cards.length >= 2) {
+            assert.equal(showcase.columns, width <= 768 ? 1 : width <= 1050 ? 2 : 3, `${mode} ${width}: showcase columns`);
+            if (width <= 768) assert.ok(Math.abs(showcase.cards[0].width - showcase.width) < 2 && showcase.cards[1].top > showcase.cards[0].top, `${mode} ${width}: full-width showcase cards`);
+            else assert.equal(showcase.cards[0].top, showcase.cards[1].top, `${mode} ${width}: showcase row`);
+          }
+        }
         console.log(`PASS ${mode} ${width}px: widths, image, card placement and overflow`);
       }
     }
