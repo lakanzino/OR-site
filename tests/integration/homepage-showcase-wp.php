@@ -8,6 +8,11 @@ $keys = array( 'show_on_front', 'page_on_front', 'hj_static_home_page_id', 'hj_s
 $old = array(); foreach ( $keys as $key ) { $old[$key] = get_option( $key ); }
 $posts = array();
 try {
+	wp_set_current_user( 0 );
+	$google = do_shortcode( '[hj_home_google]' );
+	hj_home_test_assert( false !== strpos( $google, 'hj_google_start=1' ), 'Google entry must use the doctor intent flow' );
+	wp_set_current_user( $admin[0]->ID );
+	hj_home_test_assert( '' === do_shortcode( '[hj_home_google]' ), 'Google entry should be hidden for signed-in users' );
 	// Default and missing status, pending and draft must never enter the showcase.
 	$cases = array( 'Approved Person' => array( 'publish', 'published' ), 'Pending Person' => array( 'pending', 'pending' ), 'Draft Person' => array( 'draft', 'published' ), 'Missing Status' => array( 'publish', '' ) );
 	foreach ( $cases as $name => $settings ) {
