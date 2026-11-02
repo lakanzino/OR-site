@@ -785,3 +785,114 @@ body.admin-bar .hj-doc__nav {
 		top: 46px;
 	}
 }
+
+/* شبکهٔ آیکون جراحی‌ها ------------------------------------------- */
+
+.hj-doc .hj-guide-link {
+	font-size: 12.5px;
+	color: var(--hj-primary);
+	border-bottom: 1px dashed currentColor;
+	padding-bottom: 1px;
+	white-space: nowrap;
+}
+
+.hj-doc .hj-proc-grid-wrap {
+	background: #fff;
+	border: 1px solid var(--hj-border);
+	border-radius: var(--hj-radius);
+	padding: 18px;
+	box-shadow: var(--hj-shadow);
+}
+
+.hj-doc .hj-proc-grid-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 14px;
+}
+
+.hj-doc .hj-proc-grid-head h3 {
+	margin: 0;
+	font-size: 15px;
+}
+
+.hj-doc .hj-proc-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 12px;
+}
+
+.hj-doc .hj-proc {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	padding: 16px 10px 13px;
+	border: 1px solid var(--hj-border);
+	border-radius: 12px;
+	background: #fff;
+	color: var(--hj-text);
+	transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+
+.hj-doc .hj-proc:hover,
+.hj-doc .hj-proc:focus-visible {
+	border-color: var(--hj-primary);
+	transform: translateY(-3px);
+	box-shadow: 0 6px 18px rgba(21, 86, 199, .10);
+	color: var(--hj-text);
+}
+
+.hj-doc .hj-proc__icon {
+	width: 54px;
+	height: 54px;
+	color: var(--hj-primary);
+	display: block;
+}
+
+.hj-doc .hj-proc__fa {
+	font-size: 12.5px;
+	font-weight: 600;
+	text-align: center;
+	line-height: 1.6;
+}
+
+.hj-doc .hj-proc__en {
+	font-size: 10.5px;
+	color: var(--hj-muted);
+	text-align: center;
+	line-height: 1.5;
+}
+
+.hj-proc-icon {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+@media (max-width: 850px) {
+	.hj-doc .hj-proc-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 600px) {
+	.hj-doc .hj-proc-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 10px;
+	}
+
+	.hj-doc .hj-proc {
+		padding: 13px 8px 11px;
+	}
+
+	.hj-doc .hj-proc__icon {
+		width: 46px;
+		height: 46px;
+	}
+
+	.hj-doc .hj-proc-grid-wrap {
+		padding: 13px;
+	}
+}

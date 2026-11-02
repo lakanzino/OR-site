@@ -1,0 +1,174 @@
+/* راهنمای تعاملی جراحی‌ها — ۹ دسته × ۸ عمل */
+
+.hj-guide {
+	--hj-g-primary: #1556c7;
+	--hj-g-border: #e7edf5;
+	--hj-g-text: #24334b;
+	--hj-g-muted: #718096;
+	color: var(--hj-g-text);
+	line-height: 1.9;
+}
+
+.hj-guide *,
+.hj-guide *::before,
+.hj-guide *::after {
+	box-sizing: border-box;
+}
+
+.hj-guide__nav {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 12px 0 18px;
+	position: sticky;
+	top: 0;
+	background: #fff;
+	z-index: 5;
+	border-bottom: 1px solid var(--hj-g-border);
+	margin-bottom: 22px;
+}
+
+.hj-guide__nav a {
+	display: inline-flex;
+	align-items: baseline;
+	gap: 6px;
+	padding: 7px 13px;
+	border: 1px solid var(--hj-g-border);
+	border-radius: 999px;
+	font-size: 12.5px;
+	color: var(--hj-g-text);
+	text-decoration: none;
+	background: #f8fbff;
+	transition: border-color .2s, color .2s;
+}
+
+.hj-guide__nav a:hover,
+.hj-guide__nav a:focus-visible {
+	border-color: var(--hj-g-primary);
+	color: var(--hj-g-primary);
+}
+
+.hj-guide__nav-en {
+	font-size: 10px;
+	color: var(--hj-g-muted);
+}
+
+.hj-guide__cat {
+	margin-bottom: 34px;
+	scroll-margin-top: 70px;
+}
+
+.hj-guide__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 10px;
+	margin-bottom: 14px;
+	padding-bottom: 8px;
+	border-bottom: 2px solid #eef3fa;
+}
+
+.hj-guide__head h2 {
+	font-size: 19px;
+	margin: 0;
+	display: flex;
+	align-items: center;
+}
+
+.hj-guide__head h2::before {
+	content: "";
+	display: inline-block;
+	width: 5px;
+	height: 20px;
+	border-radius: 5px;
+	background: #12a9ae;
+	margin-inline-end: 10px;
+}
+
+.hj-guide__head-en {
+	font-size: 12px;
+	color: var(--hj-g-muted);
+}
+
+.hj-guide__head-sub {
+	font-size: 12px;
+	color: var(--hj-g-muted);
+	margin-inline-start: auto;
+}
+
+.hj-guide__grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 14px;
+}
+
+.hj-guide__card {
+	display: flex;
+	gap: 14px;
+	align-items: flex-start;
+	background: #fff;
+	border: 1px solid var(--hj-g-border);
+	border-radius: 14px;
+	padding: 14px;
+	scroll-margin-top: 80px;
+	transition: border-color .2s, box-shadow .2s;
+}
+
+.hj-guide__card:target {
+	border-color: var(--hj-g-primary);
+	box-shadow: 0 0 0 3px rgba(21, 86, 199, .12);
+}
+
+.hj-guide__card:hover {
+	border-color: #c9daf8;
+}
+
+.hj-guide__icon {
+	flex: 0 0 58px;
+	width: 58px;
+	height: 58px;
+	color: var(--hj-g-primary);
+}
+
+.hj-guide__body h3 {
+	font-size: 14px;
+	margin: 0;
+}
+
+.hj-guide__en {
+	font-size: 11px;
+	color: var(--hj-g-muted);
+	margin: 2px 0 6px;
+}
+
+.hj-guide__desc {
+	font-size: 12px;
+	color: #56657a;
+	margin: 0;
+}
+
+.hj-guide__top {
+	font-size: 12px;
+	margin: 10px 0 0;
+}
+
+.hj-guide__top a {
+	color: var(--hj-g-primary);
+	text-decoration: none;
+}
+
+@media (max-width: 780px) {
+	.hj-guide__grid {
+		grid-template-columns: 1fr;
+	}
+
+	.hj-guide__nav {
+		position: static;
+		padding-bottom: 12px;
+	}
+
+	.hj-guide__head-sub {
+		margin-inline-start: 0;
+		width: 100%;
+	}
+}

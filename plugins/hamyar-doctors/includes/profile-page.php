@@ -594,17 +594,35 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 
 						</section>
 
-						<?php if ( $services ) : ?>
+						<?php
+						$procedures = function_exists( 'hj_surgery_for_doctor' )
+							? (array) hj_surgery_for_doctor( $post_id, 8 )
+							: array();
+						?>
+						<?php if ( $procedures || $services ) : ?>
 							<section class="hj-section" id="hj-services">
-								<div class="hj-section__title"><h2>خدمات و جراحی‌ها</h2></div>
-								<div class="hj-services">
-									<?php foreach ( array_slice( $services, 0, 8 ) as $index => $service ) : ?>
-										<div class="hj-service">
-											<div class="hj-service__icon" aria-hidden="true"><?php echo esc_html( $icon_set[ $index % count( $icon_set ) ] ); ?></div>
-											<h3><?php echo esc_html( $service ); ?></h3>
-										</div>
-									<?php endforeach; ?>
+								<div class="hj-section__title">
+									<h2><?php echo esc_html( $procedures ? 'عمل‌های انجام‌شده' : 'خدمات و جراحی‌ها' ); ?></h2>
+									<?php if ( $procedures && function_exists( 'hj_surgery_guide_url' ) ) : ?>
+										<a class="hj-guide-link" href="<?php echo esc_url( hj_surgery_guide_url() ); ?>">راهنمای کامل جراحی‌ها</a>
+									<?php endif; ?>
 								</div>
+
+								<?php if ( $procedures ) : ?>
+									<?php
+									// شبکهٔ آیکون‌ها؛ هر آیکون به بخش همان جراحی در راهنما لینک است.
+									echo hj_surgery_grid_html( $procedures ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+									?>
+								<?php else : ?>
+									<div class="hj-services">
+										<?php foreach ( array_slice( $services, 0, 8 ) as $index => $service ) : ?>
+											<div class="hj-service">
+												<div class="hj-service__icon" aria-hidden="true"><?php echo esc_html( $icon_set[ $index % count( $icon_set ) ] ); ?></div>
+												<h3><?php echo esc_html( $service ); ?></h3>
+											</div>
+										<?php endforeach; ?>
+									</div>
+								<?php endif; ?>
 							</section>
 						<?php endif; ?>
 
