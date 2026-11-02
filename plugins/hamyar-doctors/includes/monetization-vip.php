@@ -1,11 +1,11 @@
 <?php
 
 /**
- * ماژول ۲: lượt تجاری، ستاره‌دار/VIP، محدودیت سلأت جراحان.
+ * ماژول ۲: جایگاه تجاری، ستاره‌دار/VIP و سقف جایگاه جراحان.
  *
  * - ۳ سطح تجاری: basic، starred، vip
- * - متاباکس مدیریت در صفحه ویرایش پزشک
- * - depletion-toggle سریع در جدول edit.php
+ * - متاباکس مدیریت در صفحهٔ ویرایش پزشک
+ * - تغییر سریع جایگاه از جدول edit.php
  * - توابع کمکی hj_get_surgeon_commercial_data() و hj_get_city_slot_limit()
  *
  * @package HamyarDoctors
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /************************************************************************
- * کلاس موتورoure تجاری
+ * کلاس موتور تجاری
  ************************************************************************/
 
 if ( ! class_exists( 'HJ_Monetization_VIP_Engine' ) ) {
@@ -156,7 +156,14 @@ if ( ! class_exists( 'HJ_Monetization_VIP_Engine' ) ) {
 						continue;
 					}
 					$url = wp_nonce_url(
-						admin_url( 'admin-post.php?action=hj_quick_set_tier&amp;post_id=' . $post_id . '&amp;tier=' . $k ),
+						add_query_arg(
+							array(
+								'action'  => 'hj_quick_set_tier',
+								'post_id' => (int) $post_id,
+								'tier'    => $k,
+							),
+							admin_url( 'admin-post.php' )
+						),
 						'hj_set_tier_' . $post_id
 					);
 					echo '<a href="' . esc_url( $url ) . '" style="margin-left:6px;text-decoration:none;">[' . esc_html( $label ) . ']</a>';
@@ -194,7 +201,7 @@ if ( ! function_exists( 'hj_get_surgeon_commercial_data' ) ) {
 	/**
 	 * برگرداندن داده‌های تجاری یک جراح با لحاظ تاریخ انقضا.
 	 *
-	 * @param int $post_id شناسهٔ نوشتهٔเภت.
+	 * @param int $post_id شناسهٔ نوشتهٔ پزشک.
 	 * @return array{tier,is_starred,is_vip,badge,booking_url,priority}
 	 */
 	function hj_get_surgeon_commercial_data( $post_id ) {
@@ -222,7 +229,7 @@ if ( ! function_exists( 'hj_get_city_slot_limit' ) ) {
 	/**
 	 * سقف تعداد جراحان قابل نمایش در هر تخصص برای یک شهرستان.
 	 *
-	 * month-cities که hj_is_major_city = ۱ دارند، سقف ۱۲؛ بقیه سقف ۲.
+	 * کلانشهرهایی که hj_is_major_city = ۱ دارند سقف ۱۲ و بقیه سقف ۲ می‌گیرند.
 	 *
 	 * @param int $city_term_id شناسهٔ ترم شهر.
 	 * @return int

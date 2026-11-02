@@ -155,14 +155,25 @@ if ( ! class_exists( 'HJ_Tech_Navigator' ) ) :
 			$prov_term = get_term( $province_id, 'province' );
 			$prov_name = ( $prov_term && ! is_wp_error( $prov_term ) ) ? $prov_term->name : 'استان انتخابی';
 
+			// شهرهای یک استان: هم کلید تازهٔ hj_province_id و هم کلید قدیمی
+			// hj_parent_province_id خوانده می‌شود تا داده‌های سیدشده با هر دو
+			// نسخه دیده شوند.
 			$cities = get_terms( array(
 				'taxonomy'   => 'city',
 				'hide_empty' => false,
 				'meta_query' => array(
+					'relation' => 'OR',
+					array(
+						'key'     => 'hj_province_id',
+						'value'   => $province_id,
+						'compare' => '=',
+						'type'    => 'NUMERIC',
+					),
 					array(
 						'key'     => 'hj_parent_province_id',
 						'value'   => $province_id,
 						'compare' => '=',
+						'type'    => 'NUMERIC',
 					),
 				),
 			) );
@@ -451,11 +462,19 @@ if ( ! class_exists( 'HJ_Tech_Navigator' ) ) :
 				'post_status'    => 'publish',
 				'posts_per_page' => 30,
 				'tax_query'      => $tax_query,
+				// پروفایل‌های «در انتظار» و «ردشده» کنار گذاشته می‌شوند، اما
+				// پزشکی که متای وضعیت ندارد (مثلاً با wp_insert_post ساخته شده)
+				// نباید از ناوبر حذف شود.
 				'meta_query'     => array(
+					'relation' => 'OR',
 					array(
 						'key'     => 'hj_profile_status',
 						'value'   => 'published',
 						'compare' => '=',
+					),
+					array(
+						'key'     => 'hj_profile_status',
+						'compare' => 'NOT EXISTS',
 					),
 				),
 			);

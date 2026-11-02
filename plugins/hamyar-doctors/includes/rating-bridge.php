@@ -1329,7 +1329,7 @@ JS;
         <?php if (is_array($st)) : ?>
 
             <p style="font-size:12px;color:#666">
-               situasis فعلی: میانگین <?php echo esc_html(self::fa(number_format((float) $st['avg'], 2))); ?> — رأی تأییدشده: <?php echo esc_html(self::fa($st['approved'])); ?> — در انتظار: <?php echo esc_html(self::fa($st['pending'])); ?>
+               وضعیت فعلی: میانگین <?php echo esc_html(self::fa(number_format((float) $st['avg'], 2))); ?> — رأی تأییدشده: <?php echo esc_html(self::fa($st['approved'])); ?> — در انتظار: <?php echo esc_html(self::fa($st['pending'])); ?>
             </p>
 
         <?php endif; ?>

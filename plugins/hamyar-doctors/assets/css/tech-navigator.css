@@ -1,12 +1,10 @@
 /**
 
- * File: wp-content/plugins/hamyar-doctors/assets/css/tech-navigator.css
+ * File: assets/css/tech-navigator.css
 
- * Description: Futuristic Medical-Tech UI, 31-Province Grid, Horizontal Surgeon Ribbons, and VIP/Blur States.
+ * Description: رابط کاربری آینده‌نگر پزشکی-فناورانه: شبکهٔ ۳۱ استان، نوار افقی جراحان، حالت VIP/بلورین و قالب پروفایل تک‌جراح.
 
  */
-
-
 
 .hj-tech-hub {
 
@@ -32,8 +30,6 @@
 
 }
 
-
-
 .hj-tech-hub__header {
 
     text-align: center;
@@ -43,8 +39,6 @@
     margin: 0 auto 28px;
 
 }
-
-
 
 .hj-tech-badge {
 
@@ -68,8 +62,6 @@
 
 }
 
-
-
 .hj-tech-hub__title {
 
     font-size: 1.75rem;
@@ -82,8 +74,6 @@
 
 }
 
-
-
 .hj-tech-hub__subtitle {
 
     color: #475569;
@@ -95,8 +85,6 @@
     margin: 0 0 22px;
 
 }
-
-
 
 .hj-mode-switcher {
 
@@ -119,8 +107,6 @@
     justify-content: center;
 
 }
-
-
 
 .hj-mode-btn {
 
@@ -152,8 +138,6 @@
 
 }
 
-
-
 .hj-mode-btn.is-active {
 
     background: linear-gradient(135deg, #0284c7 0%, #0f172a 100%);
@@ -163,8 +147,6 @@
     box-shadow: 0 6px 16px rgba(2, 132, 199, 0.3);
 
 }
-
-
 
 .hj-nav-breadcrumb {
 
@@ -190,8 +172,6 @@
 
 }
 
-
-
 .hj-back-step-btn {
 
     background: #f1f5f9;
@@ -214,15 +194,11 @@
 
 }
 
-
-
 .hj-back-step-btn:hover {
 
     background: #e2e8f0;
 
 }
-
-
 
 .hj-breadcrumb-trail {
 
@@ -234,15 +210,11 @@
 
 }
 
-
-
 .hj-view-panel {
 
     display: none;
 
 }
-
-
 
 .hj-view-panel.is-active {
 
@@ -251,8 +223,6 @@
     animation: hjFadeIn 0.3s ease;
 
 }
-
-
 
 .hj-panel-head {
 
@@ -271,8 +241,7 @@
     border-bottom: 1px solid #e2e8f0;
 
     padding-bottom: 12px;
-
-
+}
 
 .hj-panel-head h3 {
 
@@ -283,8 +252,6 @@
     color: #0f172a;
 
 }
-
-
 
 .hj-tech-search-input {
 
@@ -304,8 +271,6 @@
 
 }
 
-
-
 .hj-provinces-grid {
 
     display: grid;
@@ -315,8 +280,6 @@
     gap: 12px;
 
 }
-
-
 
 .hj-province-pill {
 
@@ -350,8 +313,6 @@
 
 }
 
-
-
 .hj-province-pill:hover {
 
     border-color: #0284c7;
@@ -363,8 +324,6 @@
     box-shadow: 0 8px 18px rgba(2, 132, 199, 0.12);
 
 }
-
-
 
 .hj-prov-dot {
 
@@ -380,8 +339,6 @@
 
 }
 
-
-
 .hj-prov-name {
 
     flex: 1;
@@ -390,8 +347,6 @@
 
 }
 
-
-
 .hj-prov-arrow {
 
     color: #94a3b8;
@@ -399,8 +354,6 @@
     font-size: 0.85rem;
 
 }
-
-
 
 .hj-specialties-grid {
 
@@ -411,8 +364,6 @@
     gap: 14px;
 
 }
-
-
 
 .hj-specialty-card {
 
@@ -440,8 +391,6 @@
 
 }
 
-
-
 .hj-specialty-card:hover {
 
     border-color: #6366f1;
@@ -453,8 +402,6 @@
     box-shadow: 0 10px 22px rgba(99, 102, 241, 0.12);
 
 }
-
-
 
 .hj-spec-card__icon {
 
@@ -478,8 +425,6 @@
 
 }
 
-
-
 .hj-spec-card__info {
 
     display: flex;
@@ -489,8 +434,6 @@
     gap: 4px;
 
 }
-
-
 
 .hj-spec-card__title {
 
@@ -502,8 +445,6 @@
 
 }
 
-
-
 .hj-spec-card__cta {
 
     font-size: 0.8rem;
@@ -514,8 +455,6 @@
 
 }
 
-
-
 .hj-cities-grid {
 
     display: grid;
@@ -525,8 +464,6 @@
     gap: 12px;
 
 }
-
-
 
 .hj-city-btn {
 
@@ -554,8 +491,6 @@
 
 }
 
-
-
 .hj-city-btn.is-major-city {
 
     border-color: #38bdf8;
@@ -563,8 +498,6 @@
     background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
 
 }
-
-
 
 .hj-city-btn:hover {
 
@@ -575,8 +508,6 @@
     box-shadow: 0 6px 15px rgba(2, 132, 199, 0.12);
 
 }
-
-
 
 .hj-city-btn__top {
 
@@ -590,8 +521,6 @@
 
 }
 
-
-
 .hj-city-name {
 
     font-weight: 800;
@@ -601,8 +530,6 @@
     color: #0f172a;
 
 }
-
-
 
 .hj-major-badge {
 
@@ -620,8 +547,6 @@
 
 }
 
-
-
 .hj-city-sub {
 
     font-size: 0.8rem;
@@ -629,8 +554,6 @@
     color: #64748b;
 
 }
-
-
 
 .hj-spec-ribbon-group {
 
@@ -646,8 +569,6 @@
 
 }
 
-
-
 .hj-spec-ribbon-group.is-highlighted-spec {
 
     border: 2px solid #0284c7;
@@ -655,8 +576,6 @@
     box-shadow: 0 10px 25px rgba(2, 132, 199, 0.1);
 
 }
-
-
 
 .hj-spec-ribbon-header {
 
@@ -678,8 +597,6 @@
 
 }
 
-
-
 .hj-spec-ribbon-title {
 
     display: flex;
@@ -689,8 +606,6 @@
     gap: 8px;
 
 }
-
-
 
 .hj-spec-ribbon-title h4 {
 
@@ -703,8 +618,6 @@
     font-weight: 800;
 
 }
-
-
 
 .hj-spec-city-tag {
 
@@ -719,8 +632,6 @@
     border-radius: 99px;
 
 }
-
-
 
 .hj-slot-counter {
 
@@ -738,8 +649,6 @@
 
 }
 
-
-
 .hj-surgeon-ribbons-stack {
 
     display: flex;
@@ -749,8 +658,6 @@
     gap: 10px;
 
 }
-
-
 
 .hj-surgeon-ribbon {
 
@@ -780,8 +687,6 @@
 
 }
 
-
-
 .hj-surgeon-ribbon:hover {
 
     background: #ffffff;
@@ -794,8 +699,6 @@
 
 }
 
-
-
 .hj-surgeon-ribbon.is-starred-ribbon {
 
     background: linear-gradient(90deg, #fffbeb 0%, #ffffff 100%);
@@ -803,8 +706,6 @@
     border-color: #f59e0b;
 
 }
-
-
 
 .hj-surgeon-ribbon.is-vip-ribbon {
 
@@ -816,8 +717,6 @@
 
 }
 
-
-
 .hj-surgeon-ribbon.is-blurred-teaser .hj-ribbon__avatar,
 
 .hj-surgeon-ribbon.is-blurred-teaser .hj-ribbon__name {
@@ -828,8 +727,6 @@
 
 }
 
-
-
 .hj-surgeon-ribbon.is-blurred-teaser {
 
     opacity: 0.82;
@@ -839,8 +736,6 @@
     border-style: dashed;
 
 }
-
-
 
 .hj-ribbon__right {
 
@@ -854,8 +749,6 @@
 
 }
 
-
-
 .hj-ribbon__avatar-wrap {
 
     position: relative;
@@ -867,8 +760,6 @@
     flex-shrink: 0;
 
 }
-
-
 
 .hj-ribbon__avatar {
 
@@ -885,8 +776,6 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 
 }
-
-
 
 .hj-ribbon__star-pin {
 
@@ -918,8 +807,6 @@
 
 }
 
-
-
 .hj-ribbon__name-row {
 
     display: flex;
@@ -934,8 +821,6 @@
 
 }
 
-
-
 .hj-ribbon__name {
 
     font-size: 1.05rem;
@@ -945,8 +830,6 @@
     color: #0f172a;
 
 }
-
-
 
 .hj-badge-vip {
 
@@ -963,8 +846,6 @@
     font-weight: 700;
 
 }
-
-
 
 .hj-badge-starred {
 
@@ -984,8 +865,6 @@
 
 }
 
-
-
 .hj-badge-custom {
 
     background: #e0f2fe;
@@ -999,8 +878,6 @@
     border-radius: 99px;
 
 }
-
-
 
 .hj-ribbon__meta-row {
 
@@ -1018,8 +895,6 @@
 
 }
 
-
-
 .hj-ribbon__spec {
 
     color: #0284c7;
@@ -1027,8 +902,6 @@
     font-weight: 700;
 
 }
-
-
 
 .hj-ribbon__left {
 
@@ -1039,8 +912,6 @@
     gap: 14px;
 
 }
-
-
 
 .hj-ribbon__rating-pill {
 
@@ -1062,15 +933,11 @@
 
 }
 
-
-
 .hj-star-icon {
 
     color: #f59e0b;
 
 }
-
-
 
 .hj-rating-num {
 
@@ -1080,8 +947,6 @@
 
 }
 
-
-
 .hj-rating-cnt {
 
     font-size: 0.75rem;
@@ -1089,8 +954,6 @@
     color: #64748b;
 
 }
-
-
 
 .hj-ribbon__action-btn {
 
@@ -1109,8 +972,6 @@
     white-space: nowrap;
 
 }
-
-
 
 .hj-empty-slot-ribbon {
 
@@ -1138,8 +999,6 @@
 
 }
 
-
-
 .hj-claim-slot-link {
 
     color: #0284c7;
@@ -1149,8 +1008,6 @@
     text-decoration: none;
 
 }
-
-
 
 .hj-specialty-province-funnel {
 
@@ -1162,8 +1019,6 @@
 
 }
 
-
-
 @keyframes hjFadeIn {
 
     from { opacity: 0; transform: translateY(6px); }
@@ -1171,8 +1026,6 @@
     to { opacity: 1; transform: translateY(0); }
 
 }
-
-
 
 @media (max-width: 768px) {
 
@@ -1208,4 +1061,651 @@
 
     }
 
+}
+/* ==========================================================================
+   ناوبر: حالت بارگذاری، خطا و مسیر راهنما (۰.۳.۱)
+   ========================================================================== */
+
+.hj-crumb {
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid #dbeafe;
+    color: #0369a1;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.hj-crumb:hover {
+    background: #e0f2fe;
+    transform: translateY(-1px);
+}
+
+.hj-crumb.is-current {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    border-color: transparent;
+    color: #ffffff;
+    cursor: default;
+}
+
+.hj-crumb-sep {
+    color: #94a3b8;
+    font-weight: 700;
+    padding: 0 2px;
+}
+
+.hj-nav-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 42px 20px;
+    color: #0284c7;
+    font-weight: 700;
+}
+
+.hj-nav-loading__dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 3px solid #bae6fd;
+    border-top-color: #0284c7;
+    animation: hj-nav-spin 0.8s linear infinite;
+}
+
+@keyframes hj-nav-spin {
+    to { transform: rotate(360deg); }
+}
+
+.hj-nav-error {
+    text-align: center;
+    padding: 34px 20px;
+    color: #b91c1c;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 16px;
+}
+
+.hj-nav-retry {
+    margin-top: 10px;
+    background: #b91c1c;
+    color: #ffffff;
+    border: 0;
+    border-radius: 999px;
+    padding: 8px 20px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   قالب پروفایل تک‌جراح
+   ========================================================================== */
+
+.hj-profile,
+.hj-doctor-fallback,
+.hj-profile-notice {
+    direction: rtl;
+    text-align: right;
+    font-family: inherit;
+    color: #0f172a;
+}
+
+.hj-profile {
+    margin: 32px auto;
+    max-width: 1120px;
+}
+
+.hj-profile__wrap {
+    background: linear-gradient(150deg, #ffffff 0%, #f8fbff 55%, #f0fdf9 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 28px;
+    padding: 28px;
+    box-shadow: 0 24px 60px -28px rgba(15, 23, 42, 0.18);
+}
+
+.hj-profile__header {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.hj-profile__avatar-wrap {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.hj-profile__avatar,
+.hj-profile__avatar-placeholder {
+    width: 118px;
+    height: 118px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #ffffff;
+    box-shadow: 0 12px 28px -12px rgba(2, 132, 199, 0.55);
+    background: #e0f2fe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 46px;
+}
+
+.hj-profile__star-pin {
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fbbf24, #d97706);
+    color: #ffffff;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #ffffff;
+    box-shadow: 0 6px 14px -6px rgba(217, 119, 6, 0.9);
+}
+
+.hj-profile__identity {
+    flex: 1 1 280px;
+    min-width: 0;
+}
+
+.hj-profile__name {
+    margin: 0 0 8px;
+    font-size: 27px;
+    font-weight: 800;
+    line-height: 1.4;
+    color: #0f172a;
+}
+
+.hj-profile__name-en {
+    font-size: 15px;
+    font-weight: 500;
+    color: #64748b;
+    margin-right: 6px;
+}
+
+.hj-profile__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.hj-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 999px;
+    padding: 5px 13px;
+    font-size: 12.5px;
+    font-weight: 700;
+    line-height: 1.6;
+}
+
+.hj-badge--vip {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #ffffff;
+    box-shadow: 0 8px 18px -10px rgba(217, 119, 6, 0.9);
+}
+
+.hj-badge--starred {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fbbf24;
+}
+
+.hj-badge--custom {
+    background: #ecfeff;
+    color: #0e7490;
+    border: 1px solid #a5f3fc;
+}
+
+.hj-profile__specialty {
+    margin: 0 0 6px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0284c7;
+}
+
+.hj-profile__location {
+    font-size: 14px;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.hj-profile__stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin: 22px 0;
+}
+
+.hj-stat {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 16px 12px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    backdrop-filter: blur(8px);
+}
+
+.hj-stat__value {
+    font-size: 21px;
+    font-weight: 800;
+    color: #0f172a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.hj-stat__label {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.hj-stat--rating .hj-stat__value {
+    color: #b45309;
+}
+
+.hj-star-icon {
+    color: #f59e0b;
+    font-size: 0.95em;
+}
+
+.hj-profile__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.hj-profile__section {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 20px 22px;
+    margin-bottom: 18px;
+}
+
+.hj-profile__section-title {
+    margin: 0 0 12px;
+    font-size: 17px;
+    font-weight: 800;
+    color: #0f172a;
+    padding-right: 12px;
+    border-right: 4px solid #0284c7;
+    line-height: 1.5;
+}
+
+.hj-profile__section-content {
+    font-size: 14.5px;
+    line-height: 2;
+    color: #334155;
+}
+
+.hj-profile__specialty-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.hj-spec-tag {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.hj-surgery-item {
+    font-size: 14px;
+    line-height: 2.1;
+    color: #334155;
+}
+
+.hj-profile__card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 18px;
+}
+
+.hj-profile__card-title {
+    margin: 0 0 14px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.hj-contact-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.hj-contact-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13.5px;
+    line-height: 1.9;
+    color: #334155;
+}
+
+.hj-contact-icon {
+    flex: 0 0 auto;
+    line-height: 1.9;
+}
+
+.hj-contact-btn {
+    display: inline-block;
+    margin-top: 4px;
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 999px;
+    padding: 9px 18px;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.hj-contact-btn:hover {
+    color: #ffffff;
+    filter: brightness(1.08);
+}
+
+.hj-profile__rating-big {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 16px;
+    margin-bottom: 16px;
+}
+
+.hj-profile__rating-num {
+    font-size: 30px;
+    font-weight: 800;
+    color: #b45309;
+    line-height: 1;
+}
+
+.hj-profile__stars {
+    display: flex;
+    gap: 3px;
+    font-size: 17px;
+    color: #d6d3d1;
+}
+
+.hj-star.is-filled {
+    color: #f59e0b;
+}
+
+.hj-reviews-count {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.hj-profile__reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 460px;
+    overflow-y: auto;
+}
+
+.hj-review {
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: #f8fafc;
+}
+
+.hj-review__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.hj-review__author {
+    font-size: 13px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.hj-review__date {
+    font-size: 11.5px;
+    color: #94a3b8;
+}
+
+.hj-review__stars {
+    display: flex;
+    gap: 2px;
+    font-size: 13px;
+    color: #d6d3d1;
+    margin-bottom: 6px;
+}
+
+.hj-review__body {
+    font-size: 13.5px;
+    line-height: 1.95;
+    color: #334155;
+}
+
+.hj-profile-empty,
+.hj-profile-notice {
+    font-size: 14px;
+    color: #64748b;
+    padding: 14px;
+    background: #f8fafc;
+    border-radius: 12px;
+}
+
+.hj-doctor-fallback {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 18px;
+}
+
+.hj-doctor-fallback__title {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 14px;
+}
+
+/* واکنش‌گرا */
+
+@media (max-width: 900px) {
+    .hj-profile__body {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hj-profile__stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .hj-profile__wrap {
+        padding: 18px;
+        border-radius: 20px;
+    }
+
+    .hj-profile__avatar,
+    .hj-profile__avatar-placeholder {
+        width: 88px;
+        height: 88px;
+        font-size: 34px;
+    }
+
+    .hj-profile__name {
+        font-size: 21px;
+    }
+
+    .hj-profile__stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .hj-stat__value {
+        font-size: 18px;
+    }
+}
+
+/* ==========================================================================
+   تکمیل پوشش کلاس‌های مارک‌آپ ناوبر و پروفایل
+   ========================================================================== */
+
+.hj-dynamic-stage {
+    margin-top: 22px;
+    animation: hjStageFade 0.35s ease both;
+}
+
+@keyframes hjStageFade {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.hj-stage-box {
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid #dbeafe;
+    border-radius: 22px;
+    padding: 22px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 18px 40px -24px rgba(15, 23, 42, 0.22);
+}
+
+.hj-stage-hint {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.9;
+    color: #64748b;
+    max-width: 62ch;
+}
+
+.hj-mode-icon,
+.hj-spec-icon {
+    font-size: 1.15em;
+    line-height: 1;
+}
+
+.hj-empty-notice {
+    margin: 12px 0;
+    padding: 16px 18px;
+    border-radius: 14px;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    color: #64748b;
+    font-size: 13.5px;
+    text-align: center;
+}
+
+.hj-slot-policy-banner {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1e40af;
+    border-radius: 14px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.85;
+}
+
+.hj-specialty-sections-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.hj-specialty-spotlight {
+    margin-bottom: 26px;
+}
+
+.hj-city-directory .hj-panel-head {
+    align-items: flex-start;
+}
+
+.hj-inline-filter-tag {
+    display: inline-block;
+    background: #ecfeff;
+    color: #0e7490;
+    border: 1px solid #a5f3fc;
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 11.5px;
+    font-weight: 700;
+    vertical-align: middle;
+}
+
+.hj-ribbon__identity {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.hj-ribbon__city,
+.hj-ribbon__exp,
+.hj-ribbon__surg {
+    font-size: 12px;
+    color: #64748b;
+    white-space: nowrap;
+}
+
+.hj-profile__column {
+    min-width: 0;
+}
+
+.hj-profile__column--main,
+.hj-profile__column--sidebar {
+    display: flex;
+    flex-direction: column;
+}
+
+.hj-profile__surgeries-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.hj-profile__loc-icon {
+    font-size: 0.95em;
+    line-height: 1;
+}
+
+.hj-profile__card--contact {
+    border-color: #dbeafe;
+}
+
+.hj-profile__card--reviews {
+    border-color: #fde68a;
+    background: linear-gradient(180deg, #ffffff 0%, #fffdf5 100%);
 }

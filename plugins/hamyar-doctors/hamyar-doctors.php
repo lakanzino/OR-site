@@ -2,7 +2,7 @@
 /**
  * Plugin Name: همیار پزشک‌ها
  * Description: نوع محتوای «پزشک» با تخصص و شهر، زمینه‌های نمایه (JSON محلی ACF بدون Sync دستی) و دسترسی نقشِ پزشک فقط به نمایهٔ خودش؛ مستقل از قالب فرزند و بی‌صدا در debug.log.
- * Version: 0.3.0
+ * Version: 0.3.1
  * Requires at least: 6.4
  * Requires PHP: 8.0
  * Author: همیار جراحی
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'HJ_DOCTORS_VERSION', '0.3.0' );
+define( 'HJ_DOCTORS_VERSION', '0.3.1' );
 define( 'HJ_DOCTORS_FILE', __FILE__ );
 define( 'HJ_DOCTORS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'HJ_DOCTORS_URL', plugin_dir_url( __FILE__ ) );
@@ -168,27 +168,42 @@ final class HJ_Doctors {
 			return;
 		}
 
+		/*
+		 * ترتیب بارگذاری:
+		 * ۱) پایهٔ دادهٔ پزشک (CPT + تاکسونومی‌ها)
+		 * ۲) ماژول‌های ارتقایافته (سیدر ۳۱ استان، درآمدزایی VIP، ناوبر تکنولوژیک، پروفایل، دادهٔ نمونه)
+		 * ۳) بقیهٔ بخش‌های قدیمی
+		 *
+		 * هر فایل روی دیسک نباشد بی‌صدا رد می‌شود تا افزونه حتی با
+		 * اکسترکت نصفه هم صفحه را سفید نکند. هیچ فایلی دو بار لود نمی‌شود.
+		 */
 		$files = array(
-			'includes/roles.php',        // بخش ۴ — نقش پزشک، capabilityها و قفل پیشخوان.
-			'includes/security.php',     // بخش ۴ — primitiveهای سقف حجم و rate limit.
-			'includes/taxonomies.php',   // بخش ۲ — تخصص و شهر.
-			'includes/iran-locations-seeder.php', // بخش ۱۴ — سیدر ۳۱ استان، شهر و تخصص‌های الجراحی.
-		'includes/cpt.php',          // بخش ۲ — نوع محتوای پزشک.
-		'includes/monetization-vip.php',     // بخش ۲ — superficie تجاری، ستاره‌دار/VIP و سقف سلأت.
-		'includes/tech-navigator.php',
-		'includes/profile-render.php',       // بخش ۳ — ناوبر دو楽ته جراحان با AJAX.
-			'includes/acf-fields.php',   // بخش ۳ — زمینه‌های نمایه.
-			'includes/dashboard.php',    // بخش ۴ — صفحهٔ /my-profile/ و شورت‌کد شروع.
-			'includes/member-account.php', // حساب عمومی مستقل از ناحیه پزشکان.
-			'includes/magazine.php',       // اشتراک اختیاری مجله.
-			'includes/review-admin.php',   // صف بررسی و ویرایش پزشکان.
-			'includes/auth-google.php',  // بخش ۵ — پل ورود با گوگل (Nextend).
-			'includes/archive-render.php', // بخش ۸ — آرشیو پزشکان و صفحات تخصص/استان/شهر/نوع تخصص.
-			'includes/rating-bridge.php',  // بخش ۹ — پل بومی امتیازها (جدول hj_doctor_votes).
-			'includes/search-filters.php', // بخش ۱۰ — جست‌وجوی هوشمند، جست‌وجوی هدر و پل FacetWP.
-			'includes/rest-api.php',       // بخش ۱۱ — REST API عمومی hj/v1 (خودش بوت می‌شود).
-			'includes/shortcodes.php',     // بخش ۱۲ — شورت‌کد [hj_doctor_card] و کارت ویجت مستقل.
-			'includes/embed.php',          // بخش ۱۲ — باکس جاسازی + نقاط پایانی iframe/اسکریپت (/?hj_widget=…).
+			// ۱) پایه: نوع محتوای پزشک و تاکسونومی‌ها.
+			'includes/cpt.php',                   // بخش ۲ — نوع محتوای پزشک.
+			'includes/taxonomies.php',            // بخش ۲ — تخصص، استان و شهر.
+
+			// ۲) ماژول‌های ارتقایافته.
+			'includes/iran-locations-seeder.php', // بخش ۱۴ — سیدر ۳۱ استان، شهرستان و تخصص‌های جراحی.
+			'includes/monetization-vip.php',      // بخش ۲ — جایگاه تجاری، ستاره‌دار/VIP و سقف جایگاه.
+			'includes/tech-navigator.php',        // بخش ۳ — ناوبر دو مرحله‌ای جراحان با AJAX.
+			'includes/profile-render.php',        // بخش ۳ — قالب پروفایل تک‌جراح.
+			'includes/demo-doctors.php',          // دادهٔ نمونه: ۵ جراح (۲ VIP، ۱ ستاره‌دار، ۲ عادی).
+
+			// ۳) بخش‌های قدیمی.
+			'includes/roles.php',                 // بخش ۴ — نقش پزشک، capabilityها و قفل پیشخوان.
+			'includes/security.php',              // بخش ۴ — primitiveهای سقف حجم و rate limit.
+			'includes/acf-fields.php',            // بخش ۳ — زمینه‌های نمایه.
+			'includes/dashboard.php',             // بخش ۴ — صفحهٔ /my-profile/ و شورت‌کد شروع.
+			'includes/member-account.php',        // حساب عمومی مستقل از ناحیه پزشکان.
+			'includes/magazine.php',              // اشتراک اختیاری مجله.
+			'includes/review-admin.php',          // صف بررسی و ویرایش پزشکان.
+			'includes/auth-google.php',           // بخش ۵ — پل ورود با گوگل (Nextend).
+			'includes/archive-render.php',        // بخش ۸ — آرشیو پزشکان و صفحات تخصص/استان/شهر/نوع تخصص.
+			'includes/rating-bridge.php',         // بخش ۹ — پل بومی امتیازها (جدول hj_doctor_votes).
+			'includes/search-filters.php',        // بخش ۱۰ — جست‌وجوی هوشمند، جست‌وجوی هدر و پل FacetWP.
+			'includes/rest-api.php',              // بخش ۱۱ — REST API عمومی hj/v1 (خودش بوت می‌شود).
+			'includes/shortcodes.php',            // بخش ۱۲ — شورت‌کد [hj_doctor_card] و کارت ویجت مستقل.
+			'includes/embed.php',                 // بخش ۱۲ — باکس جاسازی + نقاط پایانی iframe/اسکریپت (/?hj_widget=…).
 		);
 
 		foreach ( $files as $file ) {
@@ -196,39 +211,6 @@ final class HJ_Doctors {
 			if ( is_readable( $path ) ) {
 				require_once $path;
 			}
-		}
-
-		// --- بارگذاری ماژول‌های ارتقایافته ناوبری تکنولوژیک، ۳۱ استان و سیستم درآمدزایی VIP ---
-		if ( ! defined( 'HJ_DOCTORS_SAFE_MODE' ) || ! HJ_DOCTORS_SAFE_MODE ) {
-
-			$hj_upgraded_modules = array(
-
-				'includes/core-patches.php',
-
-				'includes/admin-settings.php',
-
-				'includes/iran-locations-seeder.php',
-
-				'includes/monetization-vip.php',
-
-				'includes/tech-navigator.php',
-
-				'includes/profile-render.php',
-
-			);
-
-			foreach ( $hj_upgraded_modules as $hj_mod_file ) {
-
-				$hj_mod_path = plugin_dir_path( __FILE__ ) . $hj_mod_file;
-
-				if ( file_exists( $hj_mod_path ) ) {
-
-					require_once $hj_mod_path;
-
-				}
-
-			}
-
 		}
 	}
 

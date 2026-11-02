@@ -2,14 +2,14 @@
 /**
  * ماژول ۶: قالب پروفایل تک جراح (Single Surgeon Profile).
  *
- * نمایش یکپارچه و پرفरした پروفایل پزشک شامل:
+ * نمایش یکپارچه و حرفه‌ای پروفایل پزشک شامل:
  * - آمار (سابقه، تعداد جراحی، امتیاز)
  * - شمارهٔ نظام پزشکی
  * - تخصص‌ها و رشته‌ها
  * - نشان ستاره‌دار / VIP
- * - octobre ۵ ستاره و نظرات عمومی بیماران
+ * - امتیاز ۵ ستاره و نظرات عمومی بیماران
  *
- * security: nonce، sanitization، escaping، capability check، UTF-8 فارسی.
+ * امنیت: nonce، sanitization، escaping، capability check، UTF-8 فارسی.
  *
  * @package HamyarDoctors
  */
@@ -37,12 +37,18 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 			return self::$instance;
 		}
 
-		private function __construct() {
+		/**
+		 * سازندهٔ عمومی (۰.۳.۱).
+		 *
+		 * قبلاً private بود و در پایان فایل با new صدا زده می‌شد؛ در PHP 8
+		 * این ترکیب یک Error کشنده می‌ساخت و کل سایت را سفید می‌کرد.
+		 */
+		public function __construct() {
 			// شورت‌کد نمایش پروفایل: [hj_doctor_profile id="123"]
 			add_shortcode( 'hj_doctor_profile', array( $this, 'shortcode_profile' ) );
 
-			// نمایش پروفایل در صفحات تک doctors (template override)
-			add_action( 'template_redirect', array( $this, 'maybe_override_single_doctor' ) );
+			// جایگزینی قالب تک‌جراح با فیلتر template_include (نه echo/exit).
+			add_filter( 'template_include', array( $this, 'filter_single_doctor_template' ), 99 );
 
 			// استایل و اسکریپت صفحه پروفایل
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ), 20 );
@@ -61,8 +67,14 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 				return;
 			}
 
-			wp_register_style( 'hj-profile-css', HJ_DOCTORS_URL . 'assets/css/tech-navigator.css', array(), HJ_DOCTORS_VERSION );
-			wp_enqueue_style( 'hj-profile-css' );
+			// همان فایل CSS ناوبر، استایل پروفایل را هم دارد؛ برای جلوگیری از
+			// دانلود دوباره، اگر هندل مشترک ثبت شده باشد همان را صف می‌کنیم.
+			if ( wp_style_is( 'hj-tech-navigator', 'registered' ) ) {
+				wp_enqueue_style( 'hj-tech-navigator' );
+			} else {
+				wp_register_style( 'hj-profile-css', HJ_DOCTORS_URL . 'assets/css/tech-navigator.css', array(), HJ_DOCTORS_VERSION );
+				wp_enqueue_style( 'hj-profile-css' );
+			}
 
 			wp_register_script( 'hj-profile-js', HJ_DOCTORS_URL . 'assets/js/tech-navigator.js', array( 'jquery' ), HJ_DOCTORS_VERSION, true );
 			wp_localize_script( 'hj-profile-js', 'HJ_PROFILE_CONFIG', array(
@@ -98,19 +110,32 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 		 * Single doctor template override
 		 ********************************************************************/
 
-		public function maybe_override_single_doctor() {
+		/**
+		 * انتخاب قالب تک‌جراح.
+		 *
+		 * اگر قالب فعال خودش single-doctor.php داشته باشد، همان اولویت دارد و
+		 * دست‌نخورده برمی‌گردد. در غیر این صورت قالب افزونه استفاده می‌شود تا
+		 * هدر/فوتر و wp_head/wp_footer قالب حفظ شوند.
+		 *
+		 * @param string $template مسیر قالب پیشنهادی وردپرس.
+		 * @return string
+		 */
+		public function filter_single_doctor_template( $template ) {
 			if ( ! is_singular( 'doctor' ) ) {
-				return;
+				return $template;
 			}
 
-			$id = (int) get_queried_object_id();
-			if ( ! $id ) {
-				return;
+			$theme_template = locate_template( array( 'single-doctor.php' ) );
+			if ( $theme_template ) {
+				return $theme_template;
 			}
 
-			$this->enqueue_assets();
-			echo $this->render_profile( $id );
-			exit;
+			$plugin_template = HJ_DOCTORS_DIR . 'templates/single-doctor.php';
+			if ( is_readable( $plugin_template ) ) {
+				return $plugin_template;
+			}
+
+			return $template;
 		}
 
 		/********************************************************************
@@ -385,35 +410,101 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 			return false;
 		}
 
+		/**
+		 * نظرات عمومی تأییدشدهٔ بیماران.
+		 *
+		 * ستون‌های جدول hj_doctor_votes با SHOW COLUMNS تشخیص داده می‌شوند تا
+		 * اگر نام ستون‌ها (status / comment / created_at) متفاوت بود، به‌جای
+		 * خطای SQL یا نمایش خالی، همان چیزی خوانده شود که واقعاً وجود دارد.
+		 *
+		 * @param int $post_id شناسهٔ پزشک.
+		 * @return array<int,array{author:string,rating:int,comment:string,date:string}>
+		 */
 		private static function get_public_reviews( $post_id ) {
 			$post_id = (int) $post_id;
 			$reviews = array();
 
 			global $wpdb;
 			$table = $wpdb->prefix . 'hj_doctor_votes';
-			if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table ) ) !== $table ) {
+
+			$prev = $wpdb->suppress_errors( true );
+			$exists = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) );
+			if ( $exists !== $table ) {
+				$wpdb->suppress_errors( $prev );
 				return $reviews;
 			}
 
-			$rows = $wpdb->get_results( $wpdb->prepare(
-				"SELECT * FROM `{$table}` WHERE `doctor_id` = %d AND `status` = 'approved' ORDER BY `created_at` DESC LIMIT 10",
-				$post_id
-			), ARRAY_A );
+			$columns = $wpdb->get_col( "SHOW COLUMNS FROM `{$table}`", 0 ); // phpcs:ignore WordPress.DB.PreparedSQL
+			$wpdb->suppress_errors( $prev );
+			if ( ! is_array( $columns ) || empty( $columns ) ) {
+				return $reviews;
+			}
+			$columns = array_map( 'strval', $columns );
+
+			/**
+			 * نخستین ستون موجود از فهرست نامزدها (فقط از میان ستون‌های واقعی).
+			 *
+			 * @param string[] $candidates نامزدها.
+			 * @return string
+			 */
+			$pick = static function ( $candidates ) use ( $columns ) {
+				foreach ( $candidates as $candidate ) {
+					if ( in_array( $candidate, $columns, true ) ) {
+						return $candidate;
+					}
+				}
+				return '';
+			};
+
+			$col_doctor  = $pick( array( 'doctor_id', 'post_id', 'doctor' ) );
+			$col_rating  = $pick( array( 'rating', 'stars', 'score', 'vote', 'value' ) );
+			$col_comment = $pick( array( 'comment', 'review', 'content', 'body', 'text' ) );
+			$col_status  = $pick( array( 'status', 'is_approved', 'approved', 'state' ) );
+			$col_created = $pick( array( 'created_at', 'voted_at', 'date_created', 'created', 'vote_date', 'time' ) );
+
+			// بدون ستون پزشک یا امتیاز، بازیابی معنا ندارد.
+			if ( '' === $col_doctor || '' === $col_rating ) {
+				return $reviews;
+			}
+
+			$where  = "`{$col_doctor}` = %d";
+			$params = array( $post_id );
+
+			if ( '' !== $col_status ) {
+				$where   .= " AND `{$col_status}` IN ('approved','approve','publish','published','1','active','yes')";
+			}
+
+			$order = ( '' !== $col_created ) ? " ORDER BY `{$col_created}` DESC" : '';
+
+			$sql = "SELECT * FROM `{$table}` WHERE {$where}{$order} LIMIT 10"; // phpcs:ignore WordPress.DB.PreparedSQL
+
+			$prev = $wpdb->suppress_errors( true );
+			$rows = $wpdb->get_results( $wpdb->prepare( $sql, $params ), ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL
+			$wpdb->suppress_errors( $prev );
 
 			if ( ! is_array( $rows ) ) {
 				return $reviews;
 			}
 
 			foreach ( $rows as $row ) {
-				$rating = isset( $row['rating'] ) ? (int) $row['rating'] : 0;
-				$comment = isset( $row['comment'] ) ? $row['comment'] : '';
-				$created = isset( $row['created_at'] ) ? $row['created_at'] : '';
+				$rating  = isset( $row[ $col_rating ] ) ? (int) $row[ $col_rating ] : 0;
+				$comment = ( '' !== $col_comment && isset( $row[ $col_comment ] ) ) ? (string) $row[ $col_comment ] : '';
+				$created = ( '' !== $col_created && isset( $row[ $col_created ] ) ) ? $row[ $col_created ] : '';
+
+				if ( '' === trim( $comment ) ) {
+					continue;
+				}
+
+				$timestamp = 0;
+				if ( '' !== $created ) {
+					$timestamp = is_numeric( $created ) ? (int) $created : (int) strtotime( (string) $created );
+				}
 
 				$reviews[] = array(
-					'author' => 'بیمار تاییدشده',
-					'rating' => $rating,
+					'author'  => 'بیمار تأییدشده',
+					'rating'  => $rating,
 					'comment' => $comment,
-					'date'   => $created ? gmdate( 'Y/m/d', strtotime( $created ) ) : '',
+					'date'    => $timestamp > 0 ? gmdate( 'Y/m/d', $timestamp ) : '',
 				);
 			}
 
@@ -437,7 +528,7 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 		}
 	}
 
-	new HJ_Profile_Render();
+	HJ_Profile_Render::get_instance();
 
 endif;
 
