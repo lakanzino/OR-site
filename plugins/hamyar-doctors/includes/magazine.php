@@ -55,7 +55,7 @@ function hj_magazine_subscribe() {
 add_action( 'admin_post_nopriv_hj_magazine_subscribe', 'hj_magazine_subscribe' );
 add_action( 'admin_post_hj_magazine_subscribe', 'hj_magazine_subscribe' );
 function hj_magazine_token_request( $action ) {
-	$input = 'POST' === ( $_SERVER['REQUEST_METHOD'] ?? '' ) ? $_POST : $_GET;
+	$input = 'POST' === ( $_SERVER['REQUEST_METHOD'] ?? '' ) ? $_POST : $_GET; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	$id = isset( $input['id'] ) ? absint( $input['id'] ) : 0;
 	$token = isset( $input['token'] ) && is_string( $input['token'] ) ? sanitize_text_field( wp_unslash( $input['token'] ) ) : '';
 	$key = 'confirm' === $action ? '_hj_confirm_hash' : '_hj_cancel_hash';

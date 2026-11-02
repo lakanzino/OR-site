@@ -949,7 +949,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			}
 			$spec_ids = array();
 			if ( isset( $_POST['specialty'] ) && is_array( $_POST['specialty'] ) ) {
-				foreach ( $_POST['specialty'] as $s ) {
+				foreach ( $_POST['specialty'] as $s ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 					$s = absint( $s );
 					if ( $s && taxonomy_exists( 'specialty' ) && term_exists( $s, 'specialty' ) ) {
 						$spec_ids[] = $s;
@@ -1119,7 +1119,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			if ( empty( $_FILES['photo'] ) ) {
 				self::fail( 'فایلی انتخاب نشده است.', 422 );
 			}
-			$err = self::validate_file( $_FILES['photo'], 'photo' );
+			$err = self::validate_file( $_FILES['photo'], 'photo' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			if ( $err ) {
 				self::fail( $err, 422 );
 			}
@@ -1228,7 +1228,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			if ( count( $docs ) >= self::max_docs() ) {
 				self::fail( 'به سقف تعداد مدارک رسیده‌اید.', 422 );
 			}
-			$file = $_FILES['doc'];
+			$file = $_FILES['doc']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$err  = self::validate_file( $file, 'document' );
 			if ( $err ) {
 				self::fail( $err, 422 );
@@ -1251,14 +1251,14 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 				self::fail( 'ذخیرهٔ مدرک ناموفق بود.', 500 );
 			}
 			if ( ! file_exists( $dir . '/index.php' ) ) {
-				@file_put_contents( $dir . '/index.php', "<?php\n// Silence is golden.\n" );
+				@file_put_contents( $dir . '/index.php', "<?php\n// Silence is golden.\n" ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 			}
 			$stored = bin2hex( random_bytes( 16 ) ) . '.' . $exts[ $mime ];
 			$dest   = $dir . '/' . $stored;
 			if ( ! move_uploaded_file( $file['tmp_name'], $dest ) ) {
 				self::fail( 'ذخیرهٔ مدرک ناموفق بود.', 500 );
 			}
-			@chmod( $dest, 0640 );
+			@chmod( $dest, 0640 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 
 			$docs[] = array(
 				'id'   => substr( bin2hex( random_bytes( 8 ) ), 0, 12 ),
@@ -1281,7 +1281,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 				if ( isset( $d['id'] ) && $d['id'] === $id ) {
 					$path = self::doc_path( $pid, $d );
 					if ( $path ) {
-						@unlink( $path );
+						@unlink( $path ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 					}
 					continue;
 				}
@@ -1334,10 +1334,10 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			}
 			foreach ( (array) glob( $dir . '/*' ) as $f ) {
 				if ( is_file( $f ) ) {
-					@unlink( $f );
+					@unlink( $f ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 				}
 			}
-			@rmdir( $dir );
+			@rmdir( $dir ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 		}
 
 		/* ================================================================== */
@@ -1472,7 +1472,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 
 			$L[] = '';
 			$L[] = 'Existing meta keys on doctor posts (non-hidden, with counts):';
-			$rows = $wpdb->get_results(
+			$rows = $wpdb->get_results( // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 				"SELECT pm.meta_key AS k, COUNT(*) AS c
 				 FROM {$wpdb->postmeta} pm
 				 INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id

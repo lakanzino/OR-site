@@ -252,7 +252,7 @@ class HJ_Doctors_Embed {
 
         echo '<link rel="stylesheet" href="' . esc_url($css) . '">';
 
-        echo '</head><body class="hj-wd-frame"><div id="hj-wd-root" class="hj-wd-page">' . $card . '</div>';
+        echo '</head><body class="hj-wd-frame"><div id="hj-wd-root" class="hj-wd-page">' . $card . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
         echo '<script>(function(){var r=document.getElementById("hj-wd-root");'
 
@@ -404,7 +404,7 @@ JS;
 
         }
 
-        echo $js;
+        echo $js; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
         exit;
 
@@ -686,7 +686,7 @@ JS;
 
             echo '<tr><td>' . (int) $i . '</td><td>' . $e(get_the_title($i)) . '</td>';
 
-            echo '<td class="' . ($pub ? 'ok' : 'bad') . '">' . ($pub ? 'بله' : 'خیر') . '</td>';
+            echo '<td class="' . ($pub ? 'ok' : 'bad') . '">' . ($pub ? 'بله' : 'خیر') . '</td>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
             echo '<td dir="ltr">' . ($pub ? '<a target="_blank" rel="noopener" href="' . esc_url(home_url('/?hj_widget=' . (int) $i)) . '">?hj_widget=' . (int) $i . '</a>' : '—') . '</td>';
 

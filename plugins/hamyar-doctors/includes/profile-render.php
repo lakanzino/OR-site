@@ -176,9 +176,11 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 			$spec_list  = array();
 			if ( ! is_wp_error( $spec_terms ) && is_array( $spec_terms ) ) {
 				foreach ( $spec_terms as $t ) {
+					// مقدار خام نگه داشته می‌شود و در زمان چاپ escape می‌گردد
+					// (جلوگیری از escape دوباره و رعایت قاعدهٔ late escaping).
 					$spec_list[] = array(
-						'name' => esc_html( $t->name ),
-						'slug' => esc_attr( $t->slug ),
+						'name' => (string) $t->name,
+						'slug' => (string) $t->slug,
 					);
 				}
 			}
@@ -307,7 +309,7 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 									<h2 class="hj-profile__section-title">تخصص‌ها و رشته‌ها</h2>
 									<div class="hj-profile__specialty-tags">
 										<?php foreach ( $spec_list as $spec ) : ?>
-											<span class="hj-spec-tag"><?php echo $spec['name']; ?></span>
+											<span class="hj-spec-tag"><?php echo esc_html( $spec['name'] ); ?></span>
 										<?php endforeach; ?>
 									</div>
 								</div>
@@ -364,7 +366,7 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 									<span class="hj-profile__rating-num"><?php echo $rating_avg > 0 ? esc_html( number_format_i18n( $rating_avg, 1 ) ) : '۰٫۰'; ?></span>
 									<div class="hj-profile__stars">
 										<?php for ( $i = 5; $i >= 1; $i-- ) : ?>
-											<span class="hj-star <?php echo $i <= ceil( $rating_avg ) ? 'is-filled' : ''; ?>">★</span>
+											<span class="hj-star <?php echo esc_attr( $i <= ceil( $rating_avg ) ? 'is-filled' : '' ); ?>">★</span>
 										<?php endfor; ?>
 									</div>
 								</div>

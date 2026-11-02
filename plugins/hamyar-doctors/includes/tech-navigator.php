@@ -320,7 +320,8 @@ if ( ! class_exists( 'HJ_Tech_Navigator' ) ) :
 						<div class="hj-surgeon-ribbons-stack">
 							<?php foreach ( $top_surgeons as $index => $doc_post ) :
 								$is_blurred = ( $index >= 3 );
-								echo $this->render_single_surgeon_ribbon( $doc_post, $is_blurred );
+								// خروجی render_single_surgeon_ribbon خودش کامل escape شده است.
+								echo $this->render_single_surgeon_ribbon( $doc_post, $is_blurred ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 							endforeach; ?>
 						</div>
 					<?php else : ?>

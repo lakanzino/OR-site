@@ -290,6 +290,71 @@ if ( ! function_exists( 'hj_iran_locations_data' ) ) {
  * ۳. اسلاگ‌ساز فارسی (لاتین‌نویسی) برای URLهای خوانا
  * ---------------------------------------------------------------------- */
 
+if ( ! function_exists( 'hj_iran_slug_overrides' ) ) {
+	/**
+	 * آوانگاری دستی شهرهای شناخته‌شده.
+	 *
+	 * خط فارسی واکه‌های کوتاه را نمی‌نویسد، پس تبدیل حرف‌به‌حرف نام‌هایی مثل
+	 * «تهران» را به «thran» تبدیل می‌کند. این جدول برای شهرهای بزرگ و
+	 * پرشمارترین نام‌ها، اسلاگ درست می‌دهد؛ بقیه با تبدیل خودکار ساخته
+	 * می‌شوند.
+	 *
+	 * @return array<string,string>
+	 */
+	function hj_iran_slug_overrides() {
+		return array(
+			// مراکز استان‌ها.
+			'تهران' => 'tehran', 'اصفهان' => 'isfahan', 'تبریز' => 'tabriz', 'ارومیه' => 'urmia',
+			'اردبیل' => 'ardabil', 'ایلام' => 'ilam', 'بوشهر' => 'bushehr', 'شهرکرد' => 'shahrekord',
+			'بجنورد' => 'bojnurd', 'مشهد' => 'mashhad', 'بیرجند' => 'birjand', 'اهواز' => 'ahvaz',
+			'زنجان' => 'zanjan', 'سمنان' => 'semnan', 'زاهدان' => 'zahedan', 'شیراز' => 'shiraz',
+			'قزوین' => 'qazvin', 'قم' => 'qom', 'سنندج' => 'sanandaj', 'کرمان' => 'kerman',
+			'کرمانشاه' => 'kermanshah', 'یاسوج' => 'yasuj', 'گرگان' => 'gorgan', 'رشت' => 'rasht',
+			'خرم‌آباد' => 'khorramabad', 'ساری' => 'sari', 'اراک' => 'arak', 'بندرعباس' => 'bandar-abbas',
+			'همدان' => 'hamedan', 'یزد' => 'yazd', 'کرج' => 'karaj',
+
+			// شهرهای بزرگ و پرجست‌وجو.
+			'کاشان' => 'kashan', 'نجف‌آباد' => 'najafabad', 'خمینی‌شهر' => 'khomeini-shahr',
+			'شهرضا' => 'shahreza', 'گلپایگان' => 'golpayegan', 'مراغه' => 'maragheh', 'مرند' => 'marand',
+			'اهر' => 'ahar', 'سراب' => 'sarab', 'میانه' => 'miyaneh', 'خوی' => 'khoy', 'مهاباد' => 'mahabad',
+			'میاندوآب' => 'miandoab', 'بوکان' => 'bokan', 'مشگین‌شهر' => 'meshgin-shahr',
+			'پارس‌آباد' => 'parsabad', 'خلخال' => 'khalkhal', 'دهلران' => 'dehloran', 'ملکشاهی' => 'malekshahi',
+			'آبدانان' => 'abdanan', 'دره‌شهر' => 'darehshahr', 'برازجان' => 'borazjan', 'گناوه' => 'genaveh',
+			'کنگان' => 'kangan', 'دیر' => 'dayyer', 'لردگان' => 'lordegan', 'بروجن' => 'borujen',
+			'فارسان' => 'farsan', 'شیروان' => 'shirvan', 'اسفراین' => 'esfarayen', 'نیشابور' => 'neyshabur',
+			'سبزوار' => 'sabzevar', 'تربت حیدریه' => 'torbat-e-heydarieh', 'تربت جام' => 'torbat-e-jam',
+			'کاشمر' => 'kashmar', 'قوچان' => 'ghochan', 'گناباد' => 'gonabad', 'قائن' => 'ghaen',
+			'طبس' => 'tabas', 'فردوس' => 'ferdows', 'آبادان' => 'abadan', 'خرمشهر' => 'khorramshahr',
+			'دزفول' => 'dezful', 'مسجدسلیمان' => 'masjed-soleyman', 'بهبهان' => 'behbehan',
+			'شوشتر' => 'shushtar', 'اندیمشک' => 'andimeshk', 'ایذه' => 'izeh', 'رامهرمز' => 'ramhormoz',
+			'ماهشهر' => 'mahshahr', 'ابهر' => 'abhar', 'خدابنده' => 'khodabandeh', 'خرمدره' => 'khorramdareh',
+			'شاهرود' => 'shahroud', 'دامغان' => 'damghan', 'گرمسار' => 'garmsar', 'چابهار' => 'chabahar',
+			'ایرانشهر' => 'iranshahr', 'نیک‌شهر' => 'nikshahr', 'سراوان' => 'saravan', 'مرودشت' => 'marvdasht',
+			'جهرم' => 'jahrom', 'فیروزآباد' => 'firuzabad', 'کازرون' => 'kazerun', 'داراب' => 'darab',
+			'لار' => 'lar', 'آباده' => 'abadeh', 'تاکستان' => 'takestan', 'آبیک' => 'abyek',
+			'بوئین‌زهرا' => 'buinzahra', 'بانه' => 'baneh', 'سقز' => 'saghez', 'مریوان' => 'marivan',
+			'قروه' => 'ghorveh', 'بیجار' => 'bijar', 'بم' => 'bam', 'جیرفت' => 'jiroft',
+			'رفسنجان' => 'rafsanjan', 'سیرجان' => 'sirjan', 'کهنوج' => 'kahnooj', 'زرند' => 'zarand',
+			'اسلام‌آباد غرب' => 'eslamabad-e-gharb', 'پاوه' => 'paveh', 'کنگاور' => 'kangavar',
+			'هرسین' => 'hersin', 'قصر شیرین' => 'ghasr-e-shirin', 'دهدشت' => 'dehdasht',
+			'گچساران' => 'gachsaran', 'گنبد کاووس' => 'gonbad-e-kavous', 'بندر ترکمن' => 'bandar-torkaman',
+			'علی‌آباد کتول' => 'aliabad-e-katoul', 'کردکوی' => 'kordkuy', 'لاهیجان' => 'lahijan',
+			'بندر انزلی' => 'bandar-anzali', 'تالش' => 'talash', 'آستارا' => 'astara', 'رودبار' => 'rudbar',
+			'فومن' => 'fuman', 'صومعه‌سرا' => 'someh-sara', 'لنگرود' => 'langarud', 'رودسر' => 'rudsar',
+			'بروجرد' => 'borujerd', 'دورود' => 'dorud', 'الیگودرز' => 'aligudarz', 'کوهدشت' => 'kuhdasht',
+			'بابل' => 'babol', 'آمل' => 'amol', 'قائم‌شهر' => 'ghaem-shahr', 'نوشهر' => 'nowshahr',
+			'چالوس' => 'chalus', 'بهشهر' => 'behshahr', 'رامسر' => 'ramsar', 'تنکابن' => 'tonekabon',
+			'نور' => 'nur', 'فریدونکنار' => 'fereydunkenar', 'ساوه' => 'saveh', 'خمین' => 'khomein',
+			'محلات' => 'mahallat', 'شازند' => 'shazand', 'تفرش' => 'tafresh', 'دلیجان' => 'delijan',
+			'قشم' => 'gheshm', 'بندر لنگه' => 'bandar-lengeh', 'میناب' => 'minab', 'بستک' => 'bastak',
+			'ملایر' => 'malayer', 'نهاوند' => 'nahavand', 'اسدآباد' => 'asadabad', 'تویسرکان' => 'tuyserkan',
+			'کبودراهنگ' => 'kabudarahang', 'میبد' => 'meybod', 'اردکان' => 'ardakan', 'تفت' => 'taft',
+			'مهریز' => 'mehriz', 'بافق' => 'bafgh', 'ابرکوه' => 'abarkuh', 'فردیس' => 'fardis',
+			'نظرآباد' => 'nazarabad', 'هشتگرد' => 'hashtgerd', 'اشتهارد' => 'eshtehard', 'طالقان' => 'taleghan',
+		);
+	}
+}
+
 if ( ! function_exists( 'hj_iran_slugify' ) ) {
 	/**
 	 * تبدیل نام فارسی به اسلاگ لاتین.
@@ -319,6 +384,11 @@ if ( ! function_exists( 'hj_iran_slugify' ) ) {
 			'٠' => '0', '١' => '1', '٢' => '2', '٣' => '3', '٤' => '4',
 			'٥' => '5', '٦' => '6', '٧' => '7', '٨' => '8', '٩' => '9',
 		);
+
+		$overrides = hj_iran_slug_overrides();
+		if ( isset( $overrides[ $name ] ) ) {
+			return $overrides[ $name ];
+		}
 
 		$slug = strtr( $name, $map );
 		$slug = strtolower( $slug );
@@ -594,6 +664,439 @@ if ( ! function_exists( 'hj_iran_locations_seed' ) ) {
 }
 
 /* -------------------------------------------------------------------------
+ * ۵.۵ اصلاح ترم‌های مخدوش (مهاجرت از سیدر معیوب نسخهٔ ۰٫۳٫۰)
+ * ---------------------------------------------------------------------- */
+
+if ( ! function_exists( 'hj_iran_locations_city_index' ) ) {
+	/**
+	 * نمایهٔ نام شهرهای معتبر → استان آن‌ها.
+	 *
+	 * @return array<string,array{province:string,slug:string}>
+	 */
+	function hj_iran_locations_city_index() {
+		static $index = null;
+
+		if ( null !== $index ) {
+			return $index;
+		}
+
+		$index = array();
+		$data  = hj_iran_locations_data();
+
+		foreach ( $data['provinces'] as $province ) {
+			foreach ( $province['cities'] as $city_name ) {
+				if ( ! isset( $index[ $city_name ] ) ) {
+					$index[ $city_name ] = array(
+						'province' => $province['name'],
+						'slug'     => $province['slug'],
+					);
+				}
+			}
+		}
+
+		return $index;
+	}
+}
+
+if ( ! function_exists( 'hj_iran_locations_corrupt_city_map' ) ) {
+	/**
+	 * نگاشت نام‌های مخدوش ساخته‌شده توسط سیدر معیوب به نام درست.
+	 *
+	 * مقدار خالی یعنی معادل مطمئنی وجود ندارد و ترم (اگر نوشته‌ای نداشته
+	 * باشد) حذف می‌شود.
+	 *
+	 * @return array<string,string>
+	 */
+	function hj_iran_locations_corrupt_city_map() {
+		return array(
+			'داییر'      => 'دیر',
+			'گنانوه'     => 'گناوه',
+			'دلوان'      => 'دهلران',
+			'نکشهر'      => 'نیک‌شهر',
+			'تکستان'     => 'تاکستان',
+			'مهلت'       => 'محلات',
+			'کبیراحنگ'   => 'کبودراهنگ',
+			'هشتجرد'     => 'هشتگرد',
+			'ملكشاهی'    => 'ملکشاهی',
+			'ج_method'   => '',
+			'رAbove'     => '',
+			'خرمناq'     => '',
+			'دردان'      => '',
+			'جرمزی'      => '',
+			'صائقین'     => '',
+			'بوجهنور'    => '',
+			'صباسان'     => '',
+			'استرگاه'    => '',
+		);
+	}
+}
+
+if ( ! function_exists( 'hj_iran_locations_is_corrupt_name' ) ) {
+	/**
+	 * آیا نام ترم نشانهٔ خرابی دارد؟ (حروف لاتین، سیریلیک، چینی، ژاپنی…)
+	 *
+	 * @param string $name نام ترم.
+	 * @return bool
+	 */
+	function hj_iran_locations_is_corrupt_name( $name ) {
+		$name = (string) $name;
+
+		if ( '' === $name ) {
+			return false;
+		}
+
+		// حروف لاتین یا زیرخط داخل نام فارسی.
+		if ( preg_match( '/[A-Za-z_]/', $name ) ) {
+			return true;
+		}
+
+		// خطوط غیرفارسی.
+		return (bool) preg_match(
+			'/[\x{0400}-\x{04FF}\x{0900}-\x{097F}\x{0E00}-\x{0E7F}\x{3040}-\x{30FF}\x{4E00}-\x{9FFF}]/u',
+			$name
+		);
+	}
+}
+
+if ( ! function_exists( 'hj_iran_unique_slug' ) ) {
+	/**
+	 * اسلاگ یکتا در یک تاکسونومی، با نادیده‌گرفتن ترم جاری.
+	 *
+	 * @param string $slug      اسلاگ پیشنهادی.
+	 * @param string $taxonomy  تاکسونومی.
+	 * @param int    $ignore_id شناسهٔ ترمی که نباید تصادم حساب شود.
+	 * @return string
+	 */
+	function hj_iran_unique_slug( $slug, $taxonomy, $ignore_id = 0 ) {
+		$base = sanitize_title( (string) $slug );
+		if ( '' === $base ) {
+			$base = 'term';
+		}
+
+		$slug  = $base;
+		$limit = 0;
+
+		while ( $limit < 50 ) {
+			$existing = term_exists( $slug, $taxonomy );
+
+			if ( ! $existing ) {
+				return $slug;
+			}
+
+			$existing_id = is_array( $existing ) ? (int) $existing['term_id'] : (int) $existing;
+
+			if ( (int) $ignore_id > 0 && $existing_id === (int) $ignore_id ) {
+				return $slug;
+			}
+
+			$limit++;
+			$slug = $base . '-' . $limit;
+		}
+
+		return $base . '-' . wp_rand( 1000, 9999 );
+	}
+}
+
+if ( ! function_exists( 'hj_iran_locations_move_posts' ) ) {
+	/**
+	 * انتقال نوشته‌ها از یک ترم شهر به ترم دیگر.
+	 *
+	 * @param int $from_id شناسهٔ ترم مبدأ.
+	 * @param int $to_id   شناسهٔ ترم مقصد.
+	 * @return int تعداد نوشته‌های منتقل‌شده.
+	 */
+	function hj_iran_locations_move_posts( $from_id, $to_id ) {
+		$from_id = (int) $from_id;
+		$to_id   = (int) $to_id;
+
+		if ( $from_id <= 0 || $to_id <= 0 || $from_id === $to_id ) {
+			return 0;
+		}
+
+		$object_ids = get_objects_in_term( $from_id, 'city' );
+
+		if ( is_wp_error( $object_ids ) || empty( $object_ids ) ) {
+			return 0;
+		}
+
+		$moved = 0;
+
+		foreach ( $object_ids as $object_id ) {
+			$result = wp_set_object_terms( (int) $object_id, array( $to_id ), 'city', false );
+			if ( ! is_wp_error( $result ) ) {
+				$moved++;
+			}
+		}
+
+		return $moved;
+	}
+}
+
+if ( ! function_exists( 'hj_iran_locations_set_city_meta' ) ) {
+	/**
+	 * نوشتن متای استان و کلان‌شهر برای یک شهر.
+	 *
+	 * @param int    $city_id     شناسهٔ ترم شهر.
+	 * @param int    $province_id شناسهٔ ترم استان.
+	 * @param bool   $is_major    کلان‌شهر است؟
+	 * @return bool آیا مقداری تغییر کرد؟
+	 */
+	function hj_iran_locations_set_city_meta( $city_id, $province_id, $is_major ) {
+		$city_id     = (int) $city_id;
+		$province_id = (int) $province_id;
+		$is_major    = $is_major ? 1 : 0;
+
+		if ( $city_id <= 0 || $province_id <= 0 ) {
+			return false;
+		}
+
+		$current_province = (int) get_term_meta( $city_id, 'hj_province_id', true );
+		$current_alias    = (int) get_term_meta( $city_id, 'hj_parent_province_id', true );
+		$current_major    = (int) get_term_meta( $city_id, 'hj_is_major_city', true );
+
+		$changed = ( $current_province !== $province_id || $current_alias !== $province_id || $current_major !== $is_major );
+
+		update_term_meta( $city_id, 'hj_province_id', $province_id );
+		update_term_meta( $city_id, 'hj_parent_province_id', $province_id );
+		update_term_meta( $city_id, 'hj_is_major_city', $is_major );
+
+		return $changed;
+	}
+}
+
+if ( ! function_exists( 'hj_iran_locations_repair_terms' ) ) {
+	/**
+	 * اصلاح ترم‌های مخدوش ساخته‌شده توسط سیدر معیوب.
+	 *
+	 * سه کار انجام می‌دهد:
+	 * ۱) نام استان‌ها را با نام رسمی کانونیکال هم‌راست می‌کند.
+	 * ۲) شهرهای مخدوش را تغییر نام می‌دهد یا (در صورت وجود معادل) در ترم
+	 *    درست ادغام می‌کند؛ ترم مخدوشِ بدون نوشته حذف می‌شود.
+	 * ۳) متای استان والد و کلان‌شهر را برای همهٔ شهرهای کانونیکال بازمی‌نویسد.
+	 *
+	 * هیچ ترمی که نوشته دارد بدون انتقال نوشته‌ها حذف نمی‌شود.
+	 *
+	 * @return array<string,mixed>
+	 */
+	function hj_iran_locations_repair_terms() {
+		$data  = hj_iran_locations_data();
+		$index = hj_iran_locations_city_index();
+		$map   = hj_iran_locations_corrupt_city_map();
+
+		$report = array(
+			'provinces_renamed' => 0,
+			'cities_renamed'    => 0,
+			'cities_merged'     => 0,
+			'cities_deleted'    => 0,
+			'cities_meta_fixed' => 0,
+			'specs_deleted'     => 0,
+			'posts_moved'       => 0,
+			'left_for_review'   => array(),
+		);
+
+		// --- ۱) نام استان‌ها ---
+		$province_ids = array();
+
+		foreach ( $data['provinces'] as $province ) {
+			$term = get_term_by( 'slug', $province['slug'], 'province' );
+
+			if ( ! $term instanceof WP_Term ) {
+				continue;
+			}
+
+			$province_ids[ $province['slug'] ] = (int) $term->term_id;
+
+			if ( $term->name !== $province['name'] ) {
+				$updated = wp_update_term( (int) $term->term_id, 'province', array( 'name' => $province['name'] ) );
+				if ( ! is_wp_error( $updated ) ) {
+					$report['provinces_renamed']++;
+				}
+			}
+		}
+
+		// --- ۲) شهرها ---
+		$cities = get_terms(
+			array(
+				'taxonomy'   => 'city',
+				'hide_empty' => false,
+				'orderby'    => 'term_id',
+				'order'      => 'ASC',
+			)
+		);
+
+		if ( ! is_wp_error( $cities ) ) {
+			foreach ( $cities as $city ) {
+				$term_id = (int) $city->term_id;
+				$name    = (string) $city->name;
+
+				$is_known_corrupt = isset( $map[ $name ] );
+				$looks_corrupt    = hj_iran_locations_is_corrupt_name( $name );
+
+				if ( ! $is_known_corrupt && ! $looks_corrupt ) {
+					continue;
+				}
+
+				$target = $is_known_corrupt ? (string) $map[ $name ] : '';
+
+				// معادل باید داخل دادهٔ کانونیکال باشد.
+				if ( '' !== $target && ! isset( $index[ $target ] ) ) {
+					$target = '';
+				}
+
+				if ( '' !== $target ) {
+					$existing = get_term_by( 'name', $target, 'city' );
+
+					if ( $existing instanceof WP_Term && (int) $existing->term_id !== $term_id ) {
+						$report['posts_moved'] += hj_iran_locations_move_posts( $term_id, (int) $existing->term_id );
+						$deleted                = wp_delete_term( $term_id, 'city' );
+						if ( ! is_wp_error( $deleted ) && $deleted ) {
+							$report['cities_merged']++;
+						}
+						continue;
+					}
+
+					$new_slug = hj_iran_unique_slug( hj_iran_slugify( $target, 'city' ), 'city', $term_id );
+					$updated  = wp_update_term(
+						$term_id,
+						'city',
+						array(
+							'name' => $target,
+							'slug' => $new_slug,
+						)
+					);
+
+					if ( ! is_wp_error( $updated ) ) {
+						$report['cities_renamed']++;
+						$name = $target;
+					}
+				} else {
+					// بدون معادل: فقط ترم بدون نوشته حذف می‌شود.
+					if ( 0 === (int) $city->count ) {
+						$deleted = wp_delete_term( $term_id, 'city' );
+						if ( ! is_wp_error( $deleted ) && $deleted ) {
+							$report['cities_deleted']++;
+						}
+					} else {
+						$report['left_for_review'][] = $name . ' (term ' . $term_id . ')';
+					}
+					continue;
+				}
+
+				// متای شهر اصلاح‌شده.
+				if ( isset( $index[ $name ] ) ) {
+					$prov_slug   = $index[ $name ]['slug'];
+					$province_id = isset( $province_ids[ $prov_slug ] ) ? (int) $province_ids[ $prov_slug ] : 0;
+
+					if ( $province_id <= 0 ) {
+						$prov_term = get_term_by( 'slug', $prov_slug, 'province' );
+						$province_id = $prov_term instanceof WP_Term ? (int) $prov_term->term_id : 0;
+					}
+
+					$is_major = in_array( $name, $data['major_cities'], true );
+					if ( hj_iran_locations_set_city_meta( $term_id, $province_id, $is_major ) ) {
+						$report['cities_meta_fixed']++;
+					}
+				}
+			}
+		}
+
+		// --- ۳) هم‌راست‌سازی متای همهٔ شهرهای کانونیکال ---
+		foreach ( $index as $city_name => $info ) {
+			$province_id = 0;
+
+			if ( isset( $province_ids[ $info['slug'] ] ) ) {
+				$province_id = (int) $province_ids[ $info['slug'] ];
+			}
+
+			if ( $province_id <= 0 ) {
+				continue;
+			}
+
+			$slug = hj_iran_slugify( $city_name, 'city' );
+			$term = get_term_by( 'slug', $slug, 'city' );
+
+			if ( ! $term instanceof WP_Term ) {
+				continue;
+			}
+
+			$is_major = in_array( $city_name, $data['major_cities'], true );
+
+			if ( hj_iran_locations_set_city_meta( (int) $term->term_id, $province_id, $is_major ) ) {
+				$report['cities_meta_fixed']++;
+			}
+		}
+
+		// --- ۴) تخصص‌های مخدوش ---
+		$specs = get_terms(
+			array(
+				'taxonomy'   => 'specialty',
+				'hide_empty' => false,
+				'orderby'    => 'term_id',
+				'order'      => 'ASC',
+			)
+		);
+
+		if ( ! is_wp_error( $specs ) ) {
+			foreach ( $specs as $spec ) {
+				if ( ! hj_iran_locations_is_corrupt_name( $spec->name ) ) {
+					continue;
+				}
+
+				if ( 0 === (int) $spec->count ) {
+					$deleted = wp_delete_term( (int) $spec->term_id, 'specialty' );
+					if ( ! is_wp_error( $deleted ) && $deleted ) {
+						$report['specs_deleted']++;
+					}
+				} else {
+					$report['left_for_review'][] = $spec->name . ' (specialty ' . (int) $spec->term_id . ')';
+				}
+			}
+		}
+
+		update_option( 'hj_iran_locations_repaired_v2', 1, false );
+		update_option( 'hj_iran_locations_last_repair', array( 'time' => time(), 'report' => $report ), false );
+
+		return $report;
+	}
+}
+
+if ( ! function_exists( 'hj_iran_locations_auto_repair' ) ) {
+	/**
+	 * اصلاح خودکار یک‌بارهٔ ترم‌های مخدوش برای مدیر.
+	 *
+	 * بعد از سیدینگ و پیش از ساخت دادهٔ نمونه اجرا می‌شود.
+	 */
+	function hj_iran_locations_auto_repair() {
+		if ( get_option( 'hj_iran_locations_repaired_v2' ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		if ( ! get_option( 'hj_iran_locations_seeded_v1' ) ) {
+			return; // اول باید سیدینگ انجام شود.
+		}
+
+		$report = hj_iran_locations_repair_terms();
+
+		set_transient(
+			'hj_iran_locations_notice',
+			sprintf(
+				'اصلاح ترم‌ها: %d استان تغییر نام، %d شهر اصلاح، %d شهر ادغام، %d ترم مخدوش حذف شد.',
+				(int) $report['provinces_renamed'],
+				(int) $report['cities_renamed'],
+				(int) $report['cities_merged'],
+				(int) $report['cities_deleted'] + (int) $report['specs_deleted']
+			),
+			300
+		);
+	}
+	add_action( 'admin_init', 'hj_iran_locations_auto_repair', 15 );
+}
+
+/* -------------------------------------------------------------------------
  * ۶. اجرای خودکار یک‌باره + اعلان ادمین
  * ---------------------------------------------------------------------- */
 
@@ -800,8 +1303,17 @@ if ( ! function_exists( 'hj_iran_locations_tools_page_render' ) ) {
 			wp_die( esc_html__( 'دسترسی غیرمجاز.', 'hamyar-doctors' ) );
 		}
 
-		$message = '';
-		$result  = null;
+		$message       = '';
+		$result        = null;
+		$repair_report = null;
+
+		if ( isset( $_POST['hj_iran_repair_nonce'] ) ) {
+			$repair_nonce = sanitize_text_field( wp_unslash( $_POST['hj_iran_repair_nonce'] ) );
+
+			if ( wp_verify_nonce( $repair_nonce, 'hj_iran_repair' ) ) {
+				$repair_report = hj_iran_locations_repair_terms();
+			}
+		}
 
 		if ( isset( $_POST['hj_iran_run_seed_nonce'] ) ) {
 			$nonce = sanitize_text_field( wp_unslash( $_POST['hj_iran_run_seed_nonce'] ) );
@@ -846,6 +1358,47 @@ if ( ! function_exists( 'hj_iran_locations_tools_page_render' ) ) {
 		echo '</form>';
 
 		echo '<p>' . esc_html__( 'بعد از اجرا می‌توانید در «پزشک‌ها → شهر» استان والد و علامت کلان‌شهر را برای هر شهر ویرایش کنید.', 'hamyar-doctors' ) . '</p>';
+
+		// --- اصلاح ترم‌های مخدوش ---
+		echo '<hr />';
+		echo '<h2>' . esc_html__( 'اصلاح ترم‌های مخدوش', 'hamyar-doctors' ) . '</h2>';
+		echo '<p>' . esc_html__( 'اگر نسخهٔ ۰٫۳٫۰ روی همین سایت اجرا شده باشد، ممکن است ترم‌هایی با نام‌های مخدوش (حروف لاتین یا خطوط دیگر داخل نام) ساخته شده باشند. این ابزار آن‌ها را به نام درست تغییر می‌دهد یا در ترم صحیح ادغام می‌کند و متای استان والد را بازنویسی می‌کند. هیچ ترمی که نوشته دارد بدون انتقال نوشته‌ها حذف نمی‌شود.', 'hamyar-doctors' ) . '</p>';
+
+		if ( is_array( $repair_report ) ) {
+			$summary = sprintf(
+				'%d استان تغییر نام، %d شهر اصلاح، %d شهر ادغام، %d شهر حذف، %d تخصص حذف، %d نوشته منتقل، %d متا اصلاح شد.',
+				(int) $repair_report['provinces_renamed'],
+				(int) $repair_report['cities_renamed'],
+				(int) $repair_report['cities_merged'],
+				(int) $repair_report['cities_deleted'],
+				(int) $repair_report['specs_deleted'],
+				(int) $repair_report['posts_moved'],
+				(int) $repair_report['cities_meta_fixed']
+			);
+
+			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $summary ) . '</p></div>';
+
+			if ( ! empty( $repair_report['left_for_review'] ) ) {
+				echo '<div class="notice notice-warning"><p>' . esc_html__( 'این ترم‌ها نوشته دارند و معادل مطمئنی برایشان پیدا نشد؛ دستی بررسی کنید:', 'hamyar-doctors' ) . '</p><ul style="list-style:disc;margin-right:20px;">';
+				foreach ( $repair_report['left_for_review'] as $left_item ) {
+					echo '<li>' . esc_html( (string) $left_item ) . '</li>';
+				}
+				echo '</ul></div>';
+			}
+		}
+
+		$last_repair = get_option( 'hj_iran_locations_last_repair', array() );
+		if ( is_array( $last_repair ) && ! empty( $last_repair['time'] ) ) {
+			echo '<p><strong>' . esc_html__( 'آخرین اصلاح:', 'hamyar-doctors' ) . '</strong> '
+				. esc_html( date_i18n( 'Y/m/d H:i', (int) $last_repair['time'] ) ) . '</p>';
+		}
+
+		echo '<form method="post">';
+		wp_nonce_field( 'hj_iran_repair', 'hj_iran_repair_nonce' );
+		echo '<button type="submit" class="button button-secondary" onclick="return confirm('
+			. esc_attr( wp_json_encode( __( 'ترم‌های مخدوش اصلاح شوند؟', 'hamyar-doctors' ) ) )
+			. ');">' . esc_html__( 'اصلاح ترم‌های مخدوش', 'hamyar-doctors' ) . '</button>';
+		echo '</form>';
 
 		/**
 		 * قلاب افزودن بخش‌های تکمیلی به صفحهٔ ابزار سیدینگ.
