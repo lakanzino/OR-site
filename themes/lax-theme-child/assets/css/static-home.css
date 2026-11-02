@@ -60,3 +60,6 @@
  .hj-landing-login { align-items: flex-start; flex-direction: column; padding: 28px; }
 }
 @media (prefers-reduced-motion: reduce) { .hj-landing .wp-block-button__link { transition: none; } }
+.hj-landing-tool, .hj-landing-help { margin-top: 80px; padding: clamp(28px, 5vw, 48px); border-radius: 26px; background: linear-gradient(120deg, #eef9f4, #f5f3fc); border: 1px solid #e3efea; box-shadow: 0 18px 45px rgba(31,65,67,.10); }
+.hj-landing-tool > p:not(.hj-landing-eyebrow), .hj-landing-help > p { color: var(--landing-muted); font-size: 14px; line-height: 2; margin-top: 12px; max-width: 680px; }
+.hj-landing-help { background: #fff; margin-top: 36px; }
