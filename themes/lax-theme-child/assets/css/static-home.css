@@ -97,6 +97,40 @@
  .hj-landing-surgeon { margin-top: 60px; }
  .hj-landing-login { align-items: flex-start; flex-direction: column; padding: 28px; }
 }
-@media (max-width: 640px) {
+@media (max-width: 768px) {
  .hj-landing-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Classic themes cause WordPress to insert a real inner-container into every
+   Group block at render time. Make the neutral wrappers transparent to the
+   layout, so the grid/flex sees the blocks, not one half-width wrapper. */
+.hj-landing > .wp-block-group__inner-container,
+.hj-landing :is(.hj-landing-hero, .hj-landing-grid, .hj-landing-surgeon, .hj-surgeon-features, .hj-landing-login, .hj-landing-hero-art) > .wp-block-group__inner-container { display: contents; }
+.hj-landing :is(.hj-landing-grid > .wp-block-group__inner-container > .hj-landing-card,
+ .hj-landing-hero > .wp-block-group__inner-container > .wp-block-group,
+ .hj-landing-surgeon > .wp-block-group__inner-container > .wp-block-group) {
+ min-width: 0;
+ margin: 0 !important;
+}
+:is(.hj-static-home, .editor-styles-wrapper) .hj-landing > .wp-block-group__inner-container > :is(.hj-landing-hero, .hj-landing-intro, .hj-landing-grid, .hj-landing-tool, .hj-landing-surgeon, .hj-landing-login, .hj-landing-help, .hj-landing-disclaimer) {
+ width: 100%;
+ max-width: none !important;
+ min-width: 0;
+}
+/* Select text inside the classic-theme wrapper as well as unwrapped blocks. */
+.hj-landing-card > .wp-block-group__inner-container > p:not(.hj-card-icon):not(.hj-card-link),
+.hj-feature > .wp-block-group__inner-container > p:last-child {
+ color: var(--landing-muted); font-size: 14px; line-height: 2; margin-top: 10px;
+}
+.hj-landing .hj-feature > .wp-block-group__inner-container > p:last-child { margin-top: 4px; font-size: 13px; }
+.hj-surgeon-copy > .wp-block-group__inner-container > p:not(.hj-landing-eyebrow) { max-width: 470px; margin-top: 14px; color: var(--landing-muted); line-height: 2.1; font-size: 14px; }
+.hj-landing-intro > .wp-block-group__inner-container > p:last-child,
+.hj-login-copy > .wp-block-group__inner-container > p:last-child { color: var(--landing-muted); margin-top: 8px; font-size: 14px; line-height: 2; }
+.hj-landing-tool > .wp-block-group__inner-container > p:not(.hj-landing-eyebrow),
+.hj-landing-help > .wp-block-group__inner-container > p { color: var(--landing-muted); font-size: 14px; line-height: 2; margin-top: 12px; max-width: 680px; }
+
+@media (max-width: 768px) {
+ .hj-landing :is(.hj-landing-grid .hj-landing-card, .hj-landing-hero-art, .hj-landing .hj-landing-image, .hj-landing .hj-landing-image img) { width: 100%; max-width: 100%; }
+ .hj-landing .hj-landing-image { height: auto; }
+ .hj-landing .hj-landing-image img { height: auto; max-height: 330px; min-height: 0; object-fit: cover; }
 }
