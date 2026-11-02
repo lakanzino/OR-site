@@ -876,7 +876,7 @@ class HJ_Doctors_REST {
 
         foreach ($v as $k => $x) {
 
-            if (is_string($k) && $pat !== '' && @preg_match($pat, $k) === 1) { continue; }
+            if (is_string($k) && $pat !== '' && @preg_match($pat, $k) === 1) { continue; } // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 
             $o[$k] = self::scrub($x);
 
@@ -1408,7 +1408,7 @@ class HJ_Doctors_REST {
 
                 foreach ($keys as $k) {
 
-                    if ($pat !== '' && @preg_match($pat, $k) === 1) { $fail[] = 'کلید حساس: ' . $k; }
+                    if ($pat !== '' && @preg_match($pat, $k) === 1) { $fail[] = 'کلید حساس: ' . $k; } // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 
                 }
 

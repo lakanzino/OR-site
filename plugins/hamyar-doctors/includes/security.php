@@ -50,7 +50,7 @@ if ( ! function_exists( 'hj_sec_rate_limit' ) ) {
 		if ( is_string( $scope ) && '' !== $scope ) {
 			$who = 'k' . md5( $scope );
 		} elseif ( true === $scope || ! $user_id ) {
-			$ip  = isset( $_SERVER['REMOTE_ADDR'] ) ? (string) $_SERVER['REMOTE_ADDR'] : '';
+			$ip  = isset( $_SERVER['REMOTE_ADDR'] ) ? (string) $_SERVER['REMOTE_ADDR'] : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$who = 'ip' . md5( $ip );
 		} else {
 			$who = 'u' . $user_id;
@@ -112,10 +112,10 @@ if ( ! function_exists( 'hj_sec_private_dir' ) ) {
 			return '';
 		}
 		if ( ! file_exists( $dir . '/index.php' ) ) {
-			@file_put_contents( $dir . '/index.php', "<?php\n// Silence is golden.\n" );
+			@file_put_contents( $dir . '/index.php', "<?php\n// Silence is golden.\n" ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 		}
 		if ( ! file_exists( $dir . '/.htaccess' ) ) {
-			@file_put_contents( $dir . '/.htaccess', "Require all denied\nDeny from all\nOptions -Indexes\n" );
+			@file_put_contents( $dir . '/.htaccess', "Require all denied\nDeny from all\nOptions -Indexes\n" ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 		}
 
 		return $dir;

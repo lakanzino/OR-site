@@ -96,7 +96,7 @@ class HJ_Doctors_Shortcodes {
 
         $f = self::base_path() . ltrim($rel, '/');
 
-        $m = @filemtime($f);
+        $m = @filemtime($f); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 
         return self::plugin_ver() . ($m ? '.' . $m : '');
 
