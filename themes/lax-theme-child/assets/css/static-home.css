@@ -29,7 +29,9 @@
 .hj-landing h2 { font-size: clamp(26px, 3vw, 36px); line-height: 1.6; }
 .hj-landing-intro > p:last-child, .hj-login-copy > p:last-child { color: var(--landing-muted); margin-top: 8px; font-size: 14px; line-height: 2; }
 .hj-landing-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 20px; }
-.hj-landing-card { background: #fff; border: 1px solid #edf2f0; border-radius: 22px; padding: 30px; box-shadow: 0 18px 45px rgba(31,65,67,.10); }
+.hj-landing-card { position: relative; background: #fff; border: 1px solid #edf2f0; border-radius: 22px; padding: 30px; box-shadow: 0 18px 45px rgba(31,65,67,.10); transition: border-color .2s, box-shadow .2s, transform .2s; }
+.hj-landing-card .hj-card-link a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: 2; }
+.hj-landing-card:hover, .hj-landing-card:focus-within { border-color: #bfe0d7; box-shadow: 0 22px 50px rgba(31,65,67,.16); transform: translateY(-2px); }
 .hj-landing .hj-card-icon, .hj-landing .hj-feature-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 15px; font-size: 21px; color: #398b7a; background: #e3f5ee; margin-bottom: 22px; }
 .hj-landing .hj-card-lilac .hj-card-icon { color: #8271b3; background: #eeebfb; }
 .hj-landing .hj-card-peach .hj-card-icon { color: #c58873; background: #fff0e9; }
@@ -54,7 +56,6 @@
  .hj-landing-hero-copy { padding: 40px 28px 15px; }
  .hj-landing .hj-landing-image img { height: 330px; }
  .hj-landing .hj-landing-art-label { right: 24px; bottom: 24px; }
- .hj-landing-grid { grid-template-columns: 1fr; }
  .hj-landing-intro { margin-top: 60px; }
  .hj-landing-surgeon { grid-template-columns: 1fr; margin-top: 60px; gap: 28px; }
  .hj-landing-login { align-items: flex-start; flex-direction: column; padding: 28px; }
@@ -86,7 +87,6 @@
 .hj-landing-login { flex-wrap: wrap; }
 .hj-landing-login .hj-landing-actions { flex-shrink: 1; }
 @media (max-width: 1050px) {
- .hj-landing-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
  .hj-landing-surgeon { gap: 28px; }
 }
 @media (max-width: 900px) {
@@ -98,7 +98,6 @@
  .hj-landing-login { align-items: flex-start; flex-direction: column; padding: 28px; }
 }
 @media (max-width: 768px) {
- .hj-landing-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* Classic themes cause WordPress to insert a real inner-container into every

@@ -1,0 +1,492 @@
+/* ==========================================================================
+   لایهٔ ریسپانسیو سراسری سایت — آخرین شیت، بر همهٔ شیت‌های قبلی اولویت دارد.
+   هدف: هیچ بخشی در موبایل بیرون از صفحه نزند و چیدمان دسکتاپ در موبایل هم
+   قابل استفاده بماند (کوچک شدن مقیاس، نه شکستن ستون‌ها).
+   ========================================================================== */
+
+/* ۱) پایه ---------------------------------------------------------------- */
+
+html {
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+}
+
+body {
+	overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe,
+figure,
+pre,
+table {
+	max-width: 100%;
+}
+
+img,
+video {
+	height: auto;
+}
+
+.wp-block-embed iframe,
+.wp-block-video video {
+	width: 100%;
+}
+
+/* رشته‌های بلند بدون فاصله (نام کاربری، لینک، کد) نباید صفحه را پهن کنند. */
+:where(h1, h2, h3, h4, h5, h6, p, li, dd, dt, td, th, blockquote, figcaption) {
+	overflow-wrap: anywhere;
+}
+
+/* ۲) ریسپانسیو شبکه‌ها ------------------------------------------------ */
+
+.site-content,
+.site-main,
+.entry-content,
+.wp-block-group,
+.entry-content > *,
+.site-content > *,
+.site-main > * {
+	min-width: 0;
+}
+
+/* ۳) کانتینر ------------------------------------------------------------ */
+
+.container {
+	max-width: 100%;
+	padding-inline: clamp(14px, 4vw, 1rem);
+}
+
+/* ۴) جدول‌ها ------------------------------------------------------------ */
+
+@media (max-width: 782px) {
+	.entry-content table,
+	.wp-block-table table {
+		display: block;
+		width: 100%;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.entry-content pre,
+	.entry-content code {
+		overflow-x: auto;
+	}
+}
+
+/* ۵) فرم‌ها: در iOS فونت زیر ۱۶ پیکسل باعث زوم خودکار می‌شود -------------- */
+
+@media (max-width: 782px) {
+	input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+	select,
+	textarea {
+		font-size: 16px;
+		max-width: 100%;
+	}
+
+	button,
+	input[type="submit"],
+	.wp-block-button__link {
+		min-height: 44px;
+	}
+}
+
+/* ۶) ناوبری و پابرگ ---------------------------------------------------- */
+
+@media (max-width: 782px) {
+	.site-header a,
+	.main-navigation a,
+	.site-footer a {
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+	}
+
+	.site-footer .wp-block-group,
+	.site-footer .site-info,
+	.site-footer__inner {
+		grid-template-columns: 1fr !important;
+		gap: 18px;
+	}
+}
+
+/* ۷) صفحهٔ نخست: سه کادر همیشه در یک ردیف ------------------------------ */
+
+.hj-landing-grid {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: clamp(8px, 1.5vw, 20px);
+}
+
+.hj-landing-card {
+	position: relative;
+	padding: clamp(13px, 2.1vw, 30px);
+	transition: border-color .2s, box-shadow .2s, transform .2s;
+}
+
+.hj-landing-card h3 {
+	font-size: clamp(12.5px, 1.45vw, 18px);
+	line-height: 1.65;
+}
+
+.hj-landing-card > p:not(.hj-card-icon):not(.hj-card-link) {
+	font-size: clamp(10.5px, 1.1vw, 14px);
+	line-height: 1.85;
+}
+
+.hj-landing .hj-card-icon {
+	width: clamp(30px, 4.4vw, 48px);
+	height: clamp(30px, 4.4vw, 48px);
+	border-radius: clamp(9px, 1.4vw, 15px);
+	font-size: clamp(13px, 2vw, 21px);
+	margin-bottom: clamp(9px, 1.6vw, 22px);
+}
+
+.hj-landing .hj-card-link {
+	margin-top: clamp(10px, 1.8vw, 25px);
+	font-size: clamp(10.5px, 1.15vw, 13px);
+}
+
+/* کل کادر کلیک‌پذیر: لینک کوچک پایین کادر روی تمام سطح کشیده می‌شود. */
+.hj-landing-card > .hj-card-link a::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	border-radius: inherit;
+	z-index: 2;
+}
+
+.hj-landing-card:hover,
+.hj-landing-card:focus-within {
+	border-color: #bfe0d7;
+	box-shadow: 0 22px 50px rgba(31, 65, 67, .16);
+	transform: translateY(-2px);
+}
+
+.hj-landing-card > .hj-card-link a:focus-visible {
+	outline: 2px solid #317c70;
+	outline-offset: 3px;
+}
+
+/* در موبایل همان سه‌ستون می‌ماند و فقط مقیاس کوچک می‌شود. */
+@media (max-width: 1050px) {
+	.hj-landing-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 768px) {
+	.hj-landing-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 8px;
+	}
+
+	.hj-landing-card {
+		padding: 12px 9px;
+		border-radius: 16px;
+	}
+
+	.hj-landing-card h3 {
+		font-size: 13px;
+	}
+
+	.hj-landing-card > p:not(.hj-card-icon):not(.hj-card-link) {
+		font-size: 11px;
+		line-height: 1.8;
+		margin-top: 6px;
+	}
+
+	.hj-landing .hj-card-icon {
+		width: 32px;
+		height: 32px;
+		font-size: 14px;
+		border-radius: 9px;
+		margin-bottom: 9px;
+	}
+
+	.hj-landing .hj-card-link {
+		margin-top: 9px;
+		font-size: 10.5px;
+	}
+}
+
+@media (max-width: 360px) {
+	.hj-landing-card h3 {
+		font-size: 12px;
+	}
+
+	.hj-landing-card > p:not(.hj-card-icon):not(.hj-card-link) {
+		font-size: 10px;
+	}
+}
+
+/* ۸) صفحهٔ پروفایل پزشک ------------------------------------------------ */
+
+@media (max-width: 600px) {
+	.hj-doc__container {
+		width: 100%;
+		padding-inline: 14px;
+	}
+
+	.hj-doc .hj-section__title {
+		align-items: flex-start;
+	}
+}
+
+/* ۹) راهنمای جراحی ----------------------------------------------------- */
+
+@media (max-width: 780px) {
+	.hj-guide__nav {
+		display: flex;
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: thin;
+	}
+
+	.hj-guide__nav a {
+		flex: 0 0 auto;
+	}
+}
+
+/* ۱۰) داشبورد پزشک (/my-profile/) -------------------------------------- */
+
+.hj-dash,
+.hj-dash * {
+	min-width: 0;
+}
+
+.hj-dash__grid,
+.hj-dash__pair,
+.hj-dash__hrow {
+	min-width: 0;
+}
+
+.hj-dash__title,
+.hj-dash__name,
+.hj-dash__who,
+.hj-dash__card h2,
+.hj-dash__card h3 {
+	overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+	.hj-dash {
+		max-width: 100%;
+		padding: 12px 10px 40px;
+	}
+
+	.hj-dash__grid {
+		grid-template-columns: minmax(0, 1fr) !important;
+	}
+
+	.hj-dash__side {
+		position: static;
+		width: 100%;
+	}
+
+	.hj-dash__card {
+		padding: 14px;
+		border-radius: 10px;
+	}
+
+	.hj-dash__field input,
+	.hj-dash__field select,
+	.hj-dash__field textarea {
+		width: 100%;
+		max-width: 100%;
+	}
+}
+
+@media (max-width: 640px) {
+	.hj-dash__pair {
+		grid-template-columns: minmax(0, 1fr) !important;
+	}
+
+	/* ردیف ساعات کاری: نام روز و دو بازه در دو خط، نه پنج ستون در ۳۶۰ پیکسل. */
+	.hj-dash__hrow {
+		grid-template-columns: auto minmax(0, 1fr) !important;
+		gap: 6px 8px;
+	}
+
+	.hj-dash__hrow input[type="time"] {
+		width: 100%;
+		min-width: 0;
+	}
+
+	.hj-dash__hrow .hj-dash__err {
+		grid-column: 1 / -1;
+	}
+
+	.hj-dash__head {
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.hj-dash__title {
+		font-size: 1.02rem;
+	}
+
+	.hj-dash .hj-dash__avatar--lg {
+		width: 72px;
+		height: 72px;
+	}
+}
+
+/* ۱۱) آرشیو پزشکان و کارت‌های عمومی ----------------------------------- */
+
+@media (max-width: 600px) {
+	.hj-ar__grid,
+	.hj-ar__list {
+		grid-template-columns: minmax(0, 1fr) !important;
+	}
+}
+
+/* ۱۲) لایهٔ ایمنی: جلوگیری از اسکرول افقی ناخواسته ---------------------- */
+
+@media (max-width: 782px) {
+	.entry-content > *,
+	.wp-block-group,
+	.wp-block-columns,
+	.wp-block-column {
+		max-width: 100%;
+	}
+
+	.wp-block-columns {
+		flex-wrap: wrap;
+	}
+}
+
+/* ۱۳) محتوای مقالات و بلوک‌های وردپرس -------------------------------- */
+
+.entry-content :is(h1, h2, h3, h4) {
+	max-width: 100%;
+}
+
+@media (max-width: 782px) {
+	.entry-content :is(h1, h2) {
+		font-size: clamp(1.25rem, 5.2vw, 1.9rem);
+		line-height: 1.7;
+	}
+
+	.entry-content :is(h3, h4) {
+		font-size: clamp(1.05rem, 4.4vw, 1.45rem);
+		line-height: 1.75;
+	}
+
+	.entry-content p,
+	.entry-content li {
+		font-size: 1rem;
+		line-height: 2;
+	}
+
+	.wp-block-columns {
+		flex-wrap: wrap !important;
+		gap: 18px;
+	}
+
+	.wp-block-column {
+		flex-basis: 100% !important;
+		min-width: 0;
+	}
+
+	.wp-block-gallery,
+	.wp-block-image {
+		margin-inline: 0;
+	}
+
+	.wp-block-image figcaption {
+		font-size: .82rem;
+	}
+
+	.wp-block-quote,
+	blockquote {
+		margin-inline: 0;
+		padding-inline-start: 14px;
+	}
+
+	.alignleft,
+	.alignright {
+		float: none;
+		display: block;
+		margin-inline: auto;
+	}
+}
+
+/* ۱۴) ستون کنار، ابزارک‌ها، صفحه‌بندی و دیدگاه‌ها --------------------- */
+
+@media (max-width: 900px) {
+	.widget-area,
+	.sidebar,
+	#secondary {
+		width: 100%;
+		float: none;
+		margin-top: 32px;
+	}
+}
+
+@media (max-width: 782px) {
+	.navigation.pagination,
+	.nav-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+
+	.nav-links a,
+	.nav-links span,
+	.page-numbers {
+		min-width: 40px;
+		min-height: 40px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.comment-list,
+	.comment-list .children {
+		padding-inline-start: 0;
+	}
+
+	.comment-list .children {
+		margin-inline-start: 12px;
+	}
+
+	.comment-form input:not([type="submit"]),
+	.comment-form textarea {
+		width: 100%;
+	}
+}
+
+/* ۱۵) نوارهای افقی (فیلترها، تب‌ها) باید خودشان اسکرول شوند ---------- */
+
+@media (max-width: 782px) {
+	.hj-scroll-x,
+	.tabbar,
+	.nav-tabs,
+	.wp-block-buttons.is-style-scroll {
+		display: flex;
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+}
+
+@media (max-width: 640px) {
+	.hj-dash__photo {
+		flex-wrap: wrap;
+		align-items: flex-start;
+	}
+
+	.hj-dash__photo-actions {
+		flex: 1 1 150px;
+	}
+
+	.hj-dash__docs-wrap {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+}
