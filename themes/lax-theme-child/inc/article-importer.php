@@ -299,8 +299,12 @@ function hj_importer_extract_paths( string $zip_path ) {
 		if ( false === $entry || '' === $entry ) {
 			continue;
 		}
-		$clean = ltrim( str_replace( '\\', '/', $entry ), '/' );
-		if ( false !== strpos( $clean, '..' ) || preg_match( '#^[A-Za-z]:#', $clean ) ) {
+		$clean = str_replace( '\\', '/', $entry );
+		$opsys = 0;
+		$attributes = 0;
+		$zip->getExternalAttributesIndex( $i, $opsys, $attributes );
+		$is_symlink = 3 === $opsys && 0120000 === ( ( $attributes >> 16 ) & 0170000 );
+		if ( $is_symlink || '/' === substr( $clean, 0, 1 ) || false !== strpos( $clean, '..' ) || preg_match( '#^[A-Za-z]:#', $clean ) ) {
 			$zip->close();
 			hj_importer_rmdir( $real_target );
 			return new WP_Error( 'unsafe_path', 'بسته شامل مسیر غیرمجاز است و به دلایل امنیتی رد شد.' );
@@ -358,7 +362,7 @@ function hj_importer_rmdir( $dir ) {
 				continue;
 			}
 			$path = $dir . DIRECTORY_SEPARATOR . $item;
-			is_dir( $path ) ? hj_importer_rmdir( $path ) : wp_delete_file( $path );
+			( is_dir( $path ) && ! is_link( $path ) ) ? hj_importer_rmdir( $path ) : wp_delete_file( $path );
 		}
 	}
 	@rmdir( $dir );
@@ -1089,6 +1093,9 @@ function hj_importer_import_image( $post_id, $dir, array $image, bool $force_rep
 				update_post_meta( $existing_att_id, '_wp_attachment_image_alt', $alt );
 			}
 			set_post_thumbnail( $post_id, $existing_att_id );
+			if ( $existing_att_id !== (int) get_post_thumbnail_id( $post_id ) ) {
+				return new WP_Error( 'thumbnail_failed', 'اتصال تصویر شاخص شکست خورد.' );
+			}
 			return $existing_att_id;
 		}
 	}
@@ -1118,6 +1125,7 @@ function hj_importer_import_image( $post_id, $dir, array $image, bool $force_rep
 		$post_id
 	);
 	if ( is_wp_error( $att_id ) || ! $att_id ) {
+		@unlink( $upload['file'] );
 		return new WP_Error( 'attachment_failed', 'ساخت رکورد رسانه در کتابخانه شکست خورد.' );
 	}
 	$meta = wp_generate_attachment_metadata( $att_id, $upload['file'] );
@@ -1129,7 +1137,174 @@ function hj_importer_import_image( $post_id, $dir, array $image, bool $force_rep
 	update_post_meta( $att_id, '_hj_package_image', $file );
 	update_post_meta( $att_id, '_hj_image_sha256', $new_hash );
 	set_post_thumbnail( $post_id, $att_id );
+	if ( (int) $att_id !== (int) get_post_thumbnail_id( $post_id ) ) {
+		wp_delete_attachment( (int) $att_id, true );
+		return new WP_Error( 'thumbnail_failed', 'اتصال تصویر شاخص شکست خورد.' );
+	}
 	return (int) $att_id;
+}
+
+/**
+ * Validate packaged inline images before creating any post or media.
+ * New packages explicitly opt in using body_images; legacy packages are unchanged.
+ * Files are root-level WebP, each referenced exactly once as an img src.
+ *
+ * @param array  $manifest Package manifest.
+ * @param string $dir      Extracted package directory.
+ * @param string $html     Sanitized article HTML.
+ * @return array|WP_Error Validated image entries, or a descriptive error.
+ */
+function hj_importer_validate_body_images( array $manifest, string $dir, string $html ) {
+	if ( ! array_key_exists( 'body_images', $manifest ) ) {
+		return array();
+	}
+	$images = $manifest['body_images'];
+	if ( ! is_array( $images ) || count( $images ) < 1 || count( $images ) > 3 || array_values( $images ) !== $images ) {
+		return new WP_Error( 'body_images_count', 'بسته باید یک تا سه تصویر داخلی معرفی کند.' );
+	}
+	if ( ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
+		return new WP_Error( 'body_images_html', 'پردازش تصاویر به وردپرس ۶٫۴ یا جدیدتر نیاز دارد.' );
+	}
+	$root = realpath( $dir );
+	$entries = array();
+	foreach ( $images as $image ) {
+		if ( ! is_array( $image ) || ! isset( $image['file'], $image['alt'] ) || ! is_string( $image['file'] ) || ! is_string( $image['alt'] ) ) {
+			return new WP_Error( 'body_images_manifest', 'نام فایل و متن جایگزین هر تصویر داخلی لازم است.' );
+		}
+		$file = $image['file'];
+		$alt = trim( sanitize_text_field( $image['alt'] ) );
+		if ( ! preg_match( '/\A[a-zA-Z0-9][a-zA-Z0-9_-]{0,100}\.webp\z/', $file ) || isset( $entries[ $file ] ) || '' === $alt ) {
+			return new WP_Error( 'body_images_name', 'نام تصویر داخلی تکراری یا نامعتبر است، یا متن جایگزین ندارد.' );
+		}
+		$path = $dir . DIRECTORY_SEPARATOR . $file;
+		$real = realpath( $path );
+		if ( ! $root || ! $real || is_link( $path ) || dirname( $real ) !== $root || ! is_file( $real ) || ! is_readable( $real ) ) {
+			return new WP_Error( 'body_images_missing', 'فایل تصویر داخلی در ریشهٔ بسته موجود یا ایمن نیست: ' . $file );
+		}
+		$size = filesize( $real );
+		$info = @getimagesize( $real );
+		if ( false === $size || $size < 1 || $size >= 100000 || ! is_array( $info ) || ! isset( $info['mime'] ) || 'image/webp' !== $info['mime'] || empty( $info[0] ) || empty( $info[1] ) ) {
+			return new WP_Error( 'body_images_format', 'تصویر داخلی باید WebP معتبر و کمتر از ۱۰۰٬۰۰۰ بایت باشد: ' . $file );
+		}
+		$width = (int) $info[0];
+		$height = (int) $info[1];
+		if ( $width > 10000 || $height > 10000 || ( $width !== 3 * $height && 2 * $width !== 3 * $height ) ) {
+			return new WP_Error( 'body_images_ratio', 'نسبت عرض به ارتفاع تصویر داخلی باید ۳:۱ یا ۳:۲ باشد: ' . $file );
+		}
+		$entries[ $file ] = array( 'file' => $file, 'alt' => $alt, 'path' => $real, 'hash' => (string) hash_file( 'sha256', $real ), 'count' => 0 );
+	}
+	$processor = new WP_HTML_Tag_Processor( $html );
+	while ( $processor->next_tag( 'img' ) ) {
+		$src = $processor->get_attribute( 'src' );
+		if ( ! is_string( $src ) || ! isset( $entries[ $src ] ) ) {
+			return new WP_Error( 'body_images_reference', 'تمام تصاویر بدنه باید با نام فایل معرفی‌شده داخل همین بسته ارجاع شوند.' );
+		}
+		++$entries[ $src ]['count'];
+	}
+	foreach ( $entries as $entry ) {
+		if ( 1 !== $entry['count'] ) {
+			return new WP_Error( 'body_images_reference', 'هر تصویر داخلی باید دقیقاً یک بار در متن قرار گیرد: ' . $entry['file'] );
+		}
+	}
+	return $entries;
+}
+
+/** Delete only newly staged attachments; never delete an existing post's media. */
+function hj_importer_cleanup_body_images( array $created ) {
+	foreach ( $created as $id ) {
+		wp_delete_attachment( (int) $id, true );
+	}
+}
+
+/** Stage images, reusing matching attachments of the same existing draft. */
+function hj_importer_stage_body_images( array $entries, int $existing_post_id, string $slug ) {
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	$created = array();
+	$resolved = array();
+	try {
+	foreach ( $entries as $file => $entry ) {
+		$existing = $existing_post_id ? get_posts( array(
+			'post_type' => 'attachment', 'post_status' => 'inherit', 'post_parent' => $existing_post_id,
+			'posts_per_page' => 1, 'fields' => 'ids', 'meta_key' => '_hj_body_sha256', 'meta_value' => $entry['hash'],
+		) ) : array();
+		$id = ! empty( $existing[0] ) ? (int) $existing[0] : 0;
+		if ( $id && ! is_file( (string) get_attached_file( $id ) ) ) {
+			$id = 0;
+		}
+		if ( ! $id ) {
+			$bits = file_get_contents( $entry['path'] );
+			if ( false === $bits || hash( 'sha256', $bits ) !== $entry['hash'] ) {
+				hj_importer_cleanup_body_images( $created );
+				return new WP_Error( 'body_images_read', 'خواندن تصویر داخلی شکست خورد: ' . $file );
+			}
+			$upload = wp_upload_bits( sanitize_file_name( $slug . '-' . $file ), null, $bits );
+			if ( ! empty( $upload['error'] ) ) {
+				hj_importer_cleanup_body_images( $created );
+				return new WP_Error( 'body_images_upload', 'بارگذاری تصویر داخلی شکست خورد: ' . $upload['error'] );
+			}
+			$id = wp_insert_attachment( array(
+				'guid' => $upload['url'], 'post_mime_type' => 'image/webp', 'post_title' => sanitize_text_field( $slug . ' — ' . $file ),
+				'post_status' => 'inherit', 'post_parent' => 0,
+			), $upload['file'], 0, true );
+			if ( is_wp_error( $id ) || ! $id ) {
+				@unlink( $upload['file'] );
+				hj_importer_cleanup_body_images( $created );
+				return new WP_Error( 'body_images_attachment', 'ساخت رسانهٔ تصویر داخلی شکست خورد: ' . $file );
+			}
+			$id = (int) $id;
+			$created[] = $id;
+			update_post_meta( $id, '_wp_attachment_image_alt', $entry['alt'] );
+			update_post_meta( $id, '_hj_body_sha256', $entry['hash'] );
+			update_post_meta( $id, '_hj_body_package_file', $file );
+			$metadata = wp_generate_attachment_metadata( $id, $upload['file'] );
+			if ( is_array( $metadata ) ) {
+				wp_update_attachment_metadata( $id, $metadata );
+			}
+		}
+		$url = wp_get_attachment_url( $id );
+		if ( ! $url ) {
+			hj_importer_cleanup_body_images( $created );
+			return new WP_Error( 'body_images_url', 'نشانی تصویر داخلی ساخته نشد: ' . $file );
+		}
+		$resolved[ $file ] = array( 'id' => $id, 'url' => $url, 'alt' => $entry['alt'] );
+	}
+	return array( 'created' => $created, 'resolved' => $resolved );
+	} catch ( \Throwable $e ) {
+		hj_importer_cleanup_body_images( $created );
+		throw $e;
+	}
+}
+
+/** Best-effort restoration of the post after an early media failure. */
+function hj_importer_restore_body_post( int $post_id, $old_post, array $created ) {
+	if ( $old_post instanceof WP_Post ) {
+		$result = wp_update_post( wp_slash( $old_post->to_array() ), true );
+		if ( is_wp_error( $result ) || ! $result ) {
+			return false; // Keep new attachments if the post still references them.
+		}
+	} else {
+		if ( ! wp_delete_post( $post_id, true ) ) {
+			return false;
+		}
+	}
+	hj_importer_cleanup_body_images( $created );
+	return true;
+}
+
+/** Replace only image src attributes, never arbitrary article text or links. */
+function hj_importer_resolve_body_images( string $html, array $resolved ): string {
+	$processor = new WP_HTML_Tag_Processor( $html );
+	while ( $processor->next_tag( 'img' ) ) {
+		$src = $processor->get_attribute( 'src' );
+		if ( is_string( $src ) && isset( $resolved[ $src ] ) ) {
+			$processor->set_attribute( 'src', $resolved[ $src ]['url'] );
+			$processor->set_attribute( 'alt', $resolved[ $src ]['alt'] );
+			$processor->remove_attribute( 'srcset' );
+			$processor->remove_attribute( 'sizes' );
+		}
+	}
+	return $processor->get_updated_html();
 }
 
 /**
@@ -1280,6 +1455,11 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 			$html = orsite_clean_content_disclaimers_and_tables( $html, 'glossary' !== $post_type );
 		}
 		$html = wp_kses_post( $html );
+		$body_entries = hj_importer_validate_body_images( $manifest, $dir, $html );
+		if ( is_wp_error( $body_entries ) ) {
+			hj_importer_rmdir( $root_tmp );
+			return $body_entries;
+		}
 
 		// Extract SEO & FAQ fields.
 		$meta_desc = '';
@@ -1312,11 +1492,19 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 
 		$tax_pairs  = hj_importer_collect_taxonomies( $manifest, $post_type, is_array( $opts['manual_tax'] ) ? $opts['manual_tax'] : array() );
 		$image_info = hj_importer_inspect_package_image( $dir, $manifest );
+		if ( ! empty( $body_entries ) && ( ! $image_info['exists'] || ! $image_info['allowed_ext'] || ! in_array( $image_info['mime'], array( 'image/webp', 'image/jpeg', 'image/png' ), true ) || '' === $image_info['alt'] || is_link( $image_info['path'] ) || isset( $body_entries[ $image_info['declared_file'] ] ) ) ) {
+			hj_importer_rmdir( $root_tmp );
+			return new WP_Error( 'body_images_featured', 'بستهٔ تصویردار باید تصویر شاخص معتبر، مجزا و دارای متن جایگزین داشته باشد.' );
+		}
 		$audit      = hj_importer_audit_package( $manifest, $html, $image_info, $post_type, $tax_pairs );
 
 		// Look up existing post (duplicate check).
 		$existing      = hj_importer_find_existing_post( $slug, $post_type );
 		$is_duplicate  = ( $existing instanceof WP_Post );
+		if ( ! empty( $body_entries ) && $is_duplicate && 'draft' !== $existing->post_status && 'create_copy' !== $opts['duplicate_mode'] && 'warn_skip' !== $opts['duplicate_mode'] ) {
+			hj_importer_rmdir( $root_tmp );
+			return new WP_Error( 'body_images_protect', 'برای حفاظت از محتوای موجود، بستهٔ تصویر‌دار فقط در پیش‌نویس جدید یا نسخهٔ کپی وارد می‌شود.' );
+		}
 		$old_snapshot  = $is_duplicate ? hj_importer_snapshot_post( $existing ) : array();
 
 		// Determine desired post_status.
@@ -1330,6 +1518,9 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 
 		if ( $is_duplicate && ! empty( $opts['keep_existing_status'] ) && 'create_copy' !== $opts['duplicate_mode'] ) {
 			$desired_status = $existing->post_status;
+		}
+		if ( ! empty( $body_entries ) ) {
+			$desired_status = 'draft';
 		}
 
 		$forced_draft_reason = '';
@@ -1417,7 +1608,7 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 		}
 
 		// DUPLICATE MODE 2 (smart_update) when ZERO changes exist: warn identical & skip redundant DB write!
-		if ( $is_duplicate && 'smart_update' === $opts['duplicate_mode'] && empty( $diffs ) ) {
+		if ( $is_duplicate && 'smart_update' === $opts['duplicate_mode'] && empty( $diffs ) && empty( $body_entries ) ) {
 			hj_importer_rmdir( $root_tmp );
 			$res = array(
 				'dry_run'             => false,
@@ -1444,8 +1635,20 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 			return $res;
 		}
 
-		// Perform Create or Update (or Create Copy).
+		// Stage inline media first: failed uploads cannot partially overwrite an existing draft.
 		$updating_existing = ( $is_duplicate && 'create_copy' !== $opts['duplicate_mode'] );
+		$body_created = array();
+		if ( ! empty( $body_entries ) ) {
+			$staged = hj_importer_stage_body_images( $body_entries, $updating_existing ? (int) $existing->ID : 0, $slug );
+			if ( is_wp_error( $staged ) ) {
+				hj_importer_rmdir( $root_tmp );
+				return $staged;
+			}
+			$body_created = $staged['created'];
+			$html = hj_importer_resolve_body_images( $html, $staged['resolved'] );
+		}
+
+		// Perform Create or Update (or Create Copy).
 		$postarr           = array(
 			'post_type'    => $post_type,
 			'post_name'    => $slug,
@@ -1460,10 +1663,37 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 
 		$saved = wp_insert_post( wp_slash( $postarr ), true );
 		if ( is_wp_error( $saved ) ) {
+			hj_importer_cleanup_body_images( $body_created );
 			hj_importer_rmdir( $root_tmp );
 			return $saved;
 		}
 		$post_id = (int) $saved;
+		try {
+		foreach ( $body_created as $body_attachment_id ) {
+			$attached = wp_update_post( array( 'ID' => (int) $body_attachment_id, 'post_parent' => $post_id ), true );
+			if ( is_wp_error( $attached ) || ! $attached || $post_id !== (int) get_post_field( 'post_parent', $body_attachment_id ) ) {
+				$restored = hj_importer_restore_body_post( $post_id, $updating_existing ? $existing : null, $body_created );
+				hj_importer_rmdir( $root_tmp );
+				return new WP_Error( 'body_images_parent', $restored ? 'اتصال تصویر داخلی شکست خورد؛ تغییر نوشته بازگردانده شد.' : 'اتصال تصویر داخلی شکست خورد و بازگردانی کامل نشد؛ پیش‌نویس را دستی بررسی کنید.', array( 'post_id' => $post_id, 'restored' => $restored ) );
+			}
+		}
+
+		// For the new contract, fail visibly and restore the post if the featured image fails.
+		$image_status = 'بدون تصویر در بسته';
+		if ( ! empty( $body_entries ) ) {
+			$att_res = hj_importer_import_image( $post_id, $dir, array( 'file' => $image_info['declared_file'], 'alt' => $image_info['alt'] ), true );
+			if ( is_wp_error( $att_res ) || ! get_post_thumbnail_id( $post_id ) ) {
+				$restored = hj_importer_restore_body_post( $post_id, $updating_existing ? $existing : null, $body_created );
+				hj_importer_rmdir( $root_tmp );
+				return new WP_Error( 'body_images_featured_failed', $restored ? 'ثبت تصویر شاخص شکست خورد؛ تغییر نوشته بازگردانده شد.' : 'ثبت تصویر شاخص شکست خورد و بازگردانی کامل نشد؛ پیش‌نویس را دستی بررسی کنید.', array( 'post_id' => $post_id, 'restored' => $restored ) );
+			}
+			$image_status = 'ثبت شد (ID #' . (int) $att_res . ')';
+		}
+		} catch ( \Throwable $media_error ) {
+			$restored = hj_importer_restore_body_post( $post_id, $updating_existing ? $existing : null, $body_created );
+			hj_importer_rmdir( $root_tmp );
+			return new WP_Error( 'body_images_media_exception', $restored ? 'خطای رسانه رخ داد؛ تغییر نوشته بازگردانده شد.' : 'خطای رسانه و بازگردانی ناقص؛ پیش‌نویس را دستی بررسی کنید.', array( 'post_id' => $post_id, 'restored' => $restored ) );
+		}
 
 		if ( '' !== $meta_desc ) {
 			update_post_meta( $post_id, '_hj_meta_description', $meta_desc );
@@ -1515,8 +1745,7 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 		}
 
 		// Featured image import/update.
-		$image_status = 'بدون تصویر در بسته';
-		if ( $image_info['exists'] && $image_info['allowed_ext'] ) {
+		if ( empty( $body_entries ) && $image_info['exists'] && $image_info['allowed_ext'] ) {
 			$img_entry = array(
 				'file' => $image_info['declared_file'],
 				'alt'  => $image_info['alt'],
@@ -1586,6 +1815,12 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 		hj_importer_record_history( $res );
 		return $res;
 	} catch ( \Throwable $e ) {
+		if ( isset( $body_created ) && ! isset( $post_id ) ) {
+			hj_importer_cleanup_body_images( $body_created );
+		}
+		if ( isset( $root_tmp ) ) {
+			hj_importer_rmdir( $root_tmp );
+		}
 		return new WP_Error( 'importer_exception', 'خطای غیرمنتظره هنگام پردازش بسته: ' . $e->getMessage() );
 	}
 }
