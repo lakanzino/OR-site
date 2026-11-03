@@ -201,6 +201,7 @@ if ( ! class_exists( 'HJ_Doctors_Auth_Google', false ) ) :
 				exit;
 			}
 
+			if ( function_exists( 'hj_member_intent_cookie' ) ) { hj_member_intent_cookie( false ); }
 			self::set_intent();
 
 			if ( self::provider_active() ) {
@@ -250,6 +251,12 @@ if ( ! class_exists( 'HJ_Doctors_Auth_Google', false ) ) :
 			if ( self::is_doctor( $user_id ) ) {
 				delete_user_meta( $user_id, self::META_PENDING );
 				self::clear_intent();
+				return;
+			}
+
+			// A normal member login is never an opt-in to the doctor role.
+			if ( function_exists( 'hj_member_has_intent' ) && hj_member_has_intent() ) {
+				if ( function_exists( 'hj_member_intent_cookie' ) ) { hj_member_intent_cookie( false ); }
 				return;
 			}
 
