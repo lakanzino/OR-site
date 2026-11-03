@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.33.7' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.33.8' );
 }
 
 /**
@@ -271,8 +271,9 @@ add_action( 'wp_enqueue_scripts', 'lax_theme_child_assets', 20 );
 /**
  * لایهٔ ریسپانسیو سراسری.
  *
- * آخرین شیت بارگذاری می‌شود (اولویت ۹۹) تا بر استایل‌های صفحه‌ای مثل
- * static-home.css هم اولویت داشته باشد و چیدمان موبایل را یک‌دست کند.
+ * آخرین شیت بارگذاری می‌شود (اولویت ۹۹۸، بعد از static-home.css که روی
+ * ۱۰۰ است و پیش از نسخهٔ پشتیبان افزونه که روی ۹۹۹ است) تا چیدمان موبایل
+ * یک‌دست بماند.
  */
 function lax_theme_child_responsive_assets() {
 	$relative = 'assets/css/responsive.css';
@@ -289,7 +290,7 @@ function lax_theme_child_responsive_assets() {
 		lax_theme_child_asset_ver( $relative )
 	);
 }
-add_action( 'wp_enqueue_scripts', 'lax_theme_child_responsive_assets', 99 );
+add_action( 'wp_enqueue_scripts', 'lax_theme_child_responsive_assets', 998 );
 
 
 /** Editable static homepage installer and presentation. */

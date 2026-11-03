@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.33.7
+Stable tag: 0.33.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,11 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.33.8 =
+* کارت‌های صفحهٔ نخست به سه نوار باریک پاستیلی با سایهٔ عمیق دورتادور تبدیل شدند؛ فقط تیتر می‌ماند.
+* پابرگ موبایل دوستونه، ریزتر و جمع‌وجور شد.
+* تیتر کارت‌های زیر تصویر شاخص دیگر با سه‌نقطه بریده نمی‌شود و کامل جا می‌افتد.
 
 = 0.33.7 =
 * شیت سراسری responsive.css (اولویت ۹۹) برای موبایل همهٔ بخش‌های سایت.

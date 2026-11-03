@@ -97,9 +97,9 @@ video {
 /* ۶) ناوبری و پابرگ ---------------------------------------------------- */
 
 @media (max-width: 782px) {
+	/* هدف لمسی فقط برای سربرگ و ناوبری؛ لینک‌های پابرگ فشرده می‌مانند. */
 	.site-header a,
-	.main-navigation a,
-	.site-footer a {
+	.main-navigation a {
 		min-height: 44px;
 		display: inline-flex;
 		align-items: center;
@@ -113,44 +113,155 @@ video {
 	}
 }
 
-/* ۷) صفحهٔ نخست: سه کادر همیشه در یک ردیف ------------------------------ */
+/* پابرگ در موبایل: دو ستون، فونت ریزتر و فاصله‌های جمع‌وجور. */
+@media (max-width: 768px) {
+	.hj-footer {
+		margin-top: 2rem;
+	}
+
+	.hj-footer .container {
+		padding-inline: .9rem;
+	}
+
+	.hj-footer__top {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: .95rem 1.1rem;
+		padding: 1.15rem 0 .85rem;
+	}
+
+	.hj-footer__brand {
+		grid-column: 1 / -1;
+	}
+
+	.hj-footer .custom-logo-link {
+		padding: .3rem .6rem;
+		border-radius: 10px;
+	}
+
+	.hj-footer__logo-img {
+		max-height: 34px;
+	}
+
+	.hj-footer__tagline {
+		font-size: .74rem;
+		line-height: 1.7;
+		margin: .55rem 0 .4rem;
+		max-width: 100%;
+	}
+
+	.hj-footer__email {
+		font-size: .74rem;
+	}
+
+	.hj-footer__heading {
+		font-size: .78rem;
+		margin: 0 0 .45rem;
+		white-space: normal;
+	}
+
+	.hj-footer__col ul {
+		gap: .28rem;
+	}
+
+	.hj-footer__col a {
+		font-size: .74rem;
+		line-height: 1.5;
+		min-height: 0;
+		display: inline;
+		padding: .06rem 0;
+	}
+
+	.hj-footer__bottom {
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		gap: .3rem .5rem;
+		padding: .75rem 0 .85rem;
+		font-size: .7rem;
+		text-align: center;
+	}
+}
+
+/* ۷) صفحهٔ نخست: سه نوار باریکِ پاستیلی، همیشه در یک ردیف -------------- */
 
 .hj-landing-grid {
 	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: clamp(8px, 1.5vw, 20px);
+	justify-items: center;
+	gap: clamp(10px, 1.8vw, 24px);
+}
+
+/* اگر وردپرس محتوای کارت را در inner-container بگذارد، شفافش کن تا
+   فرزندانش فرزندِ مستقیم کارت شوند. */
+.hj-landing-card > .wp-block-group__inner-container {
+	display: contents;
 }
 
 .hj-landing-card {
 	position: relative;
-	padding: clamp(13px, 2.1vw, 30px);
-	transition: border-color .2s, box-shadow .2s, transform .2s;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	max-width: 210px;
+	min-height: clamp(170px, 21vw, 270px);
+	padding: clamp(14px, 1.8vw, 24px) clamp(9px, 1.2vw, 16px);
+	border: 0;
+	border-radius: 24px;
+	text-align: center;
+	background: #e6f5ee;
+	box-shadow:
+		0 18px 34px -10px rgba(24, 60, 55, .34),
+		0 8px 16px rgba(24, 60, 55, .14),
+		inset 0 1px 0 rgba(255, 255, 255, .75);
+	transition: transform .2s, box-shadow .2s;
 }
 
-.hj-landing-card h3 {
-	font-size: clamp(12.5px, 1.45vw, 18px);
-	line-height: 1.65;
+.hj-landing-card.hj-card-lilac {
+	background: #eee9fb;
 }
 
-.hj-landing-card > p:not(.hj-card-icon):not(.hj-card-link) {
-	font-size: clamp(10.5px, 1.1vw, 14px);
-	line-height: 1.85;
+.hj-landing-card.hj-card-peach {
+	background: #ffece1;
+}
+
+/* روی نوار فقط تیتر می‌ماند؛ متن ریز راهنما حذف می‌شود. */
+.hj-landing-card p:not(.hj-card-icon):not(.hj-card-link) {
+	display: none;
 }
 
 .hj-landing .hj-card-icon {
-	width: clamp(30px, 4.4vw, 48px);
-	height: clamp(30px, 4.4vw, 48px);
-	border-radius: clamp(9px, 1.4vw, 15px);
-	font-size: clamp(13px, 2vw, 21px);
-	margin-bottom: clamp(9px, 1.6vw, 22px);
+	width: clamp(30px, 3.4vw, 42px);
+	height: clamp(30px, 3.4vw, 42px);
+	border-radius: 12px;
+	font-size: clamp(13px, 1.6vw, 18px);
+	margin: 0 0 clamp(10px, 1.4vw, 16px);
+	background: #fff;
+	box-shadow: 0 8px 16px rgba(24, 60, 55, .12);
 }
 
+.hj-landing-card h3 {
+	font-size: clamp(13px, 1.25vw, 17px);
+	line-height: 1.7;
+	margin: 0;
+}
+
+/* متن ریزِ لینک دیده نمی‌شود، اما لینک روی کل کادر کشیده می‌ماند. */
 .hj-landing .hj-card-link {
-	margin-top: clamp(10px, 1.8vw, 25px);
-	font-size: clamp(10.5px, 1.15vw, 13px);
+	margin: 0;
+	height: 0;
+	font-size: 0;
+	line-height: 0;
+	overflow: visible;
 }
 
-/* کل کادر کلیک‌پذیر: لینک کوچک پایین کادر روی تمام سطح کشیده می‌شود. */
-.hj-landing-card > .hj-card-link a::after {
+.hj-landing-card .hj-card-link a {
+	display: block;
+	font-size: 0;
+	line-height: 0;
+}
+
+.hj-landing-card .hj-card-link a::after {
 	content: "";
 	position: absolute;
 	inset: 0;
@@ -160,17 +271,19 @@ video {
 
 .hj-landing-card:hover,
 .hj-landing-card:focus-within {
-	border-color: #bfe0d7;
-	box-shadow: 0 22px 50px rgba(31, 65, 67, .16);
-	transform: translateY(-2px);
+	transform: translateY(-3px);
+	box-shadow:
+		0 26px 44px -12px rgba(24, 60, 55, .44),
+		0 10px 20px rgba(24, 60, 55, .18),
+		inset 0 1px 0 rgba(255, 255, 255, .85);
 }
 
-.hj-landing-card > .hj-card-link a:focus-visible {
+.hj-landing-card:focus-within {
 	outline: 2px solid #317c70;
 	outline-offset: 3px;
 }
 
-/* در موبایل همان سه‌ستون می‌ماند و فقط مقیاس کوچک می‌شود. */
+/* در موبایل همان سه نوار در یک ردیف می‌مانند و فقط کوچک‌تر می‌شوند. */
 @media (max-width: 1050px) {
 	.hj-landing-grid {
 		grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -180,45 +293,36 @@ video {
 @media (max-width: 768px) {
 	.hj-landing-grid {
 		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 8px;
+		gap: 7px;
 	}
 
 	.hj-landing-card {
-		padding: 12px 9px;
+		min-height: 150px;
+		padding: 12px 7px;
 		border-radius: 16px;
+		box-shadow:
+			0 10px 20px -6px rgba(24, 60, 55, .34),
+			0 4px 10px rgba(24, 60, 55, .16),
+			inset 0 1px 0 rgba(255, 255, 255, .7);
 	}
 
 	.hj-landing-card h3 {
-		font-size: 13px;
-	}
-
-	.hj-landing-card > p:not(.hj-card-icon):not(.hj-card-link) {
-		font-size: 11px;
-		line-height: 1.8;
-		margin-top: 6px;
+		font-size: 12.5px;
+		line-height: 1.65;
 	}
 
 	.hj-landing .hj-card-icon {
-		width: 32px;
-		height: 32px;
-		font-size: 14px;
+		width: 28px;
+		height: 28px;
 		border-radius: 9px;
-		margin-bottom: 9px;
-	}
-
-	.hj-landing .hj-card-link {
-		margin-top: 9px;
-		font-size: 10.5px;
+		font-size: 12px;
+		margin-bottom: 8px;
 	}
 }
 
 @media (max-width: 360px) {
 	.hj-landing-card h3 {
-		font-size: 12px;
-	}
-
-	.hj-landing-card > p:not(.hj-card-icon):not(.hj-card-link) {
-		font-size: 10px;
+		font-size: 11.5px;
 	}
 }
 
@@ -489,4 +593,24 @@ video {
 		flex-wrap: wrap;
 		gap: 8px;
 	}
+}
+
+/* ۱۶) تیتر زیر تصویر شاخص: کامل، بدون سه‌نقطه، با فونت سیال ------------ */
+
+.orsite-card-article__title,
+.orsite-card-article__title a {
+	white-space: normal;
+	overflow: visible;
+	text-overflow: clip;
+	overflow-wrap: anywhere;
+}
+
+.orsite-card-article__title a {
+	display: block;
+}
+
+.orsite-card-article__title {
+	font-size: clamp(.82rem, .78rem + .3vw, 1.05rem);
+	line-height: 1.7;
+	margin: 0;
 }
