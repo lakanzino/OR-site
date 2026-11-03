@@ -1,0 +1,454 @@
+/*!
+ * Hamyar Jarahi - Emerald, Amber & Ruby Glass UI System
+ * RTL Persian WordPress Theme & Plugin Stylesheet
+ * Light Source: Top-Right | Colored Glass Bleed: Bottom-Left
+ */
+
+:root {
+  /* زمینه روشن، مینیمال و نعنایی-یخی */
+  --hj-bg-page: #eef6f2;
+  --hj-bg-recess: #e0ece6;
+
+  /* متن با کنتراست بسیار بالا برای خوانایی کامل */
+  --hj-ink: #061710;
+  --hj-ink-soft: #143325;
+  --hj-muted: #3e5e4f;
+
+  /* پالت اصلی: سبز زمردی و هایلایت‌های آن (جایگزین آبی سرمه‌ای) */
+  --hj-green-950: #052015;
+  --hj-green-800: #0a4730;
+  --hj-green-600: #0d7a52;
+  --hj-green-500: #10b981;
+  --hj-green-highlight: #34d399;
+  --hj-green-ice: #d1fae5;
+
+  /* پالت اضافه‌شده: زرد کهربایی / طلایی (برای هایلایت، امتیاز، برچسب ویژه) */
+  --hj-yellow-800: #78350f;
+  --hj-yellow-600: #d97706;
+  --hj-yellow-500: #f59e0b;
+  --hj-yellow-highlight: #fde047;
+  --hj-yellow-ice: #fef3c7;
+
+  /* پالت تأکیدی: قرمز یاقوتی (فقط در نقاط مهم و هشدار) */
+  --hj-red-ink: #4c0519;
+  --hj-red-accent: #e11d48;
+  --hj-red-bright: #fb7185;
+
+  /* سطح شیشه‌ای شفاف و کم‌رنگ */
+  --hj-glass-surface: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.84) 0%,
+    rgba(235, 248, 241, 0.58) 100%
+  );
+
+  /* سایه عمیق کارت + پخش رنگ سبز شیشه در خلاف جهت نور (پایین-چپ) */
+  --hj-shadow-card:
+    -14px 18px 36px rgba(10, 71, 48, 0.15),
+    -4px 6px 14px rgba(16, 185, 129, 0.10),
+    4px -4px 14px rgba(255, 255, 255, 0.92),
+    inset -1.5px 1.5px 2px rgba(255, 255, 255, 0.98),
+    inset 1px -1px 2px rgba(10, 71, 48, 0.08);
+
+  /* برجستگی واضح (Embossed) */
+  --hj-shadow-emboss:
+    -7px 9px 18px rgba(10, 71, 48, 0.13),
+    -2px 4px 8px rgba(16, 185, 129, 0.09),
+    3px -3px 8px rgba(255, 255, 255, 0.96),
+    inset -1px 1px 1px rgba(255, 255, 255, 1);
+
+  /* فرورفتگی عمیق (Debossed / Inset) */
+  --hj-shadow-deboss:
+    inset -5px 5px 11px rgba(8, 48, 32, 0.14),
+    inset 5px -5px 11px rgba(255, 255, 255, 0.96),
+    0 1px 0 rgba(255, 255, 255, 0.82);
+
+  --hj-radius-xl: 26px;
+  --hj-radius-lg: 18px;
+  --hj-radius-md: 14px;
+  --hj-radius-pill: 999px;
+}
+
+/* ===== پایه و پس‌زمینه سایت ===== */
+body:not(.wp-admin) {
+  direction: rtl;
+  color: var(--hj-ink);
+  background-color: var(--hj-bg-page);
+  /* هاله‌های نوری سبز، زرد و قرمز ملایم برای دیده‌شدن شفافیت شیشه از روی آن‌ها */
+  background-image:
+    radial-gradient(circle at 86% 12%, rgba(16, 185, 129, 0.16), transparent 32%),
+    radial-gradient(circle at 18% 22%, rgba(250, 204, 21, 0.14), transparent 34%),
+    radial-gradient(circle at 16% 78%, rgba(225, 29, 72, 0.07), transparent 28%),
+    radial-gradient(circle at 78% 84%, rgba(13, 122, 82, 0.12), transparent 36%);
+  background-attachment: fixed;
+  font-family: Vazirmatn, Estedad, IRANSans, Tahoma, "Segoe UI", sans-serif;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+body:not(.wp-admin) :focus-visible {
+  outline: 3px solid var(--hj-green-highlight);
+  outline-offset: 3px;
+}
+
+/* ===== ۱. کارت‌ها و کادرهای شیشه‌ای با سایه عمیق ===== */
+.hj-glass-card,
+.hj-landing-hero,
+.hj-landing-intro,
+.hj-landing-card,
+.hj-landing-surgeon,
+.hj-landing-help,
+.single-doctor article.doctor,
+.post-type-archive-doctor .doctor {
+  position: relative;
+  background: var(--hj-glass-surface) !important;
+  backdrop-filter: blur(20px) saturate(155%);
+  -webkit-backdrop-filter: blur(20px) saturate(155%);
+  border: 1px solid rgba(255, 255, 255, 0.90) !important;
+  border-radius: var(--hj-radius-xl) !important;
+  box-shadow: var(--hj-shadow-card) !important;
+  padding: 24px;
+  color: var(--hj-ink);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+/* هایلایت زرد برای کارت‌های میانی یا ویژه */
+.hj-card-peach,
+.hj-card-yellow,
+.hj-glass-card.is-yellow {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.86) 0%,
+    rgba(254, 243, 199, 0.52) 100%
+  ) !important;
+  box-shadow:
+    -12px 16px 32px rgba(217, 119, 6, 0.14),
+    4px -4px 12px rgba(255, 255, 255, 0.94),
+    inset -1.5px 1.5px 2px #ffffff !important;
+}
+
+/* ===== ۲. فرورفتگی‌های عمیق (Debossed Wells & Inputs) ===== */
+.hj-deboss-well,
+.hj-surgeon-features,
+.hj-landing-disclaimer,
+body:not(.wp-admin) input[type="text"],
+body:not(.wp-admin) input[type="search"],
+body:not(.wp-admin) input[type="email"],
+body:not(.wp-admin) input[type="tel"],
+body:not(.wp-admin) input[type="password"],
+body:not(.wp-admin) select,
+body:not(.wp-admin) textarea {
+  background: var(--hj-bg-recess) !important;
+  border: 1px solid rgba(255, 255, 255, 0.65) !important;
+  border-radius: var(--hj-radius-lg) !important;
+  box-shadow: var(--hj-shadow-deboss) !important;
+  color: var(--hj-ink) !important;
+}
+
+body:not(.wp-admin) input:focus,
+body:not(.wp-admin) select:focus,
+body:not(.wp-admin) textarea:focus {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-color: var(--hj-green-highlight) !important;
+  box-shadow:
+    -5px 7px 16px rgba(16, 185, 129, 0.22),
+    var(--hj-shadow-deboss) !important;
+}
+
+/* ===== ۳. تیترها و بج‌های شیشه‌ای برجسته (Embossed) ===== */
+.hj-embossed-heading,
+.hj-landing-hero h1,
+.single-doctor h1.entry-title {
+  display: inline-block;
+  margin: 8px 0 10px;
+  padding: 8px 18px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.90), rgba(209, 250, 229, 0.46));
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  border-radius: var(--hj-radius-md);
+  box-shadow: var(--hj-shadow-emboss);
+  color: var(--hj-ink) !important;
+  font-weight: 900;
+  line-height: 1.4;
+}
+
+.hj-section-pill,
+.hj-landing-eyebrow,
+.hj-landing-art-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(209, 250, 229, 0.48));
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  border-radius: var(--hj-radius-pill);
+  box-shadow: var(--hj-shadow-emboss);
+  color: var(--hj-ink) !important;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* بج زرد برای ستاره‌دارها و نکات راهنما */
+.hj-badge-yellow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--hj-radius-pill);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--hj-yellow-800);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(253, 224, 71, 0.36));
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  box-shadow:
+    -5px 7px 14px rgba(217, 119, 6, 0.20),
+    inset -1px 1px 1px #ffffff;
+}
+
+/* ===== ۴. دکمه‌های شیشه‌ای (شفاف در حالت عادی، درخشان در لمس، پخش رنگ شیشه در سایه) ===== */
+.hj-btn,
+.hj-btn-primary,
+.hj-btn-secondary,
+.hj-landing-card a,
+.wp-block-button__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 43px;
+  padding: 8px 20px;
+  border-radius: var(--hj-radius-pill) !important;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--hj-ink) !important;
+  text-decoration: none !important;
+  cursor: pointer;
+  backdrop-filter: blur(14px) saturate(170%);
+  -webkit-backdrop-filter: blur(14px) saturate(170%);
+  transition:
+    transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+  overflow: hidden;
+}
+
+/* انعکاس نور سفید در لبه بالا-راست شیشه */
+.hj-btn::before,
+.hj-btn-primary::before,
+.hj-btn-secondary::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0) 55%);
+  pointer-events: none;
+}
+
+/* الف) دکمه شیشه‌ای سبز (اصلی) */
+.hj-btn-green,
+.hj-btn-primary {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.70) 0%,
+    rgba(52, 211, 153, 0.22) 55%,
+    rgba(13, 122, 82, 0.24) 100%
+  ) !important;
+  border: 1px solid rgba(255, 255, 255, 0.92) !important;
+  /* پخش رنگ سبز شیشه در پایین-چپ */
+  box-shadow:
+    -8px 11px 22px rgba(13, 122, 82, 0.24),
+    -3px 5px 10px rgba(16, 185, 129, 0.22),
+    3px -3px 8px rgba(255, 255, 255, 0.92),
+    inset -1.5px 1.5px 2px rgba(255, 255, 255, 0.98),
+    inset 1.5px -1.5px 3px rgba(13, 122, 82, 0.18) !important;
+}
+
+.hj-btn-green:hover,
+.hj-btn-green:active,
+.hj-btn-primary:hover,
+.hj-btn-primary:active {
+  transform: translateY(-2px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.86) 0%,
+    rgba(52, 211, 153, 0.46) 50%,
+    rgba(16, 185, 129, 0.38) 100%
+  ) !important;
+  border-color: #ffffff !important;
+  box-shadow:
+    -11px 15px 28px rgba(16, 185, 129, 0.38),
+    -4px 6px 14px rgba(52, 211, 153, 0.45),
+    4px -4px 12px #ffffff,
+    inset -2px 2px 4px #ffffff,
+    inset 2px -2px 6px rgba(13, 122, 82, 0.28) !important;
+}
+
+/* ب) دکمه شیشه‌ای زرد کهربایی (ویژه / ستاره‌دار / مکمل) */
+.hj-btn-yellow {
+  color: var(--hj-yellow-800) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.74) 0%,
+    rgba(253, 224, 71, 0.25) 55%,
+    rgba(245, 158, 11, 0.24) 100%
+  ) !important;
+  border: 1px solid rgba(255, 255, 255, 0.92) !important;
+  /* پخش رنگ زرد/طلایی شیشه در پایین-چپ */
+  box-shadow:
+    -8px 11px 22px rgba(217, 119, 6, 0.22),
+    -3px 5px 10px rgba(245, 158, 11, 0.22),
+    3px -3px 8px rgba(255, 255, 255, 0.92),
+    inset -1.5px 1.5px 2px rgba(255, 255, 255, 0.98),
+    inset 1.5px -1.5px 3px rgba(217, 119, 6, 0.16) !important;
+}
+
+.hj-btn-yellow:hover,
+.hj-btn-yellow:active {
+  transform: translateY(-2px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.88) 0%,
+    rgba(253, 224, 71, 0.50) 50%,
+    rgba(245, 158, 11, 0.40) 100%
+  ) !important;
+  border-color: #ffffff !important;
+  box-shadow:
+    -11px 15px 28px rgba(245, 158, 11, 0.36),
+    -4px 6px 14px rgba(253, 224, 71, 0.48),
+    4px -4px 12px #ffffff,
+    inset -2px 2px 4px #ffffff !important;
+}
+
+/* پ) دکمه شیشه‌ای قرمز (فقط برای نقاط تأکیدی و مهم) */
+.hj-btn-red,
+.hj-btn-secondary {
+  color: var(--hj-red-ink) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.74) 0%,
+    rgba(251, 113, 133, 0.20) 55%,
+    rgba(225, 29, 72, 0.22) 100%
+  ) !important;
+  border: 1px solid rgba(255, 255, 255, 0.92) !important;
+  /* پخش رنگ قرمز شیشه در پایین-چپ */
+  box-shadow:
+    -8px 11px 22px rgba(225, 29, 72, 0.20),
+    -3px 5px 10px rgba(251, 113, 133, 0.22),
+    3px -3px 8px rgba(255, 255, 255, 0.92),
+    inset -1.5px 1.5px 2px rgba(255, 255, 255, 0.98),
+    inset 1.5px -1.5px 3px rgba(225, 29, 72, 0.16) !important;
+}
+
+.hj-btn-red:hover,
+.hj-btn-red:active,
+.hj-btn-secondary:hover,
+.hj-btn-secondary:active {
+  transform: translateY(-2px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.86) 0%,
+    rgba(251, 113, 133, 0.44) 50%,
+    rgba(225, 29, 72, 0.36) 100%
+  ) !important;
+  border-color: #ffffff !important;
+  box-shadow:
+    -11px 15px 28px rgba(225, 29, 72, 0.34),
+    -4px 6px 14px rgba(251, 113, 133, 0.42),
+    4px -4px 12px #ffffff,
+    inset -2px 2px 4px #ffffff !important;
+}
+
+/* ت) دکمه شیشه‌ای خنثی */
+.hj-btn-glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.78) 0%,
+    rgba(209, 250, 229, 0.34) 100%
+  ) !important;
+  border: 1px solid rgba(255, 255, 255, 0.94) !important;
+  box-shadow: var(--hj-shadow-emboss) !important;
+}
+
+.hj-btn-glass:hover,
+.hj-btn-glass:active {
+  transform: translateY(-2px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(167, 243, 208, 0.55) 100%
+  ) !important;
+  box-shadow:
+    -8px 12px 22px rgba(16, 185, 129, 0.22),
+    3px -3px 9px #ffffff,
+    inset -1.5px 1.5px 3px #ffffff !important;
+}
+
+/* ===== ۵. پروفایل جراح و ویجت آنالیز (سازگار با ساختار وردپرس) ===== */
+.hj-metrics-tray {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  padding: 14px;
+  background: var(--hj-bg-recess);
+  border-radius: var(--hj-radius-lg);
+  box-shadow: var(--hj-shadow-deboss);
+}
+
+.hj-metric-plaque,
+.hj-feature {
+  padding: 12px 15px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(235, 248, 241, 0.62));
+  border: 1px solid rgba(255, 255, 255, 0.94);
+  border-radius: var(--hj-radius-md);
+  box-shadow: var(--hj-shadow-emboss);
+  color: var(--hj-ink);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.hj-metric-plaque:hover,
+.hj-feature:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    -8px 11px 20px rgba(13, 122, 82, 0.20),
+    inset -1px 1px 2px #ffffff;
+}
+
+/* نوارهای پیشرفت و امتیاز (سبز، زرد، قرمز) */
+.hj-bar-track {
+  height: 11px;
+  padding: 2px;
+  background: var(--hj-bg-recess);
+  border-radius: var(--hj-radius-pill);
+  box-shadow: var(--hj-shadow-deboss);
+}
+
+.hj-bar-fill-green {
+  height: 100%;
+  border-radius: var(--hj-radius-pill);
+  background: linear-gradient(90deg, var(--hj-green-highlight), var(--hj-green-600));
+  box-shadow: -2px 2px 6px rgba(16, 185, 129, 0.40);
+}
+
+.hj-bar-fill-yellow {
+  height: 100%;
+  border-radius: var(--hj-radius-pill);
+  background: linear-gradient(90deg, var(--hj-yellow-highlight), var(--hj-yellow-500));
+  box-shadow: -2px 2px 6px rgba(245, 158, 11, 0.38);
+}
+
+.hj-bar-fill-red {
+  height: 100%;
+  border-radius: var(--hj-radius-pill);
+  background: linear-gradient(90deg, var(--hj-red-bright), var(--hj-red-accent));
+  box-shadow: -2px 2px 6px rgba(225, 29, 72, 0.36);
+}
+
+/* کاهش انیمیشن برای کاربران حساس به حرکت */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

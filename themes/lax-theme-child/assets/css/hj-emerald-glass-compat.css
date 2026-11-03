@@ -1,0 +1,86 @@
+/* Front-end bridge for existing Hamyar markup. No HTML, IDs, or shortcodes change. */
+body:not(.wp-admin) .hj-static-home { background: transparent; }
+body:not(.wp-admin) .hj-landing,
+body:not(.wp-admin) .hj-neo { color: var(--hj-ink); }
+body:not(.wp-admin) .hj-neo { --neo-ink: #061710; --neo-muted: #284e3c; }
+body:not(.wp-admin) .hj-landing :is(h1,h2,h3),
+body:not(.wp-admin) .hj-neo :is(h1,h2,h3) { color: var(--hj-ink); }
+body:not(.wp-admin) .hj-landing :is(.hj-landing-lead,.hj-landing-intro > p:last-child,.hj-landing-card > p:not(.hj-card-icon):not(.hj-card-link),.hj-feature > p:last-child),
+body:not(.wp-admin) .hj-neo :is(.neo-lead,.neo-section-desc,.neo-small,.neo-disclaimer) { color: var(--hj-ink-soft); }
+body:not(.wp-admin) .hj-neo .neo-title span { color: #0a6042; }
+
+/* Current homepage, doctor archive, doctor profile, and dashboard card selectors. */
+body:not(.wp-admin) :is(.hj-neo .neo-card,.hj-neo .neo-art,.hj-neo .neo-magazine,.hj-neo .neo-status-section,.hj-magazine-section,.hj-surgeon-card,.hj-ar-card,.hj-ar__head,.hj-doc .hj-card,.hj-doc .hj-review,.hj-doc .hj-service,.hj-dash .hj-dash__card,.hj-member) {
+  background: var(--hj-glass-surface) !important;
+  border: 1px solid rgba(255,255,255,.9) !important;
+  border-radius: var(--hj-radius-xl) !important;
+  box-shadow: var(--hj-shadow-card) !important;
+  color: var(--hj-ink);
+  -webkit-backdrop-filter: blur(20px) saturate(155%);
+  backdrop-filter: blur(20px) saturate(155%);
+}
+body:not(.wp-admin) .hj-member { padding: 24px; }
+body:not(.wp-admin) :is(.hj-ar__filters,.hj-ar__facets,.hj-dash__bar,.hj-neo .neo-search) {
+  background: var(--hj-bg-recess) !important;
+  border-radius: var(--hj-radius-lg);
+  box-shadow: var(--hj-shadow-deboss) !important;
+}
+body:not(.wp-admin) .hj-neo .neo-register { background: #d1fae5; box-shadow: var(--hj-shadow-card); }
+body:not(.wp-admin) .hj-neo :is(.neo-eyebrow,.neo-nav a,.neo-tabs a),
+body:not(.wp-admin) .hj-doc .hj-hero__badge {
+  background: linear-gradient(135deg,rgba(255,255,255,.88),rgba(209,250,229,.48));
+  border: 1px solid rgba(255,255,255,.96);
+  border-radius: var(--hj-radius-pill);
+  box-shadow: var(--hj-shadow-emboss);
+  color: var(--hj-ink);
+}
+body:not(.wp-admin) .hj-neo .neo-eyebrow { padding: 5px 14px; }
+body:not(.wp-admin) .hj-neo .neo-tabs [aria-selected="true"] { background: #a8e6cf; box-shadow: var(--hj-shadow-deboss); }
+body:not(.wp-admin) :is(.hj-ar__title,.hj-ar__count,.hj-ar__desc,.hj-ar__desc a,.hj-ar__head h1) { color: var(--hj-ink) !important; }
+body:not(.wp-admin) .hj-ar { --hj-navy: #061710; --hj-navy-2: #143325; --hj-gray: #3e5e4f; --hj-teal-2: #0d7a52; }
+body:not(.wp-admin) .hj-ar .hj-ar__chip.is-active { background: #d1fae5; color: var(--hj-ink); }
+
+/* The profile uses its own local variables and originally had a dark hero. */
+body:not(.wp-admin) .hj-doc { --hj-primary: #0a6042; --hj-primary-dark: #052015; --hj-text: #061710; --hj-muted: #3e5e4f; --hj-bg: #eef6f2; background: transparent; }
+body:not(.wp-admin) .hj-doc .hj-hero { background: linear-gradient(135deg,#e8faf0,#d1f2e2); color: var(--hj-ink); }
+body:not(.wp-admin) .hj-doc .hj-hero :is(h1,.hj-hero__specialty,.hj-hero__bio,.hj-hero__location,.hj-hero__verified,.hj-hero__rating small) { color: var(--hj-ink); }
+body:not(.wp-admin) .hj-doc :is(.hj-hero__badge,.hj-stars,.hj-hero__rating,.hj-dash__stars) { color: #78350f; }
+body:not(.wp-admin) .hj-doc .hj-hero__badge { background: #fef3c7; }
+body:not(.wp-admin) .hj-doc .hj-section__title h2,
+body:not(.wp-admin) .hj-dash .hj-dash__h { color: var(--hj-ink); }
+body:not(.wp-admin) .hj-dash :is(.hj-dash__muted,.hj-dash__pv-name-en,.hj-dash__pv-spec-en,.hj-dash__pv-city,.hj-dash__tog,.hj-dash__to) { color: var(--hj-ink-soft); }
+body:not(.wp-admin) .hj-dash .hj-dash__bar span { background: linear-gradient(90deg,var(--hj-green-highlight),var(--hj-green-600)); }
+
+/* Actual interactive elements, rather than WordPress's button wrapper divs. */
+body:not(.wp-admin) :is(.hj-doc .hj-btn--primary,.hj-ar__btn,.hj-ar-card__cta,.hj-dash .hj-dash__btn--primary,.hj-magazine-row button,.hj-member button,.hj-neo .neo-primary .wp-block-button__link,.hj-neo .neo-search button,.hj-landing .hj-btn-primary .wp-block-button__link) {
+  background: linear-gradient(135deg,#f8fffb,#b8efd6 55%,#95d7b9) !important;
+  color: #061710 !important;
+  border: 1px solid rgba(255,255,255,.92) !important;
+  border-radius: var(--hj-radius-pill) !important;
+  box-shadow: var(--hj-shadow-emboss) !important;
+}
+body:not(.wp-admin) :is(.hj-doc .hj-btn--outline,.hj-dash .hj-dash__btn--ghost,.hj-neo .neo-secondary .wp-block-button__link,.hj-landing .hj-btn-secondary .wp-block-button__link) {
+  background: linear-gradient(135deg,#fff,#e1f7ec) !important;
+  color: #061710 !important;
+  border: 1px solid rgba(255,255,255,.94) !important;
+  border-radius: var(--hj-radius-pill) !important;
+  box-shadow: var(--hj-shadow-emboss) !important;
+}
+/* Existing secondary actions are neutral, not warnings. Undo red on the WP wrapper. */
+body:not(.wp-admin) .hj-landing .wp-block-button:is(.hj-btn-primary,.hj-btn-secondary) {
+  background: none !important; border: 0 !important; box-shadow: none !important;
+  padding: 0; min-height: 0; overflow: visible;
+}
+body:not(.wp-admin) .hj-landing .wp-block-button:is(.hj-btn-primary,.hj-btn-secondary)::before { display: none; }
+body:not(.wp-admin) :is(.hj-doc .hj-btn--primary,.hj-doc .hj-btn--outline,.hj-ar__btn,.hj-ar-card__cta,.hj-dash .hj-dash__btn--primary,.hj-dash .hj-dash__btn--ghost,.hj-magazine-row button,.hj-member button,.hj-neo .neo-primary .wp-block-button__link,.hj-neo .neo-search button,.hj-landing .wp-block-button__link):hover { box-shadow: var(--hj-shadow-deboss) !important; }
+body:not(.wp-admin) .hj-dash .hj-dash__btn:disabled { opacity: .6; cursor: not-allowed; }
+body:not(.wp-admin) :is(.hj-doc,.hj-dash,.hj-ar,.hj-neo,.hj-landing) :focus-visible { outline: 3px solid #087a58; outline-offset: 3px; }
+@media (max-width: 767px) {
+  body:not(.wp-admin) .hj-neo .neo-hero,
+  body:not(.wp-admin) .hj-neo .neo-grid { grid-template-columns: minmax(0,1fr); }
+  body:not(.wp-admin) .hj-neo .neo-card { width: 100%; }
+}
+/* The supplied global button selector gives all block buttons dark text. */
+body:not(.wp-admin) .wp-block-button__link:where(:not(.hj-btn-yellow):not(.hj-btn-red):not(.hj-btn-green):not(.hj-btn-glass)) { background: #d1fae5 !important; color: #061710 !important; }
+/* Preserve the existing stretched link on landing cards. */
+body:not(.wp-admin) .hj-landing .hj-landing-card .hj-card-link a { position: static; overflow: visible; }

@@ -3,7 +3,7 @@
 get_header();
 ?>
 <main id="primary" class="hj-static-home" tabindex="-1">
-	<?php if ( 'page' === get_option( 'show_on_front' ) && have_posts() ) : ?>
+	<?php if ( ( 'page' === get_option( 'show_on_front' ) || is_preview() ) && have_posts() ) : ?>
 		<?php while ( have_posts() ) : the_post(); ?>
 			<div class="entry-content"><?php the_content(); ?></div>
 			<?php wp_link_pages(); ?>

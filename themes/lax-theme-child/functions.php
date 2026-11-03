@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.33.8' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.33.13' );
 }
 
 /**
@@ -306,3 +306,24 @@ add_action( 'wp_enqueue_scripts', function () {
 		wp_enqueue_style( 'hj-doctor-profile', get_stylesheet_directory_uri() . '/assets/css/doctor-profile.css', array(), lax_theme_child_asset_ver( 'assets/css/doctor-profile.css' ) );
 	}
 }, 100 );
+
+/** Emerald Glass is a reversible presentation layer, loaded only on the front end. */
+add_action( 'wp_enqueue_scripts', function () {
+	if ( is_admin() ) { return; }
+	$base = 'assets/css/hj-emerald-glass.css';
+	$compat = 'assets/css/hj-emerald-glass-compat.css';
+	if ( ! is_readable( get_stylesheet_directory() . '/' . $base ) ) { return; }
+	wp_enqueue_style( 'hj-emerald-glass', get_stylesheet_directory_uri() . '/' . $base, array(), lax_theme_child_asset_ver( $base ) );
+	if ( is_readable( get_stylesheet_directory() . '/' . $compat ) ) {
+		wp_enqueue_style( 'hj-emerald-glass-compat', get_stylesheet_directory_uri() . '/' . $compat, array( 'hj-emerald-glass' ), lax_theme_child_asset_ver( $compat ) );
+	}
+}, 1200 );
+
+/** Black RTL footer, independent of the optional glass design layer. */
+add_action( 'wp_enqueue_scripts', function () {
+	if ( is_admin() ) { return; }
+	$relative = 'assets/css/footer-black.css';
+	if ( is_readable( get_stylesheet_directory() . '/' . $relative ) ) {
+		wp_enqueue_style( 'hj-footer-black', get_stylesheet_directory_uri() . '/' . $relative, array(), lax_theme_child_asset_ver( $relative ) );
+	}
+}, 1300 );
