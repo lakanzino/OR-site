@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.33.13' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.33.14' );
 }
 
 /**
@@ -327,3 +327,12 @@ add_action( 'wp_enqueue_scripts', function () {
 		wp_enqueue_style( 'hj-footer-black', get_stylesheet_directory_uri() . '/' . $relative, array(), lax_theme_child_asset_ver( $relative ) );
 	}
 }, 1300 );
+
+/** Black header and menu are front-end presentation only. */
+add_action( 'wp_enqueue_scripts', function () {
+	if ( is_admin() ) { return; }
+	$relative = 'assets/css/header-black.css';
+	if ( is_readable( get_stylesheet_directory() . '/' . $relative ) ) {
+		wp_enqueue_style( 'hj-header-black', get_stylesheet_directory_uri() . '/' . $relative, array(), lax_theme_child_asset_ver( $relative ) );
+	}
+}, 1500 );
