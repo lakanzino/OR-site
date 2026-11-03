@@ -279,4 +279,3 @@ function hj_home_rows_styles() {
 	}
 }
 add_action( 'wp_enqueue_scripts', function () { if ( is_front_page() && ! is_admin() ) { hj_home_rows_styles(); } }, 1400 );
-add_action( 'enqueue_block_editor_assets', 'hj_home_rows_styles', 1400 );

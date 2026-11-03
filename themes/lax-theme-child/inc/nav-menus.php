@@ -1,25 +1,11 @@
 <?php
 /**
- * Nav menu locations of the child theme (child 0.20.2).
- *
- * The parent theme already registers `primary` (desktop header) and `footer`
- * and the child theme renders no header of its own — so creating *new*
- * locations such as `menu-1` or a second `mobile-menu` would show checkboxes
- * in «نمایش → فهرست‌ها» that nothing on the site prints. The patient-facing
- * result: an editor assigns a menu and sees nothing change.
- *
- * What this file does instead:
- *
- *  1. renames the two existing locations into clear Persian labels, so the
- *     dashboard reads «منوی اصلی سربرگ (دسکتاپ)» and «منوی پابرگ»;
- *  2. documents (and wires) the mobile menu as the *same* `primary` location:
- *     the child styles collapse that menu behind the parent hamburger at 1024px,
- *     so a separate mobile menu would mean two lists to keep in sync;
- *  3. adds `hj_nav_menu_location_alias` so a site that insists on the name
- *     `menu-1` can map it onto `primary` without a dead location.
+ * Child menu locations and presentation helpers.
+ * The existing primary location renders the complete editable hamburger menu;
+ * five archive shortcuts in the desktop bar are separate presentation links.
+ * The footer location and all stored menus remain unchanged.
  *
  * @package Lax_Theme_Child
- * @since   0.20.2
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -37,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function hj_register_nav_menu_labels(): void {
 	$locations = array(
-		'primary' => 'منوی اصلی سربرگ (دسکتاپ و موبایل)',
+		'primary' => 'فهرست کامل منوی همبرگری',
 		'footer'  => 'منوی پابرگ',
 	);
 
@@ -76,7 +62,7 @@ function hj_nav_menu_notice(): void {
 	<div class="notice notice-info">
 		<p>
 			<strong>منوی سربرگ و موبایل یکی است.</strong>
-			فهرستی که به «منوی اصلی سربرگ (دسکتاپ و موبایل)» وصل کنید، در دسکتاپ کنار لوگو و در موبایل داخل دکمهٔ همبرگری همان هدر نمایش داده می‌شود؛ ساختن فهرست دوم لازم نیست.
+			فهرست کامل را به «فهرست کامل منوی همبرگری» اختصاص دهید؛ در دسکتاپ پنج پیوند اصلی به‌صورت جداگانه نمایش داده می‌شوند.
 			منوی «پابرگ» فقط در فوتر دیده می‌شود.
 		</p>
 	</div>
@@ -217,7 +203,8 @@ function hj_filter_primary_header_items( $items, $args ) {
 	}
 	return $visible;
 }
-add_filter( 'wp_nav_menu_objects', 'hj_filter_primary_header_items', 10, 2 );
+// The full editable primary menu must remain intact inside the hamburger.
+// The former presentation filter is retained for compatibility, but no longer hooked.
 
 /**
  * Keep navigation available when scripts are disabled. The parent's toggle
@@ -228,16 +215,40 @@ add_filter( 'wp_nav_menu_objects', 'hj_filter_primary_header_items', 10, 2 );
 function hj_header_no_script_fallback() {
 	?>
 	<noscript><style>
-	@media (max-width: 1024px) {
-		.site-header__inner { flex-wrap: wrap; }
-		.site-header__inner .main-navigation { flex: 0 0 100%; order: 3; }
-		.site-header__inner .menu-toggle { display: none; }
-		.site-header__inner .main-navigation > #primary-menu {
-			position: static; display: flex; inline-size: 100%; max-block-size: none;
-			overflow: visible; box-shadow: none;
-		}
+	.site-header__inner { flex-wrap: wrap !important; }
+	.site-header__inner .main-navigation { flex: 0 0 100% !important; order: 3; }
+	.site-header__inner .menu-toggle { display: none !important; }
+	.site-header__inner .main-navigation > #primary-menu {
+		position: static !important; display: flex !important; width: 100% !important;
+		max-block-size: none !important; overflow: visible !important; box-shadow: none !important;
 	}
 	</style></noscript>
 	<?php
 }
 add_action( 'wp_head', 'hj_header_no_script_fallback', 100 );
+
+/** The five requested desktop shortcuts; links resolve from registered archives. */
+function hj_header_primary_links() {
+	return array(
+		array( 'label' => 'خانه', 'url' => home_url( '/' ) ),
+		array( 'label' => 'راهنمایی بیماران', 'url' => get_post_type_archive_link( 'patient_guide' ) ?: home_url( '/patient-guide/' ) ),
+		array( 'label' => 'جراحی‌ها', 'url' => get_post_type_archive_link( 'surgery' ) ?: home_url( '/surgery/' ) ),
+		array( 'label' => 'واژه‌نامه', 'url' => get_post_type_archive_link( 'glossary' ) ?: home_url( '/glossary/' ) ),
+		array( 'label' => 'دانشنامه بیماری‌ها', 'url' => get_post_type_archive_link( 'disease' ) ?: home_url( '/diseases/' ) ),
+	);
+}
+
+/** A useful menu if no primary WordPress menu has yet been assigned. */
+function hj_header_menu_fallback() {
+	$links = hj_header_primary_links();
+	$links[] = array( 'label' => 'اتاق عمل، تیم و تجهیزات', 'url' => get_post_type_archive_link( 'or_environment' ) ?: home_url( '/or-environment/' ) );
+	$links[] = array( 'label' => 'ویژه دانشجویان', 'url' => get_post_type_archive_link( 'student_content' ) ?: home_url( '/student/' ) );
+	$doctor_archive = get_post_type_archive_link( 'doctor' );
+	if ( $doctor_archive ) { $links[] = array( 'label' => 'جراحان', 'url' => $doctor_archive ); }
+	$links[] = array( 'label' => 'درباره ما', 'url' => hj_page_url( 'about' ) );
+	$links[] = array( 'label' => 'تماس با ما', 'url' => hj_page_url( 'contact' ) );
+	$links[] = array( 'label' => 'پرسش‌های متداول', 'url' => hj_page_url( 'faq' ) );
+	echo '<ul id="primary-menu" class="menu"><li class="hj-menu-title" role="presentation">فهرست</li>';
+	foreach ( $links as $link ) { echo '<li><a href="' . esc_url( $link['url'] ) . '">' . esc_html( $link['label'] ) . '</a></li>'; }
+	echo '</ul>';
+}
