@@ -48,5 +48,16 @@ $summary = hj_doctors_vote_schema_summary( $schema );
 hj_vote_schema_assert( 'شناسایی شد' === $summary['status'], 'status column recognized after schema refresh' );
 $details = hj_doctors_vote_structure_details( $schema );
 hj_vote_schema_assert( 'بله' === $details['primary_id'] && 'متنی یا فهرستی' === $details['status_type'], 'primary key and text status metadata' );
+// A separate synthetic table exercises a composite primary key, not live data.
+$composite = $wpdb->prefix . 'hj_fixture_composite_votes';
+if ( ! preg_match( '/^[A-Za-z0-9_]+$/', $composite ) || $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $composite ) ) === $composite ) { throw new Exception( 'Unexpected composite fixture table' ); }
+$result = $wpdb->query( "CREATE TABLE `{$composite}` (id INTEGER NOT NULL, doctor_id INTEGER NOT NULL, status INTEGER, PRIMARY KEY (id, doctor_id))" );
+if ( false === $result ) { throw new Exception( 'Could not create composite fixture table: ' . $wpdb->last_error ); }
+$fixture = array( 'table' => $composite, 'cols' => array( 'id', 'doctor_id', 'status' ), 'map' => array( 'id' => 'id', 'status' => 'status' ) );
+$details = hj_doctors_vote_structure_details( $fixture );
+hj_vote_schema_assert( 'خیر یا کلید مرکب' === $details['primary_id'] && 'عددی یا بولی' === $details['status_type'] && 'نام جدول متفاوت است' === $details['profile_table'], 'composite key, numeric status and alternate table' );
+$fixture['table'] = $wpdb->prefix . 'hj_fixture_missing_votes';
+$details = hj_doctors_vote_structure_details( $fixture );
+hj_vote_schema_assert( 'نامعلوم' === $details['primary_id'] && 'نامعلوم' === $details['status_type'], 'metadata query failure remains unknown' );
 echo "DONE: disposable vote schema fixture.\n";
 file_put_contents( '/wordpress/hj-vote-schema-result.txt', "PASS: disposable vote schema fixture\n" );

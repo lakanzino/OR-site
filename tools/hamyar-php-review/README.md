@@ -29,7 +29,7 @@ HJ_PHP_WASM_ROOT=/tmp/or-site-php node tools/hamyar-php-review/run-seed-hook-tes
 
 ## آزمون شبیه‌سازی‌شده metadata رأی
 
-با وابستگی‌های WASM بالا، `HJ_PHP_WASM_ROOT=/tmp/or-site-php node tools/hamyar-php-review/run-vote-structure-unit.mjs` سناریوهای جدول، کلید، نوع، خطا و اعتبارسنجی نام را با شبیه‌ساز PHP اجرا می‌کند. این آزمون به وردپرس و MariaDB متصل نمی‌شود و جایگزین آزمون واقعی DB و مجوزها نیست.
+با وابستگی‌های WASM بالا، `HJ_PHP_WASM_ROOT=/tmp/or-site-php node tools/hamyar-php-review/run-vote-structure-unit.mjs` سناریوهای جدول، کلید، نوع، خطا و اعتبارسنجی نام را با شبیه‌ساز PHP اجرا می‌کند. این آزمون به وردپرس و MariaDB متصل نمی‌شود. workflow جداگانه `.github/workflows/hamyar-doctors-mariadb.yml` یک نصب و DB کاملاً دورریختنی در CI می‌سازد؛ fixture مخرب آن هرگز روی سایت یا کپی واقعی اجرا نشود و آزمون محدود آن رفتار تمام DBهای سایت را تضمین نمی‌کند.
 
 ## قواعدی که بررسی می‌شود
 
