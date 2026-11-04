@@ -30,6 +30,45 @@ function hj_doctors_vote_schema_summary( $schema ) {
 	return $summary;
 }
 
+/** Inspect schema metadata only; never read or modify individual vote rows. */
+function hj_doctors_vote_structure_details( $schema ) {
+	$details = array( 'profile_table' => 'نامعلوم', 'primary_id' => 'نامعلوم', 'status_type' => 'نامعلوم' );
+	if ( ! is_array( $schema ) || ! isset( $schema['table'], $schema['cols'], $schema['map'] ) || ! is_string( $schema['table'] ) || ! preg_match( '/\A[A-Za-z0-9_]+\z/', $schema['table'] ) || ! is_array( $schema['cols'] ) || ! is_array( $schema['map'] ) ) { return $details; }
+	global $wpdb;
+	$table = $schema['table'];
+	$details['profile_table'] = $table === $wpdb->prefix . 'hj_doctor_votes' ? 'نام جدول یکسان است' : 'نام جدول متفاوت است';
+	$previous = $wpdb->suppress_errors( true );
+	try {
+		$columns = $wpdb->get_results( "SHOW COLUMNS FROM `{$table}`", ARRAY_A ); // phpcs:ignore WordPress.DB.PreparedSQL -- table is strictly validated above.
+		$error = $wpdb->last_error;
+	} catch ( Throwable $error ) {
+		$columns = null;
+		$error = 'metadata error';
+	} finally {
+		$wpdb->suppress_errors( $previous );
+	}
+	if ( ! is_array( $columns ) || ! $columns || '' !== $error ) { return $details; }
+	$primary = array();
+	$types = array();
+	foreach ( $columns as $column ) {
+		if ( ! is_array( $column ) || ! isset( $column['Field'], $column['Key'], $column['Type'] ) || ! is_string( $column['Field'] ) || ! is_string( $column['Key'] ) || ! is_string( $column['Type'] ) ) { return $details; }
+		$types[ $column['Field'] ] = strtolower( $column['Type'] );
+		if ( 'PRI' === strtoupper( $column['Key'] ) ) { $primary[] = $column['Field']; }
+	}
+	$id = isset( $schema['map']['id'] ) && is_string( $schema['map']['id'] ) ? $schema['map']['id'] : '';
+	if ( '' !== $id && in_array( $id, $schema['cols'], true ) && array_key_exists( $id, $types ) ) {
+		$details['primary_id'] = 1 === count( $primary ) && $primary[0] === $id ? 'بله' : 'خیر یا کلید مرکب';
+	}
+	$status = isset( $schema['map']['status'] ) && is_string( $schema['map']['status'] ) ? $schema['map']['status'] : '';
+	if ( '' !== $status && in_array( $status, $schema['cols'], true ) && isset( $types[ $status ] ) ) {
+		$type = $types[ $status ];
+		if ( preg_match( '/\A(?:tinyint|smallint|mediumint|int|integer|bigint|bit|bool|boolean)(?:\b|\()/i', $type ) ) { $details['status_type'] = 'عددی یا بولی'; }
+		elseif ( preg_match( '/\A(?:char|varchar|tinytext|text|mediumtext|longtext|enum|set)(?:\b|\()/i', $type ) ) { $details['status_type'] = 'متنی یا فهرستی'; }
+		else { $details['status_type'] = 'نوع دیگر'; }
+	}
+	return $details;
+}
+
 /** Render a small read-only summary, separately from the seed/repair tools. */
 function hj_doctors_data_status_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
@@ -80,7 +119,9 @@ function hj_doctors_data_status_page() {
 		catch ( Throwable $error ) { $vote_schema = null; }
 	}
 	$vote_summary = hj_doctors_vote_schema_summary( $vote_schema );
+	$vote_details = hj_doctors_vote_structure_details( $vote_schema );
 	$vote_labels = array( 'table' => 'جدول رأی', 'id' => 'ستون شناسه ردیف', 'doctor_id' => 'ستون شناسه پزشک', 'rating' => 'ستون امتیاز', 'status' => 'ستون وضعیت' );
+	$detail_labels = array( 'profile_table' => 'جدول پل و جدول پیش‌فرض نمایش نظر', 'primary_id' => 'شناسه به‌تنهایی کلید اصلی است', 'status_type' => 'گروه نوع ستون وضعیت' );
 	?>
 	<div class="wrap">
 		<h1><?php echo esc_html__( 'وضعیت داده‌های پزشکان', 'hamyar-doctors' ); ?></h1>
@@ -121,8 +162,11 @@ function hj_doctors_data_status_page() {
 		<?php foreach ( $vote_labels as $key => $label ) : ?>
 		<tr><th scope="row"><?php echo esc_html( $label ); ?></th><td><?php echo esc_html( $vote_summary[ $key ] ); ?></td></tr>
 		<?php endforeach; ?>
+		<?php foreach ( $detail_labels as $key => $label ) : ?>
+		<tr><th scope="row"><?php echo esc_html( $label ); ?></th><td><?php echo esc_html( $vote_details[ $key ] ); ?></td></tr>
+		<?php endforeach; ?>
 		</tbody></table>
-		<p><?php echo esc_html__( 'این گزارش فقط تشخیص پل فعلی را نشان می‌دهد؛ «نامعلوم یا شناسایی نشد» می‌تواند ناشی از نبود جدول یا خطای بررسی باشد. شناخته‌شدن ستون شناسه، یکتا بودن آن را ثابت نمی‌کند. هیچ رأی یا اطلاعات رأی‌دهنده خوانده یا تغییر داده نمی‌شود؛ این صفحه ابزار مدیریت رأی نیست.', 'hamyar-doctors' ); ?></p>
+		<p><?php echo esc_html__( 'این گزارش فقط ساختار و تشخیص پل فعلی را نشان می‌دهد؛ «نامعلوم» می‌تواند ناشی از خطای بررسی یا نبود اطلاعات باشد. برابری نام جدول به معنی برابری فیلترها نیست. نوع ستون معنای وضعیت‌های ذخیره‌شده را مشخص نمی‌کند؛ کلید اصلی نیز به‌تنهایی امن‌بودن مدیریت رأی را ثابت نمی‌کند. هیچ رأی یا اطلاعات رأی‌دهنده خوانده یا تغییر داده نمی‌شود؛ این صفحه ابزار مدیریت رأی نیست.', 'hamyar-doctors' ); ?></p>
 	</div>
 	<?php
 }

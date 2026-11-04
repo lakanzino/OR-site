@@ -27,6 +27,10 @@ HJ_PHP_WASM_ROOT=/tmp/or-site-php node tools/hamyar-php-review/run-seed-hook-tes
 
 پس از نصب وابستگی‌های بخش قبل، `HJ_PHP_WASM_ROOT=/tmp/or-site-php node tools/hamyar-php-review/run-seed-wrapper-guard-test.mjs` را اجرا کنید. چهار درخواست مجزای PHP حالت تعریف‌نشده، `false` بولی، `'true'` رشته و `true` بولی را با توابع هسته و گزینه‌های شبیه‌سازی‌شده می‌آزمایند؛ شرط‌های قبلی دسترسی و marker نیز کنترل می‌شوند. این آزمون اتصال به وردپرس یا دیتابیس و مسیر واقعی فرم و redirect را آزمون نمی‌کند. گارد فقط روی سه wrapper است؛ ثابت به‌تنهایی هیچ hookی ثبت نمی‌کند.
 
+## آزمون شبیه‌سازی‌شده metadata رأی
+
+با وابستگی‌های WASM بالا، `HJ_PHP_WASM_ROOT=/tmp/or-site-php node tools/hamyar-php-review/run-vote-structure-unit.mjs` سناریوهای جدول، کلید، نوع، خطا و اعتبارسنجی نام را با شبیه‌ساز PHP اجرا می‌کند. این آزمون به وردپرس و MariaDB متصل نمی‌شود و جایگزین آزمون واقعی DB و مجوزها نیست.
+
 ## قواعدی که بررسی می‌شود
 
 | قاعده | چه چیزی را می‌گیرد |
