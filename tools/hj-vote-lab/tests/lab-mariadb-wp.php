@@ -66,5 +66,7 @@ hj_lab_assert( false !== $wpdb->query( "ALTER TABLE `{$table}` ADD COLUMN unknow
 hj_lab_reset_bridge(); $before = $rows(); hj_lab_assert( is_wp_error( HJ_Vote_Lab::import( $doctor, 'approved', '3 | missing column', wp_generate_uuid4() ) ) && $before === $rows(), 'unknown required column refuses insert' );
 hj_lab_assert( false !== $wpdb->query( "ALTER TABLE `{$table}` DROP COLUMN comment" ), 'remove synthetic comment column' );
 hj_lab_reset_bridge(); $fallback = HJ_Vote_Lab::report( $doctor );
-hj_lab_assert( is_array( $fallback ) && $fallback['import_compatible'] === false && $fallback['vote_table']['all_rows_count'] === count( $before ) && is_array( $fallback['schema']['columns'] ), 'unsupported import still offers useful report' );
+hj_lab_assert( is_array( $fallback ) && $fallback['schema']['comment_column_will_be_added_on_import'] === true && $fallback['schema']['mapping']['comment'] === null && $fallback['vote_table']['all_rows_count'] === count( $before ) && $fallback['vote_table']['lab_marker_count'] === null, 'missing comment column reported without modifying schema' );
+hj_lab_assert( is_wp_error( HJ_Vote_Lab::import( $doctor, 'approved', '3 | still missing required column', wp_generate_uuid4() ) ), 'unsupported required field rejected before schema change' );
+$cols_after = $wpdb->get_col( "SHOW COLUMNS FROM `{$table}`", 0 ); hj_lab_assert( is_array( $cols_after ) && ! in_array( 'comment', $cols_after, true ), 'no schema change on failed validation' );
 echo "DONE: disposable vote lab MariaDB fixture.\n";

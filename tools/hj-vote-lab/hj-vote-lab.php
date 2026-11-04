@@ -2,7 +2,7 @@
 /**
  * Plugin Name: HJ Vote Lab (Demo Only)
  * Description: Admin-only synthetic vote import and aggregate diagnostic download for marked demo doctors.
- * Version: 0.1.0
+ * Version: 0.2.0
  * Requires at least: 6.4
  * Requires PHP: 8.0
  * Author: Hamyar Jarahi
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 if ( ! class_exists( 'HJ_Vote_Lab' ) ) {
 final class HJ_Vote_Lab {
-	const VERSION = '0.1.0';
+	const VERSION = '0.2.0';
 
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
@@ -80,15 +80,19 @@ final class HJ_Vote_Lab {
 			$rating = self::pick( array( 'rating', 'stars', 'score', 'vote', 'value' ), $columns );
 			$comment = self::pick( array( 'comment', 'review', 'content', 'body', 'text' ), $columns );
 			$status = self::pick( array( 'status', 'is_approved', 'approved', 'state' ), $columns );
-			if ( ! $doctor || ! $rating || ! $comment || ! $status || ( $schema['map']['doctor_id'] ?? '' ) !== $doctor || ( $schema['map']['rating'] ?? '' ) !== $rating || ( $schema['map']['status'] ?? '' ) !== $status ) {
-				return self::problem( 'ستون نظر/امتیاز/وضعیت یا نگاشت یکسان پل و پروفایل موجود نیست؛ هیچ نظری درج نشد.' );
+			if ( ! $doctor || ! $rating || ! $status || ( $schema['map']['doctor_id'] ?? '' ) !== $doctor || ( $schema['map']['rating'] ?? '' ) !== $rating || ( $schema['map']['status'] ?? '' ) !== $status ) {
+				return self::problem( 'ستون امتیاز/وضعیت یا نگاشت یکسان پل و پروفایل موجود نیست؛ هیچ نظری درج نشد.' );
 			}
 			foreach ( array( $doctor, $rating ) as $column ) {
 				if ( ! preg_match( '/\A(?:tinyint|smallint|mediumint|int|integer|bigint)(?:\(\d+\))?(?: unsigned)?\z/i', $columns[ $column ]['Type'] ) ) { return self::problem( 'نوع ستون شناسه یا امتیاز پشتیبانی نمی‌شود.' ); }
 			}
-			if ( ! preg_match( '/\A(?:varchar\((\d+)\)|char\((\d+)\)|tinytext|text|mediumtext|longtext)\z/i', $columns[ $comment ]['Type'], $cm ) ) { return self::problem( 'نوع ستون متن نظر پشتیبانی نمی‌شود.' ); }
-			$limit = ! empty( $cm[1] ) ? (int) $cm[1] : ( ! empty( $cm[2] ) ? (int) $cm[2] : ( stripos( $columns[ $comment ]['Type'], 'tinytext' ) === 0 ? 255 : 65535 ) );
-			return array( 'table' => $table, 'columns' => $columns, 'schema' => $schema, 'doctor' => $doctor, 'rating' => $rating, 'comment' => $comment, 'status' => $status, 'comment_limit' => $limit );
+			$needs_comment = $comment === '';
+			if ( $needs_comment ) { $comment = 'comment'; $limit = 65535; }
+			else {
+				if ( ! preg_match( '/\A(?:varchar\((\d+)\)|char\((\d+)\)|tinytext|text|mediumtext|longtext)\z/i', $columns[ $comment ]['Type'], $cm ) ) { return self::problem( 'نوع ستون متن نظر پشتیبانی نمی‌شود.' ); }
+				$limit = ! empty( $cm[1] ) ? (int) $cm[1] : ( ! empty( $cm[2] ) ? (int) $cm[2] : ( stripos( $columns[ $comment ]['Type'], 'tinytext' ) === 0 ? 255 : 65535 ) );
+			}
+			return array( 'table' => $table, 'columns' => $columns, 'schema' => $schema, 'doctor' => $doctor, 'rating' => $rating, 'comment' => $comment, 'needs_comment' => $needs_comment, 'status' => $status, 'comment_limit' => $limit );
 		} catch ( Throwable $e ) { return self::problem( 'بررسی ساختار ناموفق بود.' ); }
 		finally { $wpdb->suppress_errors( $old ); }
 	}
@@ -108,10 +112,12 @@ final class HJ_Vote_Lab {
 			$type = strtolower( (string) $column['Type'] );
 			if ( $name === ( $schema['map']['user_id'] ?? '' ) && preg_match( '/\A(?:tinyint|smallint|mediumint|int|integer|bigint)(?:\(\d+\))?(?: unsigned)?\z/', $type ) ) { $values[ $name ] = 0; continue; }
 			if ( $name === ( $schema['map']['ip_hash'] ?? '' ) && preg_match( '/\A(?:char|varchar)\((\d+)\)\z/', $type, $m ) && (int) $m[1] >= 32 ) { $values[ $name ] = substr( hash( 'sha256', $batch . ':' . $index ), 0, min( 64, (int) $m[1] ) ); continue; }
-			if ( $name === ( $schema['map']['created_at'] ?? '' ) ) {
+			if ( $name === ( $schema['map']['created_at'] ?? '' ) || in_array( $name, array( 'voted_at', 'created_at' ), true ) ) {
 				if ( preg_match( '/\A(?:int|integer|bigint)(?:\(\d+\))?(?: unsigned)?\z/', $type ) ) { $values[ $name ] = time(); continue; }
 				if ( preg_match( '/\A(?:datetime|timestamp)(?:\(\d+\))?\z/', $type ) ) { $values[ $name ] = current_time( 'mysql' ); continue; }
 			}
+			if ( $name === 'source' && preg_match( '/\A(?:char|varchar)\((\d+)\)\z/', $type, $m ) && (int) $m[1] >= 4 ) { $values[ $name ] = 'demo'; continue; }
+			if ( $name === 'reason' && ( in_array( $type, array( 'tinytext', 'text', 'mediumtext', 'longtext' ), true ) || ( preg_match( '/\A(?:char|varchar)\((\d+)\)\z/', $type, $m ) && (int) $m[1] >= 4 ) ) ) { $values[ $name ] = 'demo'; continue; }
 			return self::problem( 'ستون اجباری ناشناخته «' . $name . '» وجود دارد؛ از درج خودکار صرف‌نظر شد.' );
 		}
 		return $values;
@@ -171,11 +177,30 @@ final class HJ_Vote_Lab {
 		try {
 			$engine = $wpdb->get_var( $wpdb->prepare( 'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s', $details['table'] ) );
 			if ( $wpdb->last_error !== '' || strtoupper( (string) $engine ) !== 'INNODB' ) { return self::problem( 'موتور تراکنشی InnoDB تأیید نشد؛ هیچ نظری درج نشد.' ); }
-			$lock = 'hj_vote_lab_' . substr( hash( 'sha256', $details['table'] . ':' . $batch ), 0, 40 );
+			$lock = 'hj_vote_lab_' . substr( hash( 'sha256', $details['table'] ), 0, 40 );
 			$locked = (string) $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 3)', $lock ) ) === '1';
 			if ( ! $locked || $wpdb->last_error !== '' ) { return self::problem( 'قفل درخواست برقرار نشد؛ دوباره امتحان کنید.' ); }
 			$connection = $wpdb->get_var( 'SELECT CONNECTION_ID()' );
 			if ( ! is_numeric( $connection ) || $wpdb->last_error !== '' ) { return self::problem( 'اتصال دیتابیس قابل تأیید نیست؛ هیچ نظری درج نشد.' ); }
+			// Re-check under the lab-wide lock; other writers may not honour this lock.
+			$current = self::inspect();
+			if ( is_wp_error( $current ) ) { return $current; }
+			foreach ( array( 'table', 'doctor', 'rating', 'status' ) as $key ) { if ( $current[ $key ] !== $details[ $key ] ) { return self::problem( 'ساختار جدول تغییر کرده است؛ صفحه را تازه کنید.' ); } }
+			$details = $current; $value = self::state_value( $details, $state ); if ( is_wp_error( $value ) ) { return $value; }
+			$data = array();
+			foreach ( $items as $i => $item ) {
+				if ( strlen( $item['comment'] ) > min( $details['comment_limit'], 1200 ) ) { return self::problem( 'متن نظر برای ستون موجود بیش از حد طولانی است.' ); }
+				$row = array( $details['doctor'] => $doctor, $details['rating'] => $item['rating'], $details['status'] => $value, $details['comment'] => $item['comment'] );
+				$row = self::required_values( $details, $row, $batch, $i ); if ( is_wp_error( $row ) ) { return $row; }
+				$data[] = $row;
+			}
+			if ( $details['needs_comment'] ) {
+				// This is a permanent additive schema change and is NOT part of the later transaction.
+				if ( false === $wpdb->query( "ALTER TABLE `{$details['table']}` ADD COLUMN `comment` TEXT NULL" ) ) { return self::problem( 'ساخت ستون متن نظر ناموفق بود؛ دسترسی ALTER یا ساختار جدول را بررسی کنید. پیش از تکرار گزارش بگیرید.' ); }
+				if ( (string) $wpdb->get_var( 'SELECT CONNECTION_ID()' ) !== (string) $connection || $wpdb->last_error !== '' ) { return self::problem( 'اتصال پس از ساخت ستون تغییر کرده است؛ نتیجه را قبل از تکرار بررسی کنید.' ); }
+				$check = self::inspect();
+				if ( is_wp_error( $check ) || $check['needs_comment'] || $check['comment'] !== 'comment' ) { return self::problem( 'ستون اضافه شد اما بررسی مجدد آن ناموفق بود؛ قبل از تکرار گزارش بگیرید.' ); }
+			}
 			$marker = '[نظر آزمایشی HJ-' . $batch . ']';
 			$like = '%' . $wpdb->esc_like( $marker ) . '%';
 			$found = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$details['table']}` WHERE `{$details['doctor']}` = %d AND `{$details['comment']}` LIKE %s", $doctor, $like ) );
@@ -230,9 +255,12 @@ final class HJ_Vote_Lab {
 		try {
 			$total = $wpdb->get_row( $wpdb->prepare( "SELECT COUNT(*) AS total, AVG(`{$details['rating']}`) AS average FROM `{$details['table']}` WHERE `{$details['doctor']}` = %d", $doctor ), ARRAY_A );
 			if ( $wpdb->last_error !== '' || ! is_array( $total ) ) { return self::problem( 'خواندن آمار کلی ناموفق بود.' ); }
-			$marker = '%' . $wpdb->esc_like( '[نظر آزمایشی HJ-' ) . '%';
-			$marked = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$details['table']}` WHERE `{$details['doctor']}` = %d AND `{$details['comment']}` LIKE %s", $doctor, $marker ) );
-			if ( $wpdb->last_error !== '' || $marked === null ) { return self::problem( 'خواندن شمار نظرهای آزمایشی ناموفق بود.' ); }
+			$marked = null;
+			if ( ! $details['needs_comment'] ) {
+				$marker = '%' . $wpdb->esc_like( '[نظر آزمایشی HJ-' ) . '%';
+				$marked = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$details['table']}` WHERE `{$details['doctor']}` = %d AND `{$details['comment']}` LIKE %s", $doctor, $marker ) );
+				if ( $wpdb->last_error !== '' || $marked === null ) { return self::problem( 'خواندن شمار نظرهای آزمایشی ناموفق بود.' ); }
+			}
 			$groups = $wpdb->get_results( $wpdb->prepare( "SELECT CASE WHEN `{$details['status']}` IS NULL THEN 'null' WHEN CAST(`{$details['status']}` AS CHAR) IN ('approved','approve','publish','published','1','active','yes') THEN 'approved' WHEN CAST(`{$details['status']}` AS CHAR) IN ('pending','0') THEN 'pending' WHEN CAST(`{$details['status']}` AS CHAR) IN ('rejected','reject') THEN 'rejected' ELSE 'other' END AS bucket, COUNT(*) AS total FROM `{$details['table']}` WHERE `{$details['doctor']}` = %d GROUP BY bucket", $doctor ), ARRAY_A );
 			$breakdown = null;
 			if ( $wpdb->last_error === '' && is_array( $groups ) ) { $breakdown = array(); foreach ( $groups as $g ) { if ( in_array( $g['bucket'] ?? '', array( 'approved', 'pending', 'rejected', 'null', 'other' ), true ) ) { $breakdown[ $g['bucket'] ] = (int) $g['total']; } } }
@@ -243,8 +271,8 @@ final class HJ_Vote_Lab {
 		return array(
 			'report_version' => self::VERSION, 'generated_utc' => gmdate( 'Y-m-d\TH:i:s\Z' ), 'import_compatible' => null,
 			'selected_doctor' => array( 'demo_marker_present' => true, 'post_status' => get_post_status( $doctor ) ),
-			'schema' => array( 'table' => 'default_prefixed_vote_table', 'columns' => $schema_report, 'mapping' => array( 'id' => in_array( $details['schema']['map']['id'] ?? '', array_keys( $details['columns'] ), true ) ? $details['schema']['map']['id'] : null, 'doctor_id' => $details['doctor'], 'rating' => $details['rating'], 'comment' => $details['comment'], 'status' => $details['status'] ), 'primary_key_columns' => self::primary_columns( $details['table'], array_keys( $details['columns'] ) ) ),
-			'vote_table' => array( 'all_rows_count' => (int) $total['total'], 'all_rows_average' => $total['average'] === null ? null : (float) $total['average'], 'lab_marker_count' => (int) $marked, 'status_groups' => $breakdown ),
+			'schema' => array( 'table' => 'default_prefixed_vote_table', 'columns' => $schema_report, 'mapping' => array( 'id' => in_array( $details['schema']['map']['id'] ?? '', array_keys( $details['columns'] ), true ) ? $details['schema']['map']['id'] : null, 'doctor_id' => $details['doctor'], 'rating' => $details['rating'], 'comment' => $details['needs_comment'] ? null : $details['comment'], 'status' => $details['status'] ), 'comment_column_will_be_added_on_import' => $details['needs_comment'], 'primary_key_columns' => self::primary_columns( $details['table'], array_keys( $details['columns'] ) ) ),
+			'vote_table' => array( 'all_rows_count' => (int) $total['total'], 'all_rows_average' => $total['average'] === null ? null : (float) $total['average'], 'lab_marker_count' => $marked === null ? null : (int) $marked, 'status_groups' => $breakdown ),
 			'bridge' => is_array( $stats ) ? array_intersect_key( $stats, array_flip( array( 'ok', 'approved', 'pending', 'public_avg', 'avg', 'display', 'min_votes', 'force_show' ) ) ) : null,
 			'public_review_reader' => is_array( $public ) ? array( 'returned_comments_count' => count( $public ), 'max_returned' => 10 ) : null,
 			'notes' => array( 'No review text, vote IDs, voter IDs, IPs or doctor names are exported.', 'Basic column mapping matched; engine and required fields are checked only when importing, so import_compatible remains unknown.', 'Counts include all rows for the selected demo doctor. Bridge pending means not approved, not necessarily pending; NULL may be excluded.', 'Public comment reader is limited to ten; page cache or rendering can differ. Average includes all statuses unless labelled bridge.', 'Lab markers can affect public output and sorting. No cleanup, moderation, cache refresh or appointment simulation is performed.' ),
@@ -291,17 +319,17 @@ final class HJ_Vote_Lab {
 		?>
 		<div class="wrap"><h1>آزمایش رأی و نظر نمونه</h1>
 		<p>فقط برای جراحان دارای نشان دادهٔ نمونه. نظرات با برچسب «نظر آزمایشی» در جدول واقعی ذخیره می‌شوند؛ در صورت تأیید ممکن است در صفحه عمومی دیده و در آمار شمرده شوند. پشتیبان بگیرید.</p>
-		<?php if ( is_wp_error( $details ) ) : ?><div class="notice notice-error"><p><?php echo esc_html( $details->get_error_message() ); ?></p></div><?php endif; ?>
+		<?php if ( is_wp_error( $details ) ) : ?><div class="notice notice-error"><p><?php echo esc_html( $details->get_error_message() ); ?></p></div><?php elseif ( $details['needs_comment'] ) : ?><div class="notice notice-warning"><p>جدول فعلی ستون متن نظر ندارد. با زدن «درج نظرهای آزمایشی»، یک ستون <code>comment</code> قابل خالی‌بودن به جدول رأی اضافه می‌شود و سپس نظرها درج می‌شوند. این تغییر ساختار دائمی است، ممکن است موقتاً جدول را قفل کند و با غیرفعال‌سازی افزونه حذف نمی‌شود.</p></div><?php endif; ?>
 		<?php if ( isset( $_GET['result'], $_GET['count'] ) && $_GET['result'] === 'ok' && is_scalar( $_GET['count'] ) ) : ?><div class="notice notice-success"><p>درخواست ثبت شد. تعداد اعلام‌شده: <?php echo esc_html( absint( wp_unslash( $_GET['count'] ) ) ); ?>. گزارش را دانلود کنید؛ این پیام اثبات نمایش عمومی نیست.</p></div><?php endif; ?>
 		<?php if ( ! $doctors ) : ?><p>جراح دارای نشان نمونه پیدا نشد؛ هیچ داده‌ای درج نشد.</p><?php else : ?>
 		<form method="post" enctype="multipart/form-data" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 		<input type="hidden" name="action" value="hj_vote_lab_import"><input type="hidden" name="batch" value="<?php echo esc_attr( wp_generate_uuid4() ); ?>"><?php wp_nonce_field( 'hj_vote_lab_import' ); ?>
 		<p><label for="hj-lab-doctor">جراح نمونه:</label> <select id="hj-lab-doctor" name="doctor" required><?php foreach ( $doctors as $doctor ) : if ( ! self::doctor_is_demo( $doctor->ID ) ) { continue; } ?><option value="<?php echo esc_attr( $doctor->ID ); ?>" <?php selected( $selected, $doctor->ID ); ?>><?php echo esc_html( get_the_title( $doctor ) ); ?></option><?php endforeach; ?></select></p>
-		<p><label for="hj-lab-state">وضعیت:</label> <select id="hj-lab-state" name="state"><option value="pending">در انتظار تأیید</option><option value="approved">تأییدشده (ممکن است عمومی شود)</option></select></p>
+		<p><label for="hj-lab-state">وضعیت:</label> <select id="hj-lab-state" name="state"><option value="approved">تأییدشده (ممکن است عمومی شود)</option><option value="pending">در انتظار تأیید</option></select></p>
 		<p><label for="hj-lab-reviews">هر خط: امتیاز ۱ تا ۵، علامت | و متن. حداکثر ۱۰ خط:</label><br><textarea class="large-text code" dir="auto" rows="6" id="hj-lab-reviews" name="reviews">5 | متن آزمایشی برای بررسی نمایش نظر
 4 | متن آزمایشی برای بررسی امتیاز</textarea></p>
 		<p><label for="hj-lab-csv">یا فایل CSV با دو ستون rating,comment و حداکثر ۱۰ نظر (UTF-8، تا ۱۲ کیلوبایت):</label> <input id="hj-lab-csv" type="file" name="csv" accept=".csv,text/csv"> انتخاب فایل، محتوای کادر بالا را نادیده می‌گیرد.</p>
-		<p><label><input type="checkbox" name="confirm_demo" value="1" required> تأیید می‌کنم این جراح و نظرات، آزمایشی هستند و از درج در جدول سایت آگاه هستم.</label></p>
+		<p><label><input type="checkbox" name="confirm_demo" value="1" required> تأیید می‌کنم جراح و نظرها نمونه‌اند و از درج در جدول سایت و اضافه‌شدن ستون متن در صورت نیاز آگاه هستم.</label></p>
 		<?php submit_button( 'درج نظرهای آزمایشی', 'primary', 'submit', true, is_wp_error( $details ) ? array( 'disabled' => 'disabled' ) : array() ); ?></form>
 		<h2>دانلود گزارش برای مشاور</h2><p>گزارش شامل ساختار و آمار تجمیعی جراح نمونه انتخاب‌شده است، نه متن نظر یا شناسه رأی‌دهنده. پیش از ارسال، فایل را بررسی کنید.</p>
 		<ul><?php foreach ( $doctors as $doctor ) : if ( ! self::doctor_is_demo( $doctor->ID ) ) { continue; } $url = wp_nonce_url( add_query_arg( array( 'action' => 'hj_vote_lab_report', 'doctor' => $doctor->ID ), admin_url( 'admin-post.php' ) ), 'hj_vote_lab_report_' . $doctor->ID ); ?><li><a href="<?php echo esc_url( $url ); ?>">دانلود گزارش <?php echo esc_html( get_the_title( $doctor ) ); ?></a></li><?php endforeach; ?></ul>

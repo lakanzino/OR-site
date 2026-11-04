@@ -4,7 +4,10 @@ if ( ! defined( 'HJ_DISPOSABLE_TEST' ) || ! HJ_DISPOSABLE_TEST || getenv( 'GITHU
 global $wpdb;
 $table = $wpdb->prefix . 'hj_doctor_votes'; $tables = $wpdb->get_col( 'SHOW TABLES' );
 if ( $wpdb->prefix !== 'hjt_' || ! is_array( $tables ) || $wpdb->last_error !== '' || in_array( $table, $tables, true ) ) { throw new RuntimeException( 'Unexpected fixture.' ); }
-if ( false === $wpdb->query( "CREATE TABLE `{$table}` (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, post_id BIGINT UNSIGNED NOT NULL, user_id BIGINT UNSIGNED NOT NULL DEFAULT 0, rating TINYINT NOT NULL, status VARCHAR(20) NOT NULL, comment TEXT NOT NULL, ip_hash VARCHAR(64) NOT NULL, created_at DATETIME NOT NULL) ENGINE=InnoDB" ) ) { throw new RuntimeException( 'Fixture table creation failed.' ); }
+// Synthetic specimen with a missing comment column and multiple required fields.
+if ( false === $wpdb->query( "CREATE TABLE `{$table}` (id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, post_id BIGINT(20) UNSIGNED NOT NULL, user_id BIGINT(20) UNSIGNED NOT NULL, rating TINYINT(1) UNSIGNED NOT NULL, ip_hash CHAR(64) NOT NULL, status VARCHAR(12) NOT NULL, source VARCHAR(10) NOT NULL, reason TEXT NOT NULL, voted_at DATETIME NOT NULL, created_at DATETIME NOT NULL) ENGINE=InnoDB" ) ) { throw new RuntimeException( 'Fixture table creation failed.' ); }
+$old_row = array( 'id' => 12345, 'post_id' => 424242, 'user_id' => 9, 'rating' => 3, 'ip_hash' => str_repeat( 'a', 64 ), 'status' => 'approved', 'source' => 'fixture', 'reason' => 'synthetic existing row', 'voted_at' => '2026-01-01 12:00:00', 'created_at' => '2026-01-01 12:00:00' );
+if ( 1 !== $wpdb->insert( $table, $old_row ) ) { throw new RuntimeException( 'Fixture existing row failed.' ); }
 $dest = WP_PLUGIN_DIR . '/hj-vote-lab'; if ( file_exists( $dest ) || ! mkdir( $dest ) || ! copy( getenv( 'GITHUB_WORKSPACE' ) . '/tools/hj-vote-lab/hj-vote-lab.php', $dest . '/hj-vote-lab.php' ) ) { throw new RuntimeException( 'Fixture install failed.' ); }
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 foreach ( array( 'hamyar-doctors/hamyar-doctors.php', 'hj-vote-lab/hj-vote-lab.php' ) as $plugin ) { $result = activate_plugin( $plugin ); if ( is_wp_error( $result ) ) { throw new RuntimeException( 'Fixture activation failed.' ); } }
