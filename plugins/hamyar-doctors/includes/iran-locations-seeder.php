@@ -1063,9 +1063,12 @@ if ( ! function_exists( 'hj_iran_locations_repair_terms' ) ) {
 if ( ! function_exists( 'hj_iran_locations_auto_repair' ) ) {
 	/**
 	 * تابع قدیمی اصلاح خودکار؛ دیگر به admin_init متصل نیست.
-	 * برای سازگاری باقی مانده و همچنان می‌تواند مستقیماً فراخوانی شود.
+	 * برای سازگاری باقی مانده؛ فراخوانی مستقیم فقط با opt-in بولی صریح مجاز است.
 	 */
 	function hj_iran_locations_auto_repair() {
+		if ( ! defined( 'HJ_ALLOW_AUTO_SEED' ) || true !== HJ_ALLOW_AUTO_SEED ) {
+			return;
+		}
 		if ( get_option( 'hj_iran_locations_repaired_v2' ) ) {
 			return;
 		}
@@ -1102,9 +1105,12 @@ if ( ! function_exists( 'hj_iran_locations_auto_repair' ) ) {
 
 if ( ! function_exists( 'hj_iran_locations_auto_seed' ) ) {
 	/**
-	 * تابع قدیمی اجرای خودکار سیدینگ؛ دیگر به admin_init متصل نیست.
+	 * تابع قدیمی اجرای خودکار سیدینگ؛ بدون قلاب و نیازمند opt-in بولی صریح.
 	 */
 	function hj_iran_locations_auto_seed() {
+		if ( ! defined( 'HJ_ALLOW_AUTO_SEED' ) || true !== HJ_ALLOW_AUTO_SEED ) {
+			return;
+		}
 		if ( get_option( 'hj_iran_locations_seeded_v1' ) ) {
 			return;
 		}
