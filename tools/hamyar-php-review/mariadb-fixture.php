@@ -39,3 +39,4 @@ if ( getenv( 'HJ_TEST_PLUGIN' ) === 'installed-0.3.12' ) {
     throw new RuntimeException( 'Unexpected fixture plugin selection.' );
 }
 require getenv( 'GITHUB_WORKSPACE' ) . '/tools/hj-diagnostic-helper/tests/diagnostic-wp.php';
+require getenv( 'GITHUB_WORKSPACE' ) . '/tools/hamyar-php-review/vote-moderation-prototype-wp.php';

@@ -31,6 +31,10 @@ HJ_PHP_WASM_ROOT=/tmp/or-site-php node tools/hamyar-php-review/run-seed-hook-tes
 
 با وابستگی‌های WASM بالا، `HJ_PHP_WASM_ROOT=/tmp/or-site-php node tools/hamyar-php-review/run-vote-structure-unit.mjs` سناریوهای جدول، کلید، نوع، خطا و اعتبارسنجی نام را با شبیه‌ساز PHP اجرا می‌کند. این آزمون به وردپرس و MariaDB متصل نمی‌شود. workflow جداگانه `.github/workflows/hamyar-doctors-mariadb.yml` یک نصب و DB کاملاً دورریختنی در CI می‌سازد؛ fixture مخرب آن هرگز روی سایت یا کپی واقعی اجرا نشود و آزمون محدود آن رفتار تمام DBهای سایت را تضمین نمی‌کند.
 
+## نمونه مدیریت رأی مصنوعی، فقط محیط دورریختنی
+
+`vote-moderation-prototype-wp.php` fixture مخرب است و داده‌های مصنوعی را در جدول‌های اختصاصی تست ایجاد و تغییر می‌دهد. افزونه/endpoint نیست، به DB رأی اصلی وصل نمی‌شود و هیچ‌گاه روی سایت یا کپی آن اجرا نشود. workflow MariaDB دورریختنی اجرای آن را به شکل برنامه‌ای می‌آزماید؛ مستند محدوده و کمبودهای آن در `docs/handover/VOTE-MODERATION-SYNTHETIC-PROTOTYPE-2026-11-05.fa.md` آمده است. تست موفق به معنای آمادگی نصب یا اثبات معنای status در سایت نیست.
+
 ## قواعدی که بررسی می‌شود
 
 | قاعده | چه چیزی را می‌گیرد |
