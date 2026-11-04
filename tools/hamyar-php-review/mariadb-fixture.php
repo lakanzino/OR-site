@@ -29,5 +29,13 @@ define( 'HJ_DISPOSABLE_TEST', true );
 require WP_PLUGIN_DIR . '/hamyar-doctors/hamyar-doctors.php';
 hj_doctors();
 do_action( 'init' );
-require WP_PLUGIN_DIR . '/hamyar-doctors/tests/admin-data-status-wp.php';
-require WP_PLUGIN_DIR . '/hamyar-doctors/tests/vote-schema-wp.php';
+if ( getenv( 'HJ_TEST_PLUGIN' ) === 'installed-0.3.12' ) {
+    if ( HJ_DOCTORS_VERSION !== '0.3.12' ) { throw new RuntimeException( 'Wrong installed baseline.' ); }
+    require getenv( 'GITHUB_WORKSPACE' ) . '/tools/hj-diagnostic-helper/tests/setup-vote-wp.php';
+} elseif ( getenv( 'HJ_TEST_PLUGIN' ) === 'current' ) {
+    require WP_PLUGIN_DIR . '/hamyar-doctors/tests/admin-data-status-wp.php';
+    require WP_PLUGIN_DIR . '/hamyar-doctors/tests/vote-schema-wp.php';
+} else {
+    throw new RuntimeException( 'Unexpected fixture plugin selection.' );
+}
+require getenv( 'GITHUB_WORKSPACE' ) . '/tools/hj-diagnostic-helper/tests/diagnostic-wp.php';

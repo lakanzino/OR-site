@@ -5,11 +5,13 @@ on:
     paths:
       - 'plugins/hamyar-doctors/**'
       - 'tools/hamyar-php-review/**'
+      - 'tools/hj-diagnostic-helper/**'
       - '.github/workflows/hamyar-doctors-mariadb.yml'
   pull_request:
     paths:
       - 'plugins/hamyar-doctors/**'
       - 'tools/hamyar-php-review/**'
+      - 'tools/hj-diagnostic-helper/**'
       - '.github/workflows/hamyar-doctors-mariadb.yml'
   workflow_dispatch:
 
@@ -19,6 +21,10 @@ permissions:
 jobs:
   mariadb:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        plugin: [current, installed-0.3.12]
     services:
       db:
         image: mariadb:11.4
@@ -36,6 +42,12 @@ jobs:
           --health-retries=20
     steps:
       - uses: actions/checkout@v4
+      - name: Check out installed plugin baseline
+        if: matrix.plugin == 'installed-0.3.12'
+        uses: actions/checkout@v4
+        with:
+          ref: 339d1ce78ee79cee61f2c931de864fca90415be3
+          path: ci-baseline
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
@@ -52,7 +64,11 @@ jobs:
           echo '9de885e4f00ae95549e7e599bbaff4333cbcfd77425cabb24e088adf6dd6f848  '"$RUNNER_TEMP/hj-wp/wordpress.zip" | sha256sum -c -
           unzip -q "$RUNNER_TEMP/hj-wp/wordpress.zip" -d "$RUNNER_TEMP/hj-wp"
           sudo ln -s "$RUNNER_TEMP/hj-wp/WordPress-7.1.4" /wordpress
-          ln -s "$GITHUB_WORKSPACE/plugins/hamyar-doctors" /wordpress/wp-content/plugins/hamyar-doctors
+          if [ '${{ matrix.plugin }}' = 'installed-0.3.12' ]; then
+            ln -s "$GITHUB_WORKSPACE/ci-baseline/plugins/hamyar-doctors" /wordpress/wp-content/plugins/hamyar-doctors
+          else
+            ln -s "$GITHUB_WORKSPACE/plugins/hamyar-doctors" /wordpress/wp-content/plugins/hamyar-doctors
+          fi
           cat > /wordpress/wp-config.php <<'PHP'
           <?php
           define('DB_NAME', 'hj_fixture_db');
@@ -78,6 +94,7 @@ jobs:
       - name: Exercise report with real MariaDB (disposable only)
         env:
           HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+          HJ_TEST_PLUGIN: ${{ matrix.plugin }}
         run: |
           set -euxo pipefail
           php tools/hamyar-php-review/mariadb-fixture.php install
