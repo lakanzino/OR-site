@@ -466,9 +466,12 @@ if ( ! function_exists( 'hj_demo_doctors_delete' ) ) {
 if ( ! function_exists( 'hj_demo_doctors_auto_seed' ) ) {
 	/**
 	 * تابع قدیمی اجرای خودکار؛ دیگر به admin_init متصل نیست.
-	 * خود تابع برای سازگاری باقی مانده و همچنان می‌تواند مستقیماً فراخوانی شود.
+	 * خود تابع برای سازگاری باقی مانده؛ فراخوانی مستقیم نیازمند opt-in بولی صریح است.
 	 */
 	function hj_demo_doctors_auto_seed() {
+		if ( ! defined( 'HJ_ALLOW_AUTO_SEED' ) || true !== HJ_ALLOW_AUTO_SEED ) {
+			return;
+		}
 		if ( HJ_DEMO_DOCTORS_VERSION === (string) get_option( 'hj_demo_doctors_seeded_v1', '' ) ) {
 			return;
 		}
@@ -509,7 +512,7 @@ if ( ! function_exists( 'hj_demo_doctors_handle_action' ) ) {
 	 */
 	function hj_demo_doctors_handle_action() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'دسترسی غیرمجاز.', 'hamyar-doctors' ) );
+			wp_die( esc_html__( 'دسترسی غیرمجاز.', 'hamyar-doctors' ), '', array( 'response' => 403 ) );
 		}
 
 		$action = isset( $_POST['hj_demo_action'] ) ? sanitize_key( wp_unslash( $_POST['hj_demo_action'] ) ) : '';

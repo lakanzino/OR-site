@@ -23,6 +23,10 @@ npm install --prefix /tmp/or-site-php --no-audit --no-fund @php-wasm/node@3.1.54
 HJ_PHP_WASM_ROOT=/tmp/or-site-php node tools/hamyar-php-review/run-seed-hook-test.mjs
 ```
 
+## آزمون محافظ wrapperهای خودکار (فقط شبیه‌ساز)
+
+پس از نصب وابستگی‌های بخش قبل، `HJ_PHP_WASM_ROOT=/tmp/or-site-php node tools/hamyar-php-review/run-seed-wrapper-guard-test.mjs` را اجرا کنید. چهار درخواست مجزای PHP حالت تعریف‌نشده، `false` بولی، `'true'` رشته و `true` بولی را با توابع هسته و گزینه‌های شبیه‌سازی‌شده می‌آزمایند؛ شرط‌های قبلی دسترسی و marker نیز کنترل می‌شوند. این آزمون اتصال به وردپرس یا دیتابیس و مسیر واقعی فرم و redirect را آزمون نمی‌کند. گارد فقط روی سه wrapper است؛ ثابت به‌تنهایی هیچ hookی ثبت نمی‌کند.
+
 ## قواعدی که بررسی می‌شود
 
 | قاعده | چه چیزی را می‌گیرد |
