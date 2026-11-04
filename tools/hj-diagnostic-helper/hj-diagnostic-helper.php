@@ -17,7 +17,15 @@ if ( ! class_exists( 'HJ_Diagnostic_Helper_Read_Only' ) ) {
 
 		public static function menu() {
 			$hook = add_management_page( 'گزارش تشخیصی ساختار رأی', 'گزارش تشخیصی رأی', 'manage_options', 'hj-diagnostic-helper', array( __CLASS__, 'page' ) );
-			if ( $hook ) { add_action( 'load-' . $hook, 'nocache_headers' ); }
+			if ( $hook ) { add_action( 'load-' . $hook, array( __CLASS__, 'preflight' ) ); }
+		}
+
+		/** Run before admin HTML so HTTP denial codes can be sent correctly. */
+		public static function preflight() {
+			if ( ! current_user_can( 'manage_options' ) ) { wp_die( esc_html__( 'دسترسی غیرمجاز.', 'hj-diagnostic-helper' ), '', array( 'response' => 403 ) ); }
+			$method = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) : '';
+			if ( 'GET' !== $method ) { wp_die( esc_html__( 'این صفحه فقط برای مشاهده است.', 'hj-diagnostic-helper' ), '', array( 'response' => 405 ) ); }
+			nocache_headers();
 		}
 
 		/** Normalize type metadata without exposing ENUM/SET literals or defaults. */
@@ -92,10 +100,7 @@ if ( ! class_exists( 'HJ_Diagnostic_Helper_Read_Only' ) ) {
 		}
 
 		public static function page() {
-			if ( ! current_user_can( 'manage_options' ) ) { wp_die( esc_html__( 'دسترسی غیرمجاز.', 'hj-diagnostic-helper' ), '', array( 'response' => 403 ) ); }
-			$method = isset( $_SERVER['REQUEST_METHOD'] ) ? strtoupper( (string) $_SERVER['REQUEST_METHOD'] ) : '';
-			if ( 'GET' !== $method ) { wp_die( esc_html__( 'این صفحه فقط برای مشاهده است.', 'hj-diagnostic-helper' ), '', array( 'response' => 405 ) ); }
-			nocache_headers();
+			self::preflight();
 			$json = wp_json_encode( self::report(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 			if ( false === $json ) { $json = '{"error":"report_unavailable"}'; }
 			?>
