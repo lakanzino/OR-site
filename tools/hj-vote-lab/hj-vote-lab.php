@@ -36,6 +36,26 @@ final class HJ_Vote_Lab {
 		return preg_match( '/\A[a-z]+(?:\(\d+(?:,\d+)?\))?(?: unsigned)?\z/', $type ) ? $type : 'other';
 	}
 	private static function problem( $message ) { return new WP_Error( 'hj_vote_lab', $message ); }
+	private static function primary_columns( $table, $names ) {
+		global $wpdb;
+		if ( ! self::sql_identifier( $table ) ) { return null; }
+		$old = $wpdb->suppress_errors( true );
+		try {
+			$indexes = $wpdb->get_results( "SHOW INDEX FROM `{$table}`", ARRAY_A );
+			if ( $wpdb->last_error !== '' || ! is_array( $indexes ) ) { return null; }
+			$primary = array();
+			foreach ( $indexes as $index ) {
+				if ( ! is_array( $index ) || ! is_string( $index['Key_name'] ?? null ) ) { return null; }
+				if ( strtoupper( $index['Key_name'] ) !== 'PRIMARY' ) { continue; }
+				if ( ! is_numeric( $index['Seq_in_index'] ?? null ) || ! is_string( $index['Column_name'] ?? null ) || ! in_array( $index['Column_name'], $names, true ) ) { return null; }
+				$seq = (int) $index['Seq_in_index']; if ( $seq < 1 || isset( $primary[ $seq ] ) ) { return null; } $primary[ $seq ] = $index['Column_name'];
+			}
+			ksort( $primary, SORT_NUMERIC );
+			if ( $primary && array_keys( $primary ) !== range( 1, count( $primary ) ) ) { return null; }
+			return array_values( $primary );
+		} catch ( Throwable $e ) { return null; }
+		finally { $wpdb->suppress_errors( $old ); }
+	}
 
 	/** Verify the bridge and profile agree before ever writing to the live table. */
 	public static function inspect() {
@@ -189,7 +209,7 @@ final class HJ_Vote_Lab {
 			foreach ( (array) ( $schema['cols'] ?? array() ) as $name ) { if ( is_string( $name ) && self::sql_identifier( $name ) ) { $names[] = array( 'name' => $name, 'type' => self::safe_type( $schema['types'][ $name ] ?? '' ) ); } }
 			$map = array();
 			foreach ( array( 'id', 'doctor_id', 'rating', 'status' ) as $key ) { $v = $schema['map'][ $key ] ?? ''; $map[ $key ] = is_string( $v ) && in_array( $v, array_column( $names, 'name' ), true ) ? $v : null; }
-			$out['schema'] = array( 'table' => $schema['table'] === $wpdb->prefix . 'hj_doctor_votes' ? 'default_prefixed_vote_table' : 'other_table_used_by_bridge', 'columns' => $names, 'mapping' => $map );
+			$out['schema'] = array( 'table' => $schema['table'] === $wpdb->prefix . 'hj_doctor_votes' ? 'default_prefixed_vote_table' : 'other_table_used_by_bridge', 'columns' => $names, 'mapping' => $map, 'primary_key_columns' => self::primary_columns( $schema['table'], array_column( $names, 'name' ) ) );
 			if ( $map['doctor_id'] && $map['rating'] ) {
 				$total = $wpdb->get_row( $wpdb->prepare( "SELECT COUNT(*) AS total, AVG(`{$map['rating']}`) AS average FROM `{$schema['table']}` WHERE `{$map['doctor_id']}` = %d", $doctor ), ARRAY_A );
 				if ( $wpdb->last_error === '' && is_array( $total ) ) { $out['vote_table'] = array( 'all_rows_count' => (int) $total['total'], 'all_rows_average' => $total['average'] === null ? null : (float) $total['average'] ); }
@@ -223,7 +243,7 @@ final class HJ_Vote_Lab {
 		return array(
 			'report_version' => self::VERSION, 'generated_utc' => gmdate( 'Y-m-d\TH:i:s\Z' ), 'import_compatible' => null,
 			'selected_doctor' => array( 'demo_marker_present' => true, 'post_status' => get_post_status( $doctor ) ),
-			'schema' => array( 'table' => 'default_prefixed_vote_table', 'columns' => $schema_report, 'mapping' => array( 'doctor_id' => $details['doctor'], 'rating' => $details['rating'], 'comment' => $details['comment'], 'status' => $details['status'] ) ),
+			'schema' => array( 'table' => 'default_prefixed_vote_table', 'columns' => $schema_report, 'mapping' => array( 'id' => in_array( $details['schema']['map']['id'] ?? '', array_keys( $details['columns'] ), true ) ? $details['schema']['map']['id'] : null, 'doctor_id' => $details['doctor'], 'rating' => $details['rating'], 'comment' => $details['comment'], 'status' => $details['status'] ), 'primary_key_columns' => self::primary_columns( $details['table'], array_keys( $details['columns'] ) ) ),
 			'vote_table' => array( 'all_rows_count' => (int) $total['total'], 'all_rows_average' => $total['average'] === null ? null : (float) $total['average'], 'lab_marker_count' => (int) $marked, 'status_groups' => $breakdown ),
 			'bridge' => is_array( $stats ) ? array_intersect_key( $stats, array_flip( array( 'ok', 'approved', 'pending', 'public_avg', 'avg', 'display', 'min_votes', 'force_show' ) ) ) : null,
 			'public_review_reader' => is_array( $public ) ? array( 'returned_comments_count' => count( $public ), 'max_returned' => 10 ) : null,
