@@ -154,6 +154,8 @@ final class HJ_Vote_Lab {
 			$lock = 'hj_vote_lab_' . substr( hash( 'sha256', $details['table'] . ':' . $batch ), 0, 40 );
 			$locked = (string) $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 3)', $lock ) ) === '1';
 			if ( ! $locked || $wpdb->last_error !== '' ) { return self::problem( 'قفل درخواست برقرار نشد؛ دوباره امتحان کنید.' ); }
+			$connection = $wpdb->get_var( 'SELECT CONNECTION_ID()' );
+			if ( ! is_numeric( $connection ) || $wpdb->last_error !== '' ) { return self::problem( 'اتصال دیتابیس قابل تأیید نیست؛ هیچ نظری درج نشد.' ); }
 			$marker = '[نظر آزمایشی HJ-' . $batch . ']';
 			$like = '%' . $wpdb->esc_like( $marker ) . '%';
 			$found = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$details['table']}` WHERE `{$details['doctor']}` = %d AND `{$details['comment']}` LIKE %s", $doctor, $like ) );
@@ -161,7 +163,13 @@ final class HJ_Vote_Lab {
 			if ( (int) $found > 0 ) { return self::problem( 'این درخواست قبلاً ثبت شده است؛ صفحه را تازه کنید.' ); }
 			if ( false === $wpdb->query( 'START TRANSACTION' ) ) { return self::problem( 'تراکنش شروع نشد.' ); }
 			$transaction = true;
-			foreach ( $data as $row ) { if ( 1 !== $wpdb->insert( $details['table'], $row ) ) { $wpdb->query( 'ROLLBACK' ); $transaction = false; return self::problem( 'درج ناموفق بود؛ تراکنش بازگردانده شد. ساختار یا محدودیت جدول نیاز به بررسی دارد.' ); } }
+			if ( (string) $wpdb->get_var( 'SELECT CONNECTION_ID()' ) !== (string) $connection || $wpdb->last_error !== '' ) { $wpdb->query( 'ROLLBACK' ); $transaction = false; return self::problem( 'اتصال تغییر کرده است؛ نتیجه نامشخص است. پیش از تکرار گزارش را بررسی کنید.' ); }
+			foreach ( $data as $row ) {
+				$inserted = $wpdb->insert( $details['table'], $row );
+				$now = $wpdb->get_var( 'SELECT CONNECTION_ID()' );
+				if ( (string) $now !== (string) $connection || $wpdb->last_error !== '' ) { $wpdb->query( 'ROLLBACK' ); $transaction = false; return self::problem( 'اتصال تغییر کرده است؛ ممکن است بعضی نظرها ثبت شده باشند. قبل از تکرار گزارش را بررسی کنید.' ); }
+				if ( 1 !== $inserted ) { $wpdb->query( 'ROLLBACK' ); $transaction = false; return self::problem( 'درج ناموفق بود و بازگردانی درخواست شد؛ پیش از تکرار گزارش را بررسی کنید.' ); }
+			}
 			if ( false === $wpdb->query( 'COMMIT' ) ) { $wpdb->query( 'ROLLBACK' ); $transaction = false; return self::problem( 'نتیجه نهایی تراکنش نامشخص است؛ پیش از تکرار گزارش را بررسی کنید.' ); }
 			$transaction = false;
 			return count( $data );
@@ -205,18 +213,21 @@ final class HJ_Vote_Lab {
 			$marker = '%' . $wpdb->esc_like( '[نظر آزمایشی HJ-' ) . '%';
 			$marked = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM `{$details['table']}` WHERE `{$details['doctor']}` = %d AND `{$details['comment']}` LIKE %s", $doctor, $marker ) );
 			if ( $wpdb->last_error !== '' || $marked === null ) { return self::problem( 'خواندن شمار نظرهای آزمایشی ناموفق بود.' ); }
+			$groups = $wpdb->get_results( $wpdb->prepare( "SELECT CASE WHEN `{$details['status']}` IS NULL THEN 'null' WHEN CAST(`{$details['status']}` AS CHAR) IN ('approved','approve','publish','published','1','active','yes') THEN 'approved' WHEN CAST(`{$details['status']}` AS CHAR) IN ('pending','0') THEN 'pending' WHEN CAST(`{$details['status']}` AS CHAR) IN ('rejected','reject') THEN 'rejected' ELSE 'other' END AS bucket, COUNT(*) AS total FROM `{$details['table']}` WHERE `{$details['doctor']}` = %d GROUP BY bucket", $doctor ), ARRAY_A );
+			$breakdown = null;
+			if ( $wpdb->last_error === '' && is_array( $groups ) ) { $breakdown = array(); foreach ( $groups as $g ) { if ( in_array( $g['bucket'] ?? '', array( 'approved', 'pending', 'rejected', 'null', 'other' ), true ) ) { $breakdown[ $g['bucket'] ] = (int) $g['total']; } } }
 		} catch ( Throwable $e ) { return self::problem( 'خواندن آمار ناموفق بود.' ); }
 		finally { $wpdb->suppress_errors( $old ); }
 		$stats = HJ_Doctors_Rating_Bridge::stats( $doctor );
 		$public = is_callable( array( 'HJ_Profile_Render', 'public_reviews' ) ) ? HJ_Profile_Render::public_reviews( $doctor ) : null;
 		return array(
-			'report_version' => self::VERSION, 'generated_utc' => gmdate( 'Y-m-d\TH:i:s\Z' ), 'import_compatible' => true,
+			'report_version' => self::VERSION, 'generated_utc' => gmdate( 'Y-m-d\TH:i:s\Z' ), 'import_compatible' => null,
 			'selected_doctor' => array( 'demo_marker_present' => true, 'post_status' => get_post_status( $doctor ) ),
 			'schema' => array( 'table' => 'default_prefixed_vote_table', 'columns' => $schema_report, 'mapping' => array( 'doctor_id' => $details['doctor'], 'rating' => $details['rating'], 'comment' => $details['comment'], 'status' => $details['status'] ) ),
-			'vote_table' => array( 'all_rows_count' => (int) $total['total'], 'all_rows_average' => $total['average'] === null ? null : (float) $total['average'], 'lab_marker_count' => (int) $marked ),
+			'vote_table' => array( 'all_rows_count' => (int) $total['total'], 'all_rows_average' => $total['average'] === null ? null : (float) $total['average'], 'lab_marker_count' => (int) $marked, 'status_groups' => $breakdown ),
 			'bridge' => is_array( $stats ) ? array_intersect_key( $stats, array_flip( array( 'ok', 'approved', 'pending', 'public_avg', 'avg', 'display', 'min_votes', 'force_show' ) ) ) : null,
 			'public_review_reader' => is_array( $public ) ? array( 'returned_comments_count' => count( $public ), 'max_returned' => 10 ) : null,
-			'notes' => array( 'No review text, vote IDs, voter IDs, IPs or doctor names are exported.', 'Counts include all rows for the selected demo doctor. Bridge pending means not approved, not necessarily pending; NULL may be excluded.', 'Public comment reader is limited to ten; page cache or rendering can differ. Average includes all statuses unless labelled bridge.', 'Lab markers can affect public output and sorting. No cleanup, moderation, cache refresh or appointment simulation is performed.' ),
+			'notes' => array( 'No review text, vote IDs, voter IDs, IPs or doctor names are exported.', 'Basic column mapping matched; engine and required fields are checked only when importing, so import_compatible remains unknown.', 'Counts include all rows for the selected demo doctor. Bridge pending means not approved, not necessarily pending; NULL may be excluded.', 'Public comment reader is limited to ten; page cache or rendering can differ. Average includes all statuses unless labelled bridge.', 'Lab markers can affect public output and sorting. No cleanup, moderation, cache refresh or appointment simulation is performed.' ),
 		);
 	}
 	public static function handle_import() {
