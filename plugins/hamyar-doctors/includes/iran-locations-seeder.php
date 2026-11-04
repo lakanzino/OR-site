@@ -9,8 +9,8 @@
  * - شهرستان‌های شناخته‌شدهٔ هر استان با نگاشت به استان والد
  * - شهرهای بزرگ (کلان‌شهر) با متای hj_is_major_city = ۱ برای سقف جایگاه جراحان
  * - درخت تخصص‌های جراحی (specialty_type → specialty)
- * - اجرای یک‌باره از طریق آپشن hj_iran_locations_seeded_v1
- * - دکمهٔ اجرای مجدد در ابزارهای مدیریت (Tools → سیدینگ ایران)
+ * - وضعیت اجرای سیدر در آپشن hj_iran_locations_seeded_v1 نگهداری می‌شود.
+ * - مسیرهای داخلی اجرا و اصلاح از طریق ابزارهای دستی مدیر باقی می‌مانند.
  *
  * نکتهٔ سازگاری: هر شهر هم با کلید تازهٔ hj_province_id (که archive-render و
  * dashboard می‌خوانند) و هم با کلید قدیمی hj_parent_province_id (که
@@ -1093,7 +1093,8 @@ if ( ! function_exists( 'hj_iran_locations_auto_repair' ) ) {
 			300
 		);
 	}
-	add_action( 'admin_init', 'hj_iran_locations_auto_repair', 15 );
+	// Repair remains an explicit administrator action in the tools screen.
+	// Do not run it implicitly when an administrator opens wp-admin.
 }
 
 /* -------------------------------------------------------------------------
@@ -1118,7 +1119,8 @@ if ( ! function_exists( 'hj_iran_locations_auto_seed' ) ) {
 		// پیام برای نمایش در admin_notices؛ در admin_init چاپ نمی‌کنیم.
 		set_transient( 'hj_iran_locations_notice', (string) $result['message'], 300 );
 	}
-	add_action( 'admin_init', 'hj_iran_locations_auto_seed' );
+	// Do not register automatic seeding on ordinary admin requests.
+	// The existing explicit administrator tools remain available.
 }
 
 if ( ! function_exists( 'hj_iran_locations_add_admin_notice' ) ) {

@@ -482,7 +482,8 @@ if ( ! function_exists( 'hj_demo_doctors_auto_seed' ) ) {
 
 		set_transient( 'hj_demo_doctors_notice', (string) $result['message'], 300 );
 	}
-	add_action( 'admin_init', 'hj_demo_doctors_auto_seed', 20 );
+	// Do not register this automatic callback on ordinary admin requests.
+	// The existing explicit administrator action remains available.
 }
 
 if ( ! function_exists( 'hj_demo_doctors_admin_notice' ) ) {
@@ -560,7 +561,7 @@ if ( ! function_exists( 'hj_demo_doctors_tools_section' ) ) {
 			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html( $done ) . '</p></div>';
 		}
 
-		echo '<p>' . esc_html__( 'دو جراح VIP، یک جراح ستاره‌دار و دو جراح عادی با پروفایل کامل، تخصص، شهر، امتیاز و نظرات بیماران ساخته می‌شود. رکوردها با نشانهٔ _hj_demo_doctor ذخیره می‌شوند و با دکمهٔ حذف، کامل پاک می‌شوند.', 'hamyar-doctors' ) . '</p>';
+		echo '<p>' . esc_html__( 'این ابزار به‌صورت دستی پنج پروفایل نمونه و نظرهای نمونه ایجاد می‌کند. حذف، پست‌های علامت‌گذاری‌شده را برای همیشه پاک می‌کند؛ پاک‌شدن رأی‌های مرتبط یا ترم‌ها تضمین نمی‌شود. پیش از هر اقدام، نسخهٔ پشتیبان تهیه و اثر آن را بررسی کنید.', 'hamyar-doctors' ) . '</p>';
 
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" style="display:inline-block;margin-left:8px;">';
 		echo '<input type="hidden" name="action" value="hj_demo_doctors_action" />';
