@@ -1,0 +1,33 @@
+<?php
+/**
+ * Creates and tests a WordPress database. GitHub Actions disposable service ONLY.
+ * Never run against a real site, backup, staging copy, or nonempty database.
+ */
+if ( PHP_SAPI !== 'cli' || getenv( 'GITHUB_ACTIONS' ) !== 'true' || getenv( 'HJ_DISPOSABLE_MARIADB_FIXTURE' ) !== '1' ) {
+    fwrite( STDERR, "Disposable CI fixture only.\n" ); exit( 1 );
+}
+$mode = $argv[1] ?? '';
+if ( ! in_array( $mode, array( 'install', 'test' ), true ) ) { exit( 1 ); }
+if ( 'install' === $mode ) { define( 'WP_INSTALLING', true ); }
+require '/wordpress/wp-load.php';
+global $wpdb;
+if ( DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || $wpdb->prefix !== 'hjt_' || WP_HOME !== 'http://example.invalid' ) {
+    fwrite( STDERR, "Refusing unexpected DB or site configuration.\n" ); exit( 1 );
+}
+if ( 'install' === $mode ) {
+    $tables = $wpdb->get_col( 'SHOW TABLES' );
+    if ( $wpdb->last_error !== '' || ! is_array( $tables ) || $tables ) {
+        fwrite( STDERR, "Refusing nonempty or unreadable fixture database.\n" ); exit( 1 );
+    }
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+    $result = wp_install( 'Fixture', 'fixture_admin', 'admin@example.invalid', false, '', 'disposable-password-please-ignore' );
+    if ( empty( $result['user_id'] ) ) { throw new RuntimeException( 'Fixture WordPress install failed.' ); }
+    echo "PASS: installed WordPress in empty CI MariaDB.\n";
+    exit;
+}
+define( 'HJ_DISPOSABLE_TEST', true );
+require WP_PLUGIN_DIR . '/hamyar-doctors/hamyar-doctors.php';
+hj_doctors();
+do_action( 'init' );
+require WP_PLUGIN_DIR . '/hamyar-doctors/tests/admin-data-status-wp.php';
+require WP_PLUGIN_DIR . '/hamyar-doctors/tests/vote-schema-wp.php';
