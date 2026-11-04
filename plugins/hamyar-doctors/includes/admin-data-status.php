@@ -15,6 +15,21 @@ function hj_doctors_data_status_menu() {
 	if ( $hook ) { add_action( 'load-' . $hook, 'nocache_headers' ); }
 }
 
+/** Summarize the rating bridge's detected mapping without reading vote rows. */
+function hj_doctors_vote_schema_summary( $schema ) {
+	$summary = array( 'table' => 'نامعلوم یا شناسایی نشد', 'id' => 'نامعلوم', 'doctor_id' => 'نامعلوم', 'rating' => 'نامعلوم', 'status' => 'نامعلوم' );
+	if ( ! is_array( $schema ) || empty( $schema['table'] ) || ! is_string( $schema['table'] ) ) { return $summary; }
+	$summary['table'] = 'توسط پل رأی شناسایی شد';
+	if ( ! isset( $schema['map'], $schema['cols'] ) || ! is_array( $schema['map'] ) || ! is_array( $schema['cols'] ) ) { return $summary; }
+	foreach ( array( 'id', 'doctor_id', 'rating', 'status' ) as $key ) {
+		if ( ! array_key_exists( $key, $schema['map'] ) || ! is_string( $schema['map'][ $key ] ) ) { continue; }
+		$column = $schema['map'][ $key ];
+		if ( '' === $column ) { $summary[ $key ] = 'شناسایی نشد'; }
+		elseif ( in_array( $column, $schema['cols'], true ) ) { $summary[ $key ] = 'شناسایی شد'; }
+	}
+	return $summary;
+}
+
 /** Render a small read-only summary, separately from the seed/repair tools. */
 function hj_doctors_data_status_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
@@ -59,6 +74,13 @@ function hj_doctors_data_status_page() {
 	);
 	$taxonomies = array( 'province' => 'استان', 'city' => 'شهر', 'specialty_type' => 'گروه تخصص', 'specialty' => 'تخصص' );
 	$stored_version = get_option( HJ_DOCTORS_VERSION_OPTION, $missing );
+	$vote_schema = null;
+	if ( is_callable( array( 'HJ_Doctors_Rating_Bridge', 'schema' ) ) ) {
+		try { $vote_schema = HJ_Doctors_Rating_Bridge::schema(); }
+		catch ( Throwable $error ) { $vote_schema = null; }
+	}
+	$vote_summary = hj_doctors_vote_schema_summary( $vote_schema );
+	$vote_labels = array( 'table' => 'جدول رأی', 'id' => 'ستون شناسه ردیف', 'doctor_id' => 'ستون شناسه پزشک', 'rating' => 'ستون امتیاز', 'status' => 'ستون وضعیت' );
 	?>
 	<div class="wrap">
 		<h1><?php echo esc_html__( 'وضعیت داده‌های پزشکان', 'hamyar-doctors' ); ?></h1>
@@ -93,7 +115,14 @@ function hj_doctors_data_status_page() {
 		<tr><th scope="row"><?php echo esc_html( $label ); ?></th><td><?php echo esc_html( null !== $total && ! is_wp_error( $total ) && is_numeric( $total ) ? (string) (int) $total : 'نامعلوم' ); ?></td></tr>
 		<?php endforeach; ?>
 		</tbody></table>
-		<p><?php echo esc_html__( 'این اعداد تعداد عنوان‌ها هستند، نه تعداد پزشکان و نه نشان‌دهندهٔ صلاحیت جراحی. این گزارش ابزار مدیریت رأی نیست.', 'hamyar-doctors' ); ?></p>
+		<p><?php echo esc_html__( 'این اعداد تعداد عنوان‌ها هستند، نه تعداد پزشکان و نه نشان‌دهندهٔ صلاحیت جراحی.', 'hamyar-doctors' ); ?></p>
+		<h2><?php echo esc_html__( 'ساختار رأی از دید پل فعلی', 'hamyar-doctors' ); ?></h2>
+		<table class="widefat striped"><tbody>
+		<?php foreach ( $vote_labels as $key => $label ) : ?>
+		<tr><th scope="row"><?php echo esc_html( $label ); ?></th><td><?php echo esc_html( $vote_summary[ $key ] ); ?></td></tr>
+		<?php endforeach; ?>
+		</tbody></table>
+		<p><?php echo esc_html__( 'این گزارش فقط تشخیص پل فعلی را نشان می‌دهد؛ «نامعلوم یا شناسایی نشد» می‌تواند ناشی از نبود جدول یا خطای بررسی باشد. شناخته‌شدن ستون شناسه، یکتا بودن آن را ثابت نمی‌کند. هیچ رأی یا اطلاعات رأی‌دهنده خوانده یا تغییر داده نمی‌شود؛ این صفحه ابزار مدیریت رأی نیست.', 'hamyar-doctors' ); ?></p>
 	</div>
 	<?php
 }

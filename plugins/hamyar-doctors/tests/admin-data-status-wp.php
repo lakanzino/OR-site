@@ -55,6 +55,11 @@ hj_status_test_assert( false !== strpos( $html, 'در این قلاب متصل �
 hj_status_test_assert( false === strpos( $html, $secret ) && false === stripos( $html, '<form' ) && false === strpos( $html, 'admin-post.php' ), 'no personal title, forms or action links' );
 hj_status_test_assert( false === strpos( $html, '<script>unexpected</script>' ) && false !== strpos( $html, '&lt;script&gt;unexpected&lt;/script&gt;' ), 'database version escaped' );
 hj_status_test_assert( false !== strpos( $html, 'منتشرشده</th><td>' . ( $initial_published + 1 ) . '</td>' ) && false !== strpos( $html, 'پیش‌نویس</th><td>' . ( $initial_draft + 1 ) . '</td>' ) && false !== strpos( $html, 'دارای نشانگر نمونه، در همه وضعیت‌ها</th><td>' . ( $initial_marked + 1 ) . '</td>' ), 'published, draft and marked fixture counts are correct' );
+hj_status_test_assert( false !== strpos( $html, 'ساختار رأی از دید پل فعلی' ) && false !== strpos( $html, 'جدول رأی</th><td>نامعلوم یا شناسایی نشد</td>' ), 'missing vote table is shown as unknown' );
+$unknown = hj_doctors_vote_schema_summary( array( 'ok' => false, 'table' => '' ) );
+$valid = hj_doctors_vote_schema_summary( array( 'table' => 'fixture', 'cols' => array( 'vote_id', 'doctor', 'score' ), 'map' => array( 'id' => 'vote_id', 'doctor_id' => 'doctor', 'rating' => 'score', 'status' => '' ) ) );
+$bad = hj_doctors_vote_schema_summary( array( 'table' => 'fixture', 'cols' => array( 'doctor' ), 'map' => array( 'id' => '<script>', 'doctor_id' => 'doctor', 'rating' => array(), 'status' => 'missing' ) ) );
+hj_status_test_assert( 'نامعلوم' === $unknown['status'] && 'شناسایی شد' === $valid['id'] && 'شناسایی نشد' === $valid['status'] && 'نامعلوم' === $bad['id'] && 'نامعلوم' === $bad['status'], 'schema summary handles missing, valid and invalid mappings' );
 $after = array( wp_count_posts( 'doctor' )->publish, wp_count_posts( 'doctor' )->draft, get_post_meta( $p1, '_hj_demo_doctor', true ), get_option( HJ_DOCTORS_VERSION_OPTION ), wp_count_terms( array( 'taxonomy' => 'city', 'hide_empty' => false ) ) );
 hj_status_test_assert( $before === $after, 'selected database state unchanged by report rendering' );
 $real_posts = $wpdb->posts;
