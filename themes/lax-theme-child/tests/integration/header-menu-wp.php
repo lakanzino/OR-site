@@ -1,5 +1,6 @@
 <?php
 // Run only in a disposable WordPress installation: this creates a menu.
+if ( ! defined( 'HJ_DISPOSABLE_TEST' ) || true !== HJ_DISPOSABLE_TEST ) { exit; }
 require '/wordpress/wp-load.php';
 if ( has_filter( 'wp_nav_menu_objects', 'hj_filter_primary_header_items' ) ) throw new Exception( 'Legacy menu filter is still active.' );
 $menu_id = wp_create_nav_menu( 'Header test ' . uniqid() );

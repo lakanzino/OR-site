@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.33.14
+Stable tag: 0.33.16
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,12 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.33.16 =
+* هماهنگی بسته قالب با اصلاح ریسپانسیو پنل پزشک در افزونه ۰٫۳٫۸.
+
+= 0.33.15 =
+* دکمه ورود عمومی گوگل در صفحه نخست و اتصال به حساب اعضا. افزونه همیار پزشک‌ها ۰٫۳٫۷ لازم است.
 
 = 0.33.14 =
 * هدر مشکی، پنج پیوند اصلی دسکتاپ و فهرست همبرگری کامل با نقطه قرمز.
