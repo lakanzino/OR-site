@@ -465,9 +465,8 @@ if ( ! function_exists( 'hj_demo_doctors_delete' ) ) {
 
 if ( ! function_exists( 'hj_demo_doctors_auto_seed' ) ) {
 	/**
-	 * اجرای یک‌بارهٔ دادهٔ نمونه برای مدیر.
-	 *
-	 * بعد از سیدر استان‌ها اجرا می‌شود (اولویت ۲۰) تا ترم‌ها آماده باشند.
+	 * تابع قدیمی اجرای خودکار؛ دیگر به admin_init متصل نیست.
+	 * خود تابع برای سازگاری باقی مانده و همچنان می‌تواند مستقیماً فراخوانی شود.
 	 */
 	function hj_demo_doctors_auto_seed() {
 		if ( HJ_DEMO_DOCTORS_VERSION === (string) get_option( 'hj_demo_doctors_seeded_v1', '' ) ) {

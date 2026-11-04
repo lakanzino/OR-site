@@ -1062,9 +1062,8 @@ if ( ! function_exists( 'hj_iran_locations_repair_terms' ) ) {
 
 if ( ! function_exists( 'hj_iran_locations_auto_repair' ) ) {
 	/**
-	 * اصلاح خودکار یک‌بارهٔ ترم‌های مخدوش برای مدیر.
-	 *
-	 * بعد از سیدینگ و پیش از ساخت دادهٔ نمونه اجرا می‌شود.
+	 * تابع قدیمی اصلاح خودکار؛ دیگر به admin_init متصل نیست.
+	 * برای سازگاری باقی مانده و همچنان می‌تواند مستقیماً فراخوانی شود.
 	 */
 	function hj_iran_locations_auto_repair() {
 		if ( get_option( 'hj_iran_locations_repaired_v2' ) ) {
@@ -1098,12 +1097,12 @@ if ( ! function_exists( 'hj_iran_locations_auto_repair' ) ) {
 }
 
 /* -------------------------------------------------------------------------
- * ۶. اجرای خودکار یک‌باره + اعلان ادمین
+ * ۶. تابع قدیمی اجرای خودکار (بدون قلاب) + اعلان ادمین
  * ---------------------------------------------------------------------- */
 
 if ( ! function_exists( 'hj_iran_locations_auto_seed' ) ) {
 	/**
-	 * اجرای خودکار سیدینگ یک‌بار برای مدیر.
+	 * تابع قدیمی اجرای خودکار سیدینگ؛ دیگر به admin_init متصل نیست.
 	 */
 	function hj_iran_locations_auto_seed() {
 		if ( get_option( 'hj_iran_locations_seeded_v1' ) ) {
