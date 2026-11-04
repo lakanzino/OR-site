@@ -531,7 +531,7 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 				}
 
 				$reviews[] = array(
-					'author'  => 'بیمار تأییدشده',
+					'author'  => 'نظر ثبت‌شده در سایت',
 					'rating'  => $rating,
 					'comment' => $comment,
 					'date'    => $timestamp > 0 ? gmdate( 'Y/m/d', $timestamp ) : '',
