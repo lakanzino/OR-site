@@ -1,6 +1,9 @@
 <?php
 /** Disposable WordPress + MariaDB integration fixture; never run on a live site. */
 if ( PHP_SAPI !== 'cli' || getenv( 'GITHUB_ACTIONS' ) !== 'true' || getenv( 'HJ_DISPOSABLE_MARIADB_FIXTURE' ) !== '1' ) { exit( 1 ); }
+define( 'WP_DEBUG', true );
+define( 'WP_DEBUG_DISPLAY', true );
+ini_set( 'display_errors', '1' );
 require '/wordpress/wp-load.php';
 if ( DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || $GLOBALS['wpdb']->prefix !== 'hjt_' || WP_HOME !== 'http://example.invalid' ) { exit( 1 ); }
 require_once dirname( __DIR__, 2 ) . '/inc/homepage-draft.php';
