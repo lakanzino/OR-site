@@ -1,0 +1,133 @@
+/* Front page only: full-width hero and surgeon orbit rows. */
+.hj-static-home .hj-landing .hj-landing-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) !important;
+  position: relative;
+  isolation: isolate;
+  min-height: 0;
+  padding: 0 !important;
+  overflow: hidden;
+}
+.hj-static-home .hj-landing .hj-landing-hero-copy {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none !important;
+  min-width: 0;
+  padding: clamp(24px, 4.2vw, 60px);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.hj-static-home .hj-landing .hj-landing-hero-copy > .wp-block-group__inner-container { width: 100%; max-width: none; }
+.hj-static-home .hj-landing .hj-landing-hero-art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  opacity: .10;
+  pointer-events: none;
+}
+.hj-static-home .hj-landing .hj-landing-hero-art .hj-landing-image img { width: 100%; height: 100%; min-height: 0; object-fit: cover; }
+.hj-static-home .hj-landing .hj-landing-hero-art .hj-landing-art-label { display: none; }
+.hj-static-home .hj-landing .hj-landing-hero-copy h1.hj-hero-title {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none !important;
+  margin: 14px 0;
+  padding: 12px clamp(5px, 1.4vw, 18px);
+  font-size: clamp(16px, 3.5vw, 50px);
+  line-height: 1.55;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-align: center;
+}
+.hj-static-home .hj-hero-slogan { display: inline-block; white-space: nowrap; }
+.hj-static-home .hj-hero-brand { color: #12385c; }
+.hj-static-home .hj-hero-surgery { color: #08714f; }
+.hj-static-home .hj-hero-emphasis { color: #aa3542; font-weight: 800; }
+.hj-static-home .hj-landing .hj-landing-hero-copy .hj-landing-lead {
+  max-width: 900px;
+  margin: 20px auto 0;
+  color: #102d20;
+  font-size: clamp(15px, 1.5vw, 19px);
+  font-weight: 700;
+  line-height: 2;
+  text-align: center;
+}
+.hj-static-home .hj-landing .hj-landing-hero-copy .hj-landing-actions { justify-content: center; }
+.hj-static-home .hj-landing .hj-landing-hero-copy .hj-landing-note { text-align: center; }
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-hero-copy .hj-btn-primary .wp-block-button__link {
+  background: linear-gradient(135deg, #e7fff2, #8fdcba) !important;
+  color: #063526 !important;
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-hero-copy .hj-btn-secondary .wp-block-button__link {
+  background: linear-gradient(135deg, #fff, #c8ead9) !important;
+  color: #153d2d !important;
+}
+/* Rows remain single-column even if a browser requests a desktop viewport. */
+.hj-static-home .hj-landing .hj-home-surgeons { display: grid; grid-template-columns: minmax(0,1fr) !important; gap: 18px; width: 100%; max-width: none !important; }
+body:not(.wp-admin) .hj-static-home .hj-surgeon-card {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2.7vw, 30px);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  padding: clamp(16px, 2.4vw, 25px) !important;
+  border-radius: 999px 35px 35px 999px !important;
+  border: 1px solid #b9e5d7 !important;
+  background: linear-gradient(110deg, #f7fffb 5%, #e4f7f0 58%, #edf4ff) !important;
+  box-shadow: -12px 16px 34px rgba(18, 87, 72, .16), inset 0 1px 0 #fff !important;
+}
+.hj-static-home .hj-surgeon-card__avatar {
+  flex: 0 0 clamp(68px, 10vw, 106px);
+  width: clamp(68px, 10vw, 106px);
+  height: clamp(68px, 10vw, 106px);
+  display: grid;
+  place-items: center;
+  padding: 5px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a4e7d1, #d6eaff);
+  box-shadow: 0 0 0 2px #fff, 0 8px 20px rgba(24,91,74,.16);
+}
+.hj-static-home .hj-surgeon-card :is(.hj-surgeon-card__photo,.hj-surgeon-card__placeholder) {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #e0f4ec;
+  color: #236c5a;
+}
+.hj-static-home .hj-surgeon-card__details { flex: 1 1 auto; min-width: 0; }
+.hj-static-home .hj-landing .hj-surgeon-card h3 { margin: 0; color: #0d2a23; font-size: clamp(17px, 1.8vw, 23px); }
+.hj-static-home .hj-landing .hj-surgeon-card .hj-surgeon-card__details p { margin: 4px 0; color: #183c30; font-size: clamp(13px, 1.1vw, 15px); line-height: 1.65; overflow-wrap: anywhere; }
+.hj-static-home .hj-surgeon-card__rating span { color: #b97900; font-size: 1.25em; }
+.hj-static-home .hj-surgeon-card a { margin-top: 8px; color: #075c49; font-weight: 800; }
+.hj-static-home .hj-surgeon-card a:focus-visible { outline: 3px solid #075c49; outline-offset: 4px; }
+.hj-static-home .hj-member-home-entry {
+  direction: rtl;
+  max-width: 1180px;
+  margin: 50px auto 0;
+  padding: clamp(20px, 3vw, 36px);
+  border-radius: 24px;
+  background: #e6f6ef;
+  color: #061710;
+  text-align: center;
+}
+.hj-static-home .hj-member-home-entry h2 { margin: 0 0 12px; color: #061710; }
+.hj-static-home .hj-member-home-entry .hj-member-google { background: #075f43; color: #fff !important; border-color: #075f43; }
+.hj-static-home .hj-member-home-entry .hj-member-google:hover { background: #064b35; color: #fff !important; }
+.hj-static-home .hj-member-home-entry .hj-member-google__icon { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: white; color: #2261c8; }
+@media (max-width: 480px) {
+  .hj-static-home .hj-landing .hj-landing-hero-copy { padding: 25px 10px; }
+  body:not(.wp-admin) .hj-static-home .hj-surgeon-card { align-items: flex-start; border-radius: 24px !important; gap: 13px; padding: 16px 12px !important; }
+  .hj-static-home .hj-surgeon-card__avatar { flex-basis: 66px; width: 66px; height: 66px; }
+}

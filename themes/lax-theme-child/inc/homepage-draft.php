@@ -95,9 +95,7 @@ function hj_home_draft_create() {
 	return $draft;
 }
 
-add_action( 'admin_menu', function () {
-	add_theme_page( 'پیش‌نویس صفحه نخست', 'پیش‌نویس صفحه نخست', 'manage_options', 'hj-home-draft', 'hj_home_draft_admin' );
-} );
+// The earlier draft design is no longer offered in the menu. Existing drafts remain editable.
 function hj_home_draft_admin() {
 	if ( ! current_user_can( 'manage_options' ) ) { return; }
 	?><div class="wrap" dir="rtl"><h1>پیش‌نویس صفحه نخست</h1>

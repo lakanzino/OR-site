@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.33.19' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.33.20' );
 }
 
 /**
@@ -340,3 +340,7 @@ add_action( 'wp_enqueue_scripts', function () {
 // Explicit draft workflow; never automatically applies content to the live page.
 $hj_home_draft_path = get_stylesheet_directory() . '/inc/homepage-draft.php';
 if ( is_readable( $hj_home_draft_path ) ) { require_once $hj_home_draft_path; }
+
+// Opt-in targeted update of the current landing page and scoped presentation.
+$hj_orbit_path = get_stylesheet_directory() . '/inc/homepage-orbit.php';
+if ( is_readable( $hj_orbit_path ) ) { require_once $hj_orbit_path; }
