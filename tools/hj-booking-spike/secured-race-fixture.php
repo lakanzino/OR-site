@@ -28,6 +28,48 @@ if ( $mode === 'setup' ) {
 	if ( ! file_exists( '/tmp/hj-secured-go' ) ) { exit( 2 ); }
 	$r = hj_secured_create( $profile, '2030-01-02 06:00:00', $key( 10000 + $i ), '09123456789', '1234567891', $now );
 	echo $r['status'];
+} elseif ( $mode === 'metadata-lock' ) {
+	$r = hj_interval_transaction( $profile, function ( $db ) use ( $profile ) {
+		$rows = hj_interval_query( $db, "SELECT meta_id FROM hjt_postmeta WHERE post_id=? AND meta_key='working_hours' FOR UPDATE", 'i', $profile );
+		if ( count( $rows ) !== 1 ) { throw new RuntimeException( 'Expected one fallback metadata row' ); }
+		touch( '/tmp/hj-meta-held' ); $until = microtime( true ) + 15;
+		while ( ! file_exists( '/tmp/hj-meta-release' ) && microtime( true ) < $until ) { usleep( 10000 ); clearstatcache(); }
+		if ( ! file_exists( '/tmp/hj-meta-release' ) ) { throw new RuntimeException( 'Metadata lock test timed out' ); }
+		return array( 'status' => 'released' );
+	} );
+	echo $r['status'];
+} elseif ( $mode === 'metadata-write' ) {
+	$closed = array( array( 'day_of_week' => 'wednesday', 'is_closed' => 1, 'start_time' => '', 'end_time' => '' ) );
+	update_post_meta( $profile, 'working_hours', $closed );
+	echo 'wrote';
+} elseif ( $mode === 'uncoordinated-setup' ) {
+	wp_set_current_user( $doctor );
+	$open = array( array( 'day_of_week' => 'wednesday', 'is_closed' => 0, 'start_time' => '09:00:00', 'end_time' => '12:00:00' ) );
+	race_expect( hj_spike_set_hours( $profile, $open )['status'] === 'updated' && hj_spike_set_duration( $profile, 15, 0 )['status'] === 'updated', 'prepare uncoordinated-writer counterexample' );
+} elseif ( $mode === 'uncoordinated-lock' ) {
+	// Reproduce validation followed by a competing legacy WP metadata writer.
+	$validator = function ( $db, $config, $start ) use ( $profile, $now ) {
+		clean_post_cache( $profile );
+		$hours = hj_doctors_field( 'working_hours', $profile );
+		$valid = in_array( $start, hj_schedule_slots( '2030-01-02', $hours, (int) $config['duration_minutes'], (int) $config['buffer_minutes'], array(), $now, 30 ), true );
+		touch( '/tmp/hj-uncoordinated-held' );
+		$until = microtime( true ) + 15;
+		while ( ! file_exists( '/tmp/hj-uncoordinated-done' ) && microtime( true ) < $until ) { usleep( 10000 ); clearstatcache(); }
+		if ( ! file_exists( '/tmp/hj-uncoordinated-done' ) ) { throw new RuntimeException( 'Counterexample writer timed out' ); }
+		return $valid;
+	};
+	$r = hj_interval_create( $profile, race_uid( 'synthetic_race_0' ), '2030-01-02 07:30:00', $key( 14000 ), '', $validator );
+	echo $r['status'];
+} elseif ( $mode === 'uncoordinated-write' ) {
+	$closed = array( array( 'day_of_week' => 'wednesday', 'is_closed' => 1, 'start_time' => '', 'end_time' => '' ) );
+	update_post_meta( $profile, 'working_hours', $closed );
+	touch( '/tmp/hj-uncoordinated-done' );
+	echo 'wrote';
+} elseif ( $mode === 'uncoordinated-verify' ) {
+	clean_post_cache( $profile ); $hours = hj_doctors_field( 'working_hours', $profile );
+	$db = hj_interval_connection();
+	try { $rows = hj_interval_query( $db, "SELECT id FROM hjt_hjb_spike_appointments WHERE doctor_id=? AND starts_at='2030-01-02 07:30:00' AND status='pending'", 'i', $profile ); } finally { $db->close(); }
+	race_expect( ! empty( $hours[0]['is_closed'] ) && count( $rows ) === 1, 'EXPECTED COUNTEREXAMPLE: existing metadata writer bypasses lock and permits stale-hours booking' );
 } elseif ( $mode === 'mutation-setup' ) {
 	wp_set_current_user( $doctor );
 	$open = array( array( 'day_of_week' => 'wednesday', 'is_closed' => 0, 'start_time' => '09:00:00', 'end_time' => '12:00:00' ) );
