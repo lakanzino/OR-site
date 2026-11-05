@@ -34,8 +34,9 @@ if ( getenv( 'HJ_TEST_PLUGIN' ) === 'review-marker-http-current' ) {
     require getenv( 'GITHUB_WORKSPACE' ) . '/tools/hamyar-php-review/review-marker-setup-wp.php';
     exit;
 }
-if ( getenv( 'HJ_TEST_PLUGIN' ) === 'vote-manager-http-0.3.12' ) {
-    if ( HJ_DOCTORS_VERSION !== '0.3.12' ) { throw new RuntimeException( 'Wrong installed baseline.' ); }
+if ( in_array( getenv( 'HJ_TEST_PLUGIN' ), array( 'vote-manager-http-0.3.12', 'vote-manager-http-current' ), true ) ) {
+    $expected = getenv( 'HJ_TEST_PLUGIN' ) === 'vote-manager-http-current' ? '0.3.14' : '0.3.12';
+    if ( HJ_DOCTORS_VERSION !== $expected ) { throw new RuntimeException( 'Wrong installed baseline.' ); }
     require getenv( 'GITHUB_WORKSPACE' ) . '/tools/hj-vote-manager/tests/manager-http-setup-wp.php';
     exit;
 }

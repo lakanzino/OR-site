@@ -2,7 +2,7 @@
 /**
  * Plugin Name: HJ Vote Manager (Demo Only)
  * Description: Administrator-only moderation of votes for marked demo doctors, with an audit trail.
- * Version: 0.1.0
+ * Version: 0.2.0
  * Requires at least: 6.4
  * Requires PHP: 8.0
  * Author: Hamyar Jarahi
@@ -11,10 +11,11 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 if ( ! class_exists( 'HJ_Vote_Manager_Demo' ) ) {
 final class HJ_Vote_Manager_Demo {
-	const VERSION = '0.1.0';
+	const VERSION = '0.2.0';
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'menu' ) );
 		add_action( 'admin_post_hj_vote_manager_save', array( __CLASS__, 'handle_save' ) );
+		add_action( 'admin_post_hj_vote_manager_delete', array( __CLASS__, 'handle_delete' ) );
 	}
 	public static function menu() {
 		$hook = add_management_page( 'مدیریت رأی جراحان نمونه', 'مدیریت رأی نمونه', 'manage_options', 'hj-vote-manager', array( __CLASS__, 'page' ) );
@@ -81,6 +82,35 @@ final class HJ_Vote_Manager_Demo {
 		global $wpdb;
 		$sql = "SELECT `{$schema['id']}` AS vote_id, `{$schema['doctor']}` AS doctor_id, `{$schema['rating']}` AS rating, `{$schema['status']}` AS status, `{$schema['comment']}` AS comment FROM `{$schema['table']}` WHERE `{$schema['id']}` = %d AND `{$schema['doctor']}` = %d" . ( $for_update ? ' FOR UPDATE' : '' );
 		return $wpdb->get_row( $wpdb->prepare( $sql, $vote, $doctor ), ARRAY_A );
+	}
+	private static function full_row( $schema, $doctor, $vote, $for_update = false ) {
+		global $wpdb;
+		$sql = "SELECT * FROM `{$schema['table']}` WHERE `{$schema['id']}` = %d AND `{$schema['doctor']}` = %d" . ( $for_update ? ' FOR UPDATE' : '' );
+		return $wpdb->get_row( $wpdb->prepare( $sql, $vote, $doctor ), ARRAY_A );
+	}
+	/** A delete token covers every database column, without exposing their values in the form. */
+	private static function full_snapshot( $row ) {
+		if ( ! is_array( $row ) ) { return ''; }
+		ksort( $row, SORT_STRING );
+		$payload = wp_json_encode( $row, JSON_UNESCAPED_UNICODE );
+		return is_string( $payload ) ? hash_hmac( 'sha256', $payload, wp_salt( 'auth' ) ) : '';
+	}
+	private static function no_inbound_relations( $table ) {
+		global $wpdb;
+		$count = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM information_schema.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = DATABASE() AND REFERENCED_TABLE_NAME = %s', $table ) );
+		if ( $wpdb->last_error !== '' || ! is_numeric( $count ) || (int) $count !== 0 ) { return false; }
+		$triggers = $wpdb->get_results( $wpdb->prepare( 'SHOW TRIGGERS WHERE `Table` = %s', $table ), ARRAY_A );
+		return $wpdb->last_error === '' && is_array( $triggers ) && count( $triggers ) === 0;
+	}
+	private static function lock_demo_doctor( $doctor ) {
+		global $wpdb;
+		if ( ! self::valid_identifier( $wpdb->posts ) || ! self::valid_identifier( $wpdb->postmeta ) ) { return false; }
+		$post = $wpdb->get_row( $wpdb->prepare( "SELECT post_type, post_status FROM `{$wpdb->posts}` WHERE ID = %d FOR UPDATE", $doctor ), ARRAY_A );
+		if ( $wpdb->last_error !== '' || ! is_array( $post ) || $post['post_type'] !== 'doctor' || $post['post_status'] === 'trash' ) { return false; }
+		$meta = $wpdb->get_results( $wpdb->prepare( "SELECT meta_value FROM `{$wpdb->postmeta}` WHERE post_id = %d AND BINARY meta_key = %s ORDER BY meta_id ASC FOR UPDATE", $doctor, '_hj_demo_doctor' ), ARRAY_A );
+		if ( $wpdb->last_error !== '' || ! is_array( $meta ) || ! $meta ) { return false; }
+		$value = maybe_unserialize( $meta[0]['meta_value'] );
+		return is_scalar( $value ) && (string) $value !== '';
 	}
 	private static function audit_table() { global $wpdb; return $wpdb->prefix . 'hj_vote_manager_audit_v1'; }
 	/** Create audit on first save, never on activation or viewing. */
@@ -158,6 +188,62 @@ final class HJ_Vote_Manager_Demo {
 		} catch ( Throwable $e ) { if ( $transaction ) { $wpdb->query( 'ROLLBACK' ); } return self::problem( 'خطای مدیریت رأی؛ نتیجه را پیش از تکرار بررسی کنید.' ); }
 		finally { if ( $locked ) { $wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock ) ); } $wpdb->suppress_errors( $old ); }
 	}
+	/** Physically delete exactly one current demo vote and record an irreversible deletion. */
+	public static function delete_vote( $doctor, $vote, $expected, $reason ) {
+		global $wpdb;
+		if ( ! current_user_can( 'manage_options' ) || ! self::demo_doctor( $doctor ) ) { return self::problem( 'دسترسی یا جراح نمونه نامعتبر است.' ); }
+		if ( ! is_int( $vote ) || $vote < 1 || ! is_string( $expected ) || ! preg_match( '/\A[a-f0-9]{64}\z/', $expected ) || ! is_string( $reason ) ) { return self::problem( 'مقادیر حذف نامعتبر است.' ); }
+		$reason = trim( sanitize_textarea_field( $reason ) );
+		if ( $reason === '' || strlen( $reason ) > 1000 ) { return self::problem( 'دلیل حذف لازم است و نباید طولانی باشد.' ); }
+		$schema = self::inspect(); if ( is_wp_error( $schema ) ) { return $schema; }
+		$old = $wpdb->suppress_errors( true ); $locked = false; $transaction = false;
+		try {
+			if ( self::engine( $schema['table'] ) !== 'INNODB' || self::engine( $wpdb->posts ) !== 'INNODB' || self::engine( $wpdb->postmeta ) !== 'INNODB' || ! self::no_inbound_relations( $schema['table'] ) ) { return self::problem( 'جدول‌ها غیرتراکنشی‌اند یا جدول رأی وابستگی/تریگر دارد یا بررسی ممکن نیست؛ حذف انجام نشد.' ); }
+			$lock = 'hj_vote_lab_' . substr( hash( 'sha256', $schema['table'] ), 0, 40 );
+			$locked = (string) $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 3)', $lock ) ) === '1';
+			if ( ! $locked || $wpdb->last_error !== '' ) { return self::problem( 'قفل عملیات برقرار نشد.' ); }
+			$connection = $wpdb->get_var( 'SELECT CONNECTION_ID()' );
+			if ( ! is_numeric( $connection ) || $wpdb->last_error !== '' ) { return self::problem( 'اتصال دیتابیس قابل تأیید نیست.' ); }
+			$row = self::full_row( $schema, $doctor, $vote );
+			if ( $wpdb->last_error !== '' || ! is_array( $row ) || ! hash_equals( self::full_snapshot( $row ), $expected ) ) { return self::problem( 'رأی تغییر کرده یا پیدا نشد؛ صفحه را تازه کنید.' ); }
+			$status = $row[ $schema['status'] ]; $rating = $row[ $schema['rating'] ];
+			if ( ! is_string( $status ) || strlen( $status ) > 32 || ! preg_match( '/\A-?\d+\z/', (string) $rating ) || (int) $rating < -2147483648 || (int) $rating > 2147483647 ) { return self::problem( 'مقادیر قبلی برای ثبت گزارش حذف سازگار نیست.' ); }
+			$audit = self::ensure_audit(); if ( is_wp_error( $audit ) ) { return $audit; }
+			if ( false === $wpdb->query( 'START TRANSACTION' ) ) { return self::problem( 'تراکنش شروع نشد.' ); }
+			$transaction = true;
+			if ( (string) $wpdb->get_var( 'SELECT CONNECTION_ID()' ) !== (string) $connection || $wpdb->last_error !== '' ) { $wpdb->query( 'ROLLBACK' ); $transaction = false; return self::problem( 'اتصال تغییر کرد؛ وضعیت را پیش از تکرار بررسی کنید.' ); }
+			if ( ! self::lock_demo_doctor( $doctor ) ) { $wpdb->query( 'ROLLBACK' ); $transaction = false; return self::problem( 'جراح نمونه تغییر کرده یا قفل نشد.' ); }
+			$locked_row = self::full_row( $schema, $doctor, $vote, true );
+			if ( $wpdb->last_error !== '' || ! is_array( $locked_row ) || ! hash_equals( self::full_snapshot( $locked_row ), $expected ) ) { $wpdb->query( 'ROLLBACK' ); $transaction = false; return self::problem( 'رأی یا جراح تغییر کرده است؛ صفحه را تازه کنید.' ); }
+			$deleted = $wpdb->query( $wpdb->prepare( "DELETE FROM `{$schema['table']}` WHERE `{$schema['id']}` = %d AND `{$schema['doctor']}` = %d", $vote, $doctor ) );
+			if ( (string) $wpdb->get_var( 'SELECT CONNECTION_ID()' ) !== (string) $connection || $wpdb->last_error !== '' ) { $wpdb->query( 'ROLLBACK' ); $transaction = false; return self::problem( 'اتصال تغییر کرد؛ نتیجه حذف نامشخص است و باید بررسی شود.' ); }
+			if ( $deleted !== 1 ) { $wpdb->query( 'ROLLBACK' ); $transaction = false; return self::problem( 'حذف انجام نشد؛ محدودیت جدول را بررسی کنید.' ); }
+			// A deletion has new_status=deleted, new_rating=0 and new_comment=NULL; 0 is not a selectable rating.
+			$entry = array( 'vote_id' => $vote, 'doctor_id' => $doctor, 'actor_id' => get_current_user_id(), 'old_status' => $status, 'new_status' => 'deleted', 'old_rating' => (int) $rating, 'new_rating' => 0, 'old_comment' => $locked_row[ $schema['comment'] ], 'new_comment' => null, 'reason' => $reason, 'occurred_utc' => gmdate( 'Y-m-d H:i:s' ) );
+			$recorded = $wpdb->insert( $audit, $entry );
+			if ( (string) $wpdb->get_var( 'SELECT CONNECTION_ID()' ) !== (string) $connection || $wpdb->last_error !== '' ) { $wpdb->query( 'ROLLBACK' ); $transaction = false; return self::problem( 'اتصال تغییر کرد؛ نتیجه حذف نامشخص است و باید بررسی شود.' ); }
+			if ( $recorded !== 1 ) { $wpdb->query( 'ROLLBACK' ); $transaction = false; return self::problem( 'ثبت گزارش حذف ناموفق بود؛ بازگردانی درخواست شد.' ); }
+			if ( false === $wpdb->query( 'COMMIT' ) ) { $wpdb->query( 'ROLLBACK' ); $transaction = false; return self::problem( 'نتیجه نهایی نامشخص است؛ پیش از تکرار بررسی کنید.' ); }
+			$transaction = false;
+			if ( (string) $wpdb->get_var( 'SELECT CONNECTION_ID()' ) !== (string) $connection || $wpdb->last_error !== '' ) { return self::problem( 'اتصال هنگام ثبت نهایی تغییر کرد؛ نتیجه نامشخص است و باید بررسی شود.' ); }
+			return true;
+		} catch ( Throwable $e ) { if ( $transaction ) { $wpdb->query( 'ROLLBACK' ); } return self::problem( 'خطای حذف؛ نتیجه را پیش از تکرار بررسی کنید.' ); }
+		finally { if ( $locked ) { $wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock ) ); } $wpdb->suppress_errors( $old ); }
+	}
+	public static function handle_delete() {
+		if ( ! current_user_can( 'manage_options' ) ) { wp_die( 'دسترسی غیرمجاز.', '', array( 'response' => 403 ) ); }
+		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) !== 'POST' ) { wp_die( 'روش نامعتبر.', '', array( 'response' => 405 ) ); }
+		$vote = isset( $_POST['vote'] ) && is_scalar( $_POST['vote'] ) ? absint( wp_unslash( $_POST['vote'] ) ) : 0;
+		check_admin_referer( 'hj_vote_manager_delete_' . $vote );
+		$doctor = isset( $_POST['doctor'] ) && is_scalar( $_POST['doctor'] ) ? absint( wp_unslash( $_POST['doctor'] ) ) : 0;
+		$expected = isset( $_POST['expected'] ) && is_string( $_POST['expected'] ) ? wp_unslash( $_POST['expected'] ) : '';
+		$reason = isset( $_POST['reason'] ) && is_string( $_POST['reason'] ) ? wp_unslash( $_POST['reason'] ) : '';
+		$confirm = isset( $_POST['confirm'] ) && is_string( $_POST['confirm'] ) ? wp_unslash( $_POST['confirm'] ) : '';
+		if ( $confirm !== 'delete' ) { wp_die( 'تأیید صریح حذف الزامی است.', 'مدیریت رأی', array( 'response' => 400, 'back_link' => true ) ); }
+		$result = self::delete_vote( $doctor, $vote, $expected, $reason );
+		if ( is_wp_error( $result ) ) { wp_die( esc_html( $result->get_error_message() ), 'مدیریت رأی', array( 'response' => 400, 'back_link' => true ) ); }
+		wp_safe_redirect( add_query_arg( array( 'page' => 'hj-vote-manager', 'doctor' => $doctor, 'deleted' => 1 ), admin_url( 'tools.php' ) ) ); exit;
+	}
 	public static function handle_save() {
 		if ( ! current_user_can( 'manage_options' ) ) { wp_die( 'دسترسی غیرمجاز.', '', array( 'response' => 403 ) ); }
 		if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) !== 'POST' ) { wp_die( 'روش نامعتبر.', '', array( 'response' => 405 ) ); }
@@ -183,7 +269,7 @@ final class HJ_Vote_Manager_Demo {
 		if ( $doctor && self::demo_doctor( $doctor ) && ! is_wp_error( $schema ) ) {
 			$old = $wpdb->suppress_errors( true );
 			try {
-				$rows = $wpdb->get_results( $wpdb->prepare( "SELECT `{$schema['id']}` AS vote_id, `{$schema['doctor']}` AS doctor_id, `{$schema['rating']}` AS rating, `{$schema['status']}` AS status, `{$schema['comment']}` AS comment FROM `{$schema['table']}` WHERE `{$schema['doctor']}` = %d ORDER BY `{$schema['id']}` DESC LIMIT 51 OFFSET %d", $doctor, ( $page_number - 1 ) * 50 ), ARRAY_A );
+				$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM `{$schema['table']}` WHERE `{$schema['doctor']}` = %d ORDER BY `{$schema['id']}` DESC LIMIT 51 OFFSET %d", $doctor, ( $page_number - 1 ) * 50 ), ARRAY_A );
 				if ( $wpdb->last_error !== '' || ! is_array( $rows ) ) { $rows = array(); $error = 'خواندن رأی‌ها ناموفق بود.'; }
 				if ( count( $rows ) > 50 ) { array_pop( $rows ); $has_more = true; }
 				$audit = self::audit_table(); $tables = $wpdb->get_col( 'SHOW TABLES' );
@@ -195,25 +281,37 @@ final class HJ_Vote_Manager_Demo {
 		}
 		?>
 		<div class="wrap"><h1>مدیریت رأی جراحان نمونه</h1>
-		<p>فقط رأی‌های جراحان نشان‌دار نمونه. تأیید/رد، امتیاز و متن قابل تغییر است؛ با هر تغییر یک گزارش ذخیره می‌شود. رد، حذف فیزیکی نیست. صفحه و کش عمومی ممکن است با تأخیر تغییر کنند.</p>
+		<p>فقط رأی‌های جراحان نشان‌دار نمونه. تأیید/رد، امتیاز و متن قابل تغییر است. رد، حذف فیزیکی نیست؛ حذف دائمی جداگانه با تأیید صریح و دلیل انجام می‌شود و بازگردانی خودکار ندارد. تغییر و حذف در گزارش ثبت می‌شوند. کش عمومی ممکن است با تأخیر تغییر کند.</p>
 		<?php if ( is_wp_error( $schema ) ) : ?><div class="notice notice-error"><p><?php echo esc_html( $schema->get_error_message() ); ?></p></div><?php endif; ?>
 		<?php if ( $error ) : ?><div class="notice notice-error"><p><?php echo esc_html( $error ); ?></p></div><?php endif; ?>
 		<?php if ( isset( $_GET['saved'] ) && $_GET['saved'] === '1' ) : ?><div class="notice notice-success"><p>تغییر رأی و گزارش آن ذخیره شد.</p></div><?php endif; ?>
+		<?php if ( isset( $_GET['deleted'] ) && $_GET['deleted'] === '1' ) : ?><div class="notice notice-success"><p>رأی حذف و گزارش آن ثبت شد.</p></div><?php endif; ?>
 		<form method="get" action="<?php echo esc_url( admin_url( 'tools.php' ) ); ?>"><input type="hidden" name="page" value="hj-vote-manager"><label for="hj-vm-doctor">جراح نمونه:</label> <select id="hj-vm-doctor" name="doctor" required><option value="">انتخاب کنید</option><?php foreach ( $doctors as $d ) : if ( ! self::demo_doctor( $d->ID ) ) { continue; } ?><option value="<?php echo esc_attr( $d->ID ); ?>" <?php selected( $doctor, $d->ID ); ?>><?php echo esc_html( get_the_title( $d ) ); ?></option><?php endforeach; ?></select> <?php submit_button( 'نمایش رأی‌ها', 'secondary', 'submit', false ); ?></form>
 		<?php if ( $doctor && ! self::demo_doctor( $doctor ) ) : ?><p>جراح نمونه پیدا نشد.</p><?php endif; ?>
 		<?php if ( $doctor && self::demo_doctor( $doctor ) && ! is_wp_error( $schema ) ) : ?><h2>رأی‌های نمونه (۵۰ مورد در هر صفحه)</h2><?php if ( ! $rows && ! $error ) : ?><p>رأیی پیدا نشد.</p><?php endif; ?>
-		<?php foreach ( $rows as $row ) : list( $marker, $body ) = self::split_marker( $row['comment'] ); ?>
+		<?php foreach ( $rows as $raw ) :
+			$delete_expected = self::full_snapshot( $raw );
+			$row = array( 'vote_id' => $raw[ $schema['id'] ], 'doctor_id' => $raw[ $schema['doctor'] ], 'rating' => $raw[ $schema['rating'] ], 'status' => $raw[ $schema['status'] ], 'comment' => $raw[ $schema['comment'] ] );
+			list( $marker, $body ) = self::split_marker( $row['comment'] ); ?>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="background:#fff;border:1px solid #ddd;padding:16px;margin:16px 0;max-width:800px">
 		<h3>رأی شماره <?php echo esc_html( $row['vote_id'] ); ?></h3><input type="hidden" name="action" value="hj_vote_manager_save"><input type="hidden" name="doctor" value="<?php echo esc_attr( $doctor ); ?>"><input type="hidden" name="vote" value="<?php echo esc_attr( $row['vote_id'] ); ?>"><input type="hidden" name="expected" value="<?php echo esc_attr( self::snapshot( $row ) ); ?>"><?php wp_nonce_field( 'hj_vote_manager_save_' . $row['vote_id'] ); ?>
 		<p><label>وضعیت: <select name="state" required><?php if ( ! in_array( $row['status'], array( 'pending', 'approved', 'rejected' ), true ) ) : ?><option value="" selected disabled>یک وضعیت انتخاب کنید</option><?php endif; ?><option value="pending" <?php selected( $row['status'], 'pending' ); ?>>در انتظار</option><option value="approved" <?php selected( $row['status'], 'approved' ); ?>>تأییدشده</option><option value="rejected" <?php selected( $row['status'], 'rejected' ); ?>>ردشده</option></select></label> <small>وضعیت فعلی: <?php echo esc_html( $row['status'] ); ?></small></p>
 		<p><label>امتیاز: <select name="rating" required><?php if ( (int) $row['rating'] < 1 || (int) $row['rating'] > 5 ) : ?><option value="" selected disabled>یک امتیاز انتخاب کنید</option><?php endif; ?><?php for ( $i = 1; $i <= 5; $i++ ) : ?><option value="<?php echo esc_attr( $i ); ?>" <?php selected( (int) $row['rating'], $i ); ?>><?php echo esc_html( $i ); ?></option><?php endfor; ?></select></label></p>
 		<p><label>متن نظر:<br><textarea name="body" class="large-text" rows="3"><?php echo esc_textarea( $body ); ?></textarea></label><?php if ( $marker ) : ?><small> نشان ردیابی آزمایش در ذخیره حفظ می‌شود.</small><?php endif; ?></p>
 		<p><label>دلیل تغییر (در گزارش مدیر ثبت می‌شود):<br><textarea name="reason" class="large-text" rows="2" required></textarea></label></p><?php submit_button( 'ذخیره تغییر', 'primary' ); ?></form>
+		<?php if ( $delete_expected !== '' ) : ?><details style="max-width:800px;margin:0 0 24px"><summary>حذف دائمی رأی شماره <?php echo esc_html( $row['vote_id'] ); ?></summary>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="border:1px solid #b32d2e;background:#fff;padding:16px">
+		<p><strong>این کار رأی را از جدول حذف می‌کند و بازگردانی خودکار ندارد. گزارش جایگزین پشتیبان کامل نیست.</strong></p>
+		<input type="hidden" name="action" value="hj_vote_manager_delete"><input type="hidden" name="doctor" value="<?php echo esc_attr( $doctor ); ?>"><input type="hidden" name="vote" value="<?php echo esc_attr( $row['vote_id'] ); ?>"><input type="hidden" name="expected" value="<?php echo esc_attr( $delete_expected ); ?>"><?php wp_nonce_field( 'hj_vote_manager_delete_' . $row['vote_id'] ); ?>
+		<p><label>دلیل حذف:<br><textarea name="reason" class="large-text" rows="2" required></textarea></label></p><p><label><input type="checkbox" name="confirm" value="delete" required> حذف دائمی همین رأی را تأیید می‌کنم.</label></p><?php submit_button( 'حذف دائمی رأی', 'delete' ); ?></form></details><?php endif; ?>
 		<?php endforeach; ?>
 		<p>صفحه <?php echo esc_html( $page_number ); ?>
 		<?php if ( $page_number > 1 ) : ?><a class="button" href="<?php echo esc_url( add_query_arg( array( 'page' => 'hj-vote-manager', 'doctor' => $doctor, 'vote_page' => $page_number - 1 ), admin_url( 'tools.php' ) ) ); ?>">صفحه قبل</a><?php endif; ?>
 		<?php if ( $has_more ) : ?><a class="button" href="<?php echo esc_url( add_query_arg( array( 'page' => 'hj-vote-manager', 'doctor' => $doctor, 'vote_page' => $page_number + 1 ), admin_url( 'tools.php' ) ) ); ?>">صفحه بعد</a><?php endif; ?></p>
-		<h2>تاریخچه تغییرات (حداکثر ۳۰ مورد)</h2><?php if ( ! $history ) : ?><p>گزارشی ثبت نشده یا در دسترس نیست.</p><?php else : ?><ul><?php foreach ( $history as $event ) : ?><li><?php echo esc_html( 'رأی ' . $event['vote_id'] . ' | مدیر ' . $event['actor_id'] . ' | ' . $event['occurred_utc'] . ' UTC | وضعیت ' . $event['old_status'] . ' ← ' . $event['new_status'] . ' | امتیاز ' . $event['old_rating'] . ' ← ' . $event['new_rating'] . ' | دلیل: ' . $event['reason'] ); ?></li><?php endforeach; ?></ul><?php endif; ?>
+		<h2>تاریخچه تغییرات (حداکثر ۳۰ مورد)</h2><?php if ( ! $history ) : ?><p>گزارشی ثبت نشده یا در دسترس نیست.</p><?php else : ?><ul><?php foreach ( $history as $event ) :
+			$is_delete = $event['new_status'] === 'deleted' && (int) $event['new_rating'] === 0;
+			$change = $is_delete ? 'حذف دائمی | وضعیت قبلی ' . $event['old_status'] . ' | امتیاز قبلی ' . $event['old_rating'] : 'وضعیت ' . $event['old_status'] . ' ← ' . $event['new_status'] . ' | امتیاز ' . $event['old_rating'] . ' ← ' . $event['new_rating'];
+			?><li><?php echo esc_html( 'رأی ' . $event['vote_id'] . ' | مدیر ' . $event['actor_id'] . ' | ' . $event['occurred_utc'] . ' UTC | ' . $change . ' | دلیل: ' . $event['reason'] ); ?></li><?php endforeach; ?></ul><?php endif; ?>
 		<?php endif; ?></div><?php
 	}
 }
