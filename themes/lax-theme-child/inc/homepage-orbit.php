@@ -87,7 +87,11 @@ function hj_orbit_update_current() {
 	try {
 		$latest = $wpdb->get_var( $wpdb->prepare( "SELECT post_content FROM {$wpdb->posts} WHERE ID = %d", $id ) );
 		if ( $latest !== $page->post_content || get_option( 'show_on_front' ) !== 'page' || (int) get_option( 'page_on_front' ) !== $id || hj_orbit_locked( $id ) ) { return new WP_Error( 'hj_orbit_changed', 'برگه یا تنظیم صفحه نخست تغییر کرده است؛ عملیات لغو شد.' ); }
-		$revision = wp_save_post_revision( $id );
+		// WordPress normally skips a revision when normalized whitespace matches
+		// the previous one. Require an exact fresh snapshot for this operation.
+		add_filter( 'wp_save_post_revision_check_for_changes', '__return_false', PHP_INT_MAX );
+		try { $revision = wp_save_post_revision( $id ); }
+		finally { remove_filter( 'wp_save_post_revision_check_for_changes', '__return_false', PHP_INT_MAX ); }
 		if ( is_wp_error( $revision ) ) { return new WP_Error( 'hj_orbit_backup', 'ساخت رونوشت ناموفق بود؛ تغییری انجام نشد.' ); }
 		$recent = wp_get_post_revisions( $id, array( 'posts_per_page' => 1, 'orderby' => 'date ID', 'order' => 'DESC' ) );
 		$backup = $revision ? get_post( $revision ) : ( $recent ? reset( $recent ) : null );
