@@ -22,6 +22,10 @@ hd_assert( substr_count( $built['content'], '[hj_member_google]' ) === 1, 'one p
 hd_assert( strpos( $built['content'], '[hj_home_google]' ) !== false, 'surgeon login retained' );
 hd_assert( strpos( $built['content'], 'محتوای ویرایشی ویژه' ) !== false, 'editorial content retained' );
 hd_assert( serialize_blocks( parse_blocks( $built['content'] ) ) === $built['content'], 'round trip blocks' );
+$neo = file_get_contents( dirname( __DIR__, 2 ) . '/homepage/neo-clay.html' );
+$neo_result = hj_home_draft_build( str_replace( '{{DOCTORS}}', 'https://example.invalid/previous/', $neo ), $archive );
+hd_assert( strpos( $neo_result['content'], 'href="' . $archive . '"' ) !== false, 'neo hero archive link' );
+hd_assert( strpos( $neo_result['content'], '[hj_home_google]' ) !== false, 'neo surgeon shortcode retained' );
 $nested = $starter . '<!-- wp:group --><div class="wp-block-group"><!-- wp:shortcode -->[hj_member_google]<!-- /wp:shortcode --></div><!-- /wp:group -->';
 $nested_result = hj_home_draft_build( $nested, $archive );
 hd_assert( substr_count( $nested_result['content'], '[hj_member_google]' ) === 1, 'no duplicate for nested shortcode' );

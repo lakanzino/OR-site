@@ -72,6 +72,7 @@ function hj_home_draft_create() {
 	if ( ! current_user_can( 'manage_options' ) || get_option( 'show_on_front' ) !== 'page' ) { return new WP_Error( 'hj_home_unavailable', 'صفحه نخست ایستا در دسترس نیست.' ); }
 	$id = (int) get_option( 'page_on_front' ); $page = get_post( $id );
 	if ( ! $page || $page->post_type !== 'page' || $page->post_status !== 'publish' || ! current_user_can( 'edit_post', $id ) ) { return new WP_Error( 'hj_home_invalid', 'برگه نخست منتشرشده یا دسترسی ویرایش آن پیدا نشد.' ); }
+	if ( ! function_exists( 'wp_check_post_lock' ) ) { require_once ABSPATH . 'wp-admin/includes/post.php'; }
 	$lock = get_post_meta( $id, '_edit_lock', true );
 	if ( wp_check_post_lock( $id ) || ( $lock && (int) $lock > time() - 150 ) ) { return new WP_Error( 'hj_home_locked', 'برگه نخست در حال ویرایش است. پس از پایان ویرایش و انقضای قفل دوباره تلاش کنید.' ); }
 	$archive = get_post_type_archive_link( 'doctor' ) ?: home_url( '/doctors/' );
