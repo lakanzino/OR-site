@@ -49,13 +49,17 @@ def run():
     check(request(sub, endpoint, valid)[0] == 403 and request(anon, endpoint, valid)[0] in (400,403), 'subscriber and anonymous cannot submit')
     check(request(admin, endpoint + '?action=hj_review_entry')[0] == 405, 'GET denied')
     check(request(admin, endpoint, dict(valid, _wpnonce='invalid'))[0] == 403, 'bad nonce denied')
-    for override in ({'doctor':str(meta['draft'])}, {'doctor':'99999999'}, {'rating':'0'}, {'rating':'-4'}, {'rating':'6'}, {'date':'2024-02-30'}, {'name':' '}, {'comment':' '}):
+    for override in ({'doctor':str(meta['draft'])}, {'doctor':'99999999'}, {'rating':'0'}, {'rating':'-4'}, {'rating':'6'}, {'date':'2024-02-30'}, {'name':' '}, {'name':'Name — Other'}, {'comment':' '}):
         check(request(admin, endpoint, dict(valid, **override))[0] == 400, 'invalid input rejected: ' + repr(override))
     code, headers, body = request(admin, endpoint, valid)
     check(code == 302 and 'saved=1' in headers.get('Location', ''), 'first review saved: ' + str(code) + ' ' + body[-500:])
     second = dict(valid, name='Second Name', comment='Second comment', rating='5', date='2025-08-01')
     code, _, body = request(admin, endpoint, second)
     check(code == 302, 'second review saved despite unique IP placeholder: ' + str(code) + ' ' + body[-500:])
+    code, _, text = request(anon, '/wp-admin/admin-ajax.php', {'action':'hj_profile_load_reviews', 'nonce':meta['reviews_nonce'], 'post_id':str(meta['doctor'])})
+    data = json.loads(text); reviews = data['data']['reviews']
+    expected = ('Synthetic Name', 'Synthetic comment') if os.environ['HJ_TEST_PLUGIN'] == 'review-entry-http-current' else ('نظر ثبت‌شده در سایت', 'Synthetic Name — Synthetic comment')
+    check(code == 200 and data['success'] and len(reviews) == 2 and (reviews[1]['author'], reviews[1]['comment']) == expected, 'public AJAX receives correct author and body')
     def db(action): subprocess.run(['php', 'tools/hj-review-entry/tests/verify-wp.php', action], check=True)
     db('unknown-add'); check(request(admin, endpoint, valid)[0] == 400, 'unknown required column rejected'); db('unknown-drop')
     db('myisam'); check(request(admin, endpoint, valid)[0] == 400, 'non-transactional table rejected'); db('innodb')

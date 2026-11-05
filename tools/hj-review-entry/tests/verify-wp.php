@@ -19,5 +19,13 @@ foreach ( array( $rows[1]['ip_hash'], $rows[2]['ip_hash'] ) as $hash ) {
 	if ( ! preg_match( '/\A[a-f0-9]{64}\z/', $hash ) || in_array( $hash, array( hash( 'sha256', '127.0.0.1' ), hash( 'sha256', '203.0.113.99' ), '127.0.0.1', '203.0.113.99' ), true ) ) { throw new RuntimeException( 'Expected random placeholder, never IP or its hash.' ); }
 }
 $reviews = HJ_Profile_Render::public_reviews( (int) $meta['doctor'] );
-if ( count( $reviews ) !== 2 || $reviews[1]['comment'] !== 'Synthetic Name — Synthetic comment' || $reviews[1]['date'] !== '2024/05/17' || (int) $reviews[1]['rating'] !== 4 || $reviews[1]['author'] !== 'نظر ثبت‌شده در سایت' ) { throw new RuntimeException( 'Public reader differs from stored fields.' ); }
+$current = getenv( 'HJ_TEST_PLUGIN' ) === 'review-entry-http-current';
+$expected_text = $current ? 'Synthetic comment' : 'Synthetic Name — Synthetic comment';
+$expected_author = $current ? 'Synthetic Name' : 'نظر ثبت‌شده در سایت';
+if ( count( $reviews ) !== 2 || $reviews[1]['comment'] !== $expected_text || $reviews[1]['date'] !== '2024/05/17' || (int) $reviews[1]['rating'] !== 4 || $reviews[1]['author'] !== $expected_author ) { throw new RuntimeException( 'Public reader differs from expected fields.' ); }
+if ( $current ) {
+	$page = HJ_Profile_Page::render( (int) $meta['doctor'] );
+	$alternate = HJ_Profile_Render::get_instance()->render_profile( (int) $meta['doctor'] );
+	if ( strpos( $page, '<strong>Synthetic Name</strong>' ) === false || strpos( $page, '<p>Synthetic comment</p>' ) === false || strpos( $page, 'نظر ثبت‌شده در سایت' ) !== false || strpos( $alternate, 'class="hj-review__author">Synthetic Name</span>' ) === false || strpos( $alternate, 'class="hj-review__body">Synthetic comment</div>' ) === false || strpos( $alternate, 'نظر ثبت‌شده در سایت' ) !== false ) { throw new RuntimeException( 'Public profile output did not place the name separately.' ); }
+}
 echo "PASS: two entries, dates, public reader, no IP, placeholder and untouched existing record.\n";

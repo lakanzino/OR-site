@@ -43,7 +43,7 @@ $before = $wpdb->get_results( "SELECT * FROM `{$table}` ORDER BY id", ARRAY_A );
 $reviews = HJ_Profile_Render::public_reviews( $doctor );
 $after = $wpdb->get_results( "SELECT * FROM `{$table}` ORDER BY id", ARRAY_A );
 hj_review_label_check( 1 === count( $reviews ), 'pending review omitted in this status-column fixture' );
-hj_review_label_check( 'نظر ثبت‌شده در سایت' === $reviews[0]['author'], 'neutral label on approved review' );
+hj_review_label_check( '' === $reviews[0]['author'], 'no invented author on approved review' );
 hj_review_label_check( 'Synthetic approved comment' === $reviews[0]['comment'] && 4 === $reviews[0]['rating'], 'review content and rating unchanged' );
 hj_review_label_check( $before === $after, 'reading review leaves synthetic votes unchanged' );
 file_put_contents( '/wordpress/hj-review-label-result.txt', "PASS: review label fixture\n" );

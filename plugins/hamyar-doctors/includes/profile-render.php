@@ -531,13 +531,21 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 					continue;
 				}
 
+				// Review Entry stores the author's name before the exact separator in the comment.
+				// Do not infer names from the explicitly marked Vote Lab comments.
+				$author = '';
+				if ( strpos( $comment, '[نظر آزمایشی' ) !== 0 && preg_match( '/\A([^\r\n]{1,100}?) — (.+)\z/us', $comment, $parts ) && trim( $parts[1] ) !== '' && trim( $parts[2] ) !== '' ) {
+					$author = trim( $parts[1] );
+					$comment = $parts[2];
+				}
+
 				$timestamp = 0;
 				if ( '' !== $created ) {
 					$timestamp = is_numeric( $created ) ? (int) $created : (int) strtotime( (string) $created );
 				}
 
 				$reviews[] = array(
-					'author'  => 'نظر ثبت‌شده در سایت',
+					'author'  => $author,
 					'rating'  => $rating,
 					'comment' => $comment,
 					'date'    => $timestamp > 0 ? gmdate( 'Y/m/d', $timestamp ) : '',

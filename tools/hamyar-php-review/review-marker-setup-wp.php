@@ -29,7 +29,7 @@ $rows = array(
 foreach ( $rows as $row ) { if ( 1 !== $wpdb->insert( $table, $row ) ) { throw new RuntimeException( 'Vote setup failed.' ); } }
 $before = $wpdb->get_results( "SELECT * FROM `{$table}` ORDER BY id", ARRAY_A );
 $reviews = HJ_Profile_Render::public_reviews( $demo ); $comments = array_column( $reviews, 'comment' );
-if ( count( $reviews ) !== 4 || ! in_array( '[نظر آزمایشی] Synthetic <b>approved</b> & text', $comments, true ) || ! in_array( 'Ordinary synthetic text', $comments, true ) || ! in_array( $malformed . 'Do not rewrite', $comments, true ) || ! in_array( 'Infix ' . $marker . 'do not rewrite', $comments, true ) ) { throw new RuntimeException( 'Demo reader output wrong.' ); }
+if ( count( $reviews ) !== 4 || array_unique( array_column( $reviews, 'author' ) ) !== array( '' ) || ! in_array( '[نظر آزمایشی] Synthetic <b>approved</b> & text', $comments, true ) || ! in_array( 'Ordinary synthetic text', $comments, true ) || ! in_array( $malformed . 'Do not rewrite', $comments, true ) || ! in_array( 'Infix ' . $marker . 'do not rewrite', $comments, true ) ) { throw new RuntimeException( 'Demo reader output wrong.' ); }
 $other_reviews = HJ_Profile_Render::public_reviews( $other );
 if ( count( $other_reviews ) !== 1 || $other_reviews[0]['comment'] !== $marker . 'Unmarked physician' ) { throw new RuntimeException( 'Unmarked reader changed.' ); }
 $html = HJ_Profile_Render::get_instance()->render_profile( $demo );

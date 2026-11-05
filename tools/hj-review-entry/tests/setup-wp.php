@@ -14,5 +14,6 @@ $draft = wp_insert_post( array( 'post_type' => 'doctor', 'post_status' => 'draft
 if ( is_wp_error( $doctor ) || is_wp_error( $draft ) || ! $doctor || ! $draft ) { throw new RuntimeException( 'Doctor setup failed.' ); }
 $sub = wp_create_user( 'entry_subscriber', 'disposable-password', 'entry-sub@example.invalid' ); if ( is_wp_error( $sub ) ) { throw new RuntimeException( 'User setup failed.' ); }
 $tables = $wpdb->get_col( 'SHOW TABLES' ); sort( $tables );
-file_put_contents( getenv( 'RUNNER_TEMP' ) . '/review-entry-meta.json', wp_json_encode( array( 'doctor' => $doctor, 'draft' => $draft, 'tables' => $tables ) ) );
+wp_set_current_user( 0 );
+file_put_contents( getenv( 'RUNNER_TEMP' ) . '/review-entry-meta.json', wp_json_encode( array( 'doctor' => $doctor, 'draft' => $draft, 'tables' => $tables, 'reviews_nonce' => wp_create_nonce( 'hj_profile_reviews_nonce' ) ) ) );
 echo "PASS: independent review entry fixture ready.\n";

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: HJ Review Entry
  * Description: Simple administrator entry of a review for an existing surgeon.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Requires at least: 6.4
  * Requires PHP: 8.0
  * Author: Hamyar Jarahi
@@ -74,7 +74,7 @@ final class HJ_Review_Entry {
 		if ( ! current_user_can( 'manage_options' ) || ! is_int( $doctor ) || ! self::valid_doctor( $doctor ) ) { return self::error( 'دسترسی یا جراح انتخاب‌شده معتبر نیست.' ); }
 		if ( ! is_string( $name ) || ! is_string( $text ) || ! is_int( $rating ) || $rating < 1 || $rating > 5 || ! is_string( $date ) || ! preg_match( '/\A\d{4}-\d{2}-\d{2}\z/', $date ) ) { return self::error( 'اطلاعات واردشده معتبر نیست.' ); }
 		$name = trim( sanitize_text_field( $name ) ); $text = trim( sanitize_textarea_field( $text ) );
-		if ( $name === '' || $text === '' || strlen( $name ) > 300 || strlen( $text ) > 4000 ) { return self::error( 'نام و متن لازم است و نباید بیش از حد طولانی باشد.' ); }
+		if ( $name === '' || $text === '' || strlen( $name ) > 300 || strlen( $text ) > 4000 || ! preg_match( '/\A[^\r\n]{1,100}\z/u', $name ) || strpos( $name, ' — ' ) !== false ) { return self::error( 'نام و متن لازم‌اند؛ نام نمی‌تواند شامل جداکننده « — » باشد.' ); }
 		$d = DateTimeImmutable::createFromFormat( '!Y-m-d', $date, new DateTimeZone( 'UTC' ) );
 		if ( ! $d || $d->format( 'Y-m-d' ) !== $date || $date < '1970-01-01' || $date > '2100-12-31' ) { return self::error( 'تاریخ معتبر وارد کنید.' ); }
 		$old = $wpdb->suppress_errors( true );

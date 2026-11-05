@@ -679,7 +679,7 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 										<div class="hj-review">
 											<div class="hj-review__header">
 												<div class="hj-review__who">
-													<div class="hj-avatar" aria-hidden="true"><?php echo esc_html( $initial ); ?></div>
+													<?php if ( '' !== $author ) : ?><div class="hj-avatar" aria-hidden="true"><?php echo esc_html( $initial ); ?></div><?php endif; ?>
 													<strong><?php echo esc_html( $author ); ?></strong>
 												</div>
 												<?php if ( '' !== $date ) : ?>
