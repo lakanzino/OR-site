@@ -162,6 +162,8 @@ jobs:
         run: |
           set -euo pipefail
           php themes/lax-theme-child/tests/integration/homepage-browser-setup.php
+          mkdir -p /wordpress/wp-content/mu-plugins
+          ln -s "$GITHUB_WORKSPACE/themes/lax-theme-child/tests/integration/homepage-debug-mu.php" /wordpress/wp-content/mu-plugins/hj-fixture-debug.php
           npm install --no-save --no-audit --no-fund playwright-core
           export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
           sudo php -S 127.0.0.1:80 -t /wordpress > /tmp/hj-orbit-server.log 2>&1 &

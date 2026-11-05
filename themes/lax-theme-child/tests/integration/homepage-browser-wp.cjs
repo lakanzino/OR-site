@@ -17,7 +17,11 @@ const base = 'http://example.invalid';
   await page.goto(base + '/wp-admin/themes.php?page=hj-orbit-home', {waitUntil:'domcontentloaded'});
   assert.equal(await page.locator('input[name="action"][value="hj_orbit_apply"]').count(),1, 'admin apply form');
   await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded', timeout:30000}), page.locator('form input[type="submit"]').click()]);
-  if (!page.url().includes('/wp-admin/post.php?')) throw new Error('apply failed url=' + page.url() + ' body=' + (await page.locator('body').innerText()).slice(0,1000));
+  if (!page.url().includes('/wp-admin/post.php?')) {
+   const body = (await page.locator('body').innerText()).slice(0,1000);
+   await page.goto(base + '/wp-admin/admin-post.php?action=hj_fixture_revision_debug');
+   throw new Error('apply failed: ' + body + ' diagnostic=' + (await page.locator('body').innerText()).slice(0,1600));
+  }
   for (const width of [280,320,360,375,414,768,980,1280,1440]) {
    await page.setViewportSize({width,height:900});
    response=await page.goto(base + '/', {waitUntil:'domcontentloaded'}); assert.equal(response.status(),200);
