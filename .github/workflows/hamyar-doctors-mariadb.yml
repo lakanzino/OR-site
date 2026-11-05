@@ -72,6 +72,8 @@ jobs:
           echo '9de885e4f00ae95549e7e599bbaff4333cbcfd77425cabb24e088adf6dd6f848  '"$RUNNER_TEMP/hj-wp/wordpress.zip" | sha256sum -c -
           unzip -q "$RUNNER_TEMP/hj-wp/wordpress.zip" -d "$RUNNER_TEMP/hj-wp"
           sudo ln -s "$RUNNER_TEMP/hj-wp/WordPress-7.1.4" /wordpress
+          ln -s "$GITHUB_WORKSPACE/themes/lax-theme" /wordpress/wp-content/themes/lax-theme
+          ln -s "$GITHUB_WORKSPACE/themes/lax-theme-child" /wordpress/wp-content/themes/lax-theme-child
           if [ '${{ matrix.plugin }}' != 'current' ] && [ '${{ matrix.plugin }}' != 'review-marker-http-current' ] && [ '${{ matrix.plugin }}' != 'vote-manager-http-current' ] && [ '${{ matrix.plugin }}' != 'review-entry-http-current' ]; then
             ln -s "$GITHUB_WORKSPACE/ci-baseline/plugins/hamyar-doctors" /wordpress/wp-content/plugins/hamyar-doctors
           else
@@ -150,5 +152,28 @@ jobs:
           if [ "$status" -ne 0 ]; then
             summary=$(printf '%s' "$output" | head -c 3000 | tr '\n' ' ')
             echo "::error title=Homepage orbit test::$summary"
+          fi
+          exit "$status"
+
+      - name: Exercise real WordPress homepage in Chrome
+        if: matrix.plugin == 'current'
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: |
+          set -euo pipefail
+          php themes/lax-theme-child/tests/integration/homepage-browser-setup.php
+          npm install --no-save --no-audit --no-fund playwright-core
+          export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          sudo php -S 127.0.0.1:80 -t /wordpress > /tmp/hj-orbit-server.log 2>&1 &
+          server=$!
+          trap 'sudo kill "$server" || true' EXIT
+          sleep 2
+          set +e
+          output=$(node themes/lax-theme-child/tests/integration/homepage-browser-wp.cjs 2>&1)
+          status=$?
+          echo "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | head -c 3000 | tr '\n' ' ')
+            echo "::error title=Real homepage browser test::$summary"
           fi
           exit "$status"
