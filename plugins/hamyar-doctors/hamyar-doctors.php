@@ -2,7 +2,7 @@
 /**
  * Plugin Name: همیار پزشک‌ها
  * Description: نوع محتوای «پزشک» با تخصص و شهر، زمینه‌های نمایه (JSON محلی ACF بدون Sync دستی) و دسترسی نقشِ پزشک فقط به نمایهٔ خودش؛ مستقل از قالب فرزند و بی‌صدا در debug.log.
- * Version: 0.3.16
+ * Version: 0.3.17
  * Requires at least: 6.4
  * Requires PHP: 8.0
  * Author: همیار جراحی
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'HJ_DOCTORS_VERSION', '0.3.16' );
+define( 'HJ_DOCTORS_VERSION', '0.3.17' );
 define( 'HJ_DOCTORS_FILE', __FILE__ );
 define( 'HJ_DOCTORS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'HJ_DOCTORS_URL', plugin_dir_url( __FILE__ ) );
@@ -200,6 +200,7 @@ final class HJ_Doctors {
 			'includes/member-engagement.php',     // ورود عمومی و پیگیری خصوصی اعضا.
 			'includes/magazine.php',              // اشتراک اختیاری مجله.
 			'includes/review-admin.php',          // صف بررسی و ویرایش پزشکان.
+			'includes/vote-structure-report.php',  // تجمیع فقط‌خواندنی ساختار رأی (بدون خواندن ردیف).
 			'includes/admin-data-status.php',     // گزارش کمینهٔ مدیر، جدا از ابزارهای تغییر داده.
 			'includes/auth-google.php',           // بخش ۵ — پل ورود با گوگل (Nextend).
 			'includes/archive-render.php',        // بخش ۸ — آرشیو پزشکان و صفحات تخصص/استان/شهر/نوع تخصص.

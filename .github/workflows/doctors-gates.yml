@@ -1,0 +1,49 @@
+name: doctors gates
+
+# The hamyar-doctors plugin had no automated gate: its WordPress fixtures need a
+# disposable site, but the aggregate report can be tested with a simulated $wpdb
+# and a real PHP parser. Everything here is reproducible with the same command.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  unit:
+    name: vote-structure unit test + package drift
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: install php-wasm
+        run: npm install --prefix /tmp/php --no-audit --no-fund @php-wasm/node@3.1.54 @php-wasm/universal@3.1.54
+
+      - name: vote structure aggregate unit test
+        env:
+          HJ_PHP_WASM_ROOT: /tmp/php
+        run: node tools/hamyar-php-review/run-vote-structure-report-test.mjs
+
+      - name: wrapper guard test
+        env:
+          HJ_PHP_WASM_ROOT: /tmp/php
+        run: node tools/hamyar-php-review/run-seed-wrapper-guard-test.mjs
+
+      - name: package matches runtime source
+        run: |
+          set -eux
+          python3 tools/build-doctors-package.py --check
+          python3 plugins/hamyar-doctors/tests/test_release_package.py

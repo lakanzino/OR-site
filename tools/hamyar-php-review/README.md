@@ -35,6 +35,12 @@ HJ_PHP_WASM_ROOT=/tmp/or-site-php node tools/hamyar-php-review/run-seed-hook-tes
 
 `vote-moderation-prototype-wp.php` fixture مخرب است و داده‌های مصنوعی را در جدول‌های اختصاصی تست ایجاد و تغییر می‌دهد. افزونه/endpoint نیست، به DB رأی اصلی وصل نمی‌شود و هیچ‌گاه روی سایت یا کپی آن اجرا نشود. workflow MariaDB دورریختنی اجرای آن را به شکل برنامه‌ای می‌آزماید؛ مستند محدوده و کمبودهای آن در `docs/handover/VOTE-MODERATION-SYNTHETIC-PROTOTYPE-2026-11-05.fa.md` آمده است. تست موفق به معنای آمادگی نصب یا اثبات معنای status در سایت نیست.
 
+## آزمون واحد تجمیع ساختار رأی (شبیه‌ساز `$wpdb`)
+
+با همان وابستگی‌های بخش قبل: `HJ_PHP_WASM_ROOT=/tmp/or-site-php node tools/hamyar-php-review/run-vote-structure-report-test.mjs`
+
+این آزمون فایل `plugins/hamyar-doctors/includes/vote-structure-report.php` را با PHP واقعی بارگذاری می‌کند و با یک `$wpdb` ساختگی (پاسخ‌های تجویزشده) نبود جدول، خطای بررسی، شمار ردیف، یکتایی/تکرار/مقدار خالی شناسه، توزیع وضعیت، سقف ۱۲ مقدار، سقف ردیف و نام جدول ناامن را می‌سنجد؛ هم‌زمان بررسی می‌کند که هر کوئری فقط `SELECT` تجمیعی باشد و ستون هویت نخواند. وردپرس، MySQL، صفحهٔ پیشخوان، کارایی جدول واقعی و فیلترهای افزونه‌های دیگر را آزمون نمی‌کند.
+
 ## قواعدی که بررسی می‌شود
 
 | قاعده | چه چیزی را می‌گیرد |

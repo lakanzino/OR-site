@@ -40,6 +40,7 @@ hj_vote_schema_assert( $before === $after, 'report did not mutate fixture vote r
 hj_vote_schema_assert( false !== strpos( $html, 'جدول رأی</th><td>توسط پل رأی شناسایی شد</td>' ) && false !== strpos( $html, 'ستون وضعیت</th><td>شناسایی نشد</td>' ), 'report displays recognized table and absent status' );
 hj_vote_schema_assert( false !== strpos( $html, 'شناسه به‌تنهایی کلید اصلی است</th><td>بله</td>' ) && false !== strpos( $html, 'جدول پل و جدول پیش‌فرض نمایش نظر</th><td>نام جدول یکسان است</td>' ), 'report displays metadata without column names' );
 hj_vote_schema_assert( false === strpos( $html, '424242' ) && false === strpos( $html, '12345' ), 'report does not expose fixture vote or doctor identifiers' );
+hj_vote_schema_assert( false !== strpos( $html, 'تعداد ردیف رأی</th><td>1</td>' ) && false !== strpos( $html, 'یکتایی ستون شناسه</th><td>یکتا</td>' ), 'combined report displays aggregate vote count and uniqueness' );
 $result = $wpdb->query( "ALTER TABLE `{$table}` ADD COLUMN status VARCHAR(20)" );
 if ( false === $result ) { throw new Exception( 'Could not add fixture status column: ' . $wpdb->last_error ); }
 $cache->setValue( null, null );
@@ -48,6 +49,11 @@ $summary = hj_doctors_vote_schema_summary( $schema );
 hj_vote_schema_assert( 'شناسایی شد' === $summary['status'], 'status column recognized after schema refresh' );
 $details = hj_doctors_vote_structure_details( $schema );
 hj_vote_schema_assert( 'بله' === $details['primary_id'] && 'متنی یا فهرستی' === $details['status_type'], 'primary key and text status metadata' );
+$wpdb->update( $table, array( 'status' => '<b>trial</b>' ), array( 'id' => 12345 ) );
+$before_status_report = $wpdb->get_results( "SELECT * FROM `{$table}`", ARRAY_A );
+ob_start(); hj_doctors_data_status_page(); $html = ob_get_clean();
+$after_status_report = $wpdb->get_results( "SELECT * FROM `{$table}`", ARRAY_A );
+hj_vote_schema_assert( $before_status_report === $after_status_report && false !== strpos( $html, '&lt;b&gt;trial&lt;/b&gt;: 1' ) && false === strpos( $html, '<b>trial</b>' ), 'aggregate report escapes status values and does not mutate votes' );
 // A separate synthetic table exercises a composite primary key, not live data.
 $composite = $wpdb->prefix . 'hj_fixture_composite_votes';
 if ( ! preg_match( '/^[A-Za-z0-9_]+$/', $composite ) || $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $composite ) ) === $composite ) { throw new Exception( 'Unexpected composite fixture table' ); }
