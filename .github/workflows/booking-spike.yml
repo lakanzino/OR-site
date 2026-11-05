@@ -1,0 +1,88 @@
+name: Disposable booking race spike
+on:
+  push:
+    paths:
+      - 'tools/hj-booking-spike/**'
+      - '.github/workflows/booking-spike.yml'
+  pull_request:
+    paths:
+      - 'tools/hj-booking-spike/**'
+      - '.github/workflows/booking-spike.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  race:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: fixture_root_password
+          MARIADB_DATABASE: hj_fixture_db
+          MARIADB_USER: fixture_user
+          MARIADB_PASSWORD: fixture_only_password
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s --health-timeout=5s --health-retries=20
+    env:
+      HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mysqli
+          coverage: none
+      - name: Prepare disposable WordPress
+        run: |
+          set -euxo pipefail
+          mkdir -p "$RUNNER_TEMP/hj-wp"
+          curl --fail --location --silent --show-error --max-time 120 https://codeload.github.com/WordPress/WordPress/zip/refs/tags/7.1.4 -o "$RUNNER_TEMP/hj-wp/wordpress.zip"
+          echo '9de885e4f00ae95549e7e599bbaff4333cbcfd77425cabb24e088adf6dd6f848  '"$RUNNER_TEMP/hj-wp/wordpress.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/hj-wp/wordpress.zip" -d "$RUNNER_TEMP/hj-wp"
+          sudo ln -s "$RUNNER_TEMP/hj-wp/WordPress-7.1.4" /wordpress
+          cat > /wordpress/wp-config.php <<'PHP'
+          <?php
+          define('DB_NAME', 'hj_fixture_db');
+          define('DB_USER', 'fixture_user');
+          define('DB_PASSWORD', 'fixture_only_password');
+          define('DB_HOST', '127.0.0.1:3306');
+          define('DB_CHARSET', 'utf8mb4');
+          define('DB_COLLATE', '');
+          define('WP_HOME', 'http://example.invalid');
+          define('WP_SITEURL', 'http://example.invalid');
+          define('AUTH_KEY', 'fixture-only-not-a-secret');
+          define('SECURE_AUTH_KEY', 'fixture-only-not-a-secret-2');
+          define('LOGGED_IN_KEY', 'fixture-only-not-a-secret-3');
+          define('NONCE_KEY', 'fixture-only-not-a-secret-4');
+          define('AUTH_SALT', 'fixture-only-not-a-secret-5');
+          define('SECURE_AUTH_SALT', 'fixture-only-not-a-secret-6');
+          define('LOGGED_IN_SALT', 'fixture-only-not-a-secret-7');
+          define('NONCE_SALT', 'fixture-only-not-a-secret-8');
+          $table_prefix = 'hjt_';
+          if (!defined('ABSPATH')) { define('ABSPATH', __DIR__ . '/'); }
+          require_once ABSPATH . 'wp-settings.php';
+          PHP
+      - name: Exercise uniqueness using isolated data
+        run: |
+          set -euxo pipefail
+          php tools/hamyar-php-review/mariadb-fixture.php install
+          php tools/hj-booking-spike/fixture.php install
+          python3 tools/hj-booking-spike/race-test.py
+          php tools/hj-booking-spike/fixture.php verify
+      - name: Exercise transaction-serialized interval prototype
+        run: |
+          set -euxo pipefail
+          php -l tools/hj-booking-spike/interval-engine.php
+          php -l tools/hj-booking-spike/interval-fixture.php
+          set +e
+          output=$(bash -e -c 'php tools/hj-booking-spike/interval-fixture.php setup && python3 tools/hj-booking-spike/interval-race.py && python3 tools/hj-booking-spike/interval-timeout.py && php tools/hj-booking-spike/interval-fixture.php verify && php tools/hj-booking-spike/policy-fixture.php && php tools/hj-booking-spike/schedule-fixture.php && php tools/hj-booking-spike/migration-fixture.php && php tools/hj-booking-spike/secured-fixture.php && python3 tools/hj-booking-spike/secured-race.py && python3 tools/hj-booking-spike/schedule-mutation-race.py && python3 tools/hj-booking-spike/uncoordinated-writer-test.py && python3 tools/hj-booking-spike/metadata-lock-test.py && php tools/hj-booking-spike/acf-failclosed-fixture.php' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3000 | tr '\n' ' ')
+            echo "::error title=Interval spike failure::$summary"
+            exit "$status"
+          fi

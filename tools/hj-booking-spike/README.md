@@ -1,0 +1,9 @@
+# Disposable booking experiments — not installable
+
+Never install these files on a live site. They are guarded CLI-only fixtures for an empty GitHub Actions WordPress/MariaDB service. They are not loaded by `hamyar-doctors`, are not a production backend or a release package, and have no public endpoints or UI. Test data is synthetic.
+
+The original unique-start spike intentionally demonstrates that distinct overlapping starts can both be inserted. The interval experiment instead uses a per-doctor InnoDB row lock, dedicated non-persistent mysqli connection, half-open buffered intervals, bounded retry and idempotency. It exercises actual killed connections before commit and a simulated lost response after commit. Fixtures now also exercise versioned migration, WordPress fallback hours, `wp_timezone()`, status updates, scoped reads, validation, roles, concurrent patients and coordinated schedule edits.
+
+**Important counterexample:** legacy `update_post_meta()` is not automatically covered by a doctor-row lock: the CI fixture deliberately reproduces stale-hours booking. Locking the single fallback metadata row blocks its ordinary writer, and the secured experiment does this. ACF repeater uses multiple rows and is not solved by this; a mock presence of `get_field` makes the secured experiment fail closed, not support ACF. No real ACF Pro integration has been tested.
+
+[CI 42121728532](https://github.com/lakanzino/OR-site/actions/runs/42121728532), commit `980182e`, passed the disposable suite, including the deliberate legacy-writer counterexample and ACF fail-closed stub. Passing that suite is not full stage-2 approval. The guarded prototype has fixed fixture DB/table names and hardcoded test clock injection, not production DB/role integration; incomplete schema, lifecycle/privacy and existing ACF writers remain. Details, limitations and previous CI evidence: `docs/booking/BOOKING-STAGE2-TEST-REPORT.md`.
