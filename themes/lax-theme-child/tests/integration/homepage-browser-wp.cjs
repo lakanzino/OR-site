@@ -22,6 +22,9 @@ const base = 'http://example.invalid';
    await page.goto(base + '/wp-admin/admin-post.php?action=hj_fixture_revision_debug');
    throw new Error('apply failed: ' + body + ' diagnostic=' + (await page.locator('body').innerText()).slice(0,1600));
   }
+  await page.goto(base + '/wp-admin/admin-post.php?action=hj_fixture_revision_debug');
+  const revisionReport = JSON.parse(await page.locator('body').innerText());
+  assert.equal(revisionReport.expected_found, true, 'updated content retains other blocks byte-for-byte and has a pre-change revision');
   for (const width of [280,320,360,375,414,768,980,1280,1440]) {
    await page.setViewportSize({width,height:900});
    response=await page.goto(base + '/', {waitUntil:'domcontentloaded'}); assert.equal(response.status(),200);

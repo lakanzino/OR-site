@@ -84,6 +84,9 @@ function hj_orbit_update_current() {
 	// Cooperating requests take an advisory lock. Other editors still use WP locks.
 	$lock_name = 'hj_home_' . md5( DB_NAME . ':' . $wpdb->prefix . ':' . $id );
 	if ( '1' !== (string) $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 0)', $lock_name ) ) ) { return new WP_Error( 'hj_orbit_busy', 'درخواست دیگری مشغول است یا قفل پایگاه داده در دسترس نیست.' ); }
+	// The theme's normalizer rewrites all text nodes on save; suspend it only
+	// around this targeted change and its snapshot so unrelated blocks survive.
+	add_filter( 'hj_normalize_persian', '__return_false', PHP_INT_MAX );
 	try {
 		$latest = $wpdb->get_var( $wpdb->prepare( "SELECT post_content FROM {$wpdb->posts} WHERE ID = %d", $id ) );
 		if ( $latest !== $page->post_content || get_option( 'show_on_front' ) !== 'page' || (int) get_option( 'page_on_front' ) !== $id || hj_orbit_locked( $id ) ) { return new WP_Error( 'hj_orbit_changed', 'برگه یا تنظیم صفحه نخست تغییر کرده است؛ عملیات لغو شد.' ); }
@@ -102,7 +105,10 @@ function hj_orbit_update_current() {
 		if ( is_wp_error( $result ) ) { return $result; }
 		if ( function_exists( 'orsite_gh_purge_caches' ) ) { orsite_gh_purge_caches(); }
 		return $id;
-	} finally { $wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock_name ) ); }
+	} finally {
+		remove_filter( 'hj_normalize_persian', '__return_false', PHP_INT_MAX );
+		$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', $lock_name ) );
+	}
 }
 add_action( 'admin_menu', function () {
 	add_theme_page( 'اصلاح صفحه نخست فعلی', 'اصلاح صفحه نخست فعلی', 'manage_options', 'hj-orbit-home', 'hj_orbit_admin' );
