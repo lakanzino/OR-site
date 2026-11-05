@@ -52,6 +52,15 @@ function hj_home_draft_build( $content, $archive ) {
 		hj_home_draft_find_hero( $copy, $count, $ok, $archive );
 		if ( $count === 1 && $ok ) { $content = serialize_blocks( $copy ); }
 		else { $warnings[] = 'هیروی شناخته‌شده یکتا نبود؛ عنوان، زیرعنوان و دکمه جراحان را در پیش‌نویس دستی ویرایش کنید.'; }
+		$before_landing = false;
+		foreach ( $blocks as $block ) {
+			$classes = preg_split( '/\s+/', (string) ( $block['attrs']['className'] ?? '' ), -1, PREG_SPLIT_NO_EMPTY );
+			if ( in_array( 'hj-landing', $classes, true ) || in_array( 'hj-neo', $classes, true ) ) {
+				if ( $before_landing ) { $warnings[] = 'بلوک‌هایی پیش از بخش هیرو قرار دارند؛ ترتیب آنها را در پیش‌نویس بررسی کنید.'; }
+				break;
+			}
+			if ( $block['blockName'] !== null || trim( $block['innerHTML'] ) !== '' ) { $before_landing = true; }
+		}
 	}
 	if ( strpos( $content, 'پزشک هستید؟' ) !== false || strpos( $content, 'پزشکان و متخصصان' ) !== false || strpos( $content, 'ورود به پنل پزشک' ) !== false ) {
 		$warnings[] = 'برخی برچسب‌های برگه هنوز «پزشک» دارند؛ در پیش‌نویس آنها را بررسی و در صورت نیاز به «جراح» تغییر دهید.';

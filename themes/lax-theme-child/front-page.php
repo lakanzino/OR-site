@@ -5,7 +5,7 @@ get_header();
 <main id="primary" class="hj-static-home" tabindex="-1">
 	<?php if ( ( 'page' === get_option( 'show_on_front' ) || is_preview() ) && have_posts() ) : ?>
 		<?php while ( have_posts() ) : the_post(); ?>
-			<?php if ( shortcode_exists( 'hj_member_google' ) && ! has_shortcode( get_the_content(), 'hj_member_google' ) ) : ?>
+			<?php if ( ! ( is_preview() && get_post_meta( get_the_ID(), '_hj_home_draft_source', true ) ) && shortcode_exists( 'hj_member_google' ) && ! has_shortcode( get_the_content(), 'hj_member_google' ) ) : ?>
 				<section class="hj-member-home-entry" aria-label="<?php esc_attr_e( 'ورود اعضا', 'lax-theme-child' ); ?>">
 					<p><?php esc_html_e( 'برای پیگیری نظرها و پیشنهادهای خود به جمع اعضای همیار جراحی بپیوندید.', 'lax-theme-child' ); ?></p>
 					<?php echo do_shortcode( '[hj_member_google]' ); ?>

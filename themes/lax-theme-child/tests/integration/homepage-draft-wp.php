@@ -30,6 +30,9 @@ $nested = $starter . '<!-- wp:group --><div class="wp-block-group"><!-- wp:short
 $nested_result = hj_home_draft_build( $nested, $archive );
 hd_assert( substr_count( $nested_result['content'], '[hj_member_google]' ) === 1, 'no duplicate for nested shortcode' );
 hd_assert( count( $nested_result['warnings'] ) > 0, 'nested shortcode warning' );
+$preceded = '<!-- wp:group {"className":"hj-magazine-section"} --><div class="wp-block-group hj-magazine-section"><!-- wp:paragraph --><p>مجله</p><!-- /wp:paragraph --></div><!-- /wp:group -->' . $starter;
+$preceded_result = hj_home_draft_build( $preceded, $archive );
+hd_assert( strpos( implode( ' ', $preceded_result['warnings'] ), 'پیش از بخش هیرو' ) !== false, 'preceding content warned without reordering' );
 $synced = $starter . '<!-- wp:block {"ref":123} /-->';
 hd_assert( strpos( hj_home_draft_build( $synced, $archive )['content'], '[hj_member_google]' ) === false, 'no duplicate when reusable block unknown' );
 $unknown = '<!-- wp:paragraph --><p>متن سفارشی</p><!-- /wp:paragraph -->';
