@@ -14,7 +14,7 @@ function config_doctor( $id, $duration = 30, $buffer = 0 ) {
 $mode = $argv[1] ?? '';
 if ( $mode === 'setup' ) {
 	hj_interval_install();
-	foreach ( array( 101, 102, 103, 104, 105, 106 ) as $id ) { config_doctor( $id, in_array( $id, array( 103, 106 ), true ) ? 60 : 30 ); }
+	foreach ( array( 101, 102, 103, 104, 105, 106, 107, 108, 109 ) as $id ) { config_doctor( $id, in_array( $id, array( 103, 106 ), true ) ? 60 : 30 ); }
 	for ( $i = 0; $i < 10; $i++ ) {
 		$start = gmdate( 'Y-m-d H:i:s', strtotime( '2030-01-01 09:00:00 UTC' ) + $i * 1800 );
 		$r = hj_interval_create( 101, 201, $start, key_for( $i + 1 ) );
@@ -40,7 +40,7 @@ if ( $mode === 'setup' ) {
 	expect( hj_interval_create( 105, 201, '2030-01-03 10:00:00', key_for( 29 ) )['status'] === 'replayed', 'retry after lost response reconciles committed row' );
 } elseif ( $mode === 'race' ) {
 	$worker = getenv( 'HJ_SPIKE_WORKER' ); $kind = getenv( 'HJ_SPIKE_KIND' );
-	if ( ! is_string( $worker ) || ! preg_match( '/^[0-9]{1,2}$/', $worker ) || ! in_array( $kind, array( 'same', 'overlap', 'mixed' ), true ) ) { exit( 1 ); }
+	if ( ! is_string( $worker ) || ! preg_match( '/^[0-9]{1,2}$/', $worker ) || ! in_array( $kind, array( 'same', 'overlap', 'mixed', 'idempotent' ), true ) ) { exit( 1 ); }
 	touch( '/tmp/hj-interval-ready-' . $worker );
 	$until = microtime( true ) + 30;
 	while ( ! file_exists( '/tmp/hj-interval-go' ) && microtime( true ) < $until ) { usleep( 10000 ); clearstatcache(); }
@@ -48,13 +48,30 @@ if ( $mode === 'setup' ) {
 	$i = (int) $worker;
 	$offset = $kind === 'overlap' ? $i * 300 : ( $kind === 'mixed' ? intdiv( $i, 3 ) * 7200 + ( $i % 3 ) * 300 : 0 );
 	$start = gmdate( 'Y-m-d H:i:s', strtotime( '2030-01-02 09:00:00 UTC' ) + $offset );
-	$did = $kind === 'same' ? 102 : ( $kind === 'overlap' ? 103 : 106 );
-	$r = hj_interval_create( $did, 200 + $i, $start, key_for( 1000 + $i + ( $kind === 'same' ? 0 : ( $kind === 'overlap' ? 100 : 200 ) ) ) );
+	$did = $kind === 'same' ? 102 : ( $kind === 'overlap' ? 103 : ( $kind === 'mixed' ? 106 : 109 ) );
+	$patient = $kind === 'idempotent' ? 300 : 200 + $i;
+	$key = $kind === 'idempotent' ? key_for( 1300 ) : key_for( 1000 + $i + ( $kind === 'same' ? 0 : ( $kind === 'overlap' ? 100 : 200 ) ) );
+	$r = hj_interval_create( $did, $patient, $start, $key );
+	echo $r['status'];
+} elseif ( $mode === 'hold' ) {
+	$doctor = (int) ( $argv[2] ?? 0 );
+	$seconds = (int) ( $argv[3] ?? 0 );
+	if ( ! in_array( $doctor, array( 107, 108 ), true ) || ! in_array( $seconds, array( 5, 12 ), true ) ) { exit( 1 ); }
+	$r = hj_interval_transaction( $doctor, function () use ( $seconds ) {
+		touch( '/tmp/hj-interval-held' );
+		sleep( $seconds );
+		return array( 'status' => 'released' );
+	} );
+	echo $r['status'];
+} elseif ( $mode === 'retry' ) {
+	$doctor = (int) ( $argv[2] ?? 0 );
+	if ( ! in_array( $doctor, array( 107, 108 ), true ) ) { exit( 1 ); }
+	$r = hj_interval_create( $doctor, 201, '2030-01-02 09:00:00', key_for( $doctor + 5000 ) );
 	echo $r['status'];
 } elseif ( $mode === 'verify' ) {
 	$db = hj_interval_connection();
 	try {
-		foreach ( array( 102, 103 ) as $id ) {
+		foreach ( array( 102, 103, 109 ) as $id ) {
 			$rows = hj_interval_query( $db, "SELECT COUNT(*) AS n FROM hjt_hjb_spike_appointments WHERE doctor_id=? AND status IN ('pending','confirmed')", 'i', $id );
 			expect( (int) $rows[0]['n'] === 1, 'exactly one race winner for doctor ' . $id );
 		}

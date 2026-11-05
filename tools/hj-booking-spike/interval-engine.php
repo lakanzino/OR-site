@@ -79,7 +79,14 @@ function hj_interval_create( $doctor_id, $patient_id, $start, $key, $fault = '' 
 		if ( $start < $config['window_start'] || $end > $config['window_end'] ) { return array( 'status' => 'invalid_slot' ); }
 		$overlap = hj_interval_query( $db, "SELECT id FROM hjt_hjb_spike_appointments WHERE doctor_id=? AND status IN ('pending','confirmed') AND starts_at < ? AND blocked_until > ? LIMIT 1", 'iss', $doctor_id, $blocked, $start );
 		if ( $overlap ) { return array( 'status' => 'overlap' ); }
-		hj_interval_query( $db, "INSERT INTO hjt_hjb_spike_appointments (doctor_id, patient_id, request_key, request_hash, starts_at, ends_at, blocked_until, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')", 'iisssss', $doctor_id, $patient_id, $key, $hash, $start, $end, $blocked );
+		try {
+			hj_interval_query( $db, "INSERT INTO hjt_hjb_spike_appointments (doctor_id, patient_id, request_key, request_hash, starts_at, ends_at, blocked_until, status) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')", 'iisssss', $doctor_id, $patient_id, $key, $hash, $start, $end, $blocked );
+		} catch ( mysqli_sql_exception $e ) {
+			// Another doctor may have committed the same globally unique key after
+			// our snapshot. Do not reveal its owner or replay a different request.
+			if ( $e->getCode() === 1062 ) { return array( 'status' => 'idempotency_conflict' ); }
+			throw $e;
+		}
 		$id = $db->insert_id;
 		if ( $fault === 'disconnect_before_commit' ) {
 			// CI-only injection: close server connection after INSERT before COMMIT.

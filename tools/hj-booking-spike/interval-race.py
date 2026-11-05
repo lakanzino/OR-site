@@ -9,7 +9,7 @@ if os.getenv('GITHUB_ACTIONS') != 'true' or os.getenv('HJ_DISPOSABLE_MARIADB_FIX
     raise SystemExit('Disposable CI only')
 go = Path('/tmp/hj-interval-go')
 ready = [Path(f'/tmp/hj-interval-ready-{i}') for i in range(12)]
-for kind in ('same', 'overlap', 'mixed'):
+for kind in ('same', 'overlap', 'mixed', 'idempotent'):
     for path in [go, *ready]:
         path.unlink(missing_ok=True)
     workers = []
@@ -32,7 +32,8 @@ for kind in ('same', 'overlap', 'mixed'):
                 raise RuntimeError(f'Worker failed: {stderr}')
             outputs.append(stdout.strip())
         expected = 4 if kind == 'mixed' else 1
-        if outputs.count('created') != expected or outputs.count('overlap') != len(ready) - expected:
+        loser = 'replayed' if kind == 'idempotent' else 'overlap'
+        if outputs.count('created') != expected or outputs.count(loser) != len(ready) - expected:
             raise AssertionError(outputs)
         print(f'PASS: {kind} race: {expected} winners out of twelve synchronized processes')
     finally:
