@@ -64,11 +64,11 @@ function hj_interval_configure( $doctor_id, $duration, $buffer, $start, $end ) {
 		return array( 'status' => 'configured' );
 	} );
 }
-function hj_interval_create( $doctor_id, $patient_id, $start, $key, $fault = '' ) {
+function hj_interval_create( $doctor_id, $patient_id, $start, $key, $fault = '', $schedule_validator = null ) {
 	$start_ts = hj_interval_timestamp( $start );
 	if ( ! is_int( $doctor_id ) || $doctor_id < 1 || ! is_int( $patient_id ) || $patient_id < 1 || $start_ts === false || ! is_string( $key ) || ! preg_match( '/^[a-f0-9]{32}$/D', $key ) || ! in_array( $fault, array( '', 'disconnect_before_commit', 'lose_commit_response' ), true ) ) { return array( 'status' => 'invalid' ); }
 	$hash = hash( 'sha256', json_encode( array( $doctor_id, $patient_id, $start ), JSON_THROW_ON_ERROR ) );
-	$result = hj_interval_transaction( $doctor_id, function ( $db, $config ) use ( $doctor_id, $patient_id, $start, $start_ts, $key, $hash, $fault ) {
+	$result = hj_interval_transaction( $doctor_id, function ( $db, $config ) use ( $doctor_id, $patient_id, $start, $start_ts, $key, $hash, $fault, $schedule_validator ) {
 		$existing = hj_interval_query( $db, 'SELECT id, request_hash, status FROM hjt_hjb_spike_appointments WHERE request_key=?', 's', $key );
 		if ( $existing ) {
 			if ( ! hash_equals( $existing[0]['request_hash'], $hash ) ) { return array( 'status' => 'idempotency_conflict' ); }
@@ -77,6 +77,7 @@ function hj_interval_create( $doctor_id, $patient_id, $start, $key, $fault = '' 
 		$end = gmdate( 'Y-m-d H:i:s', $start_ts + (int) $config['duration_minutes'] * 60 );
 		$blocked = gmdate( 'Y-m-d H:i:s', $start_ts + ( (int) $config['duration_minutes'] + (int) $config['buffer_minutes'] ) * 60 );
 		if ( $start < $config['window_start'] || $end > $config['window_end'] ) { return array( 'status' => 'invalid_slot' ); }
+		if ( $schedule_validator !== null && ( ! is_callable( $schedule_validator ) || ! $schedule_validator( $db, $config, $start ) ) ) { return array( 'status' => 'invalid_slot' ); }
 		$overlap = hj_interval_query( $db, "SELECT id FROM hjt_hjb_spike_appointments WHERE doctor_id=? AND status IN ('pending','confirmed') AND starts_at < ? AND blocked_until > ? LIMIT 1", 'iss', $doctor_id, $blocked, $start );
 		if ( $overlap ) { return array( 'status' => 'overlap' ); }
 		try {
