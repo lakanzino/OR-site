@@ -117,8 +117,24 @@ jobs:
             python3 tools/hj-review-entry/tests/review-entry-http-test.py
           fi
           if [ "$HJ_TEST_PLUGIN" = "review-marker-http-current" ]; then
-            python3 plugins/hamyar-doctors/tests/test_release_package.py
-            python3 tools/hamyar-php-review/review-marker-http-test.py
+            set +e
+            output=$(python3 plugins/hamyar-doctors/tests/test_release_package.py 2>&1)
+            status=$?
+            printf '%s\n' "$output"
+            if [ "$status" -ne 0 ]; then
+              summary=$(printf '%s' "$output" | tail -c 3000 | tr '\n' ' ')
+              echo "::error title=Review marker package check::$summary"
+              exit "$status"
+            fi
+            output=$(python3 tools/hamyar-php-review/review-marker-http-test.py 2>&1)
+            status=$?
+            printf '%s\n' "$output"
+            set -e
+            if [ "$status" -ne 0 ]; then
+              summary=$(printf '%s' "$output" | tail -c 3000 | tr '\n' ' ')
+              echo "::error title=Review marker HTTP test::$summary"
+              exit "$status"
+            fi
           fi
           if [ "$HJ_TEST_PLUGIN" = "vote-manager-http-0.3.12" ] || [ "$HJ_TEST_PLUGIN" = "vote-manager-http-current" ]; then
             python3 tools/hj-vote-manager/tests/test_package.py

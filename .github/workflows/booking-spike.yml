@@ -72,3 +72,17 @@ jobs:
           php tools/hj-booking-spike/fixture.php install
           python3 tools/hj-booking-spike/race-test.py
           php tools/hj-booking-spike/fixture.php verify
+      - name: Exercise transaction-serialized interval prototype
+        run: |
+          set -euxo pipefail
+          php -l tools/hj-booking-spike/interval-engine.php
+          php -l tools/hj-booking-spike/interval-fixture.php
+          set +e
+          output=$(bash -e -c 'php tools/hj-booking-spike/interval-fixture.php setup && python3 tools/hj-booking-spike/interval-race.py && php tools/hj-booking-spike/interval-fixture.php verify' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3000 | tr '\n' ' ')
+            echo "::error title=Interval spike failure::$summary"
+            exit "$status"
+          fi
