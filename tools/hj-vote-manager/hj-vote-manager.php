@@ -178,12 +178,14 @@ final class HJ_Vote_Manager_Demo {
 		if ( ! current_user_can( 'manage_options' ) ) { wp_die( 'دسترسی غیرمجاز.', '', array( 'response' => 403 ) ); }
 		$doctors = get_posts( array( 'post_type' => 'doctor', 'post_status' => array( 'publish', 'draft', 'private', 'pending' ), 'meta_key' => '_hj_demo_doctor', 'posts_per_page' => 100, 'orderby' => 'title', 'order' => 'ASC' ) );
 		$doctor = isset( $_GET['doctor'] ) && is_scalar( $_GET['doctor'] ) ? absint( wp_unslash( $_GET['doctor'] ) ) : 0;
-		$schema = self::inspect(); $rows = array(); $history = array(); $error = '';
+		$page_number = isset( $_GET['vote_page'] ) && is_scalar( $_GET['vote_page'] ) ? max( 1, min( 100000, absint( wp_unslash( $_GET['vote_page'] ) ) ) ) : 1;
+		$schema = self::inspect(); $rows = array(); $history = array(); $error = ''; $has_more = false;
 		if ( $doctor && self::demo_doctor( $doctor ) && ! is_wp_error( $schema ) ) {
 			$old = $wpdb->suppress_errors( true );
 			try {
-				$rows = $wpdb->get_results( $wpdb->prepare( "SELECT `{$schema['id']}` AS vote_id, `{$schema['doctor']}` AS doctor_id, `{$schema['rating']}` AS rating, `{$schema['status']}` AS status, `{$schema['comment']}` AS comment FROM `{$schema['table']}` WHERE `{$schema['doctor']}` = %d ORDER BY `{$schema['id']}` DESC LIMIT 50", $doctor ), ARRAY_A );
+				$rows = $wpdb->get_results( $wpdb->prepare( "SELECT `{$schema['id']}` AS vote_id, `{$schema['doctor']}` AS doctor_id, `{$schema['rating']}` AS rating, `{$schema['status']}` AS status, `{$schema['comment']}` AS comment FROM `{$schema['table']}` WHERE `{$schema['doctor']}` = %d ORDER BY `{$schema['id']}` DESC LIMIT 51 OFFSET %d", $doctor, ( $page_number - 1 ) * 50 ), ARRAY_A );
 				if ( $wpdb->last_error !== '' || ! is_array( $rows ) ) { $rows = array(); $error = 'خواندن رأی‌ها ناموفق بود.'; }
+				if ( count( $rows ) > 50 ) { array_pop( $rows ); $has_more = true; }
 				$audit = self::audit_table(); $tables = $wpdb->get_col( 'SHOW TABLES' );
 				if ( is_array( $tables ) && $wpdb->last_error === '' && in_array( $audit, $tables, true ) && self::valid_identifier( $audit ) ) {
 					$history = $wpdb->get_results( $wpdb->prepare( "SELECT vote_id, actor_id, old_status, new_status, old_rating, new_rating, reason, occurred_utc FROM `{$audit}` WHERE doctor_id = %d ORDER BY log_id DESC LIMIT 30", $doctor ), ARRAY_A );
@@ -199,7 +201,7 @@ final class HJ_Vote_Manager_Demo {
 		<?php if ( isset( $_GET['saved'] ) && $_GET['saved'] === '1' ) : ?><div class="notice notice-success"><p>تغییر رأی و گزارش آن ذخیره شد.</p></div><?php endif; ?>
 		<form method="get" action="<?php echo esc_url( admin_url( 'tools.php' ) ); ?>"><input type="hidden" name="page" value="hj-vote-manager"><label for="hj-vm-doctor">جراح نمونه:</label> <select id="hj-vm-doctor" name="doctor" required><option value="">انتخاب کنید</option><?php foreach ( $doctors as $d ) : if ( ! self::demo_doctor( $d->ID ) ) { continue; } ?><option value="<?php echo esc_attr( $d->ID ); ?>" <?php selected( $doctor, $d->ID ); ?>><?php echo esc_html( get_the_title( $d ) ); ?></option><?php endforeach; ?></select> <?php submit_button( 'نمایش رأی‌ها', 'secondary', 'submit', false ); ?></form>
 		<?php if ( $doctor && ! self::demo_doctor( $doctor ) ) : ?><p>جراح نمونه پیدا نشد.</p><?php endif; ?>
-		<?php if ( $doctor && self::demo_doctor( $doctor ) && ! is_wp_error( $schema ) ) : ?><h2>رأی‌های نمونه (حداکثر ۵۰ مورد)</h2><?php if ( ! $rows && ! $error ) : ?><p>رأیی پیدا نشد.</p><?php endif; ?>
+		<?php if ( $doctor && self::demo_doctor( $doctor ) && ! is_wp_error( $schema ) ) : ?><h2>رأی‌های نمونه (۵۰ مورد در هر صفحه)</h2><?php if ( ! $rows && ! $error ) : ?><p>رأیی پیدا نشد.</p><?php endif; ?>
 		<?php foreach ( $rows as $row ) : list( $marker, $body ) = self::split_marker( $row['comment'] ); ?>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="background:#fff;border:1px solid #ddd;padding:16px;margin:16px 0;max-width:800px">
 		<h3>رأی شماره <?php echo esc_html( $row['vote_id'] ); ?></h3><input type="hidden" name="action" value="hj_vote_manager_save"><input type="hidden" name="doctor" value="<?php echo esc_attr( $doctor ); ?>"><input type="hidden" name="vote" value="<?php echo esc_attr( $row['vote_id'] ); ?>"><input type="hidden" name="expected" value="<?php echo esc_attr( self::snapshot( $row ) ); ?>"><?php wp_nonce_field( 'hj_vote_manager_save_' . $row['vote_id'] ); ?>
@@ -208,6 +210,9 @@ final class HJ_Vote_Manager_Demo {
 		<p><label>متن نظر:<br><textarea name="body" class="large-text" rows="3"><?php echo esc_textarea( $body ); ?></textarea></label><?php if ( $marker ) : ?><small> نشان ردیابی آزمایش در ذخیره حفظ می‌شود.</small><?php endif; ?></p>
 		<p><label>دلیل تغییر (در گزارش مدیر ثبت می‌شود):<br><textarea name="reason" class="large-text" rows="2" required></textarea></label></p><?php submit_button( 'ذخیره تغییر', 'primary' ); ?></form>
 		<?php endforeach; ?>
+		<p>صفحه <?php echo esc_html( $page_number ); ?>
+		<?php if ( $page_number > 1 ) : ?><a class="button" href="<?php echo esc_url( add_query_arg( array( 'page' => 'hj-vote-manager', 'doctor' => $doctor, 'vote_page' => $page_number - 1 ), admin_url( 'tools.php' ) ) ); ?>">صفحه قبل</a><?php endif; ?>
+		<?php if ( $has_more ) : ?><a class="button" href="<?php echo esc_url( add_query_arg( array( 'page' => 'hj-vote-manager', 'doctor' => $doctor, 'vote_page' => $page_number + 1 ), admin_url( 'tools.php' ) ) ); ?>">صفحه بعد</a><?php endif; ?></p>
 		<h2>تاریخچه تغییرات (حداکثر ۳۰ مورد)</h2><?php if ( ! $history ) : ?><p>گزارشی ثبت نشده یا در دسترس نیست.</p><?php else : ?><ul><?php foreach ( $history as $event ) : ?><li><?php echo esc_html( 'رأی ' . $event['vote_id'] . ' | مدیر ' . $event['actor_id'] . ' | ' . $event['occurred_utc'] . ' UTC | وضعیت ' . $event['old_status'] . ' ← ' . $event['new_status'] . ' | امتیاز ' . $event['old_rating'] . ' ← ' . $event['new_rating'] . ' | دلیل: ' . $event['reason'] ); ?></li><?php endforeach; ?></ul><?php endif; ?>
 		<?php endif; ?></div><?php
 	}

@@ -6,7 +6,7 @@ if ( DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || WP_HOME !== 
 $vote = $wpdb->prefix . 'hj_doctor_votes'; $audit = $wpdb->prefix . 'hj_vote_manager_audit_v1'; $action = $argv[1] ?? '';
 if ( $action === 'initial' ) {
 	$tables = $wpdb->get_col( 'SHOW TABLES' );
-	if ( ! is_array( $tables ) || in_array( $audit, $tables, true ) || (int) $wpdb->get_var( "SELECT COUNT(*) FROM `{$vote}`" ) !== 3 ) { throw new RuntimeException( 'Unexpected initial state.' ); }
+	if ( ! is_array( $tables ) || in_array( $audit, $tables, true ) || (int) $wpdb->get_var( "SELECT COUNT(*) FROM `{$vote}`" ) !== 54 ) { throw new RuntimeException( 'Unexpected initial state.' ); }
 	echo "PASS: page/denied requests created no audit table or rows.\n"; exit;
 }
 if ( $action === 'fail-audit-setup' ) {
@@ -23,4 +23,6 @@ if ( ! is_array( $a ) || $a['status'] !== 'rejected' || (int) $a['rating'] !== 2
 if ( ! is_array( $b ) || $b['status'] !== 'approved' || (int) $b['rating'] !== 3 || $b['comment'] !== '' ) { throw new RuntimeException( 'Empty comment update failed.' ); }
 if ( ! is_array( $c ) || $c['status'] !== 'approved' || (int) $c['rating'] !== 4 || $c['comment'] !== 'Unmarked profile synthetic comment' || $c['ip_hash'] !== str_repeat( 'c', 64 ) ) { throw new RuntimeException( 'Unmarked vote changed.' ); }
 if ( ! is_array( $history ) || count( $history ) !== 2 || $history[0]['old_status'] !== 'approved' || $history[0]['new_status'] !== 'rejected' || (int) $history[0]['old_rating'] !== 5 || (int) $history[0]['new_rating'] !== 2 || $history[0]['reason'] !== 'Synthetic moderation reason' || (int) $history[0]['actor_id'] < 1 || $history[0]['old_comment'] !== $prefix . 'Synthetic comment' || $history[0]['new_comment'] !== $prefix . 'Synthetic revised' || $history[1]['old_comment'] !== null || $history[1]['new_comment'] !== '' ) { throw new RuntimeException( 'Audit does not contain exact old/new values or rollback failed.' ); }
-echo "PASS: synthetic votes, audit, marker preservation and failure rollback verified.\n";
+$meta = json_decode( file_get_contents( getenv( 'RUNNER_TEMP' ) . '/manager-test-meta.json' ), true );
+if ( ! class_exists( 'HJ_Profile_Render' ) || ! is_array( $meta ) || HJ_Profile_Render::public_reviews( (int) $meta['demo'] ) !== array() ) { throw new RuntimeException( 'Rejected/empty comments should not be public in the installed baseline reader.' ); }
+echo "PASS: synthetic votes, audit, marker preservation, profile reader and failure rollback verified.\n";

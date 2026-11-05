@@ -107,5 +107,6 @@ jobs:
             python3 tools/hj-vote-lab/tests/lab-http-test.py
           fi
           if [ "$HJ_TEST_PLUGIN" = "vote-manager-http-0.3.12" ]; then
+            python3 tools/hj-vote-manager/tests/test_package.py
             python3 tools/hj-vote-manager/tests/manager-http-test.py
           fi

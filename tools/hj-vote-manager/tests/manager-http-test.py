@@ -62,6 +62,9 @@ def run():
     check(code == 200, 'administrator can view manager')
     a = form_for(page, 101); b = form_for(page, 102)
     check('Unmarked profile synthetic comment' not in page and 'Synthetic comment' in page, 'only selected demo vote shown; marker hidden in editor')
+    many = '/wp-admin/tools.php?page=hj-vote-manager&doctor=' + str(meta['many'])
+    first = request(admin, many)[2]; second = request(admin, many + '&vote_page=2')[2]
+    check('vote_page=2' in first and 'Pagination fixture 0' not in first and 'Pagination fixture 0' in second and 'vote_page=1' in second, 'pagination reaches older synthetic votes')
     valid = dict(a, state='rejected', rating='2', body='Synthetic revised', reason='Synthetic moderation reason')
     endpoint = '/wp-admin/admin-post.php'
     check(request(sub, endpoint, valid)[0] == 403, 'subscriber with admin nonce denied')
