@@ -995,7 +995,7 @@ final class HJ_Doctors_Archive_Render {
 
 
 
-        $h  = '<form class="hj-ar__filters" method="get" action="' . esc_url(self::archive_url()) . '" role="search" aria-label="فیلتر پزشکان">';
+        $h  = '<form class="hj-ar__filters" method="get" action="' . esc_url(self::archive_url()) . '" role="search" aria-label="فیلتر جراحان">';
 
         $h .= '<div class="hj-ar__field hj-ar__field--q"><label for="hj-ar-q">جست‌وجوی نام</label>'
 
@@ -1163,21 +1163,21 @@ final class HJ_Doctors_Archive_Render {
 
                 case 'province':
 
-                    return 'پزشکان استان ' . $q->name;
+                    return 'جراحان استان ' . $q->name;
 
                 case 'city':
 
-                    return 'پزشکان شهر ' . $q->name;
+                    return 'جراحان شهر ' . $q->name;
 
                 default:
 
-                    return 'پزشکان ' . $q->name;
+                    return 'جراحان ' . $q->name;
 
             }
 
         }
 
-        return 'پزشکان و جراحان';
+        return 'جراحان';
 
     }
 
@@ -1223,7 +1223,7 @@ final class HJ_Doctors_Archive_Render {
 
     <?php if ($is_term) : ?>
 
-      <a href="<?php echo esc_url(self::archive_url()); ?>">پزشکان</a>
+      <a href="<?php echo esc_url(self::archive_url()); ?>">جراحان</a>
 
       <span aria-hidden="true">‹</span>
 
@@ -1231,7 +1231,7 @@ final class HJ_Doctors_Archive_Render {
 
     <?php else : ?>
 
-      <span>پزشکان</span>
+      <span>جراحان</span>
 
     <?php endif; ?>
 
@@ -1245,7 +1245,7 @@ final class HJ_Doctors_Archive_Render {
 
     <?php if ($total > 0) : ?>
 
-      <p class="hj-ar__count"><?php echo esc_html(self::fa($total)); ?> پزشک</p>
+      <p class="hj-ar__count"><?php echo esc_html(self::fa($total)); ?> جراح</p>
 
     <?php endif; ?>
 
@@ -1357,11 +1357,11 @@ final class HJ_Doctors_Archive_Render {
 
     if ($shown === 0) {
 
-        echo '<div class="hj-ar__empty"><p>' . (self::has_filters() ? 'پزشکی با این مشخصات پیدا نشد.' : 'هنوز پزشکی در این بخش ثبت نشده است.') . '</p>';
+        echo '<div class="hj-ar__empty"><p>' . (self::has_filters() ? 'جراحی با این مشخصات پیدا نشد.' : 'هنوز جراحی در این بخش ثبت نشده است.') . '</p>';
 
         if (self::has_filters() || $is_term) {
 
-            echo '<a class="hj-ar__btn" href="' . esc_url(self::archive_url()) . '">نمایش همهٔ پزشکان</a>';
+            echo '<a class="hj-ar__btn" href="' . esc_url(self::archive_url()) . '">نمایش همهٔ جراحان</a>';
 
         }
 

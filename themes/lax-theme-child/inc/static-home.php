@@ -12,7 +12,7 @@ function hj_static_home_admin() {
 	?>
 	<div class="wrap" dir="rtl">
 		<h1>صفحه نخست ایستا</h1>
-		<p>برگهٔ جدید هنگام نخستین ورود مدیر پس از به‌روزرسانی ساخته و انتخاب می‌شود. صفحهٔ قبلی حذف نمی‌شود؛ برای بازگشت از تنظیمات ← خواندن استفاده کنید.</p>
+		<p>صفحه نخست موجود به‌طور خودکار جایگزین نمی‌شود. برای پیش‌نمایش تغییرات، از نمایش ← پیش‌نویس صفحه نخست استفاده کنید.</p>
 		<?php $previous = get_option( 'hj_static_home_previous', array() ); ?>
 		<?php if ( ! empty( $previous['page_on_front'] ) && 'page' === $previous['show_on_front'] ) : ?>
 			<p>برگهٔ نخست قبلی: <a href="<?php echo esc_url( get_edit_post_link( (int) $previous['page_on_front'], 'raw' ) ); ?>">ویرایش برگه قبلی</a></p>
@@ -95,7 +95,7 @@ function hj_static_home_create_page( $magazine = null, $source = 0 ) {
 }
 
 /** One-time upgrade on an administrator request, preserving the previous page. */
-add_action( 'admin_init', 'hj_static_home_upgrade_0332' );
+// Legacy automatic replacement is deliberately disabled; existing homepage stays selected.
 function hj_static_home_upgrade_0332() {
 	if ( ! current_user_can( 'manage_options' ) || get_option( 'hj_static_home_0332_done' ) || wp_doing_ajax() || wp_doing_cron() ) { return; }
 	$lock = (int) get_option( 'hj_static_home_0332_lock', 0 );
@@ -142,7 +142,7 @@ function hj_static_magazine_block() {
 		. '<!-- wp:paragraph {"className":"hj-magazine-account"} --><p class="hj-magazine-account">حساب اعضا: [hj_member_account_link] &nbsp; | &nbsp; جراح هستید؟ از بخش ثبت‌نام جراحان وارد شوید.</p><!-- /wp:paragraph -->' . "\n"
 		. '</div><!-- /wp:group -->' . "\n";
 }
-add_action( 'admin_init', function () {
+function hj_static_home_legacy_magazine_upgrade() {
 	if ( ! current_user_can( 'manage_options' ) || wp_doing_ajax() || wp_doing_cron() || 'page' !== get_option( 'show_on_front' ) ) { return; }
 	$id = (int) get_option( 'page_on_front' );
 	$page = get_post( $id );
@@ -157,7 +157,8 @@ add_action( 'admin_init', function () {
 		update_post_meta( $id, '_hj_magazine_section_added', 1 );
 		if ( function_exists( 'orsite_gh_purge_caches' ) ) { orsite_gh_purge_caches(); }
 	}
-}, 30 );
+}
+// Legacy automatic magazine insertion is disabled to preserve edited pages.
 
 // Avoid displaying raw shortcodes if the independent plugin has not been installed.
 add_action( 'init', function () {
@@ -201,7 +202,7 @@ function hj_static_home_upgrade_0336() {
 	delete_option( 'hj_static_home_0336_lock' );
 	if ( function_exists( 'orsite_gh_purge_caches' ) ) { orsite_gh_purge_caches(); }
 }
-add_action( 'admin_init', 'hj_static_home_upgrade_0336', 20 );
+// Legacy automatic selection of a replacement page is deliberately disabled.
 add_action( 'admin_notices', function () {
 	if ( current_user_can( 'manage_options' ) && get_option( 'hj_static_home_0336_error' ) ) {
 		echo '<div class="notice notice-error"><p>' . esc_html__( 'ساخت چیدمان جدید صفحه نخست ناموفق بود؛ صفحه قبلی تغییر نکرده است.', 'lax-theme-child' ) . '</p></div>';
@@ -233,6 +234,7 @@ function hj_create_neo_home_draft() {
 		'{{DISEASES}}' => get_post_type_archive_link( 'disease' ) ?: home_url( '/diseases/' ),
 		'{{STUDENTS}}' => get_post_type_archive_link( 'student_content' ) ?: home_url( '/student/' ),
 		'{{SURGERIES}}' => get_post_type_archive_link( 'surgery' ) ?: home_url( '/surgery/' ),
+		'{{DOCTORS}}' => get_post_type_archive_link( 'doctor' ) ?: home_url( '/doctors/' ),
 		'{{PROFILE}}' => function_exists( 'hj_doctors_dashboard_url' ) ? hj_doctors_dashboard_url() : home_url( '/my-profile/' ),
 		'{{IMAGE}}' => get_stylesheet_directory_uri() . '/assets/images/home-medical-tech.png',
 	);

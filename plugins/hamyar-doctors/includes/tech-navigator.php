@@ -288,7 +288,7 @@ if ( ! class_exists( 'HJ_Tech_Navigator' ) ) :
 							<?php else : ?>
 								<div class="hj-empty-slot-ribbon">
 									<span>در حال حاضر جایگاه تخصصی «<?php echo esc_html( $spec->name ); ?>» در شهرستان <?php echo esc_html( $city_name ); ?> خالی است.</span>
-									<a href="<?php echo esc_url( home_url( '/?hj_google_start=1' ) ); ?>" class="hj-claim-slot-link">پزشک این رشته هستید؟ ثبت پروفایل در این جایگاه ←</a>
+									<a href="<?php echo esc_url( home_url( '/?hj_google_start=1' ) ); ?>" class="hj-claim-slot-link">جراح این رشته هستید؟ ثبت پروفایل در این جایگاه ←</a>
 								</div>
 							<?php endif; ?>
 						</div>

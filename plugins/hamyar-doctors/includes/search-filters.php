@@ -817,7 +817,7 @@ final class HJ_Doctors_Search {
 
             array(
 
-                'placeholder' => 'جست‌وجوی پزشک، تخصص یا شهر…',
+                'placeholder' => 'جست‌وجوی جراح، تخصص یا شهر…',
 
                 'button'      => 'جست‌وجو',
 
@@ -973,7 +973,7 @@ final class HJ_Doctors_Search {
 
         }
 
-        $facets[] = array('name' => 'hj_search', 'type' => 'search', 'label' => 'جست‌وجو', 'placeholder' => 'نام پزشک، تخصص یا شهر…');
+        $facets[] = array('name' => 'hj_search', 'type' => 'search', 'label' => 'جست‌وجو', 'placeholder' => 'نام جراح، تخصص یا شهر…');
 
         $facets[] = array('name' => 'hj_specialty', 'type' => 'dropdown', 'label' => 'تخصص', 'source' => 'specialty');
 

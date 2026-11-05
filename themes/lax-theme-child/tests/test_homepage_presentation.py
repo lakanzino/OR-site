@@ -27,7 +27,7 @@ class HomepagePresentationTest(unittest.TestCase):
     def test_starter_is_editable_and_links_to_existing_flows(self):
         starter = source("homepage/starter.html")
         install = source("inc/static-home.php")
-        for label in ("راهنمای بیمار", "ثبت‌نام جراحان", "ورود به پنل پزشک", "قبل از عمل", "حین عمل", "بعد از عمل و ریکاوری", "اتاق عمل، تیم و تجهیزات", "دانشنامه بیماری‌ها", "واژه‌نامه", "ویژه دانشجویان اتاق عمل", "پرسش‌های متداول"):
+        for label in ("راهنمای بیمار", "ثبت‌نام جراحان", "ورود به پنل جراح", "قبل از عمل", "حین عمل", "بعد از عمل و ریکاوری", "اتاق عمل، تیم و تجهیزات", "دانشنامه بیماری‌ها", "واژه‌نامه", "ویژه دانشجویان اتاق عمل", "پرسش‌های متداول"):
             self.assertIn(label, starter)
         for token in ("GUIDES", "SURGERIES", "DOCTORS", "PROFILE", "IMAGE", "BEFORE", "DURING", "AFTER", "OR", "DISEASES", "GLOSSARY", "STUDENTS", "FAQ", "CONTACT"):
             self.assertIn("{{" + token + "}}", starter)

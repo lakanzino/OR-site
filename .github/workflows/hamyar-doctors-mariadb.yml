@@ -1,0 +1,181 @@
+name: hamyar-doctors MariaDB fixture
+
+on:
+  push:
+    paths:
+      - 'plugins/hamyar-doctors/**'
+      - 'themes/lax-theme-child/**'
+      - 'tools/hamyar-php-review/**'
+      - 'tools/hj-diagnostic-helper/**'
+      - 'tools/hj-vote-lab/**'
+      - 'tools/hj-vote-manager/**'
+      - 'tools/hj-review-entry/**'
+      - '.github/workflows/hamyar-doctors-mariadb.yml'
+  pull_request:
+    paths:
+      - 'plugins/hamyar-doctors/**'
+      - 'themes/lax-theme-child/**'
+      - 'tools/hamyar-php-review/**'
+      - 'tools/hj-diagnostic-helper/**'
+      - 'tools/hj-vote-lab/**'
+      - 'tools/hj-vote-manager/**'
+      - 'tools/hj-review-entry/**'
+      - '.github/workflows/hamyar-doctors-mariadb.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mariadb:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        plugin: [current, installed-0.3.12, vote-lab-0.3.12, vote-lab-http-0.3.12, vote-manager-http-0.3.12, vote-manager-http-current, review-marker-http-current, review-entry-http-0.3.12, review-entry-http-current]
+    services:
+      db:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: fixture_root_password
+          MARIADB_DATABASE: hj_fixture_db
+          MARIADB_USER: fixture_user
+          MARIADB_PASSWORD: fixture_only_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out installed plugin baseline
+        if: matrix.plugin != 'current' && matrix.plugin != 'review-marker-http-current' && matrix.plugin != 'vote-manager-http-current' && matrix.plugin != 'review-entry-http-current'
+        uses: actions/checkout@v4
+        with:
+          ref: 339d1ce78ee79cee61f2c931de864fca90415be3
+          path: ci-baseline
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mysqli
+          coverage: none
+      - name: Prepare disposable WordPress
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p "$RUNNER_TEMP/hj-wp"
+          curl --fail --location --silent --show-error --max-time 120 \
+            https://codeload.github.com/WordPress/WordPress/zip/refs/tags/7.1.4 \
+            -o "$RUNNER_TEMP/hj-wp/wordpress.zip"
+          echo '9de885e4f00ae95549e7e599bbaff4333cbcfd77425cabb24e088adf6dd6f848  '"$RUNNER_TEMP/hj-wp/wordpress.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/hj-wp/wordpress.zip" -d "$RUNNER_TEMP/hj-wp"
+          sudo ln -s "$RUNNER_TEMP/hj-wp/WordPress-7.1.4" /wordpress
+          ln -s "$GITHUB_WORKSPACE/themes/lax-theme" /wordpress/wp-content/themes/lax-theme
+          ln -s "$GITHUB_WORKSPACE/themes/lax-theme-child" /wordpress/wp-content/themes/lax-theme-child
+          if [ '${{ matrix.plugin }}' != 'current' ] && [ '${{ matrix.plugin }}' != 'review-marker-http-current' ] && [ '${{ matrix.plugin }}' != 'vote-manager-http-current' ] && [ '${{ matrix.plugin }}' != 'review-entry-http-current' ]; then
+            ln -s "$GITHUB_WORKSPACE/ci-baseline/plugins/hamyar-doctors" /wordpress/wp-content/plugins/hamyar-doctors
+          else
+            ln -s "$GITHUB_WORKSPACE/plugins/hamyar-doctors" /wordpress/wp-content/plugins/hamyar-doctors
+          fi
+          cat > /wordpress/wp-config.php <<'PHP'
+          <?php
+          define('DB_NAME', 'hj_fixture_db');
+          define('DB_USER', 'fixture_user');
+          define('DB_PASSWORD', 'fixture_only_password');
+          define('DB_HOST', '127.0.0.1:3306');
+          define('DB_CHARSET', 'utf8mb4');
+          define('DB_COLLATE', '');
+          define('WP_HOME', 'http://example.invalid');
+          define('WP_SITEURL', 'http://example.invalid');
+          define('AUTH_KEY', 'fixture-only-not-a-secret');
+          define('SECURE_AUTH_KEY', 'fixture-only-not-a-secret-2');
+          define('LOGGED_IN_KEY', 'fixture-only-not-a-secret-3');
+          define('NONCE_KEY', 'fixture-only-not-a-secret-4');
+          define('AUTH_SALT', 'fixture-only-not-a-secret-5');
+          define('SECURE_AUTH_SALT', 'fixture-only-not-a-secret-6');
+          define('LOGGED_IN_SALT', 'fixture-only-not-a-secret-7');
+          define('NONCE_SALT', 'fixture-only-not-a-secret-8');
+          $table_prefix = 'hjt_';
+          if (!defined('ABSPATH')) { define('ABSPATH', __DIR__ . '/'); }
+          require_once ABSPATH . 'wp-settings.php';
+          PHP
+      - name: Exercise report with real MariaDB (disposable only)
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+          HJ_TEST_PLUGIN: ${{ matrix.plugin }}
+        run: |
+          set -euxo pipefail
+          php tools/hamyar-php-review/mariadb-fixture.php install
+          php tools/hamyar-php-review/mariadb-fixture.php test
+          if [ "$HJ_TEST_PLUGIN" = "vote-lab-http-0.3.12" ]; then
+            python3 tools/hj-vote-lab/tests/lab-http-test.py
+          fi
+          if [ "$HJ_TEST_PLUGIN" = "review-entry-http-0.3.12" ] || [ "$HJ_TEST_PLUGIN" = "review-entry-http-current" ]; then
+            python3 tools/hj-review-entry/tests/test_package.py
+            python3 tools/hj-review-entry/tests/review-entry-http-test.py
+          fi
+          if [ "$HJ_TEST_PLUGIN" = "review-marker-http-current" ]; then
+            python3 plugins/hamyar-doctors/tests/test_release_package.py
+            python3 tools/hamyar-php-review/review-marker-http-test.py
+          fi
+          if [ "$HJ_TEST_PLUGIN" = "vote-manager-http-0.3.12" ] || [ "$HJ_TEST_PLUGIN" = "vote-manager-http-current" ]; then
+            python3 tools/hj-vote-manager/tests/test_package.py
+            python3 tools/hj-vote-manager/tests/manager-http-test.py
+          fi
+
+      - name: Test editable homepage draft in disposable WordPress
+        if: matrix.plugin == 'current'
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: |
+          set +e
+          output=$(php themes/lax-theme-child/tests/integration/homepage-draft-wp.php 2>&1)
+          status=$?
+          echo "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | head -c 3000 | tr '\n' ' ')
+            echo "::error title=Homepage draft test::$summary"
+          fi
+          exit "$status"
+
+      - name: Test in-place homepage update and surgeon rows
+        if: matrix.plugin == 'current'
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: |
+          set +e
+          output=$(php themes/lax-theme-child/tests/integration/homepage-orbit-wp.php 2>&1)
+          status=$?
+          echo "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | head -c 3000 | tr '\n' ' ')
+            echo "::error title=Homepage orbit test::$summary"
+          fi
+          exit "$status"
+
+      - name: Exercise real WordPress homepage in Chrome
+        if: matrix.plugin == 'current'
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: |
+          set -euo pipefail
+          php themes/lax-theme-child/tests/integration/homepage-browser-setup.php
+          mkdir -p /wordpress/wp-content/mu-plugins
+          ln -s "$GITHUB_WORKSPACE/themes/lax-theme-child/tests/integration/homepage-debug-mu.php" /wordpress/wp-content/mu-plugins/hj-fixture-debug.php
+          npm install --no-save --no-audit --no-fund playwright-core
+          export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          sudo php -S 127.0.0.1:80 -t /wordpress > /tmp/hj-orbit-server.log 2>&1 &
+          server=$!
+          trap 'sudo kill "$server" || true' EXIT
+          sleep 2
+          set +e
+          output=$(node themes/lax-theme-child/tests/integration/homepage-browser-wp.cjs 2>&1)
+          status=$?
+          echo "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | head -c 3000 | tr '\n' ' ')
+            echo "::error title=Real homepage browser test::$summary"
+          fi
+          exit "$status"

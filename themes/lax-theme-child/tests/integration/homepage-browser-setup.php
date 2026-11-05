@@ -1,0 +1,26 @@
+<?php
+/** Set up a synthetic homepage for the disposable CI browser test. */
+if ( PHP_SAPI !== 'cli' || getenv( 'GITHUB_ACTIONS' ) !== 'true' || getenv( 'HJ_DISPOSABLE_MARIADB_FIXTURE' ) !== '1' ) { exit( 1 ); }
+require '/wordpress/wp-load.php';
+if ( DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || $GLOBALS['wpdb']->prefix !== 'hjt_' || WP_HOME !== 'http://example.invalid' ) { exit( 1 ); }
+require_once ABSPATH . 'wp-admin/includes/plugin.php';
+wp_set_current_user( 1 );
+$active = activate_plugin( 'hamyar-doctors/hamyar-doctors.php' );
+if ( is_wp_error( $active ) ) { throw new RuntimeException( $active->get_error_message() ); }
+do_action( 'init' );
+$content = file_get_contents( dirname( __DIR__, 2 ) . '/homepage/starter.html' );
+$content = str_replace( '<!-- wp:heading {"level":1,"className":"hj-hero-title"} --><h1 class="wp-block-heading hj-hero-title"><span class="hj-hero-slogan">آرامش در مسیر <span class="hj-hero-surgery">جراحی</span> با <span class="hj-hero-brand">همیار</span><span class="hj-hero-surgery">جراحی</span></span></h1>', '<!-- wp:heading {"level":1} --><h1 class="wp-block-heading">آگاهی بیشتر،<br>آرامش در مسیر <mark>جراحی.</mark></h1>', $content );
+$content = str_replace( 'از نخستین پرسش تا روزهای پس از عمل، کنار شما هستیم. اطلاعات روشن، راهنمای کاربردی و آشنایی با جراحان <span class="hj-hero-emphasis">برتر</span>.', 'از نخستین پرسش تا روزهای پس از عمل، کنار شما هستیم. اطلاعات روشن، راهنمای کاربردی و فضایی برای آشنایی با جراحان.', $content );
+$content = preg_replace( '/\{\{[A-Z_]+\}\}/', home_url( '/' ), $content );
+$page = wp_insert_post( wp_slash( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Synthetic Browser Home', 'post_content' => $content ) ), true );
+if ( is_wp_error( $page ) ) { throw new RuntimeException( $page->get_error_message() ); }
+update_option( 'show_on_front', 'page' ); update_option( 'page_on_front', $page );
+for ( $i = 1; $i <= 3; $i++ ) {
+	$id = wp_insert_post( array( 'post_type' => 'doctor', 'post_status' => 'publish', 'post_title' => 'Synthetic surgeon ' . $i ) );
+	update_post_meta( $id, 'hj_profile_status', 'published' );
+	update_post_meta( $id, 'specialty_fa', 'جراح آزمایشی' );
+	update_post_meta( $id, 'medical_license', '123456' );
+	update_post_meta( $id, 'education', 'مدرک آزمایشی' );
+}
+switch_theme( 'lax-theme-child' );
+echo "PASS browser homepage setup\n";

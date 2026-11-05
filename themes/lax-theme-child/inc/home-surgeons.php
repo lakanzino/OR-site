@@ -17,7 +17,7 @@ add_shortcode( 'hj_home_surgeons', function ( $atts ) {
 		'orderby' => 'date', 'order' => 'DESC',
 	) );
 	if ( ! $query->posts ) {
-		return '<p class="hj-surgeons-empty">' . esc_html__( 'هنوز پروفایل تأییدشده‌ای برای نمایش وجود ندارد.', 'lax-theme-child' ) . ' <a href="' . esc_url( $archive ) . '">' . esc_html__( 'مشاهده فهرست پزشکان', 'lax-theme-child' ) . '</a></p>';
+		return '<p class="hj-surgeons-empty">' . esc_html__( 'هنوز پروفایل تأییدشده‌ای برای نمایش وجود ندارد.', 'lax-theme-child' ) . ' <a href="' . esc_url( $archive ) . '">' . esc_html__( 'مشاهده فهرست جراحان', 'lax-theme-child' ) . '</a></p>';
 	}
 	$html = '<div class="hj-home-surgeons">';
 	$shown = 0;
@@ -32,14 +32,30 @@ add_shortcode( 'hj_home_surgeons', function ( $atts ) {
 			$attachment = (int) get_post_meta( $id, 'profile_photo', true );
 			$photo = $attachment ? wp_get_attachment_image_url( $attachment, 'medium' ) : false;
 		}
+		$license = function_exists( 'hj_doctors_field' ) ? hj_doctors_field( 'medical_license', $id ) : get_post_meta( $id, 'medical_license', true );
+		$education = function_exists( 'hj_doctors_field' ) ? hj_doctors_field( 'education', $id ) : get_post_meta( $id, 'education', true );
+		$license = is_scalar( $license ) ? trim( wp_strip_all_tags( (string) $license ) ) : '';
+		$education = is_scalar( $education ) ? trim( wp_strip_all_tags( (string) $education ) ) : '';
+		$education_lines = preg_split( '/\R/u', $education, -1, PREG_SPLIT_NO_EMPTY );
+		$education = $education_lines ? trim( $education_lines[0] ) : '';
+		$stats = apply_filters( 'hj_doctor_rating_stats', null, $id );
+		// Match the public profile's displayed average; no independent calculation or invented score.
+		$rating = is_array( $stats ) && isset( $stats['avg'] ) && is_numeric( $stats['avg'] ) ? (float) $stats['avg'] : 0;
+		$rating = $rating > 0 && $rating <= 5 ? $rating : 0;
 		$url = get_permalink( $id );
 		++$shown;
 		$html .= '<article class="hj-surgeon-card">';
+		$html .= '<div class="hj-surgeon-card__avatar">';
 		if ( $photo ) { $html .= '<img class="hj-surgeon-card__photo" src="' . esc_url( $photo ) . '" alt="" loading="lazy" decoding="async">'; }
 		else { $html .= '<span class="hj-surgeon-card__placeholder" aria-hidden="true">✚</span>'; }
-		$html .= '<h3>' . esc_html( $name ) . '</h3>';
-		if ( '' !== $specialty ) { $html .= '<p>' . esc_html( $specialty ) . '</p>'; }
-		$html .= '<a href="' . esc_url( $url ) . '">' . esc_html__( 'مشاهده پروفایل', 'lax-theme-child' ) . ' ←</a></article>';
+		$html .= '</div><div class="hj-surgeon-card__details"><h3>' . esc_html( $name ) . '</h3>';
+		if ( '' !== $specialty ) { $html .= '<p class="hj-surgeon-card__specialty">' . esc_html( $specialty ) . '</p>'; }
+		if ( '' !== $education ) { $html .= '<p class="hj-surgeon-card__education">' . esc_html( $education ) . '</p>'; }
+		if ( '' !== $license ) { $html .= '<p class="hj-surgeon-card__license">' . esc_html__( 'شماره نظام پزشکی:', 'lax-theme-child' ) . ' <bdi>' . esc_html( $license ) . '</bdi></p>'; }
+		if ( $rating > 0 ) {
+			$html .= '<p class="hj-surgeon-card__rating"><span aria-hidden="true">★</span> ' . esc_html( number_format_i18n( $rating, 1 ) ) . ' ' . esc_html__( 'از ۵', 'lax-theme-child' ) . '</p>';
+		} else { $html .= '<p class="hj-surgeon-card__rating-empty">' . esc_html__( 'هنوز امتیازی برای نمایش نیست', 'lax-theme-child' ) . '</p>'; }
+		$html .= '<a href="' . esc_url( $url ) . '">' . esc_html__( 'مشاهده پروفایل', 'lax-theme-child' ) . ' ←</a></div></article>';
 	}
 	if ( ! $shown ) { return '<p class="hj-surgeons-empty">' . esc_html__( 'هنوز پروفایل تأییدشده‌ای برای نمایش وجود ندارد.', 'lax-theme-child' ) . '</p>'; }
 	$html .= '</div><p class="hj-surgeons-more"><a href="' . esc_url( $archive ) . '">' . esc_html__( 'مشاهده همه جراحان', 'lax-theme-child' ) . ' ←</a></p>';

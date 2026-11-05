@@ -28,7 +28,7 @@ update_option( 'show_on_front', 'page' );
 update_option( 'page_on_front', $front );
 update_option( HJ_DOCTORS_VERSION_OPTION, '0.3.10' );
 do_action( 'admin_init' );
-hj_review_label_check( '0.3.12' === get_option( HJ_DOCTORS_VERSION_OPTION ), 'upgrade updates stored version' );
+hj_review_label_check( HJ_DOCTORS_VERSION === get_option( HJ_DOCTORS_VERSION_OPTION ), 'upgrade updates stored version' );
 hj_review_label_check( (int) get_option( 'page_on_front' ) === $front && 'Keep synthetic home intact' === get_post( $front )->post_content, 'selected synthetic home remains unchanged' );
 foreach ( array( 'hj_iran_locations_seeded_v1', 'hj_iran_locations_repaired_v2', 'hj_demo_doctors_seeded_v1' ) as $option ) {
 	hj_review_label_check( false === get_option( $option ), 'upgrade does not create seed marker ' . $option );
@@ -43,7 +43,7 @@ $before = $wpdb->get_results( "SELECT * FROM `{$table}` ORDER BY id", ARRAY_A );
 $reviews = HJ_Profile_Render::public_reviews( $doctor );
 $after = $wpdb->get_results( "SELECT * FROM `{$table}` ORDER BY id", ARRAY_A );
 hj_review_label_check( 1 === count( $reviews ), 'pending review omitted in this status-column fixture' );
-hj_review_label_check( 'نظر ثبت‌شده در سایت' === $reviews[0]['author'], 'neutral label on approved review' );
+hj_review_label_check( '' === $reviews[0]['author'], 'no invented author on approved review' );
 hj_review_label_check( 'Synthetic approved comment' === $reviews[0]['comment'] && 4 === $reviews[0]['rating'], 'review content and rating unchanged' );
 hj_review_label_check( $before === $after, 'reading review leaves synthetic votes unchanged' );
 file_put_contents( '/wordpress/hj-review-label-result.txt', "PASS: review label fixture\n" );

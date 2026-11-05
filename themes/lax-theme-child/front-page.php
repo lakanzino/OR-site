@@ -5,13 +5,14 @@ get_header();
 <main id="primary" class="hj-static-home" tabindex="-1">
 	<?php if ( ( 'page' === get_option( 'show_on_front' ) || is_preview() ) && have_posts() ) : ?>
 		<?php while ( have_posts() ) : the_post(); ?>
-			<?php if ( shortcode_exists( 'hj_member_google' ) && ! has_shortcode( get_the_content(), 'hj_member_google' ) ) : ?>
-				<section class="hj-member-home-entry" aria-label="<?php esc_attr_e( 'ورود اعضا', 'lax-theme-child' ); ?>">
-					<p><?php esc_html_e( 'برای پیگیری نظرها و پیشنهادهای خود به جمع اعضای همیار جراحی بپیوندید.', 'lax-theme-child' ); ?></p>
+			<div class="entry-content"><?php the_content(); ?></div>
+			<?php if ( ! ( is_preview() && get_post_meta( get_the_ID(), '_hj_home_draft_source', true ) ) && shortcode_exists( 'hj_member_google' ) && ! has_shortcode( get_the_content(), 'hj_member_google' ) ) : ?>
+				<section class="hj-member-home-entry" aria-label="<?php esc_attr_e( 'ورود کاربران سایت', 'lax-theme-child' ); ?>">
+					<h2><?php esc_html_e( 'ورود کاربران سایت', 'lax-theme-child' ); ?></h2>
+					<p><?php esc_html_e( 'برای ورود به سایت و پیگیری نظرها و پیشنهادهای خود از حساب گوگل استفاده کنید.', 'lax-theme-child' ); ?></p>
 					<?php echo do_shortcode( '[hj_member_google]' ); ?>
 				</section>
 			<?php endif; ?>
-			<div class="entry-content"><?php the_content(); ?></div>
 			<?php wp_link_pages(); ?>
 		<?php endwhile; ?>
 	<?php else : ?>
