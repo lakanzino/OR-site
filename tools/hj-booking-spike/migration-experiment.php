@@ -2,9 +2,9 @@
 /** Versioned migration experiment, disposable CI only, not production installer. */
 if ( ! defined( 'HJ_BOOKING_DISPOSABLE_FIXTURE' ) || HJ_BOOKING_DISPOSABLE_FIXTURE !== true || PHP_SAPI !== 'cli' || getenv( 'GITHUB_ACTIONS' ) !== 'true' || getenv( 'HJ_DISPOSABLE_MARIADB_FIXTURE' ) !== '1' || DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || $GLOBALS['wpdb']->prefix !== 'hjt_' ) { exit( 'Disposable CI only.' ); }
 /** Real spike tables and a separate migration-test namespace use identical schema. */
-function hj_spike_migrate( $target = 2, $namespace = 'hjb_spike_' ) {
+function hj_spike_migrate( $target = 3, $namespace = 'hjb_spike_' ) {
 	global $wpdb;
-	if ( ! in_array( $target, array( 1, 2 ), true ) || ! in_array( $namespace, array( 'hjb_spike_', 'hjb_migration_' ), true ) ) { throw new InvalidArgumentException( 'Unsupported schema target' ); }
+	if ( ! in_array( $target, array( 1, 2, 3 ), true ) || ! in_array( $namespace, array( 'hjb_spike_', 'hjb_migration_' ), true ) ) { throw new InvalidArgumentException( 'Unsupported schema target' ); }
 	$base = $wpdb->prefix . $namespace;
 	$option = $namespace . 'schema_version';
 	$current = (int) get_option( $option, 0 );
@@ -50,6 +50,17 @@ function hj_spike_migrate( $target = 2, $namespace = 'hjb_spike_' ) {
 ) ENGINE=InnoDB $charset;" );
 		$required[$details] = array( 'appointment_id', 'phone', 'national_code' );
 		$required[$secretaries] = array( 'user_id', 'doctor_id' );
+	}
+	if ( $target >= 3 ) {
+		$schedules = $base . 'schedules';
+		dbDelta( "CREATE TABLE $schedules (
+ doctor_id bigint(20) unsigned NOT NULL,
+ revision bigint(20) unsigned NOT NULL,
+ rows_json longtext NOT NULL,
+ rows_hash char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ PRIMARY KEY  (doctor_id)
+) ENGINE=InnoDB $charset;" );
+		$required[$schedules] = array( 'doctor_id', 'revision', 'rows_json', 'rows_hash' );
 	}
 	foreach ( $required as $name => $fields ) {
 		$status = $wpdb->get_row( $wpdb->prepare( 'SHOW TABLE STATUS WHERE Name = %s', $name ), ARRAY_A );
