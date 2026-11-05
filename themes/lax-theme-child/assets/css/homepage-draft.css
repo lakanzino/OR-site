@@ -1,0 +1,40 @@
+/* Scoped to the homepage and its manager-only preview. */
+.hj-static-home .hj-member-public-login {
+  margin: 64px auto 0;
+  padding: clamp(24px, 4vw, 42px);
+  max-width: 1180px;
+  border-radius: 24px;
+  background: #e6f5ed;
+  color: #061710;
+  box-shadow: 0 18px 44px rgba(18, 54, 41, .12);
+}
+.hj-static-home .hj-member-public-login .hj-member-google {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 22px;
+  border: 1px solid #07563d;
+  border-radius: 12px;
+  background: #075f43;
+  color: #fff !important;
+  font-weight: 700;
+  text-decoration: none;
+}
+.hj-static-home .hj-member-public-login .hj-member-google:hover { background: #064b35; color: #fff !important; }
+.hj-static-home .hj-member-public-login .hj-member-google__icon { background: #fff; color: #2261c8; border-radius: 50%; width: 30px; height: 30px; display: inline-grid; place-items: center; }
+.hj-static-home :is(.hj-landing-surgeon, .neo-register) .hj-google-btn,
+.hj-static-home :is(.hj-landing-surgeon, .neo-register) :is(.hj-btn-secondary, .neo-primary) .wp-block-button__link {
+  background: #b42328;
+  color: #fff;
+  border-color: #b42328;
+}
+.hj-static-home :is(.hj-landing-surgeon, .neo-register) .hj-google-btn:hover,
+.hj-static-home :is(.hj-landing-surgeon, .neo-register) :is(.hj-btn-secondary, .neo-primary) .wp-block-button__link:hover {
+  background: #8f171c;
+  color: #fff;
+}
+.hj-static-home :is(.hj-member-public-login .hj-member-google, .hj-landing-surgeon .hj-google-btn, .neo-register .hj-google-btn, .hj-landing-surgeon .wp-block-button__link, .neo-register .wp-block-button__link):focus-visible {
+  outline: 3px solid #061710;
+  outline-offset: 4px;
+}

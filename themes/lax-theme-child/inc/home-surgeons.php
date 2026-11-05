@@ -17,7 +17,7 @@ add_shortcode( 'hj_home_surgeons', function ( $atts ) {
 		'orderby' => 'date', 'order' => 'DESC',
 	) );
 	if ( ! $query->posts ) {
-		return '<p class="hj-surgeons-empty">' . esc_html__( 'هنوز پروفایل تأییدشده‌ای برای نمایش وجود ندارد.', 'lax-theme-child' ) . ' <a href="' . esc_url( $archive ) . '">' . esc_html__( 'مشاهده فهرست پزشکان', 'lax-theme-child' ) . '</a></p>';
+		return '<p class="hj-surgeons-empty">' . esc_html__( 'هنوز پروفایل تأییدشده‌ای برای نمایش وجود ندارد.', 'lax-theme-child' ) . ' <a href="' . esc_url( $archive ) . '">' . esc_html__( 'مشاهده فهرست جراحان', 'lax-theme-child' ) . '</a></p>';
 	}
 	$html = '<div class="hj-home-surgeons">';
 	$shown = 0;

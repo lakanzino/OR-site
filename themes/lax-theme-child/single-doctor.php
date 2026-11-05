@@ -54,7 +54,7 @@ if ( ! have_posts() ) {
 				</header>
 
 				<?php
-				foreach ( array( 'bio_fa' => 'درباره پزشک', 'education' => 'تحصیلات و دوره‌ها', 'surgeries_performed' => 'جراحی‌های انجام‌شده' ) as $key => $label ) :
+				foreach ( array( 'bio_fa' => 'درباره جراح', 'education' => 'تحصیلات و دوره‌ها', 'surgeries_performed' => 'جراحی‌های انجام‌شده' ) as $key => $label ) :
 					$value = $get( $key );
 					if ( '' === $value ) {
 						continue;

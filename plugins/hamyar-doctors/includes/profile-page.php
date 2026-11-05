@@ -379,9 +379,9 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 					<div class="hj-doc__container">
 						<div class="hj-doc__navlinks">
 							<?php if ( $archive ) : ?>
-								<a href="<?php echo esc_url( $archive ); ?>">همهٔ پزشکان</a>
+								<a href="<?php echo esc_url( $archive ); ?>">همهٔ جراحان</a>
 							<?php endif; ?>
-							<a href="#hj-about">معرفی پزشک</a>
+							<a href="#hj-about">معرفی جراح</a>
 							<a href="#hj-services">خدمات</a>
 							<a href="#hj-education">سوابق</a>
 							<a href="#hj-reviews">نظرات بیماران</a>
@@ -400,7 +400,7 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 								echo esc_html(
 									'' !== $license
 										? 'شمارهٔ نظام پزشکی: ' . $license
-										: 'هویت و مدارک پزشک پس از تأیید قابل نمایش است'
+										: 'هویت و مدارک جراح پس از تأیید قابل نمایش است'
 								);
 								?>
 							</span>
@@ -509,7 +509,7 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 								<?php if ( '' !== $phone_clinic || '' !== $phone_mobile || '' !== $address ) : ?>
 									<div class="hj-info-row"><span class="hj-info-icon">🕘</span><a href="#hj-contact">درخواست تماس</a></div>
 								<?php else : ?>
-									<p class="hj-muted">اطلاعات تماس این پزشک هنوز ثبت نشده است.</p>
+									<p class="hj-muted">اطلاعات تماس این جراح هنوز ثبت نشده است.</p>
 								<?php endif; ?>
 							</div>
 
@@ -560,7 +560,7 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 									}
 									?>
 									<?php if ( '' === $bio_fa && empty( $has_content ) ) : ?>
-										<p class="hj-muted">توضیحاتی برای این پزشک ثبت نشده است.</p>
+										<p class="hj-muted">توضیحاتی برای این جراح ثبت نشده است.</p>
 									<?php endif; ?>
 								</div>
 								<?php if ( $spec_names ) : ?>
@@ -589,7 +589,7 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 								<?php if ( $name_en ) : ?>
 									<div class="hj-info-row" dir="ltr"><?php echo esc_html( $name_en ); ?></div>
 								<?php endif; ?>
-								<p class="hj-muted" style="margin-top:12px">اطلاعات حرفه‌ای مطابق مدارک ثبت‌شده در پروندهٔ پزشک نمایش داده می‌شود.</p>
+								<p class="hj-muted" style="margin-top:12px">اطلاعات حرفه‌ای مطابق مدارک ثبت‌شده در پروندهٔ جراح نمایش داده می‌شود.</p>
 							</div>
 
 						</section>
@@ -637,7 +637,7 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 										</div>
 									<?php endforeach; ?>
 								<?php else : ?>
-									<p class="hj-muted">سوابق تحصیلی این پزشک ثبت نشده است.</p>
+									<p class="hj-muted">سوابق تحصیلی این جراح ثبت نشده است.</p>
 								<?php endif; ?>
 							</div>
 
@@ -696,7 +696,7 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 									<?php endforeach; ?>
 								</div>
 							<?php else : ?>
-								<div class="hj-card"><p class="hj-muted">هنوز نظر تأییدشده‌ای برای این پزشک ثبت نشده است. اولین نظر را شما بنویسید.</p></div>
+								<div class="hj-card"><p class="hj-muted">هنوز نظر تأییدشده‌ای برای این جراح ثبت نشده است. اولین نظر را شما بنویسید.</p></div>
 							<?php endif; ?>
 						</section>
 

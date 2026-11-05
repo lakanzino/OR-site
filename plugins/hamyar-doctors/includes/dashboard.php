@@ -69,7 +69,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 		 */
 		public static function shortcode_render( $atts = array() ) {
 			if ( ! is_user_logged_in() ) {
-				$h  = '<div class="hj-dash"><p>' . esc_html__( 'برای دیدن داشبورد پزشک وارد شوید.', 'hamyar-doctors' ) . '</p>';
+				$h  = '<div class="hj-dash"><p>' . esc_html__( 'برای دیدن داشبورد جراح وارد شوید.', 'hamyar-doctors' ) . '</p>';
 				$h .= '<p><a class="hj-dash__btn hj-dash__btn--primary" href="' . esc_url( wp_login_url( hj_doctors_dashboard_url() ) ) . '">' . esc_html__( 'ورود', 'hamyar-doctors' ) . '</a></p>';
 				if ( shortcode_exists( 'hj_google_login' ) ) {
 					$h .= do_shortcode( '[hj_google_login]' );
@@ -80,12 +80,12 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 				$user = wp_get_current_user();
 				$replaceable = (array) apply_filters( 'hj_doctors_replaceable_roles', array( 'subscriber' ) );
 				if ( ! array_diff( (array) $user->roles, $replaceable ) ) {
-					return '<div class="hj-dash"><p>' . esc_html__( 'برای ساخت پروفایل پزشک، ثبت‌نام خود را تأیید کنید. پروفایل شما پیش از انتشار بررسی می‌شود.', 'hamyar-doctors' ) . '</p>'
+					return '<div class="hj-dash"><p>' . esc_html__( 'برای ساخت پروفایل جراح، ثبت‌نام خود را تأیید کنید. پروفایل شما پیش از انتشار بررسی می‌شود.', 'hamyar-doctors' ) . '</p>'
 						. '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="hj_doctors_join">'
 						. wp_nonce_field( 'hj_doctors_join', '_wpnonce', true, false )
-						. '<button type="submit">' . esc_html__( 'ثبت‌نام به عنوان پزشک', 'hamyar-doctors' ) . '</button></form></div>';
+						. '<button type="submit">' . esc_html__( 'ثبت‌نام به عنوان جراح', 'hamyar-doctors' ) . '</button></form></div>';
 				}
-				return '<div class="hj-dash"><p>' . esc_html__( 'شما دسترسی به داشبورد پزشک ندارید.', 'hamyar-doctors' ) . '</p></div>';
+				return '<div class="hj-dash"><p>' . esc_html__( 'شما دسترسی به داشبورد جراح ندارید.', 'hamyar-doctors' ) . '</p></div>';
 			}
 			return self::render();
 		}
@@ -97,7 +97,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			}
 			check_admin_referer( 'hj_doctors_join' );
 			if ( ! hj_doctors_assign_doctor_role( get_current_user_id() ) ) {
-				wp_die( 'این حساب امکان ثبت‌نام پزشک ندارد.', '', array( 'response' => 403 ) );
+				wp_die( 'این حساب امکان ثبت‌نام جراح ندارد.', '', array( 'response' => 403 ) );
 			}
 			wp_safe_redirect( hj_doctors_dashboard_url() );
 			exit;
