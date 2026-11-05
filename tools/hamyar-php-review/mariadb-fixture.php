@@ -29,6 +29,12 @@ define( 'HJ_DISPOSABLE_TEST', true );
 require WP_PLUGIN_DIR . '/hamyar-doctors/hamyar-doctors.php';
 hj_doctors();
 do_action( 'init' );
+if ( in_array( getenv( 'HJ_TEST_PLUGIN' ), array( 'review-entry-http-0.3.12', 'review-entry-http-current' ), true ) ) {
+    $expected = getenv( 'HJ_TEST_PLUGIN' ) === 'review-entry-http-current' ? '0.3.14' : '0.3.12';
+    if ( HJ_DOCTORS_VERSION !== $expected ) { throw new RuntimeException( 'Wrong installed baseline.' ); }
+    require getenv( 'GITHUB_WORKSPACE' ) . '/tools/hj-review-entry/tests/setup-wp.php';
+    exit;
+}
 if ( getenv( 'HJ_TEST_PLUGIN' ) === 'review-marker-http-current' ) {
     if ( HJ_DOCTORS_VERSION !== '0.3.14' ) { throw new RuntimeException( 'Wrong plugin version.' ); }
     require getenv( 'GITHUB_WORKSPACE' ) . '/tools/hamyar-php-review/review-marker-setup-wp.php';
