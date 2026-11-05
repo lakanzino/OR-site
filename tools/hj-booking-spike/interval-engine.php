@@ -21,7 +21,7 @@ function hj_interval_query( $db, $sql, $types = '', ...$args ) {
 }
 function hj_interval_install() {
 	require_once __DIR__ . '/migration-experiment.php';
-	return hj_spike_migrate( 2 );
+	return hj_spike_migrate( 3 );
 }
 function hj_interval_timestamp( $s ) {
 	if ( ! is_string( $s ) ) { return false; }
