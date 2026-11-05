@@ -81,6 +81,17 @@ function hj_doctors_data_status_page() {
 	}
 	$vote_summary = hj_doctors_vote_schema_summary( $vote_schema );
 	$vote_labels = array( 'table' => 'جدول رأی', 'id' => 'ستون شناسه ردیف', 'doctor_id' => 'ستون شناسه پزشک', 'rating' => 'ستون امتیاز', 'status' => 'ستون وضعیت' );
+	// تجمیع فقط‌خواندنی؛ اگر تابع موجود نباشد گزارش صفحه بی‌صدا ناقص نمی‌شود.
+	$vote_counts = null;
+	$vote_structure_state = null;
+	if ( function_exists( 'hj_doctors_vote_structure_counts' ) && is_array( $vote_schema ) ) {
+		try {
+			$vote_structure_state = hj_doctors_vote_structure_state( $vote_schema );
+			$vote_counts = hj_doctors_vote_structure_counts( $wpdb, $vote_schema );
+		} catch ( Throwable $error ) {
+			$vote_counts = null;
+		}
+	}
 	?>
 	<div class="wrap">
 		<h1><?php echo esc_html__( 'وضعیت داده‌های پزشکان', 'hamyar-doctors' ); ?></h1>
@@ -123,6 +134,19 @@ function hj_doctors_data_status_page() {
 		<?php endforeach; ?>
 		</tbody></table>
 		<p><?php echo esc_html__( 'این گزارش فقط تشخیص پل فعلی را نشان می‌دهد؛ «نامعلوم یا شناسایی نشد» می‌تواند ناشی از نبود جدول یا خطای بررسی باشد. شناخته‌شدن ستون شناسه، یکتا بودن آن را ثابت نمی‌کند. هیچ رأی یا اطلاعات رأی‌دهنده خوانده یا تغییر داده نمی‌شود؛ این صفحه ابزار مدیریت رأی نیست.', 'hamyar-doctors' ); ?></p>
+		<h2><?php echo esc_html__( 'تجمیع خواندنی جدول رأی', 'hamyar-doctors' ); ?></h2>
+		<?php if ( ! is_array( $vote_counts ) || ! is_array( $vote_structure_state ) ) : ?>
+		<p><?php echo esc_html__( 'تجمیع اجرا نشد؛ ساختار رأی در این درخواست قابل سنجش نبود. عدد نامعلوم با صفر برابر نیست.', 'hamyar-doctors' ); ?></p>
+		<?php else : ?>
+		<table class="widefat striped"><tbody>
+		<?php foreach ( hj_doctors_vote_structure_lines( $vote_structure_state, $vote_counts ) as $line ) : ?>
+		<tr><th scope="row"><?php echo esc_html( $line[0] ); ?></th><td><?php echo esc_html( $line[1] ); ?></td></tr>
+		<?php endforeach; ?>
+		</tbody></table>
+		<?php foreach ( hj_doctors_vote_structure_notes() as $note ) : ?>
+		<p><?php echo esc_html( $note ); ?></p>
+		<?php endforeach; ?>
+		<?php endif; ?>
 	</div>
 	<?php
 }
