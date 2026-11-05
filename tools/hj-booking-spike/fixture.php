@@ -15,7 +15,11 @@ if ( 'install' === $mode ) {
 	}
 	if ( 'unavailable' !== hj_booking_spike_reserve( 101, '2030-01-01 09:00:00' ) ) { throw new RuntimeException( 'Sequential duplicate accepted' ); }
 	if ( 'invalid' !== hj_booking_spike_reserve( 0, '2030-01-01 09:00:00' ) ) { throw new RuntimeException( 'Invalid doctor accepted' ); }
+	// Demonstrate why this proof of uniqueness cannot be promoted to booking:
+	// assuming 30-minute durations, these two starts overlap yet both insert.
+	if ( 'reserved' !== hj_booking_spike_reserve( 303, '2030-01-03 09:00:00' ) || 'reserved' !== hj_booking_spike_reserve( 303, '2030-01-03 09:15:00' ) ) { throw new RuntimeException( 'Unexpected behavior in overlap counterexample' ); }
 	echo "PASS: ten synthetic fixed slots and duplicate guard\n";
+	echo "EXPECTED LIMITATION: unique starts allow differently-started overlapping slots\n";
 } elseif ( 'race' === $mode ) {
 	$worker = getenv( 'HJ_SPIKE_WORKER' );
 	if ( ! is_string( $worker ) || ! preg_match( '/^[0-9]{1,2}$/', $worker ) ) { exit( 1 ); }
