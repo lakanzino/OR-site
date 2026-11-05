@@ -27,7 +27,7 @@ function hj_orbit_edit_hero( &$blocks, &$counts ) {
 		} elseif ( $b['blockName'] === 'core/paragraph' && in_array( 'hj-landing-lead', $classes, true ) && empty( $b['innerBlocks'] ) && preg_match( '/^\s*<p(?:\s[^>]*)?>.*<\/p>\s*$/s', $html ) ) {
 			++$counts['leads']; $text = hj_orbit_plain( $html );
 			if ( ! in_array( $text, array( 'از نخستین پرسش تا روزهای پس از عمل، کنار شما هستیم. اطلاعات روشن، راهنمای کاربردی و فضایی برای آشنایی با جراحان.', 'انتخابی که مسیر زندگی‌تان را تغییر می‌دهد؛ برترین جراحان هر شهر و استان، اینجا.' ), true ) ) { continue; }
-			$inner = 'از نخستین پرسش تا روزهای پس از عمل، کنار شما هستیم. اطلاعات روشن، راهنمای کاربردی و آشنایی با <span class="hj-hero-emphasis">جراحان برتر</span>.';
+			$inner = 'از نخستین پرسش تا روزهای پس از عمل، کنار شما هستیم. اطلاعات روشن، راهنمای کاربردی و آشنایی با جراحان <span class="hj-hero-emphasis">برتر</span>.';
 			$updated = preg_replace_callback( '/(<p(?:\s[^>]*)?>).*?(<\/p>)/s', function ( $m ) use ( $inner ) { return $m[1] . $inner . $m[2]; }, $html, 1, $n );
 			if ( $n === 1 ) { $b['innerHTML'] = $updated; $b['innerContent'] = array( $updated ); ++$counts['changed_lead']; }
 		}
