@@ -1,0 +1,5 @@
+# Disposable booking race spike
+
+This is a synthetic, CLI-only CI fixture, not a booking implementation. The guarded file runs only with an explicit constant and GitHub Actions on the named empty disposable MariaDB and WordPress fixture. It contains no user records, sensitive fields, live endpoints, activation hooks or UI; do not install it on a live site. `.github/workflows/booking-spike.yml` exercises ten distinct synthetic fixed slots, a sequential duplicate, and twelve synchronized independent PHP processes attempting a single slot.
+
+This experiment tests only `UNIQUE(doctor_id, starts_at_utc)`. It does not handle different-start overlapping intervals, changing schedules/durations, cancellations, idempotency or DB reconnect, nor patient, surgeon, secretary or administrator permissions, login or personal data. It cannot establish readiness for phase 2 or production. The production design and current gate status are in `plugins/hamyar-doctors/BOOKING-ANALYSIS.md` and `BOOKING-SCHEMA.md`.
