@@ -259,6 +259,9 @@ final class HJ_Doctors_Rating_Bridge {
 
         $prev_suppress = $wpdb->suppress_errors(true);
 
+        // A missing table and a failed probe both end with "not found"; keep them apart.
+        $probe_error = false;
+
 
 
         $candidates = array(
@@ -295,11 +298,27 @@ final class HJ_Doctors_Rating_Bridge {
 
             }
 
+            $wpdb->last_error = '';
+
             $exists = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tb_clean));
+
+            if ('' !== (string) $wpdb->last_error) {
+
+                $probe_error = true;
+
+            }
 
             if ($exists === $tb_clean) {
 
+                $wpdb->last_error = '';
+
                 $rows = $wpdb->get_results("SHOW COLUMNS FROM `{$tb_clean}`", ARRAY_A);
+
+                if ('' !== (string) $wpdb->last_error) {
+
+                    $probe_error = true;
+
+                }
 
                 if (is_array($rows) && $rows) {
 
@@ -321,7 +340,7 @@ final class HJ_Doctors_Rating_Bridge {
 
             $wpdb->suppress_errors($prev_suppress);
 
-            self::$schema_cache = array('ok' => false, 'table' => '');
+            self::$schema_cache = array('ok' => false, 'table' => '', 'probe_error' => $probe_error);
 
             return self::$schema_cache;
 
@@ -438,6 +457,8 @@ final class HJ_Doctors_Rating_Bridge {
             'map' => $map,
 
             'status_numeric' => $status_numeric,
+
+            'probe_error' => $probe_error,
 
         );
 
