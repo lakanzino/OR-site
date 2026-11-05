@@ -28,7 +28,7 @@ update_option( 'show_on_front', 'page' );
 update_option( 'page_on_front', $front );
 update_option( HJ_DOCTORS_VERSION_OPTION, '0.3.10' );
 do_action( 'admin_init' );
-hj_review_label_check( '0.3.12' === get_option( HJ_DOCTORS_VERSION_OPTION ), 'upgrade updates stored version' );
+hj_review_label_check( HJ_DOCTORS_VERSION === get_option( HJ_DOCTORS_VERSION_OPTION ), 'upgrade updates stored version' );
 hj_review_label_check( (int) get_option( 'page_on_front' ) === $front && 'Keep synthetic home intact' === get_post( $front )->post_content, 'selected synthetic home remains unchanged' );
 foreach ( array( 'hj_iran_locations_seeded_v1', 'hj_iran_locations_repaired_v2', 'hj_demo_doctors_seeded_v1' ) as $option ) {
 	hj_review_label_check( false === get_option( $option ), 'upgrade does not create seed marker ' . $option );

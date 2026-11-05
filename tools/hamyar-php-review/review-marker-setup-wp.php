@@ -7,6 +7,11 @@ if ( $wpdb->prefix !== 'hjt_' || ! is_array( $tables ) || $wpdb->last_error !== 
 if ( false === $wpdb->query( "CREATE TABLE `{$table}` (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, post_id BIGINT UNSIGNED NOT NULL, rating TINYINT NOT NULL, status VARCHAR(12) NOT NULL, comment TEXT NULL, created_at DATETIME NOT NULL) ENGINE=InnoDB" ) ) { throw new RuntimeException( 'Fixture table failed.' ); }
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 $r = activate_plugin( 'hamyar-doctors/hamyar-doctors.php' ); if ( is_wp_error( $r ) ) { throw new RuntimeException( 'Activation failed.' ); }
+$front = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Synthetic front page', 'post_content' => 'Do not change synthetic home' ), true );
+if ( is_wp_error( $front ) || ! $front ) { throw new RuntimeException( 'Synthetic home setup failed.' ); }
+update_option( 'show_on_front', 'page' ); update_option( 'page_on_front', $front ); update_option( HJ_DOCTORS_VERSION_OPTION, '0.3.12' );
+do_action( 'admin_init' );
+if ( get_option( HJ_DOCTORS_VERSION_OPTION ) !== HJ_DOCTORS_VERSION || (int) get_option( 'page_on_front' ) !== $front || get_post( $front )->post_content !== 'Do not change synthetic home' || false !== get_option( 'hj_demo_doctors_seeded_v1' ) ) { throw new RuntimeException( 'Synthetic upgrade modified home/seed marker or did not bump version.' ); }
 $demo = wp_insert_post( array( 'post_type' => 'doctor', 'post_status' => 'publish', 'post_title' => 'Synthetic demo doctor' ), true );
 $other = wp_insert_post( array( 'post_type' => 'doctor', 'post_status' => 'publish', 'post_title' => 'Unmarked doctor' ), true );
 if ( is_wp_error( $demo ) || is_wp_error( $other ) || ! $demo || ! $other ) { throw new RuntimeException( 'Doctor setup failed.' ); }
