@@ -20,8 +20,9 @@ function hj_spike_phone( $input ) {
 	return preg_match( '/^09[0-9]{9}$/D', $s ) ? $s : false;
 }
 /** An explicit mapping created only by a fixture administrator; no user meta trust. */
-function hj_spike_assign_secretary( $actor, $secretary, $doctor ) {
+function hj_spike_assign_secretary( $secretary, $doctor ) {
 	global $wpdb;
+	$actor = get_current_user_id();
 	if ( ! $actor || ! user_can( $actor, 'manage_options' ) || ! get_userdata( $secretary ) || get_post_type( $doctor ) !== 'doctor' ) { return false; }
 	return false !== $wpdb->query( $wpdb->prepare( 'INSERT IGNORE INTO hjt_hjb_spike_secretaries (user_id,doctor_id) VALUES (%d,%d)', $secretary, $doctor ) );
 }

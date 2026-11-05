@@ -8,8 +8,12 @@ function hj_secured_create( $doctor, $start, $key, $phone, $national, $now ) {
 	if ( ! $patient || ! get_userdata( $patient ) || get_post_type( $doctor ) !== 'doctor' || get_post_status( $doctor ) !== 'publish' ) { return array( 'status' => 'forbidden' ); }
 	if ( $phone === false || $national === false ) { return array( 'status' => 'invalid' ); }
 	$validator = function ( $db, $config, $utc_start ) use ( $doctor, $now ) {
-		clean_post_cache( $doctor );
-		$hours = hj_doctors_field( 'working_hours', $doctor );
+		// Only the single serialized fallback meta row is safe to lock here. An
+		// ACF repeater is multi-row and needs a different, coordinated adapter.
+		if ( function_exists( 'get_field' ) ) { return false; }
+		$meta = hj_interval_query( $db, "SELECT meta_value FROM hjt_postmeta WHERE post_id=? AND meta_key='working_hours' FOR UPDATE", 'i', $doctor );
+		if ( count( $meta ) !== 1 ) { return false; }
+		$hours = maybe_unserialize( $meta[0]['meta_value'] );
 		$local = ( new DateTimeImmutable( $utc_start, new DateTimeZone( 'UTC' ) ) )->setTimezone( wp_timezone() );
 		$occupied = hj_interval_query( $db, "SELECT starts_at, blocked_until, status FROM hjt_hjb_spike_appointments WHERE doctor_id=? AND status IN ('pending','confirmed')", 'i', $doctor );
 		return in_array( $utc_start, hj_schedule_slots( $local->format( 'Y-m-d' ), $hours, (int) $config['duration_minutes'], (int) $config['buffer_minutes'], $occupied, $now, 30 ), true );

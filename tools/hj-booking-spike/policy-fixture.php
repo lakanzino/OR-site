@@ -27,9 +27,11 @@ foreach ( array( $doctor, $other_doctor, $secretary, $patient, $other_patient ) 
 $profile = wp_insert_post( array( 'post_type' => 'doctor', 'post_status' => 'publish', 'post_title' => 'Synthetic A', 'post_author' => $doctor ), true );
 $other_profile = wp_insert_post( array( 'post_type' => 'doctor', 'post_status' => 'publish', 'post_title' => 'Synthetic B', 'post_author' => $other_doctor ), true );
 if ( is_wp_error( $profile ) || is_wp_error( $other_profile ) ) { throw new RuntimeException( 'Could not create synthetic profiles' ); }
-expect_policy( ! hj_spike_assign_secretary( $patient, $secretary, $other_profile ), 'subscriber cannot assign secretary' );
-expect_policy( hj_spike_assign_secretary( $admin, $secretary, $profile ), 'administrator assigns one secretary' );
-expect_policy( hj_spike_assign_secretary( $admin, $patient, $profile ) && ! hj_spike_can_manage( $patient, $profile ), 'mapping alone without secretary capability is insufficient' );
+wp_set_current_user( $patient );
+expect_policy( ! hj_spike_assign_secretary( $secretary, $other_profile ), 'subscriber cannot assign secretary' );
+wp_set_current_user( $admin );
+expect_policy( hj_spike_assign_secretary( $secretary, $profile ), 'administrator assigns one secretary' );
+expect_policy( hj_spike_assign_secretary( $patient, $profile ) && ! hj_spike_can_manage( $patient, $profile ), 'mapping alone without secretary capability is insufficient' );
 update_user_meta( $patient, 'hj_doctor_post_id', $profile );
 expect_policy( ! hj_spike_can_manage( $patient, $profile ), 'subscriber cannot gain doctor access through profile meta' );
 expect_policy( hj_spike_can_manage( $admin, $profile ) && hj_spike_can_manage( $admin, $other_profile ), 'admin can manage both' );
