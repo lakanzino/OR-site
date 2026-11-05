@@ -78,7 +78,7 @@ jobs:
           php -l tools/hj-booking-spike/interval-engine.php
           php -l tools/hj-booking-spike/interval-fixture.php
           set +e
-          output=$(bash -e -c 'php tools/hj-booking-spike/interval-fixture.php setup && python3 tools/hj-booking-spike/interval-race.py && python3 tools/hj-booking-spike/interval-timeout.py && php tools/hj-booking-spike/interval-fixture.php verify && php tools/hj-booking-spike/policy-fixture.php && php tools/hj-booking-spike/schedule-fixture.php && php tools/hj-booking-spike/migration-fixture.php' 2>&1)
+          output=$(bash -e -c 'php tools/hj-booking-spike/interval-fixture.php setup && python3 tools/hj-booking-spike/interval-race.py && python3 tools/hj-booking-spike/interval-timeout.py && php tools/hj-booking-spike/interval-fixture.php verify && php tools/hj-booking-spike/policy-fixture.php && php tools/hj-booking-spike/schedule-fixture.php && php tools/hj-booking-spike/migration-fixture.php && php tools/hj-booking-spike/secured-fixture.php' 2>&1)
           status=$?
           printf '%s\n' "$output"
           if [ "$status" -ne 0 ]; then

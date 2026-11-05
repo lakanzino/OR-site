@@ -23,7 +23,8 @@ function hj_interval_install() {
 	$db = hj_interval_connection();
 	try {
 		$db->query( 'CREATE TABLE hjt_hjb_spike_doctors (doctor_id BIGINT UNSIGNED PRIMARY KEY, duration_minutes INT NOT NULL, buffer_minutes INT NOT NULL, window_start DATETIME NOT NULL, window_end DATETIME NOT NULL) ENGINE=InnoDB' );
-		$db->query( "CREATE TABLE hjt_hjb_spike_appointments (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, doctor_id BIGINT UNSIGNED NOT NULL, patient_id BIGINT UNSIGNED NOT NULL, request_key CHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL, request_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL, starts_at DATETIME NOT NULL, ends_at DATETIME NOT NULL, blocked_until DATETIME NOT NULL, status VARCHAR(20) NOT NULL, UNIQUE KEY request_key (request_key), KEY doctor_start (doctor_id, starts_at)) ENGINE=InnoDB" );
+		$db->query( "CREATE TABLE hjt_hjb_spike_appointments (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, doctor_id BIGINT UNSIGNED NOT NULL, patient_id BIGINT UNSIGNED NOT NULL, request_key CHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL, request_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL, starts_at DATETIME NOT NULL, ends_at DATETIME NOT NULL, blocked_until DATETIME NOT NULL, status VARCHAR(20) NOT NULL, UNIQUE KEY request_key (request_key), KEY doctor_start (doctor_id, starts_at), KEY patient_start (patient_id, starts_at)) ENGINE=InnoDB" );
+		$db->query( "CREATE TABLE hjt_hjb_spike_details (appointment_id BIGINT UNSIGNED NOT NULL PRIMARY KEY, phone VARCHAR(24) NOT NULL, national_code CHAR(10) NOT NULL) ENGINE=InnoDB" );
 	} finally { $db->close(); }
 }
 function hj_interval_timestamp( $s ) {
@@ -64,11 +65,12 @@ function hj_interval_configure( $doctor_id, $duration, $buffer, $start, $end ) {
 		return array( 'status' => 'configured' );
 	} );
 }
-function hj_interval_create( $doctor_id, $patient_id, $start, $key, $fault = '', $schedule_validator = null ) {
+function hj_interval_create( $doctor_id, $patient_id, $start, $key, $fault = '', $schedule_validator = null, $details = null ) {
 	$start_ts = hj_interval_timestamp( $start );
 	if ( ! is_int( $doctor_id ) || $doctor_id < 1 || ! is_int( $patient_id ) || $patient_id < 1 || $start_ts === false || ! is_string( $key ) || ! preg_match( '/^[a-f0-9]{32}$/D', $key ) || ! in_array( $fault, array( '', 'disconnect_before_commit', 'lose_commit_response' ), true ) ) { return array( 'status' => 'invalid' ); }
-	$hash = hash( 'sha256', json_encode( array( $doctor_id, $patient_id, $start ), JSON_THROW_ON_ERROR ) );
-	$result = hj_interval_transaction( $doctor_id, function ( $db, $config ) use ( $doctor_id, $patient_id, $start, $start_ts, $key, $hash, $fault, $schedule_validator ) {
+	if ( $details !== null && ( ! is_array( $details ) || ! isset( $details['phone'], $details['national_code'] ) || ! is_string( $details['phone'] ) || ! is_string( $details['national_code'] ) ) ) { return array( 'status' => 'invalid' ); }
+	$hash = hash_hmac( 'sha256', json_encode( array( $doctor_id, $patient_id, $start, $details ), JSON_THROW_ON_ERROR ), wp_salt( 'auth' ) );
+	$result = hj_interval_transaction( $doctor_id, function ( $db, $config ) use ( $doctor_id, $patient_id, $start, $start_ts, $key, $hash, $fault, $schedule_validator, $details ) {
 		$existing = hj_interval_query( $db, 'SELECT id, request_hash, status FROM hjt_hjb_spike_appointments WHERE request_key=?', 's', $key );
 		if ( $existing ) {
 			if ( ! hash_equals( $existing[0]['request_hash'], $hash ) ) { return array( 'status' => 'idempotency_conflict' ); }
@@ -89,6 +91,9 @@ function hj_interval_create( $doctor_id, $patient_id, $start, $key, $fault = '',
 			throw $e;
 		}
 		$id = $db->insert_id;
+		if ( $details !== null ) {
+			hj_interval_query( $db, 'INSERT INTO hjt_hjb_spike_details (appointment_id, phone, national_code) VALUES (?, ?, ?)', 'iss', $id, $details['phone'], $details['national_code'] );
+		}
 		if ( $fault === 'disconnect_before_commit' ) {
 			// CI-only injection: close server connection after INSERT before COMMIT.
 			$killer = hj_interval_connection();
