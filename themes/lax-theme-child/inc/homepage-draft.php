@@ -65,7 +65,7 @@ function hj_home_draft_build( $content, $archive ) {
 	if ( strpos( $content, 'پزشک هستید؟' ) !== false || strpos( $content, 'پزشکان و متخصصان' ) !== false || strpos( $content, 'ورود به پنل پزشک' ) !== false ) {
 		$warnings[] = 'برخی برچسب‌های برگه هنوز «پزشک» دارند؛ در پیش‌نویس آنها را بررسی و در صورت نیاز به «جراح» تغییر دهید.';
 	}
-	if ( strpos( $content, '[hj_member_google' ) !== false || has_shortcode( $content, 'hj_member_account' ) || strpos( $content, '<!-- wp:block' ) !== false ) {
+	if ( strpos( $content, '[hj_member_google' ) !== false || preg_match( '/\[hj_member_account(?:\s|\]|\/)/', $content ) || strpos( $content, '<!-- wp:block' ) !== false ) {
 		$warnings[] = 'محتوا ممکن است ورود عمومی یا بلوک همگام‌شده داشته باشد؛ جای ورود را در پیش‌نویس بررسی و در صورت نیاز دستی به انتها منتقل کنید. نسخه دیگری اضافه نشده است.';
 	} else {
 		$content .= "\n<!-- wp:group {\"className\":\"hj-member-public-login\",\"layout\":{\"type\":\"constrained\"}} -->\n<div class=\"wp-block-group hj-member-public-login\">\n"
