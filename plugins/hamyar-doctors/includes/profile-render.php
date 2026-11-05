@@ -516,9 +516,15 @@ if ( ! class_exists( 'HJ_Profile_Render' ) ) :
 				return $reviews;
 			}
 
+			$is_demo = (string) get_post_meta( $post_id, '_hj_demo_doctor', true ) !== '';
 			foreach ( $rows as $row ) {
 				$rating  = isset( $row[ $col_rating ] ) ? (int) $row[ $col_rating ] : 0;
 				$comment = ( '' !== $col_comment && isset( $row[ $col_comment ] ) ) ? (string) $row[ $col_comment ] : '';
+				// Keep the demo label, but hide the internal Vote Lab batch ID in public output only.
+				if ( $is_demo ) {
+					$visible = preg_replace( '/\A\[نظر آزمایشی HJ-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\] /u', '[نظر آزمایشی] ', $comment, 1 );
+					if ( is_string( $visible ) ) { $comment = $visible; }
+				}
 				$created = ( '' !== $col_created && isset( $row[ $col_created ] ) ) ? $row[ $col_created ] : '';
 
 				if ( '' === trim( $comment ) ) {

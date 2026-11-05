@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        plugin: [current, installed-0.3.12, vote-lab-0.3.12, vote-lab-http-0.3.12, vote-manager-http-0.3.12]
+        plugin: [current, installed-0.3.12, vote-lab-0.3.12, vote-lab-http-0.3.12, vote-manager-http-0.3.12, review-marker-http-current]
     services:
       db:
         image: mariadb:11.4
@@ -47,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Check out installed plugin baseline
-        if: matrix.plugin != 'current'
+        if: matrix.plugin != 'current' && matrix.plugin != 'review-marker-http-current'
         uses: actions/checkout@v4
         with:
           ref: 339d1ce78ee79cee61f2c931de864fca90415be3
@@ -68,7 +68,7 @@ jobs:
           echo '9de885e4f00ae95549e7e599bbaff4333cbcfd77425cabb24e088adf6dd6f848  '"$RUNNER_TEMP/hj-wp/wordpress.zip" | sha256sum -c -
           unzip -q "$RUNNER_TEMP/hj-wp/wordpress.zip" -d "$RUNNER_TEMP/hj-wp"
           sudo ln -s "$RUNNER_TEMP/hj-wp/WordPress-7.1.4" /wordpress
-          if [ '${{ matrix.plugin }}' != 'current' ]; then
+          if [ '${{ matrix.plugin }}' != 'current' ] && [ '${{ matrix.plugin }}' != 'review-marker-http-current' ]; then
             ln -s "$GITHUB_WORKSPACE/ci-baseline/plugins/hamyar-doctors" /wordpress/wp-content/plugins/hamyar-doctors
           else
             ln -s "$GITHUB_WORKSPACE/plugins/hamyar-doctors" /wordpress/wp-content/plugins/hamyar-doctors
@@ -105,6 +105,10 @@ jobs:
           php tools/hamyar-php-review/mariadb-fixture.php test
           if [ "$HJ_TEST_PLUGIN" = "vote-lab-http-0.3.12" ]; then
             python3 tools/hj-vote-lab/tests/lab-http-test.py
+          fi
+          if [ "$HJ_TEST_PLUGIN" = "review-marker-http-current" ]; then
+            python3 plugins/hamyar-doctors/tests/test_release_package.py
+            python3 tools/hamyar-php-review/review-marker-http-test.py
           fi
           if [ "$HJ_TEST_PLUGIN" = "vote-manager-http-0.3.12" ]; then
             python3 tools/hj-vote-manager/tests/test_package.py
