@@ -110,7 +110,7 @@ if ( $mode === 'setup' ) {
 	$r = hj_secured_create( $profile, '2030-01-02 06:00:00', $key( 11000 ), '09123456789', '1234567891', $now );
 	race_expect( $r['status'] === 'created', 'patient rebooks same slot after cancellation' );
 	wp_set_current_user( $doctor ); race_expect( hj_secured_change_status( $profile, $r['id'], 'confirmed' )['status'] === 'updated', 'doctor confirms rebooking' );
-	wp_set_current_user( race_uid( 'synthetic_secretary' ) ); race_expect( hj_secured_change_status( $profile, $r['id'], 'completed' )['status'] === 'updated', 'secretary completes rebooking' );
+	wp_set_current_user( race_uid( 'synthetic_secretary' ) ); race_expect( hj_secured_change_status( $profile, $r['id'], 'completed', strtotime( '2030-01-03 UTC' ) )['status'] === 'updated', 'secretary completes rebooking' );
 	wp_set_current_user( race_uid( 'fixture_admin' ) ); $found = hj_secured_read( 'admin', $profile, 1, 50, 'completed', '2030-01-02 06:00:00', '2030-01-02 06:00:01' );
 	race_expect( count( $found['rows'] ) === 1, 'admin sees completed rebooking with filters' );
 } else { exit( 1 ); }

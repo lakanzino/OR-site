@@ -75,7 +75,11 @@ function hj_interval_create( $doctor_id, $patient_id, $start, $key, $fault = '',
 		$end = gmdate( 'Y-m-d H:i:s', $start_ts + (int) $config['duration_minutes'] * 60 );
 		$blocked = gmdate( 'Y-m-d H:i:s', $start_ts + ( (int) $config['duration_minutes'] + (int) $config['buffer_minutes'] ) * 60 );
 		if ( $start < $config['window_start'] || $end > $config['window_end'] ) { return array( 'status' => 'invalid_slot' ); }
-		if ( $schedule_validator !== null && ( ! is_callable( $schedule_validator ) || ! $schedule_validator( $db, $config, $start ) ) ) { return array( 'status' => 'invalid_slot' ); }
+		if ( $schedule_validator !== null ) {
+			if ( ! is_callable( $schedule_validator ) ) { return array( 'status' => 'invalid_slot' ); }
+			$validation = $schedule_validator( $db, $config, $start );
+			if ( $validation !== true ) { return array( 'status' => $validation === 'schedule_unsupported' ? 'schedule_unsupported' : 'invalid_slot' ); }
+		}
 		$overlap = hj_interval_query( $db, "SELECT id FROM hjt_hjb_spike_appointments WHERE doctor_id=? AND status IN ('pending','confirmed') AND starts_at < ? AND blocked_until > ? LIMIT 1", 'iss', $doctor_id, $blocked, $start );
 		if ( $overlap ) { return array( 'status' => 'overlap' ); }
 		try {

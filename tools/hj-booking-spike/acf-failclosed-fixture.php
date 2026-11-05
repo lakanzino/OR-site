@@ -12,5 +12,5 @@ $doctor = get_user_by( 'login', 'synthetic_doctor_a' ); $patient = get_user_by( 
 $ids = get_posts( array( 'post_type' => 'doctor', 'author' => $doctor->ID, 'post_status' => 'publish', 'fields' => 'ids', 'numberposts' => 1 ) );
 wp_set_current_user( $patient->ID );
 $r = hj_secured_create( (int) $ids[0], '2030-01-02 07:45:00', str_repeat( 'f', 32 ), '09123456789', '1234567891', strtotime( '2030-01-01 UTC' ) );
-if ( $r['status'] !== 'invalid_slot' ) { throw new RuntimeException( 'ACF mock was not rejected' ); }
+if ( $r['status'] !== 'schedule_unsupported' ) { throw new RuntimeException( 'ACF mock was not rejected' ); }
 echo "PASS: mock ACF presence fails closed; real ACF integration not tested\n";

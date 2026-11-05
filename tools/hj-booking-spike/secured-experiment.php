@@ -10,7 +10,7 @@ function hj_secured_create( $doctor, $start, $key, $phone, $national, $now ) {
 	$validator = function ( $db, $config, $utc_start ) use ( $doctor, $now ) {
 		// Only the single serialized fallback meta row is safe to lock here. An
 		// ACF repeater is multi-row and needs a different, coordinated adapter.
-		if ( function_exists( 'get_field' ) ) { return false; }
+		if ( function_exists( 'get_field' ) ) { return 'schedule_unsupported'; }
 		$meta = hj_interval_query( $db, "SELECT meta_value FROM hjt_postmeta WHERE post_id=? AND meta_key='working_hours' FOR UPDATE", 'i', $doctor );
 		if ( count( $meta ) !== 1 ) { return false; }
 		$hours = maybe_unserialize( $meta[0]['meta_value'] );
@@ -20,16 +20,19 @@ function hj_secured_create( $doctor, $start, $key, $phone, $national, $now ) {
 	};
 	return hj_interval_create( (int) $doctor, (int) $patient, $start, $key, '', $validator, array( 'phone' => $phone, 'national_code' => $national ) );
 }
-function hj_secured_change_status( $doctor, $id, $target ) {
+function hj_secured_change_status( $doctor, $id, $target, $now = null ) {
 	$uid = get_current_user_id();
 	if ( ! $uid || ! hj_spike_can_manage( $uid, $doctor ) ) { return array( 'status' => 'forbidden' ); }
 	if ( ! in_array( $target, array( 'confirmed', 'cancelled', 'completed' ), true ) ) { return array( 'status' => 'invalid' ); }
-	return hj_interval_transaction( (int) $doctor, function ( $db ) use ( $doctor, $id, $target ) {
-		$rows = hj_interval_query( $db, 'SELECT status FROM hjt_hjb_spike_appointments WHERE doctor_id=? AND id=?', 'ii', $doctor, $id );
+	$now = $now ?? time();
+	if ( ! is_int( $now ) ) { return array( 'status' => 'invalid' ); }
+	return hj_interval_transaction( (int) $doctor, function ( $db ) use ( $doctor, $id, $target, $now ) {
+		$rows = hj_interval_query( $db, 'SELECT status, ends_at FROM hjt_hjb_spike_appointments WHERE doctor_id=? AND id=?', 'ii', $doctor, $id );
 		if ( ! $rows ) { return array( 'status' => 'not_found' ); }
 		$old = $rows[0]['status'];
 		$allowed = array( 'pending' => array( 'confirmed', 'cancelled' ), 'confirmed' => array( 'completed', 'cancelled' ) );
 		if ( ! in_array( $target, $allowed[$old] ?? array(), true ) ) { return array( 'status' => 'invalid_transition' ); }
+		if ( $target === 'completed' && ( hj_interval_timestamp( $rows[0]['ends_at'] ) === false || hj_interval_timestamp( $rows[0]['ends_at'] ) > $now ) ) { return array( 'status' => 'invalid_transition' ); }
 		hj_interval_query( $db, 'UPDATE hjt_hjb_spike_appointments SET status=? WHERE doctor_id=? AND id=? AND status=?', 'siis', $target, $doctor, $id, $old );
 		return array( 'status' => 'updated' );
 	} );
