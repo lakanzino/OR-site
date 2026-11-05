@@ -33,6 +33,11 @@ if ( $mode === 'setup' ) {
 	expect( hj_interval_configure( 104, 20, 0, '2030-01-01 00:00:00', '2030-01-10 00:00:00' )['status'] === 'configured', 'change duration and buffer again' );
 	expect( hj_interval_create( 104, 201, '2030-01-02 10:44:00', key_for( 26 ) )['status'] === 'overlap', 'prior buffered interval remains occupied' );
 	expect( hj_interval_create( 104, 201, '2030-01-02 11:00:00', key_for( 27 ) )['status'] === 'created', 'new duration applies to future request' );
+	expect( hj_interval_create( 104, 201, '2030-01-02 15:00:00', key_for( 33 ) )['status'] === 'created', 'later appointment without buffer' );
+	expect( hj_interval_configure( 104, 20, 15, '2030-01-01 00:00:00', '2030-01-10 00:00:00' )['status'] === 'configured', 'increase buffer for new requests' );
+	expect( hj_interval_create( 104, 201, '2030-01-02 14:30:00', key_for( 30 ) )['status'] === 'overlap', 'new buffered interval also blocks an existing later appointment' );
+	expect( hj_interval_create( 104, 201, '2030-01-10 00:00:00', key_for( 31 ) )['status'] === 'invalid_slot', 'outside working window rejected' );
+	expect( hj_interval_create( 104, 201, '2030-02-30 10:00:00', key_for( 32 ) )['status'] === 'invalid', 'invalid date rejected' );
 	expect( hj_interval_create( 105, 201, '2030-01-03 09:00:00', key_for( 28 ), 'disconnect_before_commit' )['status'] === 'unknown', 'connection killed inside transaction produces unknown' );
 	$r = hj_interval_create( 105, 201, '2030-01-03 09:00:00', key_for( 28 ) );
 	expect( $r['status'] === 'created', 'reconnect with same key finds rolled back insert and creates once' );
