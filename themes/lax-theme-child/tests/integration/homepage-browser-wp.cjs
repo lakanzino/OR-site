@@ -22,6 +22,14 @@ const base = 'http://example.invalid';
    await page.goto(base + '/wp-admin/admin-post.php?action=hj_fixture_revision_debug');
    throw new Error('apply failed: ' + body + ' diagnostic=' + (await page.locator('body').innerText()).slice(0,1600));
   }
+  await page.waitForFunction(() => window.wp?.data?.select('core/block-editor')?.getBlocks()?.length > 0, null, {timeout:45000});
+  const editor = await page.evaluate(() => {
+   const walk = blocks => blocks.flatMap(b => [b, ...walk(b.innerBlocks || [])]);
+   const blocks = walk(window.wp.data.select('core/block-editor').getBlocks());
+   return blocks.filter(b => ['hj-hero-title', 'hj-landing-lead'].some(c => (b.attributes?.className || '').split(/\s+/).includes(c))).map(b => ({name:b.name, valid:b.isValid, className:b.attributes.className}));
+  });
+  assert.equal(editor.length,2, `editable hero blocks found: ${JSON.stringify(editor)}`);
+  assert.ok(editor.every(block => block.valid === true), `edited blocks valid in Gutenberg: ${JSON.stringify(editor)}`);
   await page.goto(base + '/wp-admin/admin-post.php?action=hj_fixture_revision_debug');
   const revisionReport = JSON.parse(await page.locator('body').innerText());
   assert.equal(revisionReport.expected_found, true, 'updated content retains other blocks byte-for-byte and has a pre-change revision');
