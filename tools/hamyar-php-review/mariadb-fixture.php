@@ -29,6 +29,11 @@ define( 'HJ_DISPOSABLE_TEST', true );
 require WP_PLUGIN_DIR . '/hamyar-doctors/hamyar-doctors.php';
 hj_doctors();
 do_action( 'init' );
+if ( getenv( 'HJ_TEST_PLUGIN' ) === 'vote-manager-http-0.3.12' ) {
+    if ( HJ_DOCTORS_VERSION !== '0.3.12' ) { throw new RuntimeException( 'Wrong installed baseline.' ); }
+    require getenv( 'GITHUB_WORKSPACE' ) . '/tools/hj-vote-manager/tests/manager-http-setup-wp.php';
+    exit;
+}
 if ( getenv( 'HJ_TEST_PLUGIN' ) === 'vote-lab-http-0.3.12' ) {
     if ( HJ_DOCTORS_VERSION !== '0.3.12' ) { throw new RuntimeException( 'Wrong installed baseline.' ); }
     require getenv( 'GITHUB_WORKSPACE' ) . '/tools/hj-vote-lab/tests/lab-http-setup-wp.php';

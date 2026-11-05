@@ -7,6 +7,7 @@ on:
       - 'tools/hamyar-php-review/**'
       - 'tools/hj-diagnostic-helper/**'
       - 'tools/hj-vote-lab/**'
+      - 'tools/hj-vote-manager/**'
       - '.github/workflows/hamyar-doctors-mariadb.yml'
   pull_request:
     paths:
@@ -14,6 +15,7 @@ on:
       - 'tools/hamyar-php-review/**'
       - 'tools/hj-diagnostic-helper/**'
       - 'tools/hj-vote-lab/**'
+      - 'tools/hj-vote-manager/**'
       - '.github/workflows/hamyar-doctors-mariadb.yml'
   workflow_dispatch:
 
@@ -26,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        plugin: [current, installed-0.3.12, vote-lab-0.3.12, vote-lab-http-0.3.12]
+        plugin: [current, installed-0.3.12, vote-lab-0.3.12, vote-lab-http-0.3.12, vote-manager-http-0.3.12]
     services:
       db:
         image: mariadb:11.4
@@ -103,4 +105,7 @@ jobs:
           php tools/hamyar-php-review/mariadb-fixture.php test
           if [ "$HJ_TEST_PLUGIN" = "vote-lab-http-0.3.12" ]; then
             python3 tools/hj-vote-lab/tests/lab-http-test.py
+          fi
+          if [ "$HJ_TEST_PLUGIN" = "vote-manager-http-0.3.12" ]; then
+            python3 tools/hj-vote-manager/tests/manager-http-test.py
           fi
