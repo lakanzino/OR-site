@@ -28,6 +28,36 @@ if ( $mode === 'setup' ) {
 	if ( ! file_exists( '/tmp/hj-secured-go' ) ) { exit( 2 ); }
 	$r = hj_secured_create( $profile, '2030-01-02 06:00:00', $key( 10000 + $i ), '09123456789', '1234567891', $now );
 	echo $r['status'];
+} elseif ( $mode === 'mutation-setup' ) {
+	wp_set_current_user( $doctor );
+	$open = array( array( 'day_of_week' => 'wednesday', 'is_closed' => 0, 'start_time' => '09:00:00', 'end_time' => '12:00:00' ) );
+	race_expect( hj_spike_set_hours( $profile, $open )['status'] === 'updated' && hj_spike_set_duration( $profile, 30, 0 )['status'] === 'updated', 'prepare coordinated mutation race' );
+	wp_set_current_user( race_uid( 'synthetic_secretary' ) );
+	race_expect( hj_spike_set_hours( $profile, $open )['status'] === 'forbidden' && hj_spike_set_duration( $profile, 15, 0 )['status'] === 'forbidden', 'secretary cannot change settings' );
+} elseif ( $mode === 'mutation-worker' || $mode === 'mutation-writer' ) {
+	$i = $mode === 'mutation-writer' ? 12 : (int) ( $argv[2] ?? -1 );
+	if ( $i < 0 || $i > 12 ) { exit( 1 ); }
+	wp_set_current_user( $i === 12 ? $doctor : race_uid( 'synthetic_race_' . $i ) );
+	touch( '/tmp/hj-mutation-ready-' . $i ); $until = microtime( true ) + 30;
+	while ( ! file_exists( '/tmp/hj-mutation-go' ) && microtime( true ) < $until ) { usleep( 10000 ); clearstatcache(); }
+	if ( ! file_exists( '/tmp/hj-mutation-go' ) ) { exit( 2 ); }
+	if ( $i === 12 ) {
+		$a = hj_spike_set_duration( $profile, 15, 0 );
+		$closed = array( array( 'day_of_week' => 'wednesday', 'is_closed' => 1, 'start_time' => '', 'end_time' => '' ) );
+		$b = hj_spike_set_hours( $profile, $closed );
+		echo $a['status'] === 'updated' && $b['status'] === 'updated' ? 'updated' : 'failed';
+	} else {
+		$start = $i % 2 ? '2030-01-02 06:45:00' : '2030-01-02 06:30:00';
+		echo hj_secured_create( $profile, $start, $key( 12000 + $i ), '09123456789', '1234567891', $now )['status'];
+	}
+} elseif ( $mode === 'mutation-verify' ) {
+	$db = hj_interval_connection();
+	try {
+		$conflicts = hj_interval_query( $db, "SELECT a.id FROM hjt_hjb_spike_appointments a JOIN hjt_hjb_spike_appointments b ON a.doctor_id=b.doctor_id AND a.id<b.id AND a.starts_at < b.blocked_until AND a.blocked_until > b.starts_at WHERE a.doctor_id=? AND a.status IN ('pending','confirmed') AND b.status IN ('pending','confirmed')", 'i', $profile );
+		race_expect( ! $conflicts, 'no active overlaps after concurrent duration and hours edits' );
+	} finally { $db->close(); }
+	wp_set_current_user( race_uid( 'synthetic_race_0' ) );
+	race_expect( hj_secured_create( $profile, '2030-01-02 07:30:00', $key( 13000 ), '09123456789', '1234567891', $now )['status'] === 'invalid_slot', 'closed day blocks new requests after edit' );
 } elseif ( $mode === 'finish' ) {
 	$db = hj_interval_connection();
 	try { $rows = hj_interval_query( $db, "SELECT id FROM hjt_hjb_spike_appointments WHERE doctor_id=? AND starts_at='2030-01-02 06:00:00' AND status='pending'", 'i', $profile ); } finally { $db->close(); }

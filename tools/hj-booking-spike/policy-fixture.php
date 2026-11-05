@@ -15,7 +15,7 @@ expect_policy( hj_spike_phone( '۰۹۱۲۳۴۵۶۷۸۹' ) === '09123456789', 'no
 expect_policy( hj_spike_phone( '+989123456789' ) === '09123456789', 'normalize international mobile' );
 foreach ( array( '0912345678', '02112345678', '09123456789x', '0912 3456789' ) as $phone ) { expect_policy( hj_spike_phone( $phone ) === false, 'reject invalid phone' ); }
 global $wpdb;
-if ( false === $wpdb->query( 'CREATE TABLE hjt_hjb_spike_secretaries (user_id BIGINT UNSIGNED NOT NULL, doctor_id BIGINT UNSIGNED NOT NULL, PRIMARY KEY (user_id,doctor_id)) ENGINE=InnoDB' ) ) { throw new RuntimeException( 'Could not create mapping fixture' ); }
+if ( $wpdb->get_var( "SHOW TABLES LIKE 'hjt_hjb_spike_secretaries'" ) !== 'hjt_hjb_spike_secretaries' ) { throw new RuntimeException( 'Mapping table missing from migration' ); }
 add_role( 'hj_spike_secretary', 'Synthetic secretary', array( 'read' => true, 'hj_spike_manage_appointments' => true ) );
 $admin = get_user_by( 'login', 'fixture_admin' )->ID;
 $doctor = wp_insert_user( array( 'user_login' => 'synthetic_doctor_a', 'user_pass' => 'synthetic-only', 'role' => 'doctor' ) );

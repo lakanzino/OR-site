@@ -20,12 +20,8 @@ function hj_interval_query( $db, $sql, $types = '', ...$args ) {
 	} finally { $stmt->close(); }
 }
 function hj_interval_install() {
-	$db = hj_interval_connection();
-	try {
-		$db->query( 'CREATE TABLE hjt_hjb_spike_doctors (doctor_id BIGINT UNSIGNED PRIMARY KEY, duration_minutes INT NOT NULL, buffer_minutes INT NOT NULL, window_start DATETIME NOT NULL, window_end DATETIME NOT NULL) ENGINE=InnoDB' );
-		$db->query( "CREATE TABLE hjt_hjb_spike_appointments (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, doctor_id BIGINT UNSIGNED NOT NULL, patient_id BIGINT UNSIGNED NOT NULL, request_key CHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL, request_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL, starts_at DATETIME NOT NULL, ends_at DATETIME NOT NULL, blocked_until DATETIME NOT NULL, status VARCHAR(20) NOT NULL, UNIQUE KEY request_key (request_key), KEY doctor_start (doctor_id, starts_at), KEY patient_start (patient_id, starts_at)) ENGINE=InnoDB" );
-		$db->query( "CREATE TABLE hjt_hjb_spike_details (appointment_id BIGINT UNSIGNED NOT NULL PRIMARY KEY, phone VARCHAR(24) NOT NULL, national_code CHAR(10) NOT NULL) ENGINE=InnoDB" );
-	} finally { $db->close(); }
+	require_once __DIR__ . '/migration-experiment.php';
+	return hj_spike_migrate( 2 );
 }
 function hj_interval_timestamp( $s ) {
 	if ( ! is_string( $s ) ) { return false; }
