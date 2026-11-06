@@ -60,6 +60,19 @@ add_action( 'wp_ajax_hj_ci_schedule_state', function () {
 add_action( 'wp_ajax_hj_ci_render_dashboard', function () {
 	wp_send_json_success( array( 'html' => HJ_Doctors_Dashboard::shortcode_render() ) );
 } );
+// CI-only mutation for synthetic snapshots. Never shipped in the plugin.
+add_action( 'wp_ajax_hj_ci_replace_snapshot', function () {
+	check_ajax_referer( 'hj_dash_nonce', '_hjn' );
+	$doctor = absint( $_POST['doctor'] ?? 0 );
+	$raw = isset( $_POST['rows_json'] ) && is_string( $_POST['rows_json'] ) ? wp_unslash( $_POST['rows_json'] ) : '';
+	if ( ! hj_booking_can_configure( $doctor ) || strlen( $raw ) > 10000 ) { wp_send_json_error( array(), 403 ); }
+	$result = hj_booking_transaction( $doctor, 'ci_snapshot', function ( $db ) use ( $doctor, $raw ) {
+		$table = hj_booking_table( 'schedules' );
+		$n = hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET rows_json=%s,rows_hash=%s WHERE doctor_id=%d", $raw, hash( 'sha256', $raw ), $doctor ) );
+		return array( 'status' => $n === 1 ? 'updated' : 'error' );
+	} );
+	wp_send_json_success( $result );
+} );
 add_action( 'wp_ajax_hj_ci_corrupt_snapshot', function () {
 	$doctor = absint( $_POST['doctor'] ?? 0 );
 	if ( ! current_user_can( 'edit_post', $doctor ) ) { wp_send_json_error( array(), 403 ); }

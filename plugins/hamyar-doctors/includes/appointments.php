@@ -141,8 +141,8 @@ function hj_booking_doctor_has_valid_schedule( $doctor ) {
  $previous = $wpdb->suppress_errors( true );
  try {
   $row = $wpdb->get_row( $wpdb->prepare( "SELECT d.enabled,s.revision,s.rows_json,s.rows_hash FROM `$doctors` d INNER JOIN `$schedules` s ON s.doctor_id=d.doctor_id WHERE d.doctor_id=%d", $doctor ), ARRAY_A );
-  if ( $wpdb->last_error || ! $row || (int) $row['enabled'] !== 1 || (int) $row['revision'] < 1 || ! is_string( $row['rows_json'] ) || ! is_string( $row['rows_hash'] ) || ! hash_equals( $row['rows_hash'], hash( 'sha256', $row['rows_json'] ) ) ) { return false; }
-  return hj_booking_normalize_schedule( json_decode( $row['rows_json'], true ) ) !== false;
+  if ( $wpdb->last_error || ! $row || (int) $row['enabled'] !== 1 ) { return false; }
+  return hj_booking_legacy_snapshot_rows( $row ) !== false;
  } catch ( Throwable $e ) { return false; }
  finally { $wpdb->suppress_errors( $previous ); }
 }
@@ -224,7 +224,8 @@ function hj_booking_normalize_schedule( $input ) {
 	if ( ! is_array( $input ) || count( $input ) > 7 ) { return false; }
 	$days = array( 'saturday','sunday','monday','tuesday','wednesday','thursday','friday' ); $seen = array(); $result = array();
 	foreach ( $input as $row ) {
-		if ( ! is_array( $row ) || ! isset( $row['day_of_week'], $row['is_closed'], $row['start_time'], $row['end_time'] ) ) { return false; }
+		// Unknown fields must not be silently dropped by an old-format writer.
+		if ( ! is_array( $row ) || count( $row ) !== 4 || ! isset( $row['day_of_week'], $row['is_closed'], $row['start_time'], $row['end_time'] ) ) { return false; }
 		$day = $row['day_of_week']; $closed = $row['is_closed']; $start = $row['start_time']; $end = $row['end_time'];
 		if ( ! is_string( $day ) || ! in_array( $day, $days, true ) || isset( $seen[$day] ) || ! in_array( $closed, array( 0,1,'0','1',false,true ), true ) || ! is_string( $start ) || ! is_string( $end ) ) { return false; }
 		$seen[$day] = true; $closed = (int) $closed;
@@ -238,6 +239,13 @@ function hj_booking_normalize_schedule( $input ) {
 	}
 	return $result;
 }
+/** Validate the complete old-format snapshot before reading OR replacing it. */
+function hj_booking_legacy_snapshot_rows( $row ) {
+	if ( ! is_array( $row ) || ! isset( $row['revision'], $row['rows_json'], $row['rows_hash'] ) || (int) $row['revision'] < 1 || ! is_string( $row['rows_json'] ) || ! is_string( $row['rows_hash'] ) || ! hash_equals( $row['rows_hash'], hash( 'sha256', $row['rows_json'] ) ) ) { return false; }
+	// An envelope/object (even {}) is not the old array format.
+	if ( ! is_array( json_decode( $row['rows_json'] ) ) ) { return false; }
+	return hj_booking_normalize_schedule( json_decode( $row['rows_json'], true ) );
+}
 /** Called by dashboard after its existing nonce/ownership and form validation. */
 function hj_booking_save_schedule( $doctor, $rows, $expected_revision ) {
 	if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status' => 'forbidden' ); }
@@ -248,9 +256,11 @@ function hj_booking_save_schedule( $doctor, $rows, $expected_revision ) {
 	$hash = hash( 'sha256', $json );
 	return hj_booking_transaction( $doctor, 'schedule', function ( $db ) use ( $doctor, $json, $hash, $expected_revision ) {
 		$table = hj_booking_table( 'schedules' );
-		$old = hj_booking_row( $db, $db->prepare( "SELECT revision FROM `$table` WHERE doctor_id=%d FOR UPDATE", $doctor ) );
+		$old = hj_booking_row( $db, $db->prepare( "SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d FOR UPDATE", $doctor ) );
 		$current = $old ? (int) $old['revision'] : 0;
 		if ( $current !== $expected_revision ) { return array( 'status' => 'revision_conflict' ); }
+		// A matching revision is not permission to destroy an unreadable or newer snapshot.
+		if ( $old && hj_booking_legacy_snapshot_rows( $old ) === false ) { return array( 'status' => 'invalid_schedule' ); }
 		if ( $current === PHP_INT_MAX ) { return array( 'status' => 'invalid' ); }
 		$rev = $current + 1;
 		if ( $old ) { $n = hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET revision=%d,rows_json=%s,rows_hash=%s WHERE doctor_id=%d", $rev, $json, $hash, $doctor ) ); }
@@ -276,8 +286,7 @@ function hj_booking_editor_schedule( $doctor ) {
 		$table = hj_booking_table( 'schedules' );
 		$row = hj_booking_row( $db, $db->prepare( "SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d", $doctor ) );
 		if ( ! $row ) { return array( 'status' => 'ok', 'revision' => 0, 'rows' => array(), 'missing' => true ); }
-		if ( (int) $row['revision'] < 1 || ! hash_equals( $row['rows_hash'], hash( 'sha256', $row['rows_json'] ) ) ) { return array( 'status' => 'invalid_schedule' ); }
-		$rows = hj_booking_normalize_schedule( json_decode( $row['rows_json'], true ) );
+		$rows = hj_booking_legacy_snapshot_rows( $row );
 		if ( $rows === false ) { return array( 'status' => 'invalid_schedule' ); }
 		return array( 'status' => 'ok', 'revision' => (int) $row['revision'], 'rows' => $rows, 'missing' => false );
 	} );
@@ -285,8 +294,7 @@ function hj_booking_editor_schedule( $doctor ) {
 function hj_booking_snapshot_locked( $db, $doctor ) {
 	$table = hj_booking_table( 'schedules' );
 	$row = hj_booking_row( $db, $db->prepare( "SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d", $doctor ) );
-	if ( ! $row || ! hash_equals( $row['rows_hash'], hash( 'sha256', $row['rows_json'] ) ) ) { return false; }
-	$data = json_decode( $row['rows_json'], true ); $rows = hj_booking_normalize_schedule( $data );
+	$rows = hj_booking_legacy_snapshot_rows( $row );
 	return $rows === false ? false : array( 'rows' => $rows, 'revision' => (int) $row['revision'] );
 }
 function hj_booking_slots_locked( $db, $doctor, $config, $date ) {

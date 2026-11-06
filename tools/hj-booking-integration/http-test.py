@@ -333,11 +333,25 @@ try:
     check(ajax(patients[5], booking_payload(doctor_id, nonces[5], S0935, key(37001)))['status'] == 'invalid_slot', 'rebooked interval cannot be taken twice')
     last = audit(owner, doctor_id)
     check(len(last) == len(expected_ids) + 2 and sum(int(r['id']) == after_kill['id'] and r['status'] == 'cancelled' for r in last) == 1 and sum(int(r['id']) == rebook['id'] and r['status'] == 'pending' and r['details_id'] is not None for r in last) == 1, 'cancel and rebook retain distinct consistent records')
+    baseline = state(owner, doctor_id)
     check(ajax(owner, {'action': 'hj_ci_corrupt_snapshot', 'doctor': str(doctor_id)})['ok'], 'test adapter deliberately corrupted canonical hash')
     check(slots(patients[0], doctor_id, nonces[0])['status'] == 'invalid_schedule', 'production slot reader fails closed for corrupted snapshot')
     check(ajax(patients[5], booking_payload(doctor_id, nonces[5], S1120, key(38000)))['status'] == 'invalid_schedule', 'production create fails closed for corrupted snapshot')
-    check(ajax(owner, open_hours) is not None, 'real dashboard repairs snapshot using a fresh revision')
-    check(slots(patients[0], doctor_id, nonces[0])['status'] == 'ok', 'valid snapshot restores production reader')
+    broken = state(owner, doctor_id)
+    rejected = dict(open_hours, hj_schedule_revision=str(broken['snapshot']['revision']), name_fa='Do not overwrite')
+    code, body = request(owner, url, rejected)
+    check(code == 503 and 'جلوگیری از بازنویسی' in json.loads(body)['message'] and state(owner, doctor_id) == broken, 'dashboard refuses to overwrite corrupted snapshot or other profile fields')
+    replace = {'action':'hj_ci_replace_snapshot', 'doctor':str(doctor_id), '_hjn':owner_nonce}
+    check(ajax(owner, dict(replace, rows_json=baseline['snapshot']['rows_json']))['status'] == 'updated', 'CI-only fixture restores original synthetic snapshot, not production repair')
+    check(state(owner, doctor_id) == baseline and slots(patients[0], doctor_id, nonces[0])['status'] == 'ok', 'restoring original bytes preserves revision, display, name and reader')
+    future_shapes = ['{}', json.dumps({'version':2, 'weekly':[]}), json.dumps([{'day_of_week':'wednesday','is_closed':0,'start_time':'09:00','end_time':'12:00','capacity':3}])]
+    for future in future_shapes:
+        check(ajax(owner, dict(replace, rows_json=future))['status'] == 'updated', 'CI-only fixture seeds an unknown schedule shape')
+        prior = state(owner, doctor_id)
+        code, body = request(owner, url, dict(open_hours, hj_schedule_revision=str(prior['snapshot']['revision']), name_fa='Do not overwrite'))
+        check(code == 503 and state(owner, doctor_id) == prior and slots(patients[0], doctor_id, nonces[0])['status'] == 'invalid_schedule', 'unknown snapshot shape fails closed and cannot be overwritten by old editor')
+        check(ajax(owner, dict(replace, rows_json=baseline['snapshot']['rows_json']))['status'] == 'updated', 'CI-only fixture restores original schedule after unknown shape')
+    check(state(owner, doctor_id) == baseline, 'future-format checks preserve all original synthetic schedule and display data')
 
     # Product endpoints, not the CI adapter. Another Wednesday keeps the old
     # lock-order fixture's appointments separate from this race.
