@@ -59,7 +59,7 @@ add_action( 'wp_ajax_hj_ci_corrupt_snapshot', function () {
 	global $wpdb; $table = hj_booking_table( 'schedules' );
 	$n = $wpdb->query( $wpdb->prepare( "UPDATE `$table` SET rows_hash=%s WHERE doctor_id=%d", str_repeat( '0', 64 ), $doctor ) );
 	if ( $n !== 1 ) { wp_send_json_error( array(), 500 ); }
-	wp_send_json_success();
+	wp_send_json_success( array( 'ok' => true ) );
 } );
 function hj_prod_ci_handler( $mode ) {
 	check_ajax_referer( 'hj_ci_booking', 'nonce' );
