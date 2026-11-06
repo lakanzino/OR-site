@@ -148,6 +148,11 @@ jobs:
             echo "::error title=Booking migration failure::$summary"
             exit "$status"
           fi
+      - name: Compare synthetic legacy capacity migration proposal
+        run: |
+          set -euo pipefail
+          php -l tools/hj-booking-integration/capacity-migration-proposal.php
+          php tools/hj-booking-integration/capacity-migration-proposal.php
       - name: Race production capacity calculation with real plugin mutex
         run: |
           set -uo pipefail
