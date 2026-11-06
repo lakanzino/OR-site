@@ -5,7 +5,7 @@ const vm = require('node:vm');
 const script = fs.readFileSync('plugins/hamyar-doctors/assets/js/booking-form.js', 'utf8');
 const tick = () => new Promise(resolve => setImmediate(resolve));
 const flush = async () => { for (let i=0;i<5;i++) await tick(); };
-function environment(intent, firstNetworkFails = false) {
+function environment(intent, firstNetworkFails = false, availableRevision = 7, includeSlot = true) {
   const callbacks = {};
   function element(value='') { return {value, disabled:false, textContent:'', children:[], attrs:{},
     addEventListener(type, cb) { this[type] = cb; }, setAttribute(k,v) {this.attrs[k]=v;},
@@ -22,7 +22,7 @@ function environment(intent, firstNetworkFails = false) {
     crypto:{getRandomValues:a=>{a.fill(1);return a;}}, Uint8Array, window:{location:{assign(){}}},
     fetch: async (url, opts) => {
       const data = Object.fromEntries(opts.body); requests.push(data);
-      if (data.action === 'hj_booking_slots') return {ok:true,json:async()=>({success:true,data:{revision:7,slots:[{start,label:'09:00'}]}})};
+      if (data.action === 'hj_booking_slots') return {ok:true,json:async()=>({success:true,data:{revision:availableRevision,slots:includeSlot ? [{start,label:'09:00'}] : []}})};
       if (firstNetworkFails) { firstNetworkFails = false; throw new Error('simulated lost response'); }
       return {ok:true,json:async()=>({success:true,data:{status:'replayed',id:8,message:'درخواست ثبت شد'}})};
     }};
@@ -40,5 +40,10 @@ function environment(intent, firstNetworkFails = false) {
   const first=e.requests[1]; assert.equal(first.phone,'09123456789'); assert.equal(first.national_code,'1234567891'); assert.equal(first.idempotency_key,intent.key); assert.equal(e.doctor.disabled,true); assert.equal(e.list.children[0].disabled,true);
   e.callbacks.submit({preventDefault(){}}); await flush();
   assert.equal(e.requests[2].idempotency_key,first.idempotency_key); assert.equal(e.stored.size,0); assert.match(e.status.textContent,/ثبت شد/);
-  console.log('PASS: real UI revalidates restored intent, normalizes digits and retries the same UUID after lost response without storing private data');
+  const stale=environment(intent,false,8); await flush();
+  assert.match(stale.status.textContent,/تغییر کرده/); assert.equal(stale.list.children[0].attrs['aria-pressed'],'false');
+  stale.callbacks.submit({preventDefault(){}}); await flush(); assert.equal(stale.requests.length,1);
+  const occupied=environment(intent,false,7,false); await flush();
+  assert.match(occupied.status.textContent,/تغییر کرده/); occupied.callbacks.submit({preventDefault(){}}); await flush(); assert.equal(occupied.requests.length,1);
+  console.log('PASS: real UI revalidates restored intent, rejects stale or taken selections, normalizes digits and retries the same UUID after lost response without storing private data');
 })().catch(e=>{console.error(e); process.exit(1);});

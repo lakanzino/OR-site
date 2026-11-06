@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Exercise unchanged repository plugin files on disposable WordPress."""
 import concurrent.futures
+import copy
 import datetime
 from zoneinfo import ZoneInfo
 import hashlib
@@ -113,6 +114,8 @@ try:
     plugin.symlink_to(workspace / 'plugins/hamyar-doctors', target_is_directory=True)
     created_plugin = True
     subprocess.run(['php', '-d', 'auto_prepend_file=' + PREPEND, 'tools/hj-booking-integration/setup.php'], check=True)
+    # In a separate process without the opt-in constant, the shortcode is inert.
+    subprocess.run(['php', '-r', "require '/wordpress/wp-load.php'; if (hj_booking_enabled() || do_shortcode('[hj_booking_form]') !== '') { exit(1); } echo 'PASS: patient shortcode remains off by default\\n';"], check=True)
     mu.parent.mkdir(exist_ok=True)
     mu.symlink_to(workspace / 'tools/hj-booking-integration/mu.php')
     created_mu = True
@@ -350,6 +353,8 @@ try:
         code, body = request(opener, url, payload)
         return code, json.loads(body)
     guest = session(); guest_form = ui_form(guest); guest_nonce = guest_form['data-nonce']
+    profile = Inputs(); profile.feed(ajax(guest, {'action':'hj_ci_render_patient_profile', 'doctor':str(doctor_id)})['html'])
+    check(profile.booking is not None and profile.booking['data-fixed'] == '1' and profile.booking['data-page'] == str(doctor_id), 'actual doctor profile includes fixed-doctor booking form')
     slot_payload = {'action':'hj_booking_slots', 'nonce':guest_nonce, 'doctor_id':str(doctor_id), 'date':ui_day}
     code, available = ui_request(guest, slot_payload)
     check(code == 200 and available['success'] and ui_starts[0] in [x['start'] for x in available['data']['slots']], 'guest obtains real public slots from canonical snapshot')
@@ -360,15 +365,25 @@ try:
     intent_payload = {'action':'hj_booking_intent', 'nonce':guest_nonce, 'doctor_id':str(doctor_id), 'page_id':str(page_id), 'slot_start':ui_starts[0], 'revision':str(revision), 'idempotency_key':intent_key, 'hj_ci_provider':'1'}
     code, intent_response = ui_request(guest, intent_payload)
     check(code == 200 and intent_response['success'] and 'hj_booking_return=1' in intent_response['data']['login_url'], 'guest intent saved and selects public Google entry')
+    check(ui_request(session(), dict(intent_payload, page_id='999999'))[0] == 400, 'booking intent rejects an invalid return page')
     cookie = next((c for h in guest.handlers if isinstance(h, urllib.request.HTTPCookieProcessor) for c in h.cookiejar if c.name == 'hj_booking_intent'), None)
     check(cookie is not None and cookie.has_nonstandard_attr('HttpOnly') and cookie.get_nonstandard_attr('SameSite') == 'Lax', 'short-lived signed intent cookie is HttpOnly and SameSite Lax')
     google_path = urllib.parse.urlsplit(intent_response['data']['login_url'])
+    tampered = session(); tampered_cookie = copy.copy(cookie); tampered_cookie.value = tampered_cookie.value[:-1] + ('0' if tampered_cookie.value[-1] != '0' else '1')
+    next(h for h in tampered.handlers if isinstance(h, urllib.request.HTTPCookieProcessor)).cookiejar.set_cookie(tampered_cookie)
+    tamper_req = urllib.request.Request(BASE + google_path.path + '?' + google_path.query, headers={'Host':'example.invalid'})
+    try: tamper_res = tampered.open(tamper_req, timeout=30)
+    except urllib.error.HTTPError as e: tamper_res = e
+    tamper_dest = urllib.parse.parse_qs(urllib.parse.urlsplit(tamper_res.headers.get('Location', '')).query).get('redirect', [''])[0]
+    check(tamper_res.code == 302 and '#hj-booking' not in tamper_dest, 'tampered intent cannot set a booking return target')
     req = urllib.request.Request(BASE + google_path.path + '?' + google_path.query, headers={'Host':'example.invalid'})
     try: google_response = guest.open(req, timeout=30)
     except urllib.error.HTTPError as e: google_response = e
     location = google_response.headers.get('Location', '')
     target = urllib.parse.parse_qs(urllib.parse.urlsplit(location).query).get('redirect', [''])[0]
     check(google_response.code == 302 and target.startswith('http://example.invalid/') and '#hj-booking' in target and 'loginSocial=google' in location, 'Google provider stub receives server-derived same-site return, not arbitrary URL: ' + repr((google_response.code, target, location)))
+    cookie_names = {c.name for h in guest.handlers if isinstance(h, urllib.request.HTTPCookieProcessor) for c in h.cookiejar}
+    check('hj_member_intent' in cookie_names and 'hj_doc_intent' not in cookie_names, 'booking uses ordinary member intent and not surgeon intent')
     resumed, _ = login('synthetic_race_8', guest)
     resumed_form = ui_form(resumed); restored = json.loads(resumed_form['data-intent'])
     check(restored['doctor'] == doctor_id and restored['start'] == ui_starts[0] and restored['revision'] == revision and restored['key'] == intent_key and restored['local_date'] == ui_day, 'signed intent survives simulated login and returns exact selection')
@@ -392,6 +407,8 @@ try:
     winner = [resumed,rival][winner_index]; winning_payload = [a,b][winner_index]; winning_id = replies[winner_index][1]['data']['id']
     code, replayed = ui_request(winner, winning_payload)
     check(code == 200 and replayed['data']['status'] == 'replayed' and replayed['data']['id'] == winning_id, 'same UUID replays exactly the same reservation')
+    refreshed = ui_request(rival, dict(slot_payload, nonce=rival_nonce))[1]
+    check(ui_starts[0] not in [x['start'] for x in refreshed['data']['slots']], 'occupied choice disappears on refreshed server availability')
     check(sum(int(row['id']) == winning_id for row in audit(owner, doctor_id)) == 1, 'idempotency replay inserted only one row')
     limit_patient, _ = login('synthetic_race_10'); limit_nonce = ui_form(limit_patient)['data-nonce']
     for index, start in enumerate(ui_starts[1:]):
@@ -410,6 +427,14 @@ try:
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
         cross_results = list(pool.map(lambda payload: ui_request(cross_patient, payload), [one,two]))
     check(sorted(code for code, _ in cross_results) == [200,429] and any(r['data'].get('code') == 'pending_limit' for _, r in cross_results), 'same patient racing different doctors cannot exceed three pending')
+    check(ajax(owner, open_hours) is not None, 'doctor publishes a new schedule revision after list was shown')
+    code, stale = ui_request(rival, dict(b, slot_start=cross_start(10,45), idempotency_key=str(uuid.uuid4())))
+    check(code == 409 and stale['data']['code'] == 'revision_conflict', 'real AJAX detects actual intervening schedule save')
+    code, replayed = ui_request(winner, winning_payload)
+    check(code == 200 and replayed['data']['status'] == 'replayed' and replayed['data']['id'] == winning_id, 'previously committed UUID still replays after schedule revision changes')
+    check(ajax(owner, {'action':'hj_ci_corrupt_snapshot', 'doctor':str(doctor_id)})['ok'], 'corrupt snapshot for public endpoint test')
+    code, result = ui_request(anonymous, slot_payload)
+    check(code == 503 and result['data']['code'] == 'invalid_schedule' and 'slots' not in result['data'], 'public endpoint fails closed on corrupt snapshot')
 finally:
     if server:
         os.killpg(server.pid, signal.SIGTERM)

@@ -105,3 +105,11 @@ function hj_ci_render_patient_form() {
 }
 add_action( 'wp_ajax_hj_ci_render_patient_form', 'hj_ci_render_patient_form' );
 add_action( 'wp_ajax_nopriv_hj_ci_render_patient_form', 'hj_ci_render_patient_form' );
+function hj_ci_render_patient_profile() {
+ $id = absint( $_POST['doctor'] ?? 0 );
+ global $wp_query; $wp_query->queried_object = get_post( $id ); $wp_query->queried_object_id = $id;
+ $wp_query->is_singular = true; $wp_query->is_single = true;
+ wp_send_json_success( array( 'html' => HJ_Profile_Page::render( $id ) ) );
+}
+add_action( 'wp_ajax_hj_ci_render_patient_profile', 'hj_ci_render_patient_profile' );
+add_action( 'wp_ajax_nopriv_hj_ci_render_patient_profile', 'hj_ci_render_patient_profile' );
