@@ -162,6 +162,7 @@ jobs:
       - name: Test actual create with CI-only weekly capacity v2
         run: |
           set -uo pipefail
+          set +e
           output=$(bash -e -c 'php -l tools/hj-booking-integration/capacity-v2-fixture.php && python3 tools/hj-booking-integration/capacity-v2-race.py' 2>&1)
           status=$?
           printf '%s\n' "$output"
