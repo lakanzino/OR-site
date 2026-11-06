@@ -44,6 +44,10 @@ add_action( 'init', function () {
 	if ( ! defined( 'DONOTCACHEPAGE' ) ) { define( 'DONOTCACHEPAGE', true ); }
 	nocache_headers();
 	$account = hj_member_account_url();
+	if ( isset( $_GET['hj_booking_return'] ) && function_exists( 'hj_booking_intent_destination' ) ) {
+		$booking_target = hj_booking_intent_destination();
+		if ( $booking_target ) { $account = $booking_target; }
+	}
 	if ( is_user_logged_in() || ! hj_member_google_is_ready() ) { wp_safe_redirect( $account ); exit; }
 	// A previously started surgeon flow must never turn this normal login into a doctor signup.
 	if ( class_exists( 'HJ_Doctors_Auth_Google' ) ) {

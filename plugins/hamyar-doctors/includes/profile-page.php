@@ -544,6 +544,8 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 
 						</section>
 
+						<?php if ( function_exists( 'hj_booking_ready' ) && hj_booking_ready() ) { echo hj_booking_form_shortcode( array( 'doctor_id' => (string) $post_id ) ); } ?>
+
 						<section class="hj-section hj-grid hj-grid--2" id="hj-about">
 
 							<div class="hj-card">

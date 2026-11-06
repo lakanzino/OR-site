@@ -87,3 +87,21 @@ add_action( 'wp_ajax_hj_ci_booking_audit', function () {
 	if ( $wpdb->last_error ) { wp_send_json_error( array(), 500 ); }
 	wp_send_json_success( $rows );
 } );
+
+// Only a provider stub: exercises our redirect/intent plumbing, not OAuth itself.
+if ( ( isset( $_GET['hj_member_google'] ) || isset( $_POST['hj_ci_provider'] ) ) && ! class_exists( 'NextendSocialLogin' ) ) {
+ class NextendSocialLogin {
+  public static function isProviderEnabled( $provider ) { return $provider === 'google'; }
+  public static function getLoginUrl() { return site_url( 'wp-login.php' ); }
+ }
+}
+function hj_ci_render_patient_form() {
+ $page = absint( $_POST['page'] ?? 0 );
+ if ( ! get_post( $page ) ) { wp_send_json_error( array(), 400 ); }
+ global $wp_query;
+ $wp_query->queried_object = get_post( $page ); $wp_query->queried_object_id = $page;
+ $wp_query->is_singular = true; $wp_query->is_page = true;
+ wp_send_json_success( array( 'html' => do_shortcode( '[hj_booking_form]' ) ) );
+}
+add_action( 'wp_ajax_hj_ci_render_patient_form', 'hj_ci_render_patient_form' );
+add_action( 'wp_ajax_nopriv_hj_ci_render_patient_form', 'hj_ci_render_patient_form' );

@@ -17,6 +17,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import uuid
 from pathlib import Path
 
 if os.getenv('GITHUB_ACTIONS') != 'true' or os.getenv('HJ_DISPOSABLE_MARIADB_FIXTURE') != '1':
@@ -37,10 +38,11 @@ S0900, S0935, S1010, S1045, S1120 = [moment(h, m) for h, m in [(9, 0), (9, 35), 
 PREPEND = str(workspace / 'tools/hj-booking-integration/prepend.php')
 class Inputs(HTMLParser):
     def __init__(self):
-        super().__init__(); self.inputs = {}
+        super().__init__(); self.inputs = {}; self.booking = None
     def handle_starttag(self, tag, attrs):
         attributes = dict(attrs)
         if tag == 'input' and 'name' in attributes: self.inputs[attributes['name']] = attributes
+        if tag == 'section' and 'hj-booking' in attributes.get('class', '').split(): self.booking = attributes
 
 def rendered_form(opener):
     html = ajax(opener, {'action': 'hj_ci_render_dashboard'})['html']
@@ -60,8 +62,8 @@ def request(opener, path, data=None):
 def check(condition, label):
     if not condition: raise AssertionError(label)
     print('PASS:', label, flush=True)
-def login(user):
-    opener = session()
+def login(user, opener=None):
+    opener = opener or session()
     check(request(opener, '/wp-login.php')[0] == 200, user + ' login form')
     code, _ = request(opener, '/wp-login.php', {'log': user, 'pwd': 'disposable-test-password', 'wp-submit': 'Log In', 'redirect_to': 'http://example.invalid/wp-admin/', 'testcookie': '1'})
     check(code == 302, user + ' login')
@@ -114,7 +116,7 @@ try:
     mu.parent.mkdir(exist_ok=True)
     mu.symlink_to(workspace / 'tools/hj-booking-integration/mu.php')
     created_mu = True
-    doctor_id = json.loads(meta.read_text(encoding='utf-8'))['doctor']
+    fixture_meta = json.loads(meta.read_text(encoding='utf-8')); doctor_id = fixture_meta['doctor']; doctor2_id = fixture_meta['doctor2']; page_id = fixture_meta['page']
     server = subprocess.Popen(['php', '-d', 'auto_prepend_file=' + PREPEND, '-S', '127.0.0.1:8997', '-t', '/wordpress'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, env=dict(os.environ, PHP_CLI_SERVER_WORKERS='16'))
     for _ in range(80):
         try: request(session(), '/wp-login.php'); break
@@ -332,6 +334,82 @@ try:
     check(ajax(patients[5], booking_payload(doctor_id, nonces[5], S1120, key(38000)))['status'] == 'invalid_schedule', 'production create fails closed for corrupted snapshot')
     check(ajax(owner, open_hours) is not None, 'real dashboard repairs snapshot using a fresh revision')
     check(slots(patients[0], doctor_id, nonces[0])['status'] == 'ok', 'valid snapshot restores production reader')
+
+    # Product endpoints, not the CI adapter. Another Wednesday keeps the old
+    # lock-order fixture's appointments separate from this race.
+    ui_day = (date + datetime.timedelta(days=7)).isoformat()
+    def ui_moment(hour, minute):
+        return datetime.datetime.combine(date + datetime.timedelta(days=7), datetime.time(hour, minute), ZoneInfo('Asia/Tehran')).astimezone(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
+    ui_starts = [ui_moment(h, m) for h, m in [(9,0),(9,35),(10,10),(10,45),(11,20)]]
+    def ui_form(opener):
+        html = ajax(opener, {'action':'hj_ci_render_patient_form', 'page':str(page_id)})['html']
+        parsed = Inputs(); parsed.feed(html)
+        check(parsed.booking is not None, 'real patient shortcode renders')
+        return parsed.booking
+    def ui_request(opener, payload):
+        code, body = request(opener, url, payload)
+        return code, json.loads(body)
+    guest = session(); guest_form = ui_form(guest); guest_nonce = guest_form['data-nonce']
+    slot_payload = {'action':'hj_booking_slots', 'nonce':guest_nonce, 'doctor_id':str(doctor_id), 'date':ui_day}
+    code, available = ui_request(guest, slot_payload)
+    check(code == 200 and available['success'] and ui_starts[0] in [x['start'] for x in available['data']['slots']], 'guest obtains real public slots from canonical snapshot')
+    check(set(available['data']) == {'revision','slots'} and all(set(x) == {'start','label'} for x in available['data']['slots']), 'public response contains no patient records')
+    revision = available['data']['revision']
+    check(ui_request(guest, dict(slot_payload, nonce='bad'))[0] == 403, 'product slots rejects invalid nonce')
+    intent_key = str(uuid.uuid4())
+    intent_payload = {'action':'hj_booking_intent', 'nonce':guest_nonce, 'doctor_id':str(doctor_id), 'page_id':str(page_id), 'slot_start':ui_starts[0], 'revision':str(revision), 'idempotency_key':intent_key, 'hj_ci_provider':'1'}
+    code, intent_response = ui_request(guest, intent_payload)
+    check(code == 200 and intent_response['success'] and 'hj_booking_return=1' in intent_response['data']['login_url'], 'guest intent saved and selects public Google entry')
+    cookie = next((c for h in guest.handlers if isinstance(h, urllib.request.HTTPCookieProcessor) for c in h.cookiejar if c.name == 'hj_booking_intent'), None)
+    check(cookie is not None and cookie.has_nonstandard_attr('HttpOnly') and cookie.get_nonstandard_attr('SameSite') == 'Lax', 'short-lived signed intent cookie is HttpOnly and SameSite Lax')
+    google_path = urllib.parse.urlsplit(intent_response['data']['login_url'])
+    req = urllib.request.Request(BASE + google_path.path + '?' + google_path.query, headers={'Host':'example.invalid'})
+    try: google_response = guest.open(req, timeout=30)
+    except urllib.error.HTTPError as e: google_response = e
+    location = google_response.headers.get('Location', '')
+    target = urllib.parse.parse_qs(urllib.parse.urlsplit(location).query).get('redirect', [''])[0]
+    check(google_response.code == 302 and target.startswith('http://example.invalid/') and '#hj-booking' in target and 'loginSocial=google' in location, 'Google provider stub receives server-derived same-site return, not arbitrary URL')
+    resumed, _ = login('synthetic_race_8', guest)
+    resumed_form = ui_form(resumed); restored = json.loads(resumed_form['data-intent'])
+    check(restored['doctor'] == doctor_id and restored['start'] == ui_starts[0] and restored['revision'] == revision and restored['key'] == intent_key and restored['local_date'] == ui_day, 'signed intent survives simulated login and returns exact selection')
+    resume_slots = ui_request(resumed, dict(slot_payload, nonce=resumed_form['data-nonce']))[1]
+    check(ui_starts[0] in [x['start'] for x in resume_slots['data']['slots']] and resume_slots['data']['revision'] == restored['revision'], 'restored selection can be revalidated against server')
+    rival, _ = login('synthetic_race_9'); rival_nonce = ui_form(rival)['data-nonce']
+    base = {'action':'hj_booking_create', 'doctor_id':str(doctor_id), 'slot_start':ui_starts[0], 'revision':str(revision), 'phone':'۰۹۱۲۳۴۵۶۷۸۹', 'national_code':'۱۲۳۴۵۶۷۸۹۱'}
+    a = dict(base, nonce=resumed_form['data-nonce'], idempotency_key=intent_key)
+    b = dict(base, nonce=rival_nonce, idempotency_key=str(uuid.uuid4()))
+    code, failure = ui_request(resumed, dict(a, revision=str(revision-1)))
+    check(code == 409 and failure['data']['code'] == 'revision_conflict' and 'ساعات کاری تغییر کرده' in failure['data']['message'], 'real AJAX rejects stale revision with Persian conflict')
+    for field, value, expected in [('phone','02112345678','invalid_phone'), ('national_code','1234567890','invalid_national')]:
+        code, failure = ui_request(resumed, dict(a, **{field:value}))
+        check(code == 400 and failure['data']['code'] == expected and len(failure['data']['message']) > 10, 'real AJAX rejects invalid ' + field + ' with clear message')
+    anonymous = session()
+    check(ui_request(anonymous, dict(a, nonce=guest_nonce))[0] == 403, 'guest cannot create reservation with guest nonce')
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+        replies = list(pool.map(lambda x: ui_request(*x), [(resumed,a),(rival,b)]))
+    check(sorted(code for code, _ in replies) == [200,409] and sum(x['success'] for _, x in replies) == 1 and any(x.get('data',{}).get('code') == 'invalid_slot' for _, x in replies), 'two patients race real AJAX for one slot: one success, one taken')
+    winner_index = 0 if replies[0][0] == 200 else 1
+    winner = [resumed,rival][winner_index]; winning_payload = [a,b][winner_index]; winning_id = replies[winner_index][1]['data']['id']
+    code, replayed = ui_request(winner, winning_payload)
+    check(code == 200 and replayed['data']['status'] == 'replayed' and replayed['data']['id'] == winning_id, 'same UUID replays exactly the same reservation')
+    check(sum(int(row['id']) == winning_id for row in audit(owner, doctor_id)) == 1, 'idempotency replay inserted only one row')
+    limit_patient, _ = login('synthetic_race_10'); limit_nonce = ui_form(limit_patient)['data-nonce']
+    for index, start in enumerate(ui_starts[1:]):
+        code, result = ui_request(limit_patient, dict(base, nonce=limit_nonce, slot_start=start, idempotency_key=str(uuid.uuid4())))
+        check((code == 200 and result['success']) if index < 3 else (code == 429 and result['data']['code'] == 'pending_limit'), 'three-pending patient limit item ' + str(index+1))
+    # One patient attempts a third and fourth pending booking under distinct
+    # doctor mutexes; the patient row lock must serialize the global limit.
+    cross_patient, _ = login('synthetic_race_11'); cross_nonce = ui_form(cross_patient)['data-nonce']
+    cross_day = (date + datetime.timedelta(days=14)).isoformat()
+    def cross_start(h, m): return datetime.datetime.combine(date + datetime.timedelta(days=14), datetime.time(h, m), ZoneInfo('Asia/Tehran')).astimezone(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
+    for h, m in [(9,0), (9,35)]:
+        code, result = ui_request(cross_patient, dict(base, nonce=cross_nonce, slot_start=cross_start(h,m), idempotency_key=str(uuid.uuid4())))
+        check(code == 200 and result['success'], 'patient baseline pending before cross-doctor race')
+    one = dict(base, nonce=cross_nonce, slot_start=cross_start(10,10), idempotency_key=str(uuid.uuid4()))
+    two = dict(one, doctor_id=str(doctor2_id), revision='1', idempotency_key=str(uuid.uuid4()))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+        cross_results = list(pool.map(lambda payload: ui_request(cross_patient, payload), [one,two]))
+    check(sorted(code for code, _ in cross_results) == [200,429] and any(r['data'].get('code') == 'pending_limit' for _, r in cross_results), 'same patient racing different doctors cannot exceed three pending')
 finally:
     if server:
         os.killpg(server.pid, signal.SIGTERM)

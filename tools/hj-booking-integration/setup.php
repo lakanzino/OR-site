@@ -17,6 +17,11 @@ update_user_meta( $doctor->ID, 'hj_doctor_post_id', $doc );
 update_post_meta( $doc, 'working_hours', array( array( 'day_of_week' => 'wednesday', 'is_closed' => 0, 'start_time' => '10:00:00', 'end_time' => '11:00:00' ) ) );
 wp_set_current_user( $doctor->ID );
 if ( hj_booking_configure( (int) $doc, 30, 5, true )['status'] !== 'configured' ) { throw new RuntimeException( 'Doctor config failed' ); }
+wp_set_current_user( $admin->ID );
+$doc2 = wp_insert_post( array( 'post_type' => 'doctor', 'post_status' => 'publish', 'post_title' => 'Second synthetic booking doctor', 'post_author' => $doctor->ID ), true );
+if ( is_wp_error( $doc2 ) || hj_booking_configure( (int) $doc2, 30, 5, true )['status'] !== 'configured' || hj_booking_save_schedule( (int) $doc2, array( array( 'day_of_week' => 'wednesday', 'is_closed' => 0, 'start_time' => '09:00', 'end_time' => '12:00' ) ), 0 )['status'] !== 'saved' ) { throw new RuntimeException( 'Second synthetic doctor setup failed' ); }
+$page = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Synthetic booking', 'post_content' => '[hj_booking_form]' ), true );
+if ( is_wp_error( $page ) ) { throw new RuntimeException( 'Synthetic page failed' ); }
 update_option( 'active_plugins', array( 'hamyar-doctors/hamyar-doctors.php' ) );
-file_put_contents( getenv( 'RUNNER_TEMP' ) . '/hj-wpdb-ajax-meta.json', wp_json_encode( array( 'doctor' => $doc ) ) );
+file_put_contents( getenv( 'RUNNER_TEMP' ) . '/hj-wpdb-ajax-meta.json', wp_json_encode( array( 'doctor' => $doc, 'doctor2' => $doc2, 'page' => $page ) ) );
 echo "PASS: repository plugin loaded without patch; production schema and synthetic doctor configured\n";

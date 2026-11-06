@@ -222,7 +222,12 @@ function hj_booking_slots_locked( $db, $doctor, $config, $date ) {
 	return array( 'slots' => hj_booking_compute_slots( $date, $snapshot['rows'], (int) $config['duration_minutes'], (int) $config['buffer_minutes'], $occupied, time(), 30 ), 'revision' => $snapshot['revision'] );
 }
 function hj_booking_slots( $doctor, $date ) {
-	if ( ! is_user_logged_in() || get_post_type( $doctor ) !== 'doctor' || get_post_status( $doctor ) !== 'publish' ) { return array( 'status' => 'forbidden' ); }
+	if ( ! is_user_logged_in() ) { return array( 'status' => 'forbidden' ); }
+	return hj_booking_public_slots( $doctor, $date );
+}
+/** Public availability contains no reservation or patient records. */
+function hj_booking_public_slots( $doctor, $date ) {
+	if ( get_post_type( $doctor ) !== 'doctor' || get_post_status( $doctor ) !== 'publish' ) { return array( 'status' => 'forbidden' ); }
 	if ( ! is_string( $date ) || ! preg_match( '/^\d{4}-\d{2}-\d{2}$/D', $date ) ) { return array( 'status' => 'invalid' ); }
 	return hj_booking_transaction( $doctor, 'slots', function ( $db, $config ) use ( $doctor, $date ) {
 		if ( ! (int) $config['enabled'] ) { return array( 'status' => 'unavailable' ); }
@@ -244,23 +249,38 @@ function hj_booking_national_code( $value ) {
 	$r = $sum % 11; return (int) $s[9] === ( $r < 2 ? $r : 11 - $r ) ? $s : false;
 }
 /** Request key is random and stable across retries; caller must retain it after unknown. */
-function hj_booking_create( $doctor, $start, $key, $phone, $national ) {
+function hj_booking_create( $doctor, $start, $key, $phone, $national, $expected_revision = null ) {
 	$patient = get_current_user_id();
 	if ( ! $patient || get_post_type( $doctor ) !== 'doctor' || get_post_status( $doctor ) !== 'publish' ) { return array( 'status' => 'forbidden' ); }
 	$phone = hj_booking_phone( $phone ); $national = hj_booking_national_code( $national );
-	if ( $phone === false || $national === false || ! is_string( $key ) || ! preg_match( '/^[a-f0-9]{32}$/D', $key ) || ! is_string( $start ) ) { return array( 'status' => 'invalid' ); }
+	if ( $phone === false || $national === false || ! is_string( $key ) || ! preg_match( '/^[a-f0-9]{32}$/D', $key ) || ! is_string( $start ) || ( $expected_revision !== null && ( ! is_int( $expected_revision ) || $expected_revision < 1 ) ) ) { return array( 'status' => 'invalid' ); }
 	$utc = new DateTimeZone( 'UTC' ); $when = DateTimeImmutable::createFromFormat( '!Y-m-d H:i:s', $start, $utc );
 	if ( ! $when || $when->format( 'Y-m-d H:i:s' ) !== $start ) { return array( 'status' => 'invalid' ); }
 	$date = $when->setTimezone( wp_timezone() )->format( 'Y-m-d' );
-	$hash = hash_hmac( 'sha256', wp_json_encode( array( $doctor, $patient, $start, $phone, $national ) ), wp_salt( 'auth' ) );
-	return hj_booking_transaction( $doctor, 'create', function ( $db, $config ) use ( $doctor, $patient, $start, $when, $key, $phone, $national, $hash, $date ) {
+	$payload = array( $doctor, $patient, $start, $phone, $national );
+	if ( $expected_revision !== null ) { $payload[] = $expected_revision; }
+	$hash = hash_hmac( 'sha256', wp_json_encode( $payload ), wp_salt( 'auth' ) );
+	global $wpdb;
+	$users = $wpdb->users;
+	if ( ! preg_match( '/^[A-Za-z0-9_]+$/D', $users ) ) { return array( 'status' => 'unavailable' ); }
+	return hj_booking_transaction( $doctor, 'create', function ( $db, $config ) use ( $doctor, $patient, $start, $when, $key, $phone, $national, $hash, $date, $expected_revision, $users ) {
 		$table = hj_booking_table( 'appointments' ); $details = hj_booking_table( 'details' );
+		// Serialize this patient's pending limit across different doctors as well.
+		// The user row must be transactional; never silently enforce an unsafe limit.
+		$info = hj_booking_row( $db, $db->prepare( 'SHOW TABLE STATUS WHERE Name = %s', $users ) );
+		if ( ! $info || strtoupper( $info['Engine'] ?? '' ) !== 'INNODB' ) { return array( 'status' => 'unavailable' ); }
+		$user = hj_booking_row( $db, $db->prepare( "SELECT ID FROM `$users` WHERE ID=%d FOR UPDATE", $patient ) );
+		if ( ! $user ) { return array( 'status' => 'forbidden' ); }
 		$existing = hj_booking_row( $db, $db->prepare( "SELECT id,request_hash FROM `$table` WHERE request_key=%s", $key ) );
 		if ( $existing ) { return hash_equals( $existing['request_hash'], $hash ) ? array( 'status' => 'replayed', 'id' => (int) $existing['id'] ) : array( 'status' => 'idempotency_conflict' ); }
 		if ( ! (int) $config['enabled'] ) { return array( 'status' => 'unavailable' ); }
 		$available = hj_booking_slots_locked( $db, $doctor, $config, $date );
 		if ( $available === false ) { return array( 'status' => 'invalid_schedule' ); }
+		if ( $expected_revision !== null && $available['revision'] !== $expected_revision ) { return array( 'status' => 'revision_conflict' ); }
 		if ( ! in_array( $start, $available['slots'], true ) ) { return array( 'status' => 'invalid_slot' ); }
+		$pending = hj_booking_row( $db, $db->prepare( "SELECT COUNT(*) AS n FROM `$table` WHERE patient_id=%d AND status='pending'", $patient ) );
+		if ( ! $pending ) { throw new RuntimeException( 'Pending count failed' ); }
+		if ( (int) $pending['n'] >= 3 ) { return array( 'status' => 'pending_limit' ); }
 		$end = gmdate( 'Y-m-d H:i:s', $when->getTimestamp() + (int) $config['duration_minutes'] * 60 );
 		$blocked = gmdate( 'Y-m-d H:i:s', $when->getTimestamp() + ( (int) $config['duration_minutes'] + (int) $config['buffer_minutes'] ) * 60 );
 		$n = hj_booking_query( $db, $db->prepare( "INSERT INTO `$table` (doctor_id,patient_id,request_key,request_hash,starts_at,ends_at,blocked_until,schedule_revision,status) VALUES (%d,%d,%s,%s,%s,%s,%s,%d,'pending')", $doctor, $patient, $key, $hash, $start, $end, $blocked, $available['revision'] ) );
