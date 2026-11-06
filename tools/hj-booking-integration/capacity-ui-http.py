@@ -154,6 +154,15 @@ try:
  created=ajax(patient,{'action':'hj_ci_create','doctor':str(doc),'nonce':patient_nonce,'start':slots['slots'][0],'key':'000000000000000000000000000010ab','phone':'09123456789','national':'1234567891'})
  check(created['status']=='created','actual patient booking created after form save')
  check(ajax(guest,params)['days'][2]['remaining']==11,'guest calendar reflects an actual new patient booking')
+ patient_form=Inputs(); patient_form.feed(patient_logged_html); private_nonce=patient_form.booking['data-nonce']
+ ui_payload={'action':'hj_booking_create','nonce':private_nonce,'doctor_id':str(doc),'slot_start':slots['slots'][1],'revision':str(rev),'idempotency_key':'7af34012-9eac-41ac-9e56-e133217238ed','first_name':'نام مستقل','last_name':'بیمار آزمایشی','phone':'۰۹۱۲۳۴۵۶۷۸۹','national_code':'','service':'consultation','note':'توضیح آزمایشی'}
+ code,body,_=request(patient,'/wp-admin/admin-ajax.php',dict(ui_payload,first_name='')); check(code==400 and json.loads(body)['data']['code']=='invalid_patient','actual v2 create rejects missing patient name')
+ code,body,_=request(patient,'/wp-admin/admin-ajax.php',dict(ui_payload,national_code='1234567890')); check(code==400 and json.loads(body)['data']['code']=='invalid_national','actual v2 create rejects invalid optional national code')
+ ui_result=ajax(patient,ui_payload); check(ui_result['status']=='created' and ui_result['message'] and ajax(patient,ui_payload)['status']=='replayed','actual v2 patient form creates and replays with national code omitted')
+ code,body,_=request(patient,'/wp-admin/admin-ajax.php',dict(ui_payload,last_name='نام متفاوت'))
+ check(code==409 and json.loads(body)['data']['code']=='idempotency_conflict','actual v2 create does not replay changed patient information')
+ check(ajax(guest,params)['days'][2]['remaining']==10,'calendar capacity reflects v2 patient form booking without exposing personal details')
+
  html,fields=form(owner,page); blocked=week(dict(payload,enabled='0',revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
  before=state(owner,doc); code,_,headers=request(owner,post,blocked)
  check(code==303 and 'hj_cap_status=booked' in headers.get('Location','') and state(owner,doc)==before,'future booking blocks schedule and activation changes without mutation')
