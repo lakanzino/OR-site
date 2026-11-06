@@ -9,7 +9,7 @@ import org.junit.Test
 class MoneyTest {
     @Test fun parsesPersianArabicAndGroupedAmounts() {
         assertEquals(1_500_000L, Money.parseToRials("۱۵۰٬۰۰۰", Currency.TOMAN))
-        assertEquals(1_500_000L, Money.parseToRials("١٥٠٠٠", Currency.RIAL))
+        assertEquals(15_000L, Money.parseToRials("١٥٠٠٠", Currency.RIAL))
         assertEquals(12L, Money.parseToRials("۱٫۲", Currency.TOMAN))
         assertEquals(12L, Money.parseToRials("1.2", Currency.TOMAN))
     }

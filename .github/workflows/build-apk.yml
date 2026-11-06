@@ -81,9 +81,11 @@ jobs:
                           messages.append(f"lint {issue.get('id')} {where}: {issue.get('message')}")
               except ET.ParseError:
                   pass
+          test_messages = [m for m in messages if m.startswith('ir.clinic.secretary.')]
+          chosen = (test_messages or messages)[:8]
           seen = set()
-          for message in messages:
-              message = message[:900]
+          for message in chosen:
+              message = ' '.join(message.split())[:1200]
               if message not in seen:
                   seen.add(message)
                   print('::error::' + message.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A'))

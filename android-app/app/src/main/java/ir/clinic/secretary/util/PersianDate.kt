@@ -12,14 +12,14 @@ data class PersianDate(val year: Int, val month: Int, val day: Int, val weekdayN
 
     fun toCalendar(): Calendar {
         val jdn = jalaliToJulianDay(year, month, day)
-        val gy = gregorianFromJulianDay(jdn).first
-        val march = jalaliMarchDay(gy)
-        val offset = jdn - gregorianToJulianDay(gy, 3, march)
+        val anchorYear = year + 621
+        val offset = jdn - gregorianToJulianDay(anchorYear, 3, jalaliMarchDay(anchorYear))
         require(offset >= 0 && offset < if (isLeap(year)) 366 else 365) { "Invalid Jalali day for this year" }
         val jm = if (offset < 186) 1 + offset / 31 else 7 + (offset - 186) / 30
         val jd = if (offset < 186) 1 + offset % 31 else 1 + (offset - 186) % 30
         require(jm == month && jd == day) { "Invalid Jalali date" }
-        return utcCalendar(gy, gregorianFromJulianDay(jdn).second, gregorianFromJulianDay(jdn).third)
+        val gregorian = gregorianFromJulianDay(jdn)
+        return utcCalendar(gregorian.first, gregorian.second, gregorian.third)
     }
 
     companion object {
@@ -60,8 +60,9 @@ data class PersianDate(val year: Int, val month: Int, val day: Int, val weekdayN
             return from(cal)
         }
 
-        private fun div(a: Int, b: Int): Int = Math.floorDiv(a, b)
-        private fun mod(a: Int, b: Int): Int = Math.floorMod(a, b)
+        // jalaali's integer division truncates toward zero; Kotlin Int division does the same.
+        private fun div(a: Int, b: Int): Int = a / b
+        private fun mod(a: Int, b: Int): Int = a - div(a, b) * b
 
         private fun marchInfo(gy: Int): Pair<Int, Int> {
             val jy = gy - 621
