@@ -172,7 +172,7 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 		 * @param int $post_id شناسه.
 		 * @return array<int,array{label:string,time:string,closed:bool}>
 		 */
-		private static function hours( $post_id ) {
+		private static function hours( $post_id, $canonical_rows = null, $unavailable = false ) {
 			$days = apply_filters(
 				'hj_dash_days',
 				array(
@@ -186,7 +186,7 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 				)
 			);
 
-			$rows = self::field( 'working_hours', $post_id );
+			$rows = $unavailable ? array() : ( is_array( $canonical_rows ) ? $canonical_rows : self::field( 'working_hours', $post_id ) );
 			$out  = array();
 
 			if ( is_array( $rows ) && $rows ) {
@@ -199,8 +199,11 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 						continue;
 					}
 					$closed = ! empty( $row['is_closed'] );
-					$start  = isset( $row['start_time'] ) ? substr( (string) $row['start_time'], 0, 5 ) : '';
-					$end    = isset( $row['end_time'] ) ? substr( (string) $row['end_time'], 0, 5 ) : '';
+					$start  = isset( $row['start_time'] ) ? (string) $row['start_time'] : '';
+					$end    = isset( $row['end_time'] ) ? (string) $row['end_time'] : '';
+					// Preserve meaningful seconds in validated snapshots; retain legacy display.
+					if ( ! is_array( $canonical_rows ) || substr( $start, -3 ) === ':00' ) { $start = substr( $start, 0, 5 ); }
+					if ( ! is_array( $canonical_rows ) || substr( $end, -3 ) === ':00' ) { $end = substr( $end, 0, 5 ); }
 					$out[]  = array(
 						'label'  => (string) $days[ $key ],
 						'closed' => $closed,
@@ -216,7 +219,7 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 					$out[] = array(
 						'label'  => (string) $label,
 						'closed' => false,
-						'time'   => 'ثبت نشده',
+						'time'   => $unavailable ? 'در دسترس نیست' : 'ثبت نشده',
 					);
 				}
 			}
@@ -362,6 +365,9 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 			$map_url   = self::map_url( $map_link, $address, $name_fa . ' ' . $location );
 			$tel_clinic = self::tel_href( $phone_clinic );
 			$tel_mobile = self::tel_href( $phone_mobile );
+			$office_hours = function_exists( 'hj_booking_public_office_hours' ) ? hj_booking_public_office_hours( $post_id ) : array( 'status' => 'legacy' );
+			$office_unavailable = in_array( $office_hours['status'], array( 'unavailable', 'invalid_schedule' ), true );
+			$canonical_hours = $office_hours['status'] === 'ok' ? $office_hours['rows'] : null;
 			$booking_ready = function_exists( 'hj_booking_ready' ) && hj_booking_ready();
 			$internal_booking = $booking_ready && function_exists( 'hj_booking_doctor_has_valid_schedule' ) && hj_booking_doctor_has_valid_schedule( $post_id );
 			$booking = $internal_booking ? '#hj-booking' : ( '' !== $booking_url ? $booking_url : '#hj-appointment' );
@@ -535,12 +541,13 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 
 							<div class="hj-card hj-appointment">
 								<h3>🕒 ساعات حضور در مطب</h3>
-								<?php foreach ( self::hours( $post_id ) as $row ) : ?>
+								<?php foreach ( self::hours( $post_id, $canonical_hours, $office_unavailable ) as $row ) : ?>
 									<div class="hj-time<?php echo $row['closed'] ? ' is-closed' : ''; ?>">
 										<span><?php echo esc_html( $row['label'] ); ?></span>
 										<strong><?php echo esc_html( $row['time'] ); ?></strong>
 									</div>
 								<?php endforeach; ?>
+								<?php if ( $office_hours['status'] === 'missing' ) : ?><p class="hj-muted">ساعات بالا نمایشی است؛ برنامهٔ نوبت‌دهی داخلی هنوز ثبت نشده است.</p><?php endif; ?>
 								<a class="hj-btn hj-btn--primary" href="<?php echo esc_url( $booking ); ?>"><?php echo $external_only ? 'نوبت‌دهی خارج از سایت' : 'درخواست نوبت'; ?></a>
 								<?php if ( $internal_booking && '' !== $booking_url ) : ?><p><a href="<?php echo esc_url( $booking_url ); ?>">نوبت‌دهی خارج از سایت</a></p><?php endif; ?>
 								<?php if ( $booking_ready && ! $internal_booking ) : ?><p class="hj-muted">نوبت‌دهی داخلی برای این جراح در دسترس نیست.</p><?php endif; ?>

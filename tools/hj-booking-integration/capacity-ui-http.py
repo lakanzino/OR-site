@@ -49,14 +49,21 @@ try:
  plugin.symlink_to(root/'plugins/hamyar-doctors',target_is_directory=True); created_plugin=True
  subprocess.run(cmd+['setup'],check=True); setup=True
  mu.parent.mkdir(exist_ok=True); mu.symlink_to(root/'tools/hj-booking-integration/mu.php'); created_mu=True
- fixture=json.loads(meta.read_text()); doc=fixture['doctor']; page=fixture['page']; dashboard=fixture['dashboard']; weekday=fixture['weekday']; day=fixture['date']
+ fixture=json.loads(meta.read_text()); doc=fixture['doctor']; page=fixture['page']; dashboard=fixture['dashboard']; legacy=fixture['legacy']; weekday=fixture['weekday']; day=fixture['date']
  server=subprocess.Popen(['php','-d','auto_prepend_file='+str(prepend),'-S','127.0.0.1:8996','-t','/wordpress'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True,env=dict(os.environ,PHP_CLI_SERVER_WORKERS='8'))
  for _ in range(80):
   try: request(session(),'/wp-login.php'); break
   except OSError: time.sleep(.25)
  else: raise RuntimeError('capacity UI server failed')
- owner=login('synthetic_doctor_a'); other=login('synthetic_doctor_b'); patient=login('synthetic_race_0')
+ owner=login('synthetic_doctor_a'); other=login('synthetic_doctor_b'); patient=login('synthetic_race_0'); guest=session()
  check(state(owner,doc)=={'config':None,'snapshot':None},'no doctor schedule exists before first GET')
+ def public_hours(doctor):
+  page_html=ajax(guest,{'action':'hj_ci_render_patient_profile','doctor':str(doctor)})['html']
+  return page_html.split('<div class="hj-card hj-appointment">',1)[1].split('</section>',1)[0]
+ missing_hours=public_hours(doc)
+ check('09:00 - 11:00' in missing_hours and 'ساعات بالا نمایشی است' in missing_hours and state(owner,doc)=={'config':None,'snapshot':None},'missing canonical schedule preserves labelled legacy display without writing')
+ legacy_before=state(owner,legacy); legacy_hours=public_hours(legacy)
+ check('12:00:30 - 13:00' in legacy_hours and '09:00 - 11:00' not in legacy_hours and state(owner,legacy)==legacy_before,'existing v1 canonical schedule displays without rewriting and retains seconds')
  html,fields=form(owner,page)
  check('برنامهٔ نوبت‌دهی مطب' in html and fields['revision']=='0' and fields['original_buffer']=='5','real shortcode shows blank state with expected configuration')
  render_file=Path(os.environ['RUNNER_TEMP'])/'hj-capacity-ui-render.html'; render_file.write_text(html,encoding='utf-8')
@@ -86,6 +93,7 @@ try:
  check(code==303 and 'hj_cap_status=saved' in headers.get('Location',''),'owner saves actual weekly form')
  current=state(owner,doc); snapshot=current['snapshot']; rows=json.loads(snapshot['rows_json'])
  check(int(snapshot['revision'])==1 and rows['version']==2 and rows['rows'][list(('saturday','sunday','monday','tuesday','wednesday','thursday','friday')).index(weekday)]['capacity']==3 and int(current['config']['enabled'])==1 and snapshot['rows_hash']==hashlib.sha256(snapshot['rows_json'].encode()).hexdigest(),'real form atomically persists v2 snapshot and activation')
+ check('17:00 - 21:00' in public_hours(doc) and '09:00 - 11:00' not in public_hours(doc) and state(owner,doc)==current,'guest public profile displays canonical v2 hours instead of stale meta without writes')
  # Saving a profile is independent of schedules, including a v2 snapshot.
  dash_nonce=ajax(owner,{'action':'hj_ci_dashboard_nonce'})['nonce']
  profile={'action':'hj_dash_save','pid':str(doc),'name_fa':'Synthetic dashboard profile','_hjn':dash_nonce}
@@ -127,6 +135,18 @@ try:
  check(ajax(patient,{'action':'hj_ci_slots','doctor':str(doc),'nonce':patient_nonce,'date':day})['status']=='unavailable','public slot access is unavailable after pause')
  code,_,headers=request(owner,post,pause)
  check(code==303 and 'hj_cap_status=paused' in headers.get('Location','') and state(owner,doc)==paused,'repeated pause is idempotent')
+ check('17:00 - 21:00' in public_hours(doc) and 'نوبت‌دهی داخلی برای این جراح در دسترس نیست' in public_hours(doc),'paused public profile retains hours but reports unavailable booking')
+ # Synthetic-only snapshot edits test faithful seconds and fail-closed display.
+ snapshot_data=json.loads(paused['snapshot']['rows_json'])
+ for row in snapshot_data['rows']:
+  if row['day_of_week']==weekday: row['start_time']='17:00:30'
+ replace={'action':'hj_ci_replace_snapshot','doctor':str(doc),'_hjn':dash_nonce,'rows_json':json.dumps(snapshot_data,separators=(',',':'))}
+ check(ajax(owner,replace)['status']=='updated','synthetic canonical snapshot with seconds installed')
+ seconds_state=state(owner,doc)
+ check('17:00:30 - 21:00' in public_hours(doc) and state(owner,doc)==seconds_state,'validated canonical display preserves nonzero seconds without modifying snapshot')
+ check(ajax(owner,dict(replace,rows_json='{"version":99,"rows":[]}'))['status']=='updated','synthetic unsupported snapshot installed')
+ corrupt_state=state(owner,doc); invalid_hours=public_hours(doc)
+ check('در دسترس نیست' in invalid_hours and '09:00 - 11:00' not in invalid_hours and '17:00' not in invalid_hours and state(owner,doc)==corrupt_state,'unsupported snapshot does not fall back to stale hours or mutate data')
 finally:
  if server:
   os.killpg(server.pid,signal.SIGTERM)

@@ -334,6 +334,27 @@ function hj_booking_save_capacity_week( $doctor, $rows, $expected_revision, $ena
 		return array( 'status'=>'saved', 'revision'=>$revision );
 	} );
 }
+/** Read public office hours from the validated canonical snapshot in the isolated v2 fixture.
+ * Missing snapshot retains legacy display; invalid/unavailable snapshot must not
+ * silently fall back to potentially stale display metadata. This is read-only.
+ */
+function hj_booking_public_office_hours( $doctor ) {
+	if ( ! hj_booking_capacity_v2_ready() ) { return array( 'status'=>'legacy' ); }
+	if ( ! hj_booking_ready() ) { return array( 'status'=>'unavailable' ); }
+	global $wpdb;
+	$d = hj_booking_table( 'doctors' ); $s = hj_booking_table( 'schedules' );
+	$previous = $wpdb->suppress_errors( true );
+	try {
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT d.doctor_id AS configured,s.doctor_id AS scheduled,s.revision,s.rows_json,s.rows_hash FROM (SELECT %d AS doctor_id) x LEFT JOIN `$d` d ON d.doctor_id=x.doctor_id LEFT JOIN `$s` s ON s.doctor_id=x.doctor_id", $doctor ), ARRAY_A );
+		if ( $wpdb->last_error || ! $row ) { return array( 'status'=>'unavailable' ); }
+		if ( $row['scheduled'] === null ) { return array( 'status'=>'missing' ); }
+		if ( $row['configured'] === null ) { return array( 'status'=>'invalid_schedule' ); }
+		$snapshot = hj_booking_decode_snapshot( $row );
+		if ( $snapshot === false ) { return array( 'status'=>'invalid_schedule' ); }
+		return array( 'status'=>'ok', 'rows'=>$snapshot['rows'] );
+	} catch ( Throwable $e ) { return array( 'status'=>'unavailable' ); }
+	finally { $wpdb->suppress_errors( $previous ); }
+}
 /** Pause only: allow disabling new bookings without changing any schedule or appointment. */
 function hj_booking_pause_capacity( $doctor ) {
 	if ( ! hj_booking_capacity_v2_ready() || ! hj_booking_ready() ) { return array( 'status'=>'unavailable' ); }
