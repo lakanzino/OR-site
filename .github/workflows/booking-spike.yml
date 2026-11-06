@@ -177,6 +177,7 @@ jobs:
           export NODE_PATH="$RUNNER_TEMP/hj-capacity-browser/node_modules"
           export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
           if [ -z "$CHROMIUM_PATH" ]; then echo '::error::Chrome not available'; exit 1; fi
+          set +e
           output=$(bash -e -c 'php -l plugins/hamyar-doctors/includes/booking-capacity-settings.php && php -l tools/hj-booking-integration/capacity-ui-fixture.php && python3 tools/hj-booking-integration/capacity-ui-http.py' 2>&1)
           status=$?
           printf '%s\n' "$output"
