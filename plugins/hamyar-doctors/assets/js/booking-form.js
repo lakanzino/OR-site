@@ -148,7 +148,7 @@
       setBusy(true); say('در حال ارسال…');
       try {
         const result = await post(root.dataset.logged === '1' ? 'hj_booking_create' : 'hj_booking_intent', data);
-        if (root.dataset.logged === '1') { clearPending(); selection = null; list.replaceChildren(); form.elements.phone.value = ''; form.elements.national_code.value = ''; if (review) { form.elements.first_name.value = ''; form.elements.last_name.value = ''; form.elements.service.value = ''; form.elements.note.value = ''; } say(result.message); refreshCalendar = true; }
+        if (root.dataset.logged === '1') { clearPending(); selection = null; list.replaceChildren(); form.elements.phone.value = ''; form.elements.national_code.value = ''; if (review) { form.elements.first_name.value = ''; form.elements.last_name.value = ''; form.elements.service.value = ''; form.elements.note.value = ''; } say(result.message + (result.tracking_code ? ' کد پیگیری: ' + result.tracking_code : '')); refreshCalendar = true; }
         else { window.location.assign(result.login_url); }
       } catch (e) {
         // Only these server outcomes are checked after idempotent replay; other

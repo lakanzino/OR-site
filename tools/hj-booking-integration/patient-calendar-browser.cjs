@@ -25,7 +25,7 @@ const script = fs.readFileSync(path.join(dir,'js/booking-form.js'),'utf8');
      if(action==='hj_booking_create') {
       createRequests.push(Object.fromEntries(data));
       if(!failed) { failed=true; return route.abort('failed'); }
-      return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({success:true,data:{status:'replayed',id:8,message:'درخواست ثبت شد'}})});
+      return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({success:true,data:{status:'replayed',tracking_code:'1234567890ABCDEF1234567890ABCDEF',message:'درخواست ثبت شد'}})});
      }
     }
     return route.abort();
@@ -49,7 +49,7 @@ const script = fs.readFileSync(path.join(dir,'js/booking-form.js'),'utf8');
    await page.locator('.hj-booking__form [type=submit]').click(); await page.locator('.hj-booking__confirm').click(); await page.getByText('نتیجه مشخص نیست', {exact:false}).waitFor();
    assert.equal(await doc.isDisabled(),true); assert.equal(await days.nth(2).isDisabled(),true);
    const saved=await page.evaluate(()=>JSON.stringify(sessionStorage)); assert(!saved.includes('09123456789') && !saved.includes('1234567891') && !saved.includes('نام مستقل') && !saved.includes('یادداشت آزمایشی'));
-   await page.locator('.hj-booking__form [type=submit]').click(); await page.getByText('درخواست ثبت شد',{exact:false}).waitFor();
+   await page.locator('.hj-booking__form [type=submit]').click(); await page.getByText('درخواست ثبت شد',{exact:false}).waitFor(); assert.match(await page.locator('.hj-booking__status').innerText(),/1234567890ABCDEF1234567890ABCDEF/);
    assert.equal(createRequests.length,2); assert.equal(createRequests[0].idempotency_key,createRequests[1].idempotency_key); assert.equal(createRequests[0].national_code,''); assert.equal(createRequests[0].first_name,'نام مستقل');
    await page.waitForFunction(()=>!document.querySelector('.hj-booking__calendar-retry').disabled);
    await doc.selectOption(fixture.legacy); await page.getByText('تقویم ظرفیت آماده نیست', {exact:false}).waitFor();

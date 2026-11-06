@@ -29,7 +29,7 @@ if ($mode==='setup') {
  update_option('hj_booking_schema_version',2,false); hj_booking_schema_clear_option_cache();
  if (!hj_booking_capacity_v2_ready()) { throw new RuntimeException('fixture v2 gate unavailable'); }
  global $wpdb; $extra=hj_booking_patient_details_v2_table();
- if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s',$wpdb->esc_like($extra))) || $wpdb->query("CREATE TABLE `$extra` (appointment_id bigint unsigned NOT NULL PRIMARY KEY,first_name varchar(80) NOT NULL,last_name varchar(80) NOT NULL,service varchar(20) NOT NULL,note varchar(500) NOT NULL) ENGINE=InnoDB ".$wpdb->get_charset_collate())===false) { throw new RuntimeException('experimental patient table setup failed'); }
+ if ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s',$wpdb->esc_like($extra))) || $wpdb->query("CREATE TABLE `$extra` (appointment_id bigint unsigned NOT NULL PRIMARY KEY,first_name varchar(80) NOT NULL,last_name varchar(80) NOT NULL,service varchar(20) NOT NULL,note varchar(500) NOT NULL,tracking_code char(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,UNIQUE KEY tracking_code (tracking_code)) ENGINE=InnoDB ".$wpdb->get_charset_collate())===false) { throw new RuntimeException('experimental patient table setup failed'); }
  update_option('active_plugins',array('hamyar-doctors/hamyar-doctors.php'));
  file_put_contents($meta,wp_json_encode(array('doctor'=>(int)$doc,'page'=>(int)$page,'date'=>$date,'weekday'=>$weekday,'old_meta'=>$old_meta,'dashboard'=>(int)$dashboard,'old_dashboard'=>$old_dashboard,'legacy'=>(int)$legacy,'secretary'=>(int)$secretary->ID,'old_secretary_roles'=>$old_secretary_roles)));
  echo "PASS: synthetic capacity UI setup\n"; exit(0);

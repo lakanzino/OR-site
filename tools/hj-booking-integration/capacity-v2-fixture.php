@@ -57,7 +57,7 @@ if ($mode==='patient') {
   $before_details=(int)$wpdb->get_var("SELECT COUNT(*) FROM `$details`");
   v2_check($create('',$profile)['status']==='error' && (int)$wpdb->get_var("SELECT COUNT(*) FROM `$details`")===$before_details && (int)$wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `$appointments` WHERE request_key=%s",$key))===0 && (int)$wpdb->get_var("SELECT COUNT(*) FROM `$extra`")===0,'details insert failure rolls back appointment and existing detail atomically');
   $wpdb->query("DROP TABLE `$extra`"); $owned=false;
-  v2_check($wpdb->query("CREATE TABLE `$extra` (appointment_id bigint unsigned NOT NULL PRIMARY KEY,first_name varchar(80) NOT NULL,last_name varchar(80) NOT NULL,service varchar(20) NOT NULL,note varchar(500) NOT NULL) ENGINE=InnoDB ".$wpdb->get_charset_collate())!==false,'synthetic extra fields table installed for test only'); $owned=true;
+  v2_check($wpdb->query("CREATE TABLE `$extra` (appointment_id bigint unsigned NOT NULL PRIMARY KEY,first_name varchar(80) NOT NULL,last_name varchar(80) NOT NULL,service varchar(20) NOT NULL,note varchar(500) NOT NULL,tracking_code char(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,UNIQUE KEY tracking_code (tracking_code)) ENGINE=InnoDB ".$wpdb->get_charset_collate())!==false,'synthetic extra fields table installed for test only'); $owned=true;
   $invalid=$profile; $invalid['first_name']=''; v2_check($create('',$invalid)['status']==='invalid','empty independent patient name rejected');
   $invalid=$profile; $invalid['last_name']=str_repeat('x',81); v2_check($create('',$invalid)['status']==='invalid','overlong patient surname rejected');
   $invalid=$profile; $invalid['note']=str_repeat('x',501); v2_check($create('',$invalid)['status']==='invalid','overlong description rejected');
@@ -68,7 +68,7 @@ if ($mode==='patient') {
   $row=$wpdb->get_row($wpdb->prepare("SELECT x.*,d.phone,d.national_code FROM `$extra` x INNER JOIN `$details` d ON d.appointment_id=x.appointment_id WHERE x.appointment_id=%d",$id2),ARRAY_A);
   v2_check($row['first_name']==='نام آزمایشی' && $row['last_name']==='بیمار تست' && $row['service']==='visit' && $row['note']==='توضیح آزمایشی' && $row['national_code']==='' && $row['phone']==='09123456789','normalized details persisted separately from account with optional national code empty');
   $again=$create('',$profile); $changed=$profile; $changed['note']='متن دیگر';
-  v2_check($again['status']==='replayed' && (int)$again['id']===$id2 && $create('',$changed)['status']==='idempotency_conflict' && $create('1234567891',$profile)['status']==='idempotency_conflict','replay retains identity and changed private details or national code conflict');
+  v2_check($again['status']==='replayed' && (int)$again['id']===$id2 && preg_match('/^[A-F0-9]{32}$/D',$created['tracking_code']) && $row['tracking_code']===$created['tracking_code'] && $again['tracking_code']===$created['tracking_code'] && $create('',$changed)['status']==='idempotency_conflict' && $create('1234567891',$profile)['status']==='idempotency_conflict','replay retains identity and changed private details or national code conflict');
   wp_set_current_user($other->ID); v2_check($create('',$profile)['status']==='idempotency_conflict','different account cannot replay another patient request');
   wp_set_current_user($patient->ID); $list=hj_booking_management_list('patient');
   v2_check(is_array($list) && strpos(wp_json_encode($list,JSON_UNESCAPED_UNICODE),'بیمار تست')===false && strpos(wp_json_encode(hj_booking_capacity_calendar($id),JSON_UNESCAPED_UNICODE),'بیمار تست')===false,'patient list query and public calendar do not expose experimental private fields');
@@ -114,9 +114,10 @@ if ($mode==='cancel') {
 }
 if ($mode==='verify') {
  global $wpdb; $table=hj_booking_table('appointments'); $details=hj_booking_table('details'); $extra=hj_booking_patient_details_v2_table(); $s=hj_booking_table('schedules');
- $rows=$wpdb->get_results($wpdb->prepare("SELECT a.id,a.status,a.starts_at,a.ends_at,a.blocked_until,a.schedule_revision,d.appointment_id AS detail,x.appointment_id AS extra FROM `$table` a LEFT JOIN `$details` d ON d.appointment_id=a.id LEFT JOIN `$extra` x ON x.appointment_id=a.id WHERE a.doctor_id=%d ORDER BY a.id",$id),ARRAY_A);
+ $rows=$wpdb->get_results($wpdb->prepare("SELECT a.id,a.status,a.starts_at,a.ends_at,a.blocked_until,a.schedule_revision,d.appointment_id AS detail,x.appointment_id AS extra,x.tracking_code AS tracking FROM `$table` a LEFT JOIN `$details` d ON d.appointment_id=a.id LEFT JOIN `$extra` x ON x.appointment_id=a.id WHERE a.doctor_id=%d ORDER BY a.id",$id),ARRAY_A);
  $active=array_values(array_filter($rows,function($r){return $r['status']==='pending';})); $cancelled=array_values(array_filter($rows,function($r){return $r['status']==='cancelled';}));
  v2_check(count($active)===3 && count($cancelled)===1,'real create and cancellation leave three active and one cancelled');
+ $trackings=array_column($rows,'tracking'); v2_check(count(array_unique($trackings))===4 && count(array_filter($trackings,function($t){return is_string($t) && preg_match('/^[A-F0-9]{32}$/D',$t);}))===4,'concurrent successful bookings each persist a unique random tracking code');
  foreach($rows as $row) { v2_check((int)$row['detail']===(int)$row['id'] && (int)$row['extra']===(int)$row['id'] && (int)$row['schedule_revision']===2 && strtotime($row['ends_at'].' UTC')-strtotime($row['starts_at'].' UTC')===3600 && $row['ends_at']===$row['blocked_until'],'each booking keeps atomic details and v2 duration without old buffer'); }
  $snapshot=$wpdb->get_row($wpdb->prepare("SELECT revision,rows_json,rows_hash FROM `$s` WHERE doctor_id=%d",$id),ARRAY_A);
  $rule=$data['rule']; $rule[0]['capacity']=1;

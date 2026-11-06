@@ -114,7 +114,10 @@ function hj_booking_ui_create() {
 	$result = hj_booking_create( $doctor, $start, str_replace( '-', '', $key ), $phone, $national, $revision, $patient );
 	if ( ! in_array( $result['status'], array( 'created', 'replayed' ), true ) ) { hj_booking_ui_result_error( $result['status'] ); }
 	hj_booking_intent_cookie( '', time() - 3600 );
-	wp_send_json_success( array( 'status' => $result['status'], 'id' => $result['id'], 'message' => 'درخواست نوبت شما ثبت شد و در انتظار تأیید است.' ) );
+	$response = array( 'status' => $result['status'], 'message' => 'درخواست نوبت شما ثبت شد و در انتظار تأیید است.' );
+	if ( $experimental ) { $response['tracking_code'] = $result['tracking_code']; }
+	else { $response['id'] = $result['id']; }
+	wp_send_json_success( $response );
 }
 if ( hj_booking_capacity_v2_ready() ) {
 	add_action( 'wp_ajax_hj_booking_calendar', 'hj_booking_ui_calendar' );

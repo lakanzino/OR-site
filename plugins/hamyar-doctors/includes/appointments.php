@@ -547,7 +547,16 @@ function hj_booking_create( $doctor, $start, $key, $phone, $national, $expected_
 			if ( ! $extra_info || strtoupper( $extra_info['Engine'] ?? '' ) !== 'INNODB' ) { return array( 'status'=>'unavailable' ); }
 		}
 		$existing = hj_booking_row( $db, $db->prepare( "SELECT id,request_hash FROM `$table` WHERE request_key=%s", $key ) );
-		if ( $existing ) { return hash_equals( $existing['request_hash'], $hash ) ? array( 'status' => 'replayed', 'id' => (int) $existing['id'] ) : array( 'status' => 'idempotency_conflict' ); }
+		if ( $existing ) {
+			if ( ! hash_equals( $existing['request_hash'], $hash ) ) { return array( 'status'=>'idempotency_conflict' ); }
+			$replay = array( 'status'=>'replayed', 'id'=>(int) $existing['id'] );
+			if ( $experimental ) {
+				$stored = hj_booking_row( $db, $db->prepare( "SELECT tracking_code FROM `$extra_table` WHERE appointment_id=%d", $replay['id'] ) );
+				if ( ! $stored || ! is_string( $stored['tracking_code'] ?? null ) || ! preg_match( '/^[A-F0-9]{32}\z/D', $stored['tracking_code'] ) ) { return array( 'status'=>'error' ); }
+				$replay['tracking_code'] = $stored['tracking_code'];
+			}
+			return $replay;
+		}
 		if ( ! (int) $config['enabled'] ) { return array( 'status' => 'unavailable' ); }
 		$available = hj_booking_slots_locked( $db, $doctor, $config, $date );
 		if ( $available === false ) { return array( 'status' => 'invalid_schedule' ); }
@@ -567,8 +576,14 @@ function hj_booking_create( $doctor, $start, $key, $phone, $national, $expected_
 		if ( $n !== 1 ) { throw new RuntimeException( 'Booking insert failed' ); }
 		$id = (int) $db->insert_id;
 		if ( 1 !== hj_booking_query( $db, $db->prepare( "INSERT INTO `$details` (appointment_id,phone,national_code) VALUES (%d,%s,%s)", $id, $phone, $national ) ) ) { throw new RuntimeException( 'Booking details insert failed' ); }
-		if ( $experimental && 1 !== hj_booking_query( $db, $db->prepare( "INSERT INTO `$extra_table` (appointment_id,first_name,last_name,service,note) VALUES (%d,%s,%s,%s,%s)", $id, $patient_details_v2['first_name'], $patient_details_v2['last_name'], $patient_details_v2['service'], $patient_details_v2['note'] ) ) ) { throw new RuntimeException( 'Experimental patient details insert failed' ); }
-		return array( 'status' => 'created', 'id' => $id, 'revision' => $available['revision'] );
+		$result = array( 'status' => 'created', 'id' => $id, 'revision' => $available['revision'] );
+		if ( $experimental ) {
+			// Generate once inside the transaction; replay reads the stored code.
+			$tracking = strtoupper( bin2hex( random_bytes( 16 ) ) );
+			if ( 1 !== hj_booking_query( $db, $db->prepare( "INSERT INTO `$extra_table` (appointment_id,first_name,last_name,service,note,tracking_code) VALUES (%d,%s,%s,%s,%s,%s)", $id, $patient_details_v2['first_name'], $patient_details_v2['last_name'], $patient_details_v2['service'], $patient_details_v2['note'], $tracking ) ) ) { throw new RuntimeException( 'Experimental patient details insert failed' ); }
+			$result['tracking_code'] = $tracking;
+		}
+		return $result;
 	} );
 }
 function hj_booking_change_status( $doctor, $id, $status ) {

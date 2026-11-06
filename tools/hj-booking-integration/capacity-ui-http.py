@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Real WP shortcode/admin-post tests; strictly disposable CI."""
-import copy, datetime, hashlib, http.cookiejar, json, os, signal, subprocess, time, urllib.error, urllib.parse, urllib.request
+import copy, datetime, hashlib, http.cookiejar, json, os, re, signal, subprocess, time, urllib.error, urllib.parse, urllib.request
 from html.parser import HTMLParser
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -158,23 +158,32 @@ try:
  ui_payload={'action':'hj_booking_create','nonce':private_nonce,'doctor_id':str(doc),'slot_start':slots['slots'][1],'revision':str(rev),'idempotency_key':'7af34012-9eac-41ac-9e56-e133217238ed','first_name':'نام مستقل','last_name':'بیمار آزمایشی','phone':'۰۹۱۲۳۴۵۶۷۸۹','national_code':'','service':'consultation','note':'توضیح آزمایشی'}
  code,body,_=request(patient,'/wp-admin/admin-ajax.php',dict(ui_payload,first_name='')); check(code==400 and json.loads(body)['data']['code']=='invalid_patient','actual v2 create rejects missing patient name')
  code,body,_=request(patient,'/wp-admin/admin-ajax.php',dict(ui_payload,national_code='1234567890')); check(code==400 and json.loads(body)['data']['code']=='invalid_national','actual v2 create rejects invalid optional national code')
- ui_result=ajax(patient,ui_payload); check(ui_result['status']=='created' and ui_result['message'] and ajax(patient,ui_payload)['status']=='replayed','actual v2 patient form creates and replays with national code omitted')
+ ui_result=ajax(patient,ui_payload); replay=ajax(patient,ui_payload)
+ tracking=ui_result.get('tracking_code','')
+ check(ui_result['status']=='created' and re.fullmatch(r'[A-F0-9]{32}',tracking) and 'id' not in ui_result and replay['status']=='replayed' and replay['tracking_code']==tracking,'actual v2 create and replay return the same opaque random tracking code without exposing internal id')
  code,body,_=request(patient,'/wp-admin/admin-ajax.php',dict(ui_payload,last_name='نام متفاوت'))
  check(code==409 and json.loads(body)['data']['code']=='idempotency_conflict','actual v2 create does not replay changed patient information')
  check(ajax(guest,params)['days'][2]['remaining']==10,'calendar capacity reflects v2 patient form booking without exposing personal details')
+ patient2_form=Inputs(); patient2_form.feed(ajax(patient2,{'action':'hj_ci_render_patient_form','page':str(page)})['html'])
+ second=dict(ui_payload,nonce=patient2_form.booking['data-nonce'],idempotency_key='2ff34012-9eac-41ac-9e56-e133217238ed',first_name='بیمار دوم',last_name='آزمایشی دوم',national_code='1234567891')
+ second_result=ajax(patient2,second); second_code=second_result['tracking_code']
+ check(second_result['status']=='created' and re.fullmatch(r'[A-F0-9]{32}',second_code) and second_code!=tracking,'different patient receives a distinct tracking code')
+ audit_rows=ajax(owner,{'action':'hj_ci_booking_audit','doctor':str(doc)})
+ target=next(row['id'] for row in audit_rows if row['request_key']==ui_payload['idempotency_key'].replace('-',''))
+
  # Exercise actual management authorization and rendering for old and new records.
  admin_url='/wp-admin/edit.php?post_type=doctor&page=hj-bookings'
  code,admin_html,_=request(admin,admin_url)
- check(code==200 and 'نام مستقل بیمار آزمایشی' in admin_html and 'توضیح آزمایشی' in admin_html and 'نام حساب ثبت‌کننده' in admin_html and 'نام بیمار در نوبت قدیمی ثبت نشده' in admin_html,'admin sees independent patient details and distinguishes legacy booking from account name')
+ check(code==200 and 'نام مستقل بیمار آزمایشی' in admin_html and 'توضیح آزمایشی' in admin_html and 'نام حساب ثبت‌کننده' in admin_html and tracking in admin_html and second_code in admin_html and 'نام بیمار در نوبت قدیمی ثبت نشده' in admin_html,'admin sees independent patient details and distinguishes legacy booking from account name')
  owner_html=ajax(owner,{'action':'hj_ci_render_management','doctor':str(doc)})['html']
- check('نام مستقل بیمار آزمایشی' in owner_html and 'نوع خدمت: مشاوره' in owner_html and 'توضیح آزمایشی' in owner_html and 'نام حساب ثبت‌کننده' in owner_html and 'نام بیمار در نوبت قدیمی ثبت نشده' in owner_html,'assigned doctor sees patient name, service and note alongside account name and legacy fallback')
+ check('نام مستقل بیمار آزمایشی' in owner_html and 'نوع خدمت: مشاوره' in owner_html and 'توضیح آزمایشی' in owner_html and 'نام حساب ثبت‌کننده' in owner_html and tracking in owner_html and second_code in owner_html and 'نام بیمار در نوبت قدیمی ثبت نشده' in owner_html,'assigned doctor sees patient name, service and note alongside account name and legacy fallback')
  for outsider in (other,patient,patient2,secretary):
   private=ajax(outsider,{'action':'hj_ci_render_management','doctor':str(doc)})['html']
-  check('نام مستقل' not in private and 'توضیح آزمایشی' not in private and '09123456789' not in private,'unrelated user cannot view private details before assignment')
+  check('نام مستقل' not in private and 'توضیح آزمایشی' not in private and '09123456789' not in private and tracking not in private,'unrelated user cannot view private details before assignment')
  patient_view=ajax(patient,{'action':'hj_ci_render_patient_bookings'})['html']
  other_patient_view=ajax(patient2,{'action':'hj_ci_render_patient_bookings'})['html']
- check('نام مستقل' not in patient_view and 'توضیح آزمایشی' not in patient_view and 'نام مستقل' not in other_patient_view and 'توضیح آزمایشی' not in other_patient_view,'patient lists do not join private details, including other patients')
- check('نام مستقل' not in public_hours(doc) and 'توضیح آزمایشی' not in json.dumps(ajax(guest,params),ensure_ascii=False),'public profile and calendar do not expose new patient details')
+ check('نام مستقل' not in patient_view and 'توضیح آزمایشی' not in patient_view and 'نام مستقل' not in other_patient_view and 'توضیح آزمایشی' not in other_patient_view and tracking in patient_view and second_code not in patient_view and second_code in other_patient_view and tracking not in other_patient_view,'patient lists select own tracking code without exposing private fields or another patient code')
+ check('نام مستقل' not in public_hours(doc) and tracking not in public_hours(doc) and 'توضیح آزمایشی' not in json.dumps(ajax(guest,params),ensure_ascii=False) and tracking not in json.dumps(ajax(guest,params),ensure_ascii=False),'public profile and calendar do not expose new patient details or tracking codes')
  class Forms(HTMLParser):
   def __init__(self): super().__init__(); self.forms=[]; self.current=None
   def handle_starttag(self,tag,attrs):
@@ -194,7 +203,7 @@ try:
  check(request(admin,post,dict(assign,mode='remove'))[0]==302 and 'نام مستقل' not in ajax(secretary,{'action':'hj_ci_render_management','doctor':str(doc)})['html'],'revoking secretary access prevents subsequent read')
  # The CI-only adapter writes an intentionally hostile synthetic row to test escaping at the actual render boundary.
  admin_form=Inputs(); admin_form.feed(ajax(admin,{'action':'hj_ci_render_patient_form','page':str(page)})['html'])
- check(ajax(admin,{'action':'hj_ci_patient_extra_xss','nonce':admin_form.booking['data-nonce'],'id':str(ui_result['id'])})['updated'],'synthetic stored XSS fixture installed')
+ check(ajax(admin,{'action':'hj_ci_patient_extra_xss','nonce':admin_form.booking['data-nonce'],'id':str(target)})['updated'],'synthetic stored XSS fixture installed')
  escaped=ajax(owner,{'action':'hj_ci_render_management','doctor':str(doc)})['html']
  check('&lt;img src=x onerror=alert(1)&gt;' in escaped and '&lt;script&gt;alert(2)&lt;/script&gt;' in escaped and '<script>alert(2)</script>' not in escaped,'private patient name and note are escaped in authorized management view')
 

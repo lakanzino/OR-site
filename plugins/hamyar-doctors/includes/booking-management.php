@@ -47,15 +47,16 @@ function hj_booking_management_list( $scope, $doctor = 0, $filter = 'all', $page
 		$params[] = $day->modify( '+1 day' )->setTimezone( new DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:s' );
 	} elseif ( $filter === 'future' ) { $where[] = 'a.starts_at >= %s'; $params[] = gmdate( 'Y-m-d H:i:s' ); }
 	$page = max( 1, min( 10000, (int) $page ) ); $params[] = 21; $params[] = ( $page - 1 ) * 20;
-	// Patient queries deliberately do not join the private contact table or users.
+	// Patient queries do not join the contact table or users.
 	$columns = $scope === 'patient' ? 'a.id,a.doctor_id,a.starts_at,a.status' : 'a.id,a.doctor_id,a.starts_at,a.status,u.display_name,d.phone,d.national_code';
 	$joins = $scope === 'patient' ? '' : " LEFT JOIN `$d` d ON d.appointment_id=a.id LEFT JOIN `{$wpdb->users}` u ON u.ID=a.patient_id";
-	// Only already-authorized staff may query experimental details. The patient
-	// list deliberately stays minimal and does not join either contact table.
-	if ( $scope !== 'patient' && hj_booking_capacity_v2_ready() ) {
+	// The patient query is owner-scoped and selects only the tracking code,
+	// never the contact or patient detail fields. Staff are authorized above.
+	if ( hj_booking_capacity_v2_ready() ) {
 		$extra = hj_booking_patient_details_v2_table();
 		if ( ! $extra ) { return false; }
-		$columns .= ',x.first_name,x.last_name,x.service,x.note';
+		$columns .= ',x.tracking_code';
+		if ( $scope !== 'patient' ) { $columns .= ',x.first_name,x.last_name,x.service,x.note'; }
 		$joins .= " LEFT JOIN `$extra` x ON x.appointment_id=a.id";
 	}
 	$sql = "SELECT $columns FROM `$a` a $joins WHERE " . implode( ' AND ', $where ) . ( $filter === 'future' ? ' ORDER BY a.starts_at ASC,a.id ASC' : ' ORDER BY a.starts_at DESC,a.id DESC' ) . ' LIMIT %d OFFSET %d';
@@ -132,6 +133,7 @@ function hj_booking_management_render( $scope, $doctor = 0, $admin_filters = arr
 			}
 		}
 		$out .= '<p>زمان: ' . esc_html( $timestamp !== false ? wp_date( 'Y/m/d H:i', $timestamp, wp_timezone() ) : 'نامعتبر' ) . ' · وضعیت: ' . esc_html( $labels[$row['status']] ?? 'نامعتبر' ) . '</p>';
+		if ( hj_booking_capacity_v2_ready() && is_string( $row['tracking_code'] ?? null ) && preg_match( '/^[A-F0-9]{32}\z/D', $row['tracking_code'] ) ) { $out .= '<p>کد پیگیری: <span dir="ltr">' . esc_html( $row['tracking_code'] ) . '</span></p>'; }
 		$out .= hj_booking_management_status_form( $row, $scope ) . '</article>';
 	}
 	if ( $scope !== 'admin' ) {
