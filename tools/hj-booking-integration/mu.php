@@ -89,7 +89,8 @@ add_action( 'wp_ajax_hj_ci_capacity_state', function () {
 } );
 add_action( 'wp_ajax_hj_ci_capacity_configure', function () {
 	check_ajax_referer( 'hj_dash_nonce', '_hjn' ); $doctor = absint( $_POST['doctor'] ?? 0 );
-	$result = hj_booking_configure( $doctor, 45, 10, false ); wp_send_json_success( $result );
+	$duration = isset( $_POST['duration'] ) ? absint( $_POST['duration'] ) : 45; $buffer = isset( $_POST['buffer'] ) ? absint( $_POST['buffer'] ) : 10;
+	$result = hj_booking_configure( $doctor, $duration, $buffer, false ); wp_send_json_success( $result );
 } );
 // CI-only mutation for synthetic snapshots. Never shipped in the plugin.
 add_action( 'wp_ajax_hj_ci_replace_snapshot', function () {
@@ -131,7 +132,7 @@ add_action( 'wp_ajax_hj_ci_booking_audit', function () {
 	$doctor = absint( $_POST['doctor'] ?? 0 );
 	if ( ! current_user_can( 'edit_post', $doctor ) ) { wp_send_json_error( array(), 403 ); }
 	global $wpdb; $table = hj_booking_table( 'appointments' ); $details = hj_booking_table( 'details' );
-	$rows = $wpdb->get_results( $wpdb->prepare( "SELECT a.id,a.request_key,a.starts_at,a.patient_id,a.status,a.schedule_revision AS revision,d.appointment_id AS details_id FROM `$table` a LEFT JOIN `$details` d ON a.id=d.appointment_id WHERE a.doctor_id=%d ORDER BY a.id", $doctor ), ARRAY_A );
+	$rows = $wpdb->get_results( $wpdb->prepare( "SELECT a.id,a.request_key,a.request_hash,a.starts_at,a.ends_at,a.blocked_until,a.patient_id,a.status,a.schedule_revision AS revision,d.appointment_id AS details_id,SHA2(CONCAT_WS('|',d.phone,d.national_code),256) AS details_hash FROM `$table` a LEFT JOIN `$details` d ON a.id=d.appointment_id WHERE a.doctor_id=%d ORDER BY a.id", $doctor ), ARRAY_A );
 	if ( $wpdb->last_error ) { wp_send_json_error( array(), 500 ); }
 	wp_send_json_success( $rows );
 } );

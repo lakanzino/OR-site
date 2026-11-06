@@ -382,7 +382,7 @@ function hj_booking_pause_capacity( $doctor ) {
 		return array( 'status'=>'paused' );
 	} );
 }
-/** Reactivate the unchanged v2 snapshot; stale requests cannot undo a later pause. */
+/** Reactivate an unchanged validated v1 or v2 snapshot in CI; stale requests cannot undo a later pause. */
 function hj_booking_resume_capacity( $doctor, $expected_revision, $expected_generation ) {
 	if ( ! hj_booking_capacity_v2_ready() || ! hj_booking_ready() ) { return array( 'status'=>'unavailable' ); }
 	if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status'=>'forbidden' ); }
@@ -392,7 +392,7 @@ function hj_booking_resume_capacity( $doctor, $expected_revision, $expected_gene
 		$generation = hj_booking_activation_generation( $config );
 		if ( $generation === false || ! in_array( (int)$config['enabled'], array(0,1), true ) ) { return array( 'status'=>'unavailable' ); }
 		$snapshot = hj_booking_snapshot_locked( $db, $doctor );
-		if ( $snapshot === false || $snapshot['format'] !== 2 ) { return array( 'status'=>'invalid_schedule' ); }
+		if ( $snapshot === false || ( $snapshot['format'] === 1 && ( (int)$config['duration_minutes'] < 1 || (int)$config['duration_minutes'] > 240 || (int)$config['buffer_minutes'] < 0 || (int)$config['buffer_minutes'] > 120 ) ) ) { return array( 'status'=>'invalid_schedule' ); }
 		if ( $snapshot['revision'] !== $expected_revision ) { return array( 'status'=>'revision_conflict' ); }
 		// A retry of the same transition is safe only until another transition occurs.
 		if ( (int)$config['enabled'] === 1 && $generation === $expected_generation + 1 ) { return array( 'status'=>'resumed' ); }
@@ -412,7 +412,9 @@ function hj_booking_configure( $doctor, $duration, $buffer, $enabled ) {
 		if ( hj_booking_capacity_v2_ready() ) {
 			$generation = hj_booking_activation_generation( $config );
 			if ( $generation === false || ! in_array( (int)$config['enabled'], array(0,1), true ) ) { return array( 'status'=>'unavailable' ); }
-			if ( (bool)(int)$config['enabled'] !== $enabled ) {
+			// Legacy v1 snapshots depend on these config values, so a resume token
+			// must also become stale after any change or ABA cycle of duration/buffer.
+			if ( (bool)(int)$config['enabled'] !== $enabled || (int)$config['duration_minutes'] !== $duration || (int)$config['buffer_minutes'] !== $buffer ) {
 				if ( $generation === PHP_INT_MAX ) { return array( 'status'=>'unavailable' ); }
 				$increment = ',activation_generation=activation_generation+1';
 			}

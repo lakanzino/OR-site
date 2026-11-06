@@ -104,7 +104,7 @@ function hj_capacity_settings_shortcode( $attributes = array() ) {
 			<p>برای توقف دریافت نوبت جدید، بدون حذف نوبت‌های ثبت‌شده، از این دکمه استفاده کنید.</p>
 			<button type="submit">توقف دریافت نوبت جدید</button>
 		</form>
-		<?php if ( ! $state['missing'] && ! $state['enabled'] && $state['format'] === 2 ) : ?>
+		<?php if ( ! $state['missing'] && ! $state['enabled'] && in_array( $state['format'], array( 1, 2 ), true ) ) : ?>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="hj-capacity__resume">
 			<input type="hidden" name="action" value="hj_capacity_resume">
 			<input type="hidden" name="doctor_id" value="<?php echo esc_attr( $doctor ); ?>">
