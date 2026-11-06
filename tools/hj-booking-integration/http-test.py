@@ -145,6 +145,10 @@ try:
     nonces = [booking_nonce(p) for p in patients]
     first_slots = slots(patients[0], doctor_id, nonces[0])
     check(first_slots['status'] == 'ok' and first_slots['revision'] == open_revision and S0900 in first_slots['slots'], 'actual snapshot supplies slot excluded by stale display')
+    invalid = booking_payload(doctor_id, nonces[0], S0900, key(31000))
+    check(ajax(patients[0], dict(invalid, national='1234567890'))['status'] == 'invalid', 'production booking rejects invalid national checksum')
+    check(ajax(patients[0], dict(invalid, phone='02112345678'))['status'] == 'invalid', 'production booking rejects invalid mobile')
+    check(request(patients[0], url, dict(invalid, nonce='bad'))[0] == 403, 'booking test adapter rejects invalid nonce')
 
     # The server commits and kills its own DB connection, signals the client,
     # then waits. Close the actual HTTP socket before releasing its response.
@@ -293,6 +297,11 @@ try:
     check(ajax(patients[5], booking_payload(doctor_id, nonces[5], S0935, key(37001)))['status'] == 'invalid_slot', 'rebooked interval cannot be taken twice')
     last = audit(owner, doctor_id)
     check(len(last) == len(expected_ids) + 2 and sum(int(r['id']) == after_kill['id'] and r['status'] == 'cancelled' for r in last) == 1 and sum(int(r['id']) == rebook['id'] and r['status'] == 'pending' and r['details_id'] is not None for r in last) == 1, 'cancel and rebook retain distinct consistent records')
+    check(ajax(owner, {'action': 'hj_ci_corrupt_snapshot', 'doctor': str(doctor_id)}) is None, 'test adapter deliberately corrupted canonical hash')
+    check(slots(patients[0], doctor_id, nonces[0])['status'] == 'invalid_schedule', 'production slot reader fails closed for corrupted snapshot')
+    check(ajax(patients[5], booking_payload(doctor_id, nonces[5], S1120, key(38000)))['status'] == 'invalid_schedule', 'production create fails closed for corrupted snapshot')
+    check(ajax(owner, open_hours) is not None, 'real dashboard repairs snapshot using a fresh revision')
+    check(slots(patients[0], doctor_id, nonces[0])['status'] == 'ok', 'valid snapshot restores production reader')
 finally:
     if server:
         os.killpg(server.pid, signal.SIGTERM)

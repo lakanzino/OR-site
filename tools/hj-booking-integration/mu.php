@@ -53,6 +53,14 @@ add_action( 'wp_ajax_hj_ci_schedule_state', function () {
 	$row = $wpdb->get_row( $wpdb->prepare( "SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d", $doctor ), ARRAY_A );
 	wp_send_json_success( array( 'snapshot' => $row, 'display' => get_post_meta( $doctor, 'working_hours', true ) ) );
 } );
+add_action( 'wp_ajax_hj_ci_corrupt_snapshot', function () {
+	$doctor = absint( $_POST['doctor'] ?? 0 );
+	if ( ! current_user_can( 'edit_post', $doctor ) ) { wp_send_json_error( array(), 403 ); }
+	global $wpdb; $table = hj_booking_table( 'schedules' );
+	$n = $wpdb->query( $wpdb->prepare( "UPDATE `$table` SET rows_hash=%s WHERE doctor_id=%d", str_repeat( '0', 64 ), $doctor ) );
+	if ( $n !== 1 ) { wp_send_json_error( array(), 500 ); }
+	wp_send_json_success();
+} );
 function hj_prod_ci_handler( $mode ) {
 	check_ajax_referer( 'hj_ci_booking', 'nonce' );
 	$doctor = isset( $_POST['doctor'] ) ? absint( $_POST['doctor'] ) : 0;
