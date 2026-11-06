@@ -43,6 +43,42 @@ if ($mode==='setup') {
 }
 if ($mode==='offcheck') { v2_check(!hj_booking_capacity_v2_ready() && !hj_booking_ready(),'v2 is unavailable without CI-only explicit gate'); exit(0); }
 $data=json_decode(file_get_contents($meta),true); if (!is_array($data)) { throw new RuntimeException('missing test metadata'); } $id=(int)$data['doctor'];
+if ($mode==='patient') {
+ global $wpdb; $appointments=hj_booking_table('appointments'); $details=hj_booking_table('details'); $extra=hj_booking_patient_details_v2_table();
+ $patient=get_user_by('login','synthetic_race_0'); $other=get_user_by('login','synthetic_race_1'); wp_set_current_user($patient->ID);
+ $profile=array('first_name'=>'نام <b>آزمایشی</b>','last_name'=>'بیمار تست','service'=>'visit','note'=>'توضیح آزمایشی');
+ $key=str_repeat('a',31).'f'; $start=$data['start']; $revision=(int)$data['revision']; $id2=0; $owned=false; $keep=false;
+ $create=function($national,$p,$k=null,$rev=null) use($id,$start,$key,$revision) { return hj_booking_create($id,$start,$k ?? $key,'09123456789',$national,$rev ?? $revision,$p); };
+ try {
+  v2_check(!$wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s',$wpdb->esc_like($extra))),'experimental patient table absent before fixture setup');
+  v2_check(hj_booking_create($id,$start,$key,'09123456789','',$revision)['status']==='invalid','v1 create still requires national code');
+  v2_check($create('',$profile)['status']==='unavailable','missing experimental table fails closed');
+  v2_check($wpdb->query("CREATE TABLE `$extra` (appointment_id bigint unsigned NOT NULL PRIMARY KEY) ENGINE=InnoDB")!==false,'synthetic incomplete table created'); $owned=true;
+  $before_details=(int)$wpdb->get_var("SELECT COUNT(*) FROM `$details`");
+  v2_check($create('',$profile)['status']==='error' && (int)$wpdb->get_var("SELECT COUNT(*) FROM `$details`")===$before_details && (int)$wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM `$appointments` WHERE request_key=%s",$key))===0 && (int)$wpdb->get_var("SELECT COUNT(*) FROM `$extra`")===0,'details insert failure rolls back appointment and existing detail atomically');
+  $wpdb->query("DROP TABLE `$extra`"); $owned=false;
+  v2_check($wpdb->query("CREATE TABLE `$extra` (appointment_id bigint unsigned NOT NULL PRIMARY KEY,first_name varchar(80) NOT NULL,last_name varchar(80) NOT NULL,service varchar(20) NOT NULL,note varchar(500) NOT NULL) ENGINE=InnoDB ".$wpdb->get_charset_collate())!==false,'synthetic extra fields table installed for test only'); $owned=true;
+  $invalid=$profile; $invalid['first_name']=''; v2_check($create('',$invalid)['status']==='invalid','empty independent patient name rejected');
+  $invalid=$profile; $invalid['last_name']=str_repeat('x',81); v2_check($create('',$invalid)['status']==='invalid','overlong patient surname rejected');
+  $invalid=$profile; $invalid['note']=str_repeat('x',501); v2_check($create('',$invalid)['status']==='invalid','overlong description rejected');
+  $invalid=$profile; $invalid['service']='unknown'; v2_check($create('',$invalid)['status']==='invalid','unrecognized service rejected');
+  v2_check($create('1234567890',$profile)['status']==='invalid' && $create('',$profile,null,1)['status']==='revision_conflict','invalid optional national code and stale schedule revision rejected');
+  $created=$create('',$profile); $id2=(int)($created['id'] ?? 0);
+  v2_check($created['status']==='created' && $id2>0,'independent patient details accepted without national code');
+  $row=$wpdb->get_row($wpdb->prepare("SELECT x.*,d.phone,d.national_code FROM `$extra` x INNER JOIN `$details` d ON d.appointment_id=x.appointment_id WHERE x.appointment_id=%d",$id2),ARRAY_A);
+  v2_check($row['first_name']==='نام آزمایشی' && $row['last_name']==='بیمار تست' && $row['service']==='visit' && $row['note']==='توضیح آزمایشی' && $row['national_code']==='' && $row['phone']==='09123456789','normalized details persisted separately from account with optional national code empty');
+  $again=$create('',$profile); $changed=$profile; $changed['note']='متن دیگر';
+  v2_check($again['status']==='replayed' && (int)$again['id']===$id2 && $create('',$changed)['status']==='idempotency_conflict' && $create('1234567891',$profile)['status']==='idempotency_conflict','replay retains identity and changed private details or national code conflict');
+  wp_set_current_user($other->ID); v2_check($create('',$profile)['status']==='idempotency_conflict','different account cannot replay another patient request');
+  wp_set_current_user($patient->ID); $list=hj_booking_management_list('patient');
+  v2_check(is_array($list) && strpos(wp_json_encode($list,JSON_UNESCAPED_UNICODE),'بیمار تست')===false && strpos(wp_json_encode(hj_booking_capacity_calendar($id),JSON_UNESCAPED_UNICODE),'بیمار تست')===false,'patient list query and public calendar do not expose experimental private fields');
+  $keep=true; // Keep the synthetic InnoDB table for concurrent workers; cleanup owns it.
+ } finally {
+  if ($id2) { $wpdb->delete($details,array('appointment_id'=>$id2)); $wpdb->delete($appointments,array('id'=>$id2)); }
+  if ($owned && !$keep) { $wpdb->query("DROP TABLE `$extra`"); }
+ }
+ exit(0);
+}
 if ($mode==='waiter') {
  global $wpdb; $until=microtime(true)+1.5;
  do { $ids=array(); foreach(glob($prefix.'-before-*') as $path) { $ids[]=(int)file_get_contents($path); }
@@ -68,7 +104,8 @@ if ($mode==='worker' || $mode==='retry' || $mode==='replay') {
   }
  },10,3);
  $key=substr(hash('sha256','v2-real-create-fixture-'.$worker),0,32);
- $result=hj_booking_create($id,$data['start'],$key,'09123456789','1234567891',(int)$data['revision']);
+ $profile=array('first_name'=>'نمونه','last_name'=>'بیمار','service'=>'visit','note'=>'');
+ $result=hj_booking_create($id,$data['start'],$key,'09123456789','',(int)$data['revision'],$profile);
  echo $result['status']; exit(0);
 }
 if ($mode==='cancel') {
@@ -76,11 +113,11 @@ if ($mode==='cancel') {
  v2_check($first>0 && hj_booking_change_status($id,$first,'cancelled')['status']==='updated','actual doctor cancels a v2 booking'); exit(0);
 }
 if ($mode==='verify') {
- global $wpdb; $table=hj_booking_table('appointments'); $details=hj_booking_table('details'); $s=hj_booking_table('schedules');
- $rows=$wpdb->get_results($wpdb->prepare("SELECT a.id,a.status,a.starts_at,a.ends_at,a.blocked_until,a.schedule_revision,d.appointment_id AS detail FROM `$table` a LEFT JOIN `$details` d ON d.appointment_id=a.id WHERE a.doctor_id=%d ORDER BY a.id",$id),ARRAY_A);
+ global $wpdb; $table=hj_booking_table('appointments'); $details=hj_booking_table('details'); $extra=hj_booking_patient_details_v2_table(); $s=hj_booking_table('schedules');
+ $rows=$wpdb->get_results($wpdb->prepare("SELECT a.id,a.status,a.starts_at,a.ends_at,a.blocked_until,a.schedule_revision,d.appointment_id AS detail,x.appointment_id AS extra FROM `$table` a LEFT JOIN `$details` d ON d.appointment_id=a.id LEFT JOIN `$extra` x ON x.appointment_id=a.id WHERE a.doctor_id=%d ORDER BY a.id",$id),ARRAY_A);
  $active=array_values(array_filter($rows,function($r){return $r['status']==='pending';})); $cancelled=array_values(array_filter($rows,function($r){return $r['status']==='cancelled';}));
  v2_check(count($active)===3 && count($cancelled)===1,'real create and cancellation leave three active and one cancelled');
- foreach($rows as $row) { v2_check((int)$row['detail']===(int)$row['id'] && (int)$row['schedule_revision']===2 && strtotime($row['ends_at'].' UTC')-strtotime($row['starts_at'].' UTC')===3600 && $row['ends_at']===$row['blocked_until'],'each booking keeps atomic details and v2 duration without old buffer'); }
+ foreach($rows as $row) { v2_check((int)$row['detail']===(int)$row['id'] && (int)$row['extra']===(int)$row['id'] && (int)$row['schedule_revision']===2 && strtotime($row['ends_at'].' UTC')-strtotime($row['starts_at'].' UTC')===3600 && $row['ends_at']===$row['blocked_until'],'each booking keeps atomic details and v2 duration without old buffer'); }
  $snapshot=$wpdb->get_row($wpdb->prepare("SELECT revision,rows_json,rows_hash FROM `$s` WHERE doctor_id=%d",$id),ARRAY_A);
  $rule=$data['rule']; $rule[0]['capacity']=1;
  v2_check(hj_booking_save_capacity_week($id,$rule,2)['status']==='has_future_bookings' && $snapshot===$wpdb->get_row($wpdb->prepare("SELECT revision,rows_json,rows_hash FROM `$s` WHERE doctor_id=%d",$id),ARRAY_A),'capacity reduction blocked without changing existing appointments or schedule');
@@ -94,8 +131,9 @@ if ($mode==='verify') {
  exit(0);
 }
 if ($mode==='cleanup') {
- global $wpdb; $table=hj_booking_table('appointments'); $details=hj_booking_table('details');
- $ids=$wpdb->get_col($wpdb->prepare("SELECT id FROM `$table` WHERE doctor_id=%d",$id)); foreach($ids as $appt) { $wpdb->delete($details,array('appointment_id'=>(int)$appt)); }
+ global $wpdb; $table=hj_booking_table('appointments'); $details=hj_booking_table('details'); $extra=hj_booking_patient_details_v2_table();
+ $ids=$wpdb->get_col($wpdb->prepare("SELECT id FROM `$table` WHERE doctor_id=%d",$id)); foreach($ids as $appt) { if ($extra && $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s',$wpdb->esc_like($extra)))) { $wpdb->delete($extra,array('appointment_id'=>(int)$appt)); } $wpdb->delete($details,array('appointment_id'=>(int)$appt)); }
+ if ($extra && $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s',$wpdb->esc_like($extra)))) { $wpdb->query("DROP TABLE `$extra`"); }
  $wpdb->delete($table,array('doctor_id'=>$id)); $wpdb->delete(hj_booking_table('schedules'),array('doctor_id'=>$id)); $wpdb->delete(hj_booking_table('doctors'),array('doctor_id'=>$id)); wp_delete_post($id,true);
  update_option('hj_booking_schema_version',1,false); hj_booking_schema_clear_option_cache(); unlink($meta); exit(0);
 }

@@ -492,22 +492,49 @@ function hj_booking_national_code( $value ) {
 	$sum = 0; for ( $i = 0; $i < 9; $i++ ) { $sum += (int) $s[$i] * ( 10 - $i ); }
 	$r = $sum % 11; return (int) $s[9] === ( $r < 2 ? $r : 11 - $r ) ? $s : false;
 }
+/** Validate and normalize experimental independent patient details. */
+function hj_booking_patient_details_v2( $value ) {
+	if ( ! is_array( $value ) || count( $value ) !== 4 ) { return false; }
+	foreach ( array( 'first_name', 'last_name', 'service', 'note' ) as $field ) {
+		if ( ! isset( $value[$field] ) || ! is_string( $value[$field] ) || strlen( $value[$field] ) > 4000 ) { return false; }
+	}
+	$first = trim( sanitize_text_field( $value['first_name'] ) );
+	$last = trim( sanitize_text_field( $value['last_name'] ) );
+	$note = trim( sanitize_textarea_field( $value['note'] ) );
+	if ( ! preg_match( '/\A.{1,80}\z/us', $first ) || ! preg_match( '/\A.{1,80}\z/us', $last ) || ! preg_match( '/\A.{0,500}\z/us', $note ) || ! in_array( $value['service'], array( 'consultation', 'visit', 'surgery' ), true ) ) { return false; }
+	return array( 'first_name'=>$first, 'last_name'=>$last, 'service'=>$value['service'], 'note'=>$note );
+}
+/** CI fixture table is intentionally not a production migration or activation. */
+function hj_booking_patient_details_v2_table() {
+	global $wpdb;
+	if ( ! hj_booking_capacity_v2_ready() || ! preg_match( '/^[A-Za-z0-9_]+$/D', $wpdb->prefix ) ) { return false; }
+	return $wpdb->prefix . 'hj_booking_patient_extra_test';
+}
 /** Request key is random and stable across retries; caller must retain it after unknown. */
-function hj_booking_create( $doctor, $start, $key, $phone, $national, $expected_revision = null ) {
+function hj_booking_create( $doctor, $start, $key, $phone, $national, $expected_revision = null, $patient_details_v2 = null ) {
 	$patient = get_current_user_id();
 	if ( ! $patient || get_post_type( $doctor ) !== 'doctor' || get_post_status( $doctor ) !== 'publish' ) { return array( 'status' => 'forbidden' ); }
-	$phone = hj_booking_phone( $phone ); $national = hj_booking_national_code( $national );
+	$experimental = $patient_details_v2 !== null;
+	$extra_table = false;
+	if ( $experimental ) {
+		$extra_table = hj_booking_patient_details_v2_table();
+		if ( ! $extra_table || ! hj_booking_ready() ) { return array( 'status'=>'unavailable' ); }
+		$patient_details_v2 = hj_booking_patient_details_v2( $patient_details_v2 );
+		if ( $patient_details_v2 === false || ! is_int( $expected_revision ) || $expected_revision < 1 ) { return array( 'status'=>'invalid' ); }
+	}
+	$phone = hj_booking_phone( $phone ); $national = $experimental && $national === '' ? '' : hj_booking_national_code( $national );
 	if ( $phone === false || $national === false || ! is_string( $key ) || ! preg_match( '/^[a-f0-9]{32}$/D', $key ) || ! is_string( $start ) || ( $expected_revision !== null && ( ! is_int( $expected_revision ) || $expected_revision < 1 ) ) ) { return array( 'status' => 'invalid' ); }
 	$utc = new DateTimeZone( 'UTC' ); $when = DateTimeImmutable::createFromFormat( '!Y-m-d H:i:s', $start, $utc );
 	if ( ! $when || $when->format( 'Y-m-d H:i:s' ) !== $start ) { return array( 'status' => 'invalid' ); }
 	$date = $when->setTimezone( wp_timezone() )->format( 'Y-m-d' );
 	$payload = array( $doctor, $patient, $start, $phone, $national );
 	if ( $expected_revision !== null ) { $payload[] = $expected_revision; }
+	if ( $experimental ) { $payload[] = array( 'patient_details_v2' => $patient_details_v2 ); }
 	$hash = hash_hmac( 'sha256', wp_json_encode( $payload ), wp_salt( 'auth' ) );
 	global $wpdb;
 	$users = $wpdb->users;
 	if ( ! preg_match( '/^[A-Za-z0-9_]+$/D', $users ) ) { return array( 'status' => 'unavailable' ); }
-	return hj_booking_transaction( $doctor, 'create', function ( $db, $config ) use ( $doctor, $patient, $start, $when, $key, $phone, $national, $hash, $date, $expected_revision, $users ) {
+	return hj_booking_transaction( $doctor, 'create', function ( $db, $config ) use ( $doctor, $patient, $start, $when, $key, $phone, $national, $hash, $date, $expected_revision, $users, $experimental, $extra_table, $patient_details_v2 ) {
 		$table = hj_booking_table( 'appointments' ); $details = hj_booking_table( 'details' );
 		// Serialize this patient's pending limit across different doctors as well.
 		// The user row must be transactional; never silently enforce an unsafe limit.
@@ -515,6 +542,10 @@ function hj_booking_create( $doctor, $start, $key, $phone, $national, $expected_
 		if ( ! $info || strtoupper( $info['Engine'] ?? '' ) !== 'INNODB' ) { return array( 'status' => 'unavailable' ); }
 		$user = hj_booking_row( $db, $db->prepare( "SELECT ID FROM `$users` WHERE ID=%d FOR UPDATE", $patient ) );
 		if ( ! $user ) { return array( 'status' => 'forbidden' ); }
+		if ( $experimental ) {
+			$extra_info = hj_booking_row( $db, $db->prepare( 'SHOW TABLE STATUS WHERE Name = %s', $extra_table ) );
+			if ( ! $extra_info || strtoupper( $extra_info['Engine'] ?? '' ) !== 'INNODB' ) { return array( 'status'=>'unavailable' ); }
+		}
 		$existing = hj_booking_row( $db, $db->prepare( "SELECT id,request_hash FROM `$table` WHERE request_key=%s", $key ) );
 		if ( $existing ) { return hash_equals( $existing['request_hash'], $hash ) ? array( 'status' => 'replayed', 'id' => (int) $existing['id'] ) : array( 'status' => 'idempotency_conflict' ); }
 		if ( ! (int) $config['enabled'] ) { return array( 'status' => 'unavailable' ); }
@@ -536,6 +567,7 @@ function hj_booking_create( $doctor, $start, $key, $phone, $national, $expected_
 		if ( $n !== 1 ) { throw new RuntimeException( 'Booking insert failed' ); }
 		$id = (int) $db->insert_id;
 		if ( 1 !== hj_booking_query( $db, $db->prepare( "INSERT INTO `$details` (appointment_id,phone,national_code) VALUES (%d,%s,%s)", $id, $phone, $national ) ) ) { throw new RuntimeException( 'Booking details insert failed' ); }
+		if ( $experimental && 1 !== hj_booking_query( $db, $db->prepare( "INSERT INTO `$extra_table` (appointment_id,first_name,last_name,service,note) VALUES (%d,%s,%s,%s,%s)", $id, $patient_details_v2['first_name'], $patient_details_v2['last_name'], $patient_details_v2['service'], $patient_details_v2['note'] ) ) ) { throw new RuntimeException( 'Experimental patient details insert failed' ); }
 		return array( 'status' => 'created', 'id' => $id, 'revision' => $available['revision'] );
 	} );
 }
