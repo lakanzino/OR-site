@@ -166,6 +166,12 @@ add_action( 'wp_ajax_hj_ci_status_nonce', function () {
  wp_send_json_success( array( 'nonce' => wp_create_nonce( 'hj_booking_status_' . $id ) ) );
 } );
 add_action( 'wp_ajax_hj_ci_render_patient_bookings', function () { wp_send_json_success( array( 'html' => do_shortcode( '[hj_patient_bookings]' ) ) ); } );
+add_action( 'wp_ajax_hj_ci_render_member_account', function () {
+ $page=absint($_POST['page'] ?? 0); $post=get_post($page);
+ if (!$post || $post->post_type!=='page') { wp_send_json_error(array(),400); }
+ global $wp_query; $wp_query->queried_object=$post; $wp_query->queried_object_id=$page; $wp_query->is_singular=true; $wp_query->is_page=true;
+ wp_send_json_success(array('html'=>do_shortcode('[hj_member_account]')));
+} );
 // Synthetic fixed payload, authorized only inside this disposable MU fixture.
 add_action( 'wp_ajax_hj_ci_patient_extra_xss', function () {
  if ( ! hj_booking_capacity_v2_ready() || ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'hj_booking_ui', 'nonce', false ) ) { wp_send_json_error( array(), 403 ); }

@@ -184,6 +184,18 @@ try:
  other_patient_view=ajax(patient2,{'action':'hj_ci_render_patient_bookings'})['html']
  check('نام مستقل' not in patient_view and 'توضیح آزمایشی' not in patient_view and 'نام مستقل' not in other_patient_view and 'توضیح آزمایشی' not in other_patient_view and tracking in patient_view and second_code not in patient_view and second_code in other_patient_view and tracking not in other_patient_view,'patient lists select own tracking code without exposing private fields or another patient code')
  check('نام مستقل' not in public_hours(doc) and tracking not in public_hours(doc) and 'توضیح آزمایشی' not in json.dumps(ajax(guest,params),ensure_ascii=False) and tracking not in json.dumps(ajax(guest,params),ensure_ascii=False),'public profile and calendar do not expose new patient details or tracking codes')
+ # Real page request through WP's template_redirect and the_content; stock theme only.
+ account_path='/?page_id='+str(fixture['account'])
+ code,account_html,account_headers=request(patient,account_path)
+ code2,account2_html,account2_headers=request(patient2,account_path)
+ guest_code,guest_account,guest_headers=request(guest,account_path)
+ check(code==200 and code2==200 and guest_code==200 and 'no-cache' in account_headers.get('Cache-Control','') and 'no-cache' in account2_headers.get('Cache-Control','') and 'no-cache' in guest_headers.get('Cache-Control',''),'real account pages send no-cache headers for both patients and guest')
+ check(account_html.count('id="hj-bookings"')==1 and tracking in account_html and second_code not in account_html and 'نام مستقل' not in account_html and 'توضیح آزمایشی' not in account_html,'patient account automatically shows only own tracking and no private contact fields')
+ check(second_code in account2_html and tracking not in account2_html and 'ایمیل حساب' in account2_html and 'نظرهای من' in account2_html,'second account sees own bookings and existing account/activity sections')
+ check(tracking not in guest_account and second_code not in guest_account and 'برای دیدن حساب کاربری' in guest_account and 'id="hj-bookings"' not in guest_account,'guest account cannot see either patient booking')
+ code,combined_html,_=request(patient,'/?page_id='+str(fixture['combined']))
+ check(code==200 and combined_html.count('id="hj-bookings"')==1 and tracking in combined_html,'explicit bookings shortcode suppresses duplicate automatic list')
+
  class Forms(HTMLParser):
   def __init__(self): super().__init__(); self.forms=[]; self.current=None
   def handle_starttag(self,tag,attrs):
@@ -192,6 +204,17 @@ try:
    elif tag=='input' and self.current is not None and a.get('name'): self.current[a['name']]=a.get('value','')
   def handle_endtag(self,tag):
    if tag=='form' and self.current is not None: self.forms.append(self.current); self.current=None
+ # Attacker has a valid nonce for the target ID but still fails the owner check.
+ cancel_nonce=ajax(patient2,{'action':'hj_ci_status_nonce','id':str(target)})['nonce']
+ attack={'action':'hj_booking_status','doctor_id':str(doc),'booking_id':str(target),'scope':'patient','status':'cancelled','_wpnonce':cancel_nonce}
+ check(request(patient2,post,attack)[0]==403,'other patient cannot cancel a booking even with a valid nonce')
+ patient_forms=Forms(); patient_forms.feed(account_html)
+ cancel=next(f for f in patient_forms.forms if f.get('action')=='hj_booking_status' and f.get('booking_id')==str(target))
+ check(request(patient,post,dict(cancel,_wpnonce='bad'))[0]==403,'account cancellation rejects a bad nonce')
+ check(request(patient,post,cancel)[0]==302,'patient cancels their own booking from account page')
+ code,after_cancel,_=request(patient,account_path); code2,other_after,_=request(patient2,account_path)
+ after_forms=Forms(); after_forms.feed(after_cancel)
+ check(code==200 and tracking in after_cancel and 'لغو شده' in after_cancel and not any(f.get('action')=='hj_booking_status' and f.get('booking_id')==str(target) for f in after_forms.forms) and second_code in other_after,'cancelled appointment and tracking remain visible; other patient remains unaffected')
  parsed=Forms(); parsed.feed(admin_html)
  assignment=next(f for f in parsed.forms if f.get('action')=='hj_booking_assignment')
  assign=dict(assignment,doctor_id=str(doc),user_id=str(fixture['secretary']),mode='add')

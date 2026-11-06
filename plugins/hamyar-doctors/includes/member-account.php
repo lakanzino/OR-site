@@ -34,6 +34,13 @@ add_shortcode( 'hj_member_account', function () {
 	$out = '<div class="hj-member"><p>ایمیل حساب: <b>' . esc_html( $user->user_email ) . '</b></p><form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="hj_member_save">' . wp_nonce_field( 'hj_member_save', '_wpnonce', true, false ) . '<label>نام نمایشی <input name="display_name" maxlength="80" required value="' . esc_attr( $user->display_name ) . '"></label> <button type="submit">ذخیره</button></form>';
 	if ( ! hj_doctors_is_doctor_user( $user ) ) { $out .= '<p><a href="' . esc_url( admin_url( 'profile.php' ) ) . '">تنظیمات کامل حساب</a></p>'; }
 	$out .= '<p><a href="' . esc_url( hj_doctors_dashboard_url() ) . '">ناحیه اختصاصی جراحان</a> | <a href="' . esc_url( wp_logout_url( home_url( '/' ) ) ) . '">خروج</a></p></div>';
+	// Only the isolated v2 experiment auto-embeds this private list. Restrict
+	// embedding to pages whose content already receives early no-cache headers;
+	// do not duplicate an explicitly placed patient-bookings shortcode.
+	$post = get_queried_object();
+	if ( function_exists( 'hj_booking_capacity_v2_ready' ) && hj_booking_capacity_v2_ready() && hj_booking_ready() && current_user_can( 'read' ) && is_singular() && $post instanceof WP_Post && has_shortcode( $post->post_content, 'hj_member_account' ) && ! has_shortcode( $post->post_content, 'hj_patient_bookings' ) ) {
+		$out .= do_shortcode( '[hj_patient_bookings]' );
+	}
 	return $out;
 } );
 add_action( 'admin_post_hj_member_save', function () {
