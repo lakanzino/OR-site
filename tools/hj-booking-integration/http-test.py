@@ -503,6 +503,17 @@ try:
     check(request(patient_a, status_url, dict(patient_cancel, _wpnonce='bad'))[0] == 403, 'status change rejects invalid nonce')
     early = status_payload(other, doctor2_id, id_b, 'manage', 'completed')
     check(request(other, status_url, early)[0] == 409, 'future booking cannot be completed prematurely and release capacity')
+    def wait_inside_mutex_query(marker):
+        connection = marker.read_text().strip()
+        check(connection.isdigit() and int(connection) > 0, 'fixture recorded contender connection id')
+        deadline = time.monotonic() + 2.0
+        while time.monotonic() < deadline:
+            result = ajax(admin, {'action':'hj_ci_mutex_query_in_progress', 'connection':connection})
+            if result['in_progress']:
+                check(True, 'MariaDB shows contender mutex INSERT still in progress while lock is held')
+                return
+            time.sleep(.02)
+        raise AssertionError('contender did not reach MariaDB mutex INSERT while lock was held')
     # Cancellation holds the doctor mutex while a real create reaches it.
     token = key(40100); cancel_ready, cancel_release = barrier('status-hold-' + token); create_ready, _ = barrier('create-wait-' + token)
     rebook_payload = create_payload(b_nonce, doctor_id, mstart(9,0), newest_revision)
@@ -510,7 +521,8 @@ try:
         cancel_future = pool.submit(request, patient_a, status_url, dict(patient_cancel, hj_ci_status_hold=token))
         wait_ready([cancel_ready])
         create_future = pool.submit(ui_request, patient_b, dict(rebook_payload, hj_ci_create_signal=token))
-        try: wait_ready([create_ready])
+        try:
+            wait_ready([create_ready]); wait_inside_mutex_query(create_ready)
         finally: cancel_release.touch()
         cancel_result, created_result = cancel_future.result(timeout=40), create_future.result(timeout=40)
     check(cancel_result[0] == 302 and created_result[0] == 200 and created_result[1]['success'], 'overlapping patient cancellation then waiter rebooks same slot after mutex release')
@@ -528,7 +540,8 @@ try:
         before_cancel = pool.submit(ui_request, patient_a, dict(competing, hj_ci_create_hold=token2))
         wait_ready([create_hold])
         cancel_after = pool.submit(request, secretary, status_url, dict(sec_cancel, hj_ci_status_signal=token2))
-        try: wait_ready([status_ready])
+        try:
+            wait_ready([status_ready]); wait_inside_mutex_query(status_ready)
         finally: create_release.touch()
         before_result, after_result = before_cancel.result(timeout=40), cancel_after.result(timeout=40)
     check(before_result[0] == 409 and before_result[1]['data']['code'] == 'invalid_slot' and after_result[0] == 302, 'booking-first overlap sees occupied interval before secretary cancellation')

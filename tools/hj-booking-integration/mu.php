@@ -2,10 +2,10 @@
 /** Fault injection and HTTP adapters only; all booking logic is plugin source. */
 if ( PHP_SAPI !== 'cli-server' ) { return; }
 if ( getenv( 'GITHUB_ACTIONS' ) !== 'true' || getenv( 'HJ_DISPOSABLE_MARIADB_FIXTURE' ) !== '1' || DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || $GLOBALS['wpdb']->prefix !== 'hjt_' || WP_HOME !== 'http://example.invalid' ) { exit( 'Disposable CI only.' ); }
-function hj_prod_ci_barrier( $name, $wait ) {
+function hj_prod_ci_barrier( $name, $wait, $marker = 'ready' ) {
 	if ( ! preg_match( '/^[a-z-]+[a-f0-9]{32}$/D', $name ) ) { throw new RuntimeException( 'Bad fixture barrier' ); }
 	$prefix = getenv( 'RUNNER_TEMP' ) . '/hj-wpdb-test-' . $name;
-	file_put_contents( $prefix . '-ready', 'ready' );
+	file_put_contents( $prefix . '-ready', (string) $marker );
 	if ( $wait ) {
 		$until = microtime( true ) + 25;
 		while ( ! is_file( $prefix . '-released' ) && microtime( true ) < $until ) { usleep( 10000 ); clearstatcache(); }
@@ -26,8 +26,8 @@ add_action( 'hj_booking_test_event', function ( $event, $db, $context ) {
 	if ( $operation === 'create' && $event === 'before_lock' && $fault === 'signal_before_lock' ) { hj_prod_ci_barrier( 'booking-wait-' . $key, false ); }
 	if ( $operation === 'create' && $event === 'after_lock' && $fault === 'hold_after_lock' ) { hj_prod_ci_barrier( 'booking-hold-' . $key, true ); }
 	if ( $operation === 'status' && $event === 'after_lock' && isset( $_POST['hj_ci_status_hold'] ) ) { hj_prod_ci_barrier( 'status-hold-' . $_POST['hj_ci_status_hold'], true ); }
-	if ( $operation === 'status' && $event === 'before_lock' && isset( $_POST['hj_ci_status_signal'] ) ) { hj_prod_ci_barrier( 'status-wait-' . $_POST['hj_ci_status_signal'], false ); }
-	if ( $operation === 'create' && $event === 'before_lock' && isset( $_POST['hj_ci_create_signal'] ) ) { hj_prod_ci_barrier( 'create-wait-' . $_POST['hj_ci_create_signal'], false ); }
+	if ( $operation === 'status' && $event === 'before_lock' && isset( $_POST['hj_ci_status_signal'] ) ) { hj_prod_ci_barrier( 'status-wait-' . $_POST['hj_ci_status_signal'], false, (int) $db->get_var( 'SELECT CONNECTION_ID()' ) ); }
+	if ( $operation === 'create' && $event === 'before_lock' && isset( $_POST['hj_ci_create_signal'] ) ) { hj_prod_ci_barrier( 'create-wait-' . $_POST['hj_ci_create_signal'], false, (int) $db->get_var( 'SELECT CONNECTION_ID()' ) ); }
 	if ( $operation === 'create' && $event === 'after_lock' && isset( $_POST['hj_ci_create_hold'] ) ) { hj_prod_ci_barrier( 'create-hold-' . $_POST['hj_ci_create_hold'], true ); }
 	if ( $event === 'before_commit' && ( ( $operation === 'schedule' && isset( $_POST['hj_ci_kill_before_commit'] ) ) || ( $operation === 'create' && $fault === 'kill_before_commit' ) ) ) {
 		hj_prod_ci_kill( $db );
@@ -136,4 +136,16 @@ add_action( 'wp_ajax_hj_ci_set_past', function () {
   return array( 'status' => 'updated' );
  } );
  wp_send_json_success( $result );
+} );
+// Observe the fixture user's connection executing the actual mutex INSERT;
+// return only a boolean, never query text or private appointment data.
+add_action( 'wp_ajax_hj_ci_mutex_query_in_progress', function () {
+ if ( ! current_user_can( 'manage_options' ) ) { wp_send_json_error( array(), 403 ); }
+ global $wpdb; $id = absint( $_POST['connection'] ?? 0 ); $found = false;
+ $processes = $wpdb->get_results( 'SHOW FULL PROCESSLIST', ARRAY_A );
+ if ( $wpdb->last_error || ! is_array( $processes ) ) { wp_send_json_error( array(), 500 ); }
+ foreach ( $processes as $process ) {
+  if ( (int) $process['Id'] === $id && is_string( $process['Info'] ) && str_contains( $process['Info'], 'INSERT INTO `' . hj_booking_table( 'doctors' ) . '`' ) ) { $found = true; }
+ }
+ wp_send_json_success( array( 'in_progress' => $found ) );
 } );
