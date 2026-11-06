@@ -457,7 +457,7 @@ try:
     check(request(admin, '/wp-admin/admin-post.php', dict(assign_payload, _wpnonce='bad'))[0] == 403, 'assignment requires nonce')
     check(request(admin, '/wp-admin/admin-post.php', assign_payload)[0] == 302, 'admin assigns secretary through real admin-post handler')
     secretary_view = ajax(secretary, {'action':'hj_ci_render_dashboard'})['html']
-    check('لیست نوبت‌ها' in secretary_view and 'Synthetic production backend doctor' in secretary_view and 'Second synthetic booking doctor' not in secretary_view and 'hj-dash-form' not in secretary_view, 'secretary enters only assigned booking panel, not profile editor')
+    check('لیست نوبت‌ها' in secretary_view and 'Synthetic Doctor' in secretary_view and 'Second synthetic booking doctor' not in secretary_view and 'hj-dash-form' not in secretary_view, 'secretary enters only assigned booking panel, not profile editor')
     mdate = date + datetime.timedelta(days=21)
     mday = mdate.isoformat()
     def mstart(hour, minute): return datetime.datetime.combine(mdate, datetime.time(hour, minute), ZoneInfo('Asia/Tehran')).astimezone(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
@@ -477,7 +477,7 @@ try:
     check('Synthetic Patient Alpha' in owner_html and 'Synthetic Patient Beta' not in owner_html and '09123456789' in owner_html, 'doctor dashboard shows own patient details only')
     check('Synthetic Patient Alpha' in secretary_html and 'Synthetic Patient Beta' not in secretary_html, 'secretary sees only assigned doctor patient details')
     check('Synthetic Patient Beta' in other_html and 'Synthetic Patient Alpha' not in other_html, 'other doctor sees only other doctor patient details')
-    check('Synthetic production backend doctor' in patient_html and 'Second synthetic booking doctor' not in patient_html and '09123456789' not in patient_html and '1234567891' not in patient_html, 'patient list is own-only and does not expose contact details')
+    check('Synthetic Doctor' in patient_html and 'Second synthetic booking doctor' not in patient_html and '09123456789' not in patient_html and '1234567891' not in patient_html, 'patient list is own-only and does not expose contact details')
     code, filtered = request(admin, admin_url + '&doctor_id=' + str(doctor2_id) + '&booking_status=pending&booking_date=' + mday)
     check(code == 200 and 'Synthetic Patient Beta' in filtered and 'Synthetic Patient Alpha' not in filtered, 'admin filters aggregate by doctor, status and local date')
     check(request(patient_a, admin_url)[0] in (302,403), 'patient cannot access administrator submenu')
