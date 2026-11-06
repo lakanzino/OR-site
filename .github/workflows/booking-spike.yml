@@ -3,10 +3,14 @@ on:
   push:
     paths:
       - 'tools/hj-booking-spike/**'
+      - 'tools/hj-booking-integration/**'
+      - 'plugins/hamyar-doctors/**'
       - '.github/workflows/booking-spike.yml'
   pull_request:
     paths:
       - 'tools/hj-booking-spike/**'
+      - 'tools/hj-booking-integration/**'
+      - 'plugins/hamyar-doctors/**'
       - '.github/workflows/booking-spike.yml'
   workflow_dispatch:
 permissions:
@@ -109,5 +113,16 @@ jobs:
           if [ "$status" -ne 0 ]; then
             summary=$(printf '%s' "$output" | tail -c 3000 | tr '\n' ' ')
             echo "::error title=WordPress dashboard copy failure::$summary"
+            exit "$status"
+          fi
+      - name: Exercise unchanged repository plugin booking backend
+        run: |
+          set +e
+          output=$(python3 tools/hj-booking-integration/http-test.py 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Plugin booking integration failure::$summary"
             exit "$status"
           fi

@@ -1051,7 +1051,16 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			self::set( $pid, 'address_clinic', $addr_c );
 			self::set( $pid, 'address_hospital', $addr_h );
 			self::set( $pid, 'map_link', $map );
-			self::set( $pid, 'working_hours', $rows );
+			if ( function_exists( 'hj_booking_enabled' ) && hj_booking_enabled() ) {
+				$schedule = hj_booking_save_schedule( (int) $pid, $rows );
+				if ( ( $schedule['status'] ?? '' ) !== 'saved' ) {
+					self::fail( 'ذخیرهٔ برنامهٔ نوبت‌دهی ناموفق یا نتیجه نامشخص است؛ پیش از تلاش مجدد وضعیت را بررسی کنید.', 503 );
+				}
+				// ACF/meta is a best-effort display mirror, never the booking source.
+				try { self::set( $pid, 'working_hours', $rows ); } catch ( Throwable $ignored ) {}
+			} else {
+				self::set( $pid, 'working_hours', $rows );
+			}
 
 			// ---- Taxonomies
 			if ( taxonomy_exists( 'specialty_type' ) ) {

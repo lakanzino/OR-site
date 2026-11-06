@@ -1,0 +1,20 @@
+<?php
+/** Install only in the isolated CI WordPress database. */
+if ( PHP_SAPI !== 'cli' || getenv( 'GITHUB_ACTIONS' ) !== 'true' || getenv( 'HJ_DISPOSABLE_MARIADB_FIXTURE' ) !== '1' ) { exit( 1 ); }
+require '/wordpress/wp-load.php';
+if ( DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || $GLOBALS['wpdb']->prefix !== 'hjt_' || WP_HOME !== 'http://example.invalid' ) { exit( 1 ); }
+require WP_PLUGIN_DIR . '/hamyar-doctors/hamyar-doctors.php'; hj_doctors(); do_action( 'init' );
+$doctor = get_user_by( 'login', 'synthetic_doctor_a' ); $other = get_user_by( 'login', 'synthetic_doctor_b' ); $admin = get_user_by( 'login', 'fixture_admin' );
+if ( ! $doctor || ! $other || ! $admin ) { throw new RuntimeException( 'Synthetic fixture users missing' ); }
+wp_set_password( 'disposable-test-password', $doctor->ID ); wp_set_password( 'disposable-test-password', $other->ID );
+for ( $i = 0; $i < 12; $i++ ) { $user = get_user_by( 'login', 'synthetic_race_' . $i ); if ( ! $user ) { throw new RuntimeException( 'Synthetic patient missing' ); } wp_set_password( 'disposable-test-password', $user->ID ); }
+update_option( 'timezone_string', 'Asia/Tehran' );
+wp_set_current_user( $admin->ID );
+if ( ! hj_booking_install_schema() ) { throw new RuntimeException( 'Production booking schema install failed' ); }
+$doc = wp_insert_post( array( 'post_type' => 'doctor', 'post_status' => 'publish', 'post_title' => 'Synthetic production backend doctor', 'post_author' => $doctor->ID ), true );
+if ( is_wp_error( $doc ) ) { throw new RuntimeException( 'Synthetic doctor post failed' ); }
+wp_set_current_user( $doctor->ID );
+if ( hj_booking_configure( (int) $doc, 30, 5, true )['status'] !== 'configured' ) { throw new RuntimeException( 'Doctor config failed' ); }
+update_option( 'active_plugins', array( 'hamyar-doctors/hamyar-doctors.php' ) );
+file_put_contents( getenv( 'RUNNER_TEMP' ) . '/hj-wpdb-ajax-meta.json', wp_json_encode( array( 'doctor' => $doc ) ) );
+echo "PASS: repository plugin loaded without patch; production schema and synthetic doctor configured\n";

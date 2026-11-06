@@ -85,8 +85,8 @@ try:
     created_plugin = True
     dashboard = plugin / 'includes/dashboard.php'
     source = dashboard.read_text(encoding='utf-8')
-    old = "self::set( $pid, 'working_hours', $rows );"
-    replacement = "if ( hj_ci_port_save_hours( $pid, $rows )['status'] !== 'saved' ) { self::fail( 'Fixture schedule save failed.', 503 ); }"
+    old = "\t\t\t\tself::set( $pid, 'working_hours', $rows );\n\t\t\t}"
+    replacement = "\t\t\t\tif ( hj_ci_port_save_hours( $pid, $rows )['status'] !== 'saved' ) { self::fail( 'Fixture schedule save failed.', 503 ); }\n\t\t\t}"
     if source.count(old) != 1: raise RuntimeError('Expected one exact dashboard hours writer')
     dashboard.write_text(source.replace(old, replacement, 1), encoding='utf-8')
     subprocess.run(['php', 'tools/hj-booking-spike/wpdb-ajax-setup.php'], check=True)
