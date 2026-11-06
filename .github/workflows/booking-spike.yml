@@ -148,6 +148,17 @@ jobs:
             echo "::error title=Booking migration failure::$summary"
             exit "$status"
           fi
+      - name: Inventory disposable legacy data without mutation
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/capacity-preflight.php && php -l tools/hj-booking-integration/capacity-preflight-fixture.php && php -d auto_prepend_file="$GITHUB_WORKSPACE/tools/hj-booking-integration/prepend.php" tools/hj-booking-integration/capacity-preflight-fixture.php' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Disposable inventory failure::$summary"
+            exit "$status"
+          fi
       - name: Compare synthetic legacy capacity migration proposal
         run: |
           set -uo pipefail
