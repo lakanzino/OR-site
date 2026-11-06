@@ -334,6 +334,18 @@ function hj_booking_save_capacity_week( $doctor, $rows, $expected_revision, $ena
 		return array( 'status'=>'saved', 'revision'=>$revision );
 	} );
 }
+/** Pause only: allow disabling new bookings without changing any schedule or appointment. */
+function hj_booking_pause_capacity( $doctor ) {
+	if ( ! hj_booking_capacity_v2_ready() || ! hj_booking_ready() ) { return array( 'status'=>'unavailable' ); }
+	if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status'=>'forbidden' ); }
+	return hj_booking_transaction( $doctor, 'capacity_pause', function ( $db, $config ) use ( $doctor ) {
+		if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status'=>'forbidden' ); }
+		if ( (int)$config['enabled'] === 0 ) { return array( 'status'=>'paused' ); }
+		$table = hj_booking_table( 'doctors' );
+		hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET enabled=0 WHERE doctor_id=%d", $doctor ) );
+		return array( 'status'=>'paused' );
+	} );
+}
 /** Explicit doctor configuration, disabled until set. */
 function hj_booking_configure( $doctor, $duration, $buffer, $enabled ) {
 	if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status' => 'forbidden' ); }

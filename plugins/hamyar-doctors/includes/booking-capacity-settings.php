@@ -54,6 +54,7 @@ function hj_capacity_settings_shortcode( $attributes = array() ) {
 	wp_enqueue_style( 'hj-capacity-settings', HJ_DOCTORS_URL . 'assets/css/booking-capacity-settings.css', array(), HJ_DOCTORS_VERSION );
 	$messages = array(
 		'saved'=>'برنامه ذخیره شد.',
+		'paused'=>'دریافت نوبت جدید متوقف شد؛ نوبت‌های ثبت‌شده حفظ می‌شوند.',
 		'conflict'=>'برنامه در صفحهٔ دیگری تغییر کرده است؛ اطلاعات جدید را بررسی و دوباره وارد کنید.',
 		'booked'=>'تا زمان وجود نوبت آینده یا در حال انجام، تغییر برنامه مجاز نیست؛ نوبت‌ها حذف نمی‌شوند.',
 		'invalid'=>'اطلاعات برنامه معتبر نیست. لطفاً زمان‌ها و مقدارها را بررسی کنید.',
@@ -90,6 +91,14 @@ function hj_capacity_settings_shortcode( $attributes = array() ) {
 				</fieldset>
 			<?php endforeach; ?>
 			</div><button type="submit">ذخیرهٔ برنامه</button>
+		</form>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="hj-capacity__pause">
+			<input type="hidden" name="action" value="hj_capacity_pause">
+			<input type="hidden" name="doctor_id" value="<?php echo esc_attr( $doctor ); ?>">
+			<input type="hidden" name="page_id" value="<?php echo esc_attr( $page ); ?>">
+			<?php wp_nonce_field( 'hj_capacity_pause_' . $doctor, 'hj_capacity_pause_nonce' ); ?>
+			<p>برای توقف دریافت نوبت جدید، بدون حذف نوبت‌های ثبت‌شده، از این دکمه استفاده کنید.</p>
+			<button type="submit">توقف دریافت نوبت جدید</button>
 		</form>
 	</section>
 	<?php return ob_get_clean();
@@ -134,3 +143,17 @@ function hj_capacity_week_save() {
 	wp_safe_redirect( $url, 303 ); exit;
 }
 add_action( 'admin_post_hj_capacity_week_save', 'hj_capacity_week_save' );
+function hj_capacity_pause() {
+	if ( ! hj_booking_ready() || ! hj_booking_capacity_v2_ready() ) { wp_die( 'نوبت‌دهی در دسترس نیست.', '', array( 'response'=>503 ) ); }
+	if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) !== 'POST' || ! is_user_logged_in() ) { wp_die( 'درخواست معتبر نیست.', '', array( 'response'=>403 ) ); }
+	$doctor = hj_booking_ui_int( isset( $_POST['doctor_id'] ) && is_string( $_POST['doctor_id'] ) ? wp_unslash( $_POST['doctor_id'] ) : '' );
+	$page = hj_booking_ui_int( isset( $_POST['page_id'] ) && is_string( $_POST['page_id'] ) ? wp_unslash( $_POST['page_id'] ) : '' );
+	$nonce = isset( $_POST['hj_capacity_pause_nonce'] ) && is_string( $_POST['hj_capacity_pause_nonce'] ) ? wp_unslash( $_POST['hj_capacity_pause_nonce'] ) : '';
+	if ( ! $doctor || ! $page || ! hj_capacity_page_valid( $page ) || ! wp_verify_nonce( $nonce, 'hj_capacity_pause_' . $doctor ) || ! hj_booking_can_configure( $doctor ) ) { wp_die( 'دسترسی مجاز نیست.', '', array( 'response'=>403 ) ); }
+	if ( ! hj_sec_rate_limit( 'capacity_pause', 60, HOUR_IN_SECONDS ) ) { wp_die( 'درخواست‌های زیادی ارسال شده است؛ بعداً تلاش کنید.', '', array( 'response'=>429 ) ); }
+	$result = hj_booking_pause_capacity( $doctor );
+	$status = ( $result['status'] ?? '' ) === 'paused' ? 'paused' : ( ( $result['status'] ?? '' ) === 'unknown' ? 'unknown' : 'error' );
+	$url = add_query_arg( 'hj_cap_status', $status, get_permalink( $page ) ) . '#hj-capacity-settings';
+	wp_safe_redirect( $url, 303 ); exit;
+}
+add_action( 'admin_post_hj_capacity_pause', 'hj_capacity_pause' );

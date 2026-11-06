@@ -93,6 +93,14 @@ try:
  html,fields=form(owner,page); blocked=week(dict(payload,enabled='0',revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
  before=state(owner,doc); code,_,headers=request(owner,post,blocked)
  check(code==303 and 'hj_cap_status=booked' in headers.get('Location','') and state(owner,doc)==before,'future booking blocks schedule and activation changes without mutation')
+ pause={'action':'hj_capacity_pause','doctor_id':str(doc),'page_id':str(page),'hj_capacity_pause_nonce':fields['hj_capacity_pause_nonce']}
+ check(request(owner,post,dict(pause,hj_capacity_pause_nonce='bad'))[0]==403 and request(other,post,pause)[0]==403 and request(patient,post,pause)[0]==403,'pause requires nonce and doctor ownership')
+ audit_before=ajax(owner,{'action':'hj_ci_booking_audit','doctor':str(doc)})
+ code,_,headers=request(owner,post,pause); paused=state(owner,doc)
+ check(code==303 and 'hj_cap_status=paused' in headers.get('Location','') and int(paused['config']['enabled'])==0 and paused['snapshot']==before['snapshot'] and ajax(owner,{'action':'hj_ci_booking_audit','doctor':str(doc)})==audit_before,'pause disables new bookings without changing existing schedule or bookings')
+ check(ajax(patient,{'action':'hj_ci_slots','doctor':str(doc),'nonce':patient_nonce,'date':day})['status']=='unavailable','public slot access is unavailable after pause')
+ code,_,headers=request(owner,post,pause)
+ check(code==303 and 'hj_cap_status=paused' in headers.get('Location','') and state(owner,doc)==paused,'repeated pause is idempotent')
 finally:
  if server:
   os.killpg(server.pid,signal.SIGTERM)
