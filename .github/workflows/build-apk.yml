@@ -40,8 +40,57 @@ jobs:
           gradle-version: '8.7'
 
       - name: Run unit tests, lint and assemble debug APK
+        id: gradle
         working-directory: android-app
-        run: gradle testDebugUnitTest lintDebug assembleDebug --no-daemon --stacktrace
+        shell: bash
+        run: |
+          set +e
+          gradle testDebugUnitTest lintDebug assembleDebug --no-daemon --stacktrace --console=plain > gradle-output.log 2>&1
+          status=$?
+          tail -n 160 gradle-output.log
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Surface Gradle errors as annotations
+        if: steps.gradle.outputs.status != '0'
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib, re, xml.etree.ElementTree as ET
+          root = pathlib.Path('android-app')
+          log = root / 'gradle-output.log'
+          messages = []
+          if log.exists():
+              for line in log.read_text(errors='replace').splitlines():
+                  if re.search(r'^e:|error:|FAILED$|What went wrong|Execution failed|Caused by:', line):
+                      messages.append(line.strip())
+          for xml in root.glob('app/build/test-results/testDebugUnitTest/TEST-*.xml'):
+              try:
+                  tree = ET.parse(xml)
+                  for case in tree.getroot().iter('testcase'):
+                      for failure in list(case.findall('failure')) + list(case.findall('error')):
+                          messages.append(f"{case.get('classname')}.{case.get('name')}: {failure.get('message') or (failure.text or '')[:500]}")
+              except ET.ParseError:
+                  pass
+          for xml in root.glob('app/build/reports/lint-results-*.xml'):
+              try:
+                  for issue in ET.parse(xml).getroot().iter('issue'):
+                      if issue.get('severity') in ('Error', 'Fatal'):
+                          loc = issue.find('location')
+                          where = f"{loc.get('file')}:{loc.get('line')}" if loc is not None else ''
+                          messages.append(f"lint {issue.get('id')} {where}: {issue.get('message')}")
+              except ET.ParseError:
+                  pass
+          seen = set()
+          for message in messages:
+              message = message[:900]
+              if message not in seen:
+                  seen.add(message)
+                  print('::error::' + message.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A'))
+          if not seen:
+              print('::error::Gradle failed; see the uploaded android-build-reports artifact.')
+          PY
+          exit 1
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v7
