@@ -28,6 +28,8 @@ object BackupManager {
                 val out = context.contentResolver.openOutputStream(target)
                     ?: error("Cannot open destination")
                 out.use { o -> dbFile.inputStream().use { it.copyTo(o) } }
+                // copyTo returns the byte count; the function promises Result<Unit>
+                Unit
             }
         }
 
@@ -56,6 +58,8 @@ object BackupManager {
                 File(dbFile.path + "-shm").delete()
                 tmp.copyTo(dbFile, overwrite = true)
                 tmp.delete()
+                // File.delete()/copyTo() return values; the function promises Result<Unit>
+                Unit
             }
         }
 
