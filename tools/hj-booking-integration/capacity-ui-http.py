@@ -74,9 +74,14 @@ try:
  post='/wp-admin/admin-post.php'
  bad=dict(payload,hj_capacity_nonce='bad')
  check(request(owner,post,bad)[0]==403 and request(other,post,payload)[0]==403 and request(patient,post,payload)[0]==403,'nonce, owner and role checks reject unauthorized saves')
+ # The existing appointments list uses a transaction and creates the default
+ # doctor mutex row on dashboard render; it does not create a schedule.
+ before_invalid=state(owner,doc)
+ check(before_invalid['snapshot'] is None and int(before_invalid['config']['enabled'])==0,'dashboard listing only initializes disabled doctor mutex row')
  invalid=dict(payload,**{f'week[{weekday}][capacity]':'11'})
  code,_,headers=request(owner,post,invalid)
- check(code==303 and 'hj_cap_status=invalid' in headers.get('Location','') and state(owner,doc)=={'config':None,'snapshot':None},'invalid capacity rejected before writing')
+ invalid_state=state(owner,doc)
+ check(code==303 and 'hj_cap_status=invalid' in headers.get('Location','') and invalid_state==before_invalid,f'invalid capacity rejected before writing (HTTP {code}, Location {headers.get("Location", "")}, state {invalid_state})')
  code,_,headers=request(owner,post,payload)
  check(code==303 and 'hj_cap_status=saved' in headers.get('Location',''),'owner saves actual weekly form')
  current=state(owner,doc); snapshot=current['snapshot']; rows=json.loads(snapshot['rows_json'])
