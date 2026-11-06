@@ -484,6 +484,8 @@ try:
     code, future_html = request(patient_a, url + '?hj_b_filter=future', {'action':'hj_ci_render_patient_bookings'})
     code_today, today_html = request(patient_a, url + '?hj_b_filter=today', {'action':'hj_ci_render_patient_bookings'})
     check(code == 200 and code_today == 200 and 'Synthetic Doctor' in json.loads(future_html)['data']['html'] and 'Synthetic Doctor' not in json.loads(today_html)['data']['html'], 'patient today/future filters use local-date boundaries')
+    code, all_admin = request(admin, admin_url)
+    check(code == 200 and 'Synthetic Patient Alpha' in all_admin and 'Synthetic Patient Beta' in all_admin, 'admin aggregate shows bookings from both doctors')
     code, filtered = request(admin, admin_url + '&doctor_id=' + str(doctor2_id) + '&booking_status=pending&booking_date=' + mday)
     check(code == 200 and 'Synthetic Patient Beta' in filtered and 'Synthetic Patient Alpha' not in filtered, 'admin filters aggregate by doctor, status and local date')
     check(request(patient_a, admin_url)[0] in (302,403), 'patient cannot access administrator submenu')
