@@ -37,7 +37,7 @@ function environment(intent, firstNetworkFails = false) {
   e.callbacks.submit({preventDefault(){}}); await flush();
   assert.match(e.status.textContent,/نتیجه مشخص نیست/); assert.equal(e.stored.size,1);
   const saved=JSON.stringify([...e.stored.values()]); assert(!saved.includes('09123456789') && !saved.includes('1234567891'));
-  const first=e.requests[1]; assert.equal(first.phone,'09123456789'); assert.equal(first.national_code,'1234567891'); assert.equal(first.idempotency_key,intent.key); assert.equal(e.doctor.disabled,true);
+  const first=e.requests[1]; assert.equal(first.phone,'09123456789'); assert.equal(first.national_code,'1234567891'); assert.equal(first.idempotency_key,intent.key); assert.equal(e.doctor.disabled,true); assert.equal(e.list.children[0].disabled,true);
   e.callbacks.submit({preventDefault(){}}); await flush();
   assert.equal(e.requests[2].idempotency_key,first.idempotency_key); assert.equal(e.stored.size,0); assert.match(e.status.textContent,/ثبت شد/);
   console.log('PASS: real UI revalidates restored intent, normalizes digits and retries the same UUID after lost response without storing private data');

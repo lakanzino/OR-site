@@ -368,7 +368,7 @@ try:
     except urllib.error.HTTPError as e: google_response = e
     location = google_response.headers.get('Location', '')
     target = urllib.parse.parse_qs(urllib.parse.urlsplit(location).query).get('redirect', [''])[0]
-    check(google_response.code == 302 and target.startswith('http://example.invalid/') and '#hj-booking' in target and 'loginSocial=google' in location, 'Google provider stub receives server-derived same-site return, not arbitrary URL')
+    check(google_response.code == 302 and target.startswith('http://example.invalid/') and '#hj-booking' in target and 'loginSocial=google' in location, 'Google provider stub receives server-derived same-site return, not arbitrary URL: ' + repr((google_response.code, target, location)))
     resumed, _ = login('synthetic_race_8', guest)
     resumed_form = ui_form(resumed); restored = json.loads(resumed_form['data-intent'])
     check(restored['doctor'] == doctor_id and restored['start'] == ui_starts[0] and restored['revision'] == revision and restored['key'] == intent_key and restored['local_date'] == ui_day, 'signed intent survives simulated login and returns exact selection')

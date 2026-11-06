@@ -32,7 +32,7 @@
       return json.data;
     }
     const setBusy = state => { busy = state; load.disabled = state || !!pending; submit.disabled = state; };
-    function lockPending() { doctor.disabled = !!pending || root.dataset.fixed === '1'; date.disabled = !!pending; load.disabled = !!pending; }
+    function lockPending() { doctor.disabled = !!pending || root.dataset.fixed === '1'; date.disabled = !!pending; load.disabled = !!pending; for (const button of list.querySelectorAll('button')) button.disabled = !!pending; }
     function clearPending() { pending = null; try { sessionStorage.removeItem(storageKey); } catch (_) {} lockPending(); }
     function selectedMessage() { say(selection ? `زمان انتخاب‌شده: ${selection.label || selection.start}` : 'لطفاً یک زمان خالی انتخاب کنید.'); }
     async function loadSlots(restoring) {
@@ -45,7 +45,7 @@
         if (doctor.value !== requestedDoctor || date.value !== requestedDate) { say('انتخاب تغییر کرد؛ زمان‌ها را دوباره دریافت کنید.'); return; }
         for (const slot of result.slots) {
           const button = document.createElement('button'); button.type = 'button'; button.textContent = slot.label; button.className = 'hj-booking__slot';
-          button.addEventListener('click', () => { for (const b of list.querySelectorAll('button')) b.setAttribute('aria-pressed', 'false'); button.setAttribute('aria-pressed', 'true'); selection = {doctor:requestedDoctor, date:requestedDate, start:slot.start, revision:result.revision, key:uuid(), label:slot.label}; selectedMessage(); });
+          button.addEventListener('click', () => { if (busy || pending) return; for (const b of list.querySelectorAll('button')) b.setAttribute('aria-pressed', 'false'); button.setAttribute('aria-pressed', 'true'); selection = {doctor:requestedDoctor, date:requestedDate, start:slot.start, revision:result.revision, key:uuid(), label:slot.label}; selectedMessage(); });
           button.setAttribute('aria-pressed', 'false'); list.append(button);
           if (restoring && String(restoring.doctor) === requestedDoctor && restoring.start === slot.start && restoring.revision === result.revision) {
             button.setAttribute('aria-pressed', 'true'); selection = {doctor:requestedDoctor, date:requestedDate, start:slot.start, revision:result.revision, key:restoring.key, label:slot.label};
@@ -80,7 +80,9 @@
         if (root.dataset.logged === '1') { clearPending(); selection = null; list.replaceChildren(); form.elements.phone.value = ''; form.elements.national_code.value = ''; say(result.message); }
         else { window.location.assign(result.login_url); }
       } catch (e) {
-        if (['revision_conflict', 'invalid_slot', 'invalid_phone', 'invalid_national', 'pending_limit', 'invalid', 'forbidden', 'login_required'].includes(e.code)) {
+        // Only these server outcomes are checked after idempotent replay; other
+        // errors could precede reconciliation of an already committed request.
+        if (['revision_conflict', 'invalid_slot', 'pending_limit'].includes(e.code)) {
           clearPending(); if (e.code === 'revision_conflict' || e.code === 'invalid_slot') { selection = null; list.replaceChildren(); }
         }
         say(e.message || 'نتیجه مشخص نیست؛ با همین اطلاعات دوباره تلاش کنید.');
