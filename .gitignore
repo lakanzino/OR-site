@@ -17,3 +17,19 @@ node_modules
 
 # پوشهٔ موقت دانلود از Google Drive (کپی نهایی در docs/ می‌ماند)
 google_drive/
+
+# اندروید (اپ همیار-ج) — خروجی‌های ساخت هرگز نباید کامیت شوند
+/.gradle/
+/build/
+/app/build/
+/local.properties
+/app/local.properties
+/.kotlin/
+/.idea/
+*.iml
+/captures
+.cxx
+/externalNativeBuild/
+*.apk
+*.aab
+gradle-output.log
