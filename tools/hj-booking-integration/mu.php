@@ -60,6 +60,24 @@ add_action( 'wp_ajax_hj_ci_schedule_state', function () {
 add_action( 'wp_ajax_hj_ci_render_dashboard', function () {
 	wp_send_json_success( array( 'html' => HJ_Doctors_Dashboard::shortcode_render() ) );
 } );
+// CI-only adapters for the actual experimental capacity-settings shortcode.
+add_action( 'wp_ajax_hj_ci_render_capacity_settings', function () {
+	$page = absint( $_POST['page'] ?? 0 ); $post = get_post( $page );
+	if ( ! $post ) { wp_send_json_error( array(), 400 ); }
+	global $wp_query; $wp_query->queried_object = $post; $wp_query->queried_object_id = $page; $wp_query->is_singular = true; $wp_query->is_page = true;
+	wp_send_json_success( array( 'html'=>do_shortcode( $post->post_content ) ) );
+} );
+add_action( 'wp_ajax_hj_ci_capacity_state', function () {
+	$doctor = absint( $_POST['doctor'] ?? 0 ); if ( ! hj_booking_can_configure( $doctor ) ) { wp_send_json_error( array(), 403 ); }
+	global $wpdb; $d = hj_booking_table( 'doctors' ); $s = hj_booking_table( 'schedules' );
+	$config = $wpdb->get_row( $wpdb->prepare( "SELECT duration_minutes,buffer_minutes,enabled FROM `$d` WHERE doctor_id=%d", $doctor ), ARRAY_A );
+	$snapshot = $wpdb->get_row( $wpdb->prepare( "SELECT revision,rows_json,rows_hash FROM `$s` WHERE doctor_id=%d", $doctor ), ARRAY_A );
+	wp_send_json_success( array( 'config'=>$config, 'snapshot'=>$snapshot ) );
+} );
+add_action( 'wp_ajax_hj_ci_capacity_configure', function () {
+	check_ajax_referer( 'hj_dash_nonce', '_hjn' ); $doctor = absint( $_POST['doctor'] ?? 0 );
+	$result = hj_booking_configure( $doctor, 45, 10, false ); wp_send_json_success( $result );
+} );
 // CI-only mutation for synthetic snapshots. Never shipped in the plugin.
 add_action( 'wp_ajax_hj_ci_replace_snapshot', function () {
 	check_ajax_referer( 'hj_dash_nonce', '_hjn' );

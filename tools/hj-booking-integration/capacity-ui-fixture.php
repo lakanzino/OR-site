@@ -1,0 +1,37 @@
+<?php
+/** Synthetic WordPress setup/cleanup only. */
+if (PHP_SAPI!=='cli' || getenv('GITHUB_ACTIONS')!=='true' || getenv('HJ_DISPOSABLE_MARIADB_FIXTURE')!=='1') { exit(1); }
+require '/wordpress/wp-load.php';
+if (DB_NAME!=='hj_fixture_db' || DB_HOST!=='127.0.0.1:3306' || $GLOBALS['wpdb']->prefix!=='hjt_' || WP_HOME!=='http://example.invalid') { exit(1); }
+require_once WP_PLUGIN_DIR.'/hamyar-doctors/hamyar-doctors.php'; hj_doctors(); do_action('init');
+$meta=getenv('RUNNER_TEMP').'/hj-capacity-ui-meta.json'; $mode=$argv[1] ?? '';
+$admin=get_user_by('login','fixture_admin'); $owner=get_user_by('login','synthetic_doctor_a'); $other=get_user_by('login','synthetic_doctor_b'); $patient=get_user_by('login','synthetic_race_0');
+if (!$admin || !$owner || !$other || !$patient) { throw new RuntimeException('synthetic users missing'); }
+if ($mode==='setup') {
+ wp_set_current_user($admin->ID); update_option('timezone_string','Asia/Tehran');
+ if(!hj_booking_install_schema()) { throw new RuntimeException('v1 schema setup failed'); }
+ $old_meta=get_user_meta($owner->ID,'hj_doctor_post_id',true);
+ $doc=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'Synthetic capacity UI doctor','post_author'=>$owner->ID),true);
+ $page=wp_insert_post(array('post_type'=>'page','post_status'=>'publish','post_title'=>'Synthetic capacity settings','post_content'=>'[hj_capacity_settings]'),true);
+ if(is_wp_error($doc) || is_wp_error($page) || !$doc || !$page) { throw new RuntimeException('fixture content failed'); }
+ update_user_meta($owner->ID,'hj_doctor_post_id',$doc);
+ wp_set_password('disposable-test-password',$owner->ID); wp_set_password('disposable-test-password',$other->ID); wp_set_password('disposable-test-password',$patient->ID);
+ $date=(new DateTimeImmutable('now',wp_timezone()))->modify('+2 days')->format('Y-m-d');
+ $weekday=strtolower((new DateTimeImmutable($date,new DateTimeZone('UTC')))->format('l'));
+ update_option('hj_booking_schema_version',2,false); hj_booking_schema_clear_option_cache();
+ if (!hj_booking_capacity_v2_ready()) { throw new RuntimeException('fixture v2 gate unavailable'); }
+ update_option('active_plugins',array('hamyar-doctors/hamyar-doctors.php'));
+ file_put_contents($meta,wp_json_encode(array('doctor'=>(int)$doc,'page'=>(int)$page,'date'=>$date,'weekday'=>$weekday,'old_meta'=>$old_meta)));
+ echo "PASS: synthetic capacity UI setup\n"; exit(0);
+}
+if ($mode==='cleanup') {
+ $data=json_decode(file_get_contents($meta),true); if(!is_array($data)) { exit(1); }
+ global $wpdb; $doc=(int)$data['doctor']; $a=hj_booking_table('appointments'); $p=hj_booking_table('details');
+ $ids=$wpdb->get_col($wpdb->prepare("SELECT id FROM `$a` WHERE doctor_id=%d",$doc));
+ foreach($ids as $id) { $wpdb->delete($p,array('appointment_id'=>(int)$id)); }
+ $wpdb->delete($a,array('doctor_id'=>$doc)); $wpdb->delete(hj_booking_table('schedules'),array('doctor_id'=>$doc)); $wpdb->delete(hj_booking_table('doctors'),array('doctor_id'=>$doc));
+ wp_delete_post($doc,true); wp_delete_post((int)$data['page'],true);
+ if ($data['old_meta']==='') { delete_user_meta($owner->ID,'hj_doctor_post_id'); } else { update_user_meta($owner->ID,'hj_doctor_post_id',$data['old_meta']); }
+ update_option('hj_booking_schema_version',1,false); hj_booking_schema_clear_option_cache(); update_option('active_plugins',array()); unlink($meta); exit(0);
+}
+exit(1);
