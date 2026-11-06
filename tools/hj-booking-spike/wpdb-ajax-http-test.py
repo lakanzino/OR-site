@@ -71,7 +71,8 @@ def barrier(name):
 def wait_ready(paths):
     end = time.monotonic() + 18
     while not all(p.exists() for p in paths) and time.monotonic() < end: time.sleep(.01)
-    check(all(p.exists() for p in paths), 'all fixture lock-order barriers reached')
+    if not all(p.exists() for p in paths): raise AssertionError('Missing fixture barriers: ' + ', '.join(p.name for p in paths if not p.exists()))
+    check(True, 'all fixture lock-order barriers reached')
 
 server = None
 ready = None
@@ -221,6 +222,9 @@ try:
         wait_ready([save_ready])
         future_patients = [pool.submit(ajax, patients[i], booking_payload(doctor_id, nonces[i], '2030-01-02 06:40:00', key(34100+i), 'signal_before_lock')) for i in range(8)]
         try: wait_ready(waiting)
+        except Exception:
+            print('Patient barrier diagnostics:', [(i, f.done(), f.result() if f.done() and not f.exception() else str(f.exception()) if f.done() else 'waiting') for i, f in enumerate(future_patients)], flush=True)
+            raise
         finally: save_release.touch()
         check(closer.result(timeout=40) is not None, 'held doctor closure committed')
         after_close = [f.result(timeout=40) for f in future_patients]
