@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:layoutDirection="rtl" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/reports_title"
+            android:textColor="@color/blue_700" android:textSize="22sp" android:textStyle="bold" android:layout_marginBottom="12dp" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+            <Button android:id="@+id/btnFrom" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/from_date" />
+            <Button android:id="@+id/btnTo" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="8dp" android:text="@string/to_date" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
+            <Button android:id="@+id/btnToday" style="@style/Widget.Material3.Button.TextButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/today" />
+            <Button android:id="@+id/btnWeek" style="@style/Widget.Material3.Button.TextButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/last_7_days" />
+            <Button android:id="@+id/btnMonth" style="@style/Widget.Material3.Button.TextButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/last_30_days" />
+            <Button android:id="@+id/btnAllDates" style="@style/Widget.Material3.Button.TextButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/all_dates" />
+        </LinearLayout>
+        <TextView android:id="@+id/tvSearchFilter" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textColor="@color/gray_text" />
+        <Button android:id="@+id/btnClearFilters" style="@style/ClinicWarningButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/clear_filters" />
+        <TextView android:id="@+id/tvRangeWarning" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"
+            android:background="@color/amber_surface" android:padding="12dp" android:text="@string/range_warning" android:textColor="@color/amber_text" android:visibility="gone" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
+            android:layout_marginTop="16dp" android:background="@color/green_surface" android:padding="16dp">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/patient_count_label" android:textColor="@color/green_success" />
+            <TextView android:id="@+id/tvCount" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/green_success" android:textSize="28sp" android:textStyle="bold" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/total_fee_label" android:textColor="@color/green_success" />
+            <TextView android:id="@+id/tvTotal" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/green_success" android:textSize="22sp" android:textStyle="bold" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/supplemental_count_label" android:textColor="@color/green_success" />
+            <TextView android:id="@+id/tvSupplemental" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/green_success" android:textSize="20sp" android:textStyle="bold" />
+        </LinearLayout>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:layout_marginBottom="8dp"
+            android:text="@string/by_insurance" android:textColor="@color/blue_700" android:textSize="18sp" android:textStyle="bold" />
+        <LinearLayout android:id="@+id/insuranceRows" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
+        <TextView android:id="@+id/tvNoInsurance" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/no_report_data" android:textColor="@color/gray_text" android:visibility="gone" />
+        <Button android:id="@+id/btnExportCsv" style="@style/ClinicSaveButton" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="20dp" android:text="@string/export_filtered_csv" />
+    </LinearLayout>
+</ScrollView>

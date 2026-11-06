@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Table header row. Weights must match item_patient.xml so columns line up. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/blue_50"
+    android:layoutDirection="rtl"
+    android:orientation="horizontal"
+    android:paddingStart="8dp"
+    android:paddingTop="10dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="10dp">
+
+    <TextView
+        android:id="@+id/hName"
+        style="@style/HeaderCell"
+        android:layout_weight="2"
+        android:text="@string/col_name" />
+
+    <TextView
+        android:id="@+id/hInsurance"
+        style="@style/HeaderCell"
+        android:layout_weight="1.6"
+        android:text="@string/col_insurance" />
+
+    <TextView
+        android:id="@+id/hSupp"
+        style="@style/HeaderCell"
+        android:layout_weight="1.2"
+        android:text="@string/col_supp" />
+
+    <TextView
+        android:id="@+id/hReason"
+        style="@style/HeaderCell"
+        android:layout_weight="2.4"
+        android:text="@string/col_reason" />
+
+    <TextView
+        android:id="@+id/hTime"
+        style="@style/HeaderCell"
+        android:layout_weight="1"
+        android:text="@string/col_time" />
+
+    <TextView
+        android:id="@+id/hDate"
+        style="@style/HeaderCell"
+        android:layout_weight="1.6"
+        android:text="@string/col_date" />
+
+    <TextView
+        android:id="@+id/hFee"
+        style="@style/HeaderCell"
+        android:layout_weight="1.6"
+        android:text="@string/col_fee" />
+</LinearLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layoutDirection="rtl" android:orientation="vertical">
+    <com.google.android.material.textfield.TextInputLayout style="@style/ClinicTextInput"
+        android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_margin="12dp" android:hint="@string/search_patients">
+        <com.google.android.material.textfield.TextInputEditText android:id="@+id/etSearch"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="text" android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:paddingStart="12dp" android:paddingEnd="12dp">
+        <Button android:id="@+id/btnFrom" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/from_date" />
+        <Button android:id="@+id/btnTo" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="8dp" android:text="@string/to_date" />
+        <Button android:id="@+id/btnClearFilters" style="@style/ClinicWarningButton" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:text="@string/clear" android:visibility="gone" />
+    </LinearLayout>
+    <Spinner android:id="@+id/spFilterInsurance" android:layout_width="match_parent" android:layout_height="48dp" android:layout_marginStart="12dp" android:layout_marginEnd="12dp" />
+    <TextView android:id="@+id/tvRangeWarning" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_margin="12dp" android:background="@color/amber_surface" android:padding="10dp" android:text="@string/range_warning" android:textColor="@color/amber_text" android:visibility="gone" />
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingStart="16dp" android:paddingTop="8dp" android:paddingEnd="16dp"
+        android:text="@string/columns_label" android:textColor="@color/gray_text" android:textSize="14sp" />
+    <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:scrollbars="none">
+        <com.google.android.material.chip.ChipGroup android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:paddingStart="12dp" android:paddingEnd="12dp" app:singleLine="true">
+            <com.google.android.material.chip.Chip android:id="@+id/chipName" style="@style/Widget.Material3.Chip.Filter" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/col_name" />
+            <com.google.android.material.chip.Chip android:id="@+id/chipInsurance" style="@style/Widget.Material3.Chip.Filter" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/col_insurance" />
+            <com.google.android.material.chip.Chip android:id="@+id/chipSupp" style="@style/Widget.Material3.Chip.Filter" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/col_supp" />
+            <com.google.android.material.chip.Chip android:id="@+id/chipReason" style="@style/Widget.Material3.Chip.Filter" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/col_reason" />
+            <com.google.android.material.chip.Chip android:id="@+id/chipTime" style="@style/Widget.Material3.Chip.Filter" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/col_time" />
+            <com.google.android.material.chip.Chip android:id="@+id/chipDate" style="@style/Widget.Material3.Chip.Filter" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/col_date" />
+            <com.google.android.material.chip.Chip android:id="@+id/chipFee" style="@style/Widget.Material3.Chip.Filter" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/col_fee" />
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+    <TextView android:id="@+id/tvSummary" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_margin="12dp" android:background="@color/green_surface" android:padding="12dp" android:textColor="@color/green_success" android:textSize="15sp" android:textStyle="bold" />
+    <include android:id="@+id/header" layout="@layout/item_patient_header" />
+    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        <androidx.recyclerview.widget.RecyclerView android:id="@+id/recycler" android:layout_width="match_parent" android:layout_height="match_parent" />
+        <TextView android:id="@+id/tvEmpty" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_gravity="center"
+            android:gravity="center" android:text="@string/empty_list" android:textColor="@color/gray_text" android:textSize="18sp" android:visibility="gone" />
+    </FrameLayout>
+</LinearLayout>

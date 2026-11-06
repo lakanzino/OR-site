@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
+    android:background="@color/blue_50" android:padding="12dp" android:layout_marginBottom="8dp" android:layoutDirection="rtl">
+    <TextView android:id="@+id/tvInsurance" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/blue_700" android:textStyle="bold" android:textSize="16sp" />
+    <TextView android:id="@+id/tvCount" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/gray_text" android:layout_marginTop="4dp" />
+    <TextView android:id="@+id/tvTotal" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/green_success" android:textStyle="bold" android:layout_marginTop="4dp" />
+</LinearLayout>

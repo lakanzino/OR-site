@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">منشی مطب</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_register">ثبت بیمار</string>
+    <string name="nav_patients">لیست بیماران</string>
+    <string name="nav_settings">تنظیمات</string>
+
+    <!-- Registration form -->
+    <string name="title_register">ثبت بیمار جدید</string>
+    <string name="hint_name">نام بیمار *</string>
+    <string name="label_insurance">نوع بیمه</string>
+    <string name="cb_supplemental">بیمه مکمل</string>
+    <string name="hint_reason">علت مراجعه</string>
+    <string name="hint_time">ساعت مراجعه</string>
+    <string name="hint_fee">مبلغ ویزیت</string>
+    <string name="btn_save">ذخیره بیمار</string>
+    <string name="err_name_required">نام بیمار الزامی است و حداکثر ۲۰۰ نویسه باشد</string>
+    <string name="msg_saved">بیمار با موفقیت ثبت شد</string>
+
+    <string-array name="insurance_types">
+        <item>تامین اجتماعی</item>
+        <item>خدمات درمانی</item>
+        <item>آزاد</item>
+        <item>سایر</item>
+    </string-array>
+
+    <!-- Patient list -->
+    <string name="title_patients">لیست بیماران</string>
+    <string name="columns_label">ستون‌های نمایش:</string>
+    <string name="col_name">نام</string>
+    <string name="col_insurance">بیمه</string>
+    <string name="col_supp">مکمل</string>
+    <string name="col_reason">علت مراجعه</string>
+    <string name="col_time">ساعت</string>
+    <string name="col_date">تاریخ</string>
+    <string name="col_fee">مبلغ</string>
+    <string name="yes">دارد</string>
+    <string name="no">ندارد</string>
+    <string name="empty_list">هنوز بیماری ثبت نشده است</string>
+    <string name="summary">تعداد بیماران: %1$s  |  جمع مبلغ: %2$s</string>
+    <string name="close">بستن</string>
+    <string name="delete">حذف</string>
+    <string name="cancel">انصراف</string>
+    <string name="confirm_delete">این بیمار حذف شود؟</string>
+
+    <!-- Settings -->
+    <string name="title_settings">تنظیمات</string>
+    <string name="hint_doctor_name">نام پزشک</string>
+    <string name="hint_specialty">تخصص پزشک</string>
+    <string name="hint_default_fee">مبلغ پیش‌فرض ویزیت</string>
+    <string name="btn_save_settings">ذخیره تنظیمات</string>
+    <string name="msg_settings_saved">تنظیمات ذخیره شد</string>
+
+    <!-- Version 1.1: search/edit, reports, backup, insurance and currency options. -->
+    <string name="nav_reports">گزارش‌ها</string>
+    <string name="title_edit">ویرایش بیمار</string>
+    <string name="btn_update">ذخیره تغییرات</string>
+    <string name="cancel_edit">انصراف از ویرایش</string>
+    <string name="edit">ویرایش</string>
+    <string name="confirm">تأیید</string>
+    <string name="clear">پاک‌سازی</string>
+    <string name="clear_filters">پاک کردن همه فیلترها</string>
+    <string name="phone">تلفن</string>
+    <string name="hint_phone">شماره تماس (اختیاری)</string>
+    <string name="hint_date">تاریخ مراجعه (شمسی)</string>
+    <string name="search_patients">جست‌وجوی نام یا تلفن</string>
+    <string name="from_date">از تاریخ</string>
+    <string name="to_date">تا تاریخ</string>
+    <string name="all_insurances">همه بیمه‌ها</string>
+    <string name="no_matching_patients">بیماری با این فیلترها پیدا نشد</string>
+    <string name="msg_updated">تغییرات بیمار ذخیره شد</string>
+    <string name="msg_deleted">بیمار حذف شد</string>
+    <string name="err_phone">شماره تماس باید ۷ تا ۱۵ رقم باشد</string>
+    <string name="err_fee">مبلغ معتبر وارد کنید؛ فقط رقم، جداکننده هزارگان و در تومان یک رقم اعشار</string>
+    <string name="err_insurance">نوع بیمه را انتخاب کنید</string>
+    <string name="err_settings_length">نام پزشک و تخصص حداکثر ۲۰۰ نویسه باشند</string>
+    <string name="fix_form">لطفاً خطاهای فرم را برطرف کنید</string>
+    <string name="operation_failed">انجام عملیات ناموفق بود؛ ورودی و فایل انتخابی را بررسی کنید</string>
+    <string name="amount_overflow">مبلغ خارج از محدوده قابل نمایش است</string>
+    <string name="pick_shamsi_date">انتخاب تاریخ شمسی</string>
+    <string name="shamsi_date_help">تاریخ را به صورت سال / ماه / روز وارد کنید (بازهٔ پشتیبانی‌شده: ۱۳۰۰ تا ۱۵۰۰).</string>
+    <string name="year">سال</string>
+    <string name="month">ماه</string>
+    <string name="day">روز</string>
+    <string name="invalid_shamsi_date">هشدار: تاریخ شمسی معتبر نیست؛ روزهای ماه و سال کبیسه را بررسی کنید.</string>
+    <string name="range_warning">هشدار: «از تاریخ» بعد از «تا تاریخ» است؛ نتیجه‌ای نمایش داده نمی‌شود.</string>
+    <string name="reports_title">گزارش مالی و آماری</string>
+    <string name="today">امروز</string>
+    <string name="last_7_days">۷ روز</string>
+    <string name="last_30_days">۳۰ روز</string>
+    <string name="all_dates">همه</string>
+    <string name="report_all_filters">گزارش بر اساس همه بیماران است؛ فیلترهای تاریخ، جست‌وجو و بیمهٔ صفحهٔ لیست نیز اعمال می‌شوند.</string>
+    <string name="report_active_filters">فیلتر فعال — جست‌وجو: %1$s؛ بیمه: %2$s</string>
+    <string name="patient_count_label">تعداد بیماران در بازه</string>
+    <string name="total_fee_label">جمع مبلغ ویزیت</string>
+    <string name="supplemental_count_label">بیماران دارای بیمه مکمل</string>
+    <string name="patient_count">%1$s بیمار</string>
+    <string name="by_insurance">تفکیک بر اساس بیمه</string>
+    <string name="no_report_data">داده‌ای برای این فیلترها وجود ندارد</string>
+    <string name="export_filtered_csv">خروجی CSV از بیماران فیلترشده</string>
+    <string name="currency_label">واحد نمایش و ورود مبلغ</string>
+    <string name="toman">تومان</string>
+    <string name="rial">ریال</string>
+    <string name="currency_help">هر تومان = ۱۰ ریال. تغییر واحد، مبالغ قبلی را با حفظ ارزش واقعی تبدیل می‌کند. مبالغ نسخهٔ قبلی به عنوان تومان نگه داشته می‌شوند.</string>
+    <string name="manage_insurances">مدیریت بیمه‌ها</string>
+    <string name="default_insurances_label">بیمه‌های پایه:</string>
+    <string name="new_insurance">نام بیمه جدید</string>
+    <string name="add_insurance">افزودن بیمه</string>
+    <string name="no_custom_insurance">هنوز بیمهٔ سفارشی اضافه نشده است</string>
+    <string name="msg_insurance_added">بیمه به فهرست اضافه شد</string>
+    <string name="msg_insurance_removed">بیمه از فهرست انتخاب‌های جدید حذف شد</string>
+    <string name="delete_insurance">حذف بیمه از فهرست</string>
+    <string name="delete_insurance_warning">«%1$s» از انتخاب‌های جدید حذف شود؟ سوابق بیمارانی که قبلاً با این بیمه ثبت شده‌اند تغییر نمی‌کند.</string>
+    <string name="data_management">پشتیبان‌گیری و خروجی</string>
+    <string name="data_privacy_warning">هشدار: فایل‌های خروجی رمزگذاری نشده‌اند و اطلاعات بیماران را دارند. آن‌ها را فقط در محل امن نگه دارید. بازیابی، همهٔ داده‌های فعلی را جایگزین می‌کند؛ ابتدا پشتیبان بگیرید.</string>
+    <string name="backup">تهیه فایل پشتیبان (JSON)</string>
+    <string name="restore">بازیابی از فایل پشتیبان</string>
+    <string name="export">خروجی گرفتن</string>
+    <string name="export_csv">خروجی CSV همه بیماران</string>
+    <string name="export_privacy_warning">هشدار: فایل انتخابی بدون رمزگذاری خواهد بود. ادامه می‌دهید؟</string>
+    <string name="restore_warning">هشدار: همهٔ بیماران، تنظیمات و بیمه‌های سفارشی فعلی با فایل انتخابی جایگزین می‌شوند. این کار بازگشت خودکار ندارد. ادامه می‌دهید؟</string>
+    <string name="msg_backup_exported">فایل پشتیبان ساخته شد</string>
+    <string name="msg_restored">پشتیبان با موفقیت بازیابی شد</string>
+    <string name="msg_csv_exported">فایل CSV ساخته شد</string>
+    <string name="app_version">منشی مطب — نسخهٔ ۱٫۱٫۰</string>
+</resources>

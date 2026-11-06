@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_register" android:icon="@drawable/ic_add" android:title="@string/nav_register" />
+    <item android:id="@+id/nav_patients" android:icon="@drawable/ic_list" android:title="@string/nav_patients" />
+    <item android:id="@+id/nav_reports" android:icon="@drawable/ic_report" android:title="@string/nav_reports" />
+    <item android:id="@+id/nav_settings" android:icon="@drawable/ic_settings" android:title="@string/nav_settings" />
+</menu>

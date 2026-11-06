@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One patient row. Tap to open details. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:layoutDirection="rtl"
+    android:minHeight="56dp"
+    android:orientation="horizontal"
+    android:paddingStart="8dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="12dp">
+
+    <LinearLayout
+        android:id="@+id/nameColumn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="vertical">
+        <TextView android:id="@+id/tvName" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:paddingStart="4dp" android:paddingEnd="4dp" android:textColor="#212121" android:textSize="13sp" android:textStyle="bold" android:maxLines="3" android:ellipsize="end" />
+        <TextView android:id="@+id/tvPhone" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:paddingStart="4dp" android:paddingEnd="4dp" android:textColor="@color/gray_text" android:textSize="11sp" android:maxLines="1" android:visibility="gone" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvInsurance"
+        style="@style/RowCell"
+        android:layout_weight="1.6" />
+
+    <TextView
+        android:id="@+id/tvSupp"
+        style="@style/RowCell"
+        android:layout_weight="1.2" />
+
+    <TextView
+        android:id="@+id/tvReason"
+        style="@style/RowCell"
+        android:layout_weight="2.4" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        style="@style/RowCell"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/tvDate"
+        style="@style/RowCell"
+        android:layout_weight="1.6" />
+
+    <TextView
+        android:id="@+id/tvFee"
+        style="@style/RowCell"
+        android:layout_weight="1.6" />
+</LinearLayout>

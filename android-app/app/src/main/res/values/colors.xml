@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blue_700">#1565C0</color>
+    <color name="blue_500">#1E88E5</color>
+    <color name="blue_50">#E3F2FD</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gray_text">#455A64</color>
+    <color name="divider">#E0E6EB</color>
+    <color name="green_success">#1B5E20</color>
+    <color name="green_surface">#E8F5E9</color>
+    <color name="amber_text">#7A4100</color>
+    <color name="amber_surface">#FFF3CD</color>
+    <color name="amber_action">#B26A00</color>
+</resources>

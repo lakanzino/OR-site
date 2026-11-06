@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:layoutDirection="rtl" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp"
+            android:text="@string/title_settings" android:textColor="@color/blue_700" android:textSize="22sp" android:textStyle="bold" />
+        <com.google.android.material.textfield.TextInputLayout style="@style/ClinicTextInput"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="@string/hint_doctor_name">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etDoctorName"
+                android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textPersonName" android:maxLength="200" android:minHeight="56dp" android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout style="@style/ClinicTextInput"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:hint="@string/hint_specialty">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etSpecialty"
+                android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="text" android:maxLength="200" android:minHeight="56dp" android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp"
+            android:text="@string/currency_label" android:textColor="@color/gray_text" android:textStyle="bold" />
+        <RadioGroup android:id="@+id/currencyGroup" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+            <RadioButton android:id="@+id/rbToman" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:text="@string/toman" />
+            <RadioButton android:id="@+id/rbRial" android:layout_width="0dp" android:layout_height="48dp" android:layout_weight="1" android:text="@string/rial" />
+        </RadioGroup>
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/currency_help" android:textColor="@color/gray_text" android:textSize="12sp" />
+        <com.google.android.material.textfield.TextInputLayout android:id="@+id/tilDefaultFee" style="@style/ClinicTextInput"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:hint="@string/hint_default_fee">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etDefaultFee"
+                android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal" android:minHeight="56dp" android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <Button android:id="@+id/btnSaveSettings" style="@style/ClinicSaveButton" android:layout_width="match_parent" android:layout_height="64dp"
+            android:layout_marginTop="20dp" android:text="@string/btn_save_settings" android:textSize="18sp" />
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="28dp"
+            android:text="@string/manage_insurances" android:textColor="@color/blue_700" android:textSize="18sp" android:textStyle="bold" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"
+            android:text="@string/default_insurances_label" android:textColor="@color/gray_text" android:textSize="12sp" />
+        <TextView android:id="@+id/tvDefaultInsurances" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="@color/gray_text" />
+        <com.google.android.material.textfield.TextInputLayout style="@style/ClinicTextInput"
+            android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:hint="@string/new_insurance">
+            <com.google.android.material.textfield.TextInputEditText android:id="@+id/etNewInsurance"
+                android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="text" android:maxLength="80" android:minHeight="56dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <Button android:id="@+id/btnAddInsurance" style="@style/ClinicSaveButton" android:layout_width="match_parent" android:layout_height="56dp"
+            android:layout_marginTop="8dp" android:text="@string/add_insurance" />
+        <LinearLayout android:id="@+id/customInsuranceRows" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="8dp" />
+        <TextView android:id="@+id/tvNoCustomInsurance" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/no_custom_insurance" android:textColor="@color/gray_text" android:visibility="gone" />
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="28dp"
+            android:text="@string/data_management" android:textColor="@color/blue_700" android:textSize="18sp" android:textStyle="bold" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"
+            android:background="@color/amber_surface" android:padding="12dp" android:text="@string/data_privacy_warning" android:textColor="@color/amber_text" />
+        <Button android:id="@+id/btnBackup" style="@style/ClinicSaveButton" android:layout_width="match_parent" android:layout_height="56dp"
+            android:layout_marginTop="12dp" android:text="@string/backup" />
+        <Button android:id="@+id/btnRestore" style="@style/ClinicWarningButton" android:layout_width="match_parent" android:layout_height="56dp"
+            android:layout_marginTop="8dp" android:text="@string/restore" />
+        <Button android:id="@+id/btnExportCsv" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="match_parent" android:layout_height="56dp"
+            android:layout_marginTop="8dp" android:text="@string/export_csv" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp"
+            android:gravity="center" android:text="@string/app_version" android:textColor="@color/gray_text" android:textSize="12sp" />
+    </LinearLayout>
+</ScrollView>

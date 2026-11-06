@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- White background + blue accents; layoutDirection forces RTL for dialogs too -->
+    <style name="Theme.Clinic" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/blue_700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/blue_50</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:statusBarColor">@color/blue_700</item>
+        <item name="android:layoutDirection">rtl</item>
+        <item name="android:textDirection">rtl</item>
+        <item name="colorError">@color/amber_text</item>
+        <item name="colorOnError">@color/white</item>
+    </style>
+</resources>
