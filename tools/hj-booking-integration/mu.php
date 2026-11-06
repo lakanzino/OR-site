@@ -83,7 +83,7 @@ add_action( 'wp_ajax_hj_ci_review_editor_nonce', function () {
 add_action( 'wp_ajax_hj_ci_capacity_state', function () {
 	$doctor = absint( $_POST['doctor'] ?? 0 ); if ( ! hj_booking_can_configure( $doctor ) ) { wp_send_json_error( array(), 403 ); }
 	global $wpdb; $d = hj_booking_table( 'doctors' ); $s = hj_booking_table( 'schedules' );
-	$config = $wpdb->get_row( $wpdb->prepare( "SELECT duration_minutes,buffer_minutes,enabled FROM `$d` WHERE doctor_id=%d", $doctor ), ARRAY_A );
+	$config = $wpdb->get_row( $wpdb->prepare( "SELECT duration_minutes,buffer_minutes,enabled,activation_generation FROM `$d` WHERE doctor_id=%d", $doctor ), ARRAY_A );
 	$snapshot = $wpdb->get_row( $wpdb->prepare( "SELECT revision,rows_json,rows_hash FROM `$s` WHERE doctor_id=%d", $doctor ), ARRAY_A );
 	wp_send_json_success( array( 'config'=>$config, 'snapshot'=>$snapshot ) );
 } );

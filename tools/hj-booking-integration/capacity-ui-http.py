@@ -148,6 +148,23 @@ try:
  # Refresh and re-enable; then create an actual synthetic booking.
  html,fields=form(owner,page); fresh=week(dict(payload,revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],original_generation=fields['original_generation'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
  code,_,headers=request(owner,post,fresh); check(code==303 and 'hj_cap_status=saved' in headers.get('Location',''),'fresh form safely re-enables and saves')
+ # Before any future bookings, an old disabled weekly form must not undo a later pause.
+ _,f=form(owner,page)
+ pause_empty={'action':'hj_capacity_pause','doctor_id':str(doc),'page_id':str(page),'hj_capacity_pause_nonce':f['hj_capacity_pause_nonce']}
+ code,_,headers=request(owner,post,pause_empty)
+ check(code==303 and 'hj_cap_status=paused' in headers.get('Location',''),'pause empty schedule before ABA test')
+ _,f=form(owner,page)
+ stale_empty=week(dict(payload,enabled='1',revision=f['revision'],original_duration=f['original_duration'],original_buffer=f['original_buffer'],original_enabled=f['original_enabled'],original_generation=f['original_generation'],hj_capacity_nonce=f['hj_capacity_nonce']),weekday)
+ resume_empty={'action':'hj_capacity_resume','doctor_id':str(doc),'page_id':str(page),'resume_revision':f['resume_revision'],'resume_generation':f['resume_generation'],'hj_capacity_resume_nonce':f['hj_capacity_resume_nonce']}
+ code,_,headers=request(owner,post,resume_empty)
+ check(code==303 and 'hj_cap_status=resumed' in headers.get('Location',''),'resume empty schedule before second pause')
+ code,_,headers=request(owner,post,pause_empty); after_empty_pause=state(owner,doc)
+ check(code==303 and 'hj_cap_status=paused' in headers.get('Location',''),'pause empty schedule again')
+ code,_,headers=request(owner,post,stale_empty)
+ check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,doc)==after_empty_pause,'stale weekly form cannot undo later pause even without future bookings')
+ _,f=form(owner,page)
+ code,_,headers=request(owner,post,dict(resume_empty,resume_revision=f['resume_revision'],resume_generation=f['resume_generation'],hj_capacity_resume_nonce=f['hj_capacity_resume_nonce']))
+ check(code==303 and 'hj_cap_status=resumed' in headers.get('Location',''),'fresh resume restores empty schedule after ABA test')
  current=state(owner,doc); rev=int(current['snapshot']['revision']); patient_nonce=ajax(patient,{'action':'hj_ci_booking_nonce'})['nonce']
  slots=ajax(patient,{'action':'hj_ci_slots','doctor':str(doc),'nonce':patient_nonce,'date':day})
  check(slots['status']=='ok' and len(slots['slots'])==4,'saved form drives four real backend slots')
