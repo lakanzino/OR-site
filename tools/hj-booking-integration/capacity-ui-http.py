@@ -61,7 +61,7 @@ try:
   page_html=ajax(guest,{'action':'hj_ci_render_patient_profile','doctor':str(doctor)})['html']
   return page_html.split('<div class="hj-card hj-appointment">',1)[1].split('</section>',1)[0]
  missing_hours=public_hours(doc)
- check('09:00 - 11:00' in missing_hours and 'ساعات بالا نمایشی است' in missing_hours and state(owner,doc)=={'config':None,'snapshot':None},'missing canonical schedule preserves labelled legacy display without writing')
+ check('ساعات حضور در مطب' in missing_hours and '09:00 - 11:00' in missing_hours and 'ساعات بالا نمایشی است' in missing_hours and state(owner,doc)=={'config':None,'snapshot':None},'missing canonical schedule preserves labelled legacy display without writing')
  legacy_before=state(owner,legacy); legacy_hours=public_hours(legacy)
  check('12:00:30 - 13:00' in legacy_hours and '09:00 - 11:00' not in legacy_hours and state(owner,legacy)==legacy_before,'existing v1 canonical schedule displays without rewriting and retains seconds')
  html,fields=form(owner,page)
@@ -93,7 +93,7 @@ try:
  check(code==303 and 'hj_cap_status=saved' in headers.get('Location',''),'owner saves actual weekly form')
  current=state(owner,doc); snapshot=current['snapshot']; rows=json.loads(snapshot['rows_json'])
  check(int(snapshot['revision'])==1 and rows['version']==2 and rows['rows'][list(('saturday','sunday','monday','tuesday','wednesday','thursday','friday')).index(weekday)]['capacity']==3 and int(current['config']['enabled'])==1 and snapshot['rows_hash']==hashlib.sha256(snapshot['rows_json'].encode()).hexdigest(),'real form atomically persists v2 snapshot and activation')
- check('17:00 - 21:00' in public_hours(doc) and '09:00 - 11:00' not in public_hours(doc) and state(owner,doc)==current,'guest public profile displays canonical v2 hours instead of stale meta without writes')
+ check('ساعات نوبت‌دهی مطب' in public_hours(doc) and '17:00 - 21:00' in public_hours(doc) and '09:00 - 11:00' not in public_hours(doc) and state(owner,doc)==current,'guest public profile displays canonical v2 hours instead of stale meta without writes')
  # Saving a profile is independent of schedules, including a v2 snapshot.
  dash_nonce=ajax(owner,{'action':'hj_ci_dashboard_nonce'})['nonce']
  profile={'action':'hj_dash_save','pid':str(doc),'name_fa':'Synthetic dashboard profile','_hjn':dash_nonce}

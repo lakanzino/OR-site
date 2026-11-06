@@ -540,7 +540,7 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 							</div>
 
 							<div class="hj-card hj-appointment">
-								<h3>🕒 ساعات حضور در مطب</h3>
+								<h3>🕒 <?php echo $office_hours['status'] === 'ok' ? 'ساعات نوبت‌دهی مطب' : 'ساعات حضور در مطب'; ?></h3>
 								<?php foreach ( self::hours( $post_id, $canonical_hours, $office_unavailable ) as $row ) : ?>
 									<div class="hj-time<?php echo $row['closed'] ? ' is-closed' : ''; ?>">
 										<span><?php echo esc_html( $row['label'] ); ?></span>
