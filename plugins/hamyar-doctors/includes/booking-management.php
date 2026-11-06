@@ -137,7 +137,12 @@ function hj_booking_secretary_dashboard() {
 	return $out . '</div>';
 }
 add_action( 'hj_doctor_dashboard_appointments', function ( $doctor ) {
-	if ( hj_booking_ready() && hj_booking_can_manage( (int) $doctor ) ) { echo '<div id="hj-bookings">' . hj_booking_management_render( 'doctor', (int) $doctor ) . '</div>'; } // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	if ( ! hj_booking_ready() ) { return; }
+	$out = hj_booking_can_manage( (int) $doctor ) ? hj_booking_management_render( 'doctor', (int) $doctor ) : '';
+	foreach ( hj_booking_management_secretary_doctors() as $assigned ) {
+		if ( $assigned !== (int) $doctor ) { $out .= hj_booking_management_render( 'doctor', $assigned ); }
+	}
+	if ( $out !== '' ) { echo '<div id="hj-bookings">' . $out . '</div>'; } // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 } );
 add_shortcode( 'hj_patient_bookings', function () {
 	if ( ! hj_booking_ready() ) { return ''; }
@@ -179,6 +184,10 @@ add_action( 'admin_post_hj_booking_assignment', function () {
 add_action( 'admin_menu', function () {
 	if ( ! hj_booking_ready() ) { return; }
 	add_submenu_page( 'edit.php?post_type=doctor', 'نوبت‌ها', 'نوبت‌ها', 'manage_options', 'hj-bookings', 'hj_booking_admin_page' );
+} );
+add_action( 'admin_enqueue_scripts', function () {
+	$page = isset( $_GET['page'] ) && is_string( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+	if ( hj_booking_ready() && current_user_can( 'manage_options' ) && $page === 'hj-bookings' ) { wp_enqueue_style( 'hj-bookings', HJ_DOCTORS_URL . 'assets/css/booking-management.css', array(), HJ_DOCTORS_VERSION ); }
 } );
 function hj_booking_admin_page() {
 	if ( ! hj_booking_ready() || ! current_user_can( 'manage_options' ) ) { wp_die( 'دسترسی غیرمجاز', '', array( 'response' => 403 ) ); }

@@ -477,7 +477,13 @@ try:
     check('Synthetic Patient Alpha' in owner_html and 'Synthetic Patient Beta' not in owner_html and '09123456789' in owner_html, 'doctor dashboard shows own patient details only')
     check('Synthetic Patient Alpha' in secretary_html and 'Synthetic Patient Beta' not in secretary_html, 'secretary sees only assigned doctor patient details')
     check('Synthetic Patient Beta' in other_html and 'Synthetic Patient Alpha' not in other_html, 'other doctor sees only other doctor patient details')
+    for opener, forbidden_doctor in [(secretary,doctor2_id),(other,doctor_id),(patient_b,doctor_id)]:
+        denied_html = ajax(opener, {'action':'hj_ci_render_management', 'doctor':str(forbidden_doctor)})['html']
+        check('Synthetic Patient Alpha' not in denied_html and 'Synthetic Patient Beta' not in denied_html and '09123456789' not in denied_html, 'forged doctor list access returns no private records')
     check('Synthetic Doctor' in patient_html and 'Second synthetic booking doctor' not in patient_html and '09123456789' not in patient_html and '1234567891' not in patient_html, 'patient list is own-only and does not expose contact details')
+    code, future_html = request(patient_a, url + '?hj_b_filter=future', {'action':'hj_ci_render_patient_bookings'})
+    code_today, today_html = request(patient_a, url + '?hj_b_filter=today', {'action':'hj_ci_render_patient_bookings'})
+    check(code == 200 and code_today == 200 and 'Synthetic Doctor' in json.loads(future_html)['data']['html'] and 'Synthetic Doctor' not in json.loads(today_html)['data']['html'], 'patient today/future filters use local-date boundaries')
     code, filtered = request(admin, admin_url + '&doctor_id=' + str(doctor2_id) + '&booking_status=pending&booking_date=' + mday)
     check(code == 200 and 'Synthetic Patient Beta' in filtered and 'Synthetic Patient Alpha' not in filtered, 'admin filters aggregate by doctor, status and local date')
     check(request(patient_a, admin_url)[0] in (302,403), 'patient cannot access administrator submenu')
@@ -529,6 +535,13 @@ try:
     check(ajax(other, {'action':'hj_ci_set_past','doctor':str(doctor2_id),'id':str(id_b)})['status'] == 'updated', 'CI fixture moves synthetic appointment to the past under mutex')
     check(request(other, status_url, early)[0] == 302, 'doctor marks past booking completed')
     check(request(other, status_url, status_payload(other, doctor2_id, id_b, 'manage', 'cancelled'))[0] == 409, 'terminal booking cannot be reopened or cancelled')
+    absent_code, absent = ui_request(patient_b, create_payload(b_nonce, doctor2_id, mstart(9,35), 1))
+    check(absent_code == 200 and absent['success'], 'second synthetic past-status candidate created')
+    absent_id = absent['data']['id']
+    check(ajax(other, {'action':'hj_ci_set_past','doctor':str(doctor2_id),'id':str(absent_id)})['status'] == 'updated', 'CI fixture makes no-show candidate past under mutex')
+    check(request(other, status_url, status_payload(other, doctor2_id, absent_id, 'manage', 'no_show'))[0] == 302, 'doctor marks past booking no-show')
+    absent_view = ajax(patient_b, {'action':'hj_ci_render_patient_bookings'})['html']
+    check('عدم حضور' in absent_view, 'patient sees localized no-show state')
     removed = dict(assign_payload, mode='remove')
     check(request(admin, status_url.replace('admin-post.php','admin-post.php'), removed)[0] == 302, 'admin revokes secretary assignment')
     check('Synthetic Patient Alpha' not in ajax(secretary, {'action':'hj_ci_render_dashboard'})['html'] and request(secretary, status_url, confirm)[0] == 403, 'revoked secretary cannot view or change doctor bookings')
