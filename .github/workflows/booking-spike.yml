@@ -90,6 +90,28 @@ jobs:
             echo "::error title=Interval spike failure::$summary"
             exit "$status"
           fi
+      - name: Exercise disposable per-interval capacity prototype
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l tools/hj-booking-spike/capacity-engine.php && php -l tools/hj-booking-spike/capacity-fixture.php && php tools/hj-booking-spike/capacity-fixture.php unit && php tools/hj-booking-spike/capacity-fixture.php setup && python3 tools/hj-booking-spike/capacity-race.py && php tools/hj-booking-spike/capacity-fixture.php verify' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Capacity prototype failure::$summary"
+            exit "$status"
+          fi
+      - name: Test production capacity calculation foundation
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l plugins/hamyar-doctors/includes/appointment-schedule.php && php -l tools/hj-booking-integration/capacity-engine-fixture.php && php tools/hj-booking-integration/capacity-engine-fixture.php' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Capacity calculation foundation failure::$summary"
+            exit "$status"
+          fi
       - name: Exercise synthetic dashboard storage and snapshot atomically
         run: |
           set -euo pipefail
@@ -124,6 +146,45 @@ jobs:
           if [ "$status" -ne 0 ]; then
             summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
             echo "::error title=Booking migration failure::$summary"
+            exit "$status"
+          fi
+      - name: Race production capacity calculation with real plugin mutex
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/capacity-lock-fixture.php && python3 tools/hj-booking-integration/capacity-lock-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Capacity with real mutex failure::$summary"
+            exit "$status"
+          fi
+      - name: Test actual create with CI-only weekly capacity v2
+        run: |
+          set -uo pipefail
+          set +e
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/capacity-v2-fixture.php && python3 tools/hj-booking-integration/capacity-v2-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Experimental v2 real-create failure::$summary"
+            exit "$status"
+          fi
+      - name: Exercise CI-only weekly office settings through WordPress HTTP
+        run: |
+          set -uo pipefail
+          npm install --prefix "$RUNNER_TEMP/hj-capacity-browser" --no-audit --no-fund --silent playwright-core@1.56.1
+          export NODE_PATH="$RUNNER_TEMP/hj-capacity-browser/node_modules"
+          export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          if [ -z "$CHROMIUM_PATH" ]; then echo '::error::Chrome not available'; exit 1; fi
+          set +e
+          output=$(bash -e -c 'php -l plugins/hamyar-doctors/includes/booking-capacity-settings.php && php -l tools/hj-booking-integration/capacity-ui-fixture.php && python3 tools/hj-booking-integration/capacity-ui-http.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Capacity office settings HTTP failure::$summary"
             exit "$status"
           fi
       - name: Exercise unchanged repository plugin booking backend

@@ -49,6 +49,7 @@ function hj_booking_ui_result_error( $status ) {
 		'pending_limit' => array( 'شما سه نوبت در انتظار دارید؛ ابتدا وضعیت آن‌ها را پیگیری کنید.', 429 ),
 		'idempotency_conflict' => array( 'اطلاعات درخواست قبلی تغییر کرده است؛ برای پیگیری از همان اطلاعات استفاده کنید.', 409 ),
 		'forbidden' => array( 'دسترسی به این درخواست مجاز نیست.', 403 ),
+		'legacy_schedule' => array( 'برای این برنامه تقویم ظرفیت هنوز آماده نیست؛ از انتخاب تاریخ استفاده کنید.', 409 ),
 		'invalid' => array( 'اطلاعات درخواست معتبر نیست.', 400 ),
 		'busy' => array( 'سامانه مشغول است؛ با همین درخواست دوباره تلاش کنید.', 503 ),
 		'unknown' => array( 'نتیجه مشخص نیست؛ با همین اطلاعات دوباره تلاش کنید.', 503 ),
@@ -67,6 +68,16 @@ function hj_booking_ui_slots() {
 		if ( $ts !== false ) { $slots[] = array( 'start' => $start, 'label' => wp_date( 'H:i', $ts, wp_timezone() ) ); }
 	}
 	wp_send_json_success( array( 'revision' => $result['revision'], 'slots' => $slots ) );
+}
+/** CI-only experimental calendar; it returns aggregate availability, never patient data. */
+function hj_booking_ui_calendar() {
+	if ( ! hj_booking_capacity_v2_ready() ) { hj_booking_ui_error( 'unavailable', 'تقویم در دسترس نیست.', 503 ); }
+	hj_booking_ui_guard( 'booking_calendar', 60 );
+	$doctor = hj_booking_ui_int( hj_booking_ui_value( 'doctor_id' ) );
+	$result = hj_booking_capacity_calendar( $doctor );
+	if ( $result['status'] !== 'ok' ) { hj_booking_ui_result_error( $result['status'] ); }
+	nocache_headers();
+	wp_send_json_success( array( 'revision'=>$result['revision'], 'days'=>$result['days'] ) );
 }
 function hj_booking_ui_intent() {
 	hj_booking_ui_guard( 'booking_intent', 30 );
@@ -91,13 +102,26 @@ function hj_booking_ui_create() {
 	$doctor = hj_booking_ui_int( hj_booking_ui_value( 'doctor_id' ) ); $revision = hj_booking_ui_int( hj_booking_ui_value( 'revision' ) );
 	$start = hj_booking_ui_value( 'slot_start' ); $key = hj_booking_ui_value( 'idempotency_key' );
 	$phone = hj_to_en_digits( hj_booking_ui_value( 'phone' ) ); $national = hj_to_en_digits( hj_booking_ui_value( 'national_code' ) );
+	$experimental = hj_booking_capacity_v2_ready();
 	if ( ! preg_match( '/^09[0-9]{9}$/D', $phone ) ) { hj_booking_ui_error( 'invalid_phone', 'شمارهٔ موبایل باید ۱۱ رقم و با ۰۹ آغاز شود.' ); }
-	if ( hj_booking_national_code( $national ) === false ) { hj_booking_ui_error( 'invalid_national', 'کد ملی ۱۰ رقمی معتبر وارد کنید.' ); }
+	if ( ( ! $experimental || $national !== '' ) && hj_booking_national_code( $national ) === false ) { hj_booking_ui_error( 'invalid_national', 'کد ملی ۱۰ رقمی معتبر وارد کنید.' ); }
 	if ( ! $doctor || ! $revision || ! hj_booking_ui_uuid( $key ) ) { hj_booking_ui_error( 'invalid', 'انتخاب نوبت معتبر نیست.' ); }
-	$result = hj_booking_create( $doctor, $start, str_replace( '-', '', $key ), $phone, $national, $revision );
+	$patient = null;
+	if ( $experimental ) {
+		$patient = array( 'first_name'=>hj_booking_ui_value( 'first_name' ), 'last_name'=>hj_booking_ui_value( 'last_name' ), 'service'=>hj_booking_ui_value( 'service' ), 'note'=>hj_booking_ui_value( 'note' ) );
+		if ( hj_booking_patient_details_v2( $patient ) === false ) { hj_booking_ui_error( 'invalid_patient', 'نام و نام خانوادگی، نوع خدمت و توضیح را بررسی کنید.' ); }
+	}
+	$result = hj_booking_create( $doctor, $start, str_replace( '-', '', $key ), $phone, $national, $revision, $patient );
 	if ( ! in_array( $result['status'], array( 'created', 'replayed' ), true ) ) { hj_booking_ui_result_error( $result['status'] ); }
 	hj_booking_intent_cookie( '', time() - 3600 );
-	wp_send_json_success( array( 'status' => $result['status'], 'id' => $result['id'], 'message' => 'درخواست نوبت شما ثبت شد و در انتظار تأیید است.' ) );
+	$response = array( 'status' => $result['status'], 'message' => 'درخواست نوبت شما ثبت شد و در انتظار تأیید است.' );
+	if ( $experimental ) { $response['tracking_code'] = $result['tracking_code']; }
+	else { $response['id'] = $result['id']; }
+	wp_send_json_success( $response );
+}
+if ( hj_booking_capacity_v2_ready() ) {
+	add_action( 'wp_ajax_hj_booking_calendar', 'hj_booking_ui_calendar' );
+	add_action( 'wp_ajax_nopriv_hj_booking_calendar', 'hj_booking_ui_calendar' );
 }
 add_action( 'wp_ajax_hj_booking_slots', 'hj_booking_ui_slots' );
 add_action( 'wp_ajax_nopriv_hj_booking_slots', 'hj_booking_ui_slots' );
@@ -127,14 +151,37 @@ function hj_booking_form_shortcode( $attributes = array() ) {
 	wp_enqueue_style( 'hj-booking-form', HJ_DOCTORS_URL . 'assets/css/booking-form.css', array(), HJ_DOCTORS_VERSION );
 	wp_enqueue_script( 'hj-booking-form', HJ_DOCTORS_URL . 'assets/js/booking-form.js', array(), HJ_DOCTORS_VERSION, true );
 	$today = new DateTimeImmutable( 'now', wp_timezone() );
+	$capacity_calendar = hj_booking_capacity_v2_ready();
 	ob_start(); ?>
 	<section id="hj-booking" class="hj-booking" dir="rtl" data-ajax="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( 'hj_booking_ui' ) ); ?>" data-page="<?php echo esc_attr( $page ); ?>" data-fixed="<?php echo $doctor ? '1' : '0'; ?>" data-logged="<?php echo is_user_logged_in() ? '1' : '0'; ?>" data-intent="<?php echo esc_attr( $intent ? wp_json_encode( $intent ) : '' ); ?>">
 		<h2>درخواست نوبت</h2><p>پس از ثبت، درخواست شما در انتظار تأیید مطب خواهد بود.</p>
 		<form class="hj-booking__form" novalidate>
 			<label>جراح <select name="doctor_id" required <?php disabled( (bool) $doctor ); ?>><option value="">انتخاب جراح</option><?php foreach ( $doctors as $doc ) : ?><option value="<?php echo esc_attr( $doc->ID ); ?>" <?php selected( $doctor ?: ( $intent['doctor'] ?? 0 ), $doc->ID ); ?>><?php echo esc_html( get_the_title( $doc ) ); ?></option><?php endforeach; ?></select></label>
-			<label>تاریخ <input name="date" type="date" required min="<?php echo esc_attr( $today->format( 'Y-m-d' ) ); ?>" max="<?php echo esc_attr( $today->modify( '+30 days' )->format( 'Y-m-d' ) ); ?>" value="<?php echo esc_attr( $today->format( 'Y-m-d' ) ); ?>"></label>
+			<?php if ( $capacity_calendar ) : ?>
+			<div class="hj-booking__calendar" aria-label="تقویم نوبت‌های ۱۴ روز آینده">
+				<p>۱۴ روز آینده: <span class="hj-booking__legend-blue">آبی: بسته، تکمیل یا گذشته</span>؛ <span class="hj-booking__legend-yellow">زرد: ۱ تا ۳ جای خالی</span>؛ <span class="hj-booking__legend-green">سبز: بیش از ۳ جای خالی</span>.</p>
+				<p>تعدادها لحظه‌ای هستند و زمان ثبت دوباره بررسی می‌شوند.</p>
+				<div class="hj-booking__calendar-days" aria-label="انتخاب روز"></div>
+				<p class="hj-booking__calendar-status" role="status" aria-live="polite">ابتدا جراح را انتخاب کنید.</p>
+				<button type="button" class="hj-booking__calendar-retry">به‌روزرسانی روزها</button>
+			</div>
+			<?php endif; ?>
+			<label class="hj-booking__date">تاریخ <input name="date" type="date" required min="<?php echo esc_attr( $today->format( 'Y-m-d' ) ); ?>" max="<?php echo esc_attr( $today->modify( $capacity_calendar ? '+13 days' : '+30 days' )->format( 'Y-m-d' ) ); ?>" value="<?php echo esc_attr( $today->format( 'Y-m-d' ) ); ?>"></label>
 			<button type="button" class="hj-booking__load">نمایش زمان‌های خالی</button><div class="hj-booking__slots" aria-label="زمان‌های خالی"></div>
-			<?php if ( is_user_logged_in() ) : ?><label>شمارهٔ موبایل <input name="phone" inputmode="numeric" autocomplete="tel" required></label><label>کد ملی <input name="national_code" inputmode="numeric" autocomplete="off" required></label><button type="submit">ثبت درخواست نوبت</button><?php else : ?><button type="submit">ورود و ادامهٔ رزرو</button><?php endif; ?>
+			<?php if ( is_user_logged_in() ) : ?>
+				<?php if ( $capacity_calendar ) : ?>
+				<label>نام بیمار <input name="first_name" autocomplete="off" maxlength="80" required></label>
+				<label>نام خانوادگی بیمار <input name="last_name" autocomplete="off" maxlength="80" required></label>
+				<?php endif; ?>
+				<label>شمارهٔ موبایل<?php echo $capacity_calendar ? ' بیمار یا همراه' : ''; ?> <input name="phone" inputmode="numeric" autocomplete="tel" required></label>
+				<label>کد ملی <?php echo $capacity_calendar ? '(اختیاری)' : ''; ?> <input name="national_code" inputmode="numeric" autocomplete="off" <?php echo $capacity_calendar ? '' : 'required'; ?>></label>
+				<?php if ( $capacity_calendar ) : ?>
+				<label>نوع خدمت <select name="service" required><option value="">انتخاب نوع خدمت</option><option value="consultation">مشاوره</option><option value="visit">ویزیت</option><option value="surgery">جراحی</option></select></label>
+				<label>توضیح کوتاه (اختیاری) <textarea name="note" maxlength="500" rows="3"></textarea></label><p>لطفاً اطلاعات پزشکی حساس را در توضیح وارد نکنید.</p>
+				<button type="submit">مرور درخواست نوبت</button>
+				<div class="hj-booking__review" hidden aria-label="مرور درخواست"><p class="hj-booking__review-summary"></p><p>این درخواست پس از ثبت در انتظار تأیید مطب است.</p><button type="button" class="hj-booking__confirm">تأیید و ثبت درخواست</button> <button type="button" class="hj-booking__edit">انصراف و ویرایش</button></div>
+				<?php else : ?><button type="submit">ثبت درخواست نوبت</button><?php endif; ?>
+			<?php else : ?><button type="submit">ورود و ادامهٔ رزرو</button><?php endif; ?>
 			<p class="hj-booking__status" role="status" aria-live="polite"></p>
 		</form>
 	</section>

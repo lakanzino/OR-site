@@ -60,6 +60,50 @@ add_action( 'wp_ajax_hj_ci_schedule_state', function () {
 add_action( 'wp_ajax_hj_ci_render_dashboard', function () {
 	wp_send_json_success( array( 'html' => HJ_Doctors_Dashboard::shortcode_render() ) );
 } );
+// CI-only adapters for the actual experimental capacity-settings shortcode.
+add_action( 'wp_ajax_hj_ci_render_capacity_settings', function () {
+	$page = absint( $_POST['page'] ?? 0 ); $post = get_post( $page );
+	if ( ! $post ) { wp_send_json_error( array(), 400 ); }
+	global $wp_query; $wp_query->queried_object = $post; $wp_query->queried_object_id = $page; $wp_query->is_singular = true; $wp_query->is_page = true;
+	wp_send_json_success( array( 'html'=>do_shortcode( $post->post_content ) ) );
+} );
+// Exercise our field filter with a simulated ACF field, not the ACF plugin.
+add_action( 'wp_ajax_hj_ci_acf_hours_label', function () {
+	if ( ! current_user_can( 'manage_options' ) ) { wp_send_json_error( array(), 403 ); }
+	if ( ! function_exists( 'set_current_screen' ) ) { require_once ABSPATH . 'wp-admin/includes/screen.php'; }
+	set_current_screen( 'doctor' );
+	$field = array( 'key'=>'field_hj_working_hours', 'name'=>'working_hours', 'type'=>'repeater', 'label'=>'ساعات کاری', 'instructions'=>'توسط داشبورد پر می‌شود.' );
+	wp_send_json_success( apply_filters( 'acf/prepare_field/key=field_hj_working_hours', $field ) );
+} );
+add_action( 'wp_ajax_hj_ci_review_editor_nonce', function () {
+	$doctor = absint( $_POST['doctor'] ?? 0 );
+	if ( ! current_user_can( 'edit_post', $doctor ) || get_post_type( $doctor ) !== 'doctor' ) { wp_send_json_error( array(), 403 ); }
+	wp_send_json_success( array( 'post_nonce'=>wp_create_nonce( 'update-post_' . $doctor ) ) );
+} );
+add_action( 'wp_ajax_hj_ci_capacity_state', function () {
+	$doctor = absint( $_POST['doctor'] ?? 0 ); if ( ! hj_booking_can_configure( $doctor ) ) { wp_send_json_error( array(), 403 ); }
+	global $wpdb; $d = hj_booking_table( 'doctors' ); $s = hj_booking_table( 'schedules' );
+	$config = $wpdb->get_row( $wpdb->prepare( "SELECT duration_minutes,buffer_minutes,enabled FROM `$d` WHERE doctor_id=%d", $doctor ), ARRAY_A );
+	$snapshot = $wpdb->get_row( $wpdb->prepare( "SELECT revision,rows_json,rows_hash FROM `$s` WHERE doctor_id=%d", $doctor ), ARRAY_A );
+	wp_send_json_success( array( 'config'=>$config, 'snapshot'=>$snapshot ) );
+} );
+add_action( 'wp_ajax_hj_ci_capacity_configure', function () {
+	check_ajax_referer( 'hj_dash_nonce', '_hjn' ); $doctor = absint( $_POST['doctor'] ?? 0 );
+	$result = hj_booking_configure( $doctor, 45, 10, false ); wp_send_json_success( $result );
+} );
+// CI-only mutation for synthetic snapshots. Never shipped in the plugin.
+add_action( 'wp_ajax_hj_ci_replace_snapshot', function () {
+	check_ajax_referer( 'hj_dash_nonce', '_hjn' );
+	$doctor = absint( $_POST['doctor'] ?? 0 );
+	$raw = isset( $_POST['rows_json'] ) && is_string( $_POST['rows_json'] ) ? wp_unslash( $_POST['rows_json'] ) : '';
+	if ( ! hj_booking_can_configure( $doctor ) || strlen( $raw ) > 10000 ) { wp_send_json_error( array(), 403 ); }
+	$result = hj_booking_transaction( $doctor, 'ci_snapshot', function ( $db ) use ( $doctor, $raw ) {
+		$table = hj_booking_table( 'schedules' );
+		$n = hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET rows_json=%s,rows_hash=%s WHERE doctor_id=%d", $raw, hash( 'sha256', $raw ), $doctor ) );
+		return array( 'status' => $n === 1 ? 'updated' : 'error' );
+	} );
+	wp_send_json_success( $result );
+} );
 add_action( 'wp_ajax_hj_ci_corrupt_snapshot', function () {
 	$doctor = absint( $_POST['doctor'] ?? 0 );
 	if ( ! current_user_can( 'edit_post', $doctor ) ) { wp_send_json_error( array(), 403 ); }
@@ -122,6 +166,13 @@ add_action( 'wp_ajax_hj_ci_status_nonce', function () {
  wp_send_json_success( array( 'nonce' => wp_create_nonce( 'hj_booking_status_' . $id ) ) );
 } );
 add_action( 'wp_ajax_hj_ci_render_patient_bookings', function () { wp_send_json_success( array( 'html' => do_shortcode( '[hj_patient_bookings]' ) ) ); } );
+// Synthetic fixed payload, authorized only inside this disposable MU fixture.
+add_action( 'wp_ajax_hj_ci_patient_extra_xss', function () {
+ if ( ! hj_booking_capacity_v2_ready() || ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'hj_booking_ui', 'nonce', false ) ) { wp_send_json_error( array(), 403 ); }
+ global $wpdb; $table=hj_booking_patient_details_v2_table(); $id=absint( $_POST['id'] ?? 0 );
+ $result=$wpdb->update( $table, array( 'first_name'=>'<img src=x onerror=alert(1)>', 'note'=>'<script>alert(2)</script>' ), array( 'appointment_id'=>$id ) );
+ if ( $result !== 1 ) { wp_send_json_error( array(), 400 ); } wp_send_json_success( array( 'updated'=>true ) );
+} );
 add_action( 'wp_ajax_hj_ci_render_management', function () {
  $id = absint( $_POST['doctor'] ?? 0 );
  $html = hj_booking_management_render( 'doctor', $id );

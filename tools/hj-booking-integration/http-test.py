@@ -39,11 +39,12 @@ S0900, S0935, S1010, S1045, S1120 = [moment(h, m) for h, m in [(9, 0), (9, 35), 
 PREPEND = str(workspace / 'tools/hj-booking-integration/prepend.php')
 class Inputs(HTMLParser):
     def __init__(self):
-        super().__init__(); self.inputs = {}; self.booking = None
+        super().__init__(); self.inputs = {}; self.booking = None; self.links = []
     def handle_starttag(self, tag, attrs):
         attributes = dict(attrs)
         if tag == 'input' and 'name' in attributes: self.inputs[attributes['name']] = attributes
         if tag == 'section' and 'hj-booking' in attributes.get('class', '').split(): self.booking = attributes
+        if tag == 'a' and 'href' in attributes: self.links.append(attributes['href'])
 
 def rendered_form(opener):
     html = ajax(opener, {'action': 'hj_ci_render_dashboard'})['html']
@@ -115,7 +116,7 @@ try:
     created_plugin = True
     subprocess.run(['php', '-d', 'auto_prepend_file=' + PREPEND, 'tools/hj-booking-integration/setup.php'], check=True)
     # In a separate process without the opt-in constant, the shortcode is inert.
-    subprocess.run(['php', '-r', "require '/wordpress/wp-load.php'; if (hj_booking_enabled() || do_shortcode('[hj_booking_form]') !== '') { exit(1); } echo 'PASS: patient shortcode remains off by default\\n';"], check=True)
+    subprocess.run(['php', '-r', "require '/wordpress/wp-load.php'; if (hj_booking_enabled() || do_shortcode('[hj_booking_form]') !== '') { exit(1); } $m=json_decode(file_get_contents(getenv('RUNNER_TEMP').'/hj-wpdb-ajax-meta.json'),true); $h=HJ_Profile_Page::render($m['doctor']); if (hj_booking_doctor_has_valid_schedule((int)$m['doctor']) || strpos($h,'https://example.invalid/external-booking')===false || strpos($h,'data-fixed=')!==false) { exit(1); } echo 'PASS: feature flag off preserves legacy external profile link and no booking form\\n';"], check=True)
     mu.parent.mkdir(exist_ok=True)
     mu.symlink_to(workspace / 'tools/hj-booking-integration/mu.php')
     created_mu = True
@@ -332,11 +333,25 @@ try:
     check(ajax(patients[5], booking_payload(doctor_id, nonces[5], S0935, key(37001)))['status'] == 'invalid_slot', 'rebooked interval cannot be taken twice')
     last = audit(owner, doctor_id)
     check(len(last) == len(expected_ids) + 2 and sum(int(r['id']) == after_kill['id'] and r['status'] == 'cancelled' for r in last) == 1 and sum(int(r['id']) == rebook['id'] and r['status'] == 'pending' and r['details_id'] is not None for r in last) == 1, 'cancel and rebook retain distinct consistent records')
+    baseline = state(owner, doctor_id)
     check(ajax(owner, {'action': 'hj_ci_corrupt_snapshot', 'doctor': str(doctor_id)})['ok'], 'test adapter deliberately corrupted canonical hash')
     check(slots(patients[0], doctor_id, nonces[0])['status'] == 'invalid_schedule', 'production slot reader fails closed for corrupted snapshot')
     check(ajax(patients[5], booking_payload(doctor_id, nonces[5], S1120, key(38000)))['status'] == 'invalid_schedule', 'production create fails closed for corrupted snapshot')
-    check(ajax(owner, open_hours) is not None, 'real dashboard repairs snapshot using a fresh revision')
-    check(slots(patients[0], doctor_id, nonces[0])['status'] == 'ok', 'valid snapshot restores production reader')
+    broken = state(owner, doctor_id)
+    rejected = dict(open_hours, hj_schedule_revision=str(broken['snapshot']['revision']), name_fa='Do not overwrite')
+    code, body = request(owner, url, rejected)
+    check(code == 503 and 'جلوگیری از بازنویسی' in json.loads(body)['message'] and state(owner, doctor_id) == broken, 'dashboard refuses to overwrite corrupted snapshot or other profile fields')
+    replace = {'action':'hj_ci_replace_snapshot', 'doctor':str(doctor_id), '_hjn':owner_nonce}
+    check(ajax(owner, dict(replace, rows_json=baseline['snapshot']['rows_json']))['status'] == 'updated', 'CI-only fixture restores original synthetic snapshot, not production repair')
+    check(state(owner, doctor_id) == baseline and slots(patients[0], doctor_id, nonces[0])['status'] == 'ok', 'restoring original bytes preserves revision, display, name and reader')
+    future_shapes = ['{}', json.dumps({'version':2, 'weekly':[]}), json.dumps([{'day_of_week':'wednesday','is_closed':0,'start_time':'09:00','end_time':'12:00','capacity':3}])]
+    for future in future_shapes:
+        check(ajax(owner, dict(replace, rows_json=future))['status'] == 'updated', 'CI-only fixture seeds an unknown schedule shape')
+        prior = state(owner, doctor_id)
+        code, body = request(owner, url, dict(open_hours, hj_schedule_revision=str(prior['snapshot']['revision']), name_fa='Do not overwrite'))
+        check(code == 503 and state(owner, doctor_id) == prior and slots(patients[0], doctor_id, nonces[0])['status'] == 'invalid_schedule', 'unknown snapshot shape fails closed and cannot be overwritten by old editor')
+        check(ajax(owner, dict(replace, rows_json=baseline['snapshot']['rows_json']))['status'] == 'updated', 'CI-only fixture restores original schedule after unknown shape')
+    check(state(owner, doctor_id) == baseline, 'future-format checks preserve all original synthetic schedule and display data')
 
     # Product endpoints, not the CI adapter. Another Wednesday keeps the old
     # lock-order fixture's appointments separate from this race.
@@ -353,8 +368,15 @@ try:
         code, body = request(opener, url, payload)
         return code, json.loads(body)
     guest = session(); guest_form = ui_form(guest); guest_nonce = guest_form['data-nonce']
-    profile = Inputs(); profile.feed(ajax(guest, {'action':'hj_ci_render_patient_profile', 'doctor':str(doctor_id)})['html'])
+    profile_html = ajax(guest, {'action':'hj_ci_render_patient_profile', 'doctor':str(doctor_id)})['html']
+    profile = Inputs(); profile.feed(profile_html)
     check(profile.booking is not None and profile.booking['data-fixed'] == '1' and profile.booking['data-page'] == str(doctor_id), 'actual doctor profile includes fixed-doctor booking form')
+    check(profile.links.count('#hj-booking') >= 4, 'all four profile booking buttons target the internal form for a configured doctor')
+    check('https://example.invalid/external-booking' in profile.links and 'نوبت‌دهی خارج از سایت' in profile_html, 'existing external booking link is preserved and clearly distinguished')
+    for kind, gate_doctor in fixture_meta['profile_gates'].items():
+        html = ajax(guest, {'action':'hj_ci_render_patient_profile', 'doctor':str(gate_doctor)})['html']
+        gate = Inputs(); gate.feed(html)
+        check(gate.booking is None and '#hj-booking' not in gate.links and 'https://example.invalid/external-booking' in gate.links and 'نوبت‌دهی داخلی برای این جراح در دسترس نیست' in html, 'profile gate fails closed and preserves external link: ' + kind)
     slot_payload = {'action':'hj_booking_slots', 'nonce':guest_nonce, 'doctor_id':str(doctor_id), 'date':ui_day}
     code, available = ui_request(guest, slot_payload)
     check(code == 200 and available['success'] and ui_starts[0] in [x['start'] for x in available['data']['slots']], 'guest obtains real public slots from canonical snapshot')
@@ -436,6 +458,10 @@ try:
     # Management endpoints, private list rendering, and deterministic overlapping
     # cancellation/rebooking transactions on a fresh future Wednesday.
     admin, _ = login('fixture_admin'); secretary, _ = login('synthetic_secretary')
+    fake_acf = ajax(admin, {'action':'hj_ci_acf_hours_label'})
+    check(fake_acf['label']=='ساعات کاری' and fake_acf['instructions']=='توسط داشبورد پر می‌شود.', 'legacy v1 leaves the simulated ACF field unchanged')
+    code, editor_html = request(admin, '/wp-admin/post.php?post=' + str(doctor_id) + '&action=edit')
+    check(code == 200 and 'مستقل از نوبت‌دهی' not in editor_html, 'legacy v1 admin editor does not show the v2 notice')
     patient_a, _ = login('synthetic_patient'); patient_b, _ = login('synthetic_patient_b')
     def extract_form(html, action):
         class FormParser(HTMLParser):

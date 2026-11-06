@@ -127,9 +127,30 @@ function hj_booking_install_schema() {
   $db->close();
  }
 }
+// Version 2 is CI-only: no migration or production activation is supplied.
+function hj_booking_capacity_v2_ready() {
+ global $wpdb;
+ return defined( 'HJ_BOOKING_TESTING' ) && HJ_BOOKING_TESTING === true && defined( 'HJ_BOOKING_CAPACITY_V2_TEST_ONLY' ) && HJ_BOOKING_CAPACITY_V2_TEST_ONLY === true && getenv( 'GITHUB_ACTIONS' ) === 'true' && getenv( 'HJ_DISPOSABLE_MARIADB_FIXTURE' ) === '1' && defined( 'DB_NAME' ) && DB_NAME === 'hj_fixture_db' && defined( 'DB_HOST' ) && DB_HOST === '127.0.0.1:3306' && defined( 'WP_HOME' ) && WP_HOME === 'http://example.invalid' && isset( $wpdb->prefix ) && $wpdb->prefix === 'hjt_' && (int) get_option( 'hj_booking_schema_version', 0 ) === 2 && (int) get_option( 'hj_booking_schema_verified', 0 ) === 1;
+}
 function hj_booking_ready() {
  global $wpdb;
- return hj_booking_enabled() && (int) get_option( 'hj_booking_schema_version', 0 ) === 1 && (int) get_option( 'hj_booking_schema_verified', 0 ) === 1 && get_class( $wpdb ) === 'wpdb';
+ $version = (int) get_option( 'hj_booking_schema_version', 0 );
+ return hj_booking_enabled() && ( $version === 1 || ( $version === 2 && hj_booking_capacity_v2_ready() ) ) && (int) get_option( 'hj_booking_schema_verified', 0 ) === 1 && get_class( $wpdb ) === 'wpdb';
+}
+/** Read-only display gate, not an authorization or a guarantee of open slots.
+ * The actual booking path always rechecks the state under the doctor mutex.
+ */
+function hj_booking_doctor_has_valid_schedule( $doctor ) {
+ global $wpdb;
+ if ( ! hj_booking_ready() || get_post_type( $doctor ) !== 'doctor' || get_post_status( $doctor ) !== 'publish' ) { return false; }
+ $doctors = hj_booking_table( 'doctors' ); $schedules = hj_booking_table( 'schedules' );
+ $previous = $wpdb->suppress_errors( true );
+ try {
+  $row = $wpdb->get_row( $wpdb->prepare( "SELECT d.enabled,s.revision,s.rows_json,s.rows_hash FROM `$doctors` d INNER JOIN `$schedules` s ON s.doctor_id=d.doctor_id WHERE d.doctor_id=%d", $doctor ), ARRAY_A );
+  if ( $wpdb->last_error || ! $row || (int) $row['enabled'] !== 1 ) { return false; }
+  return hj_booking_decode_snapshot( $row ) !== false;
+ } catch ( Throwable $e ) { return false; }
+ finally { $wpdb->suppress_errors( $previous ); }
 }
 /** Activation and upgrades remain inert unless the explicit booking flag is true. */
 function hj_booking_maybe_install_schema() {
@@ -209,7 +230,8 @@ function hj_booking_normalize_schedule( $input ) {
 	if ( ! is_array( $input ) || count( $input ) > 7 ) { return false; }
 	$days = array( 'saturday','sunday','monday','tuesday','wednesday','thursday','friday' ); $seen = array(); $result = array();
 	foreach ( $input as $row ) {
-		if ( ! is_array( $row ) || ! isset( $row['day_of_week'], $row['is_closed'], $row['start_time'], $row['end_time'] ) ) { return false; }
+		// Unknown fields must not be silently dropped by an old-format writer.
+		if ( ! is_array( $row ) || count( $row ) !== 4 || ! isset( $row['day_of_week'], $row['is_closed'], $row['start_time'], $row['end_time'] ) ) { return false; }
 		$day = $row['day_of_week']; $closed = $row['is_closed']; $start = $row['start_time']; $end = $row['end_time'];
 		if ( ! is_string( $day ) || ! in_array( $day, $days, true ) || isset( $seen[$day] ) || ! in_array( $closed, array( 0,1,'0','1',false,true ), true ) || ! is_string( $start ) || ! is_string( $end ) ) { return false; }
 		$seen[$day] = true; $closed = (int) $closed;
@@ -223,6 +245,39 @@ function hj_booking_normalize_schedule( $input ) {
 	}
 	return $result;
 }
+/** Validate the complete old-format snapshot before reading OR replacing it. */
+function hj_booking_legacy_snapshot_rows( $row ) {
+	if ( ! is_array( $row ) || ! isset( $row['revision'], $row['rows_json'], $row['rows_hash'] ) || (int) $row['revision'] < 1 || ! is_string( $row['rows_json'] ) || ! is_string( $row['rows_hash'] ) || ! hash_equals( $row['rows_hash'], hash( 'sha256', $row['rows_json'] ) ) ) { return false; }
+	// An envelope/object (even {}) is not the old array format.
+	if ( ! is_array( json_decode( $row['rows_json'] ) ) ) { return false; }
+	return hj_booking_normalize_schedule( json_decode( $row['rows_json'], true ) );
+}
+/** Weekly v2 policies only: no date exceptions, daily cap, or break UI yet. */
+function hj_booking_normalize_capacity_week( $input ) {
+	if ( ! is_array( $input ) || count( $input ) > 7 ) { return false; }
+	$base = array(); $policies = array();
+	foreach ( $input as $row ) {
+		if ( ! is_array( $row ) || count( $row ) !== 7 || ! isset( $row['day_of_week'], $row['is_closed'], $row['start_time'], $row['end_time'], $row['duration_minutes'], $row['buffer_minutes'], $row['capacity'] ) || ! is_int( $row['duration_minutes'] ) || $row['duration_minutes'] < 1 || $row['duration_minutes'] > 240 || ! is_int( $row['buffer_minutes'] ) || $row['buffer_minutes'] < 0 || $row['buffer_minutes'] > 120 || ! is_int( $row['capacity'] ) || $row['capacity'] < 1 || $row['capacity'] > 10 ) { return false; }
+		$base[] = array( 'day_of_week'=>$row['day_of_week'], 'is_closed'=>$row['is_closed'], 'start_time'=>$row['start_time'], 'end_time'=>$row['end_time'] );
+		$policies[] = array( 'duration_minutes'=>$row['duration_minutes'], 'buffer_minutes'=>$row['buffer_minutes'], 'capacity'=>$row['capacity'] );
+	}
+	$base = hj_booking_normalize_schedule( $base );
+	if ( $base === false ) { return false; }
+	foreach ( $base as $i => $row ) { $base[$i] = $row + $policies[$i]; }
+	return $base;
+}
+/** Decode v1 without rewriting it; v2 is accepted only behind its explicit gate. */
+function hj_booking_decode_snapshot( $row ) {
+	$legacy = hj_booking_legacy_snapshot_rows( $row );
+	if ( $legacy !== false ) { return array( 'format'=>1, 'rows'=>$legacy, 'revision'=>(int)$row['revision'] ); }
+	if ( ! hj_booking_capacity_v2_ready() || ! is_array( $row ) || ! isset( $row['revision'], $row['rows_json'], $row['rows_hash'] ) || (int)$row['revision'] < 1 || ! is_string( $row['rows_json'] ) || ! is_string( $row['rows_hash'] ) || ! hash_equals( $row['rows_hash'], hash( 'sha256', $row['rows_json'] ) ) ) { return false; }
+	$shape = json_decode( $row['rows_json'] );
+	if ( ! is_object( $shape ) || ! isset( $shape->version, $shape->rows ) || $shape->version !== 2 || ! is_array( $shape->rows ) ) { return false; }
+	$data = json_decode( $row['rows_json'], true );
+	if ( ! is_array( $data ) || count( $data ) !== 2 ) { return false; }
+	$rows = hj_booking_normalize_capacity_week( $data['rows'] );
+	return $rows === false ? false : array( 'format'=>2, 'rows'=>$rows, 'revision'=>(int)$row['revision'] );
+}
 /** Called by dashboard after its existing nonce/ownership and form validation. */
 function hj_booking_save_schedule( $doctor, $rows, $expected_revision ) {
 	if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status' => 'forbidden' ); }
@@ -233,15 +288,83 @@ function hj_booking_save_schedule( $doctor, $rows, $expected_revision ) {
 	$hash = hash( 'sha256', $json );
 	return hj_booking_transaction( $doctor, 'schedule', function ( $db ) use ( $doctor, $json, $hash, $expected_revision ) {
 		$table = hj_booking_table( 'schedules' );
-		$old = hj_booking_row( $db, $db->prepare( "SELECT revision FROM `$table` WHERE doctor_id=%d FOR UPDATE", $doctor ) );
+		$old = hj_booking_row( $db, $db->prepare( "SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d FOR UPDATE", $doctor ) );
 		$current = $old ? (int) $old['revision'] : 0;
 		if ( $current !== $expected_revision ) { return array( 'status' => 'revision_conflict' ); }
+		// A matching revision is not permission to destroy an unreadable or newer snapshot.
+		if ( $old && hj_booking_legacy_snapshot_rows( $old ) === false ) { return array( 'status' => 'invalid_schedule' ); }
 		if ( $current === PHP_INT_MAX ) { return array( 'status' => 'invalid' ); }
 		$rev = $current + 1;
 		if ( $old ) { $n = hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET revision=%d,rows_json=%s,rows_hash=%s WHERE doctor_id=%d", $rev, $json, $hash, $doctor ) ); }
 		else { $n = hj_booking_query( $db, $db->prepare( "INSERT INTO `$table` (doctor_id,revision,rows_json,rows_hash) VALUES (%d,%d,%s,%s)", $doctor, $rev, $json, $hash ) ); }
 		if ( $n !== 1 ) { throw new RuntimeException( 'Schedule save failed' ); }
 		return array( 'status' => 'saved', 'revision' => $rev );
+	} );
+}
+/** Experimental v2 writer; no endpoint/UI or schema migration is provided yet. */
+function hj_booking_save_capacity_week( $doctor, $rows, $expected_revision, $enabled = null, $expected_config = null ) {
+	if ( ! hj_booking_capacity_v2_ready() || ! hj_booking_ready() ) { return array( 'status'=>'unavailable' ); }
+	if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status'=>'forbidden' ); }
+	if ( ! is_int( $expected_revision ) || $expected_revision < 0 || ( $enabled !== null && ! is_bool( $enabled ) ) || ( $expected_config !== null && ( ! is_array( $expected_config ) || count( $expected_config ) !== 3 || ! isset( $expected_config['duration'], $expected_config['buffer'], $expected_config['enabled'] ) || ! is_int( $expected_config['duration'] ) || ! is_int( $expected_config['buffer'] ) || ! is_bool( $expected_config['enabled'] ) ) ) ) { return array( 'status'=>'invalid' ); }
+	$normalized = hj_booking_normalize_capacity_week( $rows );
+	if ( $normalized === false ) { return array( 'status'=>'invalid' ); }
+	$json = wp_json_encode( array( 'version'=>2, 'rows'=>$normalized ) );
+	if ( ! is_string( $json ) ) { return array( 'status'=>'invalid' ); }
+	$hash = hash( 'sha256', $json );
+	return hj_booking_transaction( $doctor, 'capacity_schedule', function ( $db, $config ) use ( $doctor, $json, $hash, $expected_revision, $enabled, $expected_config ) {
+		if ( $expected_config !== null && ( (int)$config['duration_minutes'] !== $expected_config['duration'] || (int)$config['buffer_minutes'] !== $expected_config['buffer'] || (bool)(int)$config['enabled'] !== $expected_config['enabled'] ) ) { return array( 'status'=>'revision_conflict' ); }
+		$table = hj_booking_table( 'schedules' ); $appointments = hj_booking_table( 'appointments' );
+		$old = hj_booking_row( $db, $db->prepare( "SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d FOR UPDATE", $doctor ) );
+		$current = $old ? (int)$old['revision'] : 0;
+		if ( $current !== $expected_revision ) { return array( 'status'=>'revision_conflict' ); }
+		if ( $old && hj_booking_decode_snapshot( $old ) === false ) { return array( 'status'=>'invalid_schedule' ); }
+		if ( $current === PHP_INT_MAX ) { return array( 'status'=>'invalid' ); }
+		// Simple safe policy: no schedule mutation while a non-cancelled future or
+		// ongoing reservation exists. Never delete or silently move reservations.
+		$busy = hj_booking_row( $db, $db->prepare( "SELECT id FROM `$appointments` WHERE doctor_id=%d AND status<>'cancelled' AND blocked_until>%s LIMIT 1", $doctor, gmdate( 'Y-m-d H:i:s' ) ) );
+		if ( $busy ) { return array( 'status'=>'has_future_bookings' ); }
+		$revision = $current + 1;
+		if ( $old ) { $n = hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET revision=%d,rows_json=%s,rows_hash=%s WHERE doctor_id=%d", $revision, $json, $hash, $doctor ) ); }
+		else { $n = hj_booking_query( $db, $db->prepare( "INSERT INTO `$table` (doctor_id,revision,rows_json,rows_hash) VALUES (%d,%d,%s,%s)", $doctor, $revision, $json, $hash ) ); }
+		if ( $n !== 1 ) { throw new RuntimeException( 'Capacity schedule save failed' ); }
+		if ( $enabled !== null ) {
+			$doctors = hj_booking_table( 'doctors' );
+			hj_booking_query( $db, $db->prepare( "UPDATE `$doctors` SET enabled=%d WHERE doctor_id=%d", $enabled ? 1 : 0, $doctor ) );
+		}
+		return array( 'status'=>'saved', 'revision'=>$revision );
+	} );
+}
+/** Read public office hours from the validated canonical snapshot in the isolated v2 fixture.
+ * Missing snapshot retains legacy display; invalid/unavailable snapshot must not
+ * silently fall back to potentially stale display metadata. This is read-only.
+ */
+function hj_booking_public_office_hours( $doctor ) {
+	if ( ! hj_booking_capacity_v2_ready() ) { return array( 'status'=>'legacy' ); }
+	if ( ! hj_booking_ready() ) { return array( 'status'=>'unavailable' ); }
+	global $wpdb;
+	$d = hj_booking_table( 'doctors' ); $s = hj_booking_table( 'schedules' );
+	$previous = $wpdb->suppress_errors( true );
+	try {
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT d.doctor_id AS configured,s.doctor_id AS scheduled,s.revision,s.rows_json,s.rows_hash FROM (SELECT %d AS doctor_id) x LEFT JOIN `$d` d ON d.doctor_id=x.doctor_id LEFT JOIN `$s` s ON s.doctor_id=x.doctor_id", $doctor ), ARRAY_A );
+		if ( $wpdb->last_error || ! $row ) { return array( 'status'=>'unavailable' ); }
+		if ( $row['scheduled'] === null ) { return array( 'status'=>'missing' ); }
+		if ( $row['configured'] === null ) { return array( 'status'=>'invalid_schedule' ); }
+		$snapshot = hj_booking_decode_snapshot( $row );
+		if ( $snapshot === false ) { return array( 'status'=>'invalid_schedule' ); }
+		return array( 'status'=>'ok', 'rows'=>$snapshot['rows'] );
+	} catch ( Throwable $e ) { return array( 'status'=>'unavailable' ); }
+	finally { $wpdb->suppress_errors( $previous ); }
+}
+/** Pause only: allow disabling new bookings without changing any schedule or appointment. */
+function hj_booking_pause_capacity( $doctor ) {
+	if ( ! hj_booking_capacity_v2_ready() || ! hj_booking_ready() ) { return array( 'status'=>'unavailable' ); }
+	if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status'=>'forbidden' ); }
+	return hj_booking_transaction( $doctor, 'capacity_pause', function ( $db, $config ) use ( $doctor ) {
+		if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status'=>'forbidden' ); }
+		if ( (int)$config['enabled'] === 0 ) { return array( 'status'=>'paused' ); }
+		$table = hj_booking_table( 'doctors' );
+		hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET enabled=0 WHERE doctor_id=%d", $doctor ) );
+		return array( 'status'=>'paused' );
 	} );
 }
 /** Explicit doctor configuration, disabled until set. */
@@ -261,8 +384,7 @@ function hj_booking_editor_schedule( $doctor ) {
 		$table = hj_booking_table( 'schedules' );
 		$row = hj_booking_row( $db, $db->prepare( "SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d", $doctor ) );
 		if ( ! $row ) { return array( 'status' => 'ok', 'revision' => 0, 'rows' => array(), 'missing' => true ); }
-		if ( (int) $row['revision'] < 1 || ! hash_equals( $row['rows_hash'], hash( 'sha256', $row['rows_json'] ) ) ) { return array( 'status' => 'invalid_schedule' ); }
-		$rows = hj_booking_normalize_schedule( json_decode( $row['rows_json'], true ) );
+		$rows = hj_booking_legacy_snapshot_rows( $row );
 		if ( $rows === false ) { return array( 'status' => 'invalid_schedule' ); }
 		return array( 'status' => 'ok', 'revision' => (int) $row['revision'], 'rows' => $rows, 'missing' => false );
 	} );
@@ -270,16 +392,31 @@ function hj_booking_editor_schedule( $doctor ) {
 function hj_booking_snapshot_locked( $db, $doctor ) {
 	$table = hj_booking_table( 'schedules' );
 	$row = hj_booking_row( $db, $db->prepare( "SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d", $doctor ) );
-	if ( ! $row || ! hash_equals( $row['rows_hash'], hash( 'sha256', $row['rows_json'] ) ) ) { return false; }
-	$data = json_decode( $row['rows_json'], true ); $rows = hj_booking_normalize_schedule( $data );
-	return $rows === false ? false : array( 'rows' => $rows, 'revision' => (int) $row['revision'] );
+	return hj_booking_decode_snapshot( $row );
 }
 function hj_booking_slots_locked( $db, $doctor, $config, $date ) {
 	$snapshot = hj_booking_snapshot_locked( $db, $doctor );
 	if ( $snapshot === false ) { return false; }
 	$table = hj_booking_table( 'appointments' );
-	$occupied = hj_booking_rows( $db, $db->prepare( "SELECT starts_at,blocked_until,status FROM `$table` WHERE doctor_id=%d AND status IN ('pending','confirmed')", $doctor ) );
-	return array( 'slots' => hj_booking_compute_slots( $date, $snapshot['rows'], (int) $config['duration_minutes'], (int) $config['buffer_minutes'], $occupied, time(), 30 ), 'revision' => $snapshot['revision'] );
+	if ( $snapshot['format'] === 1 ) {
+		$occupied = hj_booking_rows( $db, $db->prepare( "SELECT starts_at,blocked_until,status FROM `$table` WHERE doctor_id=%d AND status IN ('pending','confirmed')", $doctor ) );
+		return array( 'slots' => hj_booking_compute_slots( $date, $snapshot['rows'], (int) $config['duration_minutes'], (int) $config['buffer_minutes'], $occupied, time(), 30 ), 'revision' => $snapshot['revision'] );
+	}
+	// Terminal records still block until their recorded interval ends; unknown
+	// future states fail closed in the capacity calculator rather than vanish.
+	$occupied = hj_booking_rows( $db, $db->prepare( "SELECT starts_at,blocked_until,status FROM `$table` WHERE doctor_id=%d AND status<>'cancelled' AND blocked_until>%s", $doctor, gmdate( 'Y-m-d H:i:s' ) ) );
+	$day = DateTimeImmutable::createFromFormat( '!Y-m-d', $date, new DateTimeZone( 'UTC' ) );
+	if ( ! $day || $day->format( 'Y-m-d' ) !== $date ) { return false; }
+	$weekday = strtolower( $day->format( 'l' ) ); $rule = null;
+	foreach ( $snapshot['rows'] as $row ) { if ( $row['day_of_week'] === $weekday ) { $rule = $row; break; } }
+	if ( ! $rule || $rule['is_closed'] ) { return array( 'slots'=>array(), 'intervals'=>array(), 'revision'=>$snapshot['revision'] ); }
+	$day_slots = hj_booking_compute_capacity_day( $date, $rule, $occupied, time(), 30, wp_timezone() );
+	if ( $day_slots === false ) { return false; }
+	$starts = array(); $intervals = array();
+	foreach ( $day_slots['slots'] as $slot ) {
+		if ( $slot['state'] === 'available' ) { $starts[] = $slot['start']; $intervals[$slot['start']] = array( 'end'=>$slot['end'], 'blocked_until'=>$slot['blocked_until'] ); }
+	}
+	return array( 'slots'=>$starts, 'intervals'=>$intervals, 'revision'=>$snapshot['revision'] );
 }
 function hj_booking_slots( $doctor, $date ) {
 	if ( ! is_user_logged_in() ) { return array( 'status' => 'forbidden' ); }
@@ -292,7 +429,54 @@ function hj_booking_public_slots( $doctor, $date ) {
 	return hj_booking_transaction( $doctor, 'slots', function ( $db, $config ) use ( $doctor, $date ) {
 		if ( ! (int) $config['enabled'] ) { return array( 'status' => 'unavailable' ); }
 		$r = hj_booking_slots_locked( $db, $doctor, $config, $date );
-		return $r === false ? array( 'status' => 'invalid_schedule' ) : array( 'status' => 'ok' ) + $r;
+		if ( $r === false ) { return array( 'status' => 'invalid_schedule' ); }
+		unset( $r['intervals'] ); // Internal selected-slot details are not a public contract.
+		return array( 'status' => 'ok' ) + $r;
+	} );
+}
+/** Map a validated day calculation to an accessible state plus its color. */
+function hj_booking_calendar_day_summary( $closed, $calculation ) {
+	if ( $closed ) { return array( 'remaining'=>0, 'state'=>'closed', 'color'=>'blue' ); }
+	if ( ! is_array( $calculation ) || ! isset( $calculation['day_remaining'], $calculation['slots'] ) || ! is_int( $calculation['day_remaining'] ) || $calculation['day_remaining'] < 0 || ! is_array( $calculation['slots'] ) ) { return false; }
+	$remaining = $calculation['day_remaining'];
+	if ( $remaining > 3 ) { return array( 'remaining'=>$remaining, 'state'=>'available', 'color'=>'green' ); }
+	if ( $remaining > 0 ) { return array( 'remaining'=>$remaining, 'state'=>'limited', 'color'=>'yellow' ); }
+	$states = array_column( $calculation['slots'], 'state' );
+	if ( in_array( 'full', $states, true ) ) { $state = 'full'; }
+	elseif ( $states && count( array_unique( $states ) ) === 1 && $states[0] === 'past' ) { $state = 'past'; }
+	else { $state = 'unavailable'; }
+	return array( 'remaining'=>0, 'state'=>$state, 'color'=>'blue' );
+}
+/** 14 local calendar days from one snapshot under the same doctor mutex.
+ * CI-only backend experiment; not yet connected to a public endpoint or UI.
+ * No patient data leaves this function. Reservation always rechecks separately.
+ */
+function hj_booking_capacity_calendar( $doctor ) {
+	if ( ! hj_booking_capacity_v2_ready() || ! hj_booking_ready() ) { return array( 'status'=>'unavailable' ); }
+	if ( get_post_type( $doctor ) !== 'doctor' || get_post_status( $doctor ) !== 'publish' ) { return array( 'status'=>'forbidden' ); }
+	return hj_booking_transaction( $doctor, 'capacity_calendar', function ( $db, $config ) use ( $doctor ) {
+		if ( ! (int) $config['enabled'] ) { return array( 'status'=>'unavailable' ); }
+		$snapshot = hj_booking_snapshot_locked( $db, $doctor );
+		if ( $snapshot === false ) { return array( 'status'=>'invalid_schedule' ); }
+		// Do not infer new capacity semantics for legacy schedules during migration.
+		if ( $snapshot['format'] !== 2 ) { return array( 'status'=>'legacy_schedule' ); }
+		$now = time(); $timezone = wp_timezone(); $today = ( new DateTimeImmutable( '@' . $now ) )->setTimezone( $timezone )->setTime( 0, 0 );
+		$table = hj_booking_table( 'appointments' );
+		$occupied = hj_booking_rows( $db, $db->prepare( "SELECT starts_at,blocked_until,status FROM `$table` WHERE doctor_id=%d AND status<>'cancelled' AND blocked_until>%s", $doctor, gmdate( 'Y-m-d H:i:s', $now ) ) );
+		$rules = array(); foreach ( $snapshot['rows'] as $rule ) { $rules[$rule['day_of_week']] = $rule; }
+		$days = array();
+		for ( $i = 0; $i < 14; $i++ ) {
+			$day = $today->modify( '+' . $i . ' days' ); $date = $day->format( 'Y-m-d' );
+			$rule = $rules[strtolower( $day->format( 'l' ) )] ?? null;
+			if ( ! $rule || (int) $rule['is_closed'] ) { $summary = hj_booking_calendar_day_summary( true, null ); }
+			else {
+				$calculation = hj_booking_compute_capacity_day( $date, $rule, $occupied, $now, 30, $timezone );
+				$summary = hj_booking_calendar_day_summary( false, $calculation );
+				if ( $summary === false ) { return array( 'status'=>'invalid_schedule' ); }
+			}
+			$days[] = array( 'date'=>$date ) + $summary;
+		}
+		return array( 'status'=>'ok', 'revision'=>$snapshot['revision'], 'days'=>$days );
 	} );
 }
 function hj_booking_phone( $value ) {
@@ -308,22 +492,49 @@ function hj_booking_national_code( $value ) {
 	$sum = 0; for ( $i = 0; $i < 9; $i++ ) { $sum += (int) $s[$i] * ( 10 - $i ); }
 	$r = $sum % 11; return (int) $s[9] === ( $r < 2 ? $r : 11 - $r ) ? $s : false;
 }
+/** Validate and normalize experimental independent patient details. */
+function hj_booking_patient_details_v2( $value ) {
+	if ( ! is_array( $value ) || count( $value ) !== 4 ) { return false; }
+	foreach ( array( 'first_name', 'last_name', 'service', 'note' ) as $field ) {
+		if ( ! isset( $value[$field] ) || ! is_string( $value[$field] ) || strlen( $value[$field] ) > 4000 ) { return false; }
+	}
+	$first = trim( sanitize_text_field( $value['first_name'] ) );
+	$last = trim( sanitize_text_field( $value['last_name'] ) );
+	$note = trim( sanitize_textarea_field( $value['note'] ) );
+	if ( ! preg_match( '/\A.{1,80}\z/us', $first ) || ! preg_match( '/\A.{1,80}\z/us', $last ) || ! preg_match( '/\A.{0,500}\z/us', $note ) || ! in_array( $value['service'], array( 'consultation', 'visit', 'surgery' ), true ) ) { return false; }
+	return array( 'first_name'=>$first, 'last_name'=>$last, 'service'=>$value['service'], 'note'=>$note );
+}
+/** CI fixture table is intentionally not a production migration or activation. */
+function hj_booking_patient_details_v2_table() {
+	global $wpdb;
+	if ( ! hj_booking_capacity_v2_ready() || ! preg_match( '/^[A-Za-z0-9_]+$/D', $wpdb->prefix ) ) { return false; }
+	return $wpdb->prefix . 'hj_booking_patient_extra_test';
+}
 /** Request key is random and stable across retries; caller must retain it after unknown. */
-function hj_booking_create( $doctor, $start, $key, $phone, $national, $expected_revision = null ) {
+function hj_booking_create( $doctor, $start, $key, $phone, $national, $expected_revision = null, $patient_details_v2 = null ) {
 	$patient = get_current_user_id();
 	if ( ! $patient || get_post_type( $doctor ) !== 'doctor' || get_post_status( $doctor ) !== 'publish' ) { return array( 'status' => 'forbidden' ); }
-	$phone = hj_booking_phone( $phone ); $national = hj_booking_national_code( $national );
+	$experimental = $patient_details_v2 !== null;
+	$extra_table = false;
+	if ( $experimental ) {
+		$extra_table = hj_booking_patient_details_v2_table();
+		if ( ! $extra_table || ! hj_booking_ready() ) { return array( 'status'=>'unavailable' ); }
+		$patient_details_v2 = hj_booking_patient_details_v2( $patient_details_v2 );
+		if ( $patient_details_v2 === false || ! is_int( $expected_revision ) || $expected_revision < 1 ) { return array( 'status'=>'invalid' ); }
+	}
+	$phone = hj_booking_phone( $phone ); $national = $experimental && $national === '' ? '' : hj_booking_national_code( $national );
 	if ( $phone === false || $national === false || ! is_string( $key ) || ! preg_match( '/^[a-f0-9]{32}$/D', $key ) || ! is_string( $start ) || ( $expected_revision !== null && ( ! is_int( $expected_revision ) || $expected_revision < 1 ) ) ) { return array( 'status' => 'invalid' ); }
 	$utc = new DateTimeZone( 'UTC' ); $when = DateTimeImmutable::createFromFormat( '!Y-m-d H:i:s', $start, $utc );
 	if ( ! $when || $when->format( 'Y-m-d H:i:s' ) !== $start ) { return array( 'status' => 'invalid' ); }
 	$date = $when->setTimezone( wp_timezone() )->format( 'Y-m-d' );
 	$payload = array( $doctor, $patient, $start, $phone, $national );
 	if ( $expected_revision !== null ) { $payload[] = $expected_revision; }
+	if ( $experimental ) { $payload[] = array( 'patient_details_v2' => $patient_details_v2 ); }
 	$hash = hash_hmac( 'sha256', wp_json_encode( $payload ), wp_salt( 'auth' ) );
 	global $wpdb;
 	$users = $wpdb->users;
 	if ( ! preg_match( '/^[A-Za-z0-9_]+$/D', $users ) ) { return array( 'status' => 'unavailable' ); }
-	return hj_booking_transaction( $doctor, 'create', function ( $db, $config ) use ( $doctor, $patient, $start, $when, $key, $phone, $national, $hash, $date, $expected_revision, $users ) {
+	return hj_booking_transaction( $doctor, 'create', function ( $db, $config ) use ( $doctor, $patient, $start, $when, $key, $phone, $national, $hash, $date, $expected_revision, $users, $experimental, $extra_table, $patient_details_v2 ) {
 		$table = hj_booking_table( 'appointments' ); $details = hj_booking_table( 'details' );
 		// Serialize this patient's pending limit across different doctors as well.
 		// The user row must be transactional; never silently enforce an unsafe limit.
@@ -331,8 +542,21 @@ function hj_booking_create( $doctor, $start, $key, $phone, $national, $expected_
 		if ( ! $info || strtoupper( $info['Engine'] ?? '' ) !== 'INNODB' ) { return array( 'status' => 'unavailable' ); }
 		$user = hj_booking_row( $db, $db->prepare( "SELECT ID FROM `$users` WHERE ID=%d FOR UPDATE", $patient ) );
 		if ( ! $user ) { return array( 'status' => 'forbidden' ); }
+		if ( $experimental ) {
+			$extra_info = hj_booking_row( $db, $db->prepare( 'SHOW TABLE STATUS WHERE Name = %s', $extra_table ) );
+			if ( ! $extra_info || strtoupper( $extra_info['Engine'] ?? '' ) !== 'INNODB' ) { return array( 'status'=>'unavailable' ); }
+		}
 		$existing = hj_booking_row( $db, $db->prepare( "SELECT id,request_hash FROM `$table` WHERE request_key=%s", $key ) );
-		if ( $existing ) { return hash_equals( $existing['request_hash'], $hash ) ? array( 'status' => 'replayed', 'id' => (int) $existing['id'] ) : array( 'status' => 'idempotency_conflict' ); }
+		if ( $existing ) {
+			if ( ! hash_equals( $existing['request_hash'], $hash ) ) { return array( 'status'=>'idempotency_conflict' ); }
+			$replay = array( 'status'=>'replayed', 'id'=>(int) $existing['id'] );
+			if ( $experimental ) {
+				$stored = hj_booking_row( $db, $db->prepare( "SELECT tracking_code FROM `$extra_table` WHERE appointment_id=%d", $replay['id'] ) );
+				if ( ! $stored || ! is_string( $stored['tracking_code'] ?? null ) || ! preg_match( '/^[A-F0-9]{32}\z/D', $stored['tracking_code'] ) ) { return array( 'status'=>'error' ); }
+				$replay['tracking_code'] = $stored['tracking_code'];
+			}
+			return $replay;
+		}
 		if ( ! (int) $config['enabled'] ) { return array( 'status' => 'unavailable' ); }
 		$available = hj_booking_slots_locked( $db, $doctor, $config, $date );
 		if ( $available === false ) { return array( 'status' => 'invalid_schedule' ); }
@@ -341,13 +565,25 @@ function hj_booking_create( $doctor, $start, $key, $phone, $national, $expected_
 		$pending = hj_booking_row( $db, $db->prepare( "SELECT COUNT(*) AS n FROM `$table` WHERE patient_id=%d AND status='pending'", $patient ) );
 		if ( ! $pending ) { throw new RuntimeException( 'Pending count failed' ); }
 		if ( (int) $pending['n'] >= 3 ) { return array( 'status' => 'pending_limit' ); }
-		$end = gmdate( 'Y-m-d H:i:s', $when->getTimestamp() + (int) $config['duration_minutes'] * 60 );
-		$blocked = gmdate( 'Y-m-d H:i:s', $when->getTimestamp() + ( (int) $config['duration_minutes'] + (int) $config['buffer_minutes'] ) * 60 );
+		if ( isset( $available['intervals'] ) ) {
+			if ( ! isset( $available['intervals'][$start]['end'], $available['intervals'][$start]['blocked_until'] ) ) { return array( 'status'=>'invalid_schedule' ); }
+			$end = $available['intervals'][$start]['end']; $blocked = $available['intervals'][$start]['blocked_until'];
+		} else {
+			$end = gmdate( 'Y-m-d H:i:s', $when->getTimestamp() + (int) $config['duration_minutes'] * 60 );
+			$blocked = gmdate( 'Y-m-d H:i:s', $when->getTimestamp() + ( (int) $config['duration_minutes'] + (int) $config['buffer_minutes'] ) * 60 );
+		}
 		$n = hj_booking_query( $db, $db->prepare( "INSERT INTO `$table` (doctor_id,patient_id,request_key,request_hash,starts_at,ends_at,blocked_until,schedule_revision,status) VALUES (%d,%d,%s,%s,%s,%s,%s,%d,'pending')", $doctor, $patient, $key, $hash, $start, $end, $blocked, $available['revision'] ) );
 		if ( $n !== 1 ) { throw new RuntimeException( 'Booking insert failed' ); }
 		$id = (int) $db->insert_id;
 		if ( 1 !== hj_booking_query( $db, $db->prepare( "INSERT INTO `$details` (appointment_id,phone,national_code) VALUES (%d,%s,%s)", $id, $phone, $national ) ) ) { throw new RuntimeException( 'Booking details insert failed' ); }
-		return array( 'status' => 'created', 'id' => $id, 'revision' => $available['revision'] );
+		$result = array( 'status' => 'created', 'id' => $id, 'revision' => $available['revision'] );
+		if ( $experimental ) {
+			// Generate once inside the transaction; replay reads the stored code.
+			$tracking = strtoupper( bin2hex( random_bytes( 16 ) ) );
+			if ( 1 !== hj_booking_query( $db, $db->prepare( "INSERT INTO `$extra_table` (appointment_id,first_name,last_name,service,note,tracking_code) VALUES (%d,%s,%s,%s,%s,%s)", $id, $patient_details_v2['first_name'], $patient_details_v2['last_name'], $patient_details_v2['service'], $patient_details_v2['note'], $tracking ) ) ) { throw new RuntimeException( 'Experimental patient details insert failed' ); }
+			$result['tracking_code'] = $tracking;
+		}
+		return $result;
 	} );
 }
 function hj_booking_change_status( $doctor, $id, $status ) {
