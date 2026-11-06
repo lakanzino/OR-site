@@ -71,3 +71,14 @@ for ($case=0;$case<200;$case++) {
  if ($legacy!==$current) { throw new RuntimeException('Legacy single-capacity mismatch at case '.$case); }
 }
 echo "PASS: 200 single-capacity configurations match the existing product engine\n";
+// Old schema legally stores seconds and duration below ten minutes; do not
+// round or reset those when the new representation is eventually deployed.
+$week=array(array('day_of_week'=>'wednesday','is_closed'=>0,'start_time'=>'17:00:30','end_time'=>'17:10:30'));
+foreach (array(1,5,9) as $duration) {
+ $legacy=hj_booking_compute_slots($date,$week,$duration,0,array(),$now,14);
+ $rule_one=array('start_time'=>'17:00:30','end_time'=>'17:10:30','duration_minutes'=>$duration,'buffer_minutes'=>0,'capacity'=>1);
+ $detail=hj_booking_compute_capacity_day($date,$rule_one,array(),$now,14,$tz);
+ $current=array_column($detail['slots'],'start');
+ if ($legacy!==$current) { throw new RuntimeException('Legacy seconds/short-duration mismatch'); }
+}
+echo "PASS: legacy second precision and one-to-nine-minute durations are preserved\n";

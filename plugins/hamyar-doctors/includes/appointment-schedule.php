@@ -81,17 +81,23 @@ function hj_booking_compute_capacity_day( $date, $rule, $occupied, $now, $horizo
 	$start = $rule['start_time'] ?? null; $end = $rule['end_time'] ?? null;
 	$duration = $rule['duration_minutes'] ?? null; $buffer = $rule['buffer_minutes'] ?? null;
 	$capacity = $rule['capacity'] ?? null; $daily_cap = $rule['daily_cap'] ?? null;
-	$time_pattern = '/^([01][0-9]|2[0-3]):[0-5][0-9]$/D';
-	if ( ! is_string( $start ) || ! is_string( $end ) || ! preg_match( $time_pattern, $start ) || ! preg_match( $time_pattern, $end ) || $start >= $end || ! is_int( $duration ) || $duration < 10 || $duration > 240 || ! is_int( $buffer ) || $buffer < 0 || $buffer > 120 || ! is_int( $capacity ) || $capacity < 1 || $capacity > 10 || ( $daily_cap !== null && ( ! is_int( $daily_cap ) || $daily_cap < 1 || $daily_cap > 1000 ) ) ) { return false; }
-	$wall_start = hj_booking_local_time( $date . ' ' . $start . ':00', $utc );
-	$wall_end = hj_booking_local_time( $date . ' ' . $end . ':00', $utc );
+	$time_pattern = '/^([01][0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9])?$/D';
+	// Legacy snapshots allow seconds and 1–9 minute durations. Preserve them;
+	// a future configuration UI may impose a narrower range for NEW settings.
+	if ( ! is_string( $start ) || ! is_string( $end ) || ! preg_match( $time_pattern, $start ) || ! preg_match( $time_pattern, $end ) || ! is_int( $duration ) || $duration < 1 || $duration > 240 || ! is_int( $buffer ) || $buffer < 0 || $buffer > 120 || ! is_int( $capacity ) || $capacity < 1 || $capacity > 10 || ( $daily_cap !== null && ( ! is_int( $daily_cap ) || $daily_cap < 1 || $daily_cap > 1000 ) ) ) { return false; }
+	if ( strlen( $start ) === 5 ) { $start .= ':00'; } if ( strlen( $end ) === 5 ) { $end .= ':00'; }
+	if ( $start >= $end ) { return false; }
+	$wall_start = hj_booking_local_time( $date . ' ' . $start, $utc );
+	$wall_end = hj_booking_local_time( $date . ' ' . $end, $utc );
 	if ( $wall_start === false || $wall_end === false ) { return false; }
 	$break_start = null; $break_end = null;
 	if ( array_key_exists( 'break_start', $rule ) || array_key_exists( 'break_end', $rule ) ) {
 		$bs = $rule['break_start'] ?? null; $be = $rule['break_end'] ?? null;
-		if ( ! is_string( $bs ) || ! is_string( $be ) || ! preg_match( $time_pattern, $bs ) || ! preg_match( $time_pattern, $be ) || $bs >= $be || $bs < $start || $be > $end ) { return false; }
-		$break_start = hj_booking_local_time( $date . ' ' . $bs . ':00', $utc );
-		$break_end = hj_booking_local_time( $date . ' ' . $be . ':00', $utc );
+		if ( ! is_string( $bs ) || ! is_string( $be ) || ! preg_match( $time_pattern, $bs ) || ! preg_match( $time_pattern, $be ) ) { return false; }
+		if ( strlen( $bs ) === 5 ) { $bs .= ':00'; } if ( strlen( $be ) === 5 ) { $be .= ':00'; }
+		if ( $bs >= $be || $bs < $start || $be > $end ) { return false; }
+		$break_start = hj_booking_local_time( $date . ' ' . $bs, $utc );
+		$break_end = hj_booking_local_time( $date . ' ' . $be, $utc );
 	}
 	$active = array(); $day_count = 0;
 	foreach ( $occupied as $row ) {
