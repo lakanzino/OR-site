@@ -166,6 +166,13 @@ add_action( 'wp_ajax_hj_ci_status_nonce', function () {
  wp_send_json_success( array( 'nonce' => wp_create_nonce( 'hj_booking_status_' . $id ) ) );
 } );
 add_action( 'wp_ajax_hj_ci_render_patient_bookings', function () { wp_send_json_success( array( 'html' => do_shortcode( '[hj_patient_bookings]' ) ) ); } );
+// Synthetic fixed payload, authorized only inside this disposable MU fixture.
+add_action( 'wp_ajax_hj_ci_patient_extra_xss', function () {
+ if ( ! hj_booking_capacity_v2_ready() || ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'hj_booking_ui', 'nonce', false ) ) { wp_send_json_error( array(), 403 ); }
+ global $wpdb; $table=hj_booking_patient_details_v2_table(); $id=absint( $_POST['id'] ?? 0 );
+ $result=$wpdb->update( $table, array( 'first_name'=>'<img src=x onerror=alert(1)>', 'note'=>'<script>alert(2)</script>' ), array( 'appointment_id'=>$id ) );
+ if ( $result !== 1 ) { wp_send_json_error( array(), 400 ); } wp_send_json_success( array( 'updated'=>true ) );
+} );
 add_action( 'wp_ajax_hj_ci_render_management', function () {
  $id = absint( $_POST['doctor'] ?? 0 );
  $html = hj_booking_management_render( 'doctor', $id );

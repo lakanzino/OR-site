@@ -50,6 +50,14 @@ function hj_booking_management_list( $scope, $doctor = 0, $filter = 'all', $page
 	// Patient queries deliberately do not join the private contact table or users.
 	$columns = $scope === 'patient' ? 'a.id,a.doctor_id,a.starts_at,a.status' : 'a.id,a.doctor_id,a.starts_at,a.status,u.display_name,d.phone,d.national_code';
 	$joins = $scope === 'patient' ? '' : " LEFT JOIN `$d` d ON d.appointment_id=a.id LEFT JOIN `{$wpdb->users}` u ON u.ID=a.patient_id";
+	// Only already-authorized staff may query experimental details. The patient
+	// list deliberately stays minimal and does not join either contact table.
+	if ( $scope !== 'patient' && hj_booking_capacity_v2_ready() ) {
+		$extra = hj_booking_patient_details_v2_table();
+		if ( ! $extra ) { return false; }
+		$columns .= ',x.first_name,x.last_name,x.service,x.note';
+		$joins .= " LEFT JOIN `$extra` x ON x.appointment_id=a.id";
+	}
 	$sql = "SELECT $columns FROM `$a` a $joins WHERE " . implode( ' AND ', $where ) . ( $filter === 'future' ? ' ORDER BY a.starts_at ASC,a.id ASC' : ' ORDER BY a.starts_at DESC,a.id DESC' ) . ' LIMIT %d OFFSET %d';
 	if ( $scope === 'doctor' ) {
 		$actor = get_current_user_id();
@@ -108,9 +116,21 @@ function hj_booking_management_render( $scope, $doctor = 0, $admin_filters = arr
 	$labels = hj_booking_management_labels();
 	foreach ( array_slice( $rows, 0, 20 ) as $row ) {
 		$timestamp = strtotime( $row['starts_at'] . ' UTC' );
-		$out .= '<article class="hj-bookings__item"><p><strong>' . esc_html( $scope === 'patient' || $scope === 'admin' ? get_the_title( (int) $row['doctor_id'] ) : ( $row['display_name'] ?: 'نام حساب در دسترس نیست' ) ) . '</strong></p>';
-		if ( $scope === 'admin' ) { $out .= '<p>نام حساب بیمار: ' . esc_html( $row['display_name'] ?: 'در دسترس نیست' ) . '</p>'; }
-		if ( $scope !== 'patient' ) { $out .= '<p>موبایل: <span dir="ltr">' . esc_html( $row['phone'] ?: '—' ) . '</span> · کد ملی: <span dir="ltr">' . esc_html( $row['national_code'] ?: '—' ) . '</span></p>'; }
+		$extra_view = $scope !== 'patient' && hj_booking_capacity_v2_ready();
+		$has_patient = $extra_view && is_string( $row['first_name'] ?? null ) && $row['first_name'] !== '' && is_string( $row['last_name'] ?? null ) && $row['last_name'] !== '';
+		$patient_name = $has_patient ? $row['first_name'] . ' ' . $row['last_name'] : 'نام بیمار در نوبت قدیمی ثبت نشده';
+		$heading = $scope === 'patient' || $scope === 'admin' ? get_the_title( (int) $row['doctor_id'] ) : ( $extra_view ? $patient_name : ( $row['display_name'] ?: 'نام حساب در دسترس نیست' ) );
+		$out .= '<article class="hj-bookings__item"><p><strong>' . esc_html( $heading ) . '</strong></p>';
+		if ( $scope === 'admin' && $extra_view ) { $out .= '<p>نام بیمار: ' . esc_html( $patient_name ) . '</p>'; }
+		if ( $scope === 'admin' || ( $scope === 'doctor' && $extra_view ) ) { $out .= '<p>' . ( $extra_view ? 'نام حساب ثبت‌کننده: ' : 'نام حساب بیمار: ' ) . esc_html( $row['display_name'] ?: 'در دسترس نیست' ) . '</p>'; }
+		if ( $scope !== 'patient' ) {
+			$out .= '<p>موبایل: <span dir="ltr">' . esc_html( $row['phone'] ?: '—' ) . '</span> · کد ملی: <span dir="ltr">' . esc_html( $row['national_code'] ?: '—' ) . '</span></p>';
+			if ( $has_patient ) {
+				$services = array( 'consultation'=>'مشاوره', 'visit'=>'ویزیت', 'surgery'=>'جراحی' );
+				$out .= '<p>نوع خدمت: ' . esc_html( $services[$row['service']] ?? 'نامعتبر' ) . '</p>';
+				if ( is_string( $row['note'] ) && $row['note'] !== '' ) { $out .= '<p class="hj-bookings__note">توضیح: ' . esc_html( $row['note'] ) . '</p>'; }
+			}
+		}
 		$out .= '<p>زمان: ' . esc_html( $timestamp !== false ? wp_date( 'Y/m/d H:i', $timestamp, wp_timezone() ) : 'نامعتبر' ) . ' · وضعیت: ' . esc_html( $labels[$row['status']] ?? 'نامعتبر' ) . '</p>';
 		$out .= hj_booking_management_status_form( $row, $scope ) . '</article>';
 	}

@@ -57,7 +57,7 @@ try:
   try: request(session(),'/wp-login.php'); break
   except OSError: time.sleep(.25)
  else: raise RuntimeError('capacity UI server failed')
- owner=login('synthetic_doctor_a'); other=login('synthetic_doctor_b'); patient=login('synthetic_race_0'); admin=login('fixture_admin'); guest=session()
+ owner=login('synthetic_doctor_a'); other=login('synthetic_doctor_b'); patient=login('synthetic_race_0'); patient2=login('synthetic_race_1'); secretary=login('synthetic_secretary'); admin=login('fixture_admin'); guest=session()
  check(state(owner,doc)=={'config':None,'snapshot':None},'no doctor schedule exists before first GET')
  def public_hours(doctor):
   page_html=ajax(guest,{'action':'hj_ci_render_patient_profile','doctor':str(doctor)})['html']
@@ -162,6 +162,42 @@ try:
  code,body,_=request(patient,'/wp-admin/admin-ajax.php',dict(ui_payload,last_name='نام متفاوت'))
  check(code==409 and json.loads(body)['data']['code']=='idempotency_conflict','actual v2 create does not replay changed patient information')
  check(ajax(guest,params)['days'][2]['remaining']==10,'calendar capacity reflects v2 patient form booking without exposing personal details')
+ # Exercise actual management authorization and rendering for old and new records.
+ admin_url='/wp-admin/edit.php?post_type=doctor&page=hj-bookings'
+ code,admin_html,_=request(admin,admin_url)
+ check(code==200 and 'نام مستقل بیمار آزمایشی' in admin_html and 'توضیح آزمایشی' in admin_html and 'نام حساب ثبت‌کننده' in admin_html and 'نام بیمار در نوبت قدیمی ثبت نشده' in admin_html,'admin sees independent patient details and distinguishes legacy booking from account name')
+ owner_html=ajax(owner,{'action':'hj_ci_render_management','doctor':str(doc)})['html']
+ check('نام مستقل بیمار آزمایشی' in owner_html and 'نوع خدمت: مشاوره' in owner_html and 'توضیح آزمایشی' in owner_html and 'نام حساب ثبت‌کننده' in owner_html and 'نام بیمار در نوبت قدیمی ثبت نشده' in owner_html,'assigned doctor sees patient name, service and note alongside account name and legacy fallback')
+ for outsider in (other,patient,patient2,secretary):
+  private=ajax(outsider,{'action':'hj_ci_render_management','doctor':str(doc)})['html']
+  check('نام مستقل' not in private and 'توضیح آزمایشی' not in private and '09123456789' not in private,'unrelated user cannot view private details before assignment')
+ patient_view=ajax(patient,{'action':'hj_ci_render_patient_bookings'})['html']
+ other_patient_view=ajax(patient2,{'action':'hj_ci_render_patient_bookings'})['html']
+ check('نام مستقل' not in patient_view and 'توضیح آزمایشی' not in patient_view and 'نام مستقل' not in other_patient_view and 'توضیح آزمایشی' not in other_patient_view,'patient lists do not join private details, including other patients')
+ check('نام مستقل' not in public_hours(doc) and 'توضیح آزمایشی' not in json.dumps(ajax(guest,params),ensure_ascii=False),'public profile and calendar do not expose new patient details')
+ class Forms(HTMLParser):
+  def __init__(self): super().__init__(); self.forms=[]; self.current=None
+  def handle_starttag(self,tag,attrs):
+   a=dict(attrs)
+   if tag=='form': self.current={}
+   elif tag=='input' and self.current is not None and a.get('name'): self.current[a['name']]=a.get('value','')
+  def handle_endtag(self,tag):
+   if tag=='form' and self.current is not None: self.forms.append(self.current); self.current=None
+ parsed=Forms(); parsed.feed(admin_html)
+ assignment=next(f for f in parsed.forms if f.get('action')=='hj_booking_assignment')
+ assign=dict(assignment,doctor_id=str(doc),user_id=str(fixture['secretary']),mode='add')
+ check(request(patient,post,assign)[0]==403 and request(admin,post,dict(assign,_wpnonce='bad'))[0]==403,'secretary assignment requires administrator and valid nonce')
+ check(request(admin,post,assign)[0]==302,'administrator assigns synthetic secretary')
+ secretary_html=ajax(secretary,{'action':'hj_ci_render_management','doctor':str(doc)})['html']
+ check('نام مستقل بیمار آزمایشی' in secretary_html and 'توضیح آزمایشی' in secretary_html and 'مشاوره' in secretary_html,'assigned secretary sees only authorized doctor patient details')
+ check('نام مستقل' not in ajax(secretary,{'action':'hj_ci_render_management','doctor':str(legacy)})['html'],'secretary cannot read unassigned doctor')
+ check(request(admin,post,dict(assign,mode='remove'))[0]==302 and 'نام مستقل' not in ajax(secretary,{'action':'hj_ci_render_management','doctor':str(doc)})['html'],'revoking secretary access prevents subsequent read')
+ # The CI-only adapter writes an intentionally hostile synthetic row to test escaping at the actual render boundary.
+ admin_form=Inputs(); admin_form.feed(ajax(admin,{'action':'hj_ci_render_patient_form','page':str(page)})['html'])
+ check(ajax(admin,{'action':'hj_ci_patient_extra_xss','nonce':admin_form.booking['data-nonce'],'id':str(ui_result['id'])})['updated'],'synthetic stored XSS fixture installed')
+ escaped=ajax(owner,{'action':'hj_ci_render_management','doctor':str(doc)})['html']
+ check('&lt;img src=x onerror=alert(1)&gt;' in escaped and '&lt;script&gt;alert(2)&lt;/script&gt;' in escaped and '<script>alert(2)</script>' not in escaped,'private patient name and note are escaped in authorized management view')
+
 
  html,fields=form(owner,page); blocked=week(dict(payload,enabled='0',revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
  before=state(owner,doc); code,_,headers=request(owner,post,blocked)
