@@ -34,6 +34,9 @@ function hj_ci_port_save_hours( $doctor, $rows ) {
 			$id = (int) $db->get_var( 'SELECT CONNECTION_ID()' );
 			$killer = new wpdb( DB_USER, DB_PASSWORD, DB_NAME, DB_HOST ); $killer->suppress_errors( true );
 			try { if ( $id < 1 || false === $killer->query( 'KILL CONNECTION ' . $id ) ) { throw new RuntimeException( 'Fixture connection kill failed' ); } } finally { $killer->close(); }
+			// Probe the exact auto-reconnect hazard: this must NOT execute on a new connection.
+			$after_kill = $db->query( $db->prepare( "UPDATE hjt_hjb_spike_schedules SET rows_json='KILL_ESCAPE' WHERE doctor_id=%d", $doctor ) );
+			if ( false !== $after_kill ) { throw new RuntimeException( 'Unsafe replay after transaction connection died' ); }
 		}
 		$committing = true;
 		if ( false === $db->query( 'COMMIT' ) ) { return array( 'status' => 'unknown' ); }

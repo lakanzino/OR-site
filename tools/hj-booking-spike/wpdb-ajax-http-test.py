@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Run the actual ajax_save from a patched disposable plugin copy, never production."""
+import concurrent.futures
 import hashlib
 import http.cookiejar
 import json
@@ -47,9 +48,12 @@ def state(opener, doctor):
     return json.loads(body)['data']
 
 server = None
+created_plugin = False
+created_mu = False
 try:
     if plugin.exists() or mu.exists(): raise RuntimeError('Refusing existing plugin or MU fixture path')
     shutil.copytree(workspace / 'plugins/hamyar-doctors', plugin, ignore=shutil.ignore_patterns('tests', '__pycache__'))
+    created_plugin = True
     dashboard = plugin / 'includes/dashboard.php'
     source = dashboard.read_text(encoding='utf-8')
     old = "self::set( $pid, 'working_hours', $rows );"
@@ -59,8 +63,9 @@ try:
     subprocess.run(['php', 'tools/hj-booking-spike/wpdb-ajax-setup.php'], check=True)
     mu.parent.mkdir(exist_ok=True)
     mu.symlink_to(workspace / 'tools/hj-booking-spike/wpdb-ajax-fixture-mu.php')
+    created_mu = True
     doctor_id = json.loads(meta.read_text(encoding='utf-8'))['doctor']
-    server = subprocess.Popen(['php', '-S', '127.0.0.1:8997', '-t', '/wordpress'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    server = subprocess.Popen(['php', '-S', '127.0.0.1:8997', '-t', '/wordpress'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, env=dict(os.environ, PHP_CLI_SERVER_WORKERS='8'))
     for _ in range(80):
         try: request(session(), '/wp-login.php'); break
         except OSError: time.sleep(.25)
@@ -86,12 +91,22 @@ try:
     check(code == 503 and not json.loads(text)['success'], 'killed transaction does not claim successful save')
     saved = state(owner, doctor_id); row = saved['snapshot']
     check(int(row['revision']) == 2 and json.loads(row['rows_json'])[0]['start_time'] == '10:00:00', 'kill before commit preserved prior canonical revision')
+    def concurrent_save(hour):
+        payload = dict(common, _hjn=owner_nonce, **{'hours[wednesday][start]': f'{hour:02d}:00', 'hours[wednesday][end]': '16:30', 'hj_ci_mirror_fail': '1'})
+        return request(owner, url, payload)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+        responses = list(pool.map(concurrent_save, range(8, 16)))
+    check(all(code == 200 and json.loads(body)['success'] for code, body in responses), 'eight concurrent actual AJAX schedule saves succeeded')
+    row = state(owner, doctor_id)['snapshot']
+    check(int(row['revision']) == 10 and row['rows_hash'] == hashlib.sha256(row['rows_json'].encode()).hexdigest() and json.loads(row['rows_json'])[0]['start_time'] in [f'{h:02d}:00:00' for h in range(8, 16)], 'concurrent wpdb saves serialized without lost revisions or torn snapshot')
 finally:
     if server:
         os.killpg(server.pid, signal.SIGTERM)
         try: server.wait(timeout=10)
         except subprocess.TimeoutExpired:
             os.killpg(server.pid, signal.SIGKILL); server.wait()
-    if mu.is_symlink(): mu.unlink()
-    if plugin.is_dir(): shutil.rmtree(plugin)
-    meta.unlink(missing_ok=True)
+    if created_mu and mu.is_symlink(): mu.unlink()
+    if created_plugin:
+        subprocess.run(['php', 'tools/hj-booking-spike/wpdb-ajax-cleanup.php'], check=True)
+        shutil.rmtree(plugin)
+        meta.unlink(missing_ok=True)
