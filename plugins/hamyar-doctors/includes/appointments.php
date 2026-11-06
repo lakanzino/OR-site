@@ -1,5 +1,5 @@
 <?php
-/** Optional booking backend. No routes, UI, or automatic migration are enabled here. */
+/** Optional booking backend. All migration and runtime routes are feature-flagged. */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 require_once __DIR__ . '/appointment-schedule.php';
 
@@ -15,71 +15,130 @@ function hj_booking_table( $name ) {
 	if ( ! in_array( $name, $allowed, true ) || ! preg_match( '/^[A-Za-z0-9_]+$/D', $wpdb->prefix ) ) { throw new RuntimeException( 'Invalid booking table' ); }
 	return $wpdb->prefix . 'hj_booking_' . $name;
 }
-/** Explicit admin-only migration. Does not run automatically or enable booking. */
+/**
+ * Create-only, versioned migration. All schema work requires explicit opt-in
+ * and an administrator. Existing tables are verified, never ALTERed or dropped.
+ */
+function hj_booking_schema_definitions( $charset ) {
+ $d = hj_booking_table( 'doctors' ); $s = hj_booking_table( 'schedules' ); $a = hj_booking_table( 'appointments' ); $p = hj_booking_table( 'details' ); $m = hj_booking_table( 'secretaries' );
+ return array(
+  $d => "CREATE TABLE IF NOT EXISTS `$d` (doctor_id bigint(20) unsigned NOT NULL, duration_minutes int NOT NULL DEFAULT 30, buffer_minutes int NOT NULL DEFAULT 5, enabled tinyint NOT NULL DEFAULT 0, PRIMARY KEY (doctor_id)) ENGINE=InnoDB $charset",
+  $s => "CREATE TABLE IF NOT EXISTS `$s` (doctor_id bigint(20) unsigned NOT NULL, revision bigint(20) unsigned NOT NULL, rows_json longtext NOT NULL, rows_hash char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL, PRIMARY KEY (doctor_id)) ENGINE=InnoDB $charset",
+  $a => "CREATE TABLE IF NOT EXISTS `$a` (id bigint(20) unsigned NOT NULL AUTO_INCREMENT, doctor_id bigint(20) unsigned NOT NULL, patient_id bigint(20) unsigned NOT NULL, request_key char(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL, request_hash char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL, starts_at datetime NOT NULL, ends_at datetime NOT NULL, blocked_until datetime NOT NULL, schedule_revision bigint(20) unsigned NOT NULL, status varchar(20) NOT NULL, PRIMARY KEY (id), UNIQUE KEY request_key (request_key), KEY doctor_start (doctor_id,starts_at), KEY patient_start (patient_id,starts_at)) ENGINE=InnoDB $charset",
+  $p => "CREATE TABLE IF NOT EXISTS `$p` (appointment_id bigint(20) unsigned NOT NULL, phone varchar(24) NOT NULL, national_code char(10) NOT NULL, PRIMARY KEY (appointment_id)) ENGINE=InnoDB $charset",
+  $m => "CREATE TABLE IF NOT EXISTS `$m` (user_id bigint(20) unsigned NOT NULL, doctor_id bigint(20) unsigned NOT NULL, PRIMARY KEY (user_id,doctor_id)) ENGINE=InnoDB $charset",
+ );
+}
+/** Verify every field and critical index; unknown/incompatible structures fail closed. */
+function hj_booking_schema_valid_table( $db, $name ) {
+ $big = 'bigint unsigned';
+ $specs = array(
+  hj_booking_table( 'doctors' ) => array( 'doctor_id'=>$big, 'duration_minutes'=>'int', 'buffer_minutes'=>'int', 'enabled'=>'tinyint' ),
+  hj_booking_table( 'schedules' ) => array( 'doctor_id'=>$big, 'revision'=>$big, 'rows_json'=>'longtext', 'rows_hash'=>'char(64)' ),
+  hj_booking_table( 'appointments' ) => array( 'id'=>$big, 'doctor_id'=>$big, 'patient_id'=>$big, 'request_key'=>'char(32)', 'request_hash'=>'char(64)', 'starts_at'=>'datetime', 'ends_at'=>'datetime', 'blocked_until'=>'datetime', 'schedule_revision'=>$big, 'status'=>'varchar(20)' ),
+  hj_booking_table( 'details' ) => array( 'appointment_id'=>$big, 'phone'=>'varchar(24)', 'national_code'=>'char(10)' ),
+  hj_booking_table( 'secretaries' ) => array( 'user_id'=>$big, 'doctor_id'=>$big ),
+ );
+ $indexes = array(
+  hj_booking_table( 'doctors' ) => array( 'PRIMARY'=>array( true, array('doctor_id') ) ),
+  hj_booking_table( 'schedules' ) => array( 'PRIMARY'=>array( true, array('doctor_id') ) ),
+  hj_booking_table( 'appointments' ) => array( 'PRIMARY'=>array( true, array('id') ), 'request_key'=>array( true, array('request_key') ), 'doctor_start'=>array( false, array('doctor_id','starts_at') ), 'patient_start'=>array( false, array('patient_id','starts_at') ) ),
+  hj_booking_table( 'details' ) => array( 'PRIMARY'=>array( true, array('appointment_id') ) ),
+  hj_booking_table( 'secretaries' ) => array( 'PRIMARY'=>array( true, array('user_id','doctor_id') ) ),
+ );
+ if ( ! isset( $specs[$name] ) ) { return false; }
+ $info = hj_booking_row( $db, $db->prepare( 'SHOW TABLE STATUS WHERE Name = %s', $name ) );
+ if ( ! $info || strtoupper( $info['Engine'] ?? '' ) !== 'INNODB' ) { return false; }
+ $columns = hj_booking_rows( $db, "SHOW FULL COLUMNS FROM `$name`" ); $seen = array();
+ foreach ( $columns as $column ) {
+  $field = $column['Field'];
+  $type = preg_replace( '/^(bigint|int|tinyint)\([0-9]+\)/', '$1', strtolower( $column['Type'] ) );
+  if ( ! isset( $specs[$name][$field] ) || $type !== $specs[$name][$field] || $column['Null'] !== 'NO' ) { return false; }
+  if ( in_array( $field, array( 'rows_hash', 'request_key', 'request_hash' ), true ) && ( $column['Collation'] ?? '' ) !== 'ascii_bin' ) { return false; }
+  if ( $name === hj_booking_table( 'appointments' ) && $field === 'id' && strpos( $column['Extra'], 'auto_increment' ) === false ) { return false; }
+  if ( $name === hj_booking_table( 'doctors' ) && isset( array( 'duration_minutes'=>1, 'buffer_minutes'=>1, 'enabled'=>1 )[$field] ) ) {
+   $defaults = array( 'duration_minutes'=>'30', 'buffer_minutes'=>'5', 'enabled'=>'0' );
+   if ( (string) $column['Default'] !== $defaults[$field] ) { return false; }
+  }
+  $seen[$field] = true;
+ }
+ if ( count( $seen ) !== count( $specs[$name] ) ) { return false; }
+ $actual = array();
+ foreach ( hj_booking_rows( $db, "SHOW INDEX FROM `$name`" ) as $index ) {
+  $key = $index['Key_name']; $seq = (int) $index['Seq_in_index'];
+  if ( ! isset( $actual[$key] ) ) { $actual[$key] = array( 'unique' => (int) $index['Non_unique'] === 0, 'cols' => array(), 'whole' => true ); }
+  $actual[$key]['cols'][$seq] = $index['Column_name'];
+  if ( $index['Sub_part'] !== null ) { $actual[$key]['whole'] = false; }
+ }
+ foreach ( $actual as $key => $index ) {
+  // An unknown UNIQUE constraint can reject otherwise valid booking writes.
+  if ( $index['unique'] && ! isset( $indexes[$name][$key] ) ) { return false; }
+ }
+ foreach ( $indexes[$name] as $key => $expected ) {
+  if ( ! isset( $actual[$key] ) || ! $actual[$key]['whole'] || $actual[$key]['unique'] !== $expected[0] ) { return false; }
+  ksort( $actual[$key]['cols'] );
+  if ( array_values( $actual[$key]['cols'] ) !== $expected[1] ) { return false; }
+ }
+ return true;
+}
+function hj_booking_schema_clear_option_cache() {
+ wp_cache_delete( 'alloptions', 'options' ); wp_cache_delete( 'notoptions', 'options' );
+ wp_cache_delete( 'hj_booking_schema_version', 'options' ); wp_cache_delete( 'hj_booking_schema_verified', 'options' );
+}
 function hj_booking_install_schema() {
-	global $wpdb;
-	if ( ! hj_booking_enabled() || ! current_user_can( 'manage_options' ) || get_class( $wpdb ) !== 'wpdb' ) { return false; }
-	$version = (int) get_option( 'hj_booking_schema_version', 0 );
-	if ( $version > 1 ) { return false; }
-	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-	$charset = $wpdb->get_charset_collate();
-	$d = hj_booking_table( 'doctors' ); $s = hj_booking_table( 'schedules' ); $a = hj_booking_table( 'appointments' ); $p = hj_booking_table( 'details' ); $m = hj_booking_table( 'secretaries' );
-	dbDelta( "CREATE TABLE $d (
- doctor_id bigint(20) unsigned NOT NULL,
- duration_minutes int NOT NULL DEFAULT 30,
- buffer_minutes int NOT NULL DEFAULT 5,
- enabled tinyint NOT NULL DEFAULT 0,
- PRIMARY KEY  (doctor_id)
-) ENGINE=InnoDB $charset;" );
-	dbDelta( "CREATE TABLE $s (
- doctor_id bigint(20) unsigned NOT NULL,
- revision bigint(20) unsigned NOT NULL,
- rows_json longtext NOT NULL,
- rows_hash char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
- PRIMARY KEY  (doctor_id)
-) ENGINE=InnoDB $charset;" );
-	dbDelta( "CREATE TABLE $a (
- id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
- doctor_id bigint(20) unsigned NOT NULL,
- patient_id bigint(20) unsigned NOT NULL,
- request_key char(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
- request_hash char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
- starts_at datetime NOT NULL,
- ends_at datetime NOT NULL,
- blocked_until datetime NOT NULL,
- schedule_revision bigint(20) unsigned NOT NULL,
- status varchar(20) NOT NULL,
- PRIMARY KEY  (id),
- UNIQUE KEY request_key (request_key),
- KEY doctor_start (doctor_id,starts_at),
- KEY patient_start (patient_id,starts_at)
-) ENGINE=InnoDB $charset;" );
-	dbDelta( "CREATE TABLE $p (
- appointment_id bigint(20) unsigned NOT NULL,
- phone varchar(24) NOT NULL,
- national_code char(10) NOT NULL,
- PRIMARY KEY  (appointment_id)
-) ENGINE=InnoDB $charset;" );
-	dbDelta( "CREATE TABLE $m (
- user_id bigint(20) unsigned NOT NULL,
- doctor_id bigint(20) unsigned NOT NULL,
- PRIMARY KEY  (user_id,doctor_id)
-) ENGINE=InnoDB $charset;" );
-	$required = array( $d => array( 'doctor_id','duration_minutes','buffer_minutes','enabled' ), $s => array( 'doctor_id','revision','rows_json','rows_hash' ), $a => array( 'id','doctor_id','patient_id','request_key','request_hash','starts_at','ends_at','blocked_until','schedule_revision','status' ), $p => array( 'appointment_id','phone','national_code' ), $m => array( 'user_id','doctor_id' ) );
-	foreach ( $required as $table => $fields ) {
-		$info = $wpdb->get_row( $wpdb->prepare( 'SHOW TABLE STATUS WHERE Name = %s', $table ), ARRAY_A );
-		if ( ! $info || strtoupper( $info['Engine'] ?? '' ) !== 'INNODB' || array_diff( $fields, $wpdb->get_col( "SHOW COLUMNS FROM `$table`" ) ) ) { return false; }
-	}
-	$indexes = $wpdb->get_results( "SHOW INDEX FROM `$a`", ARRAY_A ); $unique = false;
-	foreach ( (array) $indexes as $index ) { if ( $index['Key_name'] === 'request_key' && (int) $index['Non_unique'] === 0 && $index['Column_name'] === 'request_key' ) { $unique = true; } }
-	if ( ! $unique ) { return false; }
-	update_option( 'hj_booking_schema_version', 1, false );
-	return (int) get_option( 'hj_booking_schema_version' ) === 1;
+ global $wpdb;
+ if ( ! hj_booking_enabled() || ! current_user_can( 'manage_options' ) || get_class( $wpdb ) !== 'wpdb' ) { return false; }
+ $db = new HJ_Booking_Transaction_DB( DB_USER, DB_PASSWORD, DB_NAME, DB_HOST );
+ $db->suppress_errors( true ); $locked = false; $ok = false;
+ $lock = 'hj-booking-migration-' . substr( hash( 'sha256', DB_NAME . '|' . $wpdb->prefix ), 0, 40 );
+ try {
+  $got = hj_booking_row( $db, $db->prepare( 'SELECT GET_LOCK(%s, 5) AS acquired', $lock ) );
+  if ( ! $got || (int) $got['acquired'] !== 1 ) { return false; }
+  $locked = true; hj_booking_schema_clear_option_cache();
+  $raw_version = get_option( 'hj_booking_schema_version', 0 );
+  if ( ! is_scalar( $raw_version ) || ! in_array( (string) $raw_version, array( '0', '1' ), true ) ) { return false; }
+  $version = (int) $raw_version;
+  $definitions = hj_booking_schema_definitions( $wpdb->get_charset_collate() );
+  $existing = array(); $missing = array();
+  foreach ( $definitions as $table => $sql ) {
+   $info = hj_booking_row( $db, $db->prepare( 'SHOW TABLE STATUS WHERE Name = %s', $table ) );
+   if ( ! $info ) { $missing[$table] = $sql; continue; }
+   if ( ! hj_booking_schema_valid_table( $db, $table ) ) { return false; }
+   $existing[] = $table;
+  }
+  // A missing table in an already-installed schema is not an empty install.
+  if ( $version === 1 && $missing ) { return false; }
+  // Resume a partial fresh install only when existing partial tables are empty.
+  if ( $missing ) {
+   foreach ( $existing as $table ) { if ( hj_booking_row( $db, "SELECT 1 AS present FROM `$table` LIMIT 1" ) ) { return false; } }
+  }
+  foreach ( $missing as $sql ) { hj_booking_query( $db, $sql ); }
+  foreach ( $definitions as $table => $sql ) { if ( ! hj_booking_schema_valid_table( $db, $table ) ) { return false; } }
+  hj_booking_schema_clear_option_cache();
+  update_option( 'hj_booking_schema_version', 1, false );
+  update_option( 'hj_booking_schema_verified', 1, false );
+  hj_booking_schema_clear_option_cache();
+  $ok = (int) get_option( 'hj_booking_schema_version', 0 ) === 1 && (int) get_option( 'hj_booking_schema_verified', 0 ) === 1;
+  return $ok;
+ } catch ( Throwable $e ) { return false; }
+ finally {
+  if ( $locked && ! $ok ) { update_option( 'hj_booking_schema_verified', 0, false ); }
+  if ( $locked ) { $db->get_var( $db->prepare( 'SELECT RELEASE_LOCK(%s)', $lock ) ); }
+  $db->close();
+ }
 }
 function hj_booking_ready() {
-	global $wpdb;
-	return hj_booking_enabled() && (int) get_option( 'hj_booking_schema_version', 0 ) === 1 && get_class( $wpdb ) === 'wpdb';
+ global $wpdb;
+ return hj_booking_enabled() && (int) get_option( 'hj_booking_schema_version', 0 ) === 1 && (int) get_option( 'hj_booking_schema_verified', 0 ) === 1 && get_class( $wpdb ) === 'wpdb';
 }
+/** Activation and upgrades remain inert unless the explicit booking flag is true. */
+function hj_booking_maybe_install_schema() {
+ if ( hj_booking_enabled() && current_user_can( 'manage_options' ) && ! hj_booking_ready() ) { hj_booking_install_schema(); }
+}
+add_action( 'admin_init', 'hj_booking_maybe_install_schema', 2 );
+add_action( 'admin_notices', function () {
+ if ( hj_booking_enabled() && current_user_can( 'manage_options' ) && ! hj_booking_ready() ) { echo '<div class="notice notice-error"><p>ساختار نوبت‌دهی تأیید نشد؛ قابلیت غیرفعال است. پشتیبان و وضعیت جداول را بررسی کنید.</p></div>'; }
+} );
 function hj_booking_can_configure( $doctor ) {
 	return is_user_logged_in() && get_post_type( $doctor ) === 'doctor' && function_exists( 'hj_doctors_user_can_edit_profile' ) && hj_doctors_user_can_edit_profile( $doctor );
 }

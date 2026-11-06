@@ -115,6 +115,17 @@ jobs:
             echo "::error title=WordPress dashboard copy failure::$summary"
             exit "$status"
           fi
+      - name: Verify real plugin schema installation and concurrent migration
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l plugins/hamyar-doctors/includes/appointments.php && php tools/hj-booking-integration/migration-fixture.php off && php -d auto_prepend_file="$GITHUB_WORKSPACE/tools/hj-booking-integration/prepend.php" tools/hj-booking-integration/migration-fixture.php && python3 tools/hj-booking-integration/migration-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Booking migration failure::$summary"
+            exit "$status"
+          fi
       - name: Exercise unchanged repository plugin booking backend
         run: |
           set -e
