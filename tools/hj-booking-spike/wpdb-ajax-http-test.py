@@ -212,7 +212,7 @@ try:
     check(len(final) == len(expected_ids) and {int(r['id']) for r in final} == expected_ids and len({r['request_key'] for r in final}) == len(final) and all(int(r['revision']) == open_revision and r['details_id'] is not None for r in final), 'no lost or duplicate bookings; each is linked to open revision and details')
 
     # Deterministic closure-first ordering: doctor owns the DB mutex before
-    # eight distinct patients reach SELECT FOR UPDATE, then publishes closed.
+    # eight distinct patient requests start; at least one reaches the lock while held.
     ajax(owner, open_hours)
     hold_token = key(34000)
     save_ready, save_release = barrier('save-hold-' + hold_token)
@@ -220,11 +220,15 @@ try:
     with concurrent.futures.ThreadPoolExecutor(max_workers=9) as pool:
         closer = pool.submit(ajax, owner, dict(common, _hjn=owner_nonce, hj_ci_mirror_fail='1', hj_ci_hold_lock=hold_token, **{'hours[wednesday][closed]': '1'}))
         wait_ready([save_ready])
-        future_patients = [pool.submit(ajax, patients[i], booking_payload(doctor_id, nonces[i], '2030-01-02 06:40:00', key(34100+i), 'signal_before_lock')) for i in range(8)]
-        try: wait_ready(waiting)
-        except Exception:
-            print('Patient barrier diagnostics:', [(i, f.done(), f.result() if f.done() and not f.exception() else str(f.exception()) if f.done() else 'waiting') for i, f in enumerate(future_patients)], flush=True)
-            raise
+        patient_gate = threading.Barrier(8)
+        def waiting_patient(i):
+            patient_gate.wait(timeout=15)
+            return ajax(patients[i], booking_payload(doctor_id, nonces[i], '2030-01-02 06:40:00', key(34100+i), 'signal_before_lock'))
+        future_patients = [pool.submit(waiting_patient, i) for i in range(8)]
+        try:
+            deadline = time.monotonic() + 18
+            while not any(p.exists() for p in waiting) and time.monotonic() < deadline: time.sleep(.01)
+            check(any(p.exists() for p in waiting), 'at least one concurrent patient reached the held mutex')
         finally: save_release.touch()
         check(closer.result(timeout=40) is not None, 'held doctor closure committed')
         after_close = [f.result(timeout=40) for f in future_patients]
