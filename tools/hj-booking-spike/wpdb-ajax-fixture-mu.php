@@ -6,6 +6,7 @@ if ( getenv( 'GITHUB_ACTIONS' ) !== 'true' || getenv( 'HJ_DISPOSABLE_MARIADB_FIX
 /** WordPress wpdb query semantics but no silent reconnect/replay while locked. */
 class HJ_CI_No_Reconnect_WPDB extends wpdb {
 	public function check_connection( $allow_bail = true ) { return false; }
+	public function fixture_errno() { return $this->dbh instanceof mysqli ? mysqli_errno( $this->dbh ) : 0; }
 }
 
 /** Called from ONE replaced line in a disposable copy of the actual dashboard. */

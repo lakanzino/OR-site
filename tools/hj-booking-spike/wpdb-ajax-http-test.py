@@ -168,6 +168,8 @@ try:
     check(all(r['status'] == 'replayed' and r['id'] == replay['id'] for r in retries), 'concurrent same-key retries return the same committed booking')
     conflict = ajax(patients[0], dict(retry_payload, start='2030-01-02 06:05:00'))
     check(conflict['status'] == 'idempotency_conflict', 'same key cannot be reused for changed request')
+    cross_patient = dict(retry_payload, nonce=nonces[1])
+    check(ajax(patients[1], cross_patient)['status'] == 'idempotency_conflict', 'another patient cannot replay a booking key')
     before = audit(owner, doctor_id)
     check(len(before) == 1 and before[0]['request_key'] == lost_key and before[0]['details_id'] is not None, 'lost response left exactly one booking and atomic details')
 
@@ -256,6 +258,36 @@ try:
     check(ajax(patients[3], booking_payload(doctor_id, nonces[3], '2030-01-02 07:15:00', key(35001)))['status'] == 'invalid_slot', 'new booking after ordered closure fails')
     final_ordered = audit(owner, doctor_id)
     check(len(final_ordered) == len(expected_ids) + 1 and sum(int(r['id']) == prior['id'] and int(r['revision']) == before_rev and r['details_id'] is not None for r in final_ordered) == 1, 'ordered race commits exactly one open-revision booking and its details')
+
+    # Real InnoDB lock timeout: three bounded attempts, no blind replay;
+    # release the dashboard writer, then the same idempotency key reconciles.
+    timeout_token = key(36000)
+    timeout_ready, timeout_release = barrier('save-hold-' + timeout_token)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+        holder = pool.submit(ajax, owner, dict(open_hours, hj_ci_hold_lock=timeout_token))
+        wait_ready([timeout_ready])
+        started = time.monotonic()
+        try:
+            busy = ajax(patients[0], retry_payload)
+            elapsed = time.monotonic() - started
+            check(busy['status'] == 'busy' and elapsed >= 2.5, 'wpdb booking retry is bounded on real lock timeout')
+        finally: timeout_release.touch()
+        check(holder.result(timeout=40) is not None, 'dashboard lock released after timeout')
+    check(ajax(patients[0], retry_payload)['id'] == replay['id'], 'same key reconciles after lock timeout and release')
+    check(len(audit(owner, doctor_id)) == len(expected_ids) + 1, 'timeout retries caused no extra booking')
+
+    # Minimal integrated status/cancel/rebook path, all on the same mutex.
+    owner_booking_nonce = booking_nonce(owner)
+    status_payload = {'action': 'hj_ci_status', 'doctor': str(doctor_id), 'nonce': owner_booking_nonce, 'id': str(after_kill['id']), 'status': 'confirmed'}
+    check(request(patients[1], url, dict(status_payload, nonce=nonces[1]))[0] == 403, 'patient cannot change booking status')
+    check(ajax(owner, status_payload)['status'] == 'updated', 'doctor confirms booking under shared mutex')
+    check(ajax(owner, dict(status_payload, status='cancelled'))['status'] == 'updated', 'doctor cancels booking under shared mutex')
+    rebook_key = key(37000)
+    rebook = ajax(patients[4], booking_payload(doctor_id, nonces[4], '2030-01-02 06:05:00', rebook_key))
+    check(rebook['status'] == 'created' and rebook['id'] != after_kill['id'], 'patient rebooks cancelled interval')
+    check(ajax(patients[5], booking_payload(doctor_id, nonces[5], '2030-01-02 06:05:00', key(37001)))['status'] == 'invalid_slot', 'rebooked interval cannot be taken twice')
+    last = audit(owner, doctor_id)
+    check(len(last) == len(expected_ids) + 2 and sum(int(r['id']) == after_kill['id'] and r['status'] == 'cancelled' for r in last) == 1 and sum(int(r['id']) == rebook['id'] and r['status'] == 'pending' and r['details_id'] is not None for r in last) == 1, 'cancel and rebook retain distinct consistent records')
 finally:
     if server:
         os.killpg(server.pid, signal.SIGTERM)

@@ -18,17 +18,17 @@ function hj_ci_barrier( $name, $wait ) {
 }
 function hj_ci_sql( $db, $sql ) {
 	$result = $db->query( $sql );
-	if ( $result === false ) { throw new RuntimeException( 'Fixture SQL failure' ); }
+	if ( $result === false ) { throw new RuntimeException( 'Fixture SQL failure', $db->fixture_errno() ); }
 	return $result;
 }
 function hj_ci_row( $db, $sql ) {
 	$result = $db->get_row( $sql, ARRAY_A );
-	if ( $db->last_error ) { throw new RuntimeException( 'Fixture SQL failure' ); }
+	if ( $db->last_error ) { throw new RuntimeException( 'Fixture SQL failure', $db->fixture_errno() ); }
 	return $result;
 }
 function hj_ci_rows( $db, $sql ) {
 	$result = $db->get_results( $sql, ARRAY_A );
-	if ( $db->last_error || ! is_array( $result ) ) { throw new RuntimeException( 'Fixture SQL failure' ); }
+	if ( $db->last_error || ! is_array( $result ) ) { throw new RuntimeException( 'Fixture SQL failure', $db->fixture_errno() ); }
 	return $result;
 }
 /** Both dashboard and booking take this same mutex before reading capacity. */
@@ -54,6 +54,14 @@ function hj_ci_slots_locked( $db, $doctor, $config, $date ) {
 }
 /** Same-key replay is checked before availability, so a committed result survives later closure. */
 function hj_ci_booking_operation( $mode, $doctor, $date, $start = '', $key = '', $phone = '', $national = '', $fault = '' ) {
+	for ( $attempt = 0; $attempt < 3; $attempt++ ) {
+		$result = hj_ci_booking_attempt( $mode, $doctor, $date, $start, $key, $phone, $national, $fault );
+		if ( $result['status'] !== 'retry_lock' ) { return $result; }
+		if ( $attempt < 2 ) { usleep( 20000 * ( $attempt + 1 ) ); }
+	}
+	return array( 'status' => 'busy' );
+}
+function hj_ci_booking_attempt( $mode, $doctor, $date, $start, $key, $phone, $national, $fault ) {
 	$patient = get_current_user_id();
 	if ( ! $patient || get_post_type( $doctor ) !== 'doctor' || get_post_status( $doctor ) !== 'publish' ) { return array( 'status' => 'forbidden' ); }
 	if ( ! preg_match( '/^2030-01-02$/D', $date ) ) { return array( 'status' => 'invalid' ); } // fixture scope, not a production rule
@@ -65,6 +73,7 @@ function hj_ci_booking_operation( $mode, $doctor, $date, $start = '', $key = '',
 	$db = new HJ_CI_No_Reconnect_WPDB( DB_USER, DB_PASSWORD, DB_NAME, DB_HOST );
 	$db->suppress_errors( true ); $begun = false; $committing = false;
 	try {
+		hj_ci_sql( $db, 'SET SESSION innodb_lock_wait_timeout = 1' );
 		hj_ci_sql( $db, 'START TRANSACTION' ); $begun = true;
 		if ( $mode === 'create' && $fault === 'signal_before_lock' ) { hj_ci_barrier( 'booking-wait-' . $key, false ); }
 		$config = hj_ci_lock_doctor( $db, $doctor );
@@ -108,7 +117,8 @@ function hj_ci_booking_operation( $mode, $doctor, $date, $start = '', $key = '',
 		}
 		return array( 'status' => 'created', 'id' => $id, 'revision' => $available['revision'] );
 	} catch ( Throwable $e ) {
-		return array( 'status' => $committing ? 'unknown' : 'error' );
+		if ( $committing ) { return array( 'status' => 'unknown' ); }
+		return array( 'status' => in_array( $e->getCode(), array( 1205, 1213 ), true ) ? 'retry_lock' : 'error' );
 	} finally {
 		if ( $begun && ! $committing ) { $db->query( 'ROLLBACK' ); }
 		$db->close();
@@ -121,6 +131,24 @@ function hj_ci_booking_handler( $mode ) {
 	$result = hj_ci_booking_operation( $mode, $doctor, $val('date'), $val('start'), $val('key'), $val('phone'), $val('national'), $val('fault') );
 	wp_send_json_success( $result );
 }
+add_action( 'wp_ajax_hj_ci_status', function () {
+	check_ajax_referer( 'hj_ci_booking', 'nonce' );
+	$doctor = isset( $_POST['doctor'] ) ? absint( $_POST['doctor'] ) : 0;
+	$id = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
+	$status = isset( $_POST['status'] ) && is_string( $_POST['status'] ) ? wp_unslash( $_POST['status'] ) : '';
+	if ( ! current_user_can( 'edit_post', $doctor ) || ! in_array( $status, array( 'confirmed', 'cancelled' ), true ) ) { wp_send_json_error( array(), 403 ); }
+	$db = new HJ_CI_No_Reconnect_WPDB( DB_USER, DB_PASSWORD, DB_NAME, DB_HOST ); $db->suppress_errors( true ); $begun = false; $committing = false;
+	try {
+		hj_ci_sql( $db, 'START TRANSACTION' ); $begun = true;
+		if ( ! hj_ci_lock_doctor( $db, $doctor ) ) { throw new RuntimeException( 'Doctor missing' ); }
+		$n = hj_ci_sql( $db, $db->prepare( "UPDATE hjt_hjb_spike_appointments SET status=%s WHERE doctor_id=%d AND id=%d AND status IN ('pending','confirmed')", $status, $doctor, $id ) );
+		$committing = true;
+		if ( false === $db->query( 'COMMIT' ) ) { $result = array( 'status' => 'unknown' ); }
+		else { $begun = false; $result = array( 'status' => $n === 1 ? 'updated' : 'not_found' ); }
+	} catch ( Throwable $e ) { $result = array( 'status' => $committing ? 'unknown' : 'error' ); }
+	finally { if ( $begun && ! $committing ) { $db->query( 'ROLLBACK' ); } $db->close(); }
+	wp_send_json_success( $result );
+} );
 add_action( 'wp_ajax_hj_ci_slots', function () { hj_ci_booking_handler( 'slots' ); } );
 add_action( 'wp_ajax_hj_ci_create', function () { hj_ci_booking_handler( 'create' ); } );
 add_action( 'wp_ajax_hj_ci_booking_nonce', function () { wp_send_json_success( array( 'nonce' => wp_create_nonce( 'hj_ci_booking' ) ) ); } );
@@ -128,7 +156,7 @@ add_action( 'wp_ajax_hj_ci_booking_audit', function () {
 	$doctor = isset( $_POST['doctor'] ) ? absint( $_POST['doctor'] ) : 0;
 	if ( ! current_user_can( 'edit_post', $doctor ) ) { wp_send_json_error( array(), 403 ); }
 	global $wpdb;
-	$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT a.id,a.request_key,a.starts_at,a.patient_id,b.revision,d.appointment_id AS details_id FROM hjt_hjb_spike_appointments a LEFT JOIN hjt_hjb_ci_booking_audit b ON a.id=b.appointment_id LEFT JOIN hjt_hjb_spike_details d ON d.appointment_id=a.id WHERE a.doctor_id=%d ORDER BY a.id', $doctor ), ARRAY_A );
+	$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT a.id,a.request_key,a.starts_at,a.patient_id,a.status,b.revision,d.appointment_id AS details_id FROM hjt_hjb_spike_appointments a LEFT JOIN hjt_hjb_ci_booking_audit b ON a.id=b.appointment_id LEFT JOIN hjt_hjb_spike_details d ON d.appointment_id=a.id WHERE a.doctor_id=%d ORDER BY a.id', $doctor ), ARRAY_A );
 	if ( $wpdb->last_error ) { wp_send_json_error( array(), 500 ); }
 	wp_send_json_success( $rows );
 } );
