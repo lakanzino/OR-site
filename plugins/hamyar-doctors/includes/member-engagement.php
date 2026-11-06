@@ -56,7 +56,9 @@ add_action( 'init', function () {
 	}
 	hj_member_intent_cookie( true );
 	$base = is_callable( array( 'NextendSocialLogin', 'getLoginUrl' ) ) ? NextendSocialLogin::getLoginUrl() : site_url( 'wp-login.php' );
-	wp_safe_redirect( add_query_arg( array( 'loginSocial' => 'google', 'redirect' => $account ), $base ) ); exit;
+	// add_query_arg does not encode newly supplied values; the nested URL may
+	// contain its own query string and fragment (e.g. the booking form).
+	wp_safe_redirect( add_query_arg( array( 'loginSocial' => 'google', 'redirect' => rawurlencode( $account ) ), $base ) ); exit;
 }, 4 );
 
 /** Account shortcode may be placed on any page, not only the default one. */
