@@ -29,6 +29,8 @@ if ($mode==='setup') {
  wp_set_password('disposable-test-password',$admin->ID); wp_set_password('disposable-test-password',$owner->ID); wp_set_password('disposable-test-password',$other->ID); wp_set_password('disposable-test-password',$patient->ID);
  $date=(new DateTimeImmutable('now',wp_timezone()))->modify('+2 days')->format('Y-m-d');
  $weekday=strtolower((new DateTimeImmutable($date,new DateTimeZone('UTC')))->format('l'));
+ global $wpdb; $activation_table=hj_booking_table('doctors');
+ if ($wpdb->query("ALTER TABLE `$activation_table` ADD COLUMN activation_generation bigint unsigned NOT NULL DEFAULT 0")===false) { throw new RuntimeException('synthetic activation generation setup failed'); }
  update_option('hj_booking_schema_version',2,false); hj_booking_schema_clear_option_cache();
  if (!hj_booking_capacity_v2_ready()) { throw new RuntimeException('fixture v2 gate unavailable'); }
  global $wpdb; $extra=hj_booking_patient_details_v2_table();
@@ -51,6 +53,7 @@ if ($mode==='cleanup') {
  wp_delete_post($doc,true); wp_delete_post((int)$data['page'],true); wp_delete_post((int)$data['dashboard'],true); update_option('hj_doctors_dashboard_page',$data['old_dashboard'],false);
  wp_delete_post((int)$data['account'],true); wp_delete_post((int)$data['combined'],true); update_option('hj_member_account_page',$data['old_account'],false); update_option('stylesheet',$data['old_theme']); update_option('template',$data['old_template']);
  if ($data['old_meta']==='') { delete_user_meta($owner->ID,'hj_doctor_post_id'); } else { update_user_meta($owner->ID,'hj_doctor_post_id',$data['old_meta']); }
- update_option('hj_booking_schema_version',1,false); hj_booking_schema_clear_option_cache(); update_option('active_plugins',array()); unlink($meta); exit(0);
+ update_option('hj_booking_schema_version',1,false); hj_booking_schema_clear_option_cache();
+ $activation_table=hj_booking_table('doctors'); if ($wpdb->query("ALTER TABLE `$activation_table` DROP COLUMN activation_generation")===false) { throw new RuntimeException('synthetic activation generation cleanup failed'); } update_option('active_plugins',array()); unlink($meta); exit(0);
 }
 exit(1);

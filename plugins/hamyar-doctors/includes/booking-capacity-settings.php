@@ -13,14 +13,16 @@ function hj_capacity_editor_state( $doctor ) {
 	$d = hj_booking_table( 'doctors' ); $s = hj_booking_table( 'schedules' );
 	$previous = $wpdb->suppress_errors( true );
 	try {
-		$row = $wpdb->get_row( $wpdb->prepare( "SELECT d.doctor_id AS configured,d.enabled,d.duration_minutes,d.buffer_minutes,s.doctor_id AS scheduled,s.revision,s.rows_json,s.rows_hash FROM (SELECT %d AS doctor_id) x LEFT JOIN `$d` d ON d.doctor_id=x.doctor_id LEFT JOIN `$s` s ON s.doctor_id=x.doctor_id", $doctor ), ARRAY_A );
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT d.doctor_id AS configured,d.enabled,d.duration_minutes,d.buffer_minutes,d.activation_generation,s.doctor_id AS scheduled,s.revision,s.rows_json,s.rows_hash FROM (SELECT %d AS doctor_id) x LEFT JOIN `$d` d ON d.doctor_id=x.doctor_id LEFT JOIN `$s` s ON s.doctor_id=x.doctor_id", $doctor ), ARRAY_A );
 		if ( $wpdb->last_error || ! $row || ( $row['scheduled'] !== null && $row['configured'] === null ) ) { return array( 'status'=>'invalid_schedule' ); }
 		$duration = $row['configured'] === null ? 30 : (int)$row['duration_minutes'];
 		$buffer = $row['configured'] === null ? 0 : (int)$row['buffer_minutes'];
 		if ( $duration < 1 || $duration > 240 || $buffer < 0 || $buffer > 120 || ( $row['configured'] !== null && ! in_array( (int)$row['enabled'], array(0,1), true ) ) ) { return array( 'status'=>'invalid_schedule' ); }
 		$enabled = $row['configured'] !== null && (bool)(int)$row['enabled'];
+		$generation = $row['configured'] === null ? 0 : hj_booking_activation_generation( $row );
+		if ( $generation === false ) { return array( 'status'=>'invalid_schedule' ); }
 		$expected = array( 'duration'=>$row['configured'] === null ? 30 : $duration, 'buffer'=>$row['configured'] === null ? 5 : $buffer, 'enabled'=>$enabled );
-		if ( $row['scheduled'] === null ) { return array( 'status'=>'ok', 'revision'=>0, 'enabled'=>$enabled, 'rows'=>array(), 'duration'=>$duration, 'buffer'=>$buffer, 'expected_config'=>$expected, 'missing'=>true ); }
+		if ( $row['scheduled'] === null ) { return array( 'status'=>'ok', 'revision'=>0, 'enabled'=>$enabled, 'rows'=>array(), 'duration'=>$duration, 'buffer'=>$buffer, 'expected_config'=>$expected, 'generation'=>$generation, 'format'=>0, 'missing'=>true ); }
 		$snapshot = hj_booking_decode_snapshot( $row );
 		if ( $snapshot === false ) { return array( 'status'=>'invalid_schedule' ); }
 		$rows = array();
@@ -28,7 +30,7 @@ function hj_capacity_editor_state( $doctor ) {
 			if ( $snapshot['format'] === 1 ) { $entry += array( 'duration_minutes'=>$duration, 'buffer_minutes'=>$buffer, 'capacity'=>1 ); }
 			$rows[$entry['day_of_week']] = $entry;
 		}
-		return array( 'status'=>'ok', 'revision'=>$snapshot['revision'], 'enabled'=>$enabled, 'rows'=>$rows, 'duration'=>$snapshot['format'] === 1 ? $duration : 30, 'buffer'=>$snapshot['format'] === 1 ? $buffer : 0, 'expected_config'=>$expected, 'missing'=>false );
+		return array( 'status'=>'ok', 'revision'=>$snapshot['revision'], 'enabled'=>$enabled, 'rows'=>$rows, 'duration'=>$snapshot['format'] === 1 ? $duration : 30, 'buffer'=>$snapshot['format'] === 1 ? $buffer : 0, 'expected_config'=>$expected, 'generation'=>$generation, 'format'=>$snapshot['format'], 'missing'=>false );
 	} catch ( Throwable $e ) { return array( 'status'=>'unavailable' ); }
 	finally { $wpdb->suppress_errors( $previous ); }
 }
@@ -55,6 +57,7 @@ function hj_capacity_settings_shortcode( $attributes = array() ) {
 	$messages = array(
 		'saved'=>'برنامه ذخیره شد.',
 		'paused'=>'دریافت نوبت جدید متوقف شد؛ نوبت‌های ثبت‌شده حفظ می‌شوند.',
+		'resumed'=>'دریافت نوبت جدید با برنامهٔ ذخیره‌شده از سر گرفته شد؛ نوبت‌های قبلی حفظ می‌شوند.',
 		'conflict'=>'برنامه در صفحهٔ دیگری تغییر کرده است؛ اطلاعات جدید را بررسی و دوباره وارد کنید.',
 		'booked'=>'تا زمان وجود نوبت آینده یا در حال انجام، تغییر برنامه مجاز نیست؛ نوبت‌ها حذف نمی‌شوند.',
 		'invalid'=>'اطلاعات برنامه معتبر نیست. لطفاً زمان‌ها و مقدارها را بررسی کنید.',
@@ -76,6 +79,7 @@ function hj_capacity_settings_shortcode( $attributes = array() ) {
 			<input type="hidden" name="original_duration" value="<?php echo esc_attr( $state['expected_config']['duration'] ); ?>">
 			<input type="hidden" name="original_buffer" value="<?php echo esc_attr( $state['expected_config']['buffer'] ); ?>">
 			<input type="hidden" name="original_enabled" value="<?php echo $state['expected_config']['enabled'] ? '1' : '0'; ?>">
+			<input type="hidden" name="original_generation" value="<?php echo esc_attr( $state['generation'] ); ?>">
 			<?php wp_nonce_field( 'hj_capacity_week_' . $doctor, 'hj_capacity_nonce' ); ?>
 			<label class="hj-capacity__switch">وضعیت نوبت‌دهی <select name="enabled" required><option value="0" <?php selected( $state['enabled'], false ); ?>>غیرفعال</option><option value="1" <?php selected( $state['enabled'], true ); ?>>فعال</option></select></label>
 			<div class="hj-capacity__days">
@@ -100,6 +104,18 @@ function hj_capacity_settings_shortcode( $attributes = array() ) {
 			<p>برای توقف دریافت نوبت جدید، بدون حذف نوبت‌های ثبت‌شده، از این دکمه استفاده کنید.</p>
 			<button type="submit">توقف دریافت نوبت جدید</button>
 		</form>
+		<?php if ( ! $state['missing'] && ! $state['enabled'] && $state['format'] === 2 ) : ?>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="hj-capacity__resume">
+			<input type="hidden" name="action" value="hj_capacity_resume">
+			<input type="hidden" name="doctor_id" value="<?php echo esc_attr( $doctor ); ?>">
+			<input type="hidden" name="page_id" value="<?php echo esc_attr( $page ); ?>">
+			<input type="hidden" name="resume_revision" value="<?php echo esc_attr( $state['revision'] ); ?>">
+			<input type="hidden" name="resume_generation" value="<?php echo esc_attr( $state['generation'] ); ?>">
+			<?php wp_nonce_field( 'hj_capacity_resume_' . $doctor, 'hj_capacity_resume_nonce' ); ?>
+			<p>برای شروع دوباره، برنامهٔ ذخیره‌شده را بدون تغییر ساعت یا نوبت‌های موجود فعال کنید.</p>
+			<button type="submit">شروع دوبارهٔ دریافت نوبت</button>
+		</form>
+		<?php endif; ?>
 	</section>
 	<?php return ob_get_clean();
 }
@@ -123,11 +139,13 @@ function hj_capacity_week_save() {
 	$raw_revision = isset( $_POST['revision'] ) && is_string( $_POST['revision'] ) ? wp_unslash( $_POST['revision'] ) : '';
 	$enabled = isset( $_POST['enabled'] ) && is_string( $_POST['enabled'] ) ? wp_unslash( $_POST['enabled'] ) : '';
 	$original_enabled = isset( $_POST['original_enabled'] ) && is_string( $_POST['original_enabled'] ) ? wp_unslash( $_POST['original_enabled'] ) : '';
+	$raw_generation = isset( $_POST['original_generation'] ) && is_string( $_POST['original_generation'] ) ? wp_unslash( $_POST['original_generation'] ) : '';
+	$original_generation = hj_booking_activation_generation( array( 'activation_generation'=>$raw_generation ) );
 	$original_duration = hj_capacity_int( isset( $_POST['original_duration'] ) && is_string( $_POST['original_duration'] ) ? wp_unslash( $_POST['original_duration'] ) : '', 1, 240 );
 	$original_buffer = hj_capacity_int( isset( $_POST['original_buffer'] ) && is_string( $_POST['original_buffer'] ) ? wp_unslash( $_POST['original_buffer'] ) : '', 0, 120 );
 	$week = isset( $_POST['week'] ) && is_array( $_POST['week'] ) ? wp_unslash( $_POST['week'] ) : array();
 	$valid_revision = preg_match( '/^(0|[1-9][0-9]*)$/D', $raw_revision ) && strlen( $raw_revision ) <= strlen( (string)PHP_INT_MAX ) && (string)(int)$raw_revision === $raw_revision;
-	$valid = $valid_revision && in_array( $enabled, array('0','1'), true ) && in_array( $original_enabled, array('0','1'), true ) && $original_duration !== false && $original_buffer !== false && count( $week ) === 7; $rows = array();
+	$valid = $valid_revision && in_array( $enabled, array('0','1'), true ) && in_array( $original_enabled, array('0','1'), true ) && $original_duration !== false && $original_buffer !== false && $original_generation !== false && count( $week ) === 7; $rows = array();
 	foreach ( hj_capacity_days() as $key=>$label ) {
 		$day = $week[$key] ?? null;
 		if ( ! is_array( $day ) || count( $day ) !== 6 || ! isset( $day['closed'], $day['start'], $day['end'], $day['duration'], $day['buffer'], $day['capacity'] ) || ! is_string( $day['closed'] ) || ! in_array( $day['closed'], array('0','1'), true ) || ! is_string( $day['start'] ) || ! is_string( $day['end'] ) ) { $valid = false; break; }
@@ -135,7 +153,7 @@ function hj_capacity_week_save() {
 		if ( $duration === false || $buffer === false || $capacity === false ) { $valid = false; break; }
 		$rows[] = array( 'day_of_week'=>$key, 'is_closed'=>(int)$day['closed'], 'start_time'=>trim( $day['start'] ), 'end_time'=>trim( $day['end'] ), 'duration_minutes'=>$duration, 'buffer_minutes'=>$buffer, 'capacity'=>$capacity );
 	}
-	$expected_config = array( 'duration'=>$original_duration, 'buffer'=>$original_buffer, 'enabled'=>$original_enabled === '1' );
+	$expected_config = array( 'duration'=>$original_duration, 'buffer'=>$original_buffer, 'enabled'=>$original_enabled === '1', 'generation'=>$original_generation );
 	$result = $valid ? hj_booking_save_capacity_week( $doctor, $rows, (int)$raw_revision, $enabled === '1', $expected_config ) : array( 'status'=>'invalid' );
 	$codes = array( 'saved'=>'saved', 'revision_conflict'=>'conflict', 'has_future_bookings'=>'booked', 'invalid'=>'invalid', 'unknown'=>'unknown' );
 	$status = $codes[$result['status'] ?? ''] ?? 'error';
@@ -157,3 +175,24 @@ function hj_capacity_pause() {
 	wp_safe_redirect( $url, 303 ); exit;
 }
 add_action( 'admin_post_hj_capacity_pause', 'hj_capacity_pause' );
+
+/** Separate activation transition; never modifies the weekly form or existing bookings. */
+function hj_capacity_resume() {
+	if ( ! hj_booking_ready() || ! hj_booking_capacity_v2_ready() ) { wp_die( 'نوبت‌دهی در دسترس نیست.', '', array( 'response'=>503 ) ); }
+	if ( ( $_SERVER['REQUEST_METHOD'] ?? '' ) !== 'POST' || ! is_user_logged_in() ) { wp_die( 'درخواست معتبر نیست.', '', array( 'response'=>403 ) ); }
+	$doctor = hj_booking_ui_int( isset( $_POST['doctor_id'] ) && is_string( $_POST['doctor_id'] ) ? wp_unslash( $_POST['doctor_id'] ) : '' );
+	$page = hj_booking_ui_int( isset( $_POST['page_id'] ) && is_string( $_POST['page_id'] ) ? wp_unslash( $_POST['page_id'] ) : '' );
+	$nonce = isset( $_POST['hj_capacity_resume_nonce'] ) && is_string( $_POST['hj_capacity_resume_nonce'] ) ? wp_unslash( $_POST['hj_capacity_resume_nonce'] ) : '';
+	if ( ! $doctor || ! $page || ! hj_capacity_page_valid( $page ) || ! wp_verify_nonce( $nonce, 'hj_capacity_resume_' . $doctor ) || ! hj_booking_can_configure( $doctor ) ) { wp_die( 'دسترسی مجاز نیست.', '', array( 'response'=>403 ) ); }
+	if ( ! hj_sec_rate_limit( 'capacity_resume', 60, HOUR_IN_SECONDS ) ) { wp_die( 'درخواست‌های زیادی ارسال شده است؛ بعداً تلاش کنید.', '', array( 'response'=>429 ) ); }
+	$rev = isset( $_POST['resume_revision'] ) && is_string( $_POST['resume_revision'] ) ? wp_unslash( $_POST['resume_revision'] ) : '';
+	$raw = isset( $_POST['resume_generation'] ) && is_string( $_POST['resume_generation'] ) ? wp_unslash( $_POST['resume_generation'] ) : '';
+	$revision = hj_booking_ui_int( $rev );
+	$generation = preg_match( '/^(0|[1-9][0-9]*)$/D', $raw ) && strlen( $raw ) <= strlen( (string)PHP_INT_MAX ) && (string)(int)$raw === $raw && (int)$raw < PHP_INT_MAX ? (int)$raw : false;
+	$result = $revision && $generation !== false ? hj_booking_resume_capacity( $doctor, $revision, $generation ) : array( 'status'=>'invalid' );
+	$codes = array( 'resumed'=>'resumed', 'revision_conflict'=>'conflict', 'invalid'=>'invalid', 'unknown'=>'unknown' );
+	$status = $codes[$result['status'] ?? ''] ?? 'error';
+	$url = add_query_arg( 'hj_cap_status', $status, get_permalink( $page ) ) . '#hj-capacity-settings';
+	wp_safe_redirect( $url, 303 ); exit;
+}
+add_action( 'admin_post_hj_capacity_resume', 'hj_capacity_resume' );

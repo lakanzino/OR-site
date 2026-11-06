@@ -17,6 +17,8 @@ if ($mode==='setup') {
  global $wpdb; $table=hj_booking_table('schedules'); $before=$wpdb->get_row($wpdb->prepare("SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d",$doctor),ARRAY_A);
  $v1=hj_booking_public_slots((int)$doctor,$date);
  // Deliberate fixture-only option change: NOT a migration and NOT safe on a real site.
+ global $wpdb; $activation_table=hj_booking_table('doctors');
+ if ($wpdb->query("ALTER TABLE `$activation_table` ADD COLUMN activation_generation bigint unsigned NOT NULL DEFAULT 0")===false) { throw new RuntimeException('synthetic activation generation setup failed'); }
  update_option('hj_booking_schema_version',2,false); hj_booking_schema_clear_option_cache();
  $v2=hj_booking_public_slots((int)$doctor,$date); $after=$wpdb->get_row($wpdb->prepare("SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d",$doctor),ARRAY_A);
  v2_check(hj_booking_capacity_v2_ready() && hj_booking_ready() && $v1===$v2 && $before===$after,'legacy schedule read in v2 preserves data, old duration and buffer');
@@ -182,6 +184,7 @@ if ($mode==='cleanup') {
  $ids=$wpdb->get_col($wpdb->prepare("SELECT id FROM `$table` WHERE doctor_id=%d",$id)); foreach($ids as $appt) { if ($extra && $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s',$wpdb->esc_like($extra)))) { $wpdb->delete($extra,array('appointment_id'=>(int)$appt)); } $wpdb->delete($details,array('appointment_id'=>(int)$appt)); }
  if ($extra && $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s',$wpdb->esc_like($extra)))) { $wpdb->query("DROP TABLE `$extra`"); }
  $wpdb->delete($table,array('doctor_id'=>$id)); $wpdb->delete(hj_booking_table('schedules'),array('doctor_id'=>$id)); $wpdb->delete(hj_booking_table('doctors'),array('doctor_id'=>$id)); wp_delete_post($id,true);
- update_option('hj_booking_schema_version',1,false); hj_booking_schema_clear_option_cache(); unlink($meta); exit(0);
+ update_option('hj_booking_schema_version',1,false); hj_booking_schema_clear_option_cache();
+ $activation_table=hj_booking_table('doctors'); if ($wpdb->query("ALTER TABLE `$activation_table` DROP COLUMN activation_generation")===false) { throw new RuntimeException('synthetic activation generation cleanup failed'); } unlink($meta); exit(0);
 }
 exit(1);

@@ -79,7 +79,7 @@ try:
  dash_file=Path(os.environ['RUNNER_TEMP'])/'hj-capacity-dashboard-render.html'; dash_file.write_text(dash_html,encoding='utf-8')
  try: subprocess.run(['node',str(root/'tools/hj-booking-integration/capacity-ui-browser.cjs')],check=True,env=dict(os.environ,HJ_CAPACITY_HTML=str(dash_file),HJ_DASHBOARD_TEST='1'))
  finally: dash_file.unlink(missing_ok=True)
- payload=week({'action':'hj_capacity_week_save','doctor_id':str(doc),'page_id':str(page),'revision':fields['revision'],'original_duration':fields['original_duration'],'original_buffer':fields['original_buffer'],'original_enabled':fields['original_enabled'],'enabled':'1','hj_capacity_nonce':fields['hj_capacity_nonce']},weekday)
+ payload=week({'action':'hj_capacity_week_save','doctor_id':str(doc),'page_id':str(page),'revision':fields['revision'],'original_duration':fields['original_duration'],'original_buffer':fields['original_buffer'],'original_enabled':fields['original_enabled'],'original_generation':fields['original_generation'],'enabled':'1','hj_capacity_nonce':fields['hj_capacity_nonce']},weekday)
  post='/wp-admin/admin-post.php'
  bad=dict(payload,hj_capacity_nonce='bad')
  check(request(owner,post,bad)[0]==403 and request(other,post,payload)[0]==403 and request(patient,post,payload)[0]==403,'nonce, owner and role checks reject unauthorized saves')
@@ -132,7 +132,7 @@ try:
  code,_,_=request(owner,'/wp-admin/admin-ajax.php',dict(profile,**{'hours[monday][start]':'09:00','hj_schedule_revision':'1'}))
  check(code==409 and state(owner,doc)==current,'stale legacy dashboard save rejected before changing v2 schedule')
  dash_html,dash_fields=form(owner,dashboard)
- dash_payload=week({'action':'hj_capacity_week_save','doctor_id':str(doc),'page_id':str(dashboard),'revision':dash_fields['revision'],'original_duration':dash_fields['original_duration'],'original_buffer':dash_fields['original_buffer'],'original_enabled':dash_fields['original_enabled'],'enabled':'1','hj_capacity_nonce':dash_fields['hj_capacity_nonce']},weekday)
+ dash_payload=week({'action':'hj_capacity_week_save','doctor_id':str(doc),'page_id':str(dashboard),'revision':dash_fields['revision'],'original_duration':dash_fields['original_duration'],'original_buffer':dash_fields['original_buffer'],'original_enabled':dash_fields['original_enabled'],'original_generation':dash_fields['original_generation'],'enabled':'1','hj_capacity_nonce':dash_fields['hj_capacity_nonce']},weekday)
  code,_,headers=request(owner,post,dict(dash_payload,hj_capacity_nonce='bad'))
  check(code==403 and state(owner,doc)==current,'dashboard embedded editor rejects invalid nonce')
  code,_,headers=request(owner,post,dash_payload)
@@ -140,13 +140,13 @@ try:
  current=state(owner,doc)
  code,_,headers=request(owner,post,payload)
  check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,doc)==current,'stale form rejected without writes')
- html,fields=form(owner,page); fresh=week(dict(payload,revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
+ html,fields=form(owner,page); fresh=week(dict(payload,revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],original_generation=fields['original_generation'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
  nonce=ajax(owner,{'action':'hj_ci_dashboard_nonce'})['nonce']
  check(ajax(owner,{'action':'hj_ci_capacity_configure','doctor':str(doc),'_hjn':nonce})['status']=='configured','real configuration changed under mutex in another tab')
  changed=state(owner,doc); code,_,headers=request(owner,post,fresh)
  check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,doc)==changed,'configuration conflict rejects stale form without reverting enabled state')
  # Refresh and re-enable; then create an actual synthetic booking.
- html,fields=form(owner,page); fresh=week(dict(payload,revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
+ html,fields=form(owner,page); fresh=week(dict(payload,revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],original_generation=fields['original_generation'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
  code,_,headers=request(owner,post,fresh); check(code==303 and 'hj_cap_status=saved' in headers.get('Location',''),'fresh form safely re-enables and saves')
  current=state(owner,doc); rev=int(current['snapshot']['revision']); patient_nonce=ajax(patient,{'action':'hj_ci_booking_nonce'})['nonce']
  slots=ajax(patient,{'action':'hj_ci_slots','doctor':str(doc),'nonce':patient_nonce,'date':day})
@@ -231,7 +231,7 @@ try:
  check('&lt;img src=x onerror=alert(1)&gt;' in escaped and '&lt;script&gt;alert(2)&lt;/script&gt;' in escaped and '<script>alert(2)</script>' not in escaped,'private patient name and note are escaped in authorized management view')
 
 
- html,fields=form(owner,page); blocked=week(dict(payload,enabled='0',revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
+ html,fields=form(owner,page); blocked=week(dict(payload,enabled='0',revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],original_generation=fields['original_generation'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
  before=state(owner,doc); code,_,headers=request(owner,post,blocked)
  check(code==303 and 'hj_cap_status=booked' in headers.get('Location','') and state(owner,doc)==before,'future booking blocks schedule and activation changes without mutation')
  pause={'action':'hj_capacity_pause','doctor_id':str(doc),'page_id':str(page),'hj_capacity_pause_nonce':fields['hj_capacity_pause_nonce']}
@@ -245,6 +245,30 @@ try:
  code,_,headers=request(owner,post,pause)
  check(code==303 and 'hj_cap_status=paused' in headers.get('Location','') and state(owner,doc)==paused,'repeated pause is idempotent')
  check('17:00 - 21:00' in public_hours(doc) and 'نوبت‌دهی داخلی برای این جراح در دسترس نیست' in public_hours(doc),'paused public profile retains hours but reports unavailable booking')
+ # Resume unchanged schedule even with future appointments; old tokens may not undo a later pause.
+ paused_html,paused_fields=form(owner,page)
+ resume={'action':'hj_capacity_resume','doctor_id':str(doc),'page_id':str(page),'resume_revision':paused_fields['resume_revision'],'resume_generation':paused_fields['resume_generation'],'hj_capacity_resume_nonce':paused_fields['hj_capacity_resume_nonce']}
+ old_week=week(dict(payload,enabled='1',revision=paused_fields['revision'],original_duration=paused_fields['original_duration'],original_buffer=paused_fields['original_buffer'],original_enabled=paused_fields['original_enabled'],original_generation=paused_fields['original_generation'],hj_capacity_nonce=paused_fields['hj_capacity_nonce']),weekday)
+ check('شروع دوبارهٔ دریافت نوبت' in paused_html and request(owner,post,dict(resume,hj_capacity_resume_nonce='bad'))[0]==403 and request(other,post,resume)[0]==403 and request(patient,post,resume)[0]==403,'resume is shown only for valid paused schedule and enforces owner and nonce')
+ code,_,headers=request(owner,post,dict(resume,resume_revision=str(int(resume['resume_revision'])+1)))
+ check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,doc)==paused,'stale schedule revision cannot reactivate')
+ code,_,headers=request(owner,post,dict(resume,resume_generation='99999999999999999999999999999999'))
+ check(code==303 and 'hj_cap_status=invalid' in headers.get('Location','') and state(owner,doc)==paused,'invalid activation generation cannot reactivate')
+ code,_,headers=request(owner,post,resume); resumed=state(owner,doc)
+ check(code==303 and 'hj_cap_status=resumed' in headers.get('Location','') and int(resumed['config']['enabled'])==1 and int(resumed['config']['activation_generation'])==int(paused['config']['activation_generation'])+1 and resumed['snapshot']==paused['snapshot'] and ajax(owner,{'action':'hj_ci_booking_audit','doctor':str(doc)})==audit_before,'resume keeps snapshot and future bookings unchanged and advances generation')
+ check(ajax(patient,{'action':'hj_ci_slots','doctor':str(doc),'nonce':patient_nonce,'date':day})['status']=='ok','availability returns after safe resume')
+ code,_,headers=request(owner,post,resume)
+ check(code==303 and 'hj_cap_status=resumed' in headers.get('Location','') and state(owner,doc)==resumed,'identical resume retry is idempotent without another transition')
+ code,_,_=request(owner,post,pause); paused_again=state(owner,doc)
+ code,_,headers=request(owner,post,resume)
+ check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,doc)==paused_again,'stale resume cannot undo a later pause (ABA)')
+ code,_,headers=request(owner,post,old_week)
+ check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,doc)==paused_again,'old weekly form cannot bypass activation generation after an ABA transition')
+ _,fresh_fields=form(owner,page); fresh_resume=dict(resume,resume_revision=fresh_fields['resume_revision'],resume_generation=fresh_fields['resume_generation'],hj_capacity_resume_nonce=fresh_fields['hj_capacity_resume_nonce'])
+ code,_,headers=request(owner,post,fresh_resume)
+ check(code==303 and 'hj_cap_status=resumed' in headers.get('Location','') and state(owner,doc)['snapshot']==paused['snapshot'] and ajax(owner,{'action':'hj_ci_booking_audit','doctor':str(doc)})==audit_before,'fresh resume works after a later pause without touching future bookings')
+ request(owner,post,pause); paused=state(owner,doc)
+
  # Synthetic-only snapshot edits test faithful seconds and fail-closed display.
  snapshot_data=json.loads(paused['snapshot']['rows_json'])
  for row in snapshot_data['rows']:
@@ -254,6 +278,8 @@ try:
  seconds_state=state(owner,doc)
  check('17:00:30 - 21:00' in public_hours(doc) and state(owner,doc)==seconds_state,'validated canonical display preserves nonzero seconds without modifying snapshot')
  check(ajax(owner,dict(replace,rows_json='{"version":99,"rows":[]}'))['status']=='updated','synthetic unsupported snapshot installed')
+ code,_,headers=request(owner,post,fresh_resume)
+ check(code==303 and 'hj_cap_status=error' in headers.get('Location','') and int(state(owner,doc)['config']['enabled'])==0,'resume fails closed on unsupported snapshot')
  corrupt_state=state(owner,doc); invalid_hours=public_hours(doc)
  check('در دسترس نیست' in invalid_hours and '09:00 - 11:00' not in invalid_hours and '17:00' not in invalid_hours and state(owner,doc)==corrupt_state,'unsupported snapshot does not fall back to stale hours or mutate data')
 finally:
