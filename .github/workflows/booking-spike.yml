@@ -92,7 +92,7 @@ jobs:
           php -l tools/hj-booking-spike/dashboard-hours-experiment.php
           php -l tools/hj-booking-spike/dashboard-hours-fixture.php
           set +e
-          output=$(bash -e -c 'php tools/hj-booking-spike/dashboard-hours-fixture.php && python3 tools/hj-booking-spike/dashboard-hours-race.py' 2>&1)
+          output=$(bash -e -c 'php tools/hj-booking-spike/dashboard-hours-fixture.php && python3 tools/hj-booking-spike/dashboard-hours-race.py && php tools/hj-booking-spike/wpdb-reconnect-fixture.php' 2>&1)
           status=$?
           printf '%s\n' "$output"
           if [ "$status" -ne 0 ]; then
