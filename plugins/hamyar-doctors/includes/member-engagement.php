@@ -44,6 +44,10 @@ add_action( 'init', function () {
 	if ( ! defined( 'DONOTCACHEPAGE' ) ) { define( 'DONOTCACHEPAGE', true ); }
 	nocache_headers();
 	$account = hj_member_account_url();
+	if ( isset( $_GET['hj_booking_return'] ) && function_exists( 'hj_booking_intent_destination' ) ) {
+		$booking_target = hj_booking_intent_destination();
+		if ( $booking_target ) { $account = $booking_target; }
+	}
 	if ( is_user_logged_in() || ! hj_member_google_is_ready() ) { wp_safe_redirect( $account ); exit; }
 	// A previously started surgeon flow must never turn this normal login into a doctor signup.
 	if ( class_exists( 'HJ_Doctors_Auth_Google' ) ) {
@@ -52,7 +56,9 @@ add_action( 'init', function () {
 	}
 	hj_member_intent_cookie( true );
 	$base = is_callable( array( 'NextendSocialLogin', 'getLoginUrl' ) ) ? NextendSocialLogin::getLoginUrl() : site_url( 'wp-login.php' );
-	wp_safe_redirect( add_query_arg( array( 'loginSocial' => 'google', 'redirect' => $account ), $base ) ); exit;
+	// add_query_arg does not encode newly supplied values; the nested URL may
+	// contain its own query string and fragment (e.g. the booking form).
+	wp_safe_redirect( add_query_arg( array( 'loginSocial' => 'google', 'redirect' => rawurlencode( $account ) ), $base ) ); exit;
 }, 4 );
 
 /** Account shortcode may be placed on any page, not only the default one. */

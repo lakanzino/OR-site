@@ -3,10 +3,14 @@ on:
   push:
     paths:
       - 'tools/hj-booking-spike/**'
+      - 'tools/hj-booking-integration/**'
+      - 'plugins/hamyar-doctors/**'
       - '.github/workflows/booking-spike.yml'
   pull_request:
     paths:
       - 'tools/hj-booking-spike/**'
+      - 'tools/hj-booking-integration/**'
+      - 'plugins/hamyar-doctors/**'
       - '.github/workflows/booking-spike.yml'
   workflow_dispatch:
 permissions:
@@ -84,5 +88,57 @@ jobs:
           if [ "$status" -ne 0 ]; then
             summary=$(printf '%s' "$output" | tail -c 3000 | tr '\n' ' ')
             echo "::error title=Interval spike failure::$summary"
+            exit "$status"
+          fi
+      - name: Exercise synthetic dashboard storage and snapshot atomically
+        run: |
+          set -euo pipefail
+          php -l tools/hj-booking-spike/dashboard-hours-experiment.php
+          php -l tools/hj-booking-spike/dashboard-hours-fixture.php
+          set +e
+          output=$(bash -e -c 'php tools/hj-booking-spike/dashboard-hours-fixture.php && python3 tools/hj-booking-spike/dashboard-hours-race.py && php tools/hj-booking-spike/wpdb-reconnect-fixture.php' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3000 | tr '\n' ' ')
+            echo "::error title=Dashboard-hours fixture failure::$summary"
+            exit "$status"
+          fi
+      - name: Exercise patched dashboard copy via WordPress AJAX and wpdb
+        run: |
+          set +e
+          output=$(python3 tools/hj-booking-spike/wpdb-ajax-http-test.py 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3000 | tr '\n' ' ')
+            echo "::error title=WordPress dashboard copy failure::$summary"
+            exit "$status"
+          fi
+      - name: Verify real plugin schema installation and concurrent migration
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l plugins/hamyar-doctors/includes/appointments.php && php tools/hj-booking-integration/migration-fixture.php off && php -d auto_prepend_file="$GITHUB_WORKSPACE/tools/hj-booking-integration/prepend.php" tools/hj-booking-integration/migration-fixture.php && python3 tools/hj-booking-integration/migration-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Booking migration failure::$summary"
+            exit "$status"
+          fi
+      - name: Exercise unchanged repository plugin booking backend
+        run: |
+          set -e
+          node tools/hj-booking-integration/dashboard-revision.test.cjs
+          node tools/hj-booking-integration/patient-form.test.cjs
+          php -l plugins/hamyar-doctors/includes/booking-form.php
+          php -l plugins/hamyar-doctors/includes/booking-management.php
+          set +e
+          output=$(python3 tools/hj-booking-integration/http-test.py 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Plugin booking integration failure::$summary"
             exit "$status"
           fi

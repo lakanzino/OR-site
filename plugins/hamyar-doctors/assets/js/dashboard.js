@@ -94,6 +94,10 @@
 					return;
 				}
 				err('form', '');
+				var revision = form.querySelector('input[name="hj_schedule_revision"]');
+				if (revision && res.data && Number.isSafeInteger(res.data.schedule_revision) && res.data.schedule_revision >= 0) {
+					revision.value = String(res.data.schedule_revision);
+				}
 				if (res.data && res.data.created) {
 					window.location.reload();
 					return;
