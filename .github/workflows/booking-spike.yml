@@ -101,6 +101,17 @@ jobs:
             echo "::error title=Capacity prototype failure::$summary"
             exit "$status"
           fi
+      - name: Test production capacity calculation foundation
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l plugins/hamyar-doctors/includes/appointment-schedule.php && php -l tools/hj-booking-integration/capacity-engine-fixture.php && php tools/hj-booking-integration/capacity-engine-fixture.php' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Capacity calculation foundation failure::$summary"
+            exit "$status"
+          fi
       - name: Exercise synthetic dashboard storage and snapshot atomically
         run: |
           set -euo pipefail
@@ -135,6 +146,17 @@ jobs:
           if [ "$status" -ne 0 ]; then
             summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
             echo "::error title=Booking migration failure::$summary"
+            exit "$status"
+          fi
+      - name: Race production capacity calculation with real plugin mutex
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/capacity-lock-fixture.php && python3 tools/hj-booking-integration/capacity-lock-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Capacity with real mutex failure::$summary"
             exit "$status"
           fi
       - name: Exercise unchanged repository plugin booking backend
