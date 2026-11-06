@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Platform theme: the real look comes from Compose (ui/theme/Theme.kt) -->
+    <style name="Theme.HamyarJ" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#FFFFFFFF</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">#FFFFFFFF</item>
+    </style>
+</resources>
