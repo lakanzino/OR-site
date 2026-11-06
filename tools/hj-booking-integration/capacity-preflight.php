@@ -50,7 +50,7 @@ function ci_capacity_preflight($db) {
   $counts['orphan_appointments']=(int)hj_booking_row($db,"SELECT COUNT(*) AS n FROM `$a` a LEFT JOIN `$d` d ON d.doctor_id=a.doctor_id WHERE d.doctor_id IS NULL")['n'];
   $counts['missing_details']=(int)hj_booking_row($db,"SELECT COUNT(*) AS n FROM `$a` a LEFT JOIN `$p` p ON p.appointment_id=a.id WHERE p.appointment_id IS NULL")['n'];
   $counts['orphan_details']=(int)hj_booking_row($db,"SELECT COUNT(*) AS n FROM `$p` p LEFT JOIN `$a` a ON a.id=p.appointment_id WHERE a.id IS NULL")['n'];
-  $counts['invalid_appointments']=(int)hj_booking_row($db,"SELECT COUNT(*) AS n FROM `$a` WHERE status NOT IN ('pending','confirmed','cancelled','completed','no_show') OR starts_at>=ends_at OR ends_at>blocked_until")['n'];
+  $counts['invalid_appointments']=(int)hj_booking_row($db,"SELECT COUNT(*) AS n FROM `$a` WHERE BINARY status NOT IN ('pending','confirmed','cancelled','completed','no_show') OR starts_at<'1000-01-01 00:00:00' OR ends_at<'1000-01-01 00:00:00' OR blocked_until<'1000-01-01 00:00:00' OR starts_at>=ends_at OR ends_at>blocked_until")['n'];
   $report['status']='inventory'; $report['counts']=$counts;
   foreach(array('unreadable_snapshots','orphan_schedules','invalid_configs','enabled_without_schedule','orphan_appointments','missing_details','orphan_details','invalid_appointments') as $name) { if ($counts[$name]>0) { $report['blockers'][]=$name; } }
   return $report;
