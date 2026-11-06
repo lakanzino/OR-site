@@ -315,8 +315,8 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 		}
 
 		/** ردیف‌های ساعات کاری به نقشهٔ day => [closed,start,end]. */
-		private static function hours_map( $pid ) {
-			$rows = self::val( $pid, 'working_hours' );
+		private static function hours_map( $pid, $canonical_rows = null ) {
+			$rows = is_array( $canonical_rows ) ? $canonical_rows : self::val( $pid, 'working_hours' );
 			$map  = array();
 			if ( is_array( $rows ) ) {
 				foreach ( $rows as $r ) {
@@ -523,6 +523,14 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			$uid  = get_current_user_id();
 			$pid  = self::current_pid();
 			$user = wp_get_current_user();
+			$booking_enabled = function_exists( 'hj_booking_enabled' ) && hj_booking_enabled();
+			$editor_schedule = array( 'status' => 'ok', 'revision' => 0, 'rows' => array(), 'missing' => true );
+			if ( $booking_enabled && $pid ) {
+				$editor_schedule = hj_booking_editor_schedule( (int) $pid );
+				if ( ( $editor_schedule['status'] ?? '' ) !== 'ok' ) {
+					return '<div class="hj-dash" dir="rtl"><p>' . esc_html__( 'برنامهٔ نوبت‌دهی در دسترس نیست؛ برای جلوگیری از بازنویسی ناخواسته، بعداً دوباره تلاش کنید.', 'hamyar-doctors' ) . '</p></div>';
+				}
+			}
 			$v    = function ( $k ) use ( $pid ) {
 				$x = HJ_Doctors_Dashboard::get_text( $pid, $k );
 				return $x;
@@ -534,7 +542,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			);
 			$name     = $state['name'] !== '' ? $state['name'] : $user->display_name;
 			$photo    = self::photo_url( $pid );
-			$hours    = $pid ? self::hours_map( $pid ) : array();
+			$hours    = $pid ? self::hours_map( $pid, $booking_enabled ? $editor_schedule['rows'] : null ) : array();
 			$types    = self::terms( 'specialty_type' );
 			$specs    = self::terms( 'specialty' );
 			$provs    = self::terms( 'province' );
@@ -575,6 +583,9 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 
     <form class="hj-dash__form" id="hj-dash-form" novalidate autocomplete="off">
       <input type="hidden" name="pid" value="<?php echo (int) $pid; ?>">
+      <?php if ( $booking_enabled ) : ?>
+      <input type="hidden" name="hj_schedule_revision" value="<?php echo esc_attr( (string) $editor_schedule['revision'] ); ?>">
+      <?php endif; ?>
 
       <!-- ۱) اطلاعات پایه -->
       <section class="hj-dash__card">
@@ -692,6 +703,9 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
       <!-- ۴) ساعات کاری -->
       <section class="hj-dash__card">
         <h3 class="hj-dash__h">ساعات کاری</h3>
+        <?php if ( $booking_enabled && $editor_schedule['missing'] ) : ?>
+        <p class="hj-dash__muted"><?php echo esc_html__( 'برنامهٔ نوبت‌دهی هنوز ثبت نشده است. ساعات نمایشی قبلی به‌طور خودکار وارد نمی‌شوند؛ لطفاً ساعات را بررسی و ثبت کنید.', 'hamyar-doctors' ); ?></p>
+        <?php endif; ?>
         <div class="hj-dash__hours">
           <?php
           foreach ( self::days() as $key => $label ) :
@@ -881,6 +895,15 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			if ( ! $pid && ! self::is_doctor_user() ) {
 				self::fail( 'دسترسی غیرمجاز.', 403 );
 			}
+			$booking_enabled = function_exists( 'hj_booking_enabled' ) && hj_booking_enabled();
+			$expected_revision = null;
+			if ( $booking_enabled ) {
+				$raw_revision = isset( $_POST['hj_schedule_revision'] ) && is_string( $_POST['hj_schedule_revision'] ) ? wp_unslash( $_POST['hj_schedule_revision'] ) : '';
+				if ( ! preg_match( '/^(0|[1-9][0-9]*)$/D', $raw_revision ) || strlen( $raw_revision ) > strlen( (string) PHP_INT_MAX ) || (string) (int) $raw_revision !== $raw_revision ) {
+					self::fail( 'نسخهٔ برنامه نامعتبر است؛ صفحه را دوباره باز کنید.', 400 );
+				}
+				$expected_revision = (int) $raw_revision;
+			}
 
 			$errors = array();
 
@@ -1010,6 +1033,10 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 				self::fail( 'لطفاً موارد مشخص‌شده را اصلاح کنید.', 422, array( 'errors' => $errors ) );
 			}
 
+			if ( $booking_enabled && ! $pid && $expected_revision !== 0 ) {
+				self::fail( 'نسخهٔ برنامه نامعتبر است؛ صفحه را دوباره باز کنید.', 400 );
+			}
+
 			// ---- Create profile on first save
 			$created = false;
 			if ( ! $pid ) {
@@ -1035,6 +1062,19 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 				}
 			}
 
+			// Publish the canonical schedule before any other profile field changes.
+			// The revision check and update share the same doctor mutex/transaction.
+			$schedule = null;
+			if ( $booking_enabled ) {
+				$schedule = hj_booking_save_schedule( (int) $pid, $rows, $expected_revision );
+				if ( ( $schedule['status'] ?? '' ) === 'revision_conflict' ) {
+					self::fail( 'برنامه در صفحهٔ دیگری تغییر کرده است؛ صفحه را بازخوانی کنید و تغییرات را دوباره وارد کنید.', 409 );
+				}
+				if ( ( $schedule['status'] ?? '' ) !== 'saved' ) {
+					self::fail( 'ذخیرهٔ برنامهٔ نوبت‌دهی ناموفق یا نتیجه نامشخص است؛ پیش از تلاش مجدد وضعیت را بررسی کنید.', 503 );
+				}
+			}
+
 			// ---- Write ACF fields
 			self::set( $pid, 'name_fa', $name_fa );
 			self::set( $pid, 'name_en', $name_en );
@@ -1051,11 +1091,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			self::set( $pid, 'address_clinic', $addr_c );
 			self::set( $pid, 'address_hospital', $addr_h );
 			self::set( $pid, 'map_link', $map );
-			if ( function_exists( 'hj_booking_enabled' ) && hj_booking_enabled() ) {
-				$schedule = hj_booking_save_schedule( (int) $pid, $rows );
-				if ( ( $schedule['status'] ?? '' ) !== 'saved' ) {
-					self::fail( 'ذخیرهٔ برنامهٔ نوبت‌دهی ناموفق یا نتیجه نامشخص است؛ پیش از تلاش مجدد وضعیت را بررسی کنید.', 503 );
-				}
+			if ( $booking_enabled ) {
 				// ACF/meta is a best-effort display mirror, never the booking source.
 				try { self::set( $pid, 'working_hours', $rows ); } catch ( Throwable $ignored ) {}
 			} else {
@@ -1093,6 +1129,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			$data            = self::state( $pid );
 			$data['pid']     = $pid;
 			$data['created'] = $created;
+			if ( $booking_enabled ) { $data['schedule_revision'] = $schedule['revision']; }
 			self::ok( $data );
 		}
 

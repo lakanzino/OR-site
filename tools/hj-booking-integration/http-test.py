@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 import hashlib
 import http.client
 import http.cookiejar
+from html.parser import HTMLParser
 import json
 import os
 import shutil
@@ -34,6 +35,18 @@ def moment(hour, minute):
     return datetime.datetime.combine(date, datetime.time(hour, minute), ZoneInfo('Asia/Tehran')).astimezone(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
 S0900, S0935, S1010, S1045, S1120 = [moment(h, m) for h, m in [(9, 0), (9, 35), (10, 10), (10, 45), (11, 20)]]
 PREPEND = str(workspace / 'tools/hj-booking-integration/prepend.php')
+class Inputs(HTMLParser):
+    def __init__(self):
+        super().__init__(); self.inputs = {}
+    def handle_starttag(self, tag, attrs):
+        attributes = dict(attrs)
+        if tag == 'input' and 'name' in attributes: self.inputs[attributes['name']] = attributes
+
+def rendered_form(opener):
+    html = ajax(opener, {'action': 'hj_ci_render_dashboard'})['html']
+    parsed = Inputs(); parsed.feed(html)
+    return html, parsed.inputs
+
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, hdrs, url): return None
 
@@ -60,6 +73,9 @@ def state(opener, doctor):
     check(code == 200, 'authorized synthetic state read')
     return json.loads(body)['data']
 def ajax(opener, payload):
+    if payload.get('action') == 'hj_dash_save' and 'hj_schedule_revision' not in payload:
+        current = state(opener, int(payload['pid']))['snapshot']
+        payload = dict(payload, hj_schedule_revision=str(current['revision'] if current else 0))
     code, body = request(opener, '/wp-admin/admin-ajax.php', payload)
     if code != 200: raise AssertionError(f'Unexpected AJAX status {code}: {body[:500]}')
     data = json.loads(body)
@@ -110,29 +126,43 @@ try:
     common = {'action': 'hj_dash_save', 'pid': str(doctor_id), 'name_fa': 'Synthetic Doctor', 'hours[wednesday][start]': '09:00', 'hours[wednesday][end]': '12:00'}
     check(request(owner, url, dict(common, _hjn='bad'))[0] == 403, 'actual ajax_save rejects invalid nonce')
     check(request(other, url, dict(common, _hjn=other_nonce))[0] == 403, 'actual ajax_save denies another doctor')
-    code, text = request(owner, url, dict(common, _hjn=owner_nonce))
+    html, inputs = rendered_form(owner)
+    check(inputs['hj_schedule_revision']['value'] == '0' and inputs['hours[wednesday][start]']['value'] == '' and 'هنوز ثبت نشده' in html, 'new snapshot editor starts at revision zero, not stale display meta')
+    check(request(owner, url, dict(common, _hjn=owner_nonce))[0] == 400, 'missing revision is rejected')
+    for value in ('-1', '01', 'not-a-number', '999999999999999999999999'):
+        check(request(owner, url, dict(common, _hjn=owner_nonce, hj_schedule_revision=value))[0] == 400, 'invalid revision is rejected')
+    code, text = request(owner, url, dict(common, _hjn=owner_nonce, hj_schedule_revision='0'))
     check(code == 200 and json.loads(text)['success'], 'repository ajax_save writes canonical schedule through production wpdb backend')
     saved = state(owner, doctor_id); row = saved['snapshot']
     check(int(row['revision']) == 1 and json.loads(row['rows_json'])[0]['start_time'] == '09:00:00' and row['rows_hash'] == hashlib.sha256(row['rows_json'].encode()).hexdigest(), 'first canonical revision and hash persisted')
     check(saved['display'][0]['start_time'] == '09:00:00', 'best-effort display mirror saved')
-    changed = dict(common, _hjn=owner_nonce, **{'hours[wednesday][start]': '10:00', 'hours[wednesday][end]': '11:00', 'hj_ci_mirror_fail': '1'})
+    check(json.loads(text)['data']['schedule_revision'] == 1, 'save response includes next revision')
+    stale = dict(common, _hjn=owner_nonce, hj_schedule_revision='0', name_fa='Stale profile overwrite')
+    code, response = request(owner, url, stale)
+    check(code == 409 and not json.loads(response)['success'] and 'بازخوانی' in json.loads(response)['message'], 'stale tab receives conflict and reload instruction')
+    check(state(owner, doctor_id)['name'] == 'Synthetic Doctor', 'stale tab does not mutate other profile fields')
+    changed = dict(common, _hjn=owner_nonce, hj_schedule_revision='1', **{'hours[wednesday][start]': '10:00', 'hours[wednesday][end]': '11:00', 'hj_ci_mirror_fail': '1'})
     code, text = request(owner, url, changed)
     check(code == 200 and json.loads(text)['success'], 'display mirror failure does not roll back canonical schedule')
     saved = state(owner, doctor_id); row = saved['snapshot']
     check(int(row['revision']) == 2 and json.loads(row['rows_json'])[0]['start_time'] == '10:00:00' and saved['display'][0]['start_time'] == '09:00:00', 'mirror failure leaves canonical revision independent')
-    killed = dict(common, _hjn=owner_nonce, hj_ci_kill_before_commit='1')
+    html, inputs = rendered_form(owner)
+    check(inputs['hj_schedule_revision']['value'] == '2' and inputs['hours[wednesday][start]']['value'] == '10:00', 'editor renders canonical snapshot and revision despite stale meta')
+    code, _ = request(owner, url, dict(common, _hjn=owner_nonce, hj_schedule_revision='1'))
+    check(code == 409 and int(state(owner, doctor_id)['snapshot']['revision']) == 2, 'stale tab cannot republish stale display after mirror failure')
+    killed = dict(common, _hjn=owner_nonce, hj_schedule_revision='2', hj_ci_kill_before_commit='1')
     code, text = request(owner, url, killed)
     check(code == 503 and not json.loads(text)['success'], 'killed transaction does not claim successful save')
     saved = state(owner, doctor_id); row = saved['snapshot']
     check(int(row['revision']) == 2 and json.loads(row['rows_json'])[0]['start_time'] == '10:00:00', 'kill before commit preserved prior canonical revision')
     def concurrent_save(hour):
-        payload = dict(common, _hjn=owner_nonce, **{'hours[wednesday][start]': f'{hour:02d}:00', 'hours[wednesday][end]': '16:30', 'hj_ci_mirror_fail': '1'})
+        payload = dict(common, _hjn=owner_nonce, hj_schedule_revision='2', **{'hours[wednesday][start]': f'{hour:02d}:00', 'hours[wednesday][end]': '16:30', 'hj_ci_mirror_fail': '1'})
         return request(owner, url, payload)
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
         responses = list(pool.map(concurrent_save, range(8, 16)))
-    check(all(code == 200 and json.loads(body)['success'] for code, body in responses), 'eight concurrent actual AJAX schedule saves succeeded')
+    check(sum(code == 200 and json.loads(body)['success'] for code, body in responses) == 1 and sum(code == 409 and not json.loads(body)['success'] for code, body in responses) == 7, 'eight simultaneous same-revision tabs produce one winner and seven conflicts')
     row = state(owner, doctor_id)['snapshot']
-    check(int(row['revision']) == 10 and row['rows_hash'] == hashlib.sha256(row['rows_json'].encode()).hexdigest() and json.loads(row['rows_json'])[0]['start_time'] in [f'{h:02d}:00:00' for h in range(8, 16)], 'concurrent wpdb saves serialized without lost revisions or torn snapshot')
+    check(int(row['revision']) == 3 and row['rows_hash'] == hashlib.sha256(row['rows_json'].encode()).hexdigest() and json.loads(row['rows_json'])[0]['start_time'] in [f'{h:02d}:00:00' for h in range(8, 16)], 'concurrent wpdb saves cannot overwrite the winning revision')
 
     # Set display to 10–11, then write canonical 9–12 without touching display.
     display = dict(common, _hjn=owner_nonce, **{'hours[wednesday][start]': '10:00', 'hours[wednesday][end]': '11:00'})

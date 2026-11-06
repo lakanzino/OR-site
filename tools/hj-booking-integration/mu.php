@@ -51,7 +51,10 @@ add_action( 'wp_ajax_hj_ci_schedule_state', function () {
 	if ( ! current_user_can( 'edit_post', $doctor ) ) { wp_send_json_error( array(), 403 ); }
 	global $wpdb; $table = hj_booking_table( 'schedules' );
 	$row = $wpdb->get_row( $wpdb->prepare( "SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d", $doctor ), ARRAY_A );
-	wp_send_json_success( array( 'snapshot' => $row, 'display' => get_post_meta( $doctor, 'working_hours', true ) ) );
+	wp_send_json_success( array( 'snapshot' => $row, 'display' => get_post_meta( $doctor, 'working_hours', true ), 'name' => get_post_meta( $doctor, 'name_fa', true ) ) );
+} );
+add_action( 'wp_ajax_hj_ci_render_dashboard', function () {
+	wp_send_json_success( array( 'html' => HJ_Doctors_Dashboard::shortcode_render() ) );
 } );
 add_action( 'wp_ajax_hj_ci_corrupt_snapshot', function () {
 	$doctor = absint( $_POST['doctor'] ?? 0 );

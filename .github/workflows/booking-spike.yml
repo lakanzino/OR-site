@@ -117,6 +117,8 @@ jobs:
           fi
       - name: Exercise unchanged repository plugin booking backend
         run: |
+          set -e
+          node tools/hj-booking-integration/dashboard-revision.test.cjs
           set +e
           output=$(python3 tools/hj-booking-integration/http-test.py 2>&1)
           status=$?

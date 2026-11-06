@@ -13,6 +13,8 @@ wp_set_current_user( $admin->ID );
 if ( ! hj_booking_install_schema() ) { throw new RuntimeException( 'Production booking schema install failed' ); }
 $doc = wp_insert_post( array( 'post_type' => 'doctor', 'post_status' => 'publish', 'post_title' => 'Synthetic production backend doctor', 'post_author' => $doctor->ID ), true );
 if ( is_wp_error( $doc ) ) { throw new RuntimeException( 'Synthetic doctor post failed' ); }
+update_user_meta( $doctor->ID, 'hj_doctor_post_id', $doc );
+update_post_meta( $doc, 'working_hours', array( array( 'day_of_week' => 'wednesday', 'is_closed' => 0, 'start_time' => '10:00:00', 'end_time' => '11:00:00' ) ) );
 wp_set_current_user( $doctor->ID );
 if ( hj_booking_configure( (int) $doc, 30, 5, true )['status'] !== 'configured' ) { throw new RuntimeException( 'Doctor config failed' ); }
 update_option( 'active_plugins', array( 'hamyar-doctors/hamyar-doctors.php' ) );

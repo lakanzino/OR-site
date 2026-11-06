@@ -164,16 +164,20 @@ function hj_booking_normalize_schedule( $input ) {
 	return $result;
 }
 /** Called by dashboard after its existing nonce/ownership and form validation. */
-function hj_booking_save_schedule( $doctor, $rows ) {
+function hj_booking_save_schedule( $doctor, $rows, $expected_revision ) {
 	if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status' => 'forbidden' ); }
+	if ( ! is_int( $expected_revision ) || $expected_revision < 0 ) { return array( 'status' => 'invalid' ); }
 	$normalized = hj_booking_normalize_schedule( $rows );
 	if ( $normalized === false ) { return array( 'status' => 'invalid' ); }
 	$json = wp_json_encode( $normalized ); if ( ! is_string( $json ) ) { return array( 'status' => 'invalid' ); }
 	$hash = hash( 'sha256', $json );
-	return hj_booking_transaction( $doctor, 'schedule', function ( $db ) use ( $doctor, $json, $hash ) {
+	return hj_booking_transaction( $doctor, 'schedule', function ( $db ) use ( $doctor, $json, $hash, $expected_revision ) {
 		$table = hj_booking_table( 'schedules' );
 		$old = hj_booking_row( $db, $db->prepare( "SELECT revision FROM `$table` WHERE doctor_id=%d FOR UPDATE", $doctor ) );
-		$rev = $old ? (int) $old['revision'] + 1 : 1;
+		$current = $old ? (int) $old['revision'] : 0;
+		if ( $current !== $expected_revision ) { return array( 'status' => 'revision_conflict' ); }
+		if ( $current === PHP_INT_MAX ) { return array( 'status' => 'invalid' ); }
+		$rev = $current + 1;
 		if ( $old ) { $n = hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET revision=%d,rows_json=%s,rows_hash=%s WHERE doctor_id=%d", $rev, $json, $hash, $doctor ) ); }
 		else { $n = hj_booking_query( $db, $db->prepare( "INSERT INTO `$table` (doctor_id,revision,rows_json,rows_hash) VALUES (%d,%d,%s,%s)", $doctor, $rev, $json, $hash ) ); }
 		if ( $n !== 1 ) { throw new RuntimeException( 'Schedule save failed' ); }
@@ -188,6 +192,19 @@ function hj_booking_configure( $doctor, $duration, $buffer, $enabled ) {
 		$table = hj_booking_table( 'doctors' );
 		hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET duration_minutes=%d,buffer_minutes=%d,enabled=%d WHERE doctor_id=%d", $duration, $buffer, $enabled ? 1 : 0, $doctor ) );
 		return array( 'status' => 'configured' );
+	} );
+}
+/** Editor must read rows and revision together from the canonical snapshot. */
+function hj_booking_editor_schedule( $doctor ) {
+	if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status' => 'forbidden' ); }
+	return hj_booking_transaction( $doctor, 'schedule_read', function ( $db ) use ( $doctor ) {
+		$table = hj_booking_table( 'schedules' );
+		$row = hj_booking_row( $db, $db->prepare( "SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d", $doctor ) );
+		if ( ! $row ) { return array( 'status' => 'ok', 'revision' => 0, 'rows' => array(), 'missing' => true ); }
+		if ( (int) $row['revision'] < 1 || ! hash_equals( $row['rows_hash'], hash( 'sha256', $row['rows_json'] ) ) ) { return array( 'status' => 'invalid_schedule' ); }
+		$rows = hj_booking_normalize_schedule( json_decode( $row['rows_json'], true ) );
+		if ( $rows === false ) { return array( 'status' => 'invalid_schedule' ); }
+		return array( 'status' => 'ok', 'revision' => (int) $row['revision'], 'rows' => $rows, 'missing' => false );
 	} );
 }
 function hj_booking_snapshot_locked( $db, $doctor ) {
