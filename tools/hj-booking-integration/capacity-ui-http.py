@@ -29,11 +29,13 @@ def login(name):
  status,_,_=request(s,'/wp-login.php',{'log':name,'pwd':'disposable-test-password','wp-submit':'Log In','testcookie':'1'})
  check(status==302,name+' login'); return s
 class Inputs(HTMLParser):
- def __init__(self): super().__init__(); self.fields={}; self.sections=[]
+ def __init__(self): super().__init__(); self.fields={}; self.sections=[]; self.booking=None
  def handle_starttag(self,tag,attrs):
   a=dict(attrs)
   if tag=='input' and a.get('name'): self.fields[a['name']]=a.get('value','')
-  if tag=='section': self.sections.append(a.get('class',''))
+  if tag=='section':
+   self.sections.append(a.get('class',''))
+   if 'hj-booking' in a.get('class','').split(): self.booking=a
 def form(client,page):
  html=ajax(client,{'action':'hj_ci_render_capacity_settings','page':str(page)})['html']; p=Inputs(); p.feed(html); return html,p.fields
 def state(client,doctor): return ajax(client,{'action':'hj_ci_capacity_state','doctor':str(doctor)})
@@ -94,6 +96,22 @@ try:
  current=state(owner,doc); snapshot=current['snapshot']; rows=json.loads(snapshot['rows_json'])
  check(int(snapshot['revision'])==1 and rows['version']==2 and rows['rows'][list(('saturday','sunday','monday','tuesday','wednesday','thursday','friday')).index(weekday)]['capacity']==3 and int(current['config']['enabled'])==1 and snapshot['rows_hash']==hashlib.sha256(snapshot['rows_json'].encode()).hexdigest(),'real form atomically persists v2 snapshot and activation')
  check('ساعات نوبت‌دهی مطب' in public_hours(doc) and '17:00 - 21:00' in public_hours(doc) and '09:00 - 11:00' not in public_hours(doc) and state(owner,doc)==current,'guest public profile displays canonical v2 hours instead of stale meta without writes')
+ # Actual patient shortcode and experimental endpoint, no authentication required for aggregates.
+ patient_html=ajax(guest,{'action':'hj_ci_render_patient_form','page':str(page)})['html']; parser=Inputs(); parser.feed(patient_html)
+ check(parser.booking and 'hj-booking__calendar-days' in patient_html and '۱۴ روز آینده' in patient_html,'v2 patient shortcode renders calendar and fallback date')
+ ui_nonce=parser.booking['data-nonce']; params={'action':'hj_booking_calendar','doctor_id':str(doc),'nonce':ui_nonce}
+ code,body,headers=request(guest,'/wp-admin/admin-ajax.php',params); calendar=json.loads(body)
+ check(code==200 and calendar['success'] and len(calendar['data']['days'])==14 and calendar['data']['days'][2]['remaining']==12 and calendar['data']['days'][2]['color']=='green' and 'no-cache' in headers.get('Cache-Control','') and all(set(x)=={'date','remaining','state','color'} for x in calendar['data']['days']),'guest calendar endpoint returns non-cacheable aggregate capacity only')
+ code,body,_=request(guest,'/wp-admin/admin-ajax.php',dict(params,nonce='bad'))
+ check(code==403 and json.loads(body)['data']['code']=='forbidden','calendar endpoint rejects invalid nonce')
+ code,body,_=request(guest,'/wp-admin/admin-ajax.php',dict(params,doctor_id=str(legacy)))
+ check(code==409 and json.loads(body)['data']['code']=='legacy_schedule','legacy calendar does not infer new capacity')
+ patient_logged_html=ajax(patient,{'action':'hj_ci_render_patient_form','page':str(page)})['html']
+ browser_fixture=Path(os.environ['RUNNER_TEMP'])/'hj-patient-calendar.json'
+ browser_fixture.write_text(json.dumps({'guest':patient_html,'patient':patient_logged_html,'calendar':calendar['data'],'doctor':str(doc),'legacy':str(legacy)},ensure_ascii=False),encoding='utf-8')
+ try: subprocess.run(['node',str(root/'tools/hj-booking-integration/patient-calendar-browser.cjs')],check=True,env=dict(os.environ,HJ_PATIENT_CALENDAR=str(browser_fixture)))
+ finally: browser_fixture.unlink(missing_ok=True)
+
  # WordPress native doctor editor can still edit display-only hours; verify it
  # cannot modify the canonical schedule and communicates the distinction.
  code,editor_html,_=request(admin,'/wp-admin/post.php?post='+str(doc)+'&action=edit')
@@ -135,6 +153,7 @@ try:
  check(slots['status']=='ok' and len(slots['slots'])==4,'saved form drives four real backend slots')
  created=ajax(patient,{'action':'hj_ci_create','doctor':str(doc),'nonce':patient_nonce,'start':slots['slots'][0],'key':'000000000000000000000000000010ab','phone':'09123456789','national':'1234567891'})
  check(created['status']=='created','actual patient booking created after form save')
+ check(ajax(guest,params)['days'][2]['remaining']==11,'guest calendar reflects an actual new patient booking')
  html,fields=form(owner,page); blocked=week(dict(payload,enabled='0',revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
  before=state(owner,doc); code,_,headers=request(owner,post,blocked)
  check(code==303 and 'hj_cap_status=booked' in headers.get('Location','') and state(owner,doc)==before,'future booking blocks schedule and activation changes without mutation')
@@ -144,6 +163,8 @@ try:
  code,_,headers=request(owner,post,pause); paused=state(owner,doc)
  check(code==303 and 'hj_cap_status=paused' in headers.get('Location','') and int(paused['config']['enabled'])==0 and paused['snapshot']==before['snapshot'] and ajax(owner,{'action':'hj_ci_booking_audit','doctor':str(doc)})==audit_before,'pause disables new bookings without changing existing schedule or bookings')
  check(ajax(patient,{'action':'hj_ci_slots','doctor':str(doc),'nonce':patient_nonce,'date':day})['status']=='unavailable','public slot access is unavailable after pause')
+ code,body,_=request(guest,'/wp-admin/admin-ajax.php',params)
+ check(code==503 and json.loads(body)['data']['code']=='unavailable','calendar endpoint reports unavailable after pause')
  code,_,headers=request(owner,post,pause)
  check(code==303 and 'hj_cap_status=paused' in headers.get('Location','') and state(owner,doc)==paused,'repeated pause is idempotent')
  check('17:00 - 21:00' in public_hours(doc) and 'نوبت‌دهی داخلی برای این جراح در دسترس نیست' in public_hours(doc),'paused public profile retains hours but reports unavailable booking')
