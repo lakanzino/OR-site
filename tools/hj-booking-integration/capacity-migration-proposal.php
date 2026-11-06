@@ -6,6 +6,7 @@ if (PHP_SAPI !== 'cli' || getenv('GITHUB_ACTIONS') !== 'true' || getenv('HJ_DISP
 require '/wordpress/wp-load.php';
 if (DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || $GLOBALS['wpdb']->prefix !== 'hjt_' || WP_HOME !== 'http://example.invalid') { exit(1); }
 require_once getenv('GITHUB_WORKSPACE') . '/plugins/hamyar-doctors/hamyar-doctors.php';
+hj_doctors();
 
 /** Propose a v2 equivalent of a strictly valid v1 policy. This is not a
  * safe automatic deployment: callers must independently prove old workers
