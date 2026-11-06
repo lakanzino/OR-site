@@ -2,12 +2,14 @@
 """Run the actual ajax_save from a patched disposable plugin copy, never production."""
 import concurrent.futures
 import hashlib
+import http.client
 import http.cookiejar
 import json
 import os
 import shutil
 import signal
 import subprocess
+import threading
 import time
 import urllib.error
 import urllib.parse
@@ -46,8 +48,23 @@ def state(opener, doctor):
     code, body = request(opener, '/wp-admin/admin-ajax.php', {'action': 'hj_ci_schedule_state', 'pid': str(doctor)})
     check(code == 200, 'authorized synthetic state read')
     return json.loads(body)['data']
+def ajax(opener, payload):
+    code, body = request(opener, '/wp-admin/admin-ajax.php', payload)
+    if code != 200: raise AssertionError(f'Unexpected AJAX status {code}: {body[:500]}')
+    data = json.loads(body)
+    if not data['success']: raise AssertionError('Unexpected AJAX failure')
+    return data['data']
+def booking_nonce(opener): return ajax(opener, {'action': 'hj_ci_booking_nonce'})['nonce']
+def key(n): return f'{n:032x}'
+def booking_payload(doctor, nonce, start, keyvalue, fault=''):
+    return {'action': 'hj_ci_create', 'doctor': str(doctor), 'nonce': nonce, 'date': '2030-01-02', 'start': start, 'key': keyvalue, 'phone': '09123456789', 'national': '1234567891', 'fault': fault}
+def slots(opener, doctor, nonce):
+    return ajax(opener, {'action': 'hj_ci_slots', 'doctor': str(doctor), 'nonce': nonce, 'date': '2030-01-02'})
+def audit(opener, doctor): return ajax(opener, {'action': 'hj_ci_booking_audit', 'doctor': str(doctor)})
 
 server = None
+ready = None
+released = None
 created_plugin = False
 created_mu = False
 try:
@@ -99,12 +116,96 @@ try:
     check(all(code == 200 and json.loads(body)['success'] for code, body in responses), 'eight concurrent actual AJAX schedule saves succeeded')
     row = state(owner, doctor_id)['snapshot']
     check(int(row['revision']) == 10 and row['rows_hash'] == hashlib.sha256(row['rows_json'].encode()).hexdigest() and json.loads(row['rows_json'])[0]['start_time'] in [f'{h:02d}:00:00' for h in range(8, 16)], 'concurrent wpdb saves serialized without lost revisions or torn snapshot')
+
+    # Set display to 10–11, then write canonical 9–12 without touching display.
+    display = dict(common, _hjn=owner_nonce, **{'hours[wednesday][start]': '10:00', 'hours[wednesday][end]': '11:00'})
+    check(ajax(owner, display) is not None, 'actual dashboard saves display baseline')
+    open_hours = dict(common, _hjn=owner_nonce, hj_ci_mirror_fail='1')
+    check(ajax(owner, open_hours) is not None, 'actual dashboard publishes test schedule')
+    saved = state(owner, doctor_id); open_revision = int(saved['snapshot']['revision'])
+    check(saved['display'][0]['start_time'] == '10:00:00' and json.loads(saved['snapshot']['rows_json'])[0]['start_time'] == '09:00:00', 'display intentionally differs from canonical snapshot')
+    patients = [login(f'synthetic_race_{i}')[0] for i in range(8)]
+    nonces = [booking_nonce(p) for p in patients]
+    first_slots = slots(patients[0], doctor_id, nonces[0])
+    check(first_slots['status'] == 'ok' and first_slots['revision'] == open_revision and '2030-01-02 05:30:00' in first_slots['slots'], 'actual snapshot supplies slot excluded by stale display')
+
+    # The server commits and kills its own DB connection, signals the client,
+    # then waits. Close the actual HTTP socket before releasing its response.
+    lost_key = key(31001)
+    marker = Path(os.environ['RUNNER_TEMP']) / ('hj-booking-commit-' + lost_key)
+    ready, released = Path(str(marker) + '-ready'), Path(str(marker) + '-released')
+    ready.unlink(missing_ok=True); released.unlink(missing_ok=True)
+    cookie_handler = next(h for h in patients[0].handlers if isinstance(h, urllib.request.HTTPCookieProcessor))
+    cookie = '; '.join(f'{c.name}={c.value}' for c in cookie_handler.cookiejar if c.name.startswith('wordpress_logged_in_'))
+    check(bool(cookie), 'synthetic patient authentication cookie exists')
+    lost = booking_payload(doctor_id, nonces[0], '2030-01-02 05:30:00', lost_key, 'disconnect_after_commit')
+    conn = http.client.HTTPConnection('127.0.0.1', 8997, timeout=30)
+    try:
+        conn.request('POST', url, urllib.parse.urlencode(lost), {'Host': 'example.invalid', 'Cookie': cookie, 'Content-Type': 'application/x-www-form-urlencoded'})
+        deadline = time.monotonic() + 25
+        while not ready.exists() and time.monotonic() < deadline: time.sleep(.02)
+        check(ready.exists(), 'COMMIT succeeded and DB connection killed before response')
+        conn.close()  # no response is consumed; caller must treat outcome as unknown
+    finally:
+        conn.close(); released.touch()
+    retry_payload = dict(lost, fault='')
+    replay = ajax(patients[0], retry_payload)
+    check(replay['status'] == 'replayed' and replay['id'] > 0, 'same-key retry resolves unknown commit without duplicate')
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+        retries = list(pool.map(lambda _: ajax(patients[0], retry_payload), range(4)))
+    check(all(r['status'] == 'replayed' and r['id'] == replay['id'] for r in retries), 'concurrent same-key retries return the same committed booking')
+    conflict = ajax(patients[0], dict(retry_payload, start='2030-01-02 06:05:00'))
+    check(conflict['status'] == 'idempotency_conflict', 'same key cannot be reused for changed request')
+    before = audit(owner, doctor_id)
+    check(len(before) == 1 and before[0]['request_key'] == lost_key and before[0]['details_id'] is not None, 'lost response left exactly one booking and atomic details')
+
+    killed_key = key(31002)
+    killed_booking = booking_payload(doctor_id, nonces[1], '2030-01-02 06:05:00', killed_key, 'kill_before_commit')
+    check(ajax(patients[1], killed_booking)['status'] == 'unknown', 'booking database connection killed before commit yields unknown')
+    check(len(audit(owner, doctor_id)) == 1, 'killed precommit booking and details rolled back')
+    after_kill = ajax(patients[1], dict(killed_booking, fault=''))
+    check(after_kill['status'] == 'created', 'retry after precommit kill creates one booking')
+
+    # Nine simultaneous HTTP requests: actual ajax_save closes Wednesday, eight
+    # distinct authenticated patients compete on two slots near the boundary.
+    gate = threading.Barrier(9)
+    race_payloads = [booking_payload(doctor_id, nonces[i], '2030-01-02 07:15:00' if i % 2 == 0 else '2030-01-02 07:50:00', key(32000+i)) for i in range(8)]
+    def race_patient(i):
+        gate.wait(timeout=15)
+        return ajax(patients[i], race_payloads[i])
+    def race_doctor():
+        gate.wait(timeout=15)
+        return ajax(owner, dict(common, _hjn=owner_nonce, hj_ci_mirror_fail='1', **{'hours[wednesday][closed]': '1'}))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=9) as pool:
+        futures = [pool.submit(race_patient, i) for i in range(8)]
+        closing = pool.submit(race_doctor)
+        results = [f.result(timeout=45) for f in futures]
+        check(closing.result(timeout=45) is not None, 'actual ajax_save closed hours concurrently with eight patients')
+    check(all(r['status'] in ('created', 'invalid_slot') for r in results), 'concurrent patients receive only valid terminal outcomes')
+    created = [r for r in results if r['status'] == 'created']
+    check(len(created) <= 2 and len({r['id'] for r in created}) == len(created) and all(r['revision'] == open_revision for r in created), 'only open-revision bookings win, with no duplicated slots')
+    closed_state = state(owner, doctor_id); closed_revision = int(closed_state['snapshot']['revision'])
+    check(closed_revision == open_revision + 1 and json.loads(closed_state['snapshot']['rows_json'])[0]['is_closed'] == 1, 'closed snapshot published after race')
+    closed_slots = slots(patients[0], doctor_id, nonces[0])
+    check(closed_slots['status'] == 'ok' and closed_slots['revision'] == closed_revision and not closed_slots['slots'], 'slot reader uses closed snapshot despite stale open display')
+    for i in range(8):
+        payload = booking_payload(doctor_id, nonces[i], '2030-01-02 07:15:00', key(33000+i))
+        check(ajax(patients[i], payload)['status'] == 'invalid_slot', 'patient cannot book after closure')
+    # A retry remains stable even if the doctor closed hours after commit.
+    check(ajax(patients[0], retry_payload)['id'] == replay['id'], 'committed retry survives later schedule closure')
+    final = audit(owner, doctor_id)
+    raced_rows = [r for r in final if r['request_key'] in {payload['key'] for payload in race_payloads}]
+    check(len({r['starts_at'] for r in raced_rows}) == len(raced_rows), 'competing patients cannot duplicate a boundary slot')
+    expected_ids = {replay['id'], after_kill['id'], *(r['id'] for r in created)}
+    check(len(final) == len(expected_ids) and {int(r['id']) for r in final} == expected_ids and len({r['request_key'] for r in final}) == len(final) and all(int(r['revision']) == open_revision and r['details_id'] is not None for r in final), 'no lost or duplicate bookings; each is linked to open revision and details')
 finally:
     if server:
         os.killpg(server.pid, signal.SIGTERM)
         try: server.wait(timeout=10)
         except subprocess.TimeoutExpired:
             os.killpg(server.pid, signal.SIGKILL); server.wait()
+    if ready is not None: ready.unlink(missing_ok=True)
+    if released is not None: released.unlink(missing_ok=True)
     if created_mu and mu.is_symlink(): mu.unlink()
     if created_plugin:
         subprocess.run(['php', 'tools/hj-booking-spike/wpdb-ajax-cleanup.php'], check=True)

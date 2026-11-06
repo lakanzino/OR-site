@@ -53,6 +53,7 @@ function hj_ci_port_save_hours( $doctor, $rows ) {
 	}
 	return $result;
 }
+require __DIR__ . '/wpdb-booking-fixture.php';
 add_action( 'wp_ajax_hj_ci_dashboard_nonce', function () { wp_send_json_success( array( 'nonce' => wp_create_nonce( 'hj_dash_nonce' ) ) ); } );
 add_action( 'wp_ajax_hj_ci_schedule_state', function () {
 	$doctor = isset( $_POST['pid'] ) ? absint( $_POST['pid'] ) : 0;
