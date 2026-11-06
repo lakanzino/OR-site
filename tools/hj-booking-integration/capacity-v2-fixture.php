@@ -20,6 +20,9 @@ if ($mode==='setup') {
  update_option('hj_booking_schema_version',2,false); hj_booking_schema_clear_option_cache();
  $v2=hj_booking_public_slots((int)$doctor,$date); $after=$wpdb->get_row($wpdb->prepare("SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d",$doctor),ARRAY_A);
  v2_check(hj_booking_capacity_v2_ready() && hj_booking_ready() && $v1===$v2 && $before===$after,'legacy schedule read in v2 preserves data, old duration and buffer');
+ v2_check(hj_booking_capacity_calendar((int)$doctor)['status']==='legacy_schedule','14-day capacity calendar refuses to guess capacity on a legacy snapshot');
+ $calc=function($remaining,$states) { return array('day_remaining'=>$remaining,'slots'=>array_map(function($state){return array('state'=>$state);},$states)); };
+ v2_check(hj_booking_calendar_day_summary(true,null)===array('remaining'=>0,'state'=>'closed','color'=>'blue') && hj_booking_calendar_day_summary(false,$calc(0,array('past')))['state']==='past' && hj_booking_calendar_day_summary(false,$calc(0,array('past','full')))['state']==='full' && hj_booking_calendar_day_summary(false,$calc(0,array()))['state']==='unavailable' && hj_booking_calendar_day_summary(false,$calc(1,array()))['color']==='yellow' && hj_booking_calendar_day_summary(false,$calc(3,array()))['color']==='yellow' && hj_booking_calendar_day_summary(false,$calc(4,array()))['color']==='green' && hj_booking_calendar_day_summary(false,false)===false,'calendar labels distinguish closed, full and past; colors cover threshold boundaries');
  $rule=array(array('day_of_week'=>$weekday,'is_closed'=>0,'start_time'=>'17:00','end_time'=>'21:00','duration_minutes'=>60,'buffer_minutes'=>0,'capacity'=>3));
  $bad=$rule; $bad[0]['capacity']=0; v2_check(hj_booking_save_capacity_week((int)$doctor,$bad,1)['status']==='invalid','invalid capacity rejected');
  $patient=get_user_by('login','synthetic_race_0'); if (!$patient) { throw new RuntimeException('synthetic user missing'); }
@@ -30,6 +33,11 @@ if ($mode==='setup') {
  v2_check(hj_booking_editor_schedule((int)$doctor)['status']==='invalid_schedule' && hj_booking_save_schedule((int)$doctor,$legacy,2)['status']==='invalid_schedule' && $v2snapshot===$wpdb->get_row($wpdb->prepare("SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d",$doctor),ARRAY_A),'old editor cannot discard v2 capacity');
  $slots=hj_booking_public_slots((int)$doctor,$date);
  v2_check($slots['status']==='ok' && $slots['revision']===2 && count($slots['slots'])===4 && !isset($slots['intervals']),'public slot contract remains simple and exposes no internal data');
+ $calendar=hj_booking_capacity_calendar((int)$doctor); $today=(new DateTimeImmutable('now',wp_timezone()))->setTime(0,0);
+ v2_check($calendar['status']==='ok' && $calendar['revision']===2 && count($calendar['days'])===14 && $calendar['days'][0]['date']===$today->format('Y-m-d') && $calendar['days'][13]['date']===$today->modify('+13 days')->format('Y-m-d'),'calendar has exactly 14 consecutive local dates and current revision');
+ v2_check($calendar['days'][2]===array('date'=>$date,'remaining'=>12,'state'=>'available','color'=>'green') && $calendar['days'][9]['remaining']===12 && $calendar['days'][1]['state']==='closed','capacity three across four one-hour slots gives twelve places on scheduled days');
+ foreach ($calendar['days'] as $day) { v2_check(array_keys($day)===array('date','remaining','state','color'),'calendar returns only public aggregate fields'); }
+
  file_put_contents($meta,wp_json_encode(array('doctor'=>(int)$doctor,'date'=>$date,'start'=>$slots['slots'][0],'rule'=>$rule,'revision'=>2)));
  exit(0);
 }
@@ -79,6 +87,10 @@ if ($mode==='verify') {
  $slots=hj_booking_public_slots($id,$data['date']); v2_check(!in_array($data['start'],$slots['slots'],true),'full v2 interval is no longer publicly selectable');
  $patient=get_user_by('login','synthetic_race_1'); wp_set_current_user($patient->ID);
  v2_check(hj_booking_create($id,$data['start'],str_repeat('e',32),'09123456789','1234567891',1)['status']==='revision_conflict','v2 create rejects a stale schedule revision');
+ $calendar=hj_booking_capacity_calendar($id);
+ $day=array_values(array_filter($calendar['days'],function($day) use($data){return $day['date']===$data['date'];}));
+ v2_check(count($day)===1 && $day[0]['remaining']===9 && $day[0]['color']==='green','calendar accounts for three concurrent active bookings while cancelled booking releases capacity');
+ wp_set_current_user($admin->ID); v2_check(hj_booking_pause_capacity($id)['status']==='paused' && hj_booking_capacity_calendar($id)['status']==='unavailable','paused doctor cannot expose calendar as available');
  exit(0);
 }
 if ($mode==='cleanup') {

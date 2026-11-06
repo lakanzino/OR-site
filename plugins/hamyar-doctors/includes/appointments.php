@@ -434,6 +434,51 @@ function hj_booking_public_slots( $doctor, $date ) {
 		return array( 'status' => 'ok' ) + $r;
 	} );
 }
+/** Map a validated day calculation to an accessible state plus its color. */
+function hj_booking_calendar_day_summary( $closed, $calculation ) {
+	if ( $closed ) { return array( 'remaining'=>0, 'state'=>'closed', 'color'=>'blue' ); }
+	if ( ! is_array( $calculation ) || ! isset( $calculation['day_remaining'], $calculation['slots'] ) || ! is_int( $calculation['day_remaining'] ) || $calculation['day_remaining'] < 0 || ! is_array( $calculation['slots'] ) ) { return false; }
+	$remaining = $calculation['day_remaining'];
+	if ( $remaining > 3 ) { return array( 'remaining'=>$remaining, 'state'=>'available', 'color'=>'green' ); }
+	if ( $remaining > 0 ) { return array( 'remaining'=>$remaining, 'state'=>'limited', 'color'=>'yellow' ); }
+	$states = array_column( $calculation['slots'], 'state' );
+	if ( in_array( 'full', $states, true ) ) { $state = 'full'; }
+	elseif ( $states && count( array_unique( $states ) ) === 1 && $states[0] === 'past' ) { $state = 'past'; }
+	else { $state = 'unavailable'; }
+	return array( 'remaining'=>0, 'state'=>$state, 'color'=>'blue' );
+}
+/** 14 local calendar days from one snapshot under the same doctor mutex.
+ * CI-only backend experiment; not yet connected to a public endpoint or UI.
+ * No patient data leaves this function. Reservation always rechecks separately.
+ */
+function hj_booking_capacity_calendar( $doctor ) {
+	if ( ! hj_booking_capacity_v2_ready() || ! hj_booking_ready() ) { return array( 'status'=>'unavailable' ); }
+	if ( get_post_type( $doctor ) !== 'doctor' || get_post_status( $doctor ) !== 'publish' ) { return array( 'status'=>'forbidden' ); }
+	return hj_booking_transaction( $doctor, 'capacity_calendar', function ( $db, $config ) use ( $doctor ) {
+		if ( ! (int) $config['enabled'] ) { return array( 'status'=>'unavailable' ); }
+		$snapshot = hj_booking_snapshot_locked( $db, $doctor );
+		if ( $snapshot === false ) { return array( 'status'=>'invalid_schedule' ); }
+		// Do not infer new capacity semantics for legacy schedules during migration.
+		if ( $snapshot['format'] !== 2 ) { return array( 'status'=>'legacy_schedule' ); }
+		$now = time(); $timezone = wp_timezone(); $today = ( new DateTimeImmutable( '@' . $now ) )->setTimezone( $timezone )->setTime( 0, 0 );
+		$table = hj_booking_table( 'appointments' );
+		$occupied = hj_booking_rows( $db, $db->prepare( "SELECT starts_at,blocked_until,status FROM `$table` WHERE doctor_id=%d AND status<>'cancelled' AND blocked_until>%s", $doctor, gmdate( 'Y-m-d H:i:s', $now ) ) );
+		$rules = array(); foreach ( $snapshot['rows'] as $rule ) { $rules[$rule['day_of_week']] = $rule; }
+		$days = array();
+		for ( $i = 0; $i < 14; $i++ ) {
+			$day = $today->modify( '+' . $i . ' days' ); $date = $day->format( 'Y-m-d' );
+			$rule = $rules[strtolower( $day->format( 'l' ) )] ?? null;
+			if ( ! $rule || (int) $rule['is_closed'] ) { $summary = hj_booking_calendar_day_summary( true, null ); }
+			else {
+				$calculation = hj_booking_compute_capacity_day( $date, $rule, $occupied, $now, 30, $timezone );
+				$summary = hj_booking_calendar_day_summary( false, $calculation );
+				if ( $summary === false ) { return array( 'status'=>'invalid_schedule' ); }
+			}
+			$days[] = array( 'date'=>$date ) + $summary;
+		}
+		return array( 'status'=>'ok', 'revision'=>$snapshot['revision'], 'days'=>$days );
+	} );
+}
 function hj_booking_phone( $value ) {
 	if ( ! is_string( $value ) ) { return false; }
 	$s = function_exists( 'hj_to_en_digits' ) ? hj_to_en_digits( $value ) : $value;
