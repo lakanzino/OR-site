@@ -49,7 +49,7 @@ try:
  plugin.symlink_to(root/'plugins/hamyar-doctors',target_is_directory=True); created_plugin=True
  subprocess.run(cmd+['setup'],check=True); setup=True
  mu.parent.mkdir(exist_ok=True); mu.symlink_to(root/'tools/hj-booking-integration/mu.php'); created_mu=True
- fixture=json.loads(meta.read_text()); doc=fixture['doctor']; page=fixture['page']; weekday=fixture['weekday']; day=fixture['date']
+ fixture=json.loads(meta.read_text()); doc=fixture['doctor']; page=fixture['page']; dashboard=fixture['dashboard']; weekday=fixture['weekday']; day=fixture['date']
  server=subprocess.Popen(['php','-d','auto_prepend_file='+str(prepend),'-S','127.0.0.1:8996','-t','/wordpress'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True,env=dict(os.environ,PHP_CLI_SERVER_WORKERS='8'))
  for _ in range(80):
   try: request(session(),'/wp-login.php'); break
@@ -64,6 +64,12 @@ try:
  finally: render_file.unlink(missing_ok=True)
  check(state(owner,doc)=={'config':None,'snapshot':None},'rendering settings does not create database rows')
  check(form(other,page)[0]=='' and form(patient,page)[0]=='','other doctor and patient cannot view owner settings')
+ dash_html,dash_fields=form(owner,dashboard)
+ check('hj-dash-form' in dash_html and 'hj-capacity-settings' in dash_html and 'hj_schedule_revision' not in dash_fields and not any(k.startswith('hours[') for k in dash_fields),'v2 dashboard renders separate capacity editor and no legacy schedule inputs')
+ check('hj-capacity-settings' not in form(patient,dashboard)[0] and form(other,dashboard)[1].get('doctor_id') != str(doc),'patient and other doctor do not see owner capacity editor')
+ dash_file=Path(os.environ['RUNNER_TEMP'])/'hj-capacity-dashboard-render.html'; dash_file.write_text(dash_html,encoding='utf-8')
+ try: subprocess.run(['node',str(root/'tools/hj-booking-integration/capacity-ui-browser.cjs')],check=True,env=dict(os.environ,HJ_CAPACITY_HTML=str(dash_file),HJ_DASHBOARD_TEST='1'))
+ finally: dash_file.unlink(missing_ok=True)
  payload=week({'action':'hj_capacity_week_save','doctor_id':str(doc),'page_id':str(page),'revision':fields['revision'],'original_duration':fields['original_duration'],'original_buffer':fields['original_buffer'],'original_enabled':fields['original_enabled'],'enabled':'1','hj_capacity_nonce':fields['hj_capacity_nonce']},weekday)
  post='/wp-admin/admin-post.php'
  bad=dict(payload,hj_capacity_nonce='bad')
@@ -75,6 +81,21 @@ try:
  check(code==303 and 'hj_cap_status=saved' in headers.get('Location',''),'owner saves actual weekly form')
  current=state(owner,doc); snapshot=current['snapshot']; rows=json.loads(snapshot['rows_json'])
  check(int(snapshot['revision'])==1 and rows['version']==2 and rows['rows'][list(('saturday','sunday','monday','tuesday','wednesday','thursday','friday')).index(weekday)]['capacity']==3 and int(current['config']['enabled'])==1 and snapshot['rows_hash']==hashlib.sha256(snapshot['rows_json'].encode()).hexdigest(),'real form atomically persists v2 snapshot and activation')
+ # Saving a profile is independent of schedules, including a v2 snapshot.
+ dash_nonce=ajax(owner,{'action':'hj_ci_dashboard_nonce'})['nonce']
+ profile={'action':'hj_dash_save','pid':str(doc),'name_fa':'Synthetic dashboard profile','_hjn':dash_nonce}
+ mirror_before=ajax(owner,{'action':'hj_ci_schedule_state','pid':str(doc)})['display']
+ profile_result=ajax(owner,profile)
+ check(profile_result['pid']==doc and state(owner,doc)==current and ajax(owner,{'action':'hj_ci_schedule_state','pid':str(doc)})['display']==mirror_before,'v2 profile save does not modify schedule, configuration or display mirror')
+ code,_,_=request(owner,'/wp-admin/admin-ajax.php',dict(profile,**{'hours[monday][start]':'09:00','hj_schedule_revision':'1'}))
+ check(code==409 and state(owner,doc)==current,'stale legacy dashboard save rejected before changing v2 schedule')
+ dash_html,dash_fields=form(owner,dashboard)
+ dash_payload=week({'action':'hj_capacity_week_save','doctor_id':str(doc),'page_id':str(dashboard),'revision':dash_fields['revision'],'original_duration':dash_fields['original_duration'],'original_buffer':dash_fields['original_buffer'],'original_enabled':dash_fields['original_enabled'],'enabled':'1','hj_capacity_nonce':dash_fields['hj_capacity_nonce']},weekday)
+ code,_,headers=request(owner,post,dict(dash_payload,hj_capacity_nonce='bad'))
+ check(code==403 and state(owner,doc)==current,'dashboard embedded editor rejects invalid nonce')
+ code,_,headers=request(owner,post,dash_payload)
+ check(code==303 and 'hj_cap_status=saved' in headers.get('Location','') and int(state(owner,doc)['snapshot']['revision'])==2,'dashboard embedded editor saves through actual handler')
+ current=state(owner,doc)
  code,_,headers=request(owner,post,payload)
  check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,doc)==current,'stale form rejected without writes')
  html,fields=form(owner,page); fresh=week(dict(payload,revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)

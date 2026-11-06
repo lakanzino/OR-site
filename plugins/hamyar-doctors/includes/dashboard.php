@@ -525,8 +525,10 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			$pid  = self::current_pid();
 			$user = wp_get_current_user();
 			$booking_enabled = function_exists( 'hj_booking_enabled' ) && hj_booking_enabled();
+			$capacity_mode = function_exists( 'hj_booking_capacity_v2_ready' ) && hj_booking_capacity_v2_ready();
+			$legacy_booking = $booking_enabled && ! $capacity_mode;
 			$editor_schedule = array( 'status' => 'ok', 'revision' => 0, 'rows' => array(), 'missing' => true );
-			if ( $booking_enabled && $pid ) {
+			if ( $legacy_booking && $pid ) {
 				$editor_schedule = hj_booking_editor_schedule( (int) $pid );
 				if ( ( $editor_schedule['status'] ?? '' ) !== 'ok' ) {
 					return '<div class="hj-dash" dir="rtl"><p>' . esc_html__( 'برنامهٔ نوبت‌دهی در دسترس نیست؛ برای جلوگیری از بازنویسی ناخواسته، بعداً دوباره تلاش کنید.', 'hamyar-doctors' ) . '</p></div>';
@@ -543,7 +545,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			);
 			$name     = $state['name'] !== '' ? $state['name'] : $user->display_name;
 			$photo    = self::photo_url( $pid );
-			$hours    = $pid ? self::hours_map( $pid, $booking_enabled ? $editor_schedule['rows'] : null ) : array();
+			$hours    = $pid && ! $capacity_mode ? self::hours_map( $pid, $legacy_booking ? $editor_schedule['rows'] : null ) : array();
 			$types    = self::terms( 'specialty_type' );
 			$specs    = self::terms( 'specialty' );
 			$provs    = self::terms( 'province' );
@@ -578,6 +580,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
       </div>
     </div>
     <?php if ( $pid && function_exists( 'hj_booking_ready' ) && hj_booking_ready() && hj_booking_can_manage( $pid ) ) : ?><a class="hj-dash__link" href="#hj-bookings">لیست نوبت‌ها</a><?php endif; ?>
+    <?php if ( $pid && $capacity_mode ) : ?><a class="hj-dash__link" href="#hj-capacity-settings">تنظیم نوبت‌دهی</a><?php endif; ?>
     <a class="hj-dash__link" data-hj="public-link" href="<?php echo esc_url( $state['public_url'] ); ?>"<?php echo $state['public_url'] ? '' : ' hidden'; ?>>مشاهدهٔ صفحهٔ عمومی</a>
   </header>
 
@@ -585,7 +588,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 
     <form class="hj-dash__form" id="hj-dash-form" novalidate autocomplete="off">
       <input type="hidden" name="pid" value="<?php echo (int) $pid; ?>">
-      <?php if ( $booking_enabled ) : ?>
+      <?php if ( $legacy_booking ) : ?>
       <input type="hidden" name="hj_schedule_revision" value="<?php echo esc_attr( (string) $editor_schedule['revision'] ); ?>">
       <?php endif; ?>
 
@@ -702,6 +705,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
         <?php echo self::f_text( 'map_link', 'لینک نقشه (گوگل‌مپ، نشان یا بلد)', $v( 'map_link' ), array( 'ltr' => true, 'type' => 'url', 'max' => 300, 'ph' => 'https://' ) ); ?>
       </section>
 
+      <?php if ( ! $capacity_mode ) : ?>
       <!-- ۴) ساعات کاری -->
       <section class="hj-dash__card">
         <h3 class="hj-dash__h">ساعات کاری</h3>
@@ -729,6 +733,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
         </div>
       </section>
 
+      <?php endif; ?>
       <!-- ۵) مدارک -->
       <section class="hj-dash__card">
         <h3 class="hj-dash__h">مدارک</h3>
@@ -804,6 +809,11 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
       ?>
     </aside>
   </div>
+  <?php if ( $capacity_mode && $pid && function_exists( 'hj_capacity_settings_shortcode' ) ) : ?>
+    <?php echo hj_capacity_settings_shortcode( array( 'doctor_id' => $pid ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- shortcode escapes its fields ?>
+  <?php elseif ( $capacity_mode && ! $pid ) : ?>
+    <p>برای تنظیم نوبت‌دهی، ابتدا پروفایل را ذخیره کنید.</p>
+  <?php endif; ?>
 </div>
 			<?php
 			return ob_get_clean();
@@ -898,8 +908,14 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 				self::fail( 'دسترسی غیرمجاز.', 403 );
 			}
 			$booking_enabled = function_exists( 'hj_booking_enabled' ) && hj_booking_enabled();
+			$capacity_mode = function_exists( 'hj_booking_capacity_v2_ready' ) && hj_booking_capacity_v2_ready();
+			$legacy_booking = $booking_enabled && ! $capacity_mode;
+			// Reject stale legacy forms instead of silently discarding schedule edits.
+			if ( $capacity_mode && ( isset( $_POST['hours'] ) || isset( $_POST['hj_schedule_revision'] ) ) ) {
+				self::fail( 'فرم قدیمی است؛ صفحه را بازخوانی کنید و برنامه را جداگانه تنظیم کنید.', 409 );
+			}
 			$expected_revision = null;
-			if ( $booking_enabled ) {
+			if ( $legacy_booking ) {
 				$raw_revision = isset( $_POST['hj_schedule_revision'] ) && is_string( $_POST['hj_schedule_revision'] ) ? wp_unslash( $_POST['hj_schedule_revision'] ) : '';
 				if ( ! preg_match( '/^(0|[1-9][0-9]*)$/D', $raw_revision ) || strlen( $raw_revision ) > strlen( (string) PHP_INT_MAX ) || (string) (int) $raw_revision !== $raw_revision ) {
 					self::fail( 'نسخهٔ برنامه نامعتبر است؛ صفحه را دوباره باز کنید.', 400 );
@@ -1035,7 +1051,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 				self::fail( 'لطفاً موارد مشخص‌شده را اصلاح کنید.', 422, array( 'errors' => $errors ) );
 			}
 
-			if ( $booking_enabled && ! $pid && $expected_revision !== 0 ) {
+			if ( $legacy_booking && ! $pid && $expected_revision !== 0 ) {
 				self::fail( 'نسخهٔ برنامه نامعتبر است؛ صفحه را دوباره باز کنید.', 400 );
 			}
 
@@ -1067,7 +1083,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			// Publish the canonical schedule before any other profile field changes.
 			// The revision check and update share the same doctor mutex/transaction.
 			$schedule = null;
-			if ( $booking_enabled ) {
+			if ( $legacy_booking ) {
 				$schedule = hj_booking_save_schedule( (int) $pid, $rows, $expected_revision );
 				if ( ( $schedule['status'] ?? '' ) === 'revision_conflict' ) {
 					self::fail( 'برنامه در صفحهٔ دیگری تغییر کرده است؛ صفحه را بازخوانی کنید و تغییرات را دوباره وارد کنید.', 409 );
@@ -1096,10 +1112,10 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			self::set( $pid, 'address_clinic', $addr_c );
 			self::set( $pid, 'address_hospital', $addr_h );
 			self::set( $pid, 'map_link', $map );
-			if ( $booking_enabled ) {
+			if ( $legacy_booking ) {
 				// ACF/meta is a best-effort display mirror, never the booking source.
 				try { self::set( $pid, 'working_hours', $rows ); } catch ( Throwable $ignored ) {}
-			} else {
+			} elseif ( ! $capacity_mode ) {
 				self::set( $pid, 'working_hours', $rows );
 			}
 
@@ -1134,7 +1150,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			$data            = self::state( $pid );
 			$data['pid']     = $pid;
 			$data['created'] = $created;
-			if ( $booking_enabled ) { $data['schedule_revision'] = $schedule['revision']; }
+			if ( $legacy_booking ) { $data['schedule_revision'] = $schedule['revision']; }
 			self::ok( $data );
 		}
 

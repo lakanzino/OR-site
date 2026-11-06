@@ -13,7 +13,14 @@ const css = fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'plugins/ham
     for (const width of [375, 1024]) {
       const page = await browser.newPage({ viewport:{width,height:900} });
       await page.setContent('<!doctype html><html lang="fa" dir="rtl"><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>'+html+'</body></html>');
+      if (process.env.HJ_DASHBOARD_TEST === '1') await page.addStyleTag({content:fs.readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'plugins/hamyar-doctors/assets/css/dashboard.css'), 'utf8')});
       await page.addStyleTag({content:css});
+      if (process.env.HJ_DASHBOARD_TEST === '1') {
+        assert.equal(await page.locator('#hj-dash-form').count(), 1);
+        assert.equal(await page.locator('#hj-capacity-settings form').count(), 2);
+        assert.equal(await page.locator('#hj-dash-form .hj-capacity').count(), 0, 'capacity forms must not be nested in profile form');
+        assert.equal(await page.locator('#hj-dash-form input[name^="hours["]').count(), 0);
+      }
       const result = await page.evaluate(() => {
         const section = document.querySelector('.hj-capacity');
         const cards = Array.from(document.querySelectorAll('.hj-capacity__day'));

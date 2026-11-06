@@ -34,7 +34,7 @@ function hj_capacity_editor_state( $doctor ) {
 }
 function hj_capacity_page_valid( $page ) {
 	$post = get_post( $page );
-	return $post && $post->post_type === 'page' && $post->post_status === 'publish' && has_shortcode( $post->post_content, 'hj_capacity_settings' );
+	return $post && $post->post_type === 'page' && $post->post_status === 'publish' && ( has_shortcode( $post->post_content, 'hj_capacity_settings' ) || ( (int) get_option( 'hj_doctors_dashboard_page' ) === (int) $page && has_shortcode( $post->post_content, 'hj_doctors_dashboard' ) ) );
 }
 add_action( 'template_redirect', function () {
 	$post = get_queried_object();
