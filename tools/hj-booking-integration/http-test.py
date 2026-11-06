@@ -458,6 +458,10 @@ try:
     # Management endpoints, private list rendering, and deterministic overlapping
     # cancellation/rebooking transactions on a fresh future Wednesday.
     admin, _ = login('fixture_admin'); secretary, _ = login('synthetic_secretary')
+    fake_acf = ajax(admin, {'action':'hj_ci_acf_hours_label'})
+    check(fake_acf['label']=='ساعات کاری' and fake_acf['instructions']=='توسط داشبورد پر می‌شود.', 'legacy v1 leaves the simulated ACF field unchanged')
+    code, editor_html = request(admin, '/wp-admin/post.php?post=' + str(doctor_id) + '&action=edit')
+    check(code == 200 and 'مستقل از نوبت‌دهی' not in editor_html, 'legacy v1 admin editor does not show the v2 notice')
     patient_a, _ = login('synthetic_patient'); patient_b, _ = login('synthetic_patient_b')
     def extract_form(html, action):
         class FormParser(HTMLParser):

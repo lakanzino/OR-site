@@ -55,7 +55,7 @@ try:
   try: request(session(),'/wp-login.php'); break
   except OSError: time.sleep(.25)
  else: raise RuntimeError('capacity UI server failed')
- owner=login('synthetic_doctor_a'); other=login('synthetic_doctor_b'); patient=login('synthetic_race_0'); guest=session()
+ owner=login('synthetic_doctor_a'); other=login('synthetic_doctor_b'); patient=login('synthetic_race_0'); admin=login('fixture_admin'); guest=session()
  check(state(owner,doc)=={'config':None,'snapshot':None},'no doctor schedule exists before first GET')
  def public_hours(doctor):
   page_html=ajax(guest,{'action':'hj_ci_render_patient_profile','doctor':str(doctor)})['html']
@@ -94,6 +94,17 @@ try:
  current=state(owner,doc); snapshot=current['snapshot']; rows=json.loads(snapshot['rows_json'])
  check(int(snapshot['revision'])==1 and rows['version']==2 and rows['rows'][list(('saturday','sunday','monday','tuesday','wednesday','thursday','friday')).index(weekday)]['capacity']==3 and int(current['config']['enabled'])==1 and snapshot['rows_hash']==hashlib.sha256(snapshot['rows_json'].encode()).hexdigest(),'real form atomically persists v2 snapshot and activation')
  check('ساعات نوبت‌دهی مطب' in public_hours(doc) and '17:00 - 21:00' in public_hours(doc) and '09:00 - 11:00' not in public_hours(doc) and state(owner,doc)==current,'guest public profile displays canonical v2 hours instead of stale meta without writes')
+ # WordPress native doctor editor can still edit display-only hours; verify it
+ # cannot modify the canonical schedule and communicates the distinction.
+ code,editor_html,_=request(admin,'/wp-admin/post.php?post='+str(doc)+'&action=edit')
+ editor=Inputs(); editor.feed(editor_html)
+ check(code==200 and 'ساعات نمایشی مطب (مستقل از نوبت‌دهی)' in editor_html and 'برنامهٔ نوبت‌دهی را تغییر نمی‌دهد' in editor_html and editor.fields.get('hj_review_nonce'),'native doctor editor labels display-only hours and shows warning')
+ fake_field=ajax(admin,{'action':'hj_ci_acf_hours_label'})
+ check(fake_field['name']=='working_hours' and fake_field['key']=='field_hj_working_hours' and fake_field['type']=='repeater' and 'مستقل از نوبت‌دهی' in fake_field['label'] and 'برنامهٔ نوبت‌دهی را تغییر نمی‌دهد' in fake_field['instructions'],'simulated ACF field label is scoped and keeps key, name and type')
+ update_nonce=ajax(admin,{'action':'hj_ci_review_editor_nonce','doctor':str(doc)})['post_nonce']
+ code,_,_=request(admin,'/wp-admin/post.php',{'action':'editpost','post_ID':str(doc),'post_type':'doctor','post_status':'publish','post_title':'Synthetic office review','_wpnonce':update_nonce,'hj_review_nonce':editor.fields['hj_review_nonce'],'hj_review[name_fa]':'Synthetic reviewed profile','hj_hours_present':'1','hj_hours[monday][start]':'08:00','hj_hours[monday][end]':'10:00'})
+ display=ajax(owner,{'action':'hj_ci_schedule_state','pid':str(doc)})['display']
+ check(code==302 and state(owner,doc)==current and any(row.get('start_time')=='08:00:00' for row in display) and '17:00 - 21:00' in public_hours(doc) and '08:00 - 10:00' not in public_hours(doc),'native admin edit changes only display metadata, not canonical v2 or public booking hours')
  # Saving a profile is independent of schedules, including a v2 snapshot.
  dash_nonce=ajax(owner,{'action':'hj_ci_dashboard_nonce'})['nonce']
  profile={'action':'hj_dash_save','pid':str(doc),'name_fa':'Synthetic dashboard profile','_hjn':dash_nonce}

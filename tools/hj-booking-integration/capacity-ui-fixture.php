@@ -21,7 +21,7 @@ if ($mode==='setup') {
  $legacy=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'Synthetic legacy office','post_author'=>$owner->ID),true);
  if (is_wp_error($legacy) || !$legacy || hj_booking_configure((int)$legacy,30,0,true)['status']!=='configured' || hj_booking_save_schedule((int)$legacy,array(array('day_of_week'=>'monday','is_closed'=>0,'start_time'=>'12:00:30','end_time'=>'13:00:00')),0)['status']!=='saved') { throw new RuntimeException('legacy office setup failed'); }
  update_post_meta($legacy,'working_hours',array(array('day_of_week'=>'monday','is_closed'=>0,'start_time'=>'09:00:00','end_time'=>'11:00:00')));
- wp_set_password('disposable-test-password',$owner->ID); wp_set_password('disposable-test-password',$other->ID); wp_set_password('disposable-test-password',$patient->ID);
+ wp_set_password('disposable-test-password',$admin->ID); wp_set_password('disposable-test-password',$owner->ID); wp_set_password('disposable-test-password',$other->ID); wp_set_password('disposable-test-password',$patient->ID);
  $date=(new DateTimeImmutable('now',wp_timezone()))->modify('+2 days')->format('Y-m-d');
  $weekday=strtolower((new DateTimeImmutable($date,new DateTimeZone('UTC')))->format('l'));
  update_option('hj_booking_schema_version',2,false); hj_booking_schema_clear_option_cache();

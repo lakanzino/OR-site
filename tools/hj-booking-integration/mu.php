@@ -67,6 +67,19 @@ add_action( 'wp_ajax_hj_ci_render_capacity_settings', function () {
 	global $wp_query; $wp_query->queried_object = $post; $wp_query->queried_object_id = $page; $wp_query->is_singular = true; $wp_query->is_page = true;
 	wp_send_json_success( array( 'html'=>do_shortcode( $post->post_content ) ) );
 } );
+// Exercise our field filter with a simulated ACF field, not the ACF plugin.
+add_action( 'wp_ajax_hj_ci_acf_hours_label', function () {
+	if ( ! current_user_can( 'manage_options' ) ) { wp_send_json_error( array(), 403 ); }
+	if ( ! function_exists( 'set_current_screen' ) ) { require_once ABSPATH . 'wp-admin/includes/screen.php'; }
+	set_current_screen( 'doctor' );
+	$field = array( 'key'=>'field_hj_working_hours', 'name'=>'working_hours', 'type'=>'repeater', 'label'=>'ساعات کاری', 'instructions'=>'توسط داشبورد پر می‌شود.' );
+	wp_send_json_success( apply_filters( 'acf/prepare_field/key=field_hj_working_hours', $field ) );
+} );
+add_action( 'wp_ajax_hj_ci_review_editor_nonce', function () {
+	$doctor = absint( $_POST['doctor'] ?? 0 );
+	if ( ! current_user_can( 'edit_post', $doctor ) || get_post_type( $doctor ) !== 'doctor' ) { wp_send_json_error( array(), 403 ); }
+	wp_send_json_success( array( 'post_nonce'=>wp_create_nonce( 'update-post_' . $doctor ) ) );
+} );
 add_action( 'wp_ajax_hj_ci_capacity_state', function () {
 	$doctor = absint( $_POST['doctor'] ?? 0 ); if ( ! hj_booking_can_configure( $doctor ) ) { wp_send_json_error( array(), 403 ); }
 	global $wpdb; $d = hj_booking_table( 'doctors' ); $s = hj_booking_table( 'schedules' );

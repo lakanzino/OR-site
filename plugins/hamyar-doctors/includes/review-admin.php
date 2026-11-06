@@ -52,6 +52,28 @@ add_action( 'transition_post_status', function ( $new, $old, $post ) {
 	}
 }, 10, 3 );
 
+/** Clarify that display hours are not the canonical booking schedule in v2. */
+function hj_review_capacity_hours_note() {
+	return 'این ساعات فقط اطلاعات نمایشی مطب هستند و تغییر آن‌ها برنامهٔ نوبت‌دهی را تغییر نمی‌دهد. پس از ثبت برنامهٔ نوبت‌دهی، پروفایل ساعات نوبت‌دهی را از همان برنامه نشان می‌دهد؛ تنظیم آن در پنل جراح انجام می‌شود.';
+}
+function hj_review_capacity_admin_screen() {
+	if ( ! function_exists( 'hj_booking_capacity_v2_ready' ) || ! hj_booking_capacity_v2_ready() || ! is_admin() || ! function_exists( 'get_current_screen' ) ) { return false; }
+	$screen = get_current_screen();
+	return $screen && $screen->base === 'post' && $screen->post_type === 'doctor';
+}
+add_action( 'admin_notices', function () {
+	if ( hj_review_capacity_admin_screen() ) {
+		echo '<div class="notice notice-info"><p>' . esc_html( hj_review_capacity_hours_note() ) . '</p></div>';
+	}
+} );
+// Scoped to this ACF field and doctor editor. No ACF dependency or data write.
+add_filter( 'acf/prepare_field/key=field_hj_working_hours', function ( $field ) {
+	if ( ! hj_review_capacity_admin_screen() || ! is_array( $field ) || ( $field['key'] ?? '' ) !== 'field_hj_working_hours' || ( $field['name'] ?? '' ) !== 'working_hours' ) { return $field; }
+	$field['label'] = 'ساعات نمایشی مطب (مستقل از نوبت‌دهی)';
+	$field['instructions'] = hj_review_capacity_hours_note();
+	return $field;
+} );
+
 // ACF provides its own editor when active; otherwise provide equivalent native fields.
 add_action( 'add_meta_boxes_doctor', function () {
 	if ( ! function_exists( 'acf_get_field_group' ) || ! acf_get_field_group( 'group_hj_doctor_profile' ) ) {
@@ -75,7 +97,10 @@ function hj_review_render_fields( $post ) {
 	$days = apply_filters( 'hj_dash_days', array( 'saturday' => 'شنبه', 'sunday' => 'یکشنبه', 'monday' => 'دوشنبه', 'tuesday' => 'سه‌شنبه', 'wednesday' => 'چهارشنبه', 'thursday' => 'پنجشنبه', 'friday' => 'جمعه' ) );
 	$rows = get_post_meta( $post->ID, 'working_hours', true ); $indexed = array();
 	foreach ( is_array( $rows ) ? $rows : array() as $row ) { if ( is_array( $row ) && ! empty( $row['day_of_week'] ) ) { $indexed[$row['day_of_week']] = $row; } }
-	echo '<h3>ساعات کاری</h3><input type="hidden" name="hj_hours_present" value="1">';
+	$capacity_mode = function_exists( 'hj_booking_capacity_v2_ready' ) && hj_booking_capacity_v2_ready();
+	echo '<h3>' . esc_html( $capacity_mode ? 'ساعات نمایشی مطب (مستقل از نوبت‌دهی)' : 'ساعات کاری' ) . '</h3>';
+	if ( $capacity_mode ) { echo '<p>' . esc_html( hj_review_capacity_hours_note() ) . '</p>'; }
+	echo '<input type="hidden" name="hj_hours_present" value="1">';
 	foreach ( (array) $days as $key => $label ) {
 		$row = isset( $indexed[$key] ) ? $indexed[$key] : array();
 		echo '<p><strong>' . esc_html( $label ) . '</strong> <label><input type="checkbox" name="hj_hours[' . esc_attr( $key ) . '][closed]" value="1" ' . checked( ! empty( $row['is_closed'] ), true, false ) . '> تعطیل</label> <label>از <input type="time" name="hj_hours[' . esc_attr( $key ) . '][start]" value="' . esc_attr( substr( $row['start_time'] ?? '', 0, 5 ) ) . '"></label> <label>تا <input type="time" name="hj_hours[' . esc_attr( $key ) . '][end]" value="' . esc_attr( substr( $row['end_time'] ?? '', 0, 5 ) ) . '"></label></p>';
