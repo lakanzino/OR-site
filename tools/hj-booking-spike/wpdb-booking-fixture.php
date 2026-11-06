@@ -6,6 +6,16 @@ require __DIR__ . '/schedule-engine.php';
 require __DIR__ . '/schedule-reader-experiment.php';
 require __DIR__ . '/policy-validation.php';
 
+function hj_ci_barrier( $name, $wait ) {
+	if ( ! preg_match( '/^[a-z-]+[a-f0-9]{32}$/D', $name ) ) { throw new RuntimeException( 'Invalid fixture barrier' ); }
+	$prefix = getenv( 'RUNNER_TEMP' ) . '/hj-wpdb-test-' . $name;
+	if ( false === file_put_contents( $prefix . '-ready', 'ready' ) ) { throw new RuntimeException( 'Fixture barrier signal failed' ); }
+	if ( $wait ) {
+		$until = microtime( true ) + 25;
+		while ( ! is_file( $prefix . '-released' ) && microtime( true ) < $until ) { usleep( 10000 ); clearstatcache(); }
+		if ( ! is_file( $prefix . '-released' ) ) { throw new RuntimeException( 'Fixture barrier timed out' ); }
+	}
+}
 function hj_ci_sql( $db, $sql ) {
 	$result = $db->query( $sql );
 	if ( $result === false ) { throw new RuntimeException( 'Fixture SQL failure' ); }
@@ -56,8 +66,10 @@ function hj_ci_booking_operation( $mode, $doctor, $date, $start = '', $key = '',
 	$db->suppress_errors( true ); $begun = false; $committing = false;
 	try {
 		hj_ci_sql( $db, 'START TRANSACTION' ); $begun = true;
+		if ( $mode === 'create' && $fault === 'signal_before_lock' ) { hj_ci_barrier( 'booking-wait-' . $key, false ); }
 		$config = hj_ci_lock_doctor( $db, $doctor );
 		if ( ! $config ) { return array( 'status' => 'invalid_doctor' ); }
+		if ( $mode === 'create' && $fault === 'hold_after_lock' ) { hj_ci_barrier( 'booking-hold-' . $key, true ); }
 		if ( $mode === 'create' ) {
 			$old = hj_ci_row( $db, $db->prepare( 'SELECT id,request_hash FROM hjt_hjb_spike_appointments WHERE request_key=%s', $key ) );
 			if ( $old ) {

@@ -19,8 +19,10 @@ function hj_ci_port_save_hours( $doctor, $rows ) {
 	try {
 		if ( false === $db->query( 'START TRANSACTION' ) ) { return array( 'status' => 'error' ); }
 		$in_tx = true;
+		if ( isset( $_POST['hj_ci_signal_lock'] ) && preg_match( '/^[a-f0-9]{32}$/D', $_POST['hj_ci_signal_lock'] ) ) { hj_ci_barrier( 'save-wait-' . $_POST['hj_ci_signal_lock'], false ); }
 		$locked = $db->get_row( $db->prepare( 'SELECT doctor_id FROM hjt_hjb_spike_doctors WHERE doctor_id=%d FOR UPDATE', $doctor ), ARRAY_A );
 		if ( ! $locked || $db->last_error ) { return array( 'status' => 'error' ); }
+		if ( isset( $_POST['hj_ci_hold_lock'] ) && preg_match( '/^[a-f0-9]{32}$/D', $_POST['hj_ci_hold_lock'] ) ) { hj_ci_barrier( 'save-hold-' . $_POST['hj_ci_hold_lock'], true ); }
 		$old = $db->get_row( $db->prepare( 'SELECT revision FROM hjt_hjb_spike_schedules WHERE doctor_id=%d FOR UPDATE', $doctor ), ARRAY_A );
 		if ( $db->last_error ) { return array( 'status' => 'error' ); }
 		$rev = $old ? (int) $old['revision'] + 1 : 1;

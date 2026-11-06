@@ -61,6 +61,17 @@ def booking_payload(doctor, nonce, start, keyvalue, fault=''):
 def slots(opener, doctor, nonce):
     return ajax(opener, {'action': 'hj_ci_slots', 'doctor': str(doctor), 'nonce': nonce, 'date': '2030-01-02'})
 def audit(opener, doctor): return ajax(opener, {'action': 'hj_ci_booking_audit', 'doctor': str(doctor)})
+barriers = []
+def barrier(name):
+    prefix = Path(os.environ['RUNNER_TEMP']) / ('hj-wpdb-test-' + name)
+    ready_path, release_path = Path(str(prefix) + '-ready'), Path(str(prefix) + '-released')
+    ready_path.unlink(missing_ok=True); release_path.unlink(missing_ok=True)
+    barriers.extend((ready_path, release_path))
+    return ready_path, release_path
+def wait_ready(paths):
+    end = time.monotonic() + 18
+    while not all(p.exists() for p in paths) and time.monotonic() < end: time.sleep(.01)
+    check(all(p.exists() for p in paths), 'all fixture lock-order barriers reached')
 
 server = None
 ready = None
@@ -82,7 +93,7 @@ try:
     mu.symlink_to(workspace / 'tools/hj-booking-spike/wpdb-ajax-fixture-mu.php')
     created_mu = True
     doctor_id = json.loads(meta.read_text(encoding='utf-8'))['doctor']
-    server = subprocess.Popen(['php', '-S', '127.0.0.1:8997', '-t', '/wordpress'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, env=dict(os.environ, PHP_CLI_SERVER_WORKERS='8'))
+    server = subprocess.Popen(['php', '-S', '127.0.0.1:8997', '-t', '/wordpress'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, env=dict(os.environ, PHP_CLI_SERVER_WORKERS='16'))
     for _ in range(80):
         try: request(session(), '/wp-login.php'); break
         except OSError: time.sleep(.25)
@@ -198,12 +209,52 @@ try:
     check(len({r['starts_at'] for r in raced_rows}) == len(raced_rows), 'competing patients cannot duplicate a boundary slot')
     expected_ids = {replay['id'], after_kill['id'], *(r['id'] for r in created)}
     check(len(final) == len(expected_ids) and {int(r['id']) for r in final} == expected_ids and len({r['request_key'] for r in final}) == len(final) and all(int(r['revision']) == open_revision and r['details_id'] is not None for r in final), 'no lost or duplicate bookings; each is linked to open revision and details')
+
+    # Deterministic closure-first ordering: doctor owns the DB mutex before
+    # eight distinct patients reach SELECT FOR UPDATE, then publishes closed.
+    ajax(owner, open_hours)
+    hold_token = key(34000)
+    save_ready, save_release = barrier('save-hold-' + hold_token)
+    waiting = [barrier('booking-wait-' + key(34100+i))[0] for i in range(8)]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=9) as pool:
+        closer = pool.submit(ajax, owner, dict(common, _hjn=owner_nonce, hj_ci_mirror_fail='1', hj_ci_hold_lock=hold_token, **{'hours[wednesday][closed]': '1'}))
+        wait_ready([save_ready])
+        future_patients = [pool.submit(ajax, patients[i], booking_payload(doctor_id, nonces[i], '2030-01-02 06:40:00', key(34100+i), 'signal_before_lock')) for i in range(8)]
+        try: wait_ready(waiting)
+        finally: save_release.touch()
+        check(closer.result(timeout=40) is not None, 'held doctor closure committed')
+        after_close = [f.result(timeout=40) for f in future_patients]
+    check(all(r['status'] == 'invalid_slot' for r in after_close), 'eight waiting patients cannot book after closure obtains lock first')
+    check(len(audit(owner, doctor_id)) == len(expected_ids), 'closure-first race leaves no phantom bookings')
+
+    # Deterministic booking-first ordering: a patient owns the mutex, doctor
+    # reaches the same lock, then the patient commits before closure proceeds.
+    ajax(owner, open_hours)
+    before_rev = int(state(owner, doctor_id)['snapshot']['revision'])
+    first_key = key(35000)
+    booking_ready, booking_release = barrier('booking-hold-' + first_key)
+    doctor_ready, _ = barrier('save-wait-' + first_key)
+    first_payload = booking_payload(doctor_id, nonces[2], '2030-01-02 06:40:00', first_key, 'hold_after_lock')
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+        first = pool.submit(ajax, patients[2], first_payload)
+        wait_ready([booking_ready])
+        closer = pool.submit(ajax, owner, dict(common, _hjn=owner_nonce, hj_ci_mirror_fail='1', hj_ci_signal_lock=first_key, **{'hours[wednesday][closed]': '1'}))
+        try: wait_ready([doctor_ready])
+        finally: booking_release.touch()
+        prior = first.result(timeout=40)
+        check(closer.result(timeout=40) is not None, 'doctor closure completed after waiting booking')
+    check(prior['status'] == 'created' and prior['revision'] == before_rev, 'booking holding lock commits against open snapshot before closure')
+    check(ajax(patients[2], dict(first_payload, fault=''))['id'] == prior['id'], 'booking-first retry survives closure')
+    check(ajax(patients[3], booking_payload(doctor_id, nonces[3], '2030-01-02 07:15:00', key(35001)))['status'] == 'invalid_slot', 'new booking after ordered closure fails')
+    final_ordered = audit(owner, doctor_id)
+    check(len(final_ordered) == len(expected_ids) + 1 and sum(int(r['id']) == prior['id'] and int(r['revision']) == before_rev and r['details_id'] is not None for r in final_ordered) == 1, 'ordered race commits exactly one open-revision booking and its details')
 finally:
     if server:
         os.killpg(server.pid, signal.SIGTERM)
         try: server.wait(timeout=10)
         except subprocess.TimeoutExpired:
             os.killpg(server.pid, signal.SIGKILL); server.wait()
+    for path in barriers: path.unlink(missing_ok=True)
     if ready is not None: ready.unlink(missing_ok=True)
     if released is not None: released.unlink(missing_ok=True)
     if created_mu and mu.is_symlink(): mu.unlink()
