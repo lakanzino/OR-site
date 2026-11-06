@@ -163,23 +163,8 @@ jobs:
         run: |
           set -uo pipefail
           set +e
-          # Diagnostic copy on disposable CI only; restore before any other step.
-          cp plugins/hamyar-doctors/includes/appointments.php "$RUNNER_TEMP/hj-appointments-original.php"
-          python3 - <<'PYDIAG'
-          from pathlib import Path
-          p = Path('plugins/hamyar-doctors/includes/appointments.php')
-          s = p.read_text()
-          target = "if ( $r === false ) { throw new RuntimeException( 'Booking query failed', $db->booking_errno() ); }"
-          assert s.count(target) == 1
-          s = s.replace(target, "if ( $r === false ) { fwrite(STDERR, 'CI synthetic DB error: ' . $db->last_error . \"\\n\"); throw new RuntimeException( 'Booking query failed', $db->booking_errno() ); }")
-          target = "} catch ( Throwable $e ) {\n\t\t\tif ( $committing )"
-          assert s.count(target) == 1
-          s = s.replace(target, "} catch ( Throwable $e ) {\n\t\t\tfwrite(STDERR, 'CI synthetic exception: ' . get_class($e) . ': ' . $e->getMessage() . \"\\n\");\n\t\t\tif ( $committing )")
-          p.write_text(s)
-          PYDIAG
           output=$(bash -e -c 'php -l tools/hj-booking-integration/capacity-v2-fixture.php && python3 tools/hj-booking-integration/capacity-v2-race.py' 2>&1)
           status=$?
-          cp "$RUNNER_TEMP/hj-appointments-original.php" plugins/hamyar-doctors/includes/appointments.php
           printf '%s\n' "$output"
           if [ "$status" -ne 0 ]; then
             summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
