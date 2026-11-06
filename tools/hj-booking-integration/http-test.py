@@ -39,11 +39,12 @@ S0900, S0935, S1010, S1045, S1120 = [moment(h, m) for h, m in [(9, 0), (9, 35), 
 PREPEND = str(workspace / 'tools/hj-booking-integration/prepend.php')
 class Inputs(HTMLParser):
     def __init__(self):
-        super().__init__(); self.inputs = {}; self.booking = None
+        super().__init__(); self.inputs = {}; self.booking = None; self.links = []
     def handle_starttag(self, tag, attrs):
         attributes = dict(attrs)
         if tag == 'input' and 'name' in attributes: self.inputs[attributes['name']] = attributes
         if tag == 'section' and 'hj-booking' in attributes.get('class', '').split(): self.booking = attributes
+        if tag == 'a' and 'href' in attributes: self.links.append(attributes['href'])
 
 def rendered_form(opener):
     html = ajax(opener, {'action': 'hj_ci_render_dashboard'})['html']
@@ -115,7 +116,7 @@ try:
     created_plugin = True
     subprocess.run(['php', '-d', 'auto_prepend_file=' + PREPEND, 'tools/hj-booking-integration/setup.php'], check=True)
     # In a separate process without the opt-in constant, the shortcode is inert.
-    subprocess.run(['php', '-r', "require '/wordpress/wp-load.php'; if (hj_booking_enabled() || do_shortcode('[hj_booking_form]') !== '') { exit(1); } echo 'PASS: patient shortcode remains off by default\\n';"], check=True)
+    subprocess.run(['php', '-r', "require '/wordpress/wp-load.php'; if (hj_booking_enabled() || do_shortcode('[hj_booking_form]') !== '') { exit(1); } $m=json_decode(file_get_contents(getenv('RUNNER_TEMP').'/hj-wpdb-ajax-meta.json'),true); $h=HJ_Profile_Page::render($m['doctor']); if (hj_booking_doctor_has_valid_schedule((int)$m['doctor']) || strpos($h,'https://example.invalid/external-booking')===false || strpos($h,'data-fixed=')!==false) { exit(1); } echo 'PASS: feature flag off preserves legacy external profile link and no booking form\\n';"], check=True)
     mu.parent.mkdir(exist_ok=True)
     mu.symlink_to(workspace / 'tools/hj-booking-integration/mu.php')
     created_mu = True
@@ -353,8 +354,15 @@ try:
         code, body = request(opener, url, payload)
         return code, json.loads(body)
     guest = session(); guest_form = ui_form(guest); guest_nonce = guest_form['data-nonce']
-    profile = Inputs(); profile.feed(ajax(guest, {'action':'hj_ci_render_patient_profile', 'doctor':str(doctor_id)})['html'])
+    profile_html = ajax(guest, {'action':'hj_ci_render_patient_profile', 'doctor':str(doctor_id)})['html']
+    profile = Inputs(); profile.feed(profile_html)
     check(profile.booking is not None and profile.booking['data-fixed'] == '1' and profile.booking['data-page'] == str(doctor_id), 'actual doctor profile includes fixed-doctor booking form')
+    check(profile.links.count('#hj-booking') >= 4, 'all four profile booking buttons target the internal form for a configured doctor')
+    check('https://example.invalid/external-booking' in profile.links and 'نوبت‌دهی خارج از سایت' in profile_html, 'existing external booking link is preserved and clearly distinguished')
+    for kind, gate_doctor in fixture_meta['profile_gates'].items():
+        html = ajax(guest, {'action':'hj_ci_render_patient_profile', 'doctor':str(gate_doctor)})['html']
+        gate = Inputs(); gate.feed(html)
+        check(gate.booking is None and '#hj-booking' not in gate.links and 'https://example.invalid/external-booking' in gate.links and 'نوبت‌دهی داخلی برای این جراح در دسترس نیست' in html, 'profile gate fails closed and preserves external link: ' + kind)
     slot_payload = {'action':'hj_booking_slots', 'nonce':guest_nonce, 'doctor_id':str(doctor_id), 'date':ui_day}
     code, available = ui_request(guest, slot_payload)
     check(code == 200 and available['success'] and ui_starts[0] in [x['start'] for x in available['data']['slots']], 'guest obtains real public slots from canonical snapshot')

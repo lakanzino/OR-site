@@ -362,7 +362,10 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 			$map_url   = self::map_url( $map_link, $address, $name_fa . ' ' . $location );
 			$tel_clinic = self::tel_href( $phone_clinic );
 			$tel_mobile = self::tel_href( $phone_mobile );
-			$booking    = '' !== $booking_url ? $booking_url : '#hj-appointment';
+			$booking_ready = function_exists( 'hj_booking_ready' ) && hj_booking_ready();
+			$internal_booking = $booking_ready && function_exists( 'hj_booking_doctor_has_valid_schedule' ) && hj_booking_doctor_has_valid_schedule( $post_id );
+			$booking = $internal_booking ? '#hj-booking' : ( '' !== $booking_url ? $booking_url : '#hj-appointment' );
+			$external_only = $booking_ready && ! $internal_booking && '' !== $booking_url;
 			$archive    = get_post_type_archive_link( 'doctor' );
 
 			$services = self::lines( $surgeries );
@@ -387,7 +390,7 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 							<a href="#hj-reviews">نظرات بیماران</a>
 							<a href="#hj-contact">تماس</a>
 						</div>
-						<a class="hj-btn hj-btn--primary" href="<?php echo esc_url( $booking ); ?>">نوبت‌گیری</a>
+						<a class="hj-btn hj-btn--primary" href="<?php echo esc_url( $booking ); ?>"><?php echo $external_only ? 'نوبت‌دهی خارج از سایت' : 'نوبت‌گیری'; ?></a>
 					</div>
 				</nav>
 
@@ -452,7 +455,7 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 							</div>
 
 							<div class="hj-hero__actions">
-								<a class="hj-btn hj-btn--primary" href="<?php echo esc_url( $booking ); ?>">📅 دریافت نوبت</a>
+								<a class="hj-btn hj-btn--primary" href="<?php echo esc_url( $booking ); ?>">📅 <?php echo $external_only ? 'نوبت‌دهی خارج از سایت' : 'دریافت نوبت'; ?></a>
 								<a class="hj-btn hj-btn--outline" href="#hj-reviews">مشاهده نظرات بیماران</a>
 							</div>
 						</div>
@@ -538,13 +541,15 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 										<strong><?php echo esc_html( $row['time'] ); ?></strong>
 									</div>
 								<?php endforeach; ?>
-								<a class="hj-btn hj-btn--primary" href="<?php echo esc_url( $booking ); ?>">درخواست نوبت</a>
+								<a class="hj-btn hj-btn--primary" href="<?php echo esc_url( $booking ); ?>"><?php echo $external_only ? 'نوبت‌دهی خارج از سایت' : 'درخواست نوبت'; ?></a>
+								<?php if ( $internal_booking && '' !== $booking_url ) : ?><p><a href="<?php echo esc_url( $booking_url ); ?>">نوبت‌دهی خارج از سایت</a></p><?php endif; ?>
+								<?php if ( $booking_ready && ! $internal_booking ) : ?><p class="hj-muted">نوبت‌دهی داخلی برای این جراح در دسترس نیست.</p><?php endif; ?>
 								<p class="hj-muted" style="margin-top:8px">ساعات کاری را پیش از مراجعه با مطب تأیید کنید.</p>
 							</div>
 
 						</section>
 
-						<?php if ( function_exists( 'hj_booking_ready' ) && hj_booking_ready() ) { echo hj_booking_form_shortcode( array( 'doctor_id' => (string) $post_id ) ); } ?>
+						<?php if ( $internal_booking ) { echo hj_booking_form_shortcode( array( 'doctor_id' => (string) $post_id ) ); } ?>
 
 						<section class="hj-section hj-grid hj-grid--2" id="hj-about">
 
@@ -768,7 +773,7 @@ if ( ! class_exists( 'HJ_Profile_Page' ) ) :
 				</main>
 
 				<div class="hj-doc__mobile-booking">
-					<a href="<?php echo esc_url( $booking ); ?>" class="hj-btn hj-btn--primary">📅 دریافت نوبت آنلاین</a>
+					<a href="<?php echo esc_url( $booking ); ?>" class="hj-btn hj-btn--primary">📅 <?php echo $external_only ? 'نوبت‌دهی خارج از سایت' : 'دریافت نوبت آنلاین'; ?></a>
 				</div>
 
 			</div>

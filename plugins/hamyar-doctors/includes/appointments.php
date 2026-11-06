@@ -131,6 +131,21 @@ function hj_booking_ready() {
  global $wpdb;
  return hj_booking_enabled() && (int) get_option( 'hj_booking_schema_version', 0 ) === 1 && (int) get_option( 'hj_booking_schema_verified', 0 ) === 1 && get_class( $wpdb ) === 'wpdb';
 }
+/** Read-only display gate, not an authorization or a guarantee of open slots.
+ * The actual booking path always rechecks the state under the doctor mutex.
+ */
+function hj_booking_doctor_has_valid_schedule( $doctor ) {
+ global $wpdb;
+ if ( ! hj_booking_ready() || get_post_type( $doctor ) !== 'doctor' || get_post_status( $doctor ) !== 'publish' ) { return false; }
+ $doctors = hj_booking_table( 'doctors' ); $schedules = hj_booking_table( 'schedules' );
+ $previous = $wpdb->suppress_errors( true );
+ try {
+  $row = $wpdb->get_row( $wpdb->prepare( "SELECT d.enabled,s.revision,s.rows_json,s.rows_hash FROM `$doctors` d INNER JOIN `$schedules` s ON s.doctor_id=d.doctor_id WHERE d.doctor_id=%d", $doctor ), ARRAY_A );
+  if ( $wpdb->last_error || ! $row || (int) $row['enabled'] !== 1 || (int) $row['revision'] < 1 || ! is_string( $row['rows_json'] ) || ! is_string( $row['rows_hash'] ) || ! hash_equals( $row['rows_hash'], hash( 'sha256', $row['rows_json'] ) ) ) { return false; }
+  return hj_booking_normalize_schedule( json_decode( $row['rows_json'], true ) ) !== false;
+ } catch ( Throwable $e ) { return false; }
+ finally { $wpdb->suppress_errors( $previous ); }
+}
 /** Activation and upgrades remain inert unless the explicit booking flag is true. */
 function hj_booking_maybe_install_schema() {
  if ( hj_booking_enabled() && current_user_can( 'manage_options' ) && ! hj_booking_ready() ) { hj_booking_install_schema(); }
