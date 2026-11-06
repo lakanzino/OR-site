@@ -119,7 +119,7 @@ try:
     mu.parent.mkdir(exist_ok=True)
     mu.symlink_to(workspace / 'tools/hj-booking-integration/mu.php')
     created_mu = True
-    fixture_meta = json.loads(meta.read_text(encoding='utf-8')); doctor_id = fixture_meta['doctor']; doctor2_id = fixture_meta['doctor2']; page_id = fixture_meta['page']
+    fixture_meta = json.loads(meta.read_text(encoding='utf-8')); doctor_id = fixture_meta['doctor']; doctor2_id = fixture_meta['doctor2']; page_id = fixture_meta['page']; secretary_id = fixture_meta['secretary']
     server = subprocess.Popen(['php', '-d', 'auto_prepend_file=' + PREPEND, '-S', '127.0.0.1:8997', '-t', '/wordpress'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, env=dict(os.environ, PHP_CLI_SERVER_WORKERS='16'))
     for _ in range(80):
         try: request(session(), '/wp-login.php'); break
@@ -432,6 +432,106 @@ try:
     check(code == 409 and stale['data']['code'] == 'revision_conflict', 'real AJAX detects actual intervening schedule save')
     code, replayed = ui_request(winner, winning_payload)
     check(code == 200 and replayed['data']['status'] == 'replayed' and replayed['data']['id'] == winning_id, 'previously committed UUID still replays after schedule revision changes')
+
+    # Management endpoints, private list rendering, and deterministic overlapping
+    # cancellation/rebooking transactions on a fresh future Wednesday.
+    admin, _ = login('fixture_admin'); secretary, _ = login('synthetic_secretary')
+    patient_a, _ = login('synthetic_patient'); patient_b, _ = login('synthetic_patient_b')
+    def extract_form(html, action):
+        class FormParser(HTMLParser):
+            def __init__(self): super().__init__(); self.form=None; self.forms=[]
+            def handle_starttag(self, tag, attrs):
+                attr=dict(attrs)
+                if tag == 'form': self.form={}
+                elif tag == 'input' and self.form is not None and 'name' in attr: self.form[attr['name']] = attr.get('value','')
+            def handle_endtag(self, tag):
+                if tag == 'form' and self.form is not None: self.forms.append(self.form); self.form=None
+        parser=FormParser(); parser.feed(html)
+        return next(f for f in parser.forms if f.get('action') == action)
+    admin_url = '/wp-admin/edit.php?post_type=doctor&page=hj-bookings'
+    code, admin_html = request(admin, admin_url)
+    check(code == 200 and 'مدیریت نوبت‌ها' in admin_html, 'admin can open actual aggregate submenu')
+    assignment = extract_form(admin_html, 'hj_booking_assignment')
+    assign_payload = dict(assignment, doctor_id=str(doctor_id), user_id=str(secretary_id), mode='add')
+    check(request(patient_a, '/wp-admin/admin-post.php', assign_payload)[0] == 403, 'patient cannot assign a secretary')
+    check(request(admin, '/wp-admin/admin-post.php', dict(assign_payload, _wpnonce='bad'))[0] == 403, 'assignment requires nonce')
+    check(request(admin, '/wp-admin/admin-post.php', assign_payload)[0] == 302, 'admin assigns secretary through real admin-post handler')
+    secretary_view = ajax(secretary, {'action':'hj_ci_render_dashboard'})['html']
+    check('لیست نوبت‌ها' in secretary_view and 'Synthetic production backend doctor' in secretary_view and 'Second synthetic booking doctor' not in secretary_view and 'hj-dash-form' not in secretary_view, 'secretary enters only assigned booking panel, not profile editor')
+    mdate = date + datetime.timedelta(days=21)
+    mday = mdate.isoformat()
+    def mstart(hour, minute): return datetime.datetime.combine(mdate, datetime.time(hour, minute), ZoneInfo('Asia/Tehran')).astimezone(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
+    a_nonce = ui_form(patient_a)['data-nonce']; b_nonce = ui_form(patient_b)['data-nonce']
+    newest_revision = int(state(owner, doctor_id)['snapshot']['revision'])
+    def create_payload(nonce, doctor, start, revision):
+        return {'action':'hj_booking_create', 'nonce':nonce, 'doctor_id':str(doctor), 'slot_start':start, 'revision':str(revision), 'idempotency_key':str(uuid.uuid4()), 'phone':'09123456789', 'national_code':'1234567891'}
+    first = create_payload(a_nonce, doctor_id, mstart(9,0), newest_revision)
+    second = create_payload(b_nonce, doctor2_id, mstart(9,0), 1)
+    c1, r1 = ui_request(patient_a, first); c2, r2 = ui_request(patient_b, second)
+    check(c1 == 200 and c2 == 200, 'two doctors have distinct synthetic patient appointments')
+    id_a = r1['data']['id']; id_b = r2['data']['id']
+    owner_html = ajax(owner, {'action':'hj_ci_render_dashboard'})['html']
+    secretary_html = ajax(secretary, {'action':'hj_ci_render_dashboard'})['html']
+    other_html = ajax(other, {'action':'hj_ci_render_dashboard'})['html']
+    patient_html = ajax(patient_a, {'action':'hj_ci_render_patient_bookings'})['html']
+    check('Synthetic Patient Alpha' in owner_html and 'Synthetic Patient Beta' not in owner_html and '09123456789' in owner_html, 'doctor dashboard shows own patient details only')
+    check('Synthetic Patient Alpha' in secretary_html and 'Synthetic Patient Beta' not in secretary_html, 'secretary sees only assigned doctor patient details')
+    check('Synthetic Patient Beta' in other_html and 'Synthetic Patient Alpha' not in other_html, 'other doctor sees only other doctor patient details')
+    check('Synthetic production backend doctor' in patient_html and 'Second synthetic booking doctor' not in patient_html and '09123456789' not in patient_html and '1234567891' not in patient_html, 'patient list is own-only and does not expose contact details')
+    code, filtered = request(admin, admin_url + '&doctor_id=' + str(doctor2_id) + '&booking_status=pending&booking_date=' + mday)
+    check(code == 200 and 'Synthetic Patient Beta' in filtered and 'Synthetic Patient Alpha' not in filtered, 'admin filters aggregate by doctor, status and local date')
+    check(request(patient_a, admin_url)[0] in (302,403), 'patient cannot access administrator submenu')
+    def status_payload(opener, doctor, appointment, scope, status):
+        nonce = ajax(opener, {'action':'hj_ci_status_nonce','id':str(appointment)})['nonce']
+        return {'action':'hj_booking_status','doctor_id':str(doctor),'booking_id':str(appointment),'scope':scope,'status':status,'_wpnonce':nonce}
+    patient_cancel = status_payload(patient_a, doctor_id, id_a, 'patient', 'cancelled')
+    stranger_cancel = status_payload(patient_b, doctor_id, id_a, 'patient', 'cancelled')
+    wrong_doc_cancel = status_payload(other, doctor_id, id_a, 'manage', 'cancelled')
+    secretary_other = status_payload(secretary, doctor2_id, id_b, 'manage', 'cancelled')
+    status_url = '/wp-admin/admin-post.php'
+    check(request(patient_b, status_url, stranger_cancel)[0] == 403, 'patient cannot cancel another patient booking')
+    check(request(other, status_url, wrong_doc_cancel)[0] == 403, 'doctor cannot cancel another doctor booking')
+    check(request(secretary, status_url, secretary_other)[0] == 403, 'secretary cannot cancel unassigned doctor booking')
+    check(request(patient_a, status_url, dict(patient_cancel, _wpnonce='bad'))[0] == 403, 'status change rejects invalid nonce')
+    early = status_payload(other, doctor2_id, id_b, 'manage', 'completed')
+    check(request(other, status_url, early)[0] == 409, 'future booking cannot be completed prematurely and release capacity')
+    # Cancellation holds the doctor mutex while a real create reaches it.
+    token = key(40100); cancel_ready, cancel_release = barrier('status-hold-' + token); create_ready, _ = barrier('create-wait-' + token)
+    rebook_payload = create_payload(b_nonce, doctor_id, mstart(9,0), newest_revision)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+        cancel_future = pool.submit(request, patient_a, status_url, dict(patient_cancel, hj_ci_status_hold=token))
+        wait_ready([cancel_ready])
+        create_future = pool.submit(ui_request, patient_b, dict(rebook_payload, hj_ci_create_signal=token))
+        try: wait_ready([create_ready])
+        finally: cancel_release.touch()
+        cancel_result, created_result = cancel_future.result(timeout=40), create_future.result(timeout=40)
+    check(cancel_result[0] == 302 and created_result[0] == 200 and created_result[1]['success'], 'overlapping patient cancellation then waiter rebooks same slot after mutex release')
+    rebook_id = created_result[1]['data']['id']
+    rows = audit(owner, doctor_id)
+    check(sum(int(r['id']) == id_a and r['status'] == 'cancelled' for r in rows) == 1 and sum(int(r['id']) == rebook_id and r['status'] == 'pending' for r in rows) == 1, 'cancel/rebook leaves one cancelled and one active reservation for interval')
+    confirm = status_payload(secretary, doctor_id, rebook_id, 'manage', 'confirmed')
+    check(request(secretary, status_url, confirm)[0] == 302, 'assigned secretary confirms booking')
+    # Reverse acquisition order: creation sees the still-confirmed slot and
+    # fails; secretary cancellation then frees it for a same-key retry.
+    token2 = key(40101); create_hold, create_release = barrier('create-hold-' + token2); status_ready, _ = barrier('status-wait-' + token2)
+    competing = create_payload(a_nonce, doctor_id, mstart(9,0), newest_revision)
+    sec_cancel = status_payload(secretary, doctor_id, rebook_id, 'manage', 'cancelled')
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+        before_cancel = pool.submit(ui_request, patient_a, dict(competing, hj_ci_create_hold=token2))
+        wait_ready([create_hold])
+        cancel_after = pool.submit(request, secretary, status_url, dict(sec_cancel, hj_ci_status_signal=token2))
+        try: wait_ready([status_ready])
+        finally: create_release.touch()
+        before_result, after_result = before_cancel.result(timeout=40), cancel_after.result(timeout=40)
+    check(before_result[0] == 409 and before_result[1]['data']['code'] == 'invalid_slot' and after_result[0] == 302, 'booking-first overlap sees occupied interval before secretary cancellation')
+    retry_code, retry_result = ui_request(patient_a, competing)
+    check(retry_code == 200 and retry_result['success'], 'same request can reserve after secretary cancellation completes')
+    check(ajax(other, {'action':'hj_ci_set_past','doctor':str(doctor2_id),'id':str(id_b)})['status'] == 'updated', 'CI fixture moves synthetic appointment to the past under mutex')
+    check(request(other, status_url, early)[0] == 302, 'doctor marks past booking completed')
+    check(request(other, status_url, status_payload(other, doctor2_id, id_b, 'manage', 'cancelled'))[0] == 409, 'terminal booking cannot be reopened or cancelled')
+    removed = dict(assign_payload, mode='remove')
+    check(request(admin, status_url.replace('admin-post.php','admin-post.php'), removed)[0] == 302, 'admin revokes secretary assignment')
+    check('Synthetic Patient Alpha' not in ajax(secretary, {'action':'hj_ci_render_dashboard'})['html'] and request(secretary, status_url, confirm)[0] == 403, 'revoked secretary cannot view or change doctor bookings')
     check(ajax(owner, {'action':'hj_ci_corrupt_snapshot', 'doctor':str(doctor_id)})['ok'], 'corrupt snapshot for public endpoint test')
     code, result = ui_request(anonymous, slot_payload)
     check(code == 503 and result['data']['code'] == 'invalid_schedule' and 'slots' not in result['data'], 'public endpoint fails closed on corrupt snapshot')

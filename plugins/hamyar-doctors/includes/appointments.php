@@ -86,7 +86,8 @@ function hj_booking_can_configure( $doctor ) {
 function hj_booking_can_manage( $doctor ) {
 	global $wpdb;
 	if ( ! is_user_logged_in() || get_post_type( $doctor ) !== 'doctor' ) { return false; }
-	if ( function_exists( 'hj_doctors_user_can_edit_profile' ) && hj_doctors_user_can_edit_profile( $doctor ) ) { return true; }
+	if ( current_user_can( 'manage_options' ) ) { return true; }
+	if ( current_user_can( HJ_Doctors_Roles::CAP_EDIT_OWN ) && hj_doctors_user_owns_profile( get_current_user_id(), $doctor ) ) { return true; }
 	if ( ! current_user_can( 'hj_manage_appointments' ) ) { return false; }
 	$table = hj_booking_table( 'secretaries' );
 	return (bool) $wpdb->get_var( $wpdb->prepare( "SELECT 1 FROM `$table` WHERE user_id=%d AND doctor_id=%d", get_current_user_id(), $doctor ) );
@@ -291,11 +292,31 @@ function hj_booking_create( $doctor, $start, $key, $phone, $national, $expected_
 	} );
 }
 function hj_booking_change_status( $doctor, $id, $status ) {
-	if ( ! hj_booking_can_manage( $doctor ) ) { return array( 'status' => 'forbidden' ); }
-	if ( ! in_array( $status, array( 'confirmed', 'cancelled' ), true ) || ! is_int( $id ) || $id < 1 ) { return array( 'status' => 'invalid' ); }
-	return hj_booking_transaction( $doctor, 'status', function ( $db ) use ( $doctor, $id, $status ) {
+	return hj_booking_transition_status( $doctor, $id, $status, false );
+}
+function hj_booking_patient_cancel( $doctor, $id ) {
+	return hj_booking_transition_status( $doctor, $id, 'cancelled', true );
+}
+/** All capacity-changing transitions and authorization rechecks share the doctor's mutex. */
+function hj_booking_transition_status( $doctor, $id, $status, $patient_cancel ) {
+	if ( ! is_user_logged_in() || ! current_user_can( 'read' ) || get_post_type( $doctor ) !== 'doctor' ) { return array( 'status' => 'forbidden' ); }
+	if ( ! $patient_cancel && ! hj_booking_can_manage( $doctor ) ) { return array( 'status' => 'forbidden' ); }
+	if ( ! in_array( $status, array( 'confirmed', 'cancelled', 'completed', 'no_show' ), true ) || ! is_int( $id ) || $id < 1 ) { return array( 'status' => 'invalid' ); }
+	$actor = get_current_user_id();
+	return hj_booking_transaction( $doctor, 'status', function ( $db ) use ( $doctor, $id, $status, $patient_cancel, $actor ) {
 		$table = hj_booking_table( 'appointments' );
-		$n = hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET status=%s WHERE doctor_id=%d AND id=%d AND status IN ('pending','confirmed')", $status, $doctor, $id ) );
-		return array( 'status' => $n === 1 ? 'updated' : 'not_found' );
+		if ( ! $patient_cancel && ! current_user_can( 'manage_options' ) && ! ( current_user_can( HJ_Doctors_Roles::CAP_EDIT_OWN ) && hj_doctors_user_owns_profile( $actor, $doctor ) ) ) {
+			$assignments = hj_booking_table( 'secretaries' );
+			$mapping = hj_booking_row( $db, $db->prepare( "SELECT user_id FROM `$assignments` WHERE user_id=%d AND doctor_id=%d FOR UPDATE", $actor, $doctor ) );
+			if ( ! current_user_can( 'hj_manage_appointments' ) || ! $mapping ) { return array( 'status' => 'forbidden' ); }
+		}
+		$row = hj_booking_row( $db, $db->prepare( "SELECT patient_id,status,starts_at FROM `$table` WHERE doctor_id=%d AND id=%d FOR UPDATE", $doctor, $id ) );
+		if ( ! $row || ( $patient_cancel && (int) $row['patient_id'] !== $actor ) ) { return array( 'status' => 'forbidden' ); }
+		if ( $row['status'] === $status ) { return array( 'status' => 'updated' ); }
+		if ( ! in_array( $row['status'], array( 'pending', 'confirmed' ), true ) ) { return array( 'status' => 'invalid_transition' ); }
+		// Completed/no-show must not silently release a future appointment.
+		if ( in_array( $status, array( 'completed', 'no_show' ), true ) && $row['starts_at'] > gmdate( 'Y-m-d H:i:s' ) ) { return array( 'status' => 'too_early' ); }
+		$n = hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET status=%s WHERE doctor_id=%d AND id=%d", $status, $doctor, $id ) );
+		return array( 'status' => $n === 1 ? 'updated' : 'error' );
 	} );
 }

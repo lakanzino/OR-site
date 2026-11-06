@@ -25,6 +25,10 @@ add_action( 'hj_booking_test_event', function ( $event, $db, $context ) {
 	if ( $operation === 'schedule' && $event === 'after_lock' && isset( $_POST['hj_ci_hold_lock'] ) ) { hj_prod_ci_barrier( 'save-hold-' . $_POST['hj_ci_hold_lock'], true ); }
 	if ( $operation === 'create' && $event === 'before_lock' && $fault === 'signal_before_lock' ) { hj_prod_ci_barrier( 'booking-wait-' . $key, false ); }
 	if ( $operation === 'create' && $event === 'after_lock' && $fault === 'hold_after_lock' ) { hj_prod_ci_barrier( 'booking-hold-' . $key, true ); }
+	if ( $operation === 'status' && $event === 'after_lock' && isset( $_POST['hj_ci_status_hold'] ) ) { hj_prod_ci_barrier( 'status-hold-' . $_POST['hj_ci_status_hold'], true ); }
+	if ( $operation === 'status' && $event === 'before_lock' && isset( $_POST['hj_ci_status_signal'] ) ) { hj_prod_ci_barrier( 'status-wait-' . $_POST['hj_ci_status_signal'], false ); }
+	if ( $operation === 'create' && $event === 'before_lock' && isset( $_POST['hj_ci_create_signal'] ) ) { hj_prod_ci_barrier( 'create-wait-' . $_POST['hj_ci_create_signal'], false ); }
+	if ( $operation === 'create' && $event === 'after_lock' && isset( $_POST['hj_ci_create_hold'] ) ) { hj_prod_ci_barrier( 'create-hold-' . $_POST['hj_ci_create_hold'], true ); }
 	if ( $event === 'before_commit' && ( ( $operation === 'schedule' && isset( $_POST['hj_ci_kill_before_commit'] ) ) || ( $operation === 'create' && $fault === 'kill_before_commit' ) ) ) {
 		hj_prod_ci_kill( $db );
 		if ( $operation === 'schedule' ) {
@@ -113,3 +117,23 @@ function hj_ci_render_patient_profile() {
 }
 add_action( 'wp_ajax_hj_ci_render_patient_profile', 'hj_ci_render_patient_profile' );
 add_action( 'wp_ajax_nopriv_hj_ci_render_patient_profile', 'hj_ci_render_patient_profile' );
+add_action( 'wp_ajax_hj_ci_status_nonce', function () {
+ $id = absint( $_POST['id'] ?? 0 );
+ wp_send_json_success( array( 'nonce' => wp_create_nonce( 'hj_booking_status_' . $id ) ) );
+} );
+add_action( 'wp_ajax_hj_ci_render_patient_bookings', function () { wp_send_json_success( array( 'html' => do_shortcode( '[hj_patient_bookings]' ) ) ); } );
+add_action( 'wp_ajax_hj_ci_render_management', function () {
+ $id = absint( $_POST['doctor'] ?? 0 );
+ $html = hj_booking_management_render( 'doctor', $id );
+ wp_send_json_success( array( 'html' => $html ) );
+} );
+add_action( 'wp_ajax_hj_ci_set_past', function () {
+ $doctor = absint( $_POST['doctor'] ?? 0 ); $id = absint( $_POST['id'] ?? 0 );
+ if ( ! hj_booking_can_manage( $doctor ) ) { wp_send_json_error( array(), 403 ); }
+ $result = hj_booking_transaction( $doctor, 'fixture_past', function ( $db ) use ( $doctor, $id ) {
+  $table = hj_booking_table( 'appointments' );
+  hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET starts_at='2020-01-01 09:00:00',ends_at='2020-01-01 09:30:00',blocked_until='2020-01-01 09:35:00' WHERE id=%d AND doctor_id=%d", $id, $doctor ) );
+  return array( 'status' => 'updated' );
+ } );
+ wp_send_json_success( $result );
+} );

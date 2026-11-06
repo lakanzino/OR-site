@@ -121,6 +121,7 @@ jobs:
           node tools/hj-booking-integration/dashboard-revision.test.cjs
           node tools/hj-booking-integration/patient-form.test.cjs
           php -l plugins/hamyar-doctors/includes/booking-form.php
+          php -l plugins/hamyar-doctors/includes/booking-management.php
           set +e
           output=$(python3 tools/hj-booking-integration/http-test.py 2>&1)
           status=$?

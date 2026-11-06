@@ -77,6 +77,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 				return $h . '</div>';
 			}
 			if ( ! hj_doctors_user_can_access_dashboard() ) {
+				if ( function_exists( 'hj_booking_ready' ) && hj_booking_ready() && current_user_can( 'hj_manage_appointments' ) ) { return hj_booking_secretary_dashboard(); }
 				$user = wp_get_current_user();
 				$replaceable = (array) apply_filters( 'hj_doctors_replaceable_roles', array( 'subscriber' ) );
 				if ( ! array_diff( (array) $user->roles, $replaceable ) ) {
@@ -576,6 +577,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
         <span class="hj-dash__chip-status" data-hj="status-chip" data-status="<?php echo esc_attr( $state['status'] ); ?>"><?php echo esc_html( $state['status_label'] ); ?></span>
       </div>
     </div>
+    <?php if ( $pid && function_exists( 'hj_booking_ready' ) && hj_booking_ready() && hj_booking_can_manage( $pid ) ) : ?><a class="hj-dash__link" href="#hj-bookings">لیست نوبت‌ها</a><?php endif; ?>
     <a class="hj-dash__link" data-hj="public-link" href="<?php echo esc_url( $state['public_url'] ); ?>"<?php echo $state['public_url'] ? '' : ' hidden'; ?>>مشاهدهٔ صفحهٔ عمومی</a>
   </header>
 
