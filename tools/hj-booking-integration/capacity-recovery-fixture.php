@@ -108,6 +108,10 @@ if ($mode==='check') {
  schema_check(recovery_fingerprint($db,$target)===$expected && recovery_fingerprint($db,$backup)===$expected,'isolated restored rows match backup including options and legacy details');
  foreach($source as $name=>$table) { schema_check(recovery_compare_schema($db,$table,$target[$name]),'restored fixture preserves columns, indexes and transactional engine'); }
  schema_check(recovery_fingerprint($db,$source)!==$expected,'backup predates later committed appointment and cannot recover it');
+ $late_key=str_repeat('9',31).'f';
+ $late_source=hj_booking_row($db,$db->prepare("SELECT id FROM `$a` WHERE request_key=%s",$late_key));
+ $late_target=hj_booking_row($db,$db->prepare("SELECT id FROM `{$target['appointments']}` WHERE request_key=%s",$late_key));
+ schema_check($late_source && !$late_target && hj_booking_row($db,$db->prepare("SELECT appointment_id FROM `$p` WHERE appointment_id=%d",(int)$late_source['id'])),'specific post-backup booking and detail exist only in source');
  schema_check(hj_booking_ready() && (int)get_option('hj_booking_schema_version')===1,'test leaves source schema version unchanged and does not activate v2'); exit(0);
 }
 if ($mode==='cleanup') {
