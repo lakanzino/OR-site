@@ -65,12 +65,12 @@ def request(opener, path, data=None, base=BASE):
 def check(condition, label):
     if not condition: raise AssertionError(label)
     print('PASS:', label, flush=True)
-def login(user, opener=None):
+def login(user, opener=None, base=BASE):
     opener = opener or session()
-    check(request(opener, '/wp-login.php')[0] == 200, user + ' login form')
-    code, _ = request(opener, '/wp-login.php', {'log': user, 'pwd': 'disposable-test-password', 'wp-submit': 'Log In', 'redirect_to': 'http://example.invalid/wp-admin/', 'testcookie': '1'})
+    check(request(opener, '/wp-login.php', base=base)[0] == 200, user + ' login form')
+    code, _ = request(opener, '/wp-login.php', {'log': user, 'pwd': 'disposable-test-password', 'wp-submit': 'Log In', 'redirect_to': 'http://example.invalid/wp-admin/', 'testcookie': '1'}, base=base)
     check(code == 302, user + ' login')
-    code, body = request(opener, '/wp-admin/admin-ajax.php', {'action': 'hj_ci_dashboard_nonce'})
+    code, body = request(opener, '/wp-admin/admin-ajax.php', {'action': 'hj_ci_dashboard_nonce'}, base=base)
     check(code == 200 and json.loads(body)['success'], user + ' nonce')
     return opener, json.loads(body)['data']['nonce']
 def state(opener, doctor):
@@ -111,6 +111,7 @@ def wait_ready(paths):
 
 server = None
 race_servers = []
+extra_servers = []
 ready = None
 released = None
 created_plugin = False
@@ -120,6 +121,7 @@ try:
     plugin.symlink_to(workspace / 'plugins/hamyar-doctors', target_is_directory=True)
     created_plugin = True
     subprocess.run(['php', '-d', 'auto_prepend_file=' + PREPEND, 'tools/hj-booking-integration/setup.php'], check=True)
+    subprocess.run(['php', '-d', 'auto_prepend_file=' + PREPEND, 'tools/hj-booking-integration/profile-claim-schema-test.php'], check=True)
     # In a separate process without the opt-in constant, the shortcode is inert.
     subprocess.run(['php', '-r', "require '/wordpress/wp-load.php'; if (hj_booking_enabled() || do_shortcode('[hj_booking_form]') !== '') { exit(1); } $m=json_decode(file_get_contents(getenv('RUNNER_TEMP').'/hj-wpdb-ajax-meta.json'),true); $h=HJ_Profile_Page::render($m['doctor']); if (hj_booking_doctor_has_valid_schedule((int)$m['doctor']) || strpos($h,'https://example.invalid/external-booking')===false || strpos($h,'data-fixed=')!==false) { exit(1); } echo 'PASS: feature flag off preserves legacy external profile link and no booking form\\n';"], check=True)
     mu.parent.mkdir(exist_ok=True)
@@ -146,6 +148,20 @@ try:
             except OSError: time.sleep(.25)
         else: raise RuntimeError('dedicated race server did not start: ' + port)
     check(all(worker.poll() is None for worker in race_servers), 'dedicated race listeners are alive')
+    # The guard is also active when optional booking is off; use a separate no-prepend server.
+    off_base='http://127.0.0.1:9000'
+    off_server=subprocess.Popen(['php','-S','127.0.0.1:9000','-t','/wordpress'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,start_new_session=True,env=race_env); extra_servers.append(off_server)
+    for _ in range(80):
+        if off_server.poll() is not None: raise RuntimeError('booking-off server exited')
+        try:
+            if request(session(),'/wp-login.php',base=off_base)[0]==200: break
+        except OSError: time.sleep(.25)
+    else: raise RuntimeError('booking-off server did not start')
+    off_user,off_nonce=login('synthetic_claim_booking_off',base=off_base)
+    off_payload=dict(empty_week(),action='hj_dash_save',pid='0',_hjn=off_nonce,name_fa='Synthetic Booking Off',**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
+    code,body=request(off_user,'/wp-admin/admin-ajax.php',off_payload,base=off_base)
+    check(code==200 and json.loads(body)['success'] and json.loads(body)['data']['created'], 'normal first-profile save works with booking disabled')
+    off_ids=ajax(off_user,{'action':'hj_ci_own_profiles'})['ids']; check(len(off_ids)==1 and ajax(off_user,{'action':'hj_ci_profile_claim'})['value']=='1', 'booking-off save creates one profile with durable claim')
     new_profile_browser=subprocess.run(['node',str(workspace/'tools/hj-booking-integration/dashboard-new-profile-browser.cjs')],capture_output=True,text=True,timeout=80,env=os.environ.copy())
     check(new_profile_browser.returncode==0 and 'PASS actual first profile creation with in-flight edits' in new_profile_browser.stdout, 'real first-profile browser save: '+new_profile_browser.stderr[-1800:])
     # Two actual product requests both pass the initial profile check before claiming.
@@ -784,7 +800,7 @@ try:
     code, result = ui_request(anonymous, slot_payload)
     check(code == 503 and result['data']['code'] == 'invalid_schedule' and 'slots' not in result['data'], 'public endpoint fails closed on corrupt snapshot')
 finally:
-    for process in ([server] if server else []) + race_servers:
+    for process in ([server] if server else []) + race_servers + extra_servers:
         if process.poll() is None:
             os.killpg(process.pid, signal.SIGTERM)
             try: process.wait(timeout=10)

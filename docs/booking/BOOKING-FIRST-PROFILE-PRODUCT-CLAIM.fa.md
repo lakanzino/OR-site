@@ -8,7 +8,7 @@ claim عمداً بدون TTL و بدون حذف خودکار است: مرگ wor
 
 ## آزمون‌های در حال اجرا
 
-در CI دورریختنی سه race دو worker واقعی پیش از claim، KILL اتصال claim پیش از INSERT، KILL اتصال `wpdb` نویسنده بعد از claim، SIGKILL worker پس از claim، و شکست schedule پس از ایجاد post بررسی می‌شوند. nonce، نشست، WordPress و MariaDB واقعی و داده‌ها ساختگی‌اند. نتیجهٔ runtime و CI هنوز در انتظار است؛ آزمون آفلاین syntax و تطبیق ZIP به‌تنهایی اثبات رفتار نیست.
+در CI دورریختنی سه race دو worker واقعی پیش از claim، KILL اتصال claim پیش از INSERT، KILL اتصال `wpdb` نویسنده بعد از claim، SIGKILL worker پس از claim، و شکست schedule پس از ایجاد post بررسی می‌شوند. nonce، نشست، WordPress و MariaDB واقعی و داده‌ها ساختگی‌اند. همچنین ایجاد با رزرو خاموش و رد schema ناسازگار (بدون کلید یکتا، کلید مرکب/پیشوندی، MyISAM و جدول مفقود) بررسی می‌شوند. نتیجهٔ runtime و CI هنوز در انتظار است؛ آزمون آفلاین syntax و تطبیق ZIP به‌تنهایی اثبات رفتار نیست.
 
 ## محدودیت و عملیات
 
