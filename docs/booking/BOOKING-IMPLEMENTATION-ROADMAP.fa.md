@@ -96,4 +96,6 @@
 
 **نتیجهٔ گام ۵.۱۵:** [CI نمونهٔ مقایسه و مرورگر](https://github.com/lakanzino/OR-site/actions/runs/42364765282) موفق شد؛ backend و مرورگر مستقل آزموده شدند. گام بعد اتصال فقط در fixture HTTP با بررسی واقعی نقش و nonce، پیش از اتصال به افزونه است.
 
-**گام ۵.۱۶، در انتظار CI:** [اتصال آزمایشی WordPress HTTP و مرورگر](BOOKING-INTENT-HTTP-EXPERIMENT.fa.md) برای نقش/nonce و بازبینی فقط‌خواندنی، محدود به CI دورریختنی؛ این طرح endpoint محصولی یا تشخیص قطعی نیست.
+**گام ۵.۱۶:** [اتصال آزمایشی WordPress HTTP و مرورگر](BOOKING-INTENT-HTTP-EXPERIMENT.fa.md) برای نقش/nonce و بازبینی فقط‌خواندنی، محدود به CI دورریختنی؛ این طرح endpoint محصولی یا تشخیص قطعی نیست.
+
+**نتیجهٔ گام ۵.۱۶:** [آزمون WordPress HTTP و Chromium دورریختنی](https://github.com/lakanzino/OR-site/actions/runs/42372271386) موفق شد؛ تفکیک actor و nonce بررسی شد و دو ردیف همسان هر دو تطبیق داشتند. این endpoint محصولی و شناسایی قطعی نیست.
