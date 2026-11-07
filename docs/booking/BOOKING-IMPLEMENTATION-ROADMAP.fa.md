@@ -142,4 +142,4 @@
 
 **گام ۵.۳۴، CI موفق:** [KILL اتصال WordPress پس از claim آزمایشی](BOOKING-PROFILE-CLAIM-RECONNECT.fa.md)، نه اثبات رفتار همهٔ قطع‌ها یا اصلاح محصول.
 
-**گام ۵.۳۵، در انتظار CI:** [claim محصول برای ساخت اولین پروفایل](BOOKING-FIRST-PROFILE-PRODUCT-CLAIM.fa.md) با fail-closed؛ فقط writer داشبورد جدید را پوشش می‌دهد.
+**گام ۵.۳۵، CI موفق برای مسیر داشبورد جدید:** [claim محصول برای ساخت اولین پروفایل](BOOKING-FIRST-PROFILE-PRODUCT-CLAIM.fa.md) با fail-closed؛ فقط writer داشبورد جدید را پوشش می‌دهد.
