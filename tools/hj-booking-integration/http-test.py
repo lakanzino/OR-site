@@ -212,6 +212,8 @@ try:
     try:
         browser=subprocess.run(['node',str(workspace/'tools/hj-booking-integration/dashboard-seconds-browser.cjs')],check=True,capture_output=True,text=True,timeout=40,env=dict(os.environ,HJ_SECONDS_HTML=str(render)))
         browser_values=json.loads(browser.stdout)
+        browser_save=subprocess.run(['node',str(workspace/'tools/hj-booking-integration/dashboard-save-browser.cjs')],capture_output=True,text=True,timeout=60,env=dict(os.environ,HJ_SECONDS_HTML=str(render)))
+        check(browser_save.returncode == 0 and 'PASS Chromium real dashboard form' in browser_save.stdout, 'Chromium guards pending and uncertain v1 save outcomes: ' + browser_save.stderr[-1500:])
     finally: render.unlink(missing_ok=True)
     check(browser_values['start']=='09:00:30' and browser_values['end']=='12:00:45' and browser_values['precision']=='seconds-v1','Chromium form retains seconds and marker')
     base2={**empty_week(), 'action':'hj_dash_save','pid':str(doctor2_id),'name_fa':'Synthetic Second Doctor','_hjn':other_nonce,'hj_schedule_revision':str(seconds_before['snapshot']['revision'])}
