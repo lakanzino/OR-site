@@ -50,8 +50,27 @@ add_filter( 'wp_insert_post_data', function ( $data, $postarr ) {
  if ( ( $_POST['action'] ?? '' ) === 'hj_dash_save' && ( $_POST['pid'] ?? '' ) === '0' && isset( $_POST['hj_ci_profile_insert_hold'] ) && is_string( $_POST['hj_ci_profile_insert_hold'] ) && ( $data['post_type'] ?? '' ) === 'doctor' && empty( $postarr['ID'] ) ) {
   hj_prod_ci_barrier( 'profile-hold-' . $_POST['hj_ci_profile_insert_hold'], true );
  }
+ if ( ( $_POST['action'] ?? '' ) === 'hj_dash_save' && ( $_POST['pid'] ?? '' ) === '0' && ( $_POST['hj_ci_claim_prototype'] ?? '' ) === '1' && ( $data['post_type'] ?? '' ) === 'doctor' && empty( $postarr['ID'] ) ) {
+  $token = $_POST['hj_ci_claim_token'] ?? '';
+  if ( ! is_string( $token ) || ! preg_match( '/^[a-f0-9]{32}$/D', $token ) ) { wp_send_json( array( 'success'=>false, 'message'=>'bad fixture claim' ), 400 ); }
+  hj_prod_ci_barrier( 'claim-hold-' . $token, true );
+  global $wpdb; $table = $wpdb->prefix . 'ci_profile_claims';
+  $previous_suppression = $wpdb->suppress_errors( true );
+  $n = $wpdb->query( $wpdb->prepare( "INSERT INTO `$table` (user_id, claim_token) VALUES (%d, %s) ON DUPLICATE KEY UPDATE user_id=user_id", get_current_user_id(), $token ) );
+  $wpdb->suppress_errors( $previous_suppression );
+  // Duplicate, unexpected row count and SQL errors all reject without creating a post.
+  if ( $n !== 1 ) { wp_send_json( array( 'success'=>false, 'message'=>'CI claim unavailable' ), 409 ); }
+ }
  return $data;
 }, 10, 2 );
+// Read only this authenticated user's CI-only claim, without changing it.
+add_action( 'wp_ajax_hj_ci_profile_claim', function () {
+ if ( ! hj_doctors_is_doctor_user() ) { wp_send_json_error( array(), 403 ); }
+ global $wpdb; $table=$wpdb->prefix . 'ci_profile_claims';
+ $token=$wpdb->get_var( $wpdb->prepare( "SELECT claim_token FROM `$table` WHERE user_id=%d", get_current_user_id() ) );
+ if ( $wpdb->last_error ) { wp_send_json_error( array(), 503 ); }
+ wp_send_json_success( array( 'token'=>$token ) );
+} );
 add_filter( 'update_post_metadata', function ( $check, $id, $key ) {
 	return $key === 'working_hours' && isset( $_POST['hj_ci_mirror_fail'] ) ? true : $check;
 }, 10, 3 );

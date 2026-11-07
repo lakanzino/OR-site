@@ -537,3 +537,7 @@
 ### مرحلهٔ ۵.۲۹ — شکست پیش از COMMIT برنامه در ساخت پروفایل | CI موفق
 
 [آزمون](BOOKING-FIRST-PROFILE-FAILURE.fa.md) از KILL اتصال transaction برنامه پس از درج پست در WordPress و سپس کنترل وضعیت واقعی DB استفاده می‌کند. پست و usermeta ماندند، snapshot و meta نام باقی نماند؛ retry فقط پس از بازرسی مستقل در fixture همان پست را استفاده کرد. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42418232759) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42418232776) سبز؛ قطع در میانهٔ COMMIT آزموده نشد، کد افزونه بدون تغییر، **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۳۰ — claim پایدار ایجاد پروفایل | در انتظار CI
+
+[نمونهٔ صرفاً CI](BOOKING-FIRST-PROFILE-CLAIM-SPIKE.fa.md) از کلید یکتای کاربر پیش از `wp_insert_post` برای رد دومین تلاش هم‌زمان استفاده می‌کند. نه محصول است، نه رفع همهٔ writerها یا اتمی‌بودن؛ claim بی‌انقضا ممکن است بازیابی عملیاتی بخواهد، **۷۵٪ ثابت**.

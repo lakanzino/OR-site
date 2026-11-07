@@ -171,6 +171,30 @@ try:
     check(code==200 and reply['success'] and not reply['data']['created'] and int(reply['data']['schedule_revision'])==1, 'controlled retry reuses partial profile and saves schedule')
     check(ajax(failed_owner, {'action':'hj_ci_own_profiles'})['ids']==[partial_id] and int(state(failed_owner, partial_id)['snapshot']['revision'])==1, 'controlled retry leaves one profile with initial snapshot')
 
+    # CI-only candidate: an InnoDB unique, durable per-user claim before the WordPress insert.
+    claimant1, cn1 = login('synthetic_profile_claim'); claimant2, cn2 = login('synthetic_profile_claim')
+    check(ajax(claimant1, {'action':'hj_ci_own_profiles'})['ids']==[] and ajax(claimant1, {'action':'hj_ci_profile_claim'})['token'] is None, 'claim prototype starts empty')
+    claim_tokens=[uuid.uuid4().hex, uuid.uuid4().hex]
+    claim_barriers=[barrier('claim-hold-'+token) for token in claim_tokens]
+    def claim_create(args):
+        opener,nonce,token,number=args
+        payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=nonce,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_claim_prototype='1',hj_ci_claim_token=token,name_fa='Synthetic Claimed '+str(number),**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
+        return request(opener,'/wp-admin/admin-ajax.php',payload)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+        futures=[pool.submit(claim_create,args) for args in ((claimant1,cn1,claim_tokens[0],1),(claimant2,cn2,claim_tokens[1],2))]
+        try: wait_ready([b[0] for b in claim_barriers])
+        finally:
+            for _,released in claim_barriers: released.touch()
+        claim_replies=[f.result(timeout=40) for f in futures]
+    check(sorted(code for code,body in claim_replies)==[200,409], 'one simultaneous claim wins; other first-profile insert is rejected')
+    winner=next(i for i,(code,body) in enumerate(claim_replies) if code==200)
+    check(json.loads(claim_replies[winner][1])['success'] and json.loads(claim_replies[winner][1])['data']['created'], 'winning claim creates profile through actual product handler')
+    check(not json.loads(claim_replies[1-winner][1])['success'], 'losing claim response fails closed')
+    claimed_profiles=ajax(claimant1, {'action':'hj_ci_own_profiles'}); claimed_id=claimed_profiles['ids'][0] if len(claimed_profiles['ids'])==1 else 0
+    check(claimed_id and claimed_profiles['linked']==claimed_id and ajax(claimant1, {'action':'hj_ci_profile_claim'})['token']==claim_tokens[winner], 'one durable claim and one linked post match winning request')
+    claim_state=state(claimant1,claimed_id)
+    check(int(claim_state['snapshot']['revision'])==1 and claim_state['name']=='Synthetic Claimed '+str(winner+1), 'winning profile and schedule persisted')
+
     owner, owner_nonce = login('synthetic_doctor_a')
     other, other_nonce = login('synthetic_doctor_b')
     url = '/wp-admin/admin-ajax.php'
