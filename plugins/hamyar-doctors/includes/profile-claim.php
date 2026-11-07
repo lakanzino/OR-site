@@ -39,7 +39,7 @@ function hj_doctors_claim_first_profile( $user_id ) {
 		foreach ( $keys as $parts ) {
 			if ( count( $parts ) === 1 && $parts[0]['Column_name'] === 'option_name' && $parts[0]['Sub_part'] === null ) { $unique = true; break; }
 		}
-		if ( ! $unique || false === $db->query( 'SET autocommit = 1' ) ) { return false; }
+		if ( ! $unique || false === $db->query( 'SET autocommit = 1' ) || false === $db->query( 'SET SESSION innodb_lock_wait_timeout = 3' ) ) { return false; }
 		if ( defined( 'HJ_BOOKING_TESTING' ) && HJ_BOOKING_TESTING === true ) { do_action( 'hj_doctors_profile_claim_test_event', 'before_insert', $db, $user_id ); }
 		$name = 'hj_doctors_first_profile_claim_' . $user_id;
 		$result = $db->query( $db->prepare( "INSERT IGNORE INTO `$table` (option_name, option_value, autoload) VALUES (%s, %s, 'no')", $name, '1' ) );

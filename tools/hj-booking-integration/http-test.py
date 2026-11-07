@@ -214,6 +214,23 @@ try:
     code,body=request(failed_claim,'/wp-admin/admin-ajax.php',claim_failure)
     check(code==200 and json.loads(body)['success'] and len(ajax(failed_claim,{'action':'hj_ci_own_profiles'})['ids'])==1, 'controlled retry after verified pre-insert failure creates one profile')
 
+    # Hold the same unique key in another transaction: the claim wait is bounded and fails closed.
+    locked,locked_nonce=login('synthetic_claim_lock'); token=uuid.uuid4().hex
+    lock_ready,lock_release=barrier('profile-lock-'+token)
+    lock_worker=subprocess.Popen(['php','-d','auto_prepend_file='+PREPEND,'tools/hj-booking-integration/profile-claim-lock-worker.php',token],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+    locked_payload=dict(empty_week(),action='hj_dash_save',pid='0',_hjn=locked_nonce,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',name_fa='Synthetic Locked Claim',**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
+    try:
+        wait_ready([lock_ready]); started=time.monotonic(); code,body=request(locked,'/wp-admin/admin-ajax.php',locked_payload); elapsed=time.monotonic()-started
+        check(code==409 and not json.loads(body)['success'] and elapsed<12 and ajax(locked,{'action':'hj_ci_own_profiles'})['ids']==[], 'lock contention fails closed within bounded time without creating a post')
+    finally:
+        lock_release.touch()
+        try: output,errors=lock_worker.communicate(timeout=10)
+        except subprocess.TimeoutExpired:
+            lock_worker.kill(); output,errors=lock_worker.communicate(); raise AssertionError('fixture lock worker failed to exit')
+    check(lock_worker.returncode==0 and ajax(locked,{'action':'hj_ci_profile_claim'})['value'] is None, 'rollback releases fixture claim: '+errors[-400:])
+    code,body=request(locked,'/wp-admin/admin-ajax.php',locked_payload)
+    check(code==200 and json.loads(body)['success'] and len(ajax(locked,{'action':'hj_ci_own_profiles'})['ids'])==1, 'controlled retry after verified rollback creates one profile')
+
     # The WordPress writer can reconnect, but the independently committed claim survives.
     reconnect1, rn1=login('synthetic_claim_reconnect'); reconnect2, rn2=login('synthetic_claim_reconnect')
     token=uuid.uuid4().hex; owned,owned_release=barrier('profile-owned-'+token); reconnected,_=barrier('profile-reconnect-'+token)
