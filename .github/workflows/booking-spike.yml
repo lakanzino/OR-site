@@ -225,6 +225,17 @@ jobs:
             echo "::error title=Capacity idempotency experiment failure::$summary"
             exit "$status"
           fi
+      - name: Exercise isolated durable schedule intent and key recovery
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/schedule-intent-fixture.php && python3 tools/hj-booking-integration/schedule-intent-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Durable intent experiment failure::$summary"
+            exit "$status"
+          fi
       - name: Race production capacity calculation with real plugin mutex
         run: |
           set -uo pipefail

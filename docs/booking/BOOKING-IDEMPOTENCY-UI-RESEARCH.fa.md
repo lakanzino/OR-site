@@ -27,3 +27,5 @@
 **نتیجهٔ CI:** [اجرای رزرو شاخه](https://github.com/lakanzino/OR-site/actions/runs/42326679846) و [اجرای رزرو PR](https://github.com/lakanzino/OR-site/actions/runs/42326684295) موفق شدند. اجرای جداگانهٔ [MariaDB/صفحهٔ نخست PR](https://github.com/lakanzino/OR-site/actions/runs/42326684300) به overflow تست homepage در عرض ۳۲۰ شکست خورد؛ این آزمون مستقل از نمونهٔ رابط نوبت‌دهی است و علت دقیق مشخص نشده است.
 
 بازآزمایی پس از افزودن آزمون مرورگر برای بسته‌بودن دسترسی به storage در [CI رزرو 42327027711](https://github.com/lakanzino/OR-site/actions/runs/42327027711) موفق شد. تست homepage در [اجرای بعدی](https://github.com/lakanzino/OR-site/actions/runs/42327027653) بدون تغییر قالب سبز شد؛ علت نوسان قبلی همچنان نامعلوم است.
+
+برای بررسی مسیر بازیابی خارج از storage، [نمونهٔ مستقل intent پایدار](BOOKING-DURABLE-INTENT-DESIGN.fa.md) ساخته شد؛ این نمونه به کلاینت یا افزونه متصل نیست و نتیجهٔ CI در انتظار است.

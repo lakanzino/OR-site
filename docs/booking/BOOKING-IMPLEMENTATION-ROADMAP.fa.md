@@ -71,3 +71,5 @@
 **نتیجهٔ گام ۵.۹:** [آزمون رزرو PR](https://github.com/lakanzino/OR-site/actions/runs/42326684295) موفق شد. [آزمون مستقل صفحهٔ نخست در job جاری](https://github.com/lakanzino/OR-site/actions/runs/42326684300) در عرض ۳۲۰ شکست overflow داشت؛ علت دقیق باز است و آمادگی merge اعلام نمی‌شود.
 
 **بازآزمایی گام ۵.۹:** [رزرو](https://github.com/lakanzino/OR-site/actions/runs/42327027711) و [اجرای بعدی homepage](https://github.com/lakanzino/OR-site/actions/runs/42327027653) موفق شدند؛ نوسان قبلی homepage هنوز ریشه‌یابی نشده است.
+
+**گام ۵.۱۰، در انتظار CI:** [نمونهٔ intent پایدار و بازیابی بدون کلید مرورگر](BOOKING-DURABLE-INTENT-DESIGN.fa.md) برای v1 مستقل نوشته شد. writer قدیمی می‌تواند آن را دور بزند، رفع بن‌بست و انتقال/اتصال محصولی هنوز طراحی نشده‌اند؛ هیچ آمادگی نصب اعلام نمی‌شود.
