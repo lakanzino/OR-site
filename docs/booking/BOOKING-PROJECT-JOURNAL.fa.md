@@ -534,6 +534,6 @@
 
 [طرح](BOOKING-FIRST-PROFILE-RACE.fa.md): دو نشست برای یک جراح بدون پروفایل پس از check و پیش از درج زیر barrier CI به رقابت گذاشته شدند: هر دو موفق، دو پست و دو snapshot مستقل ایجاد شد و usermeta خوانده‌شده به یکی اشاره کرد. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42417226975) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42417226818) سبزند چون ضدنمونهٔ نقص تأیید شد، نه رفع آن. کد افزونه و ZIP بدون تغییر؛ نقص جدید، سه بدهی فرم و migration باز، **۷۵٪ ثابت**؛ گام بعد طراحی هماهنگی ساخت برای هر کاربر و مدیریت دادهٔ احتمالی تکراری بدون حذف خودکار.
 
-### مرحلهٔ ۵.۲۹ — شکست پیش از COMMIT برنامه در ساخت پروفایل | در انتظار CI
+### مرحلهٔ ۵.۲۹ — شکست پیش از COMMIT برنامه در ساخت پروفایل | CI موفق
 
-[آزمون](BOOKING-FIRST-PROFILE-FAILURE.fa.md) از KILL اتصال transaction برنامه پس از درج پست در WordPress و سپس کنترل وضعیت واقعی DB استفاده می‌کند. آزمون مستقل از سایت است و قطع در میانهٔ COMMIT نیست؛ کد افزونه بدون تغییر، **۷۵٪ ثابت**.
+[آزمون](BOOKING-FIRST-PROFILE-FAILURE.fa.md) از KILL اتصال transaction برنامه پس از درج پست در WordPress و سپس کنترل وضعیت واقعی DB استفاده می‌کند. پست و usermeta ماندند، snapshot و meta نام باقی نماند؛ retry فقط پس از بازرسی مستقل در fixture همان پست را استفاده کرد. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42418232759) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42418232776) سبز؛ قطع در میانهٔ COMMIT آزموده نشد، کد افزونه بدون تغییر، **۷۵٪ ثابت**.

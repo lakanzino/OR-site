@@ -4,4 +4,4 @@
 
 [Stack Overflow: قطع اتصال و transaction](https://stackoverflow.com/questions/9936699/mysql-rollback-on-transaction-with-lost-disconnected-connection) یادآور می‌شود که قطع اتصال و reconnect خودکار باید جداگانه کنترل شوند؛ [نمونهٔ WooCommerce](https://github.com/woocommerce/woocommerce/issues/62659) نیز خطر چند درخواست ایجاد را نشان می‌دهد. پیشنهاد GET_LOCK آن گزارش به‌تنهایی برای این پروژه انتخاب نشده است؛ کد کپی نشده است.
 
-**وضعیت:** آزمون در انتظار CI؛ کد محصول بدون تغییر، بدهی اتمی‌بودن فرم و ساخت تکراری همچنان باز و درصد **۷۵٪ ثابت**.
+**نتیجهٔ مشاهده‌شده:** پاسخ ۵۰۳ و هشدار نتیجهٔ نامعلوم بود؛ یک پست و پیوند usermeta باقی ماندند، ولی snapshot و meta نام ذخیره نشدند. بعد از بازرسی مستقل، retry کنترل‌شده همان پست را به‌کار گرفت و snapshot نسخهٔ یک را ساخت. این retry آزمایشگاهی مجوز retry کور یا اثبات اتمی‌بودن فرم نیست. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42418232759) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42418232776) موفق؛ کد محصول بدون تغییر، بدهی اتمی‌بودن فرم و ساخت تکراری باز و درصد **۷۵٪ ثابت**.
