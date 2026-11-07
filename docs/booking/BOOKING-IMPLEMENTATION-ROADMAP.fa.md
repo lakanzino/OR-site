@@ -69,3 +69,5 @@
 **گام ۵.۹، در انتظار CI:** [پژوهش و نمونهٔ مستقل رابط](BOOKING-IDEMPOTENCY-UI-RESEARCH.fa.md) برای کلید و نتیجهٔ تاریخی تکمیل شده و محلی آزموده شد؛ حفظ کلید بعد از حذف storage و بازیابی مستقل از مرورگر هنوز نیازمند طراحی سمت سرور است. این نمونه محصولی نیست و اتصال به افزونه یا endpoint واقعی ندارد.
 
 **نتیجهٔ گام ۵.۹:** [آزمون رزرو PR](https://github.com/lakanzino/OR-site/actions/runs/42326684295) موفق شد. [آزمون مستقل صفحهٔ نخست در job جاری](https://github.com/lakanzino/OR-site/actions/runs/42326684300) در عرض ۳۲۰ شکست overflow داشت؛ علت دقیق باز است و آمادگی merge اعلام نمی‌شود.
+
+**بازآزمایی گام ۵.۹:** [رزرو](https://github.com/lakanzino/OR-site/actions/runs/42327027711) و [اجرای بعدی homepage](https://github.com/lakanzino/OR-site/actions/runs/42327027653) موفق شدند؛ نوسان قبلی homepage هنوز ریشه‌یابی نشده است.
