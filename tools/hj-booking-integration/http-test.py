@@ -129,7 +129,7 @@ try:
     owner, owner_nonce = login('synthetic_doctor_a')
     other, other_nonce = login('synthetic_doctor_b')
     url = '/wp-admin/admin-ajax.php'
-    common = {'action': 'hj_dash_save', 'pid': str(doctor_id), 'name_fa': 'Synthetic Doctor', 'hours[wednesday][start]': '09:00', 'hours[wednesday][end]': '12:00'}
+    common = {'action': 'hj_dash_save', 'pid': str(doctor_id), 'name_fa': 'Synthetic Doctor', 'hours[wednesday][start]': '09:00', 'hours[wednesday][end]': '12:00', 'hj_schedule_precision':'seconds-v1'}
     check(request(owner, url, dict(common, _hjn='bad'))[0] == 403, 'actual ajax_save rejects invalid nonce')
     check(request(other, url, dict(common, _hjn=other_nonce))[0] == 403, 'actual ajax_save denies another doctor')
     html, inputs = rendered_form(owner)
@@ -138,11 +138,13 @@ try:
     for value in ('-1', '01', 'not-a-number', '999999999999999999999999'):
         check(request(owner, url, dict(common, _hjn=owner_nonce, hj_schedule_revision=value))[0] == 400, 'invalid revision is rejected')
     baseline = state(owner, doctor_id)
+    stale_precision=dict(common, _hjn=owner_nonce, hj_schedule_revision='0'); stale_precision.pop('hj_schedule_precision')
+    code, body=request(owner, url, stale_precision)
+    check(code == 409 and 'بازخوانی' in json.loads(body)['message'] and state(owner, doctor_id)==baseline, 'old minute-only form is rejected before any write')
     invalid_cases = [
         {'hours[wednesday][start]': '24:00'},
         {'hours[wednesday][start]': '09:60'},
         {'hours[wednesday][start]': '09:00:70'},
-        {'hours[wednesday][start]': '09:00:30'},
         {'hours[wednesday][start]': 'bad', 'hours[wednesday][end]': 'bad'},
         {'hours[wednesday][start][bad]': '09:00', 'hours[wednesday][start]': None},
         {'hours[wednesday]': 'bad', 'hours[wednesday][start]': None, 'hours[wednesday][end]': None},
@@ -197,6 +199,32 @@ try:
     check(ajax(owner, open_hours) is not None, 'actual dashboard publishes test schedule')
     saved = state(owner, doctor_id); open_revision = int(saved['snapshot']['revision'])
     check(saved['display'][0]['start_time'] == '10:00:00' and json.loads(saved['snapshot']['rows_json'])[0]['start_time'] == '09:00:00', 'display intentionally differs from canonical snapshot')
+    # Exercise actual rendered legacy form with seconds using a separate synthetic doctor.
+    original = state(other, doctor2_id)
+    second_rows = [{'day_of_week':'wednesday','is_closed':0,'start_time':'09:00:30','end_time':'12:00:45'}]
+    check(ajax(other, {'action':'hj_ci_replace_snapshot','doctor':str(doctor2_id),'_hjn':other_nonce,'rows_json':json.dumps(second_rows)})['status']=='updated', 'inject synthetic nonzero seconds snapshot')
+    seconds_before=state(other, doctor2_id); html, fields=rendered_form(other)
+    check(fields['hours[wednesday][start]']['value']=='09:00:30' and fields['hours[wednesday][end]']['value']=='12:00:45' and fields['hours[wednesday][start]'].get('step')=='1' and fields['hours[wednesday][end]'].get('step')=='1' and fields['hj_schedule_precision']['value']=='seconds-v1', 'actual dashboard renders seconds with explicit precision marker')
+    render=Path(os.environ['RUNNER_TEMP'])/'hj-legacy-seconds-form.html'; render.write_text(html,encoding='utf-8')
+    try:
+        browser=subprocess.run(['node',str(workspace/'tools/hj-booking-integration/dashboard-seconds-browser.cjs')],check=True,capture_output=True,text=True,timeout=40,env=dict(os.environ,HJ_SECONDS_HTML=str(render)))
+        browser_values=json.loads(browser.stdout)
+    finally: render.unlink(missing_ok=True)
+    check(browser_values=={'start':'09:00:30','end':'12:00:45','precision':'seconds-v1'},'Chromium form retains seconds and marker')
+    base2={'action':'hj_dash_save','pid':str(doctor2_id),'name_fa':'Synthetic Second Doctor','_hjn':other_nonce,'hj_schedule_revision':str(seconds_before['snapshot']['revision'])}
+    stale2=dict(base2,**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
+    code,body=request(other,url,stale2)
+    check(code==409 and state(other,doctor2_id)==seconds_before, 'stale minute-only client cannot truncate second-precision schedule')
+    bad2=dict(base2,hj_schedule_precision='seconds-v1',**{'hours[wednesday][start]':'09:00:70','hours[wednesday][end]':'12:00:45'})
+    code,body=request(other,url,bad2)
+    check(code==422 and state(other,doctor2_id)==seconds_before, 'invalid seconds leave schedule and profile unchanged')
+    good2=dict(base2,hj_schedule_precision=browser_values['precision'],**{'hours[wednesday][start]':browser_values['start'],'hours[wednesday][end]':browser_values['end'],'hj_ci_time_format':'H:i'})
+    code,body=request(other,url,good2); after=state(other,doctor2_id)
+    check(code==200 and json.loads(body)['success'] and json.loads(after['snapshot']['rows_json'])==second_rows and int(after['snapshot']['revision'])==int(seconds_before['snapshot']['revision'])+1 and after['snapshot']['rows_hash']==hashlib.sha256(after['snapshot']['rows_json'].encode()).hexdigest(), 'actual dashboard save preserves seconds in canonical snapshot')
+    check(after['display'][0]['start_time']=='09:00' and after['display'][0]['end_time']=='12:00', 'minute display filter never truncates canonical snapshot')
+    check(ajax(other, {'action':'hj_ci_replace_snapshot','doctor':str(doctor2_id),'_hjn':other_nonce,'rows_json':original['snapshot']['rows_json']})['status']=='updated', 'restore other synthetic doctor schedule for later fixture checks')
+
+    doctor2_revision = int(state(other, doctor2_id)['snapshot']['revision'])
     patients = [login(f'synthetic_race_{i}')[0] for i in range(8)]
     nonces = [booking_nonce(p) for p in patients]
     first_slots = slots(patients[0], doctor_id, nonces[0])
@@ -465,7 +493,7 @@ try:
         code, result = ui_request(cross_patient, dict(base, nonce=cross_nonce, slot_start=cross_start(h,m), idempotency_key=str(uuid.uuid4())))
         check(code == 200 and result['success'], 'patient baseline pending before cross-doctor race')
     one = dict(base, nonce=cross_nonce, slot_start=cross_start(10,10), idempotency_key=str(uuid.uuid4()))
-    two = dict(one, doctor_id=str(doctor2_id), revision='1', idempotency_key=str(uuid.uuid4()))
+    two = dict(one, doctor_id=str(doctor2_id), revision=str(doctor2_revision), idempotency_key=str(uuid.uuid4()))
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
         cross_results = list(pool.map(lambda payload: ui_request(cross_patient, payload), [one,two]))
     check(sorted(code for code, _ in cross_results) == [200,429] and any(r['data'].get('code') == 'pending_limit' for _, r in cross_results), 'same patient racing different doctors cannot exceed three pending')
@@ -512,7 +540,7 @@ try:
     def create_payload(nonce, doctor, start, revision):
         return {'action':'hj_booking_create', 'nonce':nonce, 'doctor_id':str(doctor), 'slot_start':start, 'revision':str(revision), 'idempotency_key':str(uuid.uuid4()), 'phone':'09123456789', 'national_code':'1234567891'}
     first = create_payload(a_nonce, doctor_id, mstart(9,0), newest_revision)
-    second = create_payload(b_nonce, doctor2_id, mstart(9,0), 1)
+    second = create_payload(b_nonce, doctor2_id, mstart(9,0), doctor2_revision)
     c1, r1 = ui_request(patient_a, first); c2, r2 = ui_request(patient_b, second)
     check(c1 == 200 and c2 == 200, 'two doctors have distinct synthetic patient appointments')
     id_a = r1['data']['id']; id_b = r2['data']['id']
@@ -598,7 +626,7 @@ try:
     check(ajax(other, {'action':'hj_ci_set_past','doctor':str(doctor2_id),'id':str(id_b)})['status'] == 'updated', 'CI fixture moves synthetic appointment to the past under mutex')
     check(request(other, status_url, early)[0] == 302, 'doctor marks past booking completed')
     check(request(other, status_url, status_payload(other, doctor2_id, id_b, 'manage', 'cancelled'))[0] == 409, 'terminal booking cannot be reopened or cancelled')
-    absent_code, absent = ui_request(patient_b, create_payload(b_nonce, doctor2_id, mstart(9,35), 1))
+    absent_code, absent = ui_request(patient_b, create_payload(b_nonce, doctor2_id, mstart(9,35), doctor2_revision))
     check(absent_code == 200 and absent['success'], 'second synthetic past-status candidate created')
     absent_id = absent['data']['id']
     check(ajax(other, {'action':'hj_ci_set_past','doctor':str(doctor2_id),'id':str(absent_id)})['status'] == 'updated', 'CI fixture makes no-show candidate past under mutex')
