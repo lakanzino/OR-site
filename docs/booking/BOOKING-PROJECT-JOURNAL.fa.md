@@ -530,6 +530,6 @@
 
 [طرح](BOOKING-FIRST-PROFILE-BROWSER.fa.md): فرم واقعی، کوکی WordPress، جراح تازه و barrier در مسیر ذخیرهٔ واقعی؛ تأیید حفظ ویرایش‌های بعد از ارسال هنگام ایجاد. آزمون محدود به fixture، کد افزونه بدون تغییر؛ [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42416938576) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42416938686) موفق؛ بدهی‌ها باز، **۷۵٪ ثابت**.
 
-### مرحلهٔ ۵.۲۸ — race ایجاد اولین پروفایل | در انتظار CI
+### مرحلهٔ ۵.۲۸ — race ایجاد اولین پروفایل | ضدنمونه تأیید شد
 
-[طرح](BOOKING-FIRST-PROFILE-RACE.fa.md): دو نشست برای یک جراح بدون پروفایل پس از check و پیش از درج زیر barrier CI به رقابت گذاشته می‌شوند؛ نتیجهٔ هر دو پست و snapshot سنجیده خواهد شد. آزمون ضدنمونه است، نه رفع، کد افزونه و ZIP بدون تغییر، CI در انتظار؛ سه بدهی و migration باز و **۷۵٪ ثابت**.
+[طرح](BOOKING-FIRST-PROFILE-RACE.fa.md): دو نشست برای یک جراح بدون پروفایل پس از check و پیش از درج زیر barrier CI به رقابت گذاشته شدند: هر دو موفق، دو پست و دو snapshot مستقل ایجاد شد و usermeta خوانده‌شده به یکی اشاره کرد. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42417226975) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42417226818) سبزند چون ضدنمونهٔ نقص تأیید شد، نه رفع آن. کد افزونه و ZIP بدون تغییر؛ نقص جدید، سه بدهی فرم و migration باز، **۷۵٪ ثابت**؛ گام بعد طراحی هماهنگی ساخت برای هر کاربر و مدیریت دادهٔ احتمالی تکراری بدون حذف خودکار.
