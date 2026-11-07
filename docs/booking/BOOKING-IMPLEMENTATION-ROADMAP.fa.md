@@ -132,4 +132,4 @@
 
 **گام ۵.۲۹، CI موفق:** [شکست بعد از ایجاد پروفایل، پیش از COMMIT برنامه](BOOKING-FIRST-PROFILE-FAILURE.fa.md)، بدون دست‌کاری سایت.
 
-**گام ۵.۳۰، در انتظار CI:** [claim یکتای بادوام به‌صورت نمونهٔ آزمایشی](BOOKING-FIRST-PROFILE-CLAIM-SPIKE.fa.md)، بدون تغییر محصول.
+**گام ۵.۳۰، CI موفق:** [claim یکتای بادوام به‌صورت نمونهٔ آزمایشی](BOOKING-FIRST-PROFILE-CLAIM-SPIKE.fa.md)، بدون تغییر محصول.
