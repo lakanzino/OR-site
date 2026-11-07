@@ -249,6 +249,18 @@ jobs:
             echo "::error title=Writer coordination experiment failure::$summary"
             exit "$status"
           fi
+      - name: Test synthetic v1 pause and stale resume on disposable plugin copy
+        run: |
+          set -uo pipefail
+          set +e
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/v1-safe-pause-fixture.php && python3 tools/hj-booking-integration/v1-safe-pause-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=V1 pause experiment failure::$summary"
+            exit "$status"
+          fi
       - name: Race production capacity calculation with real plugin mutex
         run: |
           set -uo pipefail
