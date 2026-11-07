@@ -260,6 +260,10 @@ try:
     check(code==200 and len(json.loads(all_closed_state['snapshot']['rows_json']))==7 and all(row['is_closed']==1 for row in json.loads(all_closed_state['snapshot']['rows_json'])), 'all seven explicit closed days are accepted')
     check(ajax(other, {'action':'hj_ci_replace_snapshot','doctor':str(doctor2_id),'_hjn':other_nonce,'rows_json':original['snapshot']['rows_json']})['status']=='updated', 'restore other synthetic doctor schedule for later fixture checks')
 
+    # Real authenticated browser -> WordPress AJAX -> MariaDB, using a dedicated synthetic doctor.
+    browser_http=subprocess.run(['node',str(workspace/'tools/hj-booking-integration/dashboard-live-browser.cjs')],capture_output=True,text=True,timeout=80,env=dict(os.environ,HJ_BROWSER_DOCTOR=str(doctor2_id)))
+    check(browser_http.returncode==0 and 'PASS real authenticated Chromium dashboard save' in browser_http.stdout, 'real browser dashboard save: '+browser_http.stderr[-1800:])
+    check(ajax(other, {'action':'hj_ci_replace_snapshot','doctor':str(doctor2_id),'_hjn':other_nonce,'rows_json':original['snapshot']['rows_json']})['status']=='updated', 'restore synthetic schedule after browser save')
     doctor2_revision = int(state(other, doctor2_id)['snapshot']['revision'])
     patients = [login(f'synthetic_race_{i}')[0] for i in range(8)]
     nonces = [booking_nonce(p) for p in patients]

@@ -513,3 +513,7 @@
 ### مرحلهٔ ۵.۲۳ — ویرایش حین ذخیرهٔ فرم v1 | CI موفق
 
 [شرح و محدودیت](BOOKING-DASHBOARD-INFLIGHT-EDITS.fa.md): مقایسهٔ دادهٔ قابل ارسال در لحظهٔ درخواست و پاسخ موفق، تغییرات جدید را از نسخهٔ تأییدشده تفکیک می‌کند؛ در ساخت پروفایل، به‌جای reload نابهنگام، تغییرات در صفحه حفظ و کاربر به یادداشت و بازخوانی هدایت می‌شود. آزمون Node و Chromium مستقل موفق؛ [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42412896815) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42412896874) سبز، ۰٫۳٫۴۷ آزمایشی، بدهی‌های اصلی و migration باز و **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۲۴ — اتصال Chromium به ذخیرهٔ واقعی داشبورد | در انتظار CI
+
+[شرح](BOOKING-DASHBOARD-BROWSER-E2E.fa.md): آزمون دورریختنی ورود وردپرس، فرم واقعی افزونه، AJAX و snapshot/MariaDB را به Chromium متصل می‌کند؛ این OAuth یا navigation واقعی پوسته نیست. کد افزونه و ZIP تغییر نکرد؛ CI در انتظار، بدهی‌های فرم و migration باز و **۷۵٪ ثابت**.
