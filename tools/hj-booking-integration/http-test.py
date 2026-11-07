@@ -223,8 +223,8 @@ try:
     incomplete.append({k:v for k,v in full.items() if not k.startswith('hours[')})
     incomplete.append({k:v for k,v in full.items() if not k.startswith('hours[wednesday]')})
     incomplete.append({k:v for k,v in full.items() if not k.endswith('[present]')})
-    for key in ('hours[wednesday][present]', 'hours[wednesday][start]', 'hours[wednesday][end]'):
-        incomplete.append({k:v for k,v in full.items() if k!=key})
+    for field_name in ('hours[wednesday][present]', 'hours[wednesday][start]', 'hours[wednesday][end]'):
+        incomplete.append({k:v for k,v in full.items() if k!=field_name})
     incomplete.append(dict(full,**{'hours[wednesday][closed]':'unexpected'}))
     incomplete.append(dict(full,**{'hours[wednesday][future]':'1'}))
     incomplete.append(dict(full,**{'hours[funday][present]':'1'}))
