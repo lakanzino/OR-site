@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>نمونهٔ آزمایشی ذخیره</title>
+<style>body{font:16px sans-serif;max-width:38rem;margin:auto;padding:1rem} fieldset{display:grid;gap:1rem} input,button{font:inherit;min-height:44px} [role=status]{min-height:3rem}</style></head>
+<body><h1>نمونهٔ آزمایشی برنامه</h1><p>فقط دادهٔ ساختگی؛ این صفحه به سایت یا افزونه متصل نیست.</p>
+<form id="test-form"><fieldset id="fields"><label>شروع <input id="start" type="time" value="09:00" required></label><label>پایان <input id="end" type="time" value="10:00" required></label><button id="save" type="submit">ذخیره</button></fieldset></form>
+<p id="status" role="status" aria-live="polite"></p><button id="retry" type="button">تکرار همان درخواست</button> <button id="check" type="button">بررسی نتیجه</button>
+<script src="/client.js"></script><script>
+(async () => {
+  const post = async (url, body) => {
+    const response = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if (!response.ok) throw new Error('transport');
+    return response.json();
+  };
+  const api={submit:req=>post('/test/save',req),status:key=>post('/test/status',{key}),refresh:()=>post('/test/current',{})};
+  const fields=document.querySelector('#fields'), status=document.querySelector('#status'), retry=document.querySelector('#retry'), check=document.querySelector('#check');
+  const messages={idle:'آمادهٔ ثبت آزمایشی.',invalid:'اطلاعات معتبر نیست.',sending:'در حال ارسال…',checking:'در حال بررسی…',refreshing:'در حال خواندن برنامهٔ جاری…',uncertain:'نتیجه نامعلوم است؛ درخواست تازه نفرستید. ابتدا نتیجه را بررسی کنید.',storage_error:'ساخت یا نگهداری کلید ممکن نیست؛ برای بررسی با مدیر تماس بگیرید.',resolved:'نتیجهٔ قبلی بررسی شد؛ برای دیدن برنامهٔ جاری صفحه را بازخوانی کنید.'};
+  const client=HJTestScheduleClient.createScheduleClient({storage:sessionStorage,random:crypto,api,onState:(state,details)=>{
+    status.textContent=state==='uncertain' && !details.canRetry ? 'نتیجه نامعلوم است و اطلاعات درخواست پس از بازخوانی نگه‌داری نشده؛ فقط نتیجه را بررسی کنید.' : (messages[state] || messages.uncertain);
+    fields.disabled=state!=='idle' && state!=='invalid';
+    retry.disabled=state!=='uncertain' || !details.canRetry; check.disabled=state!=='uncertain';
+  }});
+  document.querySelector('#test-form').addEventListener('submit',async event=>{
+    event.preventDefault();
+    const revision=Number(document.body.dataset.revision), generation=Number(document.body.dataset.generation);
+    await client.start({revision,generation,enabled:true,rows:[{day:'monday',closed:false,start:document.querySelector('#start').value,end:document.querySelector('#end').value,duration:30,buffer:5,capacity:1}]});
+  });
+  document.querySelector('#test-form').addEventListener('input',()=>client.resetInvalid());
+  retry.addEventListener('click',()=>client.retry()); check.addEventListener('click',()=>client.check());
+  window.fixtureState=()=>client.getState();
+})();
+</script></body></html>
