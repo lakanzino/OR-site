@@ -10,7 +10,10 @@
   const post=async(url,body)=>{
     const controller=new AbortController(); const timer=setTimeout(()=>controller.abort(),8000);
     try {
-      const response=await fetch(url,{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:controller.signal});
+      const headers={'Content-Type':'application/json'};
+      const auth=document.querySelector('meta[name=fixture-auth]');
+      if (auth) { headers['X-Fixture-Nonce']=auth.content; headers['X-Fixture-Doctor']=auth.dataset.doctor; }
+      const response=await fetch(url,{method:'POST',cache:'no-store',headers,body:JSON.stringify(body),signal:controller.signal});
       if (!response.ok) throw new Error('transport');
       return await response.json();
     } finally { clearTimeout(timer); }

@@ -313,6 +313,14 @@ jobs:
           export NODE_PATH="$RUNNER_TEMP/hj-capacity-browser/node_modules"
           export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
           node tools/hj-booking-integration/schedule-review-prototype-browser.cjs
+      - name: Test disposable authenticated history review end-to-end
+        run: |
+          set -euo pipefail
+          export NODE_PATH="$RUNNER_TEMP/hj-capacity-browser/node_modules"
+          export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          php -l tools/hj-booking-integration/schedule-intent-functions.php
+          php -l tools/hj-booking-integration/schedule-review-http-router.php
+          python3 tools/hj-booking-integration/schedule-review-http.py
       - name: Exercise unchanged repository plugin booking backend
         run: |
           set -e
