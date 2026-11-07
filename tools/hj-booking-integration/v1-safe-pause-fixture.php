@@ -22,23 +22,29 @@ function pause_state($doctor) {
  global $wpdb,$table; $d=hj_booking_table('doctors'); $s=hj_booking_table('schedules');
  return array('config'=>$wpdb->get_row($wpdb->prepare("SELECT enabled,duration_minutes,buffer_minutes FROM `$d` WHERE doctor_id=%d",$doctor),ARRAY_A), 'snapshot'=>$wpdb->get_row($wpdb->prepare("SELECT revision,rows_json,rows_hash FROM `$s` WHERE doctor_id=%d",$doctor),ARRAY_A), 'guard'=>$wpdb->get_row($wpdb->prepare("SELECT paused,intent_active,epoch FROM `$table` WHERE doctor_id=%d",$doctor),ARRAY_A));
 }
-/** Experimental stop: only enabled changes in product tables; no intent table bypass. */
+/** Normal stop writes doctor state and guard atomically. */
 function ci_v1_pause($doctor) {
  global $table;
  if (!hj_booking_can_configure($doctor)) { return array('status'=>'forbidden'); }
  return hj_booking_transaction($doctor,'ci_v1_pause',function($db,$config) use($doctor,$table) {
   if (!hj_booking_can_configure($doctor)) { return array('status'=>'forbidden'); }
   if (!in_array((string)$config['enabled'],array('0','1'),true)) { return array('status'=>'invalid_config'); }
-  $d=hj_booking_table('doctors');
+  $row=hj_booking_row($db,$db->prepare("SELECT paused,intent_active,epoch FROM `$table` WHERE doctor_id=%d",$doctor));
+  if (!pause_guard_valid($row) || (int)$row['epoch']===PHP_INT_MAX) { return array('status'=>'guard_unavailable'); }
+  $epoch=(int)$row['epoch']; $d=hj_booking_table('doctors');
   hj_booking_query($db,$db->prepare("UPDATE `$d` SET enabled=0 WHERE doctor_id=%d",$doctor));
-  // If the guard cannot be read, disabling is still attempted. This is NOT a
-  // durable fence: operators must keep the rest of the system fail-closed.
-  try { $row=hj_booking_row($db,$db->prepare("SELECT paused,intent_active,epoch FROM `$table` WHERE doctor_id=%d",$doctor)); }
-  catch (Throwable $e) { return array('status'=>'paused_unlatched'); }
-  if (!pause_guard_valid($row)) { return array('status'=>'paused_unlatched'); }
-  $epoch=(int)$row['epoch']; if ($epoch===PHP_INT_MAX) { throw new RuntimeException('epoch exhausted'); }
   if (hj_booking_query($db,$db->prepare("UPDATE `$table` SET paused=1,epoch=%d WHERE doctor_id=%d",$epoch+1,$doctor))!==1) { throw new RuntimeException('pause guard write failed'); }
   return array('status'=>'paused','epoch'=>$epoch+1);
+ });
+}
+/** Separate fresh transaction: disables only, with NO durable fencing guarantee. */
+function ci_v1_emergency_disable($doctor) {
+ if (!hj_booking_can_configure($doctor)) { return array('status'=>'forbidden'); }
+ return hj_booking_transaction($doctor,'ci_v1_emergency_disable',function($db,$config) use($doctor) {
+  if (!hj_booking_can_configure($doctor)) { return array('status'=>'forbidden'); }
+  if (!in_array((string)$config['enabled'],array('0','1'),true)) { return array('status'=>'invalid_config'); }
+  $d=hj_booking_table('doctors'); hj_booking_query($db,$db->prepare("UPDATE `$d` SET enabled=0 WHERE doctor_id=%d",$doctor));
+  return array('status'=>'disabled_without_latch');
  });
 }
 /** Experimental resume: matching snapshot and epoch, with no active intent. */
@@ -64,7 +70,7 @@ if ($mode==='setup') {
  $d=hj_booking_table('doctors'); $doctors=array(); $owned=false;
  try {
   pause_check($wpdb->query("CREATE TABLE `$table` (doctor_id bigint unsigned NOT NULL PRIMARY KEY,paused tinyint unsigned NOT NULL,intent_active tinyint unsigned NOT NULL,epoch bigint unsigned NOT NULL) ENGINE=InnoDB")!==false,'create synthetic v1 pause guard'); $owned=true;
-  foreach(array('manual','pause_first','resume_first','missing','lost','fault','corrupt','stop_booking','booking_stop') as $name) {
+  foreach(array('manual','pause_first','resume_first','missing','lost','fault','corrupt','stop_booking','booking_stop','fallback') as $name) {
    $id=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'Synthetic v1 pause '.$name,'post_author'=>$admin->ID),true);
    if (is_wp_error($id) || !$id) { throw new RuntimeException('fixture doctor failed'); }
    $doctors[$name]=(int)$id;
@@ -80,7 +86,7 @@ if ($mode==='setup') {
  }
  exit(0);
 }
-$data=json_decode(@file_get_contents($meta),true); if (!is_array($data) || count($data)!==9) { throw new RuntimeException('missing metadata'); }
+$data=json_decode(@file_get_contents($meta),true); if (!is_array($data) || count($data)!==10) { throw new RuntimeException('missing metadata'); }
 if ($mode==='manual') {
  $id=(int)$data['manual']; $date=(new DateTimeImmutable('now',wp_timezone()))->modify('next monday')->format('Y-m-d'); $slots=hj_booking_public_slots($id,$date);
  pause_check($slots['status']==='ok' && !empty($slots['slots']),'available v1 slots before stop');
@@ -160,13 +166,17 @@ if ($mode==='fault') {
  try { pause_check(ci_v1_pause($id)['status']==='error' && pause_state($id)===$before,'failed guard write rolls back pause and reports error'); }
  finally { $wpdb->query("DROP TRIGGER `$trigger`"); }
  $id=(int)$data['corrupt']; pause_check($wpdb->update($table,array('paused'=>2),array('doctor_id'=>$id))===1,'inject invalid guard value');
- pause_check(ci_v1_pause($id)['status']==='paused_unlatched' && (int)pause_state($id)['config']['enabled']===0,'invalid guard still attempts disable but reports no durable latch');
- pause_check(ci_v1_resume($id,1,0)['status']==='guard_unavailable' && hj_booking_configure($id,30,5,true)['status']==='guard_unavailable','invalid guard prevents coordinated reactivation'); exit(0);
+ pause_check(ci_v1_pause($id)['status']==='guard_unavailable' && (int)pause_state($id)['config']['enabled']===1,'normal stop refuses invalid guard without claiming pause');
+ pause_check(ci_v1_emergency_disable($id)['status']==='disabled_without_latch' && (int)pause_state($id)['config']['enabled']===0,'separate fallback disables without claiming a durable latch');
+ pause_check(ci_v1_resume($id,1,0)['status']==='guard_unavailable' && hj_booking_configure($id,30,5,true)['status']==='guard_unavailable','invalid guard prevents coordinated reactivation');
+ $id=(int)$data['fallback']; pause_check($wpdb->update($table,array('paused'=>1,'epoch'=>2),array('doctor_id'=>$id))===1,'inject inconsistent synthetic latch');
+ pause_check(ci_v1_emergency_disable($id)['status']==='disabled_without_latch' && ci_v1_resume($id,1,2)['status']==='resumed','counterexample: unlatched fallback alone cannot block stale resume'); exit(0);
 }
 if ($mode==='missing') {
  $id=(int)$data['missing']; $before=pause_state($id); $d=hj_booking_table('doctors');
  pause_check($wpdb->query("DROP TABLE `$table`")!==false,'remove only synthetic guard table');
- pause_check(ci_v1_pause($id)['status']==='paused_unlatched','stop still attempts disable when guard table is absent');
+ pause_check(ci_v1_pause($id)['status']==='error','normal stop reports guard read failure');
+ pause_check(ci_v1_emergency_disable($id)['status']==='disabled_without_latch','fresh fallback transaction attempts disable when guard table is absent');
  $config=$wpdb->get_row($wpdb->prepare("SELECT enabled,duration_minutes,buffer_minutes FROM `$d` WHERE doctor_id=%d",$id),ARRAY_A);
  pause_check((int)$config['enabled']===0 && $config['duration_minutes']===$before['config']['duration_minutes'] && $config['buffer_minutes']===$before['config']['buffer_minutes'],'unlatched stop leaves config disabled without changing settings');
  pause_check(hj_booking_configure($id,30,5,true)['status']==='error' && hj_booking_save_schedule($id,pause_rows(),1)['status']==='error' && ci_v1_resume($id,1,0)['status']==='error','coordinated writers and resume fail closed with guard missing'); exit(0);
