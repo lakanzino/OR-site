@@ -142,10 +142,13 @@ try:
         return request(opener,'/wp-admin/admin-ajax.php',payload)
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
         results=[pool.submit(profile_create,args) for args in ((racer1,nonce1,profile_tokens[0],1),(racer2,nonce2,profile_tokens[1],2))]
+        barrier_error = None
         try: wait_ready([b[0] for b in profile_barriers])
+        except AssertionError as exc: barrier_error = exc
         finally:
             for _,released in profile_barriers: released.touch()
         replies=[result.result(timeout=40) for result in results]
+        if barrier_error: raise AssertionError(f'{barrier_error}; synthetic responses: {replies!r}') from barrier_error
     check(all(code==200 and json.loads(body)['success'] and json.loads(body)['data']['created'] for code,body in replies), 'counterexample: both actual requests report first-profile creation')
     profiles=ajax(racer1, {'action':'hj_ci_own_profiles'}); ids=profiles['ids']
     check(len(ids)==2 and len(set(ids))==2 and profiles['linked'] in ids, 'counterexample: one synthetic doctor has two profiles')
