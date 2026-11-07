@@ -318,9 +318,15 @@ jobs:
           set -euo pipefail
           export NODE_PATH="$RUNNER_TEMP/hj-capacity-browser/node_modules"
           export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
-          php -l tools/hj-booking-integration/schedule-intent-functions.php
-          php -l tools/hj-booking-integration/schedule-review-http-router.php
-          python3 tools/hj-booking-integration/schedule-review-http.py
+          set +e
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/schedule-intent-functions.php && php -l tools/hj-booking-integration/schedule-review-http-router.php && python3 tools/hj-booking-integration/schedule-review-http.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Disposable review HTTP failure::$summary"
+            exit "$status"
+          fi
       - name: Exercise unchanged repository plugin booking backend
         run: |
           set -e
