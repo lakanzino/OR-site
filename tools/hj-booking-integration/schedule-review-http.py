@@ -10,7 +10,7 @@ setup=False; server=None; server_log=Path(os.environ['RUNNER_TEMP'])/'hj-review-
 try:
  print(run('setup'),flush=True); setup=True; print(run('http-seed'),flush=True); before=run('http-audit'); doctor=str(json.loads(meta.read_text())['doctor'])
  log=server_log.open('w')
- server=subprocess.Popen(['php','-d','auto_prepend_file='+str(tool/'prepend.php'),'-S','127.0.0.1:8995','-t','/wordpress',str(tool/'schedule-review-http-router.php')],stdout=log,stderr=log,start_new_session=True)
+ server=subprocess.Popen(['php','-S','127.0.0.1:8995','-t','/wordpress',str(tool/'schedule-review-http-router.php')],stdout=log,stderr=log,start_new_session=True)
  for _ in range(80):
   try:
    req=urllib.request.Request('http://127.0.0.1:8995/review.js',headers={'Host':'example.invalid:8995'})
@@ -22,7 +22,7 @@ try:
  assert before==run('http-audit'), 'review must not modify snapshot or intent rows'
  print('PASS: snapshot and intent rows unchanged by browser HTTP review',flush=True)
 except Exception:
- if server_log.exists(): print('Server diagnostic:',server_log.read_text()[-6000:],flush=True)
+ if server_log.exists(): print('Server diagnostic:',server_log.read_text()[-1000:],flush=True)
  raise
 finally:
  if server is not None:

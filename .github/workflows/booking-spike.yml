@@ -323,7 +323,7 @@ jobs:
           status=$?
           printf '%s\n' "$output"
           if [ "$status" -ne 0 ]; then
-            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            summary=$(printf '%s' "$output" | head -c 3500 | tr '\n' ' ')
             echo "::error title=Disposable review HTTP failure::$summary"
             exit "$status"
           fi

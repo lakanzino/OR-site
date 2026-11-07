@@ -1,6 +1,7 @@
 <?php
 /** Disposable loopback-only HTTP bridge. Never install, deploy or expose. */
 if (PHP_SAPI!=='cli-server' || getenv('GITHUB_ACTIONS')!=='true' || getenv('HJ_DISPOSABLE_MARIADB_FIXTURE')!=='1' || ($_SERVER['REMOTE_ADDR'] ?? '')!=='127.0.0.1' || !in_array($_SERVER['HTTP_HOST'] ?? '',array('example.invalid:8995'),true)) { http_response_code(403); exit; }
+require __DIR__.'/prepend.php';
 $path=parse_url($_SERVER['REQUEST_URI'],PHP_URL_PATH);
 if (!in_array($path,array('/review','/review.js','/test/history','/test/compare','/test/status','/test/current'),true)) { return false; }
 require '/wordpress/wp-load.php';
