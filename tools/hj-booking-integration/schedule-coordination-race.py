@@ -53,7 +53,7 @@ with tempfile.TemporaryDirectory(prefix='hj-coordination-',dir=runner) as temp:
             if holder.returncode or waiter.returncode or (h,w)!=expected: raise RuntimeError(case+' unexpected: '+repr((h,w)))
             print('PASS: '+case+' serializes to '+repr(expected),flush=True)
             run('check',{'HJ_COORD_CASE':case})
-        run('patient'); run('missing-table')
+        run('patient'); run('patient-v2'); run('missing-table')
     finally:
         files[2].touch()
         for p in processes:

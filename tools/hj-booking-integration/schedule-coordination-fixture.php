@@ -110,6 +110,27 @@ if ($mode==='patient') {
  }
  exit(0);
 }
+if ($mode==='patient-v2') {
+ $doc=(int)$data['v2_prepare']; $patient=get_user_by('login','synthetic_race_7'); if (!$patient) { throw new RuntimeException('synthetic patient missing'); }
+ $date=(new DateTimeImmutable('now',wp_timezone()))->modify('next monday')->format('Y-m-d'); $slots=hj_booking_public_slots($doc,$date); $state=coord_state($doc); $expected=coord_expected($state);
+ coord_check($slots['status']==='ok' && !empty($slots['slots']),'v2 slots available with intent active');
+ wp_set_current_user($patient->ID); $id=0; $removed=false;
+ try {
+  $result=hj_booking_create($doc,$slots['slots'][0],str_repeat('b',31).'7','09123456789','1234567891',1);
+  coord_check($result['status']==='created','patient can book v2 while intent is pending'); $id=(int)$result['id']; wp_set_current_user($admin->ID);
+  coord_check(hj_booking_save_capacity_week($doc,coord_rule('v2',2),1,true,$expected)['status']==='intent_pending','capacity writer blocked while intent remains');
+  // Fixture-only deletion models testing the existing v2 booking check independently;
+  // this is NOT a safe release mechanism for a real intent.
+  coord_check($wpdb->delete($table,array('doctor_id'=>$doc))===1,'remove only synthetic sentinel to expose real booking check'); $removed=true;
+  coord_check(hj_booking_save_capacity_week($doc,coord_rule('v2',2),1,true,$expected)['status']==='has_future_bookings' && coord_state($doc)===$state,'real v2 writer refuses schedule change while booking exists');
+ } finally {
+  wp_set_current_user($admin->ID);
+  if ($id) { $wpdb->delete(hj_booking_table('details'),array('appointment_id'=>$id)); $wpdb->delete(hj_booking_table('appointments'),array('id'=>$id)); }
+  if ($removed && $wpdb->insert($table,array('doctor_id'=>$doc,'active'=>1))!==1) { throw new RuntimeException('fixture sentinel restore failed'); }
+ }
+ $legacy=(int)$data['v1_prepare']; coord_check(hj_booking_configure($legacy,30,5,false)['status']==='intent_pending','counterexample: v1 configure-based stop is blocked');
+ exit(0);
+}
 if ($mode==='missing-table') {
  $v1=(int)$data['v1_writer']; $v2=(int)$data['v2_writer']; $before1=coord_state($v1); $before2=coord_state($v2); $expected=coord_expected($before2);
  coord_check($wpdb->query("DROP TABLE `$table`")!==false,'remove experimental guard table');
