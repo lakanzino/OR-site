@@ -38,8 +38,8 @@ const a='0'.repeat(30)+'65', b='0'.repeat(30)+'66', ownerKey='0'.repeat(30)+'67'
   const ownNonce=await own.page.locator('meta[name=fixture-auth]').getAttribute('content'); assert.equal(await own.page.locator('#candidate option').count(),2,'owner sees own record only');
   assert.equal((await post(own.page,'/test/history',nonce,doctor)).code,403,'nonce bound to session');
   assert.equal(JSON.parse((await post(own.page,'/test/status',ownNonce,doctor,{key:a})).body).status,'unknown','owner cannot inspect admin record');
-  const patient=await session('synthetic_race_0'); sessions.push(patient); assert.equal((await patient.page.goto(base+'/review?doctor='+doctor)).status(),403);
-  const guest=await session(); sessions.push(guest); assert.equal((await guest.page.goto(base+'/review?doctor='+doctor)).status(),403);
+  const patient=await session('synthetic_race_0'); sessions.push(patient); assert.equal(await patient.page.evaluate(async doctor=>(await fetch('/review?doctor='+doctor)).status,doctor),403);
+  const guest=await session(); sessions.push(guest); await guest.page.goto(base+'/wp-login.php'); assert.equal(await guest.page.evaluate(async doctor=>(await fetch('/review?doctor='+doctor)).status,doctor),403);
   console.log('PASS: real WordPress authenticated loopback HTTP and Chromium: actor-scoped review, matching ambiguity, nonce and permissions');
  } finally { for(const s of sessions) await s.context.close(); await browser.close(); }
 })().catch(e=>{console.error(e);process.exitCode=1;});
