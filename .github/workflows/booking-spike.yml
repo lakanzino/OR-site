@@ -192,6 +192,17 @@ jobs:
             echo "::error title=Disposable schema worker race failure::$summary"
             exit "$status"
           fi
+      - name: Restore isolated synthetic table copy after killed transaction
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/capacity-recovery-fixture.php && python3 tools/hj-booking-integration/capacity-recovery-test.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Disposable recovery experiment failure::$summary"
+            exit "$status"
+          fi
       - name: Race production capacity calculation with real plugin mutex
         run: |
           set -uo pipefail
