@@ -550,6 +550,6 @@
 
 [طرح](BOOKING-PROFILE-RACE-CI-ISOLATION.fa.md): دو درخواست barrier هرکدام سرور loopback و worker مستقل ولی پایگاه دادهٔ مشترک دارند. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42425204064) موفق. فرضیهٔ صف‌شدن هنوز اثبات نشده؛ کد محصول تغییر نکرد، **۷۵٪ ثابت** و بدهی‌ها بازند.
 
-### مرحلهٔ ۵.۳۳ — تکرار race و اثبات worker مستقل | در انتظار CI
+### مرحلهٔ ۵.۳۳ — تکرار race و اثبات worker مستقل | CI موفق
 
-[طرح](BOOKING-PROFILE-RACE-CI-REPETITION.fa.md): هر race سه بار با حساب تازه، PID دو worker بررسی و marker به‌صورت اتمیک در fixture منتشر می‌شود؛ کد افزونه بدون تغییر، **۷۵٪ ثابت**.
+[طرح](BOOKING-PROFILE-RACE-CI-REPETITION.fa.md): هر race سه بار با حساب تازه، PID دو worker بررسی و marker به‌صورت اتمیک در fixture منتشر شد؛ هر سه ضدنمونه دو پست و هر سه نمونهٔ claim یک پست و یک رد داشتند. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42425497364) موفق؛ علت شکست‌های قبلی اثبات نشده، کد افزونه بدون تغییر، **۷۵٪ ثابت**.

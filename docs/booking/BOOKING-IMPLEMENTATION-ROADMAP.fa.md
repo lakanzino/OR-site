@@ -138,4 +138,4 @@
 
 **گام ۵.۳۲، CI موفق:** [جداسازی workerهای دو race پروفایل](BOOKING-PROFILE-RACE-CI-ISOLATION.fa.md)؛ ریشهٔ شکست‌های پیشین نامعلوم.
 
-**گام ۵.۳۳، در انتظار CI:** [تکرار محدود race و بررسی PID worker](BOOKING-PROFILE-RACE-CI-REPETITION.fa.md)؛ رفع علت شکست‌های قبلی ادعا نمی‌شود.
+**گام ۵.۳۳، CI موفق:** [تکرار محدود race و بررسی PID worker](BOOKING-PROFILE-RACE-CI-REPETITION.fa.md)؛ رفع علت شکست‌های قبلی ادعا نمی‌شود.
