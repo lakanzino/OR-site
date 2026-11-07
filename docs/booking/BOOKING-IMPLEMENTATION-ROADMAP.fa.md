@@ -104,4 +104,6 @@
 
 **نتیجهٔ گام ۵.۱۷:** [CI سهمیه و مرورگر](https://github.com/lakanzino/OR-site/actions/runs/42373035578) موفق شد؛ محدودسازی صرفاً آزمایشی است و رفع oracle یا آمادگی محصول اثبات نمی‌شود.
 
-**گام ۵.۱۸، در انتظار CI:** [پژوهش و inventory آزمایشی نگهداری](BOOKING-RETENTION-RESEARCH.fa.md)؛ حذف خودکار و بازیابی محصولی بدون اثبات افق retry، تخلیهٔ writerها و سازگاری restore بازند.
+**گام ۵.۱۸:** [پژوهش و inventory آزمایشی نگهداری](BOOKING-RETENTION-RESEARCH.fa.md)؛ حذف خودکار و بازیابی محصولی بدون اثبات افق retry، تخلیهٔ writerها و سازگاری restore بازند.
+
+**نتیجهٔ گام ۵.۱۸:** [CI inventory و ضدنمونه‌ها](https://github.com/lakanzino/OR-site/actions/runs/42373907898) موفق شد؛ بازگردانی intent قدیمی یا حذف tombstone می‌تواند اجرای دیررس را دوباره ممکن کند، پس حذف خودکار انتخاب نشد.
