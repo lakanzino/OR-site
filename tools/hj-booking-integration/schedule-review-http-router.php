@@ -9,6 +9,7 @@ if (DB_NAME!=='hj_fixture_db' || DB_HOST!=='127.0.0.1:3306' || $GLOBALS['wpdb']-
 require_once getenv('GITHUB_WORKSPACE').'/plugins/hamyar-doctors/hamyar-doctors.php'; hj_doctors(); do_action('init');
 global $wpdb; $table=$wpdb->prefix.'ci_schedule_intents';
 require __DIR__.'/schedule-intent-functions.php';
+require __DIR__.'/schedule-review-limit.php';
 header('Cache-Control: no-store, private'); header('X-Content-Type-Options: nosniff');
 if ($path==='/review.js') { if ($_SERVER['REQUEST_METHOD']!=='GET') { http_response_code(405); exit; } header('Content-Type: application/javascript; charset=utf-8'); readfile(__DIR__.'/schedule-review-prototype.js'); exit; }
 $rawDoctor=$path==='/review' ? ($_GET['doctor'] ?? '') : ($_SERVER['HTTP_X_FIXTURE_DOCTOR'] ?? '');
@@ -28,7 +29,11 @@ $raw=file_get_contents('php://input',false,null,0,4097);
 $input=json_decode($raw,true); if (strlen($raw)>4096 || !is_array($input) || json_last_error()!==JSON_ERROR_NONE) { http_response_code(400); exit; }
 try {
  if ($path==='/test/history') { $result=ci_intent_history($doctor); }
- elseif ($path==='/test/compare') { $result=ci_intent_compare($doctor,$input['key'] ?? null,$input['rows'] ?? null); }
+ elseif ($path==='/test/compare') {
+  $quota=ci_review_take($doctor);
+  if ($quota!=='allowed') { http_response_code($quota==='limited' ? 429 : 503); header('Content-Type: application/json'); echo '{"status":"unknown"}'; exit; }
+  $result=ci_intent_compare($doctor,$input['key'] ?? null,$input['rows'] ?? null);
+ }
  elseif ($path==='/test/status') { $result=ci_intent_find($doctor,$input['key'] ?? null); }
  else { $snapshot=intent_snapshot($doctor); $result=hj_booking_legacy_snapshot_rows($snapshot)===false ? array('status'=>'unknown') : array('revision'=>(int)$snapshot['revision']); }
  header('Content-Type: application/json; charset=utf-8'); echo wp_json_encode($result); exit;

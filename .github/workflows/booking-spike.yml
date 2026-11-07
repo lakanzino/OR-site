@@ -319,7 +319,7 @@ jobs:
           export NODE_PATH="$RUNNER_TEMP/hj-capacity-browser/node_modules"
           export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
           set +e
-          output=$(bash -e -c 'php -l tools/hj-booking-integration/schedule-intent-functions.php && php -l tools/hj-booking-integration/schedule-review-http-router.php && python3 tools/hj-booking-integration/schedule-review-http.py' 2>&1)
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/schedule-intent-functions.php && php -l tools/hj-booking-integration/schedule-review-limit.php && php -l tools/hj-booking-integration/schedule-review-http-router.php && python3 tools/hj-booking-integration/schedule-review-http.py' 2>&1)
           status=$?
           printf '%s\n' "$output"
           if [ "$status" -ne 0 ]; then

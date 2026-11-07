@@ -10,6 +10,7 @@ if (!$admin || !$owner || !$outsider || !hj_booking_enabled()) { exit(1); }
 wp_set_current_user($admin->ID);
 $table=$wpdb->prefix.'ci_schedule_intents'; $meta=getenv('RUNNER_TEMP').'/hj-ci-schedule-intent.json'; $prefix=getenv('RUNNER_TEMP').'/hj-ci-schedule-intent'; $mode=$argv[1] ?? '';
 require __DIR__.'/schedule-intent-functions.php';
+require __DIR__.'/schedule-review-limit.php';
 if ($mode==='setup') {
  intent_check(!is_file($meta) && !$wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s',$wpdb->esc_like($table))) && hj_booking_install_schema(),'clean fixture and schema');
  $doctor=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_author'=>$owner->ID,'post_title'=>'Synthetic intent doctor'),true);
@@ -23,6 +24,29 @@ if ($mode==='setup') {
  exit(0);
 }
 $data=json_decode(@file_get_contents($meta),true); if (!is_array($data) || empty($data['doctor'])) { throw new RuntimeException('missing metadata'); } $doctor=(int)$data['doctor'];
+if ($mode==='rate-setup') {
+ $rate=$wpdb->prefix.'ci_review_rate';
+ intent_check(!$wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s',$wpdb->esc_like($rate))), 'rate table absent');
+ intent_check($wpdb->query("CREATE TABLE `$rate` (kind char(1) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,subject bigint unsigned NOT NULL,bucket bigint unsigned NOT NULL,used int unsigned NOT NULL,PRIMARY KEY(kind,subject,bucket)) ENGINE=InnoDB")!==false,'create disposable rate counters'); exit(0);
+}
+if ($mode==='rate-worker') {
+ if (getenv('HJ_RATE_ACTOR')==='owner') { wp_set_current_user($owner->ID); }
+ if (getenv('HJ_RATE_ACTOR')==='outsider') { wp_set_current_user($outsider->ID); }
+ echo ci_review_take($doctor,50000000); exit(0);
+}
+if ($mode==='rate-check') {
+ $rate=$wpdb->prefix.'ci_review_rate';
+ intent_check(ci_review_take($doctor,50000000)==='limited','actor fixed window cap');
+ wp_set_current_user($owner->ID);
+ for($i=0;$i<6;$i++) { intent_check(ci_review_take($doctor,50000000)==='allowed','other authorized actor uses shared doctor quota'); }
+ intent_check(ci_review_take($doctor,50000000)==='limited','doctor total cap');
+ intent_check(ci_review_take($doctor,50000001)==='allowed','new fixed window resets quota');
+ wp_set_current_user($outsider->ID); intent_check(ci_review_take($doctor,50000001)==='forbidden','unrelated actor cannot consume quota');
+ wp_set_current_user($admin->ID); intent_check($wpdb->update($rate,array('used'=>99),array('kind'=>'d','subject'=>$doctor,'bucket'=>50000001))===1,'inject corrupt quota');
+ intent_check(ci_review_take($doctor,50000001)==='unavailable','corrupt quota fails closed');
+ exit(0);
+}
+if ($mode==='rate-drop') { $wpdb->query('DROP TABLE IF EXISTS `'.$wpdb->prefix.'ci_review_rate`'); exit(0); }
 if ($mode==='http-seed') {
  foreach (array(101,102) as $n) { intent_check(ci_intent_prepare($doctor,intent_key($n),1,intent_rows('15:00'))['status']==='prepared' && ci_intent_cancel($doctor,intent_key($n))['status']==='cancelled','seed admin same-content record'); }
  wp_set_current_user($owner->ID); intent_check(ci_intent_prepare($doctor,intent_key(103),1,intent_rows('16:00'))['status']==='prepared' && ci_intent_cancel($doctor,intent_key(103))['status']==='cancelled','seed separate owner history'); exit(0);

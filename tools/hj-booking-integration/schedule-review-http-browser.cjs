@@ -24,6 +24,7 @@ const a='0'.repeat(30)+'65', b='0'.repeat(30)+'66', ownerKey='0'.repeat(30)+'67'
   let response=await page.goto(base+'/review?doctor='+doctor); assert.equal(response.status(),200); assert.match(response.headers()['cache-control'],/no-store/);
   await page.waitForFunction(()=>!document.querySelector('#fields').disabled);
   const nonce=await page.locator('meta[name=fixture-auth]').getAttribute('content');
+  if (process.env.HJ_REVIEW_RATE_FAILURE==='1') { const r=await post(page,'/test/compare',nonce,doctor,{key:a,rows:[]}); assert.equal(r.code,503,'unavailable limiter fails closed'); assert.equal(JSON.parse(r.body).status,'unknown'); console.log('PASS: failed quota store returns unknown without comparison'); return; }
   assert.equal(await page.locator('#candidate option').count(),3,'two admin rows'); assert.equal(await page.locator('#candidate').inputValue(),'');
   for(const index of ['0','1']) { await page.locator('#candidate').selectOption(index); await page.locator('#compare').click(); await page.waitForFunction(()=>document.querySelector('#message').textContent.includes('هویت درخواست را قطعی ثابت نمی‌کند')); assert.match(await page.locator('#message').textContent(),/لغوشده/); }
   await page.locator('#start').fill('14:00'); await page.locator('#compare').click(); await page.waitForFunction(()=>document.querySelector('#message').textContent.includes('همخوان نیست'));
@@ -31,6 +32,8 @@ const a='0'.repeat(30)+'65', b='0'.repeat(30)+'66', ownerKey='0'.repeat(30)+'67'
   const row={day_of_week:'monday',is_closed:0,start_time:'15:00',end_time:'20:00'};
   for(const key of [a,b]) {let r=await post(page,'/test/compare',nonce,doctor,{key,rows:[row]}); assert.equal(r.code,200); assert.equal(JSON.parse(r.body).status,'matched'); assert.match(r.cache,/no-store/);}
   assert.equal(JSON.parse((await post(page,'/test/compare',nonce,doctor,{key:ownerKey,rows:[row]})).body).status,'unknown');
+  const limited=await post(page,'/test/compare',nonce,doctor,{key:a,rows:[row]}); assert.equal(limited.code,429,'six attempts consumed even unknown'); assert.equal(JSON.parse(limited.body).status,'unknown');
+  await page.locator('#start').fill('15:00'); await page.locator('#compare').click(); await page.waitForFunction(()=>document.querySelector('#message').textContent.includes('موقتاً محدود')); assert.match(await page.locator('#message').textContent(),/نامعلوم/);
   assert.equal((await post(page,'/test/history','bad',doctor)).code,403,'bad nonce');
   assert.equal((await post(page,'/test/history',nonce,'99999999')).code,403,'wrong doctor');
   assert.equal(await page.evaluate(async ({doctor,nonce})=>(await fetch('/test/history',{headers:{'X-Fixture-Doctor':doctor,'X-Fixture-Nonce':nonce}})).status,{doctor,nonce}),405);
@@ -38,6 +41,7 @@ const a='0'.repeat(30)+'65', b='0'.repeat(30)+'66', ownerKey='0'.repeat(30)+'67'
   const ownNonce=await own.page.locator('meta[name=fixture-auth]').getAttribute('content'); assert.equal(await own.page.locator('#candidate option').count(),2,'owner sees own record only');
   assert.equal((await post(own.page,'/test/history',nonce,doctor)).code,403,'nonce bound to session');
   assert.equal(JSON.parse((await post(own.page,'/test/status',ownNonce,doctor,{key:a})).body).status,'unknown','owner cannot inspect admin record');
+  assert.equal(JSON.parse((await post(own.page,'/test/compare',ownNonce,doctor,{key:ownerKey,rows:[{...row,start_time:'16:00'}]})).body).status,'matched','different actor has own quota');
   const patient=await session('synthetic_race_0'); sessions.push(patient); assert.equal(await patient.page.evaluate(async doctor=>(await fetch('/review?doctor='+doctor)).status,doctor),403);
   const guest=await session(); sessions.push(guest); await guest.page.goto(base+'/wp-login.php'); assert.equal(await guest.page.evaluate(async doctor=>(await fetch('/review?doctor='+doctor)).status,doctor),403);
   console.log('PASS: real WordPress authenticated loopback HTTP and Chromium: actor-scoped review, matching ambiguity, nonce and permissions');

@@ -14,7 +14,7 @@
       const auth=document.querySelector('meta[name=fixture-auth]');
       if (auth) { headers['X-Fixture-Nonce']=auth.content; headers['X-Fixture-Doctor']=auth.dataset.doctor; }
       const response=await fetch(url,{method:'POST',cache:'no-store',headers,body:JSON.stringify(body),signal:controller.signal});
-      if (!response.ok) throw new Error('transport');
+      if (!response.ok) { const error=new Error('transport'); error.httpStatus=response.status; throw error; }
       return await response.json();
     } finally { clearTimeout(timer); }
   };
@@ -53,7 +53,7 @@
       if (!unchanged()) { say('اطلاعات تغییر کرد؛ نتیجه کنار گذاشته شد.'); return; }
       if (!status || !Object.hasOwn(names,status.status) || !current || !Number.isSafeInteger(current.revision) || current.revision<1) throw new Error('unknown status');
       say('اطلاعات با ردیف انتخاب‌شده همخوان است، اما هویت درخواست را قطعی ثابت نمی‌کند؛ ممکن است چند ردیف همخوان باشند. آخرین وضعیت خوانده‌شدهٔ ردیف: '+names[status.status]+'؛ بازبینی برنامهٔ جاری لازم است.');
-    } catch (_) { say('بررسی ناموفق یا نامعلوم است؛ نتیجه قطعی نیست.'); }
+    } catch (error) { say(error.httpStatus===429 ? 'تعداد بررسی‌ها موقتاً محدود شده است؛ بعداً دوباره تلاش کنید. نتیجه همچنان نامعلوم است.' : 'بررسی ناموفق یا نامعلوم است؛ نتیجه قطعی نیست.'); }
     finally { busy=false; fields.disabled=false; }
   });
   load();

@@ -99,3 +99,5 @@
 **گام ۵.۱۶:** [اتصال آزمایشی WordPress HTTP و مرورگر](BOOKING-INTENT-HTTP-EXPERIMENT.fa.md) برای نقش/nonce و بازبینی فقط‌خواندنی، محدود به CI دورریختنی؛ این طرح endpoint محصولی یا تشخیص قطعی نیست.
 
 **نتیجهٔ گام ۵.۱۶:** [آزمون WordPress HTTP و Chromium دورریختنی](https://github.com/lakanzino/OR-site/actions/runs/42372271386) موفق شد؛ تفکیک actor و nonce بررسی شد و دو ردیف همسان هر دو تطبیق داشتند. این endpoint محصولی و شناسایی قطعی نیست.
+
+**گام ۵.۱۷، در انتظار CI:** [سهمیهٔ آزمایشی و مسیر پشتیبانی](BOOKING-REVIEW-RATE-EXPERIMENT.fa.md)، نه محافظ محصولی؛ خطر oracle و محروم‌سازی، حفظ tombstone و بازیابی هنوز تصمیم و آزمون مستقل لازم دارند.
