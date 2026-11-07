@@ -9,8 +9,9 @@ const a='0'.repeat(30)+'65', b='0'.repeat(30)+'66', ownerKey='0'.repeat(30)+'67'
   const context=await browser.newContext({viewport:{width:375,height:850}}); const page=await context.newPage();
   if(name) {
    await context.addCookies([{name:'wordpress_test_cookie',value:'WP Cookie check',url:base}]);
-   const r=await context.request.post(base+'/wp-login.php',{form:{log:name,pwd:'disposable-test-password','wp-submit':'Log In',testcookie:'1'},maxRedirects:0});
-   assert.equal(r.status(),302,'real WP login: '+name);
+   await page.goto(base+'/wp-login.php');
+   await page.evaluate(async name=>{const form=new URLSearchParams({log:name,pwd:'disposable-test-password','wp-submit':'Log In',testcookie:'1'}); await fetch('/wp-login.php',{method:'POST',body:form,redirect:'manual'});},name);
+   assert((await context.cookies()).some(c=>c.name.startsWith('wordpress_logged_in_')),'real WP login: '+name);
   }
   return {context,page};
  }
@@ -32,7 +33,7 @@ const a='0'.repeat(30)+'65', b='0'.repeat(30)+'66', ownerKey='0'.repeat(30)+'67'
   assert.equal(JSON.parse((await post(page,'/test/compare',nonce,doctor,{key:ownerKey,rows:[row]})).body).status,'unknown');
   assert.equal((await post(page,'/test/history','bad',doctor)).code,403,'bad nonce');
   assert.equal((await post(page,'/test/history',nonce,'99999999')).code,403,'wrong doctor');
-  assert.equal((await page.request.get(base+'/test/history',{headers:{'X-Fixture-Doctor':doctor,'X-Fixture-Nonce':nonce}})).status(),405);
+  assert.equal(await page.evaluate(async ({doctor,nonce})=>(await fetch('/test/history',{headers:{'X-Fixture-Doctor':doctor,'X-Fixture-Nonce':nonce}})).status,{doctor,nonce}),405);
   const own=await session('synthetic_doctor_a'); sessions.push(own); response=await own.page.goto(base+'/review?doctor='+doctor); assert.equal(response.status(),200); await own.page.waitForFunction(()=>!document.querySelector('#fields').disabled);
   const ownNonce=await own.page.locator('meta[name=fixture-auth]').getAttribute('content'); assert.equal(await own.page.locator('#candidate option').count(),2,'owner sees own record only');
   assert.equal((await post(own.page,'/test/history',nonce,doctor)).code,403,'nonce bound to session');
