@@ -228,6 +228,7 @@ jobs:
       - name: Exercise isolated durable schedule intent and key recovery
         run: |
           set -uo pipefail
+          set +e
           output=$(bash -e -c 'php -l tools/hj-booking-integration/schedule-intent-fixture.php && python3 tools/hj-booking-integration/schedule-intent-race.py' 2>&1)
           status=$?
           printf '%s\n' "$output"
