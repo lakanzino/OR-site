@@ -35,3 +35,5 @@
 [CI ابطال نمونهٔ v1](https://github.com/lakanzino/OR-site/actions/runs/42363178897) موفق شد؛ رکورد لغوشده باقی می‌ماند، ولی بازیابی وضعیت لغو پس از از دست رفتن هم‌زمان پاسخ و کلید در این نمونه وجود ندارد.
 
 [نمونهٔ تاریخچهٔ actor-scoped](BOOKING-INTENT-HISTORY-EXPERIMENT.fa.md) برای بررسی بدون کلید در fixture افزوده شد؛ هنوز نه endpoint است و نه راه شناسایی قطعی درخواست گم‌شده. CI در انتظار است.
+
+[CI نمونهٔ تاریخچه](https://github.com/lakanzino/OR-site/actions/runs/42363842962) موفق شد؛ شناسایی دقیق ردیف موردنظر بدون کلید و پایداری retention/restore همچنان باز است.
