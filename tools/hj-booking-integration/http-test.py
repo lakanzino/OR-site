@@ -129,6 +129,8 @@ try:
         try: request(session(), '/wp-login.php'); break
         except OSError: time.sleep(.25)
     else: raise RuntimeError('fixture HTTP server did not start')
+    new_profile_browser=subprocess.run(['node',str(workspace/'tools/hj-booking-integration/dashboard-new-profile-browser.cjs')],capture_output=True,text=True,timeout=80,env=os.environ.copy())
+    check(new_profile_browser.returncode==0 and 'PASS actual first profile creation with in-flight edits' in new_profile_browser.stdout, 'real first-profile browser save: '+new_profile_browser.stderr[-1800:])
     owner, owner_nonce = login('synthetic_doctor_a')
     other, other_nonce = login('synthetic_doctor_b')
     url = '/wp-admin/admin-ajax.php'

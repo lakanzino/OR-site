@@ -58,6 +58,12 @@ add_action( 'wp_ajax_hj_ci_schedule_state', function () {
 	$row = $wpdb->get_row( $wpdb->prepare( "SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d", $doctor ), ARRAY_A );
 	wp_send_json_success( array( 'snapshot' => $row, 'display' => get_post_meta( $doctor, 'working_hours', true ), 'name' => get_post_meta( $doctor, 'name_fa', true ) ) );
 } );
+// CI-only introspection of the caller's synthetic doctor profiles.
+add_action( 'wp_ajax_hj_ci_own_profiles', function () {
+ if ( ! hj_doctors_is_doctor_user() ) { wp_send_json_error( array(), 403 ); }
+ $ids = get_posts( array( 'post_type'=>'doctor', 'post_status'=>array('draft','pending','publish','private'), 'author'=>get_current_user_id(), 'posts_per_page'=>20, 'fields'=>'ids', 'orderby'=>'ID', 'order'=>'ASC', 'suppress_filters'=>true ) );
+ wp_send_json_success( array( 'ids'=>array_map('intval',$ids), 'linked'=>(int)get_user_meta(get_current_user_id(),'hj_doctor_post_id',true) ) );
+} );
 add_action( 'wp_ajax_hj_ci_render_dashboard', function () {
 	wp_send_json_success( array( 'html' => HJ_Doctors_Dashboard::shortcode_render() ) );
 } );
