@@ -158,7 +158,21 @@ if ($mode==='check-race') {
  $hook=function($event,$db,$ctx) use(&$killed) { if (!$killed && $ctx['operation']==='ci_intent_apply' && $event==='before_commit') { $killed=true; $id=(int)$db->get_var('SELECT CONNECTION_ID()'); $killer=new wpdb(DB_USER,DB_PASSWORD,DB_NAME,DB_HOST); $killer->suppress_errors(true); if (!$id || $killer->query('KILL CONNECTION '.$id)===false) { throw new RuntimeException('fixture kill failed'); } $killer->close(); } };
  add_action('hj_booking_test_event',$hook,10,3); $lost=ci_intent_apply($doctor,intent_key(3),4,intent_rows('12:00')); remove_action('hj_booking_test_event',$hook,10);
  intent_check($killed && $lost['status']==='unknown' && intent_snapshot($doctor)===$before && ci_intent_recover($doctor)['status']==='prepared','connection kill before commit leaves recoverable intent and unchanged snapshot');
- intent_check(ci_intent_apply($doctor,intent_key(3),4,intent_rows('12:00'))===array('status'=>'saved','revision'=>5) && ci_intent_apply($doctor,intent_key(3),4,intent_rows('12:00'))===array('status'=>'replayed','revision'=>5),'retry after rollback makes one save and historical replay'); exit(0);
+ exit(0);
+}
+if ($mode==='race-apply') {
+ $id=getenv('HJ_INTENT_WORKER'); if (!is_string($id) || !preg_match('/^[0-7]$/D',$id)) { exit(1); }
+ add_action('hj_booking_test_event',function($event,$db,$ctx) use($prefix,$id) {
+  if ($ctx['operation']!=='ci_intent_apply') { return; }
+  if ($event==='before_lock' && $id!=='0') { file_put_contents($prefix.'-before-'.$id,(string)$db->get_var('SELECT CONNECTION_ID()')); }
+  if ($event==='after_lock' && $id==='0') { file_put_contents($prefix.'-locked','1'); $until=microtime(true)+15; while (!is_file($prefix.'-release') && microtime(true)<$until) { usleep(10000); clearstatcache(); } if (!is_file($prefix.'-release')) { throw new RuntimeException('barrier timeout'); } }
+ },10,3);
+ $result=ci_intent_apply($doctor,intent_key(3),4,intent_rows('12:00'));
+ echo $result['status']; exit(in_array($result['status'],array('saved','replayed'),true)?0:1);
+}
+if ($mode==='check-apply-race') {
+ intent_check(ci_intent_recover($doctor)===array('status'=>'completed','key'=>intent_key(3),'revision'=>5) && (int)intent_snapshot($doctor)['revision']===5,'concurrent retry has one completed revision and recoverable result');
+ intent_check(ci_intent_apply($doctor,intent_key(3),4,intent_rows('12:00'))===array('status'=>'replayed','revision'=>5),'old execution remains replayable'); exit(0);
 }
 if ($mode==='cleanup') { $wpdb->query("DROP TABLE IF EXISTS `$table`"); $wpdb->delete(hj_booking_table('schedules'),array('doctor_id'=>$doctor)); $wpdb->delete(hj_booking_table('doctors'),array('doctor_id'=>$doctor)); wp_delete_post($doctor,true); unlink($meta); exit(0); }
 exit(1);

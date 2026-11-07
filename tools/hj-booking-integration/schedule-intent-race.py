@@ -44,6 +44,23 @@ try:
     if outputs.count('prepared')!=8 or outputs.count('blocked')!=1: raise RuntimeError('unexpected race results: '+str(outputs))
     print('PASS: duplicate intent preparations serialize and competing intent is blocked',flush=True)
     run('check-race')
+    for f in [file('-locked'),file('-release')]+[file('-before-'+str(i)) for i in range(1,9)]: f.unlink(missing_ok=True)
+    first=subprocess.Popen(cmd+['race-apply'],env=dict(os.environ,HJ_INTENT_WORKER='0'),stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True); processes.append(first)
+    wait(file('-locked'),first); workers=[first]
+    for i in range(1,8):
+        p=subprocess.Popen(cmd+['race-apply'],env=dict(os.environ,HJ_INTENT_WORKER=str(i)),stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True); processes.append(p); workers.append(p)
+    try:
+        for i in range(1,8): wait(file('-before-'+str(i)),first)
+        if run('waiter')!='WAITING': raise RuntimeError('expected real mutex waiter during apply')
+    finally: file('-release').touch()
+    outputs=[]
+    for p in workers:
+        out=p.communicate(timeout=25)[0].strip()
+        if p.returncode: raise RuntimeError('apply worker failed: '+out[-1500:])
+        outputs.append(out)
+    if outputs.count('saved')!=1 or outputs.count('replayed')!=7: raise RuntimeError('unexpected apply race results: '+str(outputs))
+    print('PASS: eight concurrent executions produce one save and seven replays after unknown',flush=True)
+    run('check-apply-race')
 finally:
     file('-release').touch()
     for p in processes:
