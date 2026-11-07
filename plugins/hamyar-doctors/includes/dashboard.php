@@ -211,6 +211,15 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			return '';
 		}
 
+		/** Strict booking time: preserve second precision; false means invalid. */
+		private static function booking_time( $value ) {
+			if ( ! is_scalar( $value ) ) { return false; }
+			$value = trim( (string) $value );
+			if ( $value === '' ) { return ''; }
+			if ( ! preg_match( '/^([01]?[0-9]|2[0-3]):([0-5][0-9])(?::([0-5][0-9]))?$/D', $value, $matches ) ) { return false; }
+			return sprintf( '%02d:%s:%s', (int) $matches[1], $matches[2], isset( $matches[3] ) ? $matches[3] : '00' );
+		}
+
 		/** روزهای هفتهٔ ساعات کاری (کلیدها در ACF ذخیره می‌شوند). */
 		private static function days() {
 			$days = array(
@@ -324,11 +333,18 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 					if ( ! is_array( $r ) || empty( $r['day_of_week'] ) ) {
 						continue;
 					}
-					$map[ $r['day_of_week'] ] = array(
-						'closed' => ! empty( $r['is_closed'] ),
-						'start'  => self::time_hm( isset( $r['start_time'] ) ? $r['start_time'] : '' ),
-						'end'    => self::time_hm( isset( $r['end_time'] ) ? $r['end_time'] : '' ),
-					);
+					$start = isset( $r['start_time'] ) ? $r['start_time'] : '';
+					$end   = isset( $r['end_time'] ) ? $r['end_time'] : '';
+					if ( is_array( $canonical_rows ) && empty( $r['is_closed'] ) ) {
+						$start = self::booking_time( $start );
+						$end   = self::booking_time( $end );
+						// Browser accepts seconds only where precision requires it.
+						$seconds = ( is_string( $start ) && substr( $start, -3 ) !== ':00' ) || ( is_string( $end ) && substr( $end, -3 ) !== ':00' );
+						if ( ! $seconds ) { $start = substr( (string) $start, 0, 5 ); $end = substr( (string) $end, 0, 5 ); }
+					} else {
+						$start = self::time_hm( $start ); $end = self::time_hm( $end ); $seconds = false;
+					}
+					$map[ $r['day_of_week'] ] = array( 'closed' => ! empty( $r['is_closed'] ), 'start' => $start, 'end' => $end, 'seconds' => $seconds );
 				}
 			}
 			return $map;
@@ -590,6 +606,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
       <input type="hidden" name="pid" value="<?php echo (int) $pid; ?>">
       <?php if ( $legacy_booking ) : ?>
       <input type="hidden" name="hj_schedule_revision" value="<?php echo esc_attr( (string) $editor_schedule['revision'] ); ?>">
+      <input type="hidden" name="hj_schedule_precision" value="seconds-v1">
       <?php endif; ?>
 
       <!-- ۱) اطلاعات پایه -->
@@ -719,14 +736,15 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 				$dk = esc_attr( $key );
 				?>
             <div class="hj-dash__hrow">
+              <?php if ( $legacy_booking ) : ?><input type="hidden" name="hours[<?php echo $dk; ?>][present]" value="1"><?php endif; ?>
               <span class="hj-dash__day"><?php echo esc_html( $label ); ?></span>
               <label class="hj-dash__tog">
                 <input type="checkbox" name="hours[<?php echo $dk; ?>][closed]" value="1" data-hj="closed"<?php checked( $r['closed'] ); ?>>
                 <span>تعطیل</span>
               </label>
-              <input type="time" name="hours[<?php echo $dk; ?>][start]" value="<?php echo esc_attr( $r['start'] ); ?>" aria-label="شروع"<?php echo $r['closed'] ? ' disabled' : ''; ?> dir="ltr">
+              <input type="time"<?php echo $legacy_booking && ! empty( $r['seconds'] ) ? ' step="1"' : ''; ?> name="hours[<?php echo $dk; ?>][start]" value="<?php echo esc_attr( $r['start'] ); ?>" aria-label="شروع"<?php echo $r['closed'] ? ' disabled' : ''; ?> dir="ltr">
               <span class="hj-dash__to">تا</span>
-              <input type="time" name="hours[<?php echo $dk; ?>][end]" value="<?php echo esc_attr( $r['end'] ); ?>" aria-label="پایان"<?php echo $r['closed'] ? ' disabled' : ''; ?> dir="ltr">
+              <input type="time"<?php echo $legacy_booking && ! empty( $r['seconds'] ) ? ' step="1"' : ''; ?> name="hours[<?php echo $dk; ?>][end]" value="<?php echo esc_attr( $r['end'] ); ?>" aria-label="پایان"<?php echo $r['closed'] ? ' disabled' : ''; ?> dir="ltr">
               <small class="hj-dash__err" data-err="hours_<?php echo $dk; ?>" role="status"></small>
             </div>
           <?php endforeach; ?>
@@ -921,6 +939,8 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 					self::fail( 'نسخهٔ برنامه نامعتبر است؛ صفحه را دوباره باز کنید.', 400 );
 				}
 				$expected_revision = (int) $raw_revision;
+				$precision = isset( $_POST['hj_schedule_precision'] ) && is_string( $_POST['hj_schedule_precision'] ) ? wp_unslash( $_POST['hj_schedule_precision'] ) : '';
+				if ( $precision !== 'seconds-v1' ) { self::fail( 'فرم قدیمی است؛ صفحه را بازخوانی کنید.', 409 ); }
 			}
 
 			$errors = array();
@@ -1021,13 +1041,37 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 
 			// ---- Working hours
 			$hours_in = ( isset( $_POST['hours'] ) && is_array( $_POST['hours'] ) ) ? wp_unslash( $_POST['hours'] ) : array();
+			if ( $legacy_booking ) {
+				// A full replacement must include every day, even an empty or closed day.
+				if ( ! isset( $_POST['hours'] ) || ! is_array( $_POST['hours'] ) || array_diff( array_keys( $hours_in ), array_keys( self::days() ) ) ) {
+					$errors['hours'] = 'برنامه ناقص یا نامعتبر است؛ صفحه را بازخوانی کنید.';
+				}
+			}
 			$rows     = array();
 			$fmt      = apply_filters( 'hj_dash_time_storage_format', 'H:i:s' );
 			foreach ( self::days() as $key => $label ) {
-				$r = ( isset( $hours_in[ $key ] ) && is_array( $hours_in[ $key ] ) ) ? $hours_in[ $key ] : array();
+				if ( $legacy_booking ) {
+					$r = isset( $hours_in[ $key ] ) && is_array( $hours_in[ $key ] ) ? $hours_in[ $key ] : array();
+					// Closed checkboxes are omitted when unchecked; closed time inputs are disabled.
+					if ( ! isset( $r['present'] ) || $r['present'] !== '1' || array_diff( array_keys( $r ), array( 'present', 'closed', 'start', 'end' ) ) || ( isset( $r['closed'] ) && $r['closed'] !== '1' ) || ( ! isset( $r['closed'] ) && ( ! array_key_exists( 'start', $r ) || ! array_key_exists( 'end', $r ) ) ) ) {
+						$errors[ 'hours_' . $key ] = 'برنامهٔ این روز ناقص یا نامعتبر است؛ صفحه را بازخوانی کنید.';
+						continue;
+					}
+				} else {
+					$r = ( isset( $hours_in[ $key ] ) && is_array( $hours_in[ $key ] ) ) ? $hours_in[ $key ] : array();
+				}
 				$closed = ! empty( $r['closed'] );
-				$s = ( isset( $r['start'] ) && is_scalar( $r['start'] ) ) ? self::time_hm( sanitize_text_field( (string) $r['start'] ) ) : '';
-				$e = ( isset( $r['end'] ) && is_scalar( $r['end'] ) ) ? self::time_hm( sanitize_text_field( (string) $r['end'] ) ) : '';
+				if ( $legacy_booking && ! $closed ) {
+					$s = self::booking_time( isset( $r['start'] ) ? $r['start'] : '' );
+					$e = self::booking_time( isset( $r['end'] ) ? $r['end'] : '' );
+					if ( $s === false || $e === false ) {
+						$errors[ 'hours_' . $key ] = 'ساعت نامعتبر است؛ ساعت معتبر وارد کنید.';
+						continue;
+					}
+				} else {
+					$s = ( isset( $r['start'] ) && is_scalar( $r['start'] ) ) ? self::time_hm( sanitize_text_field( (string) $r['start'] ) ) : '';
+					$e = ( isset( $r['end'] ) && is_scalar( $r['end'] ) ) ? self::time_hm( sanitize_text_field( (string) $r['end'] ) ) : '';
+				}
 				if ( $closed ) {
 					$rows[] = array( 'day_of_week' => $key, 'is_closed' => 1, 'start_time' => '', 'end_time' => '' );
 					continue;
@@ -1042,8 +1086,8 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 				$rows[] = array(
 					'day_of_week' => $key,
 					'is_closed'   => 0,
-					'start_time'  => ( $fmt === 'H:i' ) ? $s : $s . ':00',
-					'end_time'    => ( $fmt === 'H:i' ) ? $e : $e . ':00',
+					'start_time'  => $legacy_booking ? $s : ( ( $fmt === 'H:i' ) ? $s : $s . ':00' ),
+					'end_time'    => $legacy_booking ? $e : ( ( $fmt === 'H:i' ) ? $e : $e . ':00' ),
 				);
 			}
 
@@ -1114,7 +1158,14 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			self::set( $pid, 'map_link', $map );
 			if ( $legacy_booking ) {
 				// ACF/meta is a best-effort display mirror, never the booking source.
-				try { self::set( $pid, 'working_hours', $rows ); } catch ( Throwable $ignored ) {}
+				$mirror_rows = $rows;
+				if ( $fmt === 'H:i' ) {
+					foreach ( $mirror_rows as &$mirror_row ) {
+						if ( ! $mirror_row['is_closed'] ) { $mirror_row['start_time'] = substr( $mirror_row['start_time'], 0, 5 ); $mirror_row['end_time'] = substr( $mirror_row['end_time'], 0, 5 ); }
+					}
+					unset( $mirror_row );
+				}
+				try { self::set( $pid, 'working_hours', $mirror_rows ); } catch ( Throwable $ignored ) {}
 			} elseif ( ! $capacity_mode ) {
 				self::set( $pid, 'working_hours', $rows );
 			}

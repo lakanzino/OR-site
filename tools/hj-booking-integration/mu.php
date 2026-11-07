@@ -48,6 +48,7 @@ add_action( 'hj_booking_test_event', function ( $event, $db, $context ) {
 add_filter( 'update_post_metadata', function ( $check, $id, $key ) {
 	return $key === 'working_hours' && isset( $_POST['hj_ci_mirror_fail'] ) ? true : $check;
 }, 10, 3 );
+add_filter( 'hj_dash_time_storage_format', function ( $format ) { return isset( $_POST['hj_ci_time_format'] ) && $_POST['hj_ci_time_format'] === 'H:i' ? 'H:i' : $format; } );
 add_action( 'wp_ajax_hj_ci_dashboard_nonce', function () { wp_send_json_success( array( 'nonce' => wp_create_nonce( 'hj_dash_nonce' ) ) ); } );
 add_action( 'wp_ajax_hj_ci_booking_nonce', function () { wp_send_json_success( array( 'nonce' => wp_create_nonce( 'hj_ci_booking' ) ) ); } );
 add_action( 'wp_ajax_hj_ci_schedule_state', function () {

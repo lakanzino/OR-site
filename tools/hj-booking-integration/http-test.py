@@ -85,6 +85,9 @@ def ajax(opener, payload):
     data = json.loads(body)
     if not data['success']: raise AssertionError('Unexpected AJAX failure')
     return data['data']
+DAYS = ('saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday')
+def empty_week():
+    return {f'hours[{day}][{key}]': value for day in DAYS for key, value in (('present','1'),('start',''),('end',''))}
 def booking_nonce(opener): return ajax(opener, {'action': 'hj_ci_booking_nonce'})['nonce']
 def key(n): return f'{n:032x}'
 def booking_payload(doctor, nonce, start, keyvalue, fault=''):
@@ -129,7 +132,7 @@ try:
     owner, owner_nonce = login('synthetic_doctor_a')
     other, other_nonce = login('synthetic_doctor_b')
     url = '/wp-admin/admin-ajax.php'
-    common = {'action': 'hj_dash_save', 'pid': str(doctor_id), 'name_fa': 'Synthetic Doctor', 'hours[wednesday][start]': '09:00', 'hours[wednesday][end]': '12:00'}
+    common = {**empty_week(), 'action': 'hj_dash_save', 'pid': str(doctor_id), 'name_fa': 'Synthetic Doctor', 'hours[wednesday][start]': '09:00', 'hours[wednesday][end]': '12:00', 'hj_schedule_precision':'seconds-v1'}
     check(request(owner, url, dict(common, _hjn='bad'))[0] == 403, 'actual ajax_save rejects invalid nonce')
     check(request(other, url, dict(common, _hjn=other_nonce))[0] == 403, 'actual ajax_save denies another doctor')
     html, inputs = rendered_form(owner)
@@ -137,12 +140,34 @@ try:
     check(request(owner, url, dict(common, _hjn=owner_nonce))[0] == 400, 'missing revision is rejected')
     for value in ('-1', '01', 'not-a-number', '999999999999999999999999'):
         check(request(owner, url, dict(common, _hjn=owner_nonce, hj_schedule_revision=value))[0] == 400, 'invalid revision is rejected')
-    code, text = request(owner, url, dict(common, _hjn=owner_nonce, hj_schedule_revision='0'))
-    check(code == 200 and json.loads(text)['success'], 'repository ajax_save writes canonical schedule through production wpdb backend')
+    baseline = state(owner, doctor_id)
+    stale_precision=dict(common, _hjn=owner_nonce, hj_schedule_revision='0'); stale_precision.pop('hj_schedule_precision')
+    code, body=request(owner, url, stale_precision)
+    check(code == 409 and 'بازخوانی' in json.loads(body)['message'] and state(owner, doctor_id)==baseline, 'old minute-only form is rejected before any write')
+    invalid_cases = [
+        {'hours[wednesday][start]': '24:00'},
+        {'hours[wednesday][start]': '09:60'},
+        {'hours[wednesday][start]': '09:00:70'},
+        {'hours[wednesday][start]': 'bad', 'hours[wednesday][end]': 'bad'},
+        {'hours[wednesday][start][bad]': '09:00', 'hours[wednesday][start]': None},
+        {'hours[wednesday]': 'bad', 'hours[wednesday][present]': None, 'hours[wednesday][start]': None, 'hours[wednesday][end]': None},
+    ]
+    for case in invalid_cases:
+        payload = dict(common, _hjn=owner_nonce, hj_schedule_revision='0', name_fa='Must not be saved', **case)
+        payload = {k:v for k,v in payload.items() if v is not None}
+        code, text = request(owner, url, payload)
+        check(code == 422 and 'hours_wednesday' in json.loads(text).get('errors', {}), 'invalid booking hours rejected before first save')
+        check(state(owner, doctor_id) == baseline, 'invalid hours preserve snapshot, mirror and profile name')
+    valid = dict(common, _hjn=owner_nonce, hj_schedule_revision='0', **{'hours[wednesday][start]': '9:00:00', 'hours[wednesday][end]': '12:00:00'})
+    code, text = request(owner, url, valid)
+    check(code == 200 and json.loads(text)['success'], 'repository ajax_save accepts valid whole-minute time and writes canonical schedule')
     saved = state(owner, doctor_id); row = saved['snapshot']
     check(int(row['revision']) == 1 and json.loads(row['rows_json'])[0]['start_time'] == '09:00:00' and row['rows_hash'] == hashlib.sha256(row['rows_json'].encode()).hexdigest(), 'first canonical revision and hash persisted')
     check(saved['display'][0]['start_time'] == '09:00:00', 'best-effort display mirror saved')
     check(json.loads(text)['data']['schedule_revision'] == 1, 'save response includes next revision')
+    payload = dict(common, _hjn=owner_nonce, hj_schedule_revision='1', name_fa='Must not be saved', **{'hours[wednesday][start]':'24:00', 'hours[wednesday][end]':'25:00'})
+    code, body = request(owner, url, payload)
+    check(code == 422 and 'hours_wednesday' in json.loads(body).get('errors', {}) and state(owner, doctor_id) == saved, 'invalid pair cannot clear or rewrite an existing schedule')
     stale = dict(common, _hjn=owner_nonce, hj_schedule_revision='0', name_fa='Stale profile overwrite')
     code, response = request(owner, url, stale)
     check(code == 409 and not json.loads(response)['success'] and 'بازخوانی' in json.loads(response)['message'], 'stale tab receives conflict and reload instruction')
@@ -177,6 +202,65 @@ try:
     check(ajax(owner, open_hours) is not None, 'actual dashboard publishes test schedule')
     saved = state(owner, doctor_id); open_revision = int(saved['snapshot']['revision'])
     check(saved['display'][0]['start_time'] == '10:00:00' and json.loads(saved['snapshot']['rows_json'])[0]['start_time'] == '09:00:00', 'display intentionally differs from canonical snapshot')
+    # Exercise actual rendered legacy form with seconds using a separate synthetic doctor.
+    original = state(other, doctor2_id)
+    second_rows = [{'day_of_week':'wednesday','is_closed':0,'start_time':'09:00:30','end_time':'12:00:45'}]
+    check(ajax(other, {'action':'hj_ci_replace_snapshot','doctor':str(doctor2_id),'_hjn':other_nonce,'rows_json':json.dumps(second_rows)})['status']=='updated', 'inject synthetic nonzero seconds snapshot')
+    seconds_before=state(other, doctor2_id); html, fields=rendered_form(other)
+    check(fields['hours[wednesday][start]']['value']=='09:00:30' and fields['hours[wednesday][end]']['value']=='12:00:45' and fields['hours[wednesday][start]'].get('step')=='1' and fields['hours[wednesday][end]'].get('step')=='1' and fields['hj_schedule_precision']['value']=='seconds-v1', 'actual dashboard renders seconds with explicit precision marker')
+    render=Path(os.environ['RUNNER_TEMP'])/'hj-legacy-seconds-form.html'; render.write_text(html,encoding='utf-8')
+    try:
+        browser=subprocess.run(['node',str(workspace/'tools/hj-booking-integration/dashboard-seconds-browser.cjs')],check=True,capture_output=True,text=True,timeout=40,env=dict(os.environ,HJ_SECONDS_HTML=str(render)))
+        browser_values=json.loads(browser.stdout)
+        browser_save=subprocess.run(['node',str(workspace/'tools/hj-booking-integration/dashboard-save-browser.cjs')],capture_output=True,text=True,timeout=60,env=dict(os.environ,HJ_SECONDS_HTML=str(render)))
+        check(browser_save.returncode == 0 and 'PASS Chromium real dashboard form' in browser_save.stdout, 'Chromium guards pending and uncertain v1 save outcomes: ' + browser_save.stderr[-1500:])
+    finally: render.unlink(missing_ok=True)
+    check(browser_values['start']=='09:00:30' and browser_values['end']=='12:00:45' and browser_values['precision']=='seconds-v1','Chromium form retains seconds and marker')
+    base2={**empty_week(), 'action':'hj_dash_save','pid':str(doctor2_id),'name_fa':'Synthetic Second Doctor','_hjn':other_nonce,'hj_schedule_revision':str(seconds_before['snapshot']['revision'])}
+    stale2=dict(base2,**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
+    code,body=request(other,url,stale2)
+    check(code==409 and state(other,doctor2_id)==seconds_before, 'stale minute-only client cannot truncate second-precision schedule')
+    incomplete=[]
+    full=dict(base2,hj_schedule_precision='seconds-v1',**{'hours[wednesday][start]':'09:00:30','hours[wednesday][end]':'12:00:45'})
+    incomplete.append({k:v for k,v in full.items() if not k.startswith('hours[')})
+    incomplete.append({k:v for k,v in full.items() if not k.startswith('hours[wednesday]')})
+    incomplete.append({k:v for k,v in full.items() if not k.endswith('[present]')})
+    for field_name in ('hours[wednesday][present]', 'hours[wednesday][start]', 'hours[wednesday][end]'):
+        incomplete.append({k:v for k,v in full.items() if k!=field_name})
+    incomplete.append(dict(full,**{'hours[wednesday][closed]':'unexpected'}))
+    incomplete.append(dict(full,**{'hours[wednesday][future]':'1'}))
+    incomplete.append(dict(full,**{'hours[funday][present]':'1'}))
+    for partial in incomplete:
+        code,body=request(other,url,partial)
+        check(code==422 and state(other,doctor2_id)==seconds_before, 'incomplete or unknown weekly fields fail before any write')
+    bad2=dict(base2,hj_schedule_precision='seconds-v1',**{'hours[wednesday][start]':'09:00:70','hours[wednesday][end]':'12:00:45'})
+    code,body=request(other,url,bad2)
+    check(code==422 and state(other,doctor2_id)==seconds_before, 'invalid seconds leave schedule and profile unchanged')
+    for end in ('09:00:30', '09:00:29'):
+        reversed2=dict(base2,hj_schedule_precision='seconds-v1',**{'hours[wednesday][start]':'09:00:30','hours[wednesday][end]':end})
+        code,body=request(other,url,reversed2)
+        check(code==422 and state(other,doctor2_id)==seconds_before, 'equal or reverse second-level range is rejected without writes')
+    good2=dict(base2,hj_schedule_precision=browser_values['precision'],**dict(browser_values['hours'], hj_ci_time_format='H:i'))
+    code,body=request(other,url,good2); after=state(other,doctor2_id)
+    check(code==200 and json.loads(body)['success'] and json.loads(after['snapshot']['rows_json'])==second_rows and int(after['snapshot']['revision'])==int(seconds_before['snapshot']['revision'])+1 and after['snapshot']['rows_hash']==hashlib.sha256(after['snapshot']['rows_json'].encode()).hexdigest(), 'actual dashboard save preserves seconds in canonical snapshot')
+    check(after['display'][0]['start_time']=='09:00' and after['display'][0]['end_time']=='12:00', 'minute display filter never truncates canonical snapshot')
+    same_minute=dict(base2,hj_schedule_precision='seconds-v1',hj_schedule_revision=str(after['snapshot']['revision']),**{'hours[wednesday][start]':'09:00:30','hours[wednesday][end]':'09:00:55','hours[thursday][closed]':'1','hours[thursday][start]':'bad'})
+    code,body=request(other,url,same_minute); narrow=state(other,doctor2_id)
+    narrow_rows=json.loads(narrow['snapshot']['rows_json'])
+    check(code==200 and narrow_rows==[{'day_of_week':'wednesday','is_closed':0,'start_time':'09:00:30','end_time':'09:00:55'},{'day_of_week':'thursday','is_closed':1,'start_time':'','end_time':''}], 'same-minute second precision and closed day are saved correctly')
+    closed_payload=dict({k:v for k,v in base2.items() if not k.startswith('hours[')},hj_schedule_precision='seconds-v1',hj_schedule_revision=str(narrow['snapshot']['revision']),**browser_values['closed_hours'])
+    code,body=request(other,url,closed_payload); closed=state(other,doctor2_id)
+    check(code==200 and json.loads(closed['snapshot']['rows_json'])==[{'day_of_week':'wednesday','is_closed':1,'start_time':'','end_time':''}], 'actual Chromium closed toggle submits marker and checkbox without disabled times')
+    all_empty=dict(base2,hj_schedule_precision='seconds-v1',hj_schedule_revision=str(closed['snapshot']['revision']))
+    code,body=request(other,url,all_empty); empty=state(other,doctor2_id)
+    check(code==200 and json.loads(empty['snapshot']['rows_json'])==[], 'explicit complete blank week remains a valid empty schedule')
+    closed_week={f'hours[{day}][{key}]':'1' for day in DAYS for key in ('present','closed')}
+    all_closed=dict({k:v for k,v in base2.items() if not k.startswith('hours[')},hj_schedule_precision='seconds-v1',hj_schedule_revision=str(empty['snapshot']['revision']),**closed_week)
+    code,body=request(other,url,all_closed); all_closed_state=state(other,doctor2_id)
+    check(code==200 and len(json.loads(all_closed_state['snapshot']['rows_json']))==7 and all(row['is_closed']==1 for row in json.loads(all_closed_state['snapshot']['rows_json'])), 'all seven explicit closed days are accepted')
+    check(ajax(other, {'action':'hj_ci_replace_snapshot','doctor':str(doctor2_id),'_hjn':other_nonce,'rows_json':original['snapshot']['rows_json']})['status']=='updated', 'restore other synthetic doctor schedule for later fixture checks')
+
+    doctor2_revision = int(state(other, doctor2_id)['snapshot']['revision'])
     patients = [login(f'synthetic_race_{i}')[0] for i in range(8)]
     nonces = [booking_nonce(p) for p in patients]
     first_slots = slots(patients[0], doctor_id, nonces[0])
@@ -445,7 +529,7 @@ try:
         code, result = ui_request(cross_patient, dict(base, nonce=cross_nonce, slot_start=cross_start(h,m), idempotency_key=str(uuid.uuid4())))
         check(code == 200 and result['success'], 'patient baseline pending before cross-doctor race')
     one = dict(base, nonce=cross_nonce, slot_start=cross_start(10,10), idempotency_key=str(uuid.uuid4()))
-    two = dict(one, doctor_id=str(doctor2_id), revision='1', idempotency_key=str(uuid.uuid4()))
+    two = dict(one, doctor_id=str(doctor2_id), revision=str(doctor2_revision), idempotency_key=str(uuid.uuid4()))
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
         cross_results = list(pool.map(lambda payload: ui_request(cross_patient, payload), [one,two]))
     check(sorted(code for code, _ in cross_results) == [200,429] and any(r['data'].get('code') == 'pending_limit' for _, r in cross_results), 'same patient racing different doctors cannot exceed three pending')
@@ -492,7 +576,7 @@ try:
     def create_payload(nonce, doctor, start, revision):
         return {'action':'hj_booking_create', 'nonce':nonce, 'doctor_id':str(doctor), 'slot_start':start, 'revision':str(revision), 'idempotency_key':str(uuid.uuid4()), 'phone':'09123456789', 'national_code':'1234567891'}
     first = create_payload(a_nonce, doctor_id, mstart(9,0), newest_revision)
-    second = create_payload(b_nonce, doctor2_id, mstart(9,0), 1)
+    second = create_payload(b_nonce, doctor2_id, mstart(9,0), doctor2_revision)
     c1, r1 = ui_request(patient_a, first); c2, r2 = ui_request(patient_b, second)
     check(c1 == 200 and c2 == 200, 'two doctors have distinct synthetic patient appointments')
     id_a = r1['data']['id']; id_b = r2['data']['id']
@@ -578,7 +662,7 @@ try:
     check(ajax(other, {'action':'hj_ci_set_past','doctor':str(doctor2_id),'id':str(id_b)})['status'] == 'updated', 'CI fixture moves synthetic appointment to the past under mutex')
     check(request(other, status_url, early)[0] == 302, 'doctor marks past booking completed')
     check(request(other, status_url, status_payload(other, doctor2_id, id_b, 'manage', 'cancelled'))[0] == 409, 'terminal booking cannot be reopened or cancelled')
-    absent_code, absent = ui_request(patient_b, create_payload(b_nonce, doctor2_id, mstart(9,35), 1))
+    absent_code, absent = ui_request(patient_b, create_payload(b_nonce, doctor2_id, mstart(9,35), doctor2_revision))
     check(absent_code == 200 and absent['success'], 'second synthetic past-status candidate created')
     absent_id = absent['data']['id']
     check(ajax(other, {'action':'hj_ci_set_past','doctor':str(doctor2_id),'id':str(absent_id)})['status'] == 'updated', 'CI fixture makes no-show candidate past under mutex')
