@@ -203,6 +203,17 @@ jobs:
             echo "::error title=Disposable recovery experiment failure::$summary"
             exit "$status"
           fi
+      - name: Race isolated schedule idempotency and lost responses
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/schedule-idempotency-fixture.php && python3 tools/hj-booking-integration/schedule-idempotency-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Schedule idempotency experiment failure::$summary"
+            exit "$status"
+          fi
       - name: Race production capacity calculation with real plugin mutex
         run: |
           set -uo pipefail
