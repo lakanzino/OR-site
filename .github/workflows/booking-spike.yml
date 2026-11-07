@@ -237,6 +237,18 @@ jobs:
             echo "::error title=Durable intent experiment failure::$summary"
             exit "$status"
           fi
+      - name: Test writer coordination on a disposable patched plugin copy
+        run: |
+          set -uo pipefail
+          set +e
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/schedule-coordination-fixture.php && python3 tools/hj-booking-integration/schedule-coordination-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Writer coordination experiment failure::$summary"
+            exit "$status"
+          fi
       - name: Race production capacity calculation with real plugin mutex
         run: |
           set -uo pipefail
