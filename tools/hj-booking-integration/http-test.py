@@ -28,6 +28,7 @@ plugin = Path('/wordpress/wp-content/plugins/hamyar-doctors')
 mu = Path('/wordpress/wp-content/mu-plugins/hj-wpdb-ajax-fixture.php')
 meta = Path(os.environ['RUNNER_TEMP']) / 'hj-wpdb-ajax-meta.json'
 BASE = 'http://127.0.0.1:8997'
+RACE_BASES = ('http://127.0.0.1:8998', 'http://127.0.0.1:8999')
 local_now = datetime.datetime.now(ZoneInfo('Asia/Tehran'))
 offset = (2 - local_now.weekday()) % 7
 if offset < 2: offset += 7
@@ -55,9 +56,9 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, hdrs, url): return None
 
 def session(): return urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()), NoRedirect())
-def request(opener, path, data=None):
+def request(opener, path, data=None, base=BASE):
     body = urllib.parse.urlencode(data).encode() if data is not None else None
-    req = urllib.request.Request(BASE + path, data=body, headers={'Host': 'example.invalid'})
+    req = urllib.request.Request(base + path, data=body, headers={'Host': 'example.invalid'})
     try: res = opener.open(req, timeout=30)
     except urllib.error.HTTPError as e: res = e
     return res.code, res.read().decode('utf-8', errors='replace')
@@ -109,6 +110,7 @@ def wait_ready(paths):
     check(True, 'all fixture lock-order barriers reached')
 
 server = None
+race_servers = []
 ready = None
 released = None
 created_plugin = False
@@ -129,6 +131,21 @@ try:
         try: request(session(), '/wp-login.php'); break
         except OSError: time.sleep(.25)
     else: raise RuntimeError('fixture HTTP server did not start')
+    # Each race request has its own single-worker listener, while both use the
+    # same WordPress files, cookies, and MariaDB. No scheduler can queue both
+    # barrier requests behind the same blocked PHP worker.
+    race_env = dict(os.environ); race_env.pop('PHP_CLI_SERVER_WORKERS', None)
+    for base in RACE_BASES:
+        port = base.rsplit(':', 1)[1]
+        worker = subprocess.Popen(['php', '-d', 'auto_prepend_file=' + PREPEND, '-S', '127.0.0.1:' + port, '-t', '/wordpress'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, env=race_env)
+        race_servers.append(worker)
+        for _ in range(80):
+            if worker.poll() is not None: raise RuntimeError('dedicated race server exited: ' + port)
+            try:
+                if request(session(), '/wp-login.php', base=base)[0] == 200: break
+            except OSError: time.sleep(.25)
+        else: raise RuntimeError('dedicated race server did not start: ' + port)
+    check(all(worker.poll() is None for worker in race_servers), 'dedicated race listeners are alive')
     new_profile_browser=subprocess.run(['node',str(workspace/'tools/hj-booking-integration/dashboard-new-profile-browser.cjs')],capture_output=True,text=True,timeout=80,env=os.environ.copy())
     check(new_profile_browser.returncode==0 and 'PASS actual first profile creation with in-flight edits' in new_profile_browser.stdout, 'real first-profile browser save: '+new_profile_browser.stderr[-1800:])
     # A deterministic counterexample: two sessions have both passed the first-profile check before either inserts.
@@ -139,7 +156,7 @@ try:
     def profile_create(args):
         opener,nonce,token,number=args
         payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=nonce,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_profile_insert_hold=token,name_fa='Synthetic Concurrent '+str(number),**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
-        return request(opener,'/wp-admin/admin-ajax.php',payload)
+        return request(opener,'/wp-admin/admin-ajax.php',payload, base=RACE_BASES[number-1])
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
         results=[pool.submit(profile_create,args) for args in ((racer1,nonce1,profile_tokens[0],1),(racer2,nonce2,profile_tokens[1],2))]
         barrier_error = None
@@ -182,7 +199,7 @@ try:
     def claim_create(args):
         opener,nonce,token,number=args
         payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=nonce,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_claim_prototype='1',hj_ci_claim_token=token,name_fa='Synthetic Claimed '+str(number),**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
-        return request(opener,'/wp-admin/admin-ajax.php',payload)
+        return request(opener,'/wp-admin/admin-ajax.php',payload, base=RACE_BASES[number-1])
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
         futures=[pool.submit(claim_create,args) for args in ((claimant1,cn1,claim_tokens[0],1),(claimant2,cn2,claim_tokens[1],2))]
         barrier_error = None
@@ -781,11 +798,12 @@ try:
     code, result = ui_request(anonymous, slot_payload)
     check(code == 503 and result['data']['code'] == 'invalid_schedule' and 'slots' not in result['data'], 'public endpoint fails closed on corrupt snapshot')
 finally:
-    if server:
-        os.killpg(server.pid, signal.SIGTERM)
-        try: server.wait(timeout=10)
-        except subprocess.TimeoutExpired:
-            os.killpg(server.pid, signal.SIGKILL); server.wait()
+    for process in ([server] if server else []) + race_servers:
+        if process.poll() is None:
+            os.killpg(process.pid, signal.SIGTERM)
+            try: process.wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                os.killpg(process.pid, signal.SIGKILL); process.wait()
     for path in barriers: path.unlink(missing_ok=True)
     if ready is not None: ready.unlink(missing_ok=True)
     if released is not None: released.unlink(missing_ok=True)
