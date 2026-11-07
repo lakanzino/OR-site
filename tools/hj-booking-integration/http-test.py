@@ -149,31 +149,34 @@ try:
     new_profile_browser=subprocess.run(['node',str(workspace/'tools/hj-booking-integration/dashboard-new-profile-browser.cjs')],capture_output=True,text=True,timeout=80,env=os.environ.copy())
     check(new_profile_browser.returncode==0 and 'PASS actual first profile creation with in-flight edits' in new_profile_browser.stdout, 'real first-profile browser save: '+new_profile_browser.stderr[-1800:])
     # A deterministic counterexample: two sessions have both passed the first-profile check before either inserts.
-    racer1, nonce1 = login('synthetic_profile_race'); racer2, nonce2 = login('synthetic_profile_race')
-    check(ajax(racer1, {'action':'hj_ci_own_profiles'})['ids']==[], 'race doctor starts with no profiles')
-    profile_tokens=[uuid.uuid4().hex, uuid.uuid4().hex]
-    profile_barriers=[barrier('profile-hold-'+token) for token in profile_tokens]
-    def profile_create(args):
-        opener,nonce,token,number=args
-        payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=nonce,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_profile_insert_hold=token,name_fa='Synthetic Concurrent '+str(number),**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
-        return request(opener,'/wp-admin/admin-ajax.php',payload, base=RACE_BASES[number-1])
-    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
-        results=[pool.submit(profile_create,args) for args in ((racer1,nonce1,profile_tokens[0],1),(racer2,nonce2,profile_tokens[1],2))]
-        barrier_error = None
-        try: wait_ready([b[0] for b in profile_barriers])
-        except AssertionError as exc: barrier_error = exc
-        finally:
-            for _,released in profile_barriers: released.touch()
-        replies=[result.result(timeout=40) for result in results]
-        if barrier_error: raise AssertionError(f'{barrier_error}; synthetic responses: {replies!r}') from barrier_error
-    check(all(code==200 and json.loads(body)['success'] and json.loads(body)['data']['created'] for code,body in replies), 'counterexample: both actual requests report first-profile creation')
-    profiles=ajax(racer1, {'action':'hj_ci_own_profiles'}); ids=profiles['ids']
-    check(len(ids)==2 and len(set(ids))==2 and profiles['linked'] in ids, 'counterexample: one synthetic doctor has two profiles')
-    names=set()
-    for profile_id in ids:
-        created_state=state(racer1,profile_id); names.add(created_state['name'])
-        check(int(created_state['snapshot']['revision'])==1 and json.loads(created_state['snapshot']['rows_json'])[0]['start_time']=='09:00:00', 'each duplicated profile has its own committed schedule')
-    check(names=={'Synthetic Concurrent 1','Synthetic Concurrent 2'}, 'both concurrent payloads persisted on separate doctor posts')
+    for login_name in ('synthetic_profile_race', 'synthetic_profile_race_2', 'synthetic_profile_race_3'):
+        racer1, nonce1 = login(login_name); racer2, nonce2 = login(login_name)
+        check(ajax(racer1, {'action':'hj_ci_own_profiles'})['ids']==[], 'race doctor starts with no profiles')
+        profile_tokens=[uuid.uuid4().hex, uuid.uuid4().hex]
+        profile_barriers=[barrier('profile-hold-'+token) for token in profile_tokens]
+        def profile_create(args):
+            opener,nonce,token,number=args
+            payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=nonce,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_profile_insert_hold=token,name_fa='Synthetic Concurrent '+str(number),**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
+            return request(opener,'/wp-admin/admin-ajax.php',payload, base=RACE_BASES[number-1])
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+            results=[pool.submit(profile_create,args) for args in ((racer1,nonce1,profile_tokens[0],1),(racer2,nonce2,profile_tokens[1],2))]
+            barrier_error = None
+            try:
+                wait_ready([b[0] for b in profile_barriers])
+                check({int(b[0].read_text()) for b in profile_barriers}=={worker.pid for worker in race_servers}, 'both race barriers run on their dedicated worker processes')
+            except AssertionError as exc: barrier_error = exc
+            finally:
+                for _,released in profile_barriers: released.touch()
+            replies=[result.result(timeout=40) for result in results]
+            if barrier_error: raise AssertionError(f'{barrier_error}; synthetic responses: {replies!r}') from barrier_error
+        check(all(code==200 and json.loads(body)['success'] and json.loads(body)['data']['created'] for code,body in replies), 'counterexample: both actual requests report first-profile creation')
+        profiles=ajax(racer1, {'action':'hj_ci_own_profiles'}); ids=profiles['ids']
+        check(len(ids)==2 and len(set(ids))==2 and profiles['linked'] in ids, 'counterexample: one synthetic doctor has two profiles')
+        names=set()
+        for profile_id in ids:
+            created_state=state(racer1,profile_id); names.add(created_state['name'])
+            check(int(created_state['snapshot']['revision'])==1 and json.loads(created_state['snapshot']['rows_json'])[0]['start_time']=='09:00:00', 'each duplicated profile has its own committed schedule')
+        check(names=={'Synthetic Concurrent 1','Synthetic Concurrent 2'}, 'both concurrent payloads persisted on separate doctor posts')
 
     # Kill the separate schedule transaction immediately before COMMIT, after creating the post.
     failed_owner, failed_nonce = login('synthetic_profile_failure')
@@ -192,31 +195,34 @@ try:
     check(ajax(failed_owner, {'action':'hj_ci_own_profiles'})['ids']==[partial_id] and int(state(failed_owner, partial_id)['snapshot']['revision'])==1, 'controlled retry leaves one profile with initial snapshot')
 
     # CI-only candidate: an InnoDB unique, durable per-user claim before the WordPress insert.
-    claimant1, cn1 = login('synthetic_profile_claim'); claimant2, cn2 = login('synthetic_profile_claim')
-    check(ajax(claimant1, {'action':'hj_ci_own_profiles'})['ids']==[] and ajax(claimant1, {'action':'hj_ci_profile_claim'})['token'] is None, 'claim prototype starts empty')
-    claim_tokens=[uuid.uuid4().hex, uuid.uuid4().hex]
-    claim_barriers=[barrier('claim-hold-'+token) for token in claim_tokens]
-    def claim_create(args):
-        opener,nonce,token,number=args
-        payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=nonce,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_claim_prototype='1',hj_ci_claim_token=token,name_fa='Synthetic Claimed '+str(number),**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
-        return request(opener,'/wp-admin/admin-ajax.php',payload, base=RACE_BASES[number-1])
-    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
-        futures=[pool.submit(claim_create,args) for args in ((claimant1,cn1,claim_tokens[0],1),(claimant2,cn2,claim_tokens[1],2))]
-        barrier_error = None
-        try: wait_ready([b[0] for b in claim_barriers])
-        except AssertionError as exc: barrier_error = exc
-        finally:
-            for _,released in claim_barriers: released.touch()
-        claim_replies=[f.result(timeout=40) for f in futures]
-        if barrier_error: raise AssertionError(f'{barrier_error}; synthetic responses: {claim_replies!r}') from barrier_error
-    check(sorted(code for code,body in claim_replies)==[200,409], 'one simultaneous claim wins; other first-profile insert is rejected')
-    winner=next(i for i,(code,body) in enumerate(claim_replies) if code==200)
-    check(json.loads(claim_replies[winner][1])['success'] and json.loads(claim_replies[winner][1])['data']['created'], 'winning claim creates profile through actual product handler')
-    check(not json.loads(claim_replies[1-winner][1])['success'], 'losing claim response fails closed')
-    claimed_profiles=ajax(claimant1, {'action':'hj_ci_own_profiles'}); claimed_id=claimed_profiles['ids'][0] if len(claimed_profiles['ids'])==1 else 0
-    check(claimed_id and claimed_profiles['linked']==claimed_id and ajax(claimant1, {'action':'hj_ci_profile_claim'})['token']==claim_tokens[winner], 'one durable claim and one linked post match winning request')
-    claim_state=state(claimant1,claimed_id)
-    check(int(claim_state['snapshot']['revision'])==1 and claim_state['name']=='Synthetic Claimed '+str(winner+1), 'winning profile and schedule persisted')
+    for login_name in ('synthetic_profile_claim', 'synthetic_profile_claim_2', 'synthetic_profile_claim_3'):
+        claimant1, cn1 = login(login_name); claimant2, cn2 = login(login_name)
+        check(ajax(claimant1, {'action':'hj_ci_own_profiles'})['ids']==[] and ajax(claimant1, {'action':'hj_ci_profile_claim'})['token'] is None, 'claim prototype starts empty')
+        claim_tokens=[uuid.uuid4().hex, uuid.uuid4().hex]
+        claim_barriers=[barrier('claim-hold-'+token) for token in claim_tokens]
+        def claim_create(args):
+            opener,nonce,token,number=args
+            payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=nonce,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_claim_prototype='1',hj_ci_claim_token=token,name_fa='Synthetic Claimed '+str(number),**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
+            return request(opener,'/wp-admin/admin-ajax.php',payload, base=RACE_BASES[number-1])
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+            futures=[pool.submit(claim_create,args) for args in ((claimant1,cn1,claim_tokens[0],1),(claimant2,cn2,claim_tokens[1],2))]
+            barrier_error = None
+            try:
+                wait_ready([b[0] for b in claim_barriers])
+                check({int(b[0].read_text()) for b in claim_barriers}=={worker.pid for worker in race_servers}, 'both claim barriers run on their dedicated worker processes')
+            except AssertionError as exc: barrier_error = exc
+            finally:
+                for _,released in claim_barriers: released.touch()
+            claim_replies=[f.result(timeout=40) for f in futures]
+            if barrier_error: raise AssertionError(f'{barrier_error}; synthetic responses: {claim_replies!r}') from barrier_error
+        check(sorted(code for code,body in claim_replies)==[200,409], 'one simultaneous claim wins; other first-profile insert is rejected')
+        winner=next(i for i,(code,body) in enumerate(claim_replies) if code==200)
+        check(json.loads(claim_replies[winner][1])['success'] and json.loads(claim_replies[winner][1])['data']['created'], 'winning claim creates profile through actual product handler')
+        check(not json.loads(claim_replies[1-winner][1])['success'], 'losing claim response fails closed')
+        claimed_profiles=ajax(claimant1, {'action':'hj_ci_own_profiles'}); claimed_id=claimed_profiles['ids'][0] if len(claimed_profiles['ids'])==1 else 0
+        check(claimed_id and claimed_profiles['linked']==claimed_id and ajax(claimant1, {'action':'hj_ci_profile_claim'})['token']==claim_tokens[winner], 'one durable claim and one linked post match winning request')
+        claim_state=state(claimant1,claimed_id)
+        check(int(claim_state['snapshot']['revision'])==1 and claim_state['name']=='Synthetic Claimed '+str(winner+1), 'winning profile and schedule persisted')
 
     # Kill only the disposable PHP worker after its durable claim, before wp_insert_post writes.
     orphan1, on1 = login('synthetic_claim_orphan'); orphan2, on2 = login('synthetic_claim_orphan')

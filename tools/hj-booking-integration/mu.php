@@ -5,7 +5,9 @@ if ( getenv( 'GITHUB_ACTIONS' ) !== 'true' || getenv( 'HJ_DISPOSABLE_MARIADB_FIX
 function hj_prod_ci_barrier( $name, $wait, $marker = 'ready' ) {
 	if ( ! preg_match( '/^[a-z-]+[a-f0-9]{32}$/D', $name ) ) { throw new RuntimeException( 'Bad fixture barrier' ); }
 	$prefix = getenv( 'RUNNER_TEMP' ) . '/hj-wpdb-test-' . $name;
-	file_put_contents( $prefix . '-ready', (string) $marker );
+	// Publish only a complete marker; readers must not see a newly created empty file.
+	$ready = $prefix . '-ready'; $temporary = $ready . '-' . getmypid() . '.tmp';
+	if ( false === file_put_contents( $temporary, (string) $marker ) || ! rename( $temporary, $ready ) ) { @unlink( $temporary ); throw new RuntimeException( 'Fixture barrier marker failed' ); }
 	if ( $wait ) {
 		$until = microtime( true ) + 25;
 		while ( ! is_file( $prefix . '-released' ) && microtime( true ) < $until ) { usleep( 10000 ); clearstatcache(); }
@@ -48,12 +50,12 @@ add_action( 'hj_booking_test_event', function ( $event, $db, $context ) {
 // CI-only barrier after the product's first-profile check, before WordPress inserts the post.
 add_filter( 'wp_insert_post_data', function ( $data, $postarr ) {
  if ( ( $_POST['action'] ?? '' ) === 'hj_dash_save' && ( $_POST['pid'] ?? '' ) === '0' && isset( $_POST['hj_ci_profile_insert_hold'] ) && is_string( $_POST['hj_ci_profile_insert_hold'] ) && ( $data['post_type'] ?? '' ) === 'doctor' && empty( $postarr['ID'] ) ) {
-  hj_prod_ci_barrier( 'profile-hold-' . $_POST['hj_ci_profile_insert_hold'], true );
+  hj_prod_ci_barrier( 'profile-hold-' . $_POST['hj_ci_profile_insert_hold'], true, getmypid() );
  }
  if ( ( $_POST['action'] ?? '' ) === 'hj_dash_save' && ( $_POST['pid'] ?? '' ) === '0' && ( $_POST['hj_ci_claim_prototype'] ?? '' ) === '1' && ( $data['post_type'] ?? '' ) === 'doctor' && empty( $postarr['ID'] ) ) {
   $token = $_POST['hj_ci_claim_token'] ?? '';
   if ( ! is_string( $token ) || ! preg_match( '/^[a-f0-9]{32}$/D', $token ) ) { wp_send_json( array( 'success'=>false, 'message'=>'bad fixture claim' ), 400 ); }
-  hj_prod_ci_barrier( 'claim-hold-' . $token, true );
+  hj_prod_ci_barrier( 'claim-hold-' . $token, true, getmypid() );
   global $wpdb; $table = $wpdb->prefix . 'ci_profile_claims';
   $previous_suppression = $wpdb->suppress_errors( true );
   $n = $wpdb->query( $wpdb->prepare( "INSERT INTO `$table` (user_id, claim_token) VALUES (%d, %s) ON DUPLICATE KEY UPDATE user_id=user_id", get_current_user_id(), $token ) );

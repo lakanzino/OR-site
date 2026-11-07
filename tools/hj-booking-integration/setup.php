@@ -9,7 +9,7 @@ echo "PASS: integration exercises WordPress without ACF or ACF Pro\n";
 $doctor = get_user_by( 'login', 'synthetic_doctor_a' ); $other = get_user_by( 'login', 'synthetic_doctor_b' ); $admin = get_user_by( 'login', 'fixture_admin' );
 if ( ! $doctor || ! $other || ! $admin ) { throw new RuntimeException( 'Synthetic fixture users missing' ); }
 // Dedicated first-profile users: isolated CI fixtures, never real accounts.
-foreach ( array( 'synthetic_new_profile', 'synthetic_profile_race', 'synthetic_profile_failure', 'synthetic_profile_claim', 'synthetic_claim_orphan' ) as $login ) {
+foreach ( array( 'synthetic_new_profile', 'synthetic_profile_race', 'synthetic_profile_failure', 'synthetic_profile_claim', 'synthetic_claim_orphan', 'synthetic_profile_race_2', 'synthetic_profile_race_3', 'synthetic_profile_claim_2', 'synthetic_profile_claim_3' ) as $login ) {
  if ( get_user_by( 'login', $login ) ) { throw new RuntimeException( 'First-profile fixture already exists' ); }
  $id = wp_insert_user( array( 'user_login'=>$login, 'user_pass'=>'disposable-test-password', 'role'=>'doctor' ) );
  if ( is_wp_error( $id ) || ! $id ) { throw new RuntimeException( 'First-profile fixture user failed' ); }
