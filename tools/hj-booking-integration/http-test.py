@@ -218,10 +218,18 @@ try:
     bad2=dict(base2,hj_schedule_precision='seconds-v1',**{'hours[wednesday][start]':'09:00:70','hours[wednesday][end]':'12:00:45'})
     code,body=request(other,url,bad2)
     check(code==422 and state(other,doctor2_id)==seconds_before, 'invalid seconds leave schedule and profile unchanged')
+    for end in ('09:00:30', '09:00:29'):
+        reversed2=dict(base2,hj_schedule_precision='seconds-v1',**{'hours[wednesday][start]':'09:00:30','hours[wednesday][end]':end})
+        code,body=request(other,url,reversed2)
+        check(code==422 and state(other,doctor2_id)==seconds_before, 'equal or reverse second-level range is rejected without writes')
     good2=dict(base2,hj_schedule_precision=browser_values['precision'],**{'hours[wednesday][start]':browser_values['start'],'hours[wednesday][end]':browser_values['end'],'hj_ci_time_format':'H:i'})
     code,body=request(other,url,good2); after=state(other,doctor2_id)
     check(code==200 and json.loads(body)['success'] and json.loads(after['snapshot']['rows_json'])==second_rows and int(after['snapshot']['revision'])==int(seconds_before['snapshot']['revision'])+1 and after['snapshot']['rows_hash']==hashlib.sha256(after['snapshot']['rows_json'].encode()).hexdigest(), 'actual dashboard save preserves seconds in canonical snapshot')
     check(after['display'][0]['start_time']=='09:00' and after['display'][0]['end_time']=='12:00', 'minute display filter never truncates canonical snapshot')
+    same_minute=dict(base2,hj_schedule_precision='seconds-v1',hj_schedule_revision=str(after['snapshot']['revision']),**{'hours[wednesday][start]':'09:00:30','hours[wednesday][end]':'09:00:55','hours[thursday][closed]':'1','hours[thursday][start]':'bad'})
+    code,body=request(other,url,same_minute); narrow=state(other,doctor2_id)
+    narrow_rows=json.loads(narrow['snapshot']['rows_json'])
+    check(code==200 and narrow_rows==[{'day_of_week':'wednesday','is_closed':0,'start_time':'09:00:30','end_time':'09:00:55'},{'day_of_week':'thursday','is_closed':1,'start_time':'','end_time':''}], 'same-minute second precision and closed day are saved correctly')
     check(ajax(other, {'action':'hj_ci_replace_snapshot','doctor':str(doctor2_id),'_hjn':other_nonce,'rows_json':original['snapshot']['rows_json']})['status']=='updated', 'restore other synthetic doctor schedule for later fixture checks')
 
     doctor2_revision = int(state(other, doctor2_id)['snapshot']['revision'])
