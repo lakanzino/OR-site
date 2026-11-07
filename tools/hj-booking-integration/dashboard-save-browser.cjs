@@ -40,6 +40,28 @@ const {chromium} = require('playwright-core');
     await page.waitForFunction(value=>document.querySelector('[name="hj_schedule_revision"]').value===String(Number(value)+1),rev);
     assert.equal(await page.locator('[data-hj="save"]').isDisabled(),false);
     await page.close();
+    // Editing while a save is in flight cannot be reported as saved or silently reloaded.
+    for (const scenario of ['text','time','closed','programmatic','new-profile']) {
+      page=await setup(); const initial=await page.locator('[name="hj_schedule_revision"]').inputValue();
+      await page.evaluate(()=>window.__send());
+      if (scenario==='text' || scenario==='new-profile') await page.locator('[name="name_fa"]').fill('Changed while saving');
+      if (scenario==='time') await page.locator('[name="hours[wednesday][start]"]').fill('10:00:30');
+      if (scenario==='closed') await page.locator('[name="hours[wednesday][closed]"]').check();
+      if (scenario==='programmatic') await page.evaluate(()=>{document.querySelector('[name="name_fa"]').value='Silent script change';});
+      await page.evaluate(({revision,created})=>window.__reply(200,{success:true,data:{schedule_revision:Number(revision)+1,created}}),{revision:initial,created:scenario==='new-profile'});
+      await page.waitForFunction(()=>document.querySelector('[data-err="form"]').textContent.includes('بعد از ارسال'));
+      assert.equal(await page.locator('[name="hj_schedule_revision"]').inputValue(),String(Number(initial)+1),scenario);
+      assert.equal(await page.locator('[data-hj="save"]').isDisabled(),scenario==='new-profile',scenario);
+      if(scenario==='new-profile') {
+        assert.equal(await page.locator('[name="name_fa"]').inputValue(),'Changed while saving');
+        assert.match(await page.locator('[data-err="form"]').textContent(),/یادداشت کنید/);
+        await page.evaluate(()=>window.__send()); assert.equal(await page.evaluate(()=>window.__count),1);
+      } else {
+        await page.evaluate(()=>window.__send()); assert.equal(await page.evaluate(()=>window.__count),2);
+        assert.equal(await page.evaluate(()=>window.__form.hj_schedule_revision),String(Number(initial)+1));
+      }
+      await page.close();
+    }
     for (const scenario of ['network','503','409','bad-json','bad-revision','timeout']) {
       page=await setup(); await page.evaluate(()=>window.__send());
       await page.evaluate(kind=>{

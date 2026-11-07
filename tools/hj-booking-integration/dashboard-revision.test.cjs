@@ -6,20 +6,21 @@ const path = require('node:path');
 const script = fs.readFileSync(path.join(__dirname, '../../plugins/hamyar-doctors/assets/js/dashboard.js'), 'utf8');
 const flush = () => new Promise(resolve => setImmediate(resolve));
 function harness(hasRevision=true) {
-  let submit, timer, resolveFetch, rejectFetch, calls = 0;
+  let submit, timer, resolveFetch, rejectFetch, calls = 0, reloads = 0;
+  const fields={name:'before'};
   const revision = { value: '4' }, button = {disabled:false}, error = {textContent:''};
   const root = {querySelector(sel) { return sel === '[data-err="form"]' ? error : null; },querySelectorAll() { return []; },addEventListener() {}};
   const form = {addEventListener(type, fn) { if (type === 'submit') submit = fn; },querySelector(sel) { if (sel === 'input[name="hj_schedule_revision"]') return hasRevision ? revision : null; if (sel === '[data-hj="save"]') return button; return null; }};
   let sent;
-  class FakeFormData { constructor() { this.data = hasRevision ? {hj_schedule_revision: revision.value} : {}; } append(k,v) { this.data[k]=v; } }
+  class FakeFormData { constructor() { this.data = hasRevision ? {hj_schedule_revision: revision.value,name:fields.name} : {}; } append(k,v) { this.data[k]=v; } forEach(fn) { Object.entries(this.data).forEach(([k,v])=>fn(v,k)); } }
   const context = {
     document: {getElementById(id) { return id === 'hj-dash' ? root : id === 'hj-dash-form' ? form : null; }},
-    window: {HJ_DASH: {nonce:'fixture',ajax:'/ajax',i18n:{fail:'failed'}},location:{reload(){}},setTimeout(fn) { timer=fn; return 1; },clearTimeout() {timer=null;}},
+    window: {HJ_DASH: {nonce:'fixture',ajax:'/ajax',i18n:{fail:'failed'}},location:{reload(){reloads++;}},setTimeout(fn) { timer=fn; return 1; },clearTimeout() {timer=null;}},
     FormData:FakeFormData, fetch(url,options) { calls++; sent=options.body.data; return new Promise((resolve,reject)=>{resolveFetch=resolve;rejectFetch=reject;}); },
     Promise,Number,String,Array,Object,Event:class {},
   };
   vm.runInNewContext(script,context,{filename:'dashboard.js'});
-  return {button,error,revision,submit(){submit({preventDefault(){}});},sent(){return sent;},calls(){return calls;},fireTimer(){assert.ok(timer); const fn=timer;timer=null;fn();},reply(status,body){resolveFetch({status,json:()=>Promise.resolve(body)});},invalidJson(status){resolveFetch({status,json:()=>Promise.reject(new Error('truncated'))});},reject(){rejectFetch(new Error('network'));}};
+  return {button,error,revision,fields,reloads(){return reloads;},submit(){submit({preventDefault(){}});},sent(){return sent;},calls(){return calls;},fireTimer(){assert.ok(timer); const fn=timer;timer=null;fn();},reply(status,body){resolveFetch({status,json:()=>Promise.resolve(body)});},invalidJson(status){resolveFetch({status,json:()=>Promise.reject(new Error('truncated'))});},reject(){rejectFetch(new Error('network'));}};
 }
 (async () => {
   let h=harness(); h.submit(); h.submit();
@@ -28,6 +29,13 @@ function harness(hasRevision=true) {
   assert.equal(h.button.disabled,false); assert.equal(h.error.textContent,'invalid'); assert.equal(h.revision.value,'4');
   h.submit(); assert.equal(h.calls(),2); h.reply(200,{success:true,data:{schedule_revision:5}}); await flush();
   assert.equal(h.revision.value,'5'); assert.equal(h.button.disabled,false); assert.equal(h.error.textContent,'');
+  h=harness(); h.submit(); h.fields.name='after'; h.reply(200,{success:true,data:{schedule_revision:5}}); await flush();
+  assert.equal(h.revision.value,'5'); assert.equal(h.button.disabled,false); assert.match(h.error.textContent,/بعد از ارسال هنوز ذخیره نشده/);
+  h.submit(); assert.equal(h.sent().name,'after'); assert.equal(h.sent().hj_schedule_revision,'5'); h.reply(200,{success:true,data:{schedule_revision:6}}); await flush();
+  assert.equal(h.error.textContent,''); assert.equal(h.revision.value,'6');
+  h=harness(); h.submit(); h.fields.name='after'; h.reply(200,{success:true,data:{schedule_revision:5,created:true}}); await flush();
+  assert.equal(h.reloads(),0); assert.equal(h.button.disabled,true); assert.match(h.error.textContent,/یادداشت کنید/); h.submit(); assert.equal(h.calls(),1);
+  h=harness(); h.submit(); h.reply(200,{success:true,data:{schedule_revision:5,created:true}}); await flush(); assert.equal(h.reloads(),1);
   for (const scenario of ['network','truncated','503','409','bad-success','bad-revision','timeout']) {
     h=harness(); h.submit();
     if (scenario==='network') h.reject();

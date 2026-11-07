@@ -81,21 +81,40 @@
 
 	if (form) {
 		var schedulePending = false;
-		var scheduleUnknown = false;
+		var scheduleBlocked = false;
 		var saveButton = form.querySelector('[data-hj="save"]');
 		var unknownMessage = 'نتیجهٔ ذخیره مشخص نیست؛ دوباره ذخیره نکنید. تغییرات را یادداشت کنید و با مدیر سایت وضعیت را بررسی کنید؛ بازخوانی به‌تنهایی نتیجه را قطعی نمی‌کند.';
 		function markScheduleUnknown() {
 			schedulePending = false;
-			scheduleUnknown = true;
+			scheduleBlocked = true;
 			if (saveButton) { saveButton.disabled = true; }
 			err('form', unknownMessage);
+		}
+		// Compare successful controls in order, including repeated names and omitted disabled fields.
+		function formEntries(data) {
+			var entries = [];
+			data.forEach(function (value, key) { entries.push([key, value]); });
+			return entries;
+		}
+		function changedSinceSubmit(sent) {
+			try {
+				var current = formEntries(new FormData(form));
+				if (sent.length !== current.length) { return true; }
+				for (var i = 0; i < sent.length; i++) {
+					// Treat non-string values conservatively; a File may have changed.
+					if (sent[i][0] !== current[i][0] || typeof sent[i][1] !== 'string' || sent[i][1] !== current[i][1]) { return true; }
+				}
+				return false;
+			} catch (ex) { return true; }
 		}
 		form.addEventListener('submit', function (e) {
 			e.preventDefault();
 			var revision = form.querySelector('input[name="hj_schedule_revision"]');
-			if (revision && (schedulePending || scheduleUnknown)) { return; }
+			if (revision && (schedulePending || scheduleBlocked)) { return; }
 			clearErrs();
 			var fd = new FormData(form);
+			var submittedFields = null;
+			if (revision) { try { submittedFields = formEntries(fd); } catch (ex) {} }
 			fd.append('action', 'hj_dash_save');
 			if (revision) {
 				// A lost response does not imply rollback. Never retry this form automatically.
@@ -111,7 +130,7 @@
 				request.then(function (response) {
 					return response.json().then(function (body) { return { status: response.status, body: body }; });
 				}).then(function (reply) {
-					if (scheduleUnknown) { return; } // A late response cannot unlock a timed-out form.
+					if (scheduleBlocked) { return; } // A late response cannot unlock a timed-out form.
 					var res = reply.body;
 					if (reply.status === 422 && res && res.success === false && typeof res.message === 'string' && res.errors && typeof res.errors === 'object' && !Array.isArray(res.errors)) {
 						window.clearTimeout(timer); schedulePending = false;
@@ -124,15 +143,22 @@
 					if (reply.status !== 200 || !res || res.success !== true || !res.data || !Number.isSafeInteger(oldRevision) || oldRevision < 0 || !Number.isSafeInteger(res.data.schedule_revision) || res.data.schedule_revision !== oldRevision + 1) {
 						window.clearTimeout(timer); markScheduleUnknown(); return;
 					}
+					var changed = changedSinceSubmit(submittedFields);
+					submittedFields = null; // Never store profile fields outside this request.
 					revision.value = String(res.data.schedule_revision);
-					if (res.data.created) { window.location.reload(); return; }
+					if (res.data.created) {
+						if (!changed) { window.location.reload(); return; }
+						window.clearTimeout(timer); schedulePending = false; scheduleBlocked = true;
+						err('form', 'درخواست قبلی موفق بود؛ تغییرات بعد از ارسال ذخیره نشده‌اند. آنها را یادداشت کنید و برای ادامه صفحه را بازخوانی کنید.');
+						return;
+					}
 					applyState(res.data);
 					var hint = q('[data-hj="pid-hint"]');
 					if (hint) { hint.hidden = true; }
 					qa('[data-needs-pid]').forEach(function (el) { el.disabled = false; });
 					window.clearTimeout(timer); schedulePending = false;
 					if (saveButton) { saveButton.disabled = false; }
-					err('form', '');
+					err('form', changed ? 'درخواست قبلی موفق بود؛ تغییرات بعد از ارسال هنوز ذخیره نشده‌اند.' : '');
 				}).catch(function () { window.clearTimeout(timer); markScheduleUnknown(); });
 				return;
 			}
