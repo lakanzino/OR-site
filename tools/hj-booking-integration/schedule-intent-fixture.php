@@ -2,7 +2,7 @@
 /** CI-only experiment: durable pre-intent and recovery. NOT an endpoint or plugin. */
 if (PHP_SAPI!=='cli' || getenv('GITHUB_ACTIONS')!=='true' || getenv('HJ_DISPOSABLE_MARIADB_FIXTURE')!=='1') { exit(1); }
 require '/wordpress/wp-load.php';
-if (DB_NAME!=='hj_fixture_db' || DB_HOST!=='127.0.0.1:3306 || $GLOBALS['wpdb']->prefix!=='hjt_' || WP_HOME!=='http://example.invalid') { exit(1); }
+if (DB_NAME!=='hj_fixture_db' || DB_HOST!=='127.0.0.1:3306' || $GLOBALS['wpdb']->prefix!=='hjt_' || WP_HOME!=='http://example.invalid') { exit(1); }
 require_once getenv('GITHUB_WORKSPACE').'/plugins/hamyar-doctors/hamyar-doctors.php'; hj_doctors(); do_action('init');
 global $wpdb;
 $admin=get_user_by('login','fixture_admin'); $owner=get_user_by('login','synthetic_doctor_a'); $outsider=get_user_by('login','synthetic_race_0');
