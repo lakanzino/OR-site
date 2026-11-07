@@ -39,6 +39,12 @@ const server=http.createServer((req,res)=>{
     assert.match(await page.locator('#status').textContent(),/بازخوانی/); assert.equal(await page.locator('#save').isDisabled(),true,'resolved view must not submit old form');
     await page.reload(); await page.waitForFunction(()=>window.fixtureState()==='idle'); assert.equal(await page.locator('body').getAttribute('data-revision'),'4'); assert.equal(await page.locator('#start').inputValue(),'09:15');
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth),false);
-    await page.close(); console.log('PASS: synthetic mobile browser handles lost response, reload, ambiguous status and historical receipt without storing payload');
+    await page.close();
+    const restricted=await browser.newContext({viewport:{width:375,height:850}});
+    await restricted.addInitScript(() => Object.defineProperty(window,'sessionStorage',{get(){throw new Error('storage blocked');}}));
+    const blockedPage=await restricted.newPage(); await blockedPage.goto('http://127.0.0.1:'+server.address().port+'/');
+    await blockedPage.waitForFunction(()=>window.fixtureState()==='storage_error');
+    assert.equal(await blockedPage.locator('#save').isDisabled(),true); assert.equal(calls,1); await restricted.close();
+    console.log('PASS: synthetic mobile browser handles lost response, reload, ambiguous status, restricted storage and historical receipt without storing payload');
   } finally {await browser.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(e=>{console.error(e);server.close();process.exitCode=1;});
