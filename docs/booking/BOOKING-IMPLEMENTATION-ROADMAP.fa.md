@@ -107,3 +107,31 @@
 **گام ۵.۱۸:** [پژوهش و inventory آزمایشی نگهداری](BOOKING-RETENTION-RESEARCH.fa.md)؛ حذف خودکار و بازیابی محصولی بدون اثبات افق retry، تخلیهٔ writerها و سازگاری restore بازند.
 
 **نتیجهٔ گام ۵.۱۸:** [CI inventory و ضدنمونه‌ها](https://github.com/lakanzino/OR-site/actions/runs/42373907898) موفق شد؛ بازگردانی intent قدیمی یا حذف tombstone می‌تواند اجرای دیررس را دوباره ممکن کند، پس حذف خودکار انتخاب نشد.
+
+**گام ۵.۱۹:** [اعتبارسنجی دقیق ورودی ساعات داشبورد v1](BOOKING-DASHBOARD-TIME-VALIDATION.fa.md) پیش از هر ذخیره؛ محدودیت ثانیهٔ snapshot قدیمی و بدهی‌های فرم همچنان بازند. بستهٔ ۰٫۳٫۴۳ آزمایشی است.
+
+**نتیجهٔ گام ۵.۱۹:** [CI مسیر و فرم](https://github.com/lakanzino/OR-site/actions/runs/42375416859) موفق شد؛ ساعت نامعتبر v1 رد می‌شود. دقت ثانیه در snapshot قبلی و بدهی‌های فرم بازند.
+
+**گام ۵.۲۰، CI موفق:** [حفظ ثانیهٔ snapshot v1](BOOKING-DASHBOARD-SECONDS.fa.md) و جلوگیری از ارسال فرم قدیمی بدون نشانهٔ precision؛ نویسندهٔ خارج از پروتکل، migration و بدهی‌های فرم همچنان بازند.
+
+**گام ۵.۲۱، CI موفق:** [اعتبارسنجی کامل‌بودن فرم برنامهٔ v1](BOOKING-DASHBOARD-FORM-COMPLETENESS.fa.md)؛ این گام سه بدهی اصلی و مهاجرت را حل نمی‌کند.
+
+**گام ۵.۲۲، CI موفق:** [هشدار محافظه‌کارانهٔ نتیجهٔ نامعلوم در فرم v1](BOOKING-DASHBOARD-UNKNOWN-RESPONSE.fa.md)؛ بازیابی پایدار و بدهی‌های اصلی همچنان بازند.
+
+**گام ۵.۲۳، CI موفق:** [حفظ و هشدار ویرایش حین ذخیرهٔ v1](BOOKING-DASHBOARD-INFLIGHT-EDITS.fa.md)؛ سه بدهی سروری و مهاجرت همچنان بازند.
+
+**گام ۵.۲۴، CI موفق:** [آزمون اتصال مرورگر به ذخیرهٔ داشبورد](BOOKING-DASHBOARD-BROWSER-E2E.fa.md) در محیط دورریختنی؛ OAuth و محیط واقعی خارج از پوشش.
+
+**گام ۵.۲۵، CI موفق:** [race ویرایش فرم با writer واقعی](BOOKING-DASHBOARD-PENDING-E2E.fa.md)؛ آزمون دورریختنی و محدود.
+
+**گام ۵.۲۶، CI موفق:** [پاسخ ازدست‌رفته پس از ذخیرهٔ واقعی](BOOKING-DASHBOARD-LOST-RESPONSE-E2E.fa.md)؛ شبیه‌سازی بعد از پاسخ کامل، نه قطع COMMIT.
+
+**گام ۵.۲۷، CI موفق:** [آزمون مرورگر در ساخت نخستین پروفایل](BOOKING-FIRST-PROFILE-BROWSER.fa.md)، بدون ادعای رفع ایجاد تکراری.
+
+**گام ۵.۲۸، نقص تأییدشده در CI:** [race ساخت اولین پروفایل](BOOKING-FIRST-PROFILE-RACE.fa.md) دو پست مستقل ایجاد کرد؛ هماهنگی کاربر و رسیدگی بدون حذف خودکار هنوز لازم است.
+
+**گام ۵.۲۹، CI موفق:** [شکست بعد از ایجاد پروفایل، پیش از COMMIT برنامه](BOOKING-FIRST-PROFILE-FAILURE.fa.md)، بدون دست‌کاری سایت.
+
+**گام ۵.۳۰، CI موفق:** [claim یکتای بادوام به‌صورت نمونهٔ آزمایشی](BOOKING-FIRST-PROFILE-CLAIM-SPIKE.fa.md)، بدون تغییر محصول.
+
+**گام ۵.۳۱، CI موفق با ناپایداری barrier باز:** [مرگ worker و مسیر غیرهماهنگ در نمونهٔ claim](BOOKING-FIRST-PROFILE-CLAIM-FAILURE.fa.md)، بازیابی عملیاتی هنوز طراحی و اثبات نشده است.

@@ -342,6 +342,8 @@ jobs:
       - name: Exercise unchanged repository plugin booking backend
         run: |
           set -e
+          export NODE_PATH="$RUNNER_TEMP/hj-capacity-browser/node_modules"
+          export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
           node tools/hj-booking-integration/dashboard-revision.test.cjs
           node tools/hj-booking-integration/patient-form.test.cjs
           php -l plugins/hamyar-doctors/includes/booking-form.php

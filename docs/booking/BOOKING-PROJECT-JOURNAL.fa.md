@@ -491,3 +491,57 @@
 [پژوهش Stack Overflow، Stripe و Rails و طرح آزمایش](BOOKING-RETENTION-RESEARCH.fa.md) ثبت شد. inventory محدود به مدیر CI تنها شمارش و `retain_all` می‌دهد، بدون کلید یا دادهٔ بیمار؛ خرابی را unknown می‌داند. دو ضدنمونهٔ عمدی در CI برای بازگردانی ردیف prepared قبل از لغو و حذف tombstone و سپس اجرای دیررس طراحی شدند. این بازیابی واقعی یا راهکار محصولی نیست؛ نتیجهٔ CI در پایین آمده، حذف خودکار و استقرار مجاز نشده، محصول/ZIP/سایت بدون تغییر و **۷۵٪ ثابت** است.
 
 **نتیجهٔ مرحلهٔ ۵.۱۸:** [CI شاخه 42373903653](https://github.com/lakanzino/OR-site/actions/runs/42373903653) و [CI درخواست بررسی 42373907898](https://github.com/lakanzino/OR-site/actions/runs/42373907898) موفق شدند. inventory بدون تغییر intent/snapshot فقط به مدیر داده شد و در خرابی جدول یا داده unknown ماند. کپی ساختگی ردیف prepared به پیش از لغو بازگردانده شد و apply دیررس را ممکن کرد؛ حذف عمدی tombstone نیز prepare و apply دیررس را دوباره مجاز کرد. این‌ها ضدنمونه‌اند نه راهکار restore؛ مقدار نگهداری، تخلیهٔ workerها، نگهداری در بکاپ و همبستگی قطعی بازند. افزونه/ZIP/سایت دست نخورده و **۷۵٪ ثابت**، چون هنوز قابلیت نصب‌پذیر اضافه نشده است. گام بعد ارزیابی عملیاتی migration و بازیابی، با محدودسازی دامنه و بدون حذف خودکار است.
+
+### مرحلهٔ ۵.۱۹ — جلوگیری از clamp ورودی ساعات v1 | CI موفق
+
+[شرح و حدود](BOOKING-DASHBOARD-TIME-VALIDATION.fa.md): فقط هنگام فعال‌بودن ذخیرهٔ برنامهٔ v1، ورودی روز باز پیش از ایجاد پروفایل/ذخیره از نظر ساختار، بازهٔ ساعت و دقیقه و صفر بودن ثانیه بررسی می‌شود؛ دیگر دادهٔ نامعتبر به ساعت مجاز تبدیل یا بی‌صدا حذف نمی‌شود. پرچم خاموش و مسیر v2 دست‌نخورده‌اند. نسخهٔ افزونه/ZIP به ۰٫۳٫۴۳ افزایش یافت؛ ZIP صرفاً آزمایشی است. بسته و تست Node محلی موفق؛ CI در انتظار، سه بدهی فرم و حفظ ثانیهٔ غیرصفر snapshot قدیمی بازند؛ سایت زنده تغییر نکرد. تخمین **۷۵٪ ثابت** است.
+
+**نتیجهٔ مرحلهٔ ۵.۱۹:** [CI نوبت‌دهی 42375416859](https://github.com/lakanzino/OR-site/actions/runs/42375416859)، [ماتریس MariaDB 42375416877](https://github.com/lakanzino/OR-site/actions/runs/42375416877) و سایر گیت‌های PR موفق شدند. ورودی ساعت/دقیقهٔ خارج محدوده، ثانیهٔ غیرصفر یا نامعتبر و ساختار تو در تو در مسیر واقعی v1 با ۴۲۲ و بدون تغییر snapshot، mirror و نام رد شدند؛ `9:00:00` پذیرفته و به دقیقه نرمال شد. بستهٔ ۰٫۳٫۴۳ با SHA-256 `243683014883e22f78f7f2971e095ff2bad852e872c63b49bc23521340eeebd3` از منابع ساخته و تطبیق یافت. حفظ ثانیهٔ snapshot قبلی، نتیجهٔ نامعلوم، idempotency، کل فرم و محیط واقعی هنوز بازند؛ بسته آزمایشی است و استقرار نشده. تخمین **۷۵٪ ثابت** چون گام محدود و مهاجرت و بدهی‌های اصلی پابرجاست. گام بعد حفاظت از دقت ثانیه هنگام ویرایش snapshot قدیمی بدون بازنویسی خاموش است.
+
+### مرحلهٔ ۵.۲۰ — حفظ ثانیه در ویرایش snapshot قدیمی | CI موفق
+
+[شرح و محدودیت‌ها](BOOKING-DASHBOARD-SECONDS.fa.md): snapshot معتبر v1 به دقت ثانیه رندر و برای همان روز `step=1` می‌گیرد؛ parser مشترک ساعات را سخت‌گیرانه و بدون clamp نگه می‌دارد. نشانهٔ نسخهٔ فرم، فرم قدیمی و فاقد آن را با ۴۰۹ رد می‌کند؛ این نشانه مجوز نیست و worker قدیمی را متوقف نمی‌کند. فیلتر دقیقه‌ای فقط mirror را کوتاه می‌کند. آزمون HTTP واقعی و Chromium مستقل، مرزهای ثانیه و ZIP نسخهٔ ۰٫۳٫۴۴ تأیید شد؛ CI [race](https://github.com/lakanzino/OR-site/actions/runs/42376716378) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42376716305) موفق، سه بدهی فرم و migration باز، سایت بدون تغییر و **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۲۱ — جلوگیری از ارسال ناقص برنامه | CI موفق
+
+[طرح و محدودیت](BOOKING-DASHBOARD-FORM-COMPLETENESS.fa.md): نبود روز/نشانگر/ساعت در فرم کامل v1 پیش از write رد می‌شود؛ روز خالی و checkbox تعطیل صریح، بدون نیاز به ارسال ساعت disabled، همچنان قابل ذخیره‌اند. فرم ۰٫۳٫۴۴ بازمانده نیازمند refresh است؛ نشانگر امنیت در برابر نویسندهٔ غیرهماهنگ نیست. تست HTTP واقعی و Chromium مستقل، [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42377948995) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42377948983) موفق؛ شکست نخست به دلیل هم‌نامی متغیر در harness اصلاح و بازآزمایی شد. بستهٔ آزمایشی ۰٫۳٫۴۵ ساخته و تطبیق یافت؛ محیط سایت، migration و سه بدهی فرم بازند؛ **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۲۲ — محافظ محلی پیام نتیجهٔ نامعلوم | CI موفق
+
+[شرح و محدودیت](BOOKING-DASHBOARD-UNKNOWN-RESPONSE.fa.md): در فرم v1 ارسال موازی مسدود و در خطای شبکه، ۵xx، پاسخ ناسازگار یا timeout، پیام نتیجهٔ نامعلوم و مسدودسازی موقت همان صفحه اعمال می‌شود؛ خطای معتبر ۴۲۲ قابل اصلاح است. این فقط محافظ کلاینتی است؛ با refresh از بین می‌رود، وضعیت سروری را تعیین نمی‌کند و idempotency یا اتمی‌بودن فرم نیست. Node و Chromium با شبکهٔ ساختگی موفق؛ [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42379993140) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42379993076) سبز؛ بستهٔ ۰٫۳٫۴۶ آزمایشی، سه بدهی و migration باز، **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۲۳ — ویرایش حین ذخیرهٔ فرم v1 | CI موفق
+
+[شرح و محدودیت](BOOKING-DASHBOARD-INFLIGHT-EDITS.fa.md): مقایسهٔ دادهٔ قابل ارسال در لحظهٔ درخواست و پاسخ موفق، تغییرات جدید را از نسخهٔ تأییدشده تفکیک می‌کند؛ در ساخت پروفایل، به‌جای reload نابهنگام، تغییرات در صفحه حفظ و کاربر به یادداشت و بازخوانی هدایت می‌شود. آزمون Node و Chromium مستقل موفق؛ [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42412896815) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42412896874) سبز، ۰٫۳٫۴۷ آزمایشی، بدهی‌های اصلی و migration باز و **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۲۴ — اتصال Chromium به ذخیرهٔ واقعی داشبورد | CI موفق
+
+[شرح](BOOKING-DASHBOARD-BROWSER-E2E.fa.md): آزمون دورریختنی ورود وردپرس، فرم واقعی افزونه، AJAX و snapshot/MariaDB را به Chromium متصل می‌کند؛ این OAuth یا navigation واقعی پوسته نیست. کد افزونه و ZIP تغییر نکرد؛ [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42415588894) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42415588918) موفق، بدهی‌های فرم و migration باز و **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۲۵ — race ویرایش حین ذخیره در HTTP واقعی | CI موفق
+
+[طرح](BOOKING-DASHBOARD-PENDING-E2E.fa.md) با barrier واقعی mutex در CI: بررسی حفظ محتوای ارسال‌شده، هشدار ویرایش بعدی، جلوگیری از ارسال موازی و ذخیرهٔ بعدی با revision جدید؛ داده و سرور دورریختنی، محصول و ZIP بدون تغییر. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42415895217) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42415895220) موفق، سه بدهی و migration باز، **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۲۶ — پاسخ ازدست‌رفته پس از commit واقعی | CI موفق
+
+[طرح و محدودیت](BOOKING-DASHBOARD-LOST-RESPONSE-E2E.fa.md): در Chromium متصل به وردپرس، پاسخ واقعی و کامل پس از commit عمداً توسط wrapper آزمون دور انداخته می‌شود؛ حفظ snapshot، قفل همان صفحه و از بین رفتن قفل در صفحهٔ تازه بررسی می‌شود. این قطع شبکه/میانهٔ COMMIT، idempotency یا بازیابی پایدار نیست؛ کد افزونه و ZIP بدون تغییر، [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42416162949) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42416163047) موفق، سه بدهی و migration باز، **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۲۷ — ساخت اولین پروفایل و ویرایش در حال انتظار | CI موفق
+
+[طرح](BOOKING-FIRST-PROFILE-BROWSER.fa.md): فرم واقعی، کوکی WordPress، جراح تازه و barrier در مسیر ذخیرهٔ واقعی؛ تأیید حفظ ویرایش‌های بعد از ارسال هنگام ایجاد. آزمون محدود به fixture، کد افزونه بدون تغییر؛ [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42416938576) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42416938686) موفق؛ بدهی‌ها باز، **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۲۸ — race ایجاد اولین پروفایل | ضدنمونه تأیید شد
+
+[طرح](BOOKING-FIRST-PROFILE-RACE.fa.md): دو نشست برای یک جراح بدون پروفایل پس از check و پیش از درج زیر barrier CI به رقابت گذاشته شدند: هر دو موفق، دو پست و دو snapshot مستقل ایجاد شد و usermeta خوانده‌شده به یکی اشاره کرد. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42417226975) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42417226818) سبزند چون ضدنمونهٔ نقص تأیید شد، نه رفع آن. کد افزونه و ZIP بدون تغییر؛ نقص جدید، سه بدهی فرم و migration باز، **۷۵٪ ثابت**؛ گام بعد طراحی هماهنگی ساخت برای هر کاربر و مدیریت دادهٔ احتمالی تکراری بدون حذف خودکار.
+
+### مرحلهٔ ۵.۲۹ — شکست پیش از COMMIT برنامه در ساخت پروفایل | CI موفق
+
+[آزمون](BOOKING-FIRST-PROFILE-FAILURE.fa.md) از KILL اتصال transaction برنامه پس از درج پست در WordPress و سپس کنترل وضعیت واقعی DB استفاده می‌کند. پست و usermeta ماندند، snapshot و meta نام باقی نماند؛ retry فقط پس از بازرسی مستقل در fixture همان پست را استفاده کرد. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42418232759) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42418232776) سبز؛ قطع در میانهٔ COMMIT آزموده نشد، کد افزونه بدون تغییر، **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۳۰ — claim پایدار ایجاد پروفایل | CI موفق
+
+[نمونهٔ صرفاً CI](BOOKING-FIRST-PROFILE-CLAIM-SPIKE.fa.md) از کلید یکتای کاربر پیش از `wp_insert_post` برای رد دومین تلاش هم‌زمان استفاده می‌کند. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42418532222) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42418532130) موفق: از دو درخواست هماهنگ، یک برنده، یک رد و یک پست ثبت شد. نه محصول است، نه رفع همهٔ writerها یا اتمی‌بودن؛ claim بی‌انقضا ممکن است بازیابی عملیاتی بخواهد، **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۳۱ — مرگ worker پس از claim و writer غیرهماهنگ | CI موفق، ناپایداری barrier باز
+
+[آزمون](BOOKING-FIRST-PROFILE-CLAIM-FAILURE.fa.md): SIGKILL worker دورریختنی پس از claim و پیش از درج، claim بی‌پست را باقی گذاشت و retry هماهنگ ۴۰۹ گرفت؛ writer اصلی بدون claim پست و snapshot ساخت. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42419441515) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42419441465) موفق؛ دو اجرای پیشین barrier شکست خوردند و علت ناپایداری هنوز مشخص نیست. محصول و ZIP بدون تغییر، **۷۵٪ ثابت**.
