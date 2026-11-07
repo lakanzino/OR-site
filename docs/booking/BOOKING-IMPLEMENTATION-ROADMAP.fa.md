@@ -83,3 +83,5 @@
 **گام ۵.۱۲، در انتظار CI:** [نمونهٔ توقف مستقل v1](BOOKING-V1-SAFE-PAUSE-EXPERIMENT.fa.md) روی کپی موقت تهیه شد؛ fallback بدون latch فقط وضعیت هشدار است و اتصال محصولی، migration و ایمنی worker قدیمی هنوز بازند.
 
 **نتیجهٔ گام ۵.۱۲:** [CI آزمایش توقف v1](https://github.com/lakanzino/OR-site/actions/runs/42362313264) موفق شد؛ fallback بدون latch در ضدنمونه امکان بازشدن با resume قدیمی دارد. مهاجرت، اعمال intent، قرنطینهٔ عملیاتی و worker قدیمی همچنان بازند.
+
+**گام ۵.۱۳، در انتظار CI:** [نمونهٔ ابطال intent](BOOKING-INTENT-CANCELLATION-EXPERIMENT.fa.md) برای جلوگیری از اجرای دیررس و حفظ نتیجهٔ قبلاً ثبت‌شده افزوده شد؛ بازیابی تاریخچه بدون کلید و یکپارچه‌سازی با توقف و writerهای واقعی بازند.

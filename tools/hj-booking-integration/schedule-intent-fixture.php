@@ -15,6 +15,17 @@ function intent_rows($start) { return array(array('day_of_week'=>'monday','is_cl
 function intent_snapshot($doctor) { global $wpdb; $s=hj_booking_table('schedules'); return $wpdb->get_row($wpdb->prepare("SELECT revision,rows_json,rows_hash FROM `$s` WHERE doctor_id=%d",$doctor),ARRAY_A); }
 function intent_valid_key($key) { return is_string($key) && preg_match('/^[a-f0-9]{32}$/D',$key); }
 function intent_hash($doctor,$actor,$revision,$rows) { return hash_hmac('sha256',wp_json_encode(array('intent-v1',$doctor,$actor,$revision,$rows)),wp_salt('auth')); }
+/** Do not interpret malformed state, activity or revision as a valid outcome. */
+function intent_record_valid($row) {
+ if (!is_array($row) || !array_key_exists('state',$row) || !array_key_exists('active',$row) || !array_key_exists('result_revision',$row)) { return false; }
+ $raw=(string)$row['result_revision'];
+ if (!preg_match('/^(0|[1-9][0-9]*)$/D',$raw) || strlen($raw)>strlen((string)PHP_INT_MAX) || (string)(int)$raw!==$raw) { return false; }
+ if ($row['state']==='prepared') { return (string)$row['active']==='1' && (int)$raw===0; }
+ if ($row['state']==='cancelled') { return $row['active']===null && (int)$raw===0; }
+ if ($row['state']==='completed') { return (string)$row['active']==='1' && (int)$raw>0; }
+ if ($row['state']==='acknowledged') { return $row['active']===null && (int)$raw>0; }
+ return false;
+}
 /** One active intent per doctor; completed history retained forever in this experiment. */
 function ci_intent_prepare($doctor,$key,$revision,$rows) {
  global $table;
@@ -23,11 +34,16 @@ function ci_intent_prepare($doctor,$key,$revision,$rows) {
  $actor=get_current_user_id(); $hash=intent_hash($doctor,$actor,$revision,$rows);
  return hj_booking_transaction($doctor,'ci_intent_prepare',function($db) use($doctor,$key,$actor,$hash,$revision,$table) {
   if (get_current_user_id()!==$actor || !hj_booking_can_configure($doctor)) { return array('status'=>'forbidden'); }
-  $old=hj_booking_row($db,$db->prepare("SELECT actor_id,payload_hash,state,result_revision FROM `$table` WHERE doctor_id=%d AND request_key=%s",$doctor,$key));
+  $old=hj_booking_row($db,$db->prepare("SELECT actor_id,payload_hash,state,active,result_revision FROM `$table` WHERE doctor_id=%d AND request_key=%s",$doctor,$key));
   if ($old) {
    if ((int)$old['actor_id']!==$actor || !hash_equals($old['payload_hash'],$hash)) { return array('status'=>'blocked'); }
+   if (!intent_record_valid($old)) { return array('status'=>'unknown'); }
    return array('status'=>$old['state'],'revision'=>(int)$old['result_revision']);
   }
+  // A malformed row must not look like the absence of an active operation.
+  // CI-only scan; production needs validated schema, bounds and operational indexing.
+  $bad=hj_booking_row($db,$db->prepare("SELECT request_key FROM `$table` WHERE doctor_id=%d AND COALESCE((state='prepared' AND active=1 AND result_revision=0) OR (state='cancelled' AND active IS NULL AND result_revision=0) OR (state='completed' AND active=1 AND result_revision BETWEEN 1 AND %d) OR (state='acknowledged' AND active IS NULL AND result_revision BETWEEN 1 AND %d),0)=0 LIMIT 1",$doctor,PHP_INT_MAX,PHP_INT_MAX));
+  if ($bad) { return array('status'=>'unknown'); }
   $active=hj_booking_row($db,$db->prepare("SELECT request_key FROM `$table` WHERE doctor_id=%d AND active=1",$doctor));
   if ($active) { return array('status'=>'blocked'); }
   $s=hj_booking_table('schedules'); $current=hj_booking_row($db,$db->prepare("SELECT revision,rows_json,rows_hash FROM `$s` WHERE doctor_id=%d FOR UPDATE",$doctor));
@@ -46,6 +62,7 @@ function ci_intent_apply($doctor,$key,$revision,$rows) {
   if (get_current_user_id()!==$actor || !hj_booking_can_configure($doctor)) { return array('status'=>'forbidden'); }
   $intent=hj_booking_row($db,$db->prepare("SELECT actor_id,payload_hash,state,result_revision,active FROM `$table` WHERE doctor_id=%d AND request_key=%s",$doctor,$key));
   if (!$intent || (int)$intent['actor_id']!==$actor || !hash_equals($intent['payload_hash'],$hash)) { return array('status'=>'blocked'); }
+  if (!intent_record_valid($intent)) { return array('status'=>'unknown'); }
   if (in_array($intent['state'],array('completed','acknowledged'),true)) { return array('status'=>'replayed','revision'=>(int)$intent['result_revision']); }
   if ($intent['state']!=='prepared' || (int)$intent['active']!==1) { return array('status'=>'blocked'); }
   $s=hj_booking_table('schedules'); $old=hj_booking_row($db,$db->prepare("SELECT revision,rows_json,rows_hash FROM `$s` WHERE doctor_id=%d FOR UPDATE",$doctor));
@@ -63,9 +80,44 @@ function ci_intent_recover($doctor) {
  $actor=get_current_user_id();
  return hj_booking_transaction($doctor,'ci_intent_recover',function($db) use($doctor,$actor,$table) {
   if (get_current_user_id()!==$actor || !hj_booking_can_configure($doctor)) { return array('status'=>'forbidden'); }
-  $row=hj_booking_row($db,$db->prepare("SELECT request_key,state,result_revision FROM `$table` WHERE doctor_id=%d AND actor_id=%d AND active=1",$doctor,$actor));
-  if (!$row || !in_array($row['state'],array('prepared','completed'),true) || !intent_valid_key($row['request_key'])) { return array('status'=>'unknown'); }
+  $row=hj_booking_row($db,$db->prepare("SELECT request_key,state,active,result_revision FROM `$table` WHERE doctor_id=%d AND actor_id=%d AND active=1",$doctor,$actor));
+  if (!$row || !intent_record_valid($row) || !in_array($row['state'],array('prepared','completed'),true) || !intent_valid_key($row['request_key'])) { return array('status'=>'unknown'); }
   return array('status'=>$row['state'],'key'=>$row['request_key'],'revision'=>(int)$row['result_revision']);
+ });
+}
+/** Actor-scoped cancellation: retain tombstone so a delayed apply cannot run. */
+function ci_intent_cancel($doctor,$key) {
+ global $table;
+ if (!hj_booking_can_configure($doctor)) { return array('status'=>'forbidden'); }
+ if (!intent_valid_key($key)) { return array('status'=>'invalid'); }
+ $actor=get_current_user_id();
+ return hj_booking_transaction($doctor,'ci_intent_cancel',function($db) use($doctor,$key,$actor,$table) {
+  if (get_current_user_id()!==$actor || !hj_booking_can_configure($doctor)) { return array('status'=>'forbidden'); }
+  $row=hj_booking_row($db,$db->prepare("SELECT actor_id,state,active,result_revision FROM `$table` WHERE doctor_id=%d AND request_key=%s",$doctor,$key));
+  if (!$row || (int)$row['actor_id']!==$actor) { return array('status'=>'unknown'); }
+  if (!intent_record_valid($row)) { return array('status'=>'unknown'); }
+  if ($row['state']==='cancelled' && $row['active']===null && (int)$row['result_revision']===0) { return array('status'=>'cancelled'); }
+  if ((($row['state']==='completed' && (string)$row['active']==='1') || ($row['state']==='acknowledged' && $row['active']===null)) && (int)$row['result_revision']>0) { return array('status'=>'already_completed','revision'=>(int)$row['result_revision']); }
+  if ($row['state']!=='prepared' || (string)$row['active']!=='1' || (int)$row['result_revision']!==0) { return array('status'=>'unknown'); }
+  if (hj_booking_query($db,$db->prepare("UPDATE `$table` SET state='cancelled',active=NULL WHERE doctor_id=%d AND request_key=%s AND actor_id=%d AND state='prepared' AND active=1 AND result_revision=0",$doctor,$key,$actor))!==1) { throw new RuntimeException('intent cancel failed'); }
+  return array('status'=>'cancelled');
+ });
+}
+/** Lookup an already-known key; no keyless history or real endpoint exists. */
+function ci_intent_find($doctor,$key) {
+ global $table;
+ if (!hj_booking_can_configure($doctor)) { return array('status'=>'forbidden'); }
+ if (!intent_valid_key($key)) { return array('status'=>'invalid'); }
+ $actor=get_current_user_id();
+ return hj_booking_transaction($doctor,'ci_intent_find',function($db) use($doctor,$key,$actor,$table) {
+  if (get_current_user_id()!==$actor || !hj_booking_can_configure($doctor)) { return array('status'=>'forbidden'); }
+  $row=hj_booking_row($db,$db->prepare("SELECT actor_id,state,active,result_revision FROM `$table` WHERE doctor_id=%d AND request_key=%s",$doctor,$key));
+  if (!$row || (int)$row['actor_id']!==$actor) { return array('status'=>'unknown'); }
+  if (!intent_record_valid($row)) { return array('status'=>'unknown'); }
+  if ($row['state']==='prepared' && (string)$row['active']==='1' && (int)$row['result_revision']===0) { return array('status'=>'prepared'); }
+  if ($row['state']==='cancelled' && $row['active']===null && (int)$row['result_revision']===0) { return array('status'=>'cancelled'); }
+  if ((($row['state']==='completed' && (string)$row['active']==='1') || ($row['state']==='acknowledged' && $row['active']===null)) && (int)$row['result_revision']>0) { return array('status'=>$row['state'],'revision'=>(int)$row['result_revision']); }
+  return array('status'=>'unknown');
  });
 }
 /** Completed record only; requires a fresh exact revision and retains replay tombstone. */
@@ -78,6 +130,7 @@ function ci_intent_ack($doctor,$key,$observed_revision) {
   if (get_current_user_id()!==$actor || !hj_booking_can_configure($doctor)) { return array('status'=>'forbidden'); }
   $row=hj_booking_row($db,$db->prepare("SELECT actor_id,state,result_revision,active FROM `$table` WHERE doctor_id=%d AND request_key=%s",$doctor,$key));
   if (!$row || (int)$row['actor_id']!==$actor) { return array('status'=>'blocked'); }
+  if (!intent_record_valid($row)) { return array('status'=>'unknown'); }
   if ($row['state']==='acknowledged') { return array('status'=>'acknowledged'); }
   if ($row['state']!=='completed' || (int)$row['active']!==1) { return array('status'=>'blocked'); }
   $s=hj_booking_table('schedules'); $current=hj_booking_row($db,$db->prepare("SELECT revision,rows_json,rows_hash FROM `$s` WHERE doctor_id=%d FOR UPDATE",$doctor));
@@ -112,7 +165,7 @@ if ($mode==='check-prepared') {
  wp_set_current_user($outsider->ID); intent_check(ci_intent_recover($doctor)['status']==='forbidden' && ci_intent_prepare($doctor,intent_key(2),1,intent_rows('11:00'))['status']==='forbidden','unrelated actor forbidden');
  wp_set_current_user($admin->ID); intent_check(ci_intent_prepare($doctor,intent_key(1),1,intent_rows('10:00'))['status']==='prepared','same prepare is idempotent');
  $other=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'Synthetic different doctor'),true); if (is_wp_error($other) || !$other) { throw new RuntimeException('other doctor failed'); }
- try { intent_check(ci_intent_recover((int)$other)['status']==='unknown' && ci_intent_apply((int)$other,intent_key(1),1,intent_rows('10:00'))['status']==='blocked','authorized actor cannot recover or apply another doctor intent in wrong scope'); }
+ try { intent_check(ci_intent_recover((int)$other)['status']==='unknown' && ci_intent_find((int)$other,intent_key(1))['status']==='unknown' && ci_intent_cancel((int)$other,intent_key(1))['status']==='unknown' && ci_intent_apply((int)$other,intent_key(1),1,intent_rows('10:00'))['status']==='blocked','authorized actor cannot inspect, cancel or apply another doctor intent in wrong scope'); }
  finally { $wpdb->delete(hj_booking_table('doctors'),array('doctor_id'=>(int)$other)); wp_delete_post((int)$other,true); }
  exit(0);
 }
@@ -173,6 +226,54 @@ if ($mode==='race-apply') {
 if ($mode==='check-apply-race') {
  intent_check(ci_intent_recover($doctor)===array('status'=>'completed','key'=>intent_key(3),'revision'=>5) && (int)intent_snapshot($doctor)['revision']===5,'concurrent retry has one completed revision and recoverable result');
  intent_check(ci_intent_apply($doctor,intent_key(3),4,intent_rows('12:00'))===array('status'=>'replayed','revision'=>5),'old execution remains replayable'); exit(0);
+}
+if ($mode==='cancel-seed') {
+ intent_check(ci_intent_ack($doctor,intent_key(3),5)['status']==='acknowledged' && ci_intent_prepare($doctor,intent_key(4),5,intent_rows('13:00'))['status']==='prepared','prepare cancel race with current revision');
+ wp_set_current_user($owner->ID); intent_check(hj_booking_can_configure($doctor) && ci_intent_cancel($doctor,intent_key(4))['status']==='unknown' && ci_intent_find($doctor,intent_key(4))['status']==='unknown','other authorized actor cannot cancel or inspect intent');
+ wp_set_current_user($outsider->ID); intent_check(ci_intent_cancel($doctor,intent_key(4))['status']==='forbidden' && ci_intent_find($doctor,intent_key(4))['status']==='forbidden','unauthorized actor cannot cancel or inspect'); wp_set_current_user($admin->ID);
+ intent_check(ci_intent_cancel($doctor,intent_key(999))['status']==='unknown' && ci_intent_find($doctor,intent_key(999))['status']==='unknown','absent key does not imply safe cancellation');
+ intent_check($wpdb->update($table,array('active'=>2),array('doctor_id'=>$doctor,'request_key'=>intent_key(4)))===1,'inject inconsistent active marker');
+ intent_check(ci_intent_cancel($doctor,intent_key(4))['status']==='unknown' && ci_intent_find($doctor,intent_key(4))['status']==='unknown' && ci_intent_prepare($doctor,intent_key(4),5,intent_rows('13:00'))['status']==='unknown' && ci_intent_prepare($doctor,intent_key(8),5,intent_rows('16:00'))['status']==='unknown' && ci_intent_apply($doctor,intent_key(4),5,intent_rows('13:00'))['status']==='unknown' && (int)intent_snapshot($doctor)['revision']===5,'inconsistent record cannot cancel, replay or apply');
+ intent_check($wpdb->update($table,array('active'=>1),array('doctor_id'=>$doctor,'request_key'=>intent_key(4)))===1,'restore only synthetic marker');
+ $trigger=$wpdb->prefix.'ci_intent_cancel_fail'; intent_check($wpdb->query("CREATE TRIGGER `$trigger` BEFORE UPDATE ON `$table` FOR EACH ROW SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT='synthetic failure'")!==false,'inject cancel write failure');
+ try { intent_check(ci_intent_cancel($doctor,intent_key(4))['status']==='error' && ci_intent_find($doctor,intent_key(4))['status']==='prepared' && (int)intent_snapshot($doctor)['revision']===5,'failed cancel retains prepared intent and snapshot'); }
+ finally { $wpdb->query("DROP TRIGGER `$trigger`"); }
+ $killed=false;
+ $hook=function($event,$db,$ctx) use(&$killed) { if (!$killed && $ctx['operation']==='ci_intent_cancel' && $event==='before_commit') { $killed=true; $id=(int)$db->get_var('SELECT CONNECTION_ID()'); $killer=new wpdb(DB_USER,DB_PASSWORD,DB_NAME,DB_HOST); $killer->suppress_errors(true); if (!$id || $killer->query('KILL CONNECTION '.$id)===false) { throw new RuntimeException('fixture kill failed'); } $killer->close(); } };
+ add_action('hj_booking_test_event',$hook,10,3); $lost=ci_intent_cancel($doctor,intent_key(4)); remove_action('hj_booking_test_event',$hook,10);
+ intent_check($killed && $lost['status']==='unknown' && ci_intent_find($doctor,intent_key(4))['status']==='prepared' && (int)intent_snapshot($doctor)['revision']===5,'cancel connection kill before commit leaves active prepared intent'); exit(0);
+}
+if ($mode==='cancel-worker') {
+ $case=getenv('HJ_CANCEL_CASE'); $role=getenv('HJ_CANCEL_ROLE');
+ if (!in_array($case,array('cancel_first','apply_first'),true) || !in_array($role,array('holder','waiter'),true)) { exit(1); }
+ $cancel=($role==='holder')===($case==='cancel_first'); $operation=$cancel ? 'ci_intent_cancel' : 'ci_intent_apply';
+ $key=$case==='cancel_first' ? intent_key(4) : intent_key(6); $rows=intent_rows($case==='cancel_first' ? '13:00' : '14:00');
+ add_action('hj_booking_test_event',function($event,$db,$ctx) use($prefix,$role,$operation) {
+  if ($ctx['operation']!==$operation) { return; }
+  if ($role==='waiter' && $event==='before_lock') { file_put_contents($prefix.'-before-1',(string)$db->get_var('SELECT CONNECTION_ID()')); }
+  if ($role==='holder' && $event==='after_lock') { file_put_contents($prefix.'-locked','1'); $until=microtime(true)+15; while (!is_file($prefix.'-release') && microtime(true)<$until) { usleep(10000); clearstatcache(); } if (!is_file($prefix.'-release')) { throw new RuntimeException('barrier timeout'); } }
+ },10,3);
+ $result=$cancel ? ci_intent_cancel($doctor,$key) : ci_intent_apply($doctor,$key,5,$rows);
+ echo $result['status']; exit(in_array($result['status'],array('cancelled','blocked','saved','already_completed'),true)?0:1);
+}
+if ($mode==='check-cancel-first') {
+ intent_check(ci_intent_find($doctor,intent_key(4))['status']==='cancelled' && (int)intent_snapshot($doctor)['revision']===5,'cancel-first leaves durable tombstone and no save');
+ intent_check(ci_intent_prepare($doctor,intent_key(4),5,intent_rows('13:00'))['status']==='cancelled' && ci_intent_apply($doctor,intent_key(4),5,intent_rows('13:00'))['status']==='blocked' && ci_intent_cancel($doctor,intent_key(4))['status']==='cancelled','old prepare, apply and cancel cannot revive cancelled key');
+ intent_check(ci_intent_prepare($doctor,intent_key(5),5,intent_rows('13:30'))['status']==='prepared' && ci_intent_cancel($doctor,intent_key(4))['status']==='cancelled' && ci_intent_recover($doctor)['key']===intent_key(5),'replayed old cancellation does not clear a newer intent');
+ intent_check(ci_intent_cancel($doctor,intent_key(5))['status']==='cancelled' && ci_intent_prepare($doctor,intent_key(6),5,intent_rows('14:00'))['status']==='prepared','prepare apply-first race'); exit(0);
+}
+if ($mode==='check-apply-first') {
+ intent_check(ci_intent_find($doctor,intent_key(6))===array('status'=>'completed','revision'=>6) && ci_intent_cancel($doctor,intent_key(6))===array('status'=>'already_completed','revision'=>6) && (int)intent_snapshot($doctor)['revision']===6,'committed save is never reported as cancelled');
+ intent_check(ci_intent_prepare($doctor,intent_key(7),6,intent_rows('15:00'))['status']==='blocked' && ci_intent_ack($doctor,intent_key(6),5)['status']==='refresh_required' && ci_intent_ack($doctor,intent_key(6),6)['status']==='acknowledged','completed intent remains active until fresh acknowledgement');
+ intent_check(ci_intent_cancel($doctor,intent_key(6))===array('status'=>'already_completed','revision'=>6) && ci_intent_prepare($doctor,intent_key(7),6,intent_rows('15:00'))['status']==='prepared','historical result retained and new intent prepared'); exit(0);
+}
+if ($mode==='cancel-lost') {
+ add_action('hj_booking_test_event',function($event,$db,$ctx) use($prefix) { if ($ctx['operation']==='ci_intent_cancel' && $event==='after_commit' && ($ctx['result']['status'] ?? '')==='cancelled') { file_put_contents($prefix.'-cancelled','1'); $end=microtime(true)+20; while(microtime(true)<$end) { usleep(10000); } throw new RuntimeException('not interrupted'); } },10,3);
+ ci_intent_cancel($doctor,intent_key(7)); exit(1);
+}
+if ($mode==='check-cancel-lost') {
+ intent_check(ci_intent_recover($doctor)['status']==='unknown','keyless active lookup after cancellation remains ambiguous');
+ intent_check(ci_intent_find($doctor,intent_key(7))['status']==='cancelled' && ci_intent_cancel($doctor,intent_key(7))['status']==='cancelled' && ci_intent_apply($doctor,intent_key(7),6,intent_rows('15:00'))['status']==='blocked' && (int)intent_snapshot($doctor)['revision']===6,'known key resolves lost cancellation without late apply'); exit(0);
 }
 if ($mode==='cleanup') { $wpdb->query("DROP TABLE IF EXISTS `$table`"); $wpdb->delete(hj_booking_table('schedules'),array('doctor_id'=>$doctor)); $wpdb->delete(hj_booking_table('doctors'),array('doctor_id'=>$doctor)); wp_delete_post($doctor,true); unlink($meta); exit(0); }
 exit(1);
