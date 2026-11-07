@@ -14,7 +14,10 @@
   const api={submit:req=>post('/test/save',req),status:key=>post('/test/status',{key}),refresh:()=>post('/test/current',{})};
   const fields=document.querySelector('#fields'), status=document.querySelector('#status'), retry=document.querySelector('#retry'), check=document.querySelector('#check');
   const messages={idle:'آمادهٔ ثبت آزمایشی.',invalid:'اطلاعات معتبر نیست.',sending:'در حال ارسال…',checking:'در حال بررسی…',refreshing:'در حال خواندن برنامهٔ جاری…',uncertain:'نتیجه نامعلوم است؛ درخواست تازه نفرستید. ابتدا نتیجه را بررسی کنید.',storage_error:'ساخت یا نگهداری کلید ممکن نیست؛ برای بررسی با مدیر تماس بگیرید.',resolved:'نتیجهٔ قبلی بررسی شد؛ برای دیدن برنامهٔ جاری صفحه را بازخوانی کنید.'};
-  const client=HJTestScheduleClient.createScheduleClient({storage:sessionStorage,random:crypto,api,onState:(state,details)=>{
+  // Access to these browser properties can itself throw in restricted contexts.
+  const storage={getItem:key=>window.sessionStorage.getItem(key),setItem:(key,value)=>window.sessionStorage.setItem(key,value),removeItem:key=>window.sessionStorage.removeItem(key)};
+  const random={getRandomValues:bytes=>window.crypto.getRandomValues(bytes)};
+  const client=HJTestScheduleClient.createScheduleClient({storage,random,api,onState:(state,details)=>{
     status.textContent=state==='uncertain' && !details.canRetry ? 'نتیجه نامعلوم است و اطلاعات درخواست پس از بازخوانی نگه‌داری نشده؛ فقط نتیجه را بررسی کنید.' : (messages[state] || messages.uncertain);
     fields.disabled=state!=='idle' && state!=='invalid';
     retry.disabled=state!=='uncertain' || !details.canRetry; check.disabled=state!=='uncertain';
