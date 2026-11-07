@@ -195,6 +195,35 @@ try:
     claim_state=state(claimant1,claimed_id)
     check(int(claim_state['snapshot']['revision'])==1 and claim_state['name']=='Synthetic Claimed '+str(winner+1), 'winning profile and schedule persisted')
 
+    # Kill only the disposable PHP worker after its durable claim, before wp_insert_post writes.
+    orphan1, on1 = login('synthetic_claim_orphan'); orphan2, on2 = login('synthetic_claim_orphan')
+    orphan_token=uuid.uuid4().hex; _, claim_release=barrier('claim-hold-'+orphan_token); claim_release.touch()
+    owned_ready, owned_release=barrier('claim-owned-'+orphan_token)
+    orphan_payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=on1,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_claim_prototype='1',hj_ci_claim_token=orphan_token,hj_ci_claim_hold_owned='1',name_fa='Synthetic Orphan',**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
+    def interrupted_claim():
+        try: return request(orphan1, '/wp-admin/admin-ajax.php', orphan_payload)
+        except (OSError, http.client.HTTPException): return None
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+        running=pool.submit(interrupted_claim)
+        try:
+            wait_ready([owned_ready]); worker=int(owned_ready.read_text())
+            check(worker>1 and worker!=server.pid and os.getpgid(worker)==server.pid, 'barrier identifies only a disposable fixture server worker')
+            check(ajax(orphan2, {'action':'hj_ci_profile_claim'})['token']==orphan_token and ajax(orphan2, {'action':'hj_ci_own_profiles'})['ids']==[], 'durable claim visible before any profile exists')
+            os.kill(worker, signal.SIGKILL)
+            check(running.result(timeout=30) is None, 'claimed worker died before emitting HTTP response')
+        finally: owned_release.touch()
+    check(ajax(orphan2, {'action':'hj_ci_profile_claim'})['token']==orphan_token and ajax(orphan2, {'action':'hj_ci_own_profiles'})['ids']==[], 'worker death leaves durable orphan claim and no profile')
+    retry_token=uuid.uuid4().hex; _, retry_release=barrier('claim-hold-'+retry_token); retry_release.touch()
+    guarded_retry=dict(orphan_payload, _hjn=on2, hj_ci_claim_token=retry_token); guarded_retry.pop('hj_ci_claim_hold_owned')
+    retry_status,retry_body=request(orphan2, '/wp-admin/admin-ajax.php', guarded_retry)
+    check(retry_status==409 and not json.loads(retry_body)['success'] and ajax(orphan2, {'action':'hj_ci_own_profiles'})['ids']==[], 'guarded retry fails closed while orphan claim persists')
+    # Negative control: the unmodified product writer does not consult a CI-only claim.
+    bypass=dict(guarded_retry); bypass.pop('hj_ci_claim_prototype'); bypass.pop('hj_ci_claim_token')
+    bypass_status,bypass_body=request(orphan2, '/wp-admin/admin-ajax.php', bypass)
+    check(bypass_status==200 and json.loads(bypass_body)['success'] and json.loads(bypass_body)['data']['created'], 'uncoordinated original writer bypasses experimental claim')
+    orphan_posts=ajax(orphan2, {'action':'hj_ci_own_profiles'}); orphan_claim=ajax(orphan2, {'action':'hj_ci_profile_claim'})
+    check(len(orphan_posts['ids'])==1 and orphan_claim['token']==orphan_token and int(state(orphan2,orphan_posts['ids'][0])['snapshot']['revision'])==1, 'bypass persists a profile despite the orphan claim')
+
     owner, owner_nonce = login('synthetic_doctor_a')
     other, other_nonce = login('synthetic_doctor_b')
     url = '/wp-admin/admin-ajax.php'

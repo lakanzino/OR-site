@@ -60,6 +60,7 @@ add_filter( 'wp_insert_post_data', function ( $data, $postarr ) {
   $wpdb->suppress_errors( $previous_suppression );
   // Duplicate, unexpected row count and SQL errors all reject without creating a post.
   if ( $n !== 1 ) { wp_send_json( array( 'success'=>false, 'message'=>'CI claim unavailable' ), 409 ); }
+  if ( isset( $_POST['hj_ci_claim_hold_owned'] ) ) { hj_prod_ci_barrier( 'claim-owned-' . $token, true, getmypid() ); }
  }
  return $data;
 }, 10, 2 );
