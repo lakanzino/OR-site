@@ -113,3 +113,5 @@
 **نتیجهٔ گام ۵.۱۹:** [CI مسیر و فرم](https://github.com/lakanzino/OR-site/actions/runs/42375416859) موفق شد؛ ساعت نامعتبر v1 رد می‌شود. دقت ثانیه در snapshot قبلی و بدهی‌های فرم بازند.
 
 **گام ۵.۲۰، CI موفق:** [حفظ ثانیهٔ snapshot v1](BOOKING-DASHBOARD-SECONDS.fa.md) و جلوگیری از ارسال فرم قدیمی بدون نشانهٔ precision؛ نویسندهٔ خارج از پروتکل، migration و بدهی‌های فرم همچنان بازند.
+
+**گام ۵.۲۱، در انتظار CI:** [اعتبارسنجی کامل‌بودن فرم برنامهٔ v1](BOOKING-DASHBOARD-FORM-COMPLETENESS.fa.md)؛ این گام سه بدهی اصلی و مهاجرت را حل نمی‌کند.

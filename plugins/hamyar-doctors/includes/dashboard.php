@@ -736,6 +736,7 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 				$dk = esc_attr( $key );
 				?>
             <div class="hj-dash__hrow">
+              <?php if ( $legacy_booking ) : ?><input type="hidden" name="hours[<?php echo $dk; ?>][present]" value="1"><?php endif; ?>
               <span class="hj-dash__day"><?php echo esc_html( $label ); ?></span>
               <label class="hj-dash__tog">
                 <input type="checkbox" name="hours[<?php echo $dk; ?>][closed]" value="1" data-hj="closed"<?php checked( $r['closed'] ); ?>>
@@ -1040,17 +1041,25 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 
 			// ---- Working hours
 			$hours_in = ( isset( $_POST['hours'] ) && is_array( $_POST['hours'] ) ) ? wp_unslash( $_POST['hours'] ) : array();
-			if ( $legacy_booking && isset( $_POST['hours'] ) && ! is_array( $_POST['hours'] ) ) {
-				$errors['hours'] = 'ساختار ساعات نامعتبر است.';
+			if ( $legacy_booking ) {
+				// A full replacement must include every day, even an empty or closed day.
+				if ( ! isset( $_POST['hours'] ) || ! is_array( $_POST['hours'] ) || array_diff( array_keys( $hours_in ), array_keys( self::days() ) ) ) {
+					$errors['hours'] = 'برنامه ناقص یا نامعتبر است؛ صفحه را بازخوانی کنید.';
+				}
 			}
 			$rows     = array();
 			$fmt      = apply_filters( 'hj_dash_time_storage_format', 'H:i:s' );
 			foreach ( self::days() as $key => $label ) {
-				if ( $legacy_booking && isset( $hours_in[ $key ] ) && ! is_array( $hours_in[ $key ] ) ) {
-					$errors[ 'hours_' . $key ] = 'ساختار ساعات نامعتبر است.';
-					continue;
+				if ( $legacy_booking ) {
+					$r = isset( $hours_in[ $key ] ) && is_array( $hours_in[ $key ] ) ? $hours_in[ $key ] : array();
+					// Closed checkboxes are omitted when unchecked; closed time inputs are disabled.
+					if ( ! isset( $r['present'] ) || $r['present'] !== '1' || array_diff( array_keys( $r ), array( 'present', 'closed', 'start', 'end' ) ) || ( isset( $r['closed'] ) && $r['closed'] !== '1' ) || ( ! isset( $r['closed'] ) && ( ! array_key_exists( 'start', $r ) || ! array_key_exists( 'end', $r ) ) ) ) {
+						$errors[ 'hours_' . $key ] = 'برنامهٔ این روز ناقص یا نامعتبر است؛ صفحه را بازخوانی کنید.';
+						continue;
+					}
+				} else {
+					$r = ( isset( $hours_in[ $key ] ) && is_array( $hours_in[ $key ] ) ) ? $hours_in[ $key ] : array();
 				}
-				$r = ( isset( $hours_in[ $key ] ) && is_array( $hours_in[ $key ] ) ) ? $hours_in[ $key ] : array();
 				$closed = ! empty( $r['closed'] );
 				if ( $legacy_booking && ! $closed ) {
 					$s = self::booking_time( isset( $r['start'] ) ? $r['start'] : '' );
