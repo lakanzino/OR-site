@@ -557,3 +557,7 @@
 ### مرحلهٔ ۵.۳۴ — قطع اتصال WordPress پس از claim | CI موفق
 
 [آزمون](BOOKING-PROFILE-CLAIM-RECONNECT.fa.md) در WordPress/MariaDB دورریختنی claim پیش از درج باقی ماند و رقیب رد شد؛ پس از KILL اتصال، درج با شناسهٔ اتصال دیگر و یک پست و snapshot رخ داد. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42425850138) موفق؛ نمونه CI-only است، **۷۵٪ ثابت** و بدهی‌ها بازند.
+
+### مرحلهٔ ۵.۳۵ — claim پایدار محصول برای ساخت اولین پروفایل | در انتظار CI
+
+[طرح، محدودیت و rollback](BOOKING-FIRST-PROFILE-PRODUCT-CLAIM.fa.md): claim اتمیک در options با اتصال مجزای بدون reconnect، schema و کلید یکتای تأییدشده و پاسخ fail-closed به مسیر واقعی داشبورد افزوده شد. نسخهٔ آزمایشی ۰٫۳٫۴۸، نصب نشده؛ race، قطع اتصال، مرگ worker و شکست جزئی در انتظار CI. مهاجرت و نویسندگان غیرهماهنگ و بازیابی claim باز، **۷۵٪ ثابت** و NO-GO.

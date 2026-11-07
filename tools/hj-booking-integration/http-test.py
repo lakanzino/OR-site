@@ -148,132 +148,90 @@ try:
     check(all(worker.poll() is None for worker in race_servers), 'dedicated race listeners are alive')
     new_profile_browser=subprocess.run(['node',str(workspace/'tools/hj-booking-integration/dashboard-new-profile-browser.cjs')],capture_output=True,text=True,timeout=80,env=os.environ.copy())
     check(new_profile_browser.returncode==0 and 'PASS actual first profile creation with in-flight edits' in new_profile_browser.stdout, 'real first-profile browser save: '+new_profile_browser.stderr[-1800:])
-    # A deterministic counterexample: two sessions have both passed the first-profile check before either inserts.
+    # Two actual product requests both pass the initial profile check before claiming.
     for login_name in ('synthetic_profile_race', 'synthetic_profile_race_2', 'synthetic_profile_race_3'):
         racer1, nonce1 = login(login_name); racer2, nonce2 = login(login_name)
-        check(ajax(racer1, {'action':'hj_ci_own_profiles'})['ids']==[], 'race doctor starts with no profiles')
-        profile_tokens=[uuid.uuid4().hex, uuid.uuid4().hex]
-        profile_barriers=[barrier('profile-hold-'+token) for token in profile_tokens]
+        check(ajax(racer1, {'action':'hj_ci_own_profiles'})['ids']==[] and ajax(racer1, {'action':'hj_ci_profile_claim'})['value'] is None, 'product race starts with no profile or claim')
+        tokens=[uuid.uuid4().hex, uuid.uuid4().hex]; race_barriers=[barrier('profile-hold-'+token) for token in tokens]
         def profile_create(args):
             opener,nonce,token,number=args
-            payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=nonce,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_profile_insert_hold=token,name_fa='Synthetic Concurrent '+str(number),**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
-            return request(opener,'/wp-admin/admin-ajax.php',payload, base=RACE_BASES[number-1])
+            payload=dict(empty_week(),action='hj_dash_save',pid='0',_hjn=nonce,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_profile_hold='1',hj_ci_profile_token=token,name_fa='Synthetic Concurrent '+str(number),**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
+            return request(opener,'/wp-admin/admin-ajax.php',payload,base=RACE_BASES[number-1])
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
-            results=[pool.submit(profile_create,args) for args in ((racer1,nonce1,profile_tokens[0],1),(racer2,nonce2,profile_tokens[1],2))]
-            barrier_error = None
+            futures=[pool.submit(profile_create,args) for args in ((racer1,nonce1,tokens[0],1),(racer2,nonce2,tokens[1],2))]
+            barrier_error=None
             try:
-                wait_ready([b[0] for b in profile_barriers])
-                check({int(b[0].read_text()) for b in profile_barriers}=={worker.pid for worker in race_servers}, 'both race barriers run on their dedicated worker processes')
-            except AssertionError as exc: barrier_error = exc
+                wait_ready([b[0] for b in race_barriers])
+                check({int(b[0].read_text()) for b in race_barriers}=={worker.pid for worker in race_servers}, 'both product requests reach the claim on distinct workers')
+            except AssertionError as exc: barrier_error=exc
             finally:
-                for _,released in profile_barriers: released.touch()
-            replies=[result.result(timeout=40) for result in results]
+                for _,released in race_barriers: released.touch()
+            replies=[future.result(timeout=40) for future in futures]
             if barrier_error: raise AssertionError(f'{barrier_error}; synthetic responses: {replies!r}') from barrier_error
-        check(all(code==200 and json.loads(body)['success'] and json.loads(body)['data']['created'] for code,body in replies), 'counterexample: both actual requests report first-profile creation')
+        check(sorted(code for code,body in replies)==[200,409], 'only one product first-profile request wins')
+        winner=next(i for i,(code,body) in enumerate(replies) if code==200)
+        check(json.loads(replies[winner][1])['success'] and json.loads(replies[winner][1])['data']['created'] and not json.loads(replies[1-winner][1])['success'], 'winner creates and loser fails closed')
         profiles=ajax(racer1, {'action':'hj_ci_own_profiles'}); ids=profiles['ids']
-        check(len(ids)==2 and len(set(ids))==2 and profiles['linked'] in ids, 'counterexample: one synthetic doctor has two profiles')
-        names=set()
-        for profile_id in ids:
-            created_state=state(racer1,profile_id); names.add(created_state['name'])
-            check(int(created_state['snapshot']['revision'])==1 and json.loads(created_state['snapshot']['rows_json'])[0]['start_time']=='09:00:00', 'each duplicated profile has its own committed schedule')
-        check(names=={'Synthetic Concurrent 1','Synthetic Concurrent 2'}, 'both concurrent payloads persisted on separate doctor posts')
+        check(len(ids)==1 and profiles['linked']==ids[0] and ajax(racer1, {'action':'hj_ci_profile_claim'})['value']=='1', 'one profile, linked usermeta and durable claim persist')
+        saved=state(racer1,ids[0]); check(int(saved['snapshot']['revision'])==1 and saved['name']=='Synthetic Concurrent '+str(winner+1), 'winning schedule and form field persisted')
 
-    # Kill the separate schedule transaction immediately before COMMIT, after creating the post.
+    # A schedule failure after post creation remains a separate partial-save debt.
     failed_owner, failed_nonce = login('synthetic_profile_failure')
     check(ajax(failed_owner, {'action':'hj_ci_own_profiles'})['ids']==[], 'failure doctor starts without a profile')
-    failed_payload=dict(empty_week(), action='hj_dash_save', pid='0', _hjn=failed_nonce, hj_schedule_revision='0', hj_schedule_precision='seconds-v1', hj_ci_kill_before_commit='1', name_fa='Synthetic Partial Profile', **{'hours[wednesday][start]':'10:00','hours[wednesday][end]':'12:00'})
-    code, body=request(failed_owner, '/wp-admin/admin-ajax.php', failed_payload)
-    check(code==503 and 'نامشخص' in json.loads(body)['message'], 'first-profile schedule connection killed before COMMIT returns unknown failure')
-    failed_profiles=ajax(failed_owner, {'action':'hj_ci_own_profiles'})
-    check(len(failed_profiles['ids'])==1 and failed_profiles['linked']==failed_profiles['ids'][0], 'profile and linked usermeta persist despite schedule rollback')
-    partial_id=failed_profiles['ids'][0]; partial_state=state(failed_owner, partial_id)
+    failed_payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=failed_nonce,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_kill_before_commit='1',name_fa='Synthetic Partial Profile',**{'hours[wednesday][start]':'10:00','hours[wednesday][end]':'12:00'})
+    code,body=request(failed_owner,'/wp-admin/admin-ajax.php',failed_payload)
+    check(code==503 and 'نامشخص' in json.loads(body)['message'], 'schedule transaction killed before COMMIT returns unknown failure')
+    failed_profiles=ajax(failed_owner, {'action':'hj_ci_own_profiles'}); check(len(failed_profiles['ids'])==1 and failed_profiles['linked']==failed_profiles['ids'][0], 'partial failure leaves profile and linked usermeta')
+    partial_id=failed_profiles['ids'][0]; partial_state=state(failed_owner,partial_id)
     check(partial_state['snapshot'] is None and not partial_state['name'], 'failed first save leaves no schedule or name field')
-    # Only after independently inspecting the fixture state, perform a controlled retry.
     retry=dict(failed_payload); retry.pop('hj_ci_kill_before_commit')
-    code, body=request(failed_owner, '/wp-admin/admin-ajax.php', retry); reply=json.loads(body)
-    check(code==200 and reply['success'] and not reply['data']['created'] and int(reply['data']['schedule_revision'])==1, 'controlled retry reuses partial profile and saves schedule')
-    check(ajax(failed_owner, {'action':'hj_ci_own_profiles'})['ids']==[partial_id] and int(state(failed_owner, partial_id)['snapshot']['revision'])==1, 'controlled retry leaves one profile with initial snapshot')
+    code,body=request(failed_owner,'/wp-admin/admin-ajax.php',retry); reply=json.loads(body)
+    check(code==200 and reply['success'] and not reply['data']['created'] and int(reply['data']['schedule_revision'])==1, 'controlled retry after inspection reuses partial profile')
+    check(ajax(failed_owner, {'action':'hj_ci_own_profiles'})['ids']==[partial_id] and int(state(failed_owner,partial_id)['snapshot']['revision'])==1, 'controlled retry leaves one profile')
 
-    # CI-only candidate: an InnoDB unique, durable per-user claim before the WordPress insert.
-    for login_name in ('synthetic_profile_claim', 'synthetic_profile_claim_2', 'synthetic_profile_claim_3'):
-        claimant1, cn1 = login(login_name); claimant2, cn2 = login(login_name)
-        check(ajax(claimant1, {'action':'hj_ci_own_profiles'})['ids']==[] and ajax(claimant1, {'action':'hj_ci_profile_claim'})['token'] is None, 'claim prototype starts empty')
-        claim_tokens=[uuid.uuid4().hex, uuid.uuid4().hex]
-        claim_barriers=[barrier('claim-hold-'+token) for token in claim_tokens]
-        def claim_create(args):
-            opener,nonce,token,number=args
-            payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=nonce,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_claim_prototype='1',hj_ci_claim_token=token,name_fa='Synthetic Claimed '+str(number),**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
-            return request(opener,'/wp-admin/admin-ajax.php',payload, base=RACE_BASES[number-1])
-        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
-            futures=[pool.submit(claim_create,args) for args in ((claimant1,cn1,claim_tokens[0],1),(claimant2,cn2,claim_tokens[1],2))]
-            barrier_error = None
-            try:
-                wait_ready([b[0] for b in claim_barriers])
-                check({int(b[0].read_text()) for b in claim_barriers}=={worker.pid for worker in race_servers}, 'both claim barriers run on their dedicated worker processes')
-            except AssertionError as exc: barrier_error = exc
-            finally:
-                for _,released in claim_barriers: released.touch()
-            claim_replies=[f.result(timeout=40) for f in futures]
-            if barrier_error: raise AssertionError(f'{barrier_error}; synthetic responses: {claim_replies!r}') from barrier_error
-        check(sorted(code for code,body in claim_replies)==[200,409], 'one simultaneous claim wins; other first-profile insert is rejected')
-        winner=next(i for i,(code,body) in enumerate(claim_replies) if code==200)
-        check(json.loads(claim_replies[winner][1])['success'] and json.loads(claim_replies[winner][1])['data']['created'], 'winning claim creates profile through actual product handler')
-        check(not json.loads(claim_replies[1-winner][1])['success'], 'losing claim response fails closed')
-        claimed_profiles=ajax(claimant1, {'action':'hj_ci_own_profiles'}); claimed_id=claimed_profiles['ids'][0] if len(claimed_profiles['ids'])==1 else 0
-        check(claimed_id and claimed_profiles['linked']==claimed_id and ajax(claimant1, {'action':'hj_ci_profile_claim'})['token']==claim_tokens[winner], 'one durable claim and one linked post match winning request')
-        claim_state=state(claimant1,claimed_id)
-        check(int(claim_state['snapshot']['revision'])==1 and claim_state['name']=='Synthetic Claimed '+str(winner+1), 'winning profile and schedule persisted')
+    # KILL the claim connection before insertion. It must not reconnect and create a claim or profile.
+    failed_claim, fcn=login('synthetic_claim_db_failure')
+    claim_failure=dict(empty_week(),action='hj_dash_save',pid='0',_hjn=fcn,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_profile_kill_claim_db='1',name_fa='Synthetic Claim Failure',**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
+    code,body=request(failed_claim,'/wp-admin/admin-ajax.php',claim_failure)
+    check(code==409 and not json.loads(body)['success'] and ajax(failed_claim,{'action':'hj_ci_profile_claim'})['value'] is None and ajax(failed_claim,{'action':'hj_ci_own_profiles'})['ids']==[], 'claim connection loss fails closed without post or claim')
+    claim_failure.pop('hj_ci_profile_kill_claim_db')
+    code,body=request(failed_claim,'/wp-admin/admin-ajax.php',claim_failure)
+    check(code==200 and json.loads(body)['success'] and len(ajax(failed_claim,{'action':'hj_ci_own_profiles'})['ids'])==1, 'controlled retry after verified pre-insert failure creates one profile')
 
-    # Kill the WordPress writer's DB connection after its durable claim and check the actual reconnect.
+    # The WordPress writer can reconnect, but the independently committed claim survives.
     reconnect1, rn1=login('synthetic_claim_reconnect'); reconnect2, rn2=login('synthetic_claim_reconnect')
-    reconnect_token=uuid.uuid4().hex; _, first_release=barrier('claim-hold-'+reconnect_token); first_release.touch()
-    first_owned, first_owned_release=barrier('claim-owned-'+reconnect_token); reconnected, _=barrier('claim-reconnect-'+reconnect_token)
-    first_payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=rn1,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_claim_prototype='1',hj_ci_claim_token=reconnect_token,hj_ci_claim_hold_owned='1',hj_ci_claim_kill_wpdb='1',name_fa='Synthetic Reconnect',**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
-    other_token=uuid.uuid4().hex; _, second_release=barrier('claim-hold-'+other_token); second_release.touch()
-    second_payload=dict(first_payload, _hjn=rn2, hj_ci_claim_token=other_token); second_payload.pop('hj_ci_claim_hold_owned'); second_payload.pop('hj_ci_claim_kill_wpdb')
+    token=uuid.uuid4().hex; owned,owned_release=barrier('profile-owned-'+token); reconnected,_=barrier('profile-reconnect-'+token)
+    first_payload=dict(empty_week(),action='hj_dash_save',pid='0',_hjn=rn1,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_profile_token=token,hj_ci_profile_owned='1',hj_ci_profile_kill_wpdb='1',name_fa='Synthetic Reconnect',**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
+    second_payload=dict(first_payload,_hjn=rn2); second_payload.pop('hj_ci_profile_owned'); second_payload.pop('hj_ci_profile_kill_wpdb')
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
         first=pool.submit(request,reconnect1,'/wp-admin/admin-ajax.php',first_payload,RACE_BASES[0])
         try:
-            wait_ready([first_owned])
-            check(ajax(reconnect2, {'action':'hj_ci_profile_claim'})['token']==reconnect_token and ajax(reconnect2, {'action':'hj_ci_own_profiles'})['ids']==[], 'first request has durable claim before WordPress post insert')
-            status, body=request(reconnect2,'/wp-admin/admin-ajax.php',second_payload,RACE_BASES[1])
-            check(status==409 and not json.loads(body)['success'], 'competing coordinated writer is rejected before the first insert')
-        finally: first_owned_release.touch()
+            wait_ready([owned]); check(ajax(reconnect2,{'action':'hj_ci_profile_claim'})['value']=='1' and ajax(reconnect2,{'action':'hj_ci_own_profiles'})['ids']==[], 'claim exists before profile insert')
+            status,body=request(reconnect2,'/wp-admin/admin-ajax.php',second_payload,RACE_BASES[1]); check(status==409 and not json.loads(body)['success'], 'concurrent product writer fails closed before first insert')
+        finally: owned_release.touch()
         first_status,first_body=first.result(timeout=40)
-    check(first_status==200 and json.loads(first_body)['success'] and json.loads(first_body)['data']['created'], 'first request completes after WordPress database connection kill')
-    wait_ready([reconnected]); old_conn,new_conn=map(int,reconnected.read_text().split(','))
-    check(old_conn>0 and new_conn>0 and old_conn!=new_conn, 'WordPress insert ran on a different connection after KILL')
-    reconnected_posts=ajax(reconnect2, {'action':'hj_ci_own_profiles'}); reconnected_ids=reconnected_posts['ids']
-    check(len(reconnected_ids)==1 and reconnected_posts['linked']==reconnected_ids[0] and ajax(reconnect2, {'action':'hj_ci_profile_claim'})['token']==reconnect_token and int(state(reconnect2,reconnected_ids[0])['snapshot']['revision'])==1, 'claim survives reconnect with one linked profile and schedule')
+    check(first_status==200 and json.loads(first_body)['success'] and json.loads(first_body)['data']['created'], 'first request completes after WordPress connection kill')
+    wait_ready([reconnected]); old_conn,new_conn=map(int,reconnected.read_text().split(',')); check(old_conn>0 and new_conn>0 and old_conn!=new_conn, 'WordPress reconnected before post insert')
+    reconnect_ids=ajax(reconnect2,{'action':'hj_ci_own_profiles'})['ids']; check(len(reconnect_ids)==1 and ajax(reconnect2,{'action':'hj_ci_profile_claim'})['value']=='1' and int(state(reconnect2,reconnect_ids[0])['snapshot']['revision'])==1, 'claim survives writer reconnect and one profile persists')
 
-    # Kill only the disposable PHP worker after its durable claim, before wp_insert_post writes.
-    orphan1, on1 = login('synthetic_claim_orphan'); orphan2, on2 = login('synthetic_claim_orphan')
-    orphan_token=uuid.uuid4().hex; _, claim_release=barrier('claim-hold-'+orphan_token); claim_release.touch()
-    owned_ready, owned_release=barrier('claim-owned-'+orphan_token)
-    orphan_payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=on1,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_claim_prototype='1',hj_ci_claim_token=orphan_token,hj_ci_claim_hold_owned='1',name_fa='Synthetic Orphan',**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
+    # SIGKILL the disposable worker after the claim, before WordPress creates any post.
+    orphan1,on1=login('synthetic_claim_orphan'); orphan2,on2=login('synthetic_claim_orphan')
+    token=uuid.uuid4().hex; owned,owned_release=barrier('profile-owned-'+token)
+    orphan_payload=dict(empty_week(),action='hj_dash_save',pid='0',_hjn=on1,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_profile_token=token,hj_ci_profile_owned='1',name_fa='Synthetic Orphan',**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
     def interrupted_claim():
-        try: return request(orphan1, '/wp-admin/admin-ajax.php', orphan_payload)
-        except (OSError, http.client.HTTPException): return None
+        try: return request(orphan1,'/wp-admin/admin-ajax.php',orphan_payload)
+        except (OSError,http.client.HTTPException): return None
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
         running=pool.submit(interrupted_claim)
         try:
-            wait_ready([owned_ready]); worker=int(owned_ready.read_text())
-            check(worker>1 and worker!=server.pid and os.getpgid(worker)==server.pid, 'barrier identifies only a disposable fixture server worker')
-            check(ajax(orphan2, {'action':'hj_ci_profile_claim'})['token']==orphan_token and ajax(orphan2, {'action':'hj_ci_own_profiles'})['ids']==[], 'durable claim visible before any profile exists')
-            os.kill(worker, signal.SIGKILL)
-            check(running.result(timeout=30) is None, 'claimed worker died before emitting HTTP response')
+            wait_ready([owned]); worker=int(owned.read_text()); check(worker>1 and worker!=server.pid and os.getpgid(worker)==server.pid, 'worker belongs to disposable server')
+            check(ajax(orphan2,{'action':'hj_ci_profile_claim'})['value']=='1' and ajax(orphan2,{'action':'hj_ci_own_profiles'})['ids']==[], 'claim committed before post creation')
+            os.kill(worker,signal.SIGKILL); check(running.result(timeout=30) is None, 'claimed worker died before response')
         finally: owned_release.touch()
-    check(ajax(orphan2, {'action':'hj_ci_profile_claim'})['token']==orphan_token and ajax(orphan2, {'action':'hj_ci_own_profiles'})['ids']==[], 'worker death leaves durable orphan claim and no profile')
-    retry_token=uuid.uuid4().hex; _, retry_release=barrier('claim-hold-'+retry_token); retry_release.touch()
-    guarded_retry=dict(orphan_payload, _hjn=on2, hj_ci_claim_token=retry_token); guarded_retry.pop('hj_ci_claim_hold_owned')
-    retry_status,retry_body=request(orphan2, '/wp-admin/admin-ajax.php', guarded_retry)
-    check(retry_status==409 and not json.loads(retry_body)['success'] and ajax(orphan2, {'action':'hj_ci_own_profiles'})['ids']==[], 'guarded retry fails closed while orphan claim persists')
-    # Negative control: the unmodified product writer does not consult a CI-only claim.
-    bypass=dict(guarded_retry); bypass.pop('hj_ci_claim_prototype'); bypass.pop('hj_ci_claim_token')
-    bypass_status,bypass_body=request(orphan2, '/wp-admin/admin-ajax.php', bypass)
-    check(bypass_status==200 and json.loads(bypass_body)['success'] and json.loads(bypass_body)['data']['created'], 'uncoordinated original writer bypasses experimental claim')
-    orphan_posts=ajax(orphan2, {'action':'hj_ci_own_profiles'}); orphan_claim=ajax(orphan2, {'action':'hj_ci_profile_claim'})
-    check(len(orphan_posts['ids'])==1 and orphan_claim['token']==orphan_token and int(state(orphan2,orphan_posts['ids'][0])['snapshot']['revision'])==1, 'bypass persists a profile despite the orphan claim')
+    check(ajax(orphan2,{'action':'hj_ci_profile_claim'})['value']=='1' and ajax(orphan2,{'action':'hj_ci_own_profiles'})['ids']==[], 'worker death leaves durable claim and no post')
+    retry=dict(orphan_payload,_hjn=on2); retry.pop('hj_ci_profile_owned')
+    code,body=request(orphan2,'/wp-admin/admin-ajax.php',retry)
+    check(code==409 and not json.loads(body)['success'] and ajax(orphan2,{'action':'hj_ci_own_profiles'})['ids']==[], 'retry after worker death fails closed; claim is not auto-cleared')
 
     owner, owner_nonce = login('synthetic_doctor_a')
     other, other_nonce = login('synthetic_doctor_b')

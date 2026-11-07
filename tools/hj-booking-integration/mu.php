@@ -47,39 +47,31 @@ add_action( 'hj_booking_test_event', function ( $event, $db, $context ) {
 		if ( ! is_file( $prefix . '-released' ) ) { throw new RuntimeException( 'Lost response barrier timeout' ); }
 	}
 }, 10, 3 );
-// CI-only barrier after the product's first-profile check, before WordPress inserts the post.
-add_filter( 'wp_insert_post_data', function ( $data, $postarr ) {
- if ( ( $_POST['action'] ?? '' ) === 'hj_dash_save' && ( $_POST['pid'] ?? '' ) === '0' && isset( $_POST['hj_ci_profile_insert_hold'] ) && is_string( $_POST['hj_ci_profile_insert_hold'] ) && ( $data['post_type'] ?? '' ) === 'doctor' && empty( $postarr['ID'] ) ) {
-  hj_prod_ci_barrier( 'profile-hold-' . $_POST['hj_ci_profile_insert_hold'], true, getmypid() );
+// Fault injection only: the claim itself is production code, not the old CI prototype.
+add_action( 'hj_doctors_profile_test_event', function ( $event, $user_id ) {
+ $token = $_POST['hj_ci_profile_token'] ?? '';
+ if ( ! is_string( $token ) || ! preg_match( '/^[a-f0-9]{32}$/D', $token ) ) { return; }
+ if ( $event === 'before_claim' && isset( $_POST['hj_ci_profile_hold'] ) ) { hj_prod_ci_barrier( 'profile-hold-' . $token, true, getmypid() ); }
+ if ( $event === 'after_claim' && isset( $_POST['hj_ci_profile_owned'] ) ) { hj_prod_ci_barrier( 'profile-owned-' . $token, true, getmypid() ); }
+ if ( $event === 'after_claim' && isset( $_POST['hj_ci_profile_kill_wpdb'] ) ) {
+  global $wpdb; $GLOBALS['hj_ci_profile_old_db_id'] = (int) $wpdb->get_var( 'SELECT CONNECTION_ID()' ); hj_prod_ci_kill( $wpdb );
  }
- if ( ( $_POST['action'] ?? '' ) === 'hj_dash_save' && ( $_POST['pid'] ?? '' ) === '0' && ( $_POST['hj_ci_claim_prototype'] ?? '' ) === '1' && ( $data['post_type'] ?? '' ) === 'doctor' && empty( $postarr['ID'] ) ) {
-  $token = $_POST['hj_ci_claim_token'] ?? '';
-  if ( ! is_string( $token ) || ! preg_match( '/^[a-f0-9]{32}$/D', $token ) ) { wp_send_json( array( 'success'=>false, 'message'=>'bad fixture claim' ), 400 ); }
-  hj_prod_ci_barrier( 'claim-hold-' . $token, true, getmypid() );
-  global $wpdb; $table = $wpdb->prefix . 'ci_profile_claims';
-  $previous_suppression = $wpdb->suppress_errors( true );
-  $n = $wpdb->query( $wpdb->prepare( "INSERT INTO `$table` (user_id, claim_token) VALUES (%d, %s) ON DUPLICATE KEY UPDATE user_id=user_id", get_current_user_id(), $token ) );
-  $wpdb->suppress_errors( $previous_suppression );
-  // Duplicate, unexpected row count and SQL errors all reject without creating a post.
-  if ( $n !== 1 ) { wp_send_json( array( 'success'=>false, 'message'=>'CI claim unavailable' ), 409 ); }
-  if ( isset( $_POST['hj_ci_claim_hold_owned'] ) ) { hj_prod_ci_barrier( 'claim-owned-' . $token, true, getmypid() ); }
-  if ( isset( $_POST['hj_ci_claim_kill_wpdb'] ) ) { $GLOBALS['hj_ci_claim_old_db_id'] = (int) $wpdb->get_var( 'SELECT CONNECTION_ID()' ); hj_prod_ci_kill( $wpdb ); }
- }
- return $data;
 }, 10, 2 );
-// Report the actual WordPress writer connection after the deliberately killed one reconnects.
-add_action( 'wp_after_insert_post', function ( $id, $post, $update ) {
- if ( $update || $post->post_type !== 'doctor' || empty( $GLOBALS['hj_ci_claim_old_db_id'] ) || ! isset( $_POST['hj_ci_claim_kill_wpdb'], $_POST['hj_ci_claim_token'] ) ) { return; }
- global $wpdb; $new_id = (int) $wpdb->get_var( 'SELECT CONNECTION_ID()' );
- hj_prod_ci_barrier( 'claim-reconnect-' . $_POST['hj_ci_claim_token'], false, $GLOBALS['hj_ci_claim_old_db_id'] . ',' . $new_id );
+add_action( 'hj_doctors_profile_claim_test_event', function ( $event, $db, $user_id ) {
+ if ( $event === 'before_insert' && isset( $_POST['hj_ci_profile_kill_claim_db'] ) ) { hj_prod_ci_kill( $db ); }
 }, 10, 3 );
-// Read only this authenticated user's CI-only claim, without changing it.
+add_action( 'wp_after_insert_post', function ( $id, $post, $update ) {
+ if ( $update || $post->post_type !== 'doctor' || empty( $GLOBALS['hj_ci_profile_old_db_id'] ) || ! isset( $_POST['hj_ci_profile_kill_wpdb'], $_POST['hj_ci_profile_token'] ) ) { return; }
+ global $wpdb; $new_id = (int) $wpdb->get_var( 'SELECT CONNECTION_ID()' );
+ hj_prod_ci_barrier( 'profile-reconnect-' . $_POST['hj_ci_profile_token'], false, $GLOBALS['hj_ci_profile_old_db_id'] . ',' . $new_id );
+}, 10, 3 );
+// Introspection is restricted to the authenticated synthetic user in CI.
 add_action( 'wp_ajax_hj_ci_profile_claim', function () {
  if ( ! hj_doctors_is_doctor_user() ) { wp_send_json_error( array(), 403 ); }
- global $wpdb; $table=$wpdb->prefix . 'ci_profile_claims';
- $token=$wpdb->get_var( $wpdb->prepare( "SELECT claim_token FROM `$table` WHERE user_id=%d", get_current_user_id() ) );
+ global $wpdb; $name = 'hj_doctors_first_profile_claim_' . get_current_user_id();
+ $value = $wpdb->get_var( $wpdb->prepare( "SELECT option_value FROM `{$wpdb->options}` WHERE option_name=%s", $name ) );
  if ( $wpdb->last_error ) { wp_send_json_error( array(), 503 ); }
- wp_send_json_success( array( 'token'=>$token ) );
+ wp_send_json_success( array( 'value'=>$value ) );
 } );
 add_filter( 'update_post_metadata', function ( $check, $id, $key ) {
 	return $key === 'working_hours' && isset( $_POST['hj_ci_mirror_fail'] ) ? true : $check;
