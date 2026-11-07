@@ -522,6 +522,6 @@
 
 [طرح](BOOKING-DASHBOARD-PENDING-E2E.fa.md) با barrier واقعی mutex در CI: بررسی حفظ محتوای ارسال‌شده، هشدار ویرایش بعدی، جلوگیری از ارسال موازی و ذخیرهٔ بعدی با revision جدید؛ داده و سرور دورریختنی، محصول و ZIP بدون تغییر. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42415895217) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42415895220) موفق، سه بدهی و migration باز، **۷۵٪ ثابت**.
 
-### مرحلهٔ ۵.۲۶ — پاسخ ازدست‌رفته پس از commit واقعی | در انتظار CI
+### مرحلهٔ ۵.۲۶ — پاسخ ازدست‌رفته پس از commit واقعی | CI موفق
 
-[طرح و محدودیت](BOOKING-DASHBOARD-LOST-RESPONSE-E2E.fa.md): در Chromium متصل به وردپرس، پاسخ واقعی و کامل پس از commit عمداً توسط wrapper آزمون دور انداخته می‌شود؛ حفظ snapshot، قفل همان صفحه و از بین رفتن قفل در صفحهٔ تازه بررسی می‌شود. این قطع شبکه/میانهٔ COMMIT، idempotency یا بازیابی پایدار نیست؛ کد افزونه و ZIP بدون تغییر، CI در انتظار، سه بدهی و migration باز، **۷۵٪ ثابت**.
+[طرح و محدودیت](BOOKING-DASHBOARD-LOST-RESPONSE-E2E.fa.md): در Chromium متصل به وردپرس، پاسخ واقعی و کامل پس از commit عمداً توسط wrapper آزمون دور انداخته می‌شود؛ حفظ snapshot، قفل همان صفحه و از بین رفتن قفل در صفحهٔ تازه بررسی می‌شود. این قطع شبکه/میانهٔ COMMIT، idempotency یا بازیابی پایدار نیست؛ کد افزونه و ZIP بدون تغییر، [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42416162949) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42416163047) موفق، سه بدهی و migration باز، **۷۵٪ ثابت**.
