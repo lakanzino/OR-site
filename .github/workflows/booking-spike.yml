@@ -307,6 +307,12 @@ jobs:
           export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
           node tools/hj-booking-integration/schedule-client-prototype.test.cjs
           node tools/hj-booking-integration/schedule-client-prototype-browser.cjs
+      - name: Test isolated mobile schedule history review
+        run: |
+          set -euo pipefail
+          export NODE_PATH="$RUNNER_TEMP/hj-capacity-browser/node_modules"
+          export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          node tools/hj-booking-integration/schedule-review-prototype-browser.cjs
       - name: Exercise unchanged repository plugin booking backend
         run: |
           set -e

@@ -77,7 +77,7 @@ try:
     lost=subprocess.Popen(cmd+['cancel-lost'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True); processes.append(lost)
     wait(file('-cancelled'),lost); lost.kill(); output=lost.communicate(timeout=5)[0]
     if lost.returncode!=-9: raise RuntimeError('expected SIGKILL after cancel commit: '+output[-1000:])
-    run('check-cancel-lost'); run('history')
+    run('check-cancel-lost'); run('history'); run('compare')
 finally:
     file('-release').touch()
     for p in processes:
