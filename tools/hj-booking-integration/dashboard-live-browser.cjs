@@ -2,6 +2,8 @@
 'use strict';
 const assert=require('node:assert/strict');
 const path=require('node:path');
+const fs=require('node:fs');
+const crypto=require('node:crypto');
 const {chromium}=require('playwright-core');
 const base='http://example.invalid:8997';
 const doctor=String(process.env.HJ_BROWSER_DOCTOR);
@@ -34,5 +36,46 @@ const doctor=String(process.env.HJ_BROWSER_DOCTOR);
   assert.equal(after.display[0].start_time,'09:15:00');
   assert.equal(await page.locator('[data-hj="save"]').isDisabled(),false);
   console.log('PASS real authenticated Chromium dashboard save, revision, MariaDB snapshot and display mirror');
+  // Deterministically hold the real writer under its doctor mutex while the user edits.
+  const token=crypto.randomBytes(16).toString('hex');
+  const prefix=path.join(process.env.RUNNER_TEMP,'hj-wpdb-test-save-hold-'+token);
+  const ready=prefix+'-ready', release=prefix+'-released';
+  try {
+   await page.locator('[name="name_fa"]').fill('Synthetic Pending Initial');
+   await page.locator('[name="hours[wednesday][start]"]').fill('10:00');
+   await page.evaluate(token=>{
+    const input=document.createElement('input');input.type='hidden';input.name='hj_ci_hold_lock';input.value=token;document.querySelector('#hj-dash-form').append(input);
+    const real=window.fetch.bind(window); window.__saveCalls=0;
+    window.fetch=(url,opts)=>{if(opts && opts.body instanceof FormData && opts.body.get('action')==='hj_dash_save') window.__saveCalls++;return real(url,opts);};
+   },token);
+   await page.locator('[data-hj="save"]').click();
+   const until=Date.now()+15000;
+   while(!fs.existsSync(ready) && Date.now()<until) await new Promise(r=>setTimeout(r,25));
+   assert(fs.existsSync(ready),'actual schedule writer reached mutex barrier');
+   assert.equal(await page.locator('[data-hj="save"]').isDisabled(),true);
+   await page.locator('[name="name_fa"]').fill('Synthetic Pending Edited');
+   await page.locator('[name="hours[wednesday][start]"]').fill('10:30');
+   await page.evaluate(()=>document.querySelector('#hj-dash-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})));
+   assert.equal(await page.evaluate(()=>window.__saveCalls),1,'parallel submission blocked');
+   fs.writeFileSync(release,'go');
+   await page.waitForFunction(rev=>document.querySelector('[name="hj_schedule_revision"]').value===String(rev+1),revision+1);
+   await page.waitForFunction(()=>document.querySelector('[data-err="form"]').textContent.includes('بعد از ارسال'));
+   const first=await state();
+   assert.equal(first.name,'Synthetic Pending Initial'); assert.equal(JSON.parse(first.snapshot.rows_json)[0].start_time,'10:00:00');
+   assert.equal(await page.locator('[name="name_fa"]').inputValue(),'Synthetic Pending Edited');
+   assert.equal(await page.locator('[name="hours[wednesday][start]"]').inputValue(),'10:30');
+   assert.equal(await page.locator('[data-hj="save"]').isDisabled(),false);
+   await page.locator('[name="hj_ci_hold_lock"]').evaluate(el=>el.remove());
+   await page.locator('[data-hj="save"]').click();
+   await page.waitForFunction(rev=>document.querySelector('[name="hj_schedule_revision"]').value===String(rev+1),revision+2);
+   const second=await state();
+   assert.equal(second.name,'Synthetic Pending Edited'); assert.equal(JSON.parse(second.snapshot.rows_json)[0].start_time,'10:30:00');
+   assert.equal(Number(second.snapshot.revision),revision+3); assert.equal(await page.evaluate(()=>window.__saveCalls),2);
+   console.log('PASS real browser in-flight edits, mutex barrier, original save and explicit subsequent save');
+  } finally {
+   fs.writeFileSync(release,'go');
+   for(const f of [ready,release]) try {fs.unlinkSync(f);} catch(e) {if(e.code!=='ENOENT')throw e;}
+  }
+
  } finally {await context.close();await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

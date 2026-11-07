@@ -514,6 +514,10 @@
 
 [شرح و محدودیت](BOOKING-DASHBOARD-INFLIGHT-EDITS.fa.md): مقایسهٔ دادهٔ قابل ارسال در لحظهٔ درخواست و پاسخ موفق، تغییرات جدید را از نسخهٔ تأییدشده تفکیک می‌کند؛ در ساخت پروفایل، به‌جای reload نابهنگام، تغییرات در صفحه حفظ و کاربر به یادداشت و بازخوانی هدایت می‌شود. آزمون Node و Chromium مستقل موفق؛ [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42412896815) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42412896874) سبز، ۰٫۳٫۴۷ آزمایشی، بدهی‌های اصلی و migration باز و **۷۵٪ ثابت**.
 
-### مرحلهٔ ۵.۲۴ — اتصال Chromium به ذخیرهٔ واقعی داشبورد | در انتظار CI
+### مرحلهٔ ۵.۲۴ — اتصال Chromium به ذخیرهٔ واقعی داشبورد | CI موفق
 
-[شرح](BOOKING-DASHBOARD-BROWSER-E2E.fa.md): آزمون دورریختنی ورود وردپرس، فرم واقعی افزونه، AJAX و snapshot/MariaDB را به Chromium متصل می‌کند؛ این OAuth یا navigation واقعی پوسته نیست. کد افزونه و ZIP تغییر نکرد؛ CI در انتظار، بدهی‌های فرم و migration باز و **۷۵٪ ثابت**.
+[شرح](BOOKING-DASHBOARD-BROWSER-E2E.fa.md): آزمون دورریختنی ورود وردپرس، فرم واقعی افزونه، AJAX و snapshot/MariaDB را به Chromium متصل می‌کند؛ این OAuth یا navigation واقعی پوسته نیست. کد افزونه و ZIP تغییر نکرد؛ [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42415588894) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42415588918) موفق، بدهی‌های فرم و migration باز و **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۲۵ — race ویرایش حین ذخیره در HTTP واقعی | در انتظار CI
+
+[طرح](BOOKING-DASHBOARD-PENDING-E2E.fa.md) با barrier واقعی mutex در CI: بررسی حفظ محتوای ارسال‌شده، هشدار ویرایش بعدی، جلوگیری از ارسال موازی و ذخیرهٔ بعدی با revision جدید؛ داده و سرور دورریختنی، محصول و ZIP بدون تغییر. CI در انتظار، سه بدهی و migration باز، **۷۵٪ ثابت**.
