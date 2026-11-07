@@ -182,10 +182,13 @@ try:
         return request(opener,'/wp-admin/admin-ajax.php',payload)
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
         futures=[pool.submit(claim_create,args) for args in ((claimant1,cn1,claim_tokens[0],1),(claimant2,cn2,claim_tokens[1],2))]
+        barrier_error = None
         try: wait_ready([b[0] for b in claim_barriers])
+        except AssertionError as exc: barrier_error = exc
         finally:
             for _,released in claim_barriers: released.touch()
         claim_replies=[f.result(timeout=40) for f in futures]
+        if barrier_error: raise AssertionError(f'{barrier_error}; synthetic responses: {claim_replies!r}') from barrier_error
     check(sorted(code for code,body in claim_replies)==[200,409], 'one simultaneous claim wins; other first-profile insert is rejected')
     winner=next(i for i,(code,body) in enumerate(claim_replies) if code==200)
     check(json.loads(claim_replies[winner][1])['success'] and json.loads(claim_replies[winner][1])['data']['created'], 'winning claim creates profile through actual product handler')
