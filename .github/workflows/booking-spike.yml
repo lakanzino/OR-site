@@ -237,6 +237,42 @@ jobs:
             echo "::error title=Durable intent experiment failure::$summary"
             exit "$status"
           fi
+      - name: Exercise retention inventory and stale-copy counterexamples
+        run: |
+          set -uo pipefail
+          set +e
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/schedule-retention-report.php && php -l tools/hj-booking-integration/schedule-retention-fixture.php && python3 tools/hj-booking-integration/schedule-retention-test.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Retention experiment failure::$summary"
+            exit "$status"
+          fi
+      - name: Test writer coordination on a disposable patched plugin copy
+        run: |
+          set -uo pipefail
+          set +e
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/schedule-coordination-fixture.php && python3 tools/hj-booking-integration/schedule-coordination-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Writer coordination experiment failure::$summary"
+            exit "$status"
+          fi
+      - name: Test synthetic v1 pause and stale resume on disposable plugin copy
+        run: |
+          set -uo pipefail
+          set +e
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/v1-safe-pause-fixture.php && python3 tools/hj-booking-integration/v1-safe-pause-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=V1 pause experiment failure::$summary"
+            exit "$status"
+          fi
       - name: Race production capacity calculation with real plugin mutex
         run: |
           set -uo pipefail
@@ -283,6 +319,26 @@ jobs:
           export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
           node tools/hj-booking-integration/schedule-client-prototype.test.cjs
           node tools/hj-booking-integration/schedule-client-prototype-browser.cjs
+      - name: Test isolated mobile schedule history review
+        run: |
+          set -euo pipefail
+          export NODE_PATH="$RUNNER_TEMP/hj-capacity-browser/node_modules"
+          export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          node tools/hj-booking-integration/schedule-review-prototype-browser.cjs
+      - name: Test disposable authenticated history review end-to-end
+        run: |
+          set -euo pipefail
+          export NODE_PATH="$RUNNER_TEMP/hj-capacity-browser/node_modules"
+          export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          set +e
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/schedule-intent-functions.php && php -l tools/hj-booking-integration/schedule-review-limit.php && php -l tools/hj-booking-integration/schedule-review-http-router.php && python3 tools/hj-booking-integration/schedule-review-http.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | head -c 3500 | tr '\n' ' ')
+            echo "::error title=Disposable review HTTP failure::$summary"
+            exit "$status"
+          fi
       - name: Exercise unchanged repository plugin booking backend
         run: |
           set -e
