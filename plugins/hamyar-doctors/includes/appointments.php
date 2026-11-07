@@ -305,7 +305,7 @@ function hj_booking_save_schedule( $doctor, $rows, $expected_revision ) {
 function hj_booking_save_capacity_week( $doctor, $rows, $expected_revision, $enabled = null, $expected_config = null ) {
 	if ( ! hj_booking_capacity_v2_ready() || ! hj_booking_ready() ) { return array( 'status'=>'unavailable' ); }
 	if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status'=>'forbidden' ); }
-	if ( ! is_int( $expected_revision ) || $expected_revision < 0 || ( $enabled !== null && ! is_bool( $enabled ) ) || ( $expected_config !== null && ( ! is_array( $expected_config ) || count( $expected_config ) !== 3 || ! isset( $expected_config['duration'], $expected_config['buffer'], $expected_config['enabled'] ) || ! is_int( $expected_config['duration'] ) || ! is_int( $expected_config['buffer'] ) || ! is_bool( $expected_config['enabled'] ) ) ) ) { return array( 'status'=>'invalid' ); }
+	if ( ! is_int( $expected_revision ) || $expected_revision < 0 || ( $enabled !== null && ! is_bool( $enabled ) ) || ( $expected_config !== null && ( ! is_array( $expected_config ) || count( $expected_config ) !== 4 || ! isset( $expected_config['duration'], $expected_config['buffer'], $expected_config['enabled'], $expected_config['generation'] ) || ! is_int( $expected_config['duration'] ) || ! is_int( $expected_config['buffer'] ) || ! is_bool( $expected_config['enabled'] ) || ! is_int( $expected_config['generation'] ) || $expected_config['generation'] < 0 ) ) ) { return array( 'status'=>'invalid' ); }
 	$normalized = hj_booking_normalize_capacity_week( $rows );
 	if ( $normalized === false ) { return array( 'status'=>'invalid' ); }
 	$json = wp_json_encode( array( 'version'=>2, 'rows'=>$normalized ) );
@@ -313,6 +313,11 @@ function hj_booking_save_capacity_week( $doctor, $rows, $expected_revision, $ena
 	$hash = hash( 'sha256', $json );
 	return hj_booking_transaction( $doctor, 'capacity_schedule', function ( $db, $config ) use ( $doctor, $json, $hash, $expected_revision, $enabled, $expected_config ) {
 		if ( $expected_config !== null && ( (int)$config['duration_minutes'] !== $expected_config['duration'] || (int)$config['buffer_minutes'] !== $expected_config['buffer'] || (bool)(int)$config['enabled'] !== $expected_config['enabled'] ) ) { return array( 'status'=>'revision_conflict' ); }
+		$generation = hj_booking_activation_generation( $config );
+		if ( $generation === false || ! in_array( (int)$config['enabled'], array(0,1), true ) ) { return array( 'status'=>'unavailable' ); }
+		if ( $expected_config !== null && $generation !== $expected_config['generation'] ) { return array( 'status'=>'revision_conflict' ); }
+		$activation_changes = $enabled !== null && (bool)(int)$config['enabled'] !== $enabled;
+		if ( $activation_changes && $generation === PHP_INT_MAX ) { return array( 'status'=>'unavailable' ); }
 		$table = hj_booking_table( 'schedules' ); $appointments = hj_booking_table( 'appointments' );
 		$old = hj_booking_row( $db, $db->prepare( "SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d FOR UPDATE", $doctor ) );
 		$current = $old ? (int)$old['revision'] : 0;
@@ -329,7 +334,8 @@ function hj_booking_save_capacity_week( $doctor, $rows, $expected_revision, $ena
 		if ( $n !== 1 ) { throw new RuntimeException( 'Capacity schedule save failed' ); }
 		if ( $enabled !== null ) {
 			$doctors = hj_booking_table( 'doctors' );
-			hj_booking_query( $db, $db->prepare( "UPDATE `$doctors` SET enabled=%d WHERE doctor_id=%d", $enabled ? 1 : 0, $doctor ) );
+			$increment = $activation_changes ? ' ,activation_generation=activation_generation+1' : '';
+			hj_booking_query( $db, $db->prepare( "UPDATE `$doctors` SET enabled=%d$increment WHERE doctor_id=%d", $enabled ? 1 : 0, $doctor ) );
 		}
 		return array( 'status'=>'saved', 'revision'=>$revision );
 	} );
@@ -355,25 +361,65 @@ function hj_booking_public_office_hours( $doctor ) {
 	} catch ( Throwable $e ) { return array( 'status'=>'unavailable' ); }
 	finally { $wpdb->suppress_errors( $previous ); }
 }
+/** Activation generation is deliberately available only in the disposable v2 fixture. */
+function hj_booking_activation_generation( $config ) {
+	$value = $config['activation_generation'] ?? null;
+	if ( ! is_scalar( $value ) || ! preg_match( '/^(0|[1-9][0-9]*)$/D', (string)$value ) || strlen( (string)$value ) > strlen( (string)PHP_INT_MAX ) || (string)(int)$value !== (string)$value ) { return false; }
+	return (int)$value;
+}
 /** Pause only: allow disabling new bookings without changing any schedule or appointment. */
 function hj_booking_pause_capacity( $doctor ) {
 	if ( ! hj_booking_capacity_v2_ready() || ! hj_booking_ready() ) { return array( 'status'=>'unavailable' ); }
 	if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status'=>'forbidden' ); }
 	return hj_booking_transaction( $doctor, 'capacity_pause', function ( $db, $config ) use ( $doctor ) {
 		if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status'=>'forbidden' ); }
+		$generation = hj_booking_activation_generation( $config );
+		if ( $generation === false || ! in_array( (int)$config['enabled'], array(0,1), true ) ) { return array( 'status'=>'unavailable' ); }
 		if ( (int)$config['enabled'] === 0 ) { return array( 'status'=>'paused' ); }
+		if ( $generation === PHP_INT_MAX ) { return array( 'status'=>'unavailable' ); }
 		$table = hj_booking_table( 'doctors' );
-		hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET enabled=0 WHERE doctor_id=%d", $doctor ) );
+		hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET enabled=0,activation_generation=activation_generation+1 WHERE doctor_id=%d", $doctor ) );
 		return array( 'status'=>'paused' );
+	} );
+}
+/** Reactivate an unchanged validated v1 or v2 snapshot in CI; stale requests cannot undo a later pause. */
+function hj_booking_resume_capacity( $doctor, $expected_revision, $expected_generation ) {
+	if ( ! hj_booking_capacity_v2_ready() || ! hj_booking_ready() ) { return array( 'status'=>'unavailable' ); }
+	if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status'=>'forbidden' ); }
+	if ( ! is_int( $expected_revision ) || $expected_revision < 1 || ! is_int( $expected_generation ) || $expected_generation < 0 || $expected_generation >= PHP_INT_MAX ) { return array( 'status'=>'invalid' ); }
+	return hj_booking_transaction( $doctor, 'capacity_resume', function ( $db, $config ) use ( $doctor, $expected_revision, $expected_generation ) {
+		if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status'=>'forbidden' ); }
+		$generation = hj_booking_activation_generation( $config );
+		if ( $generation === false || ! in_array( (int)$config['enabled'], array(0,1), true ) ) { return array( 'status'=>'unavailable' ); }
+		$snapshot = hj_booking_snapshot_locked( $db, $doctor );
+		if ( $snapshot === false || ( $snapshot['format'] === 1 && ( (int)$config['duration_minutes'] < 1 || (int)$config['duration_minutes'] > 240 || (int)$config['buffer_minutes'] < 0 || (int)$config['buffer_minutes'] > 120 ) ) ) { return array( 'status'=>'invalid_schedule' ); }
+		if ( $snapshot['revision'] !== $expected_revision ) { return array( 'status'=>'revision_conflict' ); }
+		// A retry of the same transition is safe only until another transition occurs.
+		if ( (int)$config['enabled'] === 1 && $generation === $expected_generation + 1 ) { return array( 'status'=>'resumed' ); }
+		if ( (int)$config['enabled'] !== 0 || $generation !== $expected_generation ) { return array( 'status'=>'revision_conflict' ); }
+		$table = hj_booking_table( 'doctors' );
+		$n = hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET enabled=1,activation_generation=activation_generation+1 WHERE doctor_id=%d", $doctor ) );
+		if ( $n !== 1 ) { throw new RuntimeException( 'Capacity resume failed' ); }
+		return array( 'status'=>'resumed' );
 	} );
 }
 /** Explicit doctor configuration, disabled until set. */
 function hj_booking_configure( $doctor, $duration, $buffer, $enabled ) {
 	if ( ! hj_booking_can_configure( $doctor ) ) { return array( 'status' => 'forbidden' ); }
 	if ( ! is_int( $duration ) || $duration < 1 || $duration > 240 || ! is_int( $buffer ) || $buffer < 0 || $buffer > 120 || ! is_bool( $enabled ) ) { return array( 'status' => 'invalid' ); }
-	return hj_booking_transaction( $doctor, 'configure', function ( $db ) use ( $doctor, $duration, $buffer, $enabled ) {
-		$table = hj_booking_table( 'doctors' );
-		hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET duration_minutes=%d,buffer_minutes=%d,enabled=%d WHERE doctor_id=%d", $duration, $buffer, $enabled ? 1 : 0, $doctor ) );
+	return hj_booking_transaction( $doctor, 'configure', function ( $db, $config ) use ( $doctor, $duration, $buffer, $enabled ) {
+		$table = hj_booking_table( 'doctors' ); $increment = '';
+		if ( hj_booking_capacity_v2_ready() ) {
+			$generation = hj_booking_activation_generation( $config );
+			if ( $generation === false || ! in_array( (int)$config['enabled'], array(0,1), true ) ) { return array( 'status'=>'unavailable' ); }
+			// Legacy v1 snapshots depend on these config values, so a resume token
+			// must also become stale after any change or ABA cycle of duration/buffer.
+			if ( (bool)(int)$config['enabled'] !== $enabled || (int)$config['duration_minutes'] !== $duration || (int)$config['buffer_minutes'] !== $buffer ) {
+				if ( $generation === PHP_INT_MAX ) { return array( 'status'=>'unavailable' ); }
+				$increment = ',activation_generation=activation_generation+1';
+			}
+		}
+		hj_booking_query( $db, $db->prepare( "UPDATE `$table` SET duration_minutes=%d,buffer_minutes=%d,enabled=%d$increment WHERE doctor_id=%d", $duration, $buffer, $enabled ? 1 : 0, $doctor ) );
 		return array( 'status' => 'configured' );
 	} );
 }

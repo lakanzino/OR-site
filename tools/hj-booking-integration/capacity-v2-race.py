@@ -13,6 +13,7 @@ try:
     subprocess.run(cmd+['setup'],check=True); setup=True
     subprocess.run(off,check=True)
     subprocess.run(cmd+['patient'],check=True)
+    subprocess.run(['python3',str(root/'tools/hj-booking-integration/capacity-pause-race.py')],check=True)
     for i in range(12): workers.append(subprocess.Popen(cmd+['worker'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,env=dict(os.environ,HJ_V2_WORKER=str(i))))
     until=time.monotonic()+25
     while not all(Path(str(prefix)+'-ready-'+str(i)).exists() for i in range(12)) and time.monotonic()<until:

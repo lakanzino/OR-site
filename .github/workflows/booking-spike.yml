@@ -148,6 +148,95 @@ jobs:
             echo "::error title=Booking migration failure::$summary"
             exit "$status"
           fi
+      - name: Inventory disposable legacy data without mutation
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/capacity-preflight.php && php -l tools/hj-booking-integration/capacity-preflight-fixture.php && php -d auto_prepend_file="$GITHUB_WORKSPACE/tools/hj-booking-integration/prepend.php" tools/hj-booking-integration/capacity-preflight-fixture.php' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Disposable inventory failure::$summary"
+            exit "$status"
+          fi
+      - name: Compare synthetic legacy capacity migration proposal
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/capacity-migration-proposal.php && php tools/hj-booking-integration/capacity-migration-proposal.php' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Legacy capacity proposal failure::$summary"
+            exit "$status"
+          fi
+      - name: Exercise disposable v2 schema preparation and interrupted reruns
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/capacity-schema-experiment.php && php -d auto_prepend_file="$GITHUB_WORKSPACE/tools/hj-booking-integration/prepend.php" tools/hj-booking-integration/capacity-schema-experiment.php' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Disposable schema preparation failure::$summary"
+            exit "$status"
+          fi
+      - name: Kill and race disposable schema preparation workers
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/capacity-schema-experiment-lib.php && php -l tools/hj-booking-integration/capacity-schema-race-fixture.php && python3 tools/hj-booking-integration/capacity-schema-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Disposable schema worker race failure::$summary"
+            exit "$status"
+          fi
+      - name: Restore isolated synthetic table copy after killed transaction
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/capacity-recovery-fixture.php && python3 tools/hj-booking-integration/capacity-recovery-test.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Disposable recovery experiment failure::$summary"
+            exit "$status"
+          fi
+      - name: Race isolated schedule idempotency and lost responses
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/schedule-idempotency-fixture.php && python3 tools/hj-booking-integration/schedule-idempotency-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Schedule idempotency experiment failure::$summary"
+            exit "$status"
+          fi
+      - name: Test isolated capacity receipt policy and lost responses
+        run: |
+          set -uo pipefail
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/capacity-idempotency-fixture.php && python3 tools/hj-booking-integration/capacity-idempotency-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Capacity idempotency experiment failure::$summary"
+            exit "$status"
+          fi
+      - name: Exercise isolated durable schedule intent and key recovery
+        run: |
+          set -uo pipefail
+          set +e
+          output=$(bash -e -c 'php -l tools/hj-booking-integration/schedule-intent-fixture.php && python3 tools/hj-booking-integration/schedule-intent-race.py' 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Durable intent experiment failure::$summary"
+            exit "$status"
+          fi
       - name: Race production capacity calculation with real plugin mutex
         run: |
           set -uo pipefail
@@ -187,6 +276,13 @@ jobs:
             echo "::error title=Capacity office settings HTTP failure::$summary"
             exit "$status"
           fi
+      - name: Exercise isolated idempotency client and mobile browser
+        run: |
+          set -euo pipefail
+          export NODE_PATH="$RUNNER_TEMP/hj-capacity-browser/node_modules"
+          export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          node tools/hj-booking-integration/schedule-client-prototype.test.cjs
+          node tools/hj-booking-integration/schedule-client-prototype-browser.cjs
       - name: Exercise unchanged repository plugin booking backend
         run: |
           set -e

@@ -17,6 +17,8 @@ if ($mode==='setup') {
  global $wpdb; $table=hj_booking_table('schedules'); $before=$wpdb->get_row($wpdb->prepare("SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d",$doctor),ARRAY_A);
  $v1=hj_booking_public_slots((int)$doctor,$date);
  // Deliberate fixture-only option change: NOT a migration and NOT safe on a real site.
+ global $wpdb; $activation_table=hj_booking_table('doctors');
+ if ($wpdb->query("ALTER TABLE `$activation_table` ADD COLUMN activation_generation bigint unsigned NOT NULL DEFAULT 0")===false) { throw new RuntimeException('synthetic activation generation setup failed'); }
  update_option('hj_booking_schema_version',2,false); hj_booking_schema_clear_option_cache();
  $v2=hj_booking_public_slots((int)$doctor,$date); $after=$wpdb->get_row($wpdb->prepare("SELECT revision,rows_json,rows_hash FROM `$table` WHERE doctor_id=%d",$doctor),ARRAY_A);
  v2_check(hj_booking_capacity_v2_ready() && hj_booking_ready() && $v1===$v2 && $before===$after,'legacy schedule read in v2 preserves data, old duration and buffer');
@@ -38,7 +40,7 @@ if ($mode==='setup') {
  v2_check($calendar['days'][2]===array('date'=>$date,'remaining'=>12,'state'=>'available','color'=>'green') && $calendar['days'][9]['remaining']===12 && $calendar['days'][1]['state']==='closed','capacity three across four one-hour slots gives twelve places on scheduled days');
  foreach ($calendar['days'] as $day) { v2_check(array_keys($day)===array('date','remaining','state','color'),'calendar returns only public aggregate fields'); }
 
- file_put_contents($meta,wp_json_encode(array('doctor'=>(int)$doctor,'date'=>$date,'start'=>$slots['slots'][0],'rule'=>$rule,'revision'=>2)));
+ file_put_contents($meta,wp_json_encode(array('doctor'=>(int)$doctor,'date'=>$date,'start'=>$slots['slots'][0],'rule'=>$rule,'revision'=>2,'snapshot'=>$v2snapshot)));
  exit(0);
 }
 if ($mode==='offcheck') { v2_check(!hj_booking_capacity_v2_ready() && !hj_booking_ready(),'v2 is unavailable without CI-only explicit gate'); exit(0); }
@@ -77,6 +79,52 @@ if ($mode==='patient') {
   if ($id2) { $wpdb->delete($details,array('appointment_id'=>$id2)); $wpdb->delete($appointments,array('id'=>$id2)); }
   if ($owned && !$keep) { $wpdb->query("DROP TABLE `$extra`"); }
  }
+ exit(0);
+}
+// Deterministic, disposable pause/create race using the actual plugin mutex.
+if ($mode==='pause-worker') {
+ $round=getenv('HJ_PAUSE_ROUND'); $actor=getenv('HJ_PAUSE_ACTOR'); $role=getenv('HJ_PAUSE_ROLE');
+ if (!in_array($round,array('pause','create'),true) || !in_array($actor,array('pause','create'),true) || !in_array($role,array('holder','waiter'),true)) { exit(1); }
+ $race=$prefix.'-pause-'.$round; $operation=$actor==='pause' ? 'capacity_pause' : 'create';
+ wp_set_current_user($actor==='pause' ? $admin->ID : get_user_by('login','synthetic_race_0')->ID);
+ add_action('hj_booking_test_event',function($event,$db,$context) use($race,$role,$operation) {
+  if ($context['operation']!==$operation) { return; }
+  if ($role==='waiter' && $event==='before_lock') { file_put_contents($race.'-before',(string)$db->get_var('SELECT CONNECTION_ID()')); }
+  if ($role==='holder' && $event==='after_lock') {
+   file_put_contents($race.'-locked','locked'); $until=microtime(true)+10;
+   while (!is_file($race.'-release') && microtime(true)<$until) { usleep(10000); clearstatcache(); }
+   if (!is_file($race.'-release')) { throw new RuntimeException('pause race barrier timeout'); }
+  }
+ },10,3);
+ $key=substr(hash('sha256','synthetic-pause-race-'.$round),0,32);
+ $profile=array('first_name'=>'نمونه','last_name'=>'بیمار','service'=>'visit','note'=>'');
+ $result=$actor==='pause' ? hj_booking_pause_capacity($id) : hj_booking_create($id,$data['start'],$key,'09123456789','',(int)$data['revision'],$profile);
+ echo $result['status']; exit(0);
+}
+if ($mode==='pause-waiter') {
+ global $wpdb; $round=getenv('HJ_PAUSE_ROUND'); if (!in_array($round,array('pause','create'),true)) { exit(1); }
+ $path=$prefix.'-pause-'.$round.'-before'; $until=microtime(true)+1.5;
+ do {
+  $connection=is_file($path) ? (int)file_get_contents($path) : 0;
+  foreach($wpdb->get_results('SHOW FULL PROCESSLIST',ARRAY_A) as $row) {
+   if ($connection && (int)$row['Id']===$connection && stripos((string)($row['Info'] ?? ''),'INSERT INTO `'.hj_booking_table('doctors').'`')!==false) { echo 'WAITING'; exit(0); }
+  }
+  usleep(10000); clearstatcache();
+ } while(microtime(true)<$until); exit(1);
+}
+if ($mode==='pause-check') {
+ global $wpdb; $round=getenv('HJ_PAUSE_ROUND'); if (!in_array($round,array('pause','create'),true)) { exit(1); }
+ $a=hj_booking_table('appointments'); $p=hj_booking_table('details'); $extra=hj_booking_patient_details_v2_table(); $schedule=hj_booking_table('schedules'); $doctors=hj_booking_table('doctors');
+ $key=substr(hash('sha256','synthetic-pause-race-'.$round),0,32);
+ $rows=$wpdb->get_results($wpdb->prepare("SELECT id,status FROM `$a` WHERE doctor_id=%d AND request_key=%s",$id,$key),ARRAY_A);
+ $current=$wpdb->get_row($wpdb->prepare("SELECT revision,rows_json,rows_hash FROM `$schedule` WHERE doctor_id=%d",$id),ARRAY_A);
+ v2_check((int)$wpdb->get_var($wpdb->prepare("SELECT enabled FROM `$doctors` WHERE doctor_id=%d",$id))===0 && $current===$data['snapshot'] && count($rows)===($round==='create' ? 1 : 0),'pause race preserves snapshot and retains only a booking committed before pause');
+ wp_set_current_user(get_user_by('login','synthetic_race_0')->ID);
+ $profile=array('first_name'=>'نمونه','last_name'=>'بیمار','service'=>'visit','note'=>'');
+ if ($round==='create') { v2_check($rows[0]['status']==='pending' && hj_booking_create($id,$data['start'],$key,'09123456789','',(int)$data['revision'],$profile)['status']==='replayed','already committed request replays even after pause'); }
+ v2_check(hj_booking_create($id,$data['start'],str_repeat('f',32),'09123456789','',(int)$data['revision'],$profile)['status']==='unavailable','new request is rejected while paused');
+ foreach($rows as $row) { $booking=(int)$row['id']; $wpdb->delete($extra,array('appointment_id'=>$booking)); $wpdb->delete($p,array('appointment_id'=>$booking)); $wpdb->delete($a,array('id'=>$booking)); }
+ wp_set_current_user($admin->ID); v2_check(hj_booking_configure($id,30,5,true)['status']==='configured','CI fixture re-enables empty doctor for subsequent tests');
  exit(0);
 }
 if ($mode==='waiter') {
@@ -136,6 +184,7 @@ if ($mode==='cleanup') {
  $ids=$wpdb->get_col($wpdb->prepare("SELECT id FROM `$table` WHERE doctor_id=%d",$id)); foreach($ids as $appt) { if ($extra && $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s',$wpdb->esc_like($extra)))) { $wpdb->delete($extra,array('appointment_id'=>(int)$appt)); } $wpdb->delete($details,array('appointment_id'=>(int)$appt)); }
  if ($extra && $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s',$wpdb->esc_like($extra)))) { $wpdb->query("DROP TABLE `$extra`"); }
  $wpdb->delete($table,array('doctor_id'=>$id)); $wpdb->delete(hj_booking_table('schedules'),array('doctor_id'=>$id)); $wpdb->delete(hj_booking_table('doctors'),array('doctor_id'=>$id)); wp_delete_post($id,true);
- update_option('hj_booking_schema_version',1,false); hj_booking_schema_clear_option_cache(); unlink($meta); exit(0);
+ update_option('hj_booking_schema_version',1,false); hj_booking_schema_clear_option_cache();
+ $activation_table=hj_booking_table('doctors'); if ($wpdb->query("ALTER TABLE `$activation_table` DROP COLUMN activation_generation")===false) { throw new RuntimeException('synthetic activation generation cleanup failed'); } unlink($meta); exit(0);
 }
 exit(1);

@@ -507,6 +507,8 @@ try:
         denied_html = ajax(opener, {'action':'hj_ci_render_management', 'doctor':str(forbidden_doctor)})['html']
         check('Synthetic Patient Alpha' not in denied_html and 'Synthetic Patient Beta' not in denied_html and '09123456789' not in denied_html, 'forged doctor list access returns no private records')
     check('Synthetic Doctor' in patient_html and 'Second synthetic booking doctor' not in patient_html and '09123456789' not in patient_html and '1234567891' not in patient_html, 'patient list is own-only and does not expose contact details')
+    legacy_account=ajax(patient_a, {'action':'hj_ci_render_member_account','page':str(fixture_meta['account'])})['html']
+    check('ایمیل حساب' in legacy_account and 'id="hj-bookings"' not in legacy_account and 'Synthetic Doctor' not in legacy_account, 'v1 member account does not automatically change or expose bookings')
     code, future_html = request(patient_a, url + '?hj_b_filter=future', {'action':'hj_ci_render_patient_bookings'})
     code_today, today_html = request(patient_a, url + '?hj_b_filter=today', {'action':'hj_ci_render_patient_bookings'})
     check(code == 200 and code_today == 200 and 'Synthetic Doctor' in json.loads(future_html)['data']['html'] and 'Synthetic Doctor' not in json.loads(today_html)['data']['html'], 'patient today/future filters use local-date boundaries')

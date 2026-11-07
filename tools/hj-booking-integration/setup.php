@@ -44,6 +44,8 @@ foreach ( array( 'disabled', 'missing', 'corrupt' ) as $kind ) {
 }
 $page = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Synthetic booking', 'post_content' => '[hj_booking_form]' ), true );
 if ( is_wp_error( $page ) ) { throw new RuntimeException( 'Synthetic page failed' ); }
+$account=wp_insert_post(array('post_type'=>'page','post_status'=>'publish','post_title'=>'Synthetic legacy account','post_content'=>'[hj_member_account]'),true);
+if (is_wp_error($account) || !$account) { throw new RuntimeException('Synthetic legacy account failed'); }
 update_option( 'active_plugins', array( 'hamyar-doctors/hamyar-doctors.php' ) );
-file_put_contents( getenv( 'RUNNER_TEMP' ) . '/hj-wpdb-ajax-meta.json', wp_json_encode( array( 'doctor' => $doc, 'doctor2' => $doc2, 'profile_gates' => $fixtures, 'page' => $page, 'secretary' => $secretary->ID ) ) );
+file_put_contents( getenv( 'RUNNER_TEMP' ) . '/hj-wpdb-ajax-meta.json', wp_json_encode( array( 'doctor' => $doc, 'doctor2' => $doc2, 'profile_gates' => $fixtures, 'page' => $page, 'account' => $account, 'secretary' => $secretary->ID ) ) );
 echo "PASS: repository plugin loaded without patch; production schema and synthetic doctor configured\n";

@@ -1,0 +1,40 @@
+'use strict';
+const assert = require('node:assert/strict');
+const {createScheduleClient, STORE} = require('./schedule-client-prototype.js');
+const payload = () => ({revision:3,generation:2,enabled:true,rows:[{day:'monday',closed:false,start:'09:00',end:'10:00',duration:30,buffer:5,capacity:1}]});
+function storage(value = null) { let v=value; return {getItem:k=>k===STORE?v:null,setItem:(k,x)=>{if(k===STORE)v=x;},removeItem:k=>{if(k===STORE)v=null;},read:()=>v}; }
+const random={getRandomValues:a=>{a.fill(42);return a;}};
+(async () => {
+  const store=storage(), calls=[]; let outcome='lost', refreshRev=4;
+  const api={submit:async request=>{calls.push(JSON.parse(JSON.stringify(request))); if(outcome==='lost') throw Error('network'); return {status:'replayed',revision:4};},status:async()=>({status:outcome,revision:4}),refresh:async()=>({revision:refreshRev})};
+  let c=createScheduleClient({storage:store,random,api}); const input=payload();
+  assert.equal(await c.start(input),false); assert.equal(c.getState(),'uncertain'); assert.match(store.read(),/^[0-9a-f]{32}$/); assert.equal(calls.length,1);
+  input.rows[0].start='08:00'; assert(!JSON.stringify(store.read()).includes('monday'));
+  outcome='replay'; assert.equal(await c.retry(),true); assert.equal(calls.length,2); assert.deepEqual(calls[1],calls[0]); assert.equal(store.read(),null); assert.equal(c.getState(),'resolved');
+  c=createScheduleClient({storage:store,random,api}); outcome='lost'; await c.start(payload()); const original=store.read();
+  c=createScheduleClient({storage:store,random,api}); assert.equal(c.getState(),'uncertain'); assert.equal(await c.retry(),false); assert.equal(await c.start(payload()),false); assert.equal(store.read(),original);
+  for (const status of ['not_found','in_flight','expired','forbidden']) {outcome=status; assert.equal(await c.check(),false); assert.equal(c.getState(),'uncertain'); assert.equal(store.read(),original);}
+  outcome='completed'; refreshRev=3; assert.equal(await c.check(),false); assert.equal(store.read(),original);
+  refreshRev=9; assert.equal(await c.check(),true); assert.equal(store.read(),null); assert.equal(c.getState(),'resolved');
+  assert.equal(await c.start(payload()),false, 'resolved view requires fresh render before a new request');
+  const bad=storage('bad-value'); let never=0; c=createScheduleClient({storage:bad,random,api:{submit:async()=>{never++;},status:async()=>{never++;},refresh:async()=>{never++;}}});
+  assert.equal(c.getState(),'storage_error'); assert.equal(await c.start(payload()),false); assert.equal(await c.check(),false); assert.equal(never,0); assert.equal(bad.read(),'bad-value');
+  const throws={getItem(){throw Error('blocked');},setItem(){throw Error('blocked');},removeItem(){throw Error('blocked');}};
+  c=createScheduleClient({storage:throws,random,api}); assert.equal(c.getState(),'storage_error'); assert.equal(await c.start(payload()),false);
+  const invalid=storage(); c=createScheduleClient({storage:invalid,random,api}); const p=payload(); p.patient_name='خصوصی'; assert.equal(await c.start(p),false); assert.equal(c.getState(),'invalid'); assert.equal(invalid.read(),null); c.resetInvalid(); assert.equal(c.getState(),'idle');
+  const noCrypto=storage(); c=createScheduleClient({storage:noCrypto,random:null,api}); assert.equal(await c.start(payload()),false); assert.equal(c.getState(),'storage_error'); assert.equal(noCrypto.read(),null);
+  let count=0, backing=null; const noReadback={getItem:()=>++count===1?null:null,setItem:(k,v)=>{backing=v;},removeItem:()=>{backing=null;}};
+  c=createScheduleClient({storage:noReadback,random,api:{submit:async()=>{never++;},refresh:async()=>{},status:async()=>{}}});
+  assert.equal(await c.start(payload()),false); assert.equal(c.getState(),'storage_error'); assert.match(backing,/^[a-f0-9]{32}$/); assert.equal(never,0);
+  const brokenRefresh=storage(); c=createScheduleClient({storage:brokenRefresh,random,api:{submit:async()=>({status:'saved',revision:4}),refresh:async()=>{throw Error('offline');},status:async()=>({status:'completed',revision:4})}});
+  assert.equal(await c.start(payload()),false); assert.equal(c.getState(),'uncertain'); assert.match(brokenRefresh.read(),/^[a-f0-9]{32}$/); assert.equal(await c.check(),false); assert.notEqual(brokenRefresh.read(),null);
+  const timedStorage=storage(); let timeoutCalls=0;
+  c=createScheduleClient({storage:timedStorage,random,timeoutMs:10,api:{submit:async()=>{timeoutCalls++;return new Promise(()=>{});},status:async()=>({status:'not_found'}),refresh:async()=>({revision:4})}});
+  assert.equal(await c.start(payload()),false); assert.equal(c.getState(),'uncertain'); assert.match(timedStorage.read(),/^[a-f0-9]{32}$/); assert.equal(timeoutCalls,1); assert.equal(await c.check(),false);
+  let finish; const deferred=new Promise(resolve=>{finish=resolve;}); const concurrent=storage(); let sent=0;
+  c=createScheduleClient({storage:concurrent,random,api:{submit:async()=>{sent++;return deferred;},status:async()=>({status:'not_found'}),refresh:async()=>({revision:4})}});
+  const first=c.start(payload()); assert.equal(await c.start(payload()),false); assert.equal(await c.retry(),false); assert.equal(sent,1); finish({status:'saved',revision:4}); assert.equal(await first,true);
+  const tamper=storage(); c=createScheduleClient({storage:tamper,random,api:{submit:async()=>{tamper.setItem(STORE,'f'.repeat(32));return {status:'saved',revision:4};},status:async()=>({status:'completed',revision:4}),refresh:async()=>({revision:4})}});
+  assert.equal(await c.start(payload()),false); assert.equal(c.getState(),'storage_error'); assert.equal(tamper.read(),'f'.repeat(32));
+  console.log('PASS: isolated client retains only random key; preserves payload in memory; reload and uncertain states fail closed');
+})().catch(e=>{console.error(e);process.exit(1);});

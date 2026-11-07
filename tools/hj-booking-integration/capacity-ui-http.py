@@ -65,7 +65,7 @@ try:
  missing_hours=public_hours(doc)
  check('ساعات حضور در مطب' in missing_hours and '09:00 - 11:00' in missing_hours and 'ساعات بالا نمایشی است' in missing_hours and state(owner,doc)=={'config':None,'snapshot':None},'missing canonical schedule preserves labelled legacy display without writing')
  legacy_before=state(owner,legacy); legacy_hours=public_hours(legacy)
- check('12:00:30 - 13:00' in legacy_hours and '09:00 - 11:00' not in legacy_hours and state(owner,legacy)==legacy_before,'existing v1 canonical schedule displays without rewriting and retains seconds')
+ check('12:00:30 - 13:30' in legacy_hours and '09:00 - 11:00' not in legacy_hours and state(owner,legacy)==legacy_before,'existing v1 canonical schedule displays without rewriting and retains seconds')
  html,fields=form(owner,page)
  check('برنامهٔ نوبت‌دهی مطب' in html and fields['revision']=='0' and fields['original_buffer']=='5','real shortcode shows blank state with expected configuration')
  render_file=Path(os.environ['RUNNER_TEMP'])/'hj-capacity-ui-render.html'; render_file.write_text(html,encoding='utf-8')
@@ -79,7 +79,7 @@ try:
  dash_file=Path(os.environ['RUNNER_TEMP'])/'hj-capacity-dashboard-render.html'; dash_file.write_text(dash_html,encoding='utf-8')
  try: subprocess.run(['node',str(root/'tools/hj-booking-integration/capacity-ui-browser.cjs')],check=True,env=dict(os.environ,HJ_CAPACITY_HTML=str(dash_file),HJ_DASHBOARD_TEST='1'))
  finally: dash_file.unlink(missing_ok=True)
- payload=week({'action':'hj_capacity_week_save','doctor_id':str(doc),'page_id':str(page),'revision':fields['revision'],'original_duration':fields['original_duration'],'original_buffer':fields['original_buffer'],'original_enabled':fields['original_enabled'],'enabled':'1','hj_capacity_nonce':fields['hj_capacity_nonce']},weekday)
+ payload=week({'action':'hj_capacity_week_save','doctor_id':str(doc),'page_id':str(page),'revision':fields['revision'],'original_duration':fields['original_duration'],'original_buffer':fields['original_buffer'],'original_enabled':fields['original_enabled'],'original_generation':fields['original_generation'],'enabled':'1','hj_capacity_nonce':fields['hj_capacity_nonce']},weekday)
  post='/wp-admin/admin-post.php'
  bad=dict(payload,hj_capacity_nonce='bad')
  check(request(owner,post,bad)[0]==403 and request(other,post,payload)[0]==403 and request(patient,post,payload)[0]==403,'nonce, owner and role checks reject unauthorized saves')
@@ -100,6 +100,52 @@ try:
  patient_html=ajax(guest,{'action':'hj_ci_render_patient_form','page':str(page)})['html']; parser=Inputs(); parser.feed(patient_html)
  check(parser.booking and 'hj-booking__calendar-days' in patient_html and '۱۴ روز آینده' in patient_html,'v2 patient shortcode renders calendar and fallback date')
  ui_nonce=parser.booking['data-nonce']; params={'action':'hj_booking_calendar','doctor_id':str(doc),'nonce':ui_nonce}
+ # Legacy v1 schedule and a booking created before the test-only v2 gate.
+ legacy_page=fixture['legacy_page']; legacy_date=fixture['legacy_date']
+ legacy_initial=state(owner,legacy); legacy_audit=ajax(owner,{'action':'hj_ci_booking_audit','doctor':str(legacy)})
+ check(len(legacy_audit)==1 and legacy_audit[0]['starts_at']==fixture['legacy_booked_start'] and legacy_audit[0]['details_id'] is not None,'legacy appointment and original details survive the v2 gate')
+ legacy_nonce=ajax(patient,{'action':'hj_ci_booking_nonce'})['nonce']
+ legacy_slots=ajax(patient,{'action':'hj_ci_slots','doctor':str(legacy),'nonce':legacy_nonce,'date':legacy_date})
+ check(legacy_slots==fixture['legacy_before_slots'] and fixture['legacy_booked_start'] not in legacy_slots['slots'] and len(legacy_slots['slots'])>=1 and state(owner,legacy)==legacy_initial,'legacy slots retain v1 duration, buffer, seconds and occupancy without rewriting')
+ code,body,_=request(guest,'/wp-admin/admin-ajax.php',{'action':'hj_booking_calendar','doctor_id':str(legacy),'nonce':ui_nonce})
+ check(code==409 and json.loads(body)['data']['code']=='legacy_schedule','calendar explicitly offers date fallback for an unmigrated schedule')
+ _,lf=form(owner,legacy_page)
+ legacy_week=week({'action':'hj_capacity_week_save','doctor_id':str(legacy),'page_id':str(legacy_page),'revision':lf['revision'],'original_duration':lf['original_duration'],'original_buffer':lf['original_buffer'],'original_enabled':lf['original_enabled'],'original_generation':lf['original_generation'],'enabled':'1','hj_capacity_nonce':lf['hj_capacity_nonce']},'monday')
+ code,_,headers=request(owner,post,legacy_week)
+ check(code==303 and 'hj_cap_status=booked' in headers.get('Location','') and state(owner,legacy)==legacy_initial and ajax(owner,{'action':'hj_ci_booking_audit','doctor':str(legacy)})==legacy_audit,'weekly conversion is blocked while legacy future booking exists')
+ legacy_pause={'action':'hj_capacity_pause','doctor_id':str(legacy),'page_id':str(legacy_page),'hj_capacity_pause_nonce':lf['hj_capacity_pause_nonce']}
+ code,_,headers=request(owner,post,legacy_pause); legacy_paused=state(owner,legacy)
+ check(code==303 and 'hj_cap_status=paused' in headers.get('Location','') and legacy_paused['snapshot']==legacy_initial['snapshot'] and ajax(owner,{'action':'hj_ci_booking_audit','doctor':str(legacy)})==legacy_audit,'pause preserves legacy schedule and future appointment')
+ legacy_html,lf=form(owner,legacy_page)
+ legacy_resume={'action':'hj_capacity_resume','doctor_id':str(legacy),'page_id':str(legacy_page),'resume_revision':lf['resume_revision'],'resume_generation':lf['resume_generation'],'hj_capacity_resume_nonce':lf['hj_capacity_resume_nonce']}
+ check('شروع دوبارهٔ دریافت نوبت' in legacy_html and request(owner,post,dict(legacy_resume,hj_capacity_resume_nonce='bad'))[0]==403 and request(other,post,legacy_resume)[0]==403,'legacy resume form requires ownership and nonce')
+ legacy_dash_nonce=ajax(owner,{'action':'hj_ci_dashboard_nonce'})['nonce']
+ check(ajax(owner,{'action':'hj_ci_capacity_configure','doctor':str(legacy),'_hjn':legacy_dash_nonce})['status']=='configured','fixture changes paused legacy duration and buffer under the mutex')
+ changed_legacy=state(owner,legacy)
+ code,_,headers=request(owner,post,legacy_resume)
+ check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,legacy)==changed_legacy,'legacy resume token cannot activate changed duration and buffer')
+ check(ajax(owner,{'action':'hj_ci_capacity_configure','doctor':str(legacy),'_hjn':legacy_dash_nonce,'duration':'30','buffer':'0'})['status']=='configured','fixture restores original paused legacy configuration')
+ restored_legacy=state(owner,legacy)
+ code,_,headers=request(owner,post,legacy_resume)
+ check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,legacy)==restored_legacy,'legacy config ABA still invalidates old resume token')
+ _,lf=form(owner,legacy_page); legacy_resume.update(resume_revision=lf['resume_revision'],resume_generation=lf['resume_generation'],hj_capacity_resume_nonce=lf['hj_capacity_resume_nonce'])
+ code,_,headers=request(owner,post,legacy_resume); legacy_resumed=state(owner,legacy)
+ check(code==303 and 'hj_cap_status=resumed' in headers.get('Location','') and int(legacy_resumed['config']['enabled'])==1 and legacy_resumed['snapshot']==legacy_initial['snapshot'] and ajax(owner,{'action':'hj_ci_booking_audit','doctor':str(legacy)})==legacy_audit and ajax(patient,{'action':'hj_ci_slots','doctor':str(legacy),'nonce':legacy_nonce,'date':legacy_date})==legacy_slots,'legacy resume restores same slots without converting snapshot or touching booking')
+ code,_,headers=request(owner,post,legacy_resume)
+ check(code==303 and 'hj_cap_status=resumed' in headers.get('Location','') and state(owner,legacy)==legacy_resumed,'legacy resume replay is idempotent')
+ request(owner,post,legacy_pause); legacy_paused_again=state(owner,legacy)
+ code,_,headers=request(owner,post,legacy_resume)
+ check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,legacy)==legacy_paused_again,'stale legacy resume cannot undo a later pause')
+ _,lf=form(owner,legacy_page)
+ code,_,headers=request(owner,post,dict(legacy_resume,resume_revision=lf['resume_revision'],resume_generation=lf['resume_generation'],hj_capacity_resume_nonce=lf['hj_capacity_resume_nonce']))
+ check(code==303 and 'hj_cap_status=resumed' in headers.get('Location',''),'fresh legacy resume works after a later pause')
+ legacy_management=ajax(owner,{'action':'hj_ci_render_management','doctor':str(legacy)})['html']
+ check('نام بیمار در نوبت قدیمی ثبت نشده' in legacy_management and state(owner,legacy)['snapshot']==legacy_initial['snapshot'],'legacy record is displayed as legacy without inventing independent patient details')
+ legacy_patient_form=Inputs(); legacy_patient_form.feed(ajax(patient2,{'action':'hj_ci_render_patient_form','page':str(page)})['html'])
+ legacy_new={'action':'hj_booking_create','nonce':legacy_patient_form.booking['data-nonce'],'doctor_id':str(legacy),'slot_start':legacy_slots['slots'][0],'revision':str(legacy_slots['revision']),'idempotency_key':'baf34012-9eac-41ac-9e56-e133217238ed','first_name':'بیمار','last_name':'نمونه','phone':'09123456789','national_code':'','service':'visit','note':''}
+ legacy_created=ajax(patient2,legacy_new); legacy_retry=ajax(patient2,legacy_new)
+ legacy_audit_after=ajax(owner,{'action':'hj_ci_booking_audit','doctor':str(legacy)})
+ check(legacy_created['status']=='created' and re.fullmatch(r'[A-F0-9]{32}',legacy_created['tracking_code']) and legacy_retry['status']=='replayed' and legacy_retry['tracking_code']==legacy_created['tracking_code'] and legacy_audit[0] in legacy_audit_after and len(legacy_audit_after)==2 and state(owner,legacy)['snapshot']==legacy_initial['snapshot'],'new v2 patient form can book an available v1 slot while retaining original booking and snapshot')
  code,body,headers=request(guest,'/wp-admin/admin-ajax.php',params); calendar=json.loads(body)
  check(code==200 and calendar['success'] and len(calendar['data']['days'])==14 and calendar['data']['days'][2]['remaining']==12 and calendar['data']['days'][2]['color']=='green' and 'no-cache' in headers.get('Cache-Control','') and all(set(x)=={'date','remaining','state','color'} for x in calendar['data']['days']),'guest calendar endpoint returns non-cacheable aggregate capacity only')
  code,body,_=request(guest,'/wp-admin/admin-ajax.php',dict(params,nonce='bad'))
@@ -132,7 +178,7 @@ try:
  code,_,_=request(owner,'/wp-admin/admin-ajax.php',dict(profile,**{'hours[monday][start]':'09:00','hj_schedule_revision':'1'}))
  check(code==409 and state(owner,doc)==current,'stale legacy dashboard save rejected before changing v2 schedule')
  dash_html,dash_fields=form(owner,dashboard)
- dash_payload=week({'action':'hj_capacity_week_save','doctor_id':str(doc),'page_id':str(dashboard),'revision':dash_fields['revision'],'original_duration':dash_fields['original_duration'],'original_buffer':dash_fields['original_buffer'],'original_enabled':dash_fields['original_enabled'],'enabled':'1','hj_capacity_nonce':dash_fields['hj_capacity_nonce']},weekday)
+ dash_payload=week({'action':'hj_capacity_week_save','doctor_id':str(doc),'page_id':str(dashboard),'revision':dash_fields['revision'],'original_duration':dash_fields['original_duration'],'original_buffer':dash_fields['original_buffer'],'original_enabled':dash_fields['original_enabled'],'original_generation':dash_fields['original_generation'],'enabled':'1','hj_capacity_nonce':dash_fields['hj_capacity_nonce']},weekday)
  code,_,headers=request(owner,post,dict(dash_payload,hj_capacity_nonce='bad'))
  check(code==403 and state(owner,doc)==current,'dashboard embedded editor rejects invalid nonce')
  code,_,headers=request(owner,post,dash_payload)
@@ -140,14 +186,31 @@ try:
  current=state(owner,doc)
  code,_,headers=request(owner,post,payload)
  check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,doc)==current,'stale form rejected without writes')
- html,fields=form(owner,page); fresh=week(dict(payload,revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
+ html,fields=form(owner,page); fresh=week(dict(payload,revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],original_generation=fields['original_generation'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
  nonce=ajax(owner,{'action':'hj_ci_dashboard_nonce'})['nonce']
  check(ajax(owner,{'action':'hj_ci_capacity_configure','doctor':str(doc),'_hjn':nonce})['status']=='configured','real configuration changed under mutex in another tab')
  changed=state(owner,doc); code,_,headers=request(owner,post,fresh)
  check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,doc)==changed,'configuration conflict rejects stale form without reverting enabled state')
  # Refresh and re-enable; then create an actual synthetic booking.
- html,fields=form(owner,page); fresh=week(dict(payload,revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
+ html,fields=form(owner,page); fresh=week(dict(payload,revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],original_generation=fields['original_generation'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
  code,_,headers=request(owner,post,fresh); check(code==303 and 'hj_cap_status=saved' in headers.get('Location',''),'fresh form safely re-enables and saves')
+ # Before any future bookings, an old disabled weekly form must not undo a later pause.
+ _,f=form(owner,page)
+ pause_empty={'action':'hj_capacity_pause','doctor_id':str(doc),'page_id':str(page),'hj_capacity_pause_nonce':f['hj_capacity_pause_nonce']}
+ code,_,headers=request(owner,post,pause_empty)
+ check(code==303 and 'hj_cap_status=paused' in headers.get('Location',''),'pause empty schedule before ABA test')
+ _,f=form(owner,page)
+ stale_empty=week(dict(payload,enabled='1',revision=f['revision'],original_duration=f['original_duration'],original_buffer=f['original_buffer'],original_enabled=f['original_enabled'],original_generation=f['original_generation'],hj_capacity_nonce=f['hj_capacity_nonce']),weekday)
+ resume_empty={'action':'hj_capacity_resume','doctor_id':str(doc),'page_id':str(page),'resume_revision':f['resume_revision'],'resume_generation':f['resume_generation'],'hj_capacity_resume_nonce':f['hj_capacity_resume_nonce']}
+ code,_,headers=request(owner,post,resume_empty)
+ check(code==303 and 'hj_cap_status=resumed' in headers.get('Location',''),'resume empty schedule before second pause')
+ code,_,headers=request(owner,post,pause_empty); after_empty_pause=state(owner,doc)
+ check(code==303 and 'hj_cap_status=paused' in headers.get('Location',''),'pause empty schedule again')
+ code,_,headers=request(owner,post,stale_empty)
+ check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,doc)==after_empty_pause,'stale weekly form cannot undo later pause even without future bookings')
+ _,f=form(owner,page)
+ code,_,headers=request(owner,post,dict(resume_empty,resume_revision=f['resume_revision'],resume_generation=f['resume_generation'],hj_capacity_resume_nonce=f['hj_capacity_resume_nonce']))
+ check(code==303 and 'hj_cap_status=resumed' in headers.get('Location',''),'fresh resume restores empty schedule after ABA test')
  current=state(owner,doc); rev=int(current['snapshot']['revision']); patient_nonce=ajax(patient,{'action':'hj_ci_booking_nonce'})['nonce']
  slots=ajax(patient,{'action':'hj_ci_slots','doctor':str(doc),'nonce':patient_nonce,'date':day})
  check(slots['status']=='ok' and len(slots['slots'])==4,'saved form drives four real backend slots')
@@ -184,6 +247,18 @@ try:
  other_patient_view=ajax(patient2,{'action':'hj_ci_render_patient_bookings'})['html']
  check('نام مستقل' not in patient_view and 'توضیح آزمایشی' not in patient_view and 'نام مستقل' not in other_patient_view and 'توضیح آزمایشی' not in other_patient_view and tracking in patient_view and second_code not in patient_view and second_code in other_patient_view and tracking not in other_patient_view,'patient lists select own tracking code without exposing private fields or another patient code')
  check('نام مستقل' not in public_hours(doc) and tracking not in public_hours(doc) and 'توضیح آزمایشی' not in json.dumps(ajax(guest,params),ensure_ascii=False) and tracking not in json.dumps(ajax(guest,params),ensure_ascii=False),'public profile and calendar do not expose new patient details or tracking codes')
+ # Real page request through WP's template_redirect and the_content; stock theme only.
+ account_path='/?page_id='+str(fixture['account'])
+ code,account_html,account_headers=request(patient,account_path)
+ code2,account2_html,account2_headers=request(patient2,account_path)
+ guest_code,guest_account,guest_headers=request(guest,account_path)
+ check(code==200 and code2==200 and guest_code==200 and 'no-cache' in account_headers.get('Cache-Control','') and 'no-cache' in account2_headers.get('Cache-Control','') and 'no-cache' in guest_headers.get('Cache-Control',''),'real account pages send no-cache headers for both patients and guest')
+ check(account_html.count('id="hj-bookings"')==1 and tracking in account_html and second_code not in account_html and 'نام مستقل' not in account_html and 'توضیح آزمایشی' not in account_html,'patient account automatically shows only own tracking and no private contact fields')
+ check(second_code in account2_html and tracking not in account2_html and 'ایمیل حساب' in account2_html and 'نظرهای من' in account2_html,'second account sees own bookings and existing account/activity sections')
+ check(tracking not in guest_account and second_code not in guest_account and 'برای دیدن حساب کاربری' in guest_account and 'id="hj-bookings"' not in guest_account,'guest account cannot see either patient booking')
+ code,combined_html,_=request(patient,'/?page_id='+str(fixture['combined']))
+ check(code==200 and combined_html.count('id="hj-bookings"')==1 and tracking in combined_html,'explicit bookings shortcode suppresses duplicate automatic list')
+
  class Forms(HTMLParser):
   def __init__(self): super().__init__(); self.forms=[]; self.current=None
   def handle_starttag(self,tag,attrs):
@@ -192,6 +267,17 @@ try:
    elif tag=='input' and self.current is not None and a.get('name'): self.current[a['name']]=a.get('value','')
   def handle_endtag(self,tag):
    if tag=='form' and self.current is not None: self.forms.append(self.current); self.current=None
+ # Attacker has a valid nonce for the target ID but still fails the owner check.
+ cancel_nonce=ajax(patient2,{'action':'hj_ci_status_nonce','id':str(target)})['nonce']
+ attack={'action':'hj_booking_status','doctor_id':str(doc),'booking_id':str(target),'scope':'patient','status':'cancelled','_wpnonce':cancel_nonce}
+ check(request(patient2,post,attack)[0]==403,'other patient cannot cancel a booking even with a valid nonce')
+ patient_forms=Forms(); patient_forms.feed(account_html)
+ cancel=next(f for f in patient_forms.forms if f.get('action')=='hj_booking_status' and f.get('booking_id')==str(target))
+ check(request(patient,post,dict(cancel,_wpnonce='bad'))[0]==403,'account cancellation rejects a bad nonce')
+ check(request(patient,post,cancel)[0]==302,'patient cancels their own booking from account page')
+ code,after_cancel,_=request(patient,account_path); code2,other_after,_=request(patient2,account_path)
+ after_forms=Forms(); after_forms.feed(after_cancel)
+ check(code==200 and tracking in after_cancel and 'لغو شده' in after_cancel and not any(f.get('action')=='hj_booking_status' and f.get('booking_id')==str(target) for f in after_forms.forms) and second_code in other_after,'cancelled appointment and tracking remain visible; other patient remains unaffected')
  parsed=Forms(); parsed.feed(admin_html)
  assignment=next(f for f in parsed.forms if f.get('action')=='hj_booking_assignment')
  assign=dict(assignment,doctor_id=str(doc),user_id=str(fixture['secretary']),mode='add')
@@ -208,7 +294,7 @@ try:
  check('&lt;img src=x onerror=alert(1)&gt;' in escaped and '&lt;script&gt;alert(2)&lt;/script&gt;' in escaped and '<script>alert(2)</script>' not in escaped,'private patient name and note are escaped in authorized management view')
 
 
- html,fields=form(owner,page); blocked=week(dict(payload,enabled='0',revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
+ html,fields=form(owner,page); blocked=week(dict(payload,enabled='0',revision=fields['revision'],original_duration=fields['original_duration'],original_buffer=fields['original_buffer'],original_enabled=fields['original_enabled'],original_generation=fields['original_generation'],hj_capacity_nonce=fields['hj_capacity_nonce']),weekday)
  before=state(owner,doc); code,_,headers=request(owner,post,blocked)
  check(code==303 and 'hj_cap_status=booked' in headers.get('Location','') and state(owner,doc)==before,'future booking blocks schedule and activation changes without mutation')
  pause={'action':'hj_capacity_pause','doctor_id':str(doc),'page_id':str(page),'hj_capacity_pause_nonce':fields['hj_capacity_pause_nonce']}
@@ -222,6 +308,30 @@ try:
  code,_,headers=request(owner,post,pause)
  check(code==303 and 'hj_cap_status=paused' in headers.get('Location','') and state(owner,doc)==paused,'repeated pause is idempotent')
  check('17:00 - 21:00' in public_hours(doc) and 'نوبت‌دهی داخلی برای این جراح در دسترس نیست' in public_hours(doc),'paused public profile retains hours but reports unavailable booking')
+ # Resume unchanged schedule even with future appointments; old tokens may not undo a later pause.
+ paused_html,paused_fields=form(owner,page)
+ resume={'action':'hj_capacity_resume','doctor_id':str(doc),'page_id':str(page),'resume_revision':paused_fields['resume_revision'],'resume_generation':paused_fields['resume_generation'],'hj_capacity_resume_nonce':paused_fields['hj_capacity_resume_nonce']}
+ old_week=week(dict(payload,enabled='1',revision=paused_fields['revision'],original_duration=paused_fields['original_duration'],original_buffer=paused_fields['original_buffer'],original_enabled=paused_fields['original_enabled'],original_generation=paused_fields['original_generation'],hj_capacity_nonce=paused_fields['hj_capacity_nonce']),weekday)
+ check('شروع دوبارهٔ دریافت نوبت' in paused_html and request(owner,post,dict(resume,hj_capacity_resume_nonce='bad'))[0]==403 and request(other,post,resume)[0]==403 and request(patient,post,resume)[0]==403,'resume is shown only for valid paused schedule and enforces owner and nonce')
+ code,_,headers=request(owner,post,dict(resume,resume_revision=str(int(resume['resume_revision'])+1)))
+ check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,doc)==paused,'stale schedule revision cannot reactivate')
+ code,_,headers=request(owner,post,dict(resume,resume_generation='99999999999999999999999999999999'))
+ check(code==303 and 'hj_cap_status=invalid' in headers.get('Location','') and state(owner,doc)==paused,'invalid activation generation cannot reactivate')
+ code,_,headers=request(owner,post,resume); resumed=state(owner,doc)
+ check(code==303 and 'hj_cap_status=resumed' in headers.get('Location','') and int(resumed['config']['enabled'])==1 and int(resumed['config']['activation_generation'])==int(paused['config']['activation_generation'])+1 and resumed['snapshot']==paused['snapshot'] and ajax(owner,{'action':'hj_ci_booking_audit','doctor':str(doc)})==audit_before,'resume keeps snapshot and future bookings unchanged and advances generation')
+ check(ajax(patient,{'action':'hj_ci_slots','doctor':str(doc),'nonce':patient_nonce,'date':day})['status']=='ok','availability returns after safe resume')
+ code,_,headers=request(owner,post,resume)
+ check(code==303 and 'hj_cap_status=resumed' in headers.get('Location','') and state(owner,doc)==resumed,'identical resume retry is idempotent without another transition')
+ code,_,_=request(owner,post,pause); paused_again=state(owner,doc)
+ code,_,headers=request(owner,post,resume)
+ check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,doc)==paused_again,'stale resume cannot undo a later pause (ABA)')
+ code,_,headers=request(owner,post,old_week)
+ check(code==303 and 'hj_cap_status=conflict' in headers.get('Location','') and state(owner,doc)==paused_again,'old weekly form cannot bypass activation generation after an ABA transition')
+ _,fresh_fields=form(owner,page); fresh_resume=dict(resume,resume_revision=fresh_fields['resume_revision'],resume_generation=fresh_fields['resume_generation'],hj_capacity_resume_nonce=fresh_fields['hj_capacity_resume_nonce'])
+ code,_,headers=request(owner,post,fresh_resume)
+ check(code==303 and 'hj_cap_status=resumed' in headers.get('Location','') and state(owner,doc)['snapshot']==paused['snapshot'] and ajax(owner,{'action':'hj_ci_booking_audit','doctor':str(doc)})==audit_before,'fresh resume works after a later pause without touching future bookings')
+ request(owner,post,pause); paused=state(owner,doc)
+
  # Synthetic-only snapshot edits test faithful seconds and fail-closed display.
  snapshot_data=json.loads(paused['snapshot']['rows_json'])
  for row in snapshot_data['rows']:
@@ -231,6 +341,8 @@ try:
  seconds_state=state(owner,doc)
  check('17:00:30 - 21:00' in public_hours(doc) and state(owner,doc)==seconds_state,'validated canonical display preserves nonzero seconds without modifying snapshot')
  check(ajax(owner,dict(replace,rows_json='{"version":99,"rows":[]}'))['status']=='updated','synthetic unsupported snapshot installed')
+ code,_,headers=request(owner,post,fresh_resume)
+ check(code==303 and 'hj_cap_status=error' in headers.get('Location','') and int(state(owner,doc)['config']['enabled'])==0,'resume fails closed on unsupported snapshot')
  corrupt_state=state(owner,doc); invalid_hours=public_hours(doc)
  check('در دسترس نیست' in invalid_hours and '09:00 - 11:00' not in invalid_hours and '17:00' not in invalid_hours and state(owner,doc)==corrupt_state,'unsupported snapshot does not fall back to stale hours or mutate data')
 finally:
