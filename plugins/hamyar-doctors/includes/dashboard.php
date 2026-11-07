@@ -1021,11 +1021,27 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 
 			// ---- Working hours
 			$hours_in = ( isset( $_POST['hours'] ) && is_array( $_POST['hours'] ) ) ? wp_unslash( $_POST['hours'] ) : array();
+			if ( $legacy_booking && isset( $_POST['hours'] ) && ! is_array( $_POST['hours'] ) ) {
+				$errors['hours'] = 'ساختار ساعات نامعتبر است.';
+			}
 			$rows     = array();
 			$fmt      = apply_filters( 'hj_dash_time_storage_format', 'H:i:s' );
 			foreach ( self::days() as $key => $label ) {
+				if ( $legacy_booking && isset( $hours_in[ $key ] ) && ! is_array( $hours_in[ $key ] ) ) {
+					$errors[ 'hours_' . $key ] = 'ساختار ساعات نامعتبر است.';
+					continue;
+				}
 				$r = ( isset( $hours_in[ $key ] ) && is_array( $hours_in[ $key ] ) ) ? $hours_in[ $key ] : array();
 				$closed = ! empty( $r['closed'] );
+				if ( $legacy_booking && ! $closed ) {
+					// The booking editor represents whole minutes; never clamp or silently discard invalid seconds.
+					foreach ( array( 'start', 'end' ) as $part ) {
+						$raw = isset( $r[ $part ] ) ? $r[ $part ] : '';
+						if ( ! is_scalar( $raw ) || ( trim( (string) $raw ) !== '' && ! preg_match( '/^(?:[01]?[0-9]|2[0-3]):[0-5][0-9](?::00)?$/D', trim( (string) $raw ) ) ) ) {
+							$errors[ 'hours_' . $key ] = 'ساعت نامعتبر است؛ ساعت و دقیقهٔ معتبر وارد کنید.';
+						}
+					}
+				}
 				$s = ( isset( $r['start'] ) && is_scalar( $r['start'] ) ) ? self::time_hm( sanitize_text_field( (string) $r['start'] ) ) : '';
 				$e = ( isset( $r['end'] ) && is_scalar( $r['end'] ) ) ? self::time_hm( sanitize_text_field( (string) $r['end'] ) ) : '';
 				if ( $closed ) {

@@ -137,12 +137,32 @@ try:
     check(request(owner, url, dict(common, _hjn=owner_nonce))[0] == 400, 'missing revision is rejected')
     for value in ('-1', '01', 'not-a-number', '999999999999999999999999'):
         check(request(owner, url, dict(common, _hjn=owner_nonce, hj_schedule_revision=value))[0] == 400, 'invalid revision is rejected')
-    code, text = request(owner, url, dict(common, _hjn=owner_nonce, hj_schedule_revision='0'))
-    check(code == 200 and json.loads(text)['success'], 'repository ajax_save writes canonical schedule through production wpdb backend')
+    baseline = state(owner, doctor_id)
+    invalid_cases = [
+        {'hours[wednesday][start]': '24:00'},
+        {'hours[wednesday][start]': '09:60'},
+        {'hours[wednesday][start]': '09:00:70'},
+        {'hours[wednesday][start]': '09:00:30'},
+        {'hours[wednesday][start]': 'bad', 'hours[wednesday][end]': 'bad'},
+        {'hours[wednesday][start][bad]': '09:00', 'hours[wednesday][start]': None},
+        {'hours[wednesday]': 'bad', 'hours[wednesday][start]': None, 'hours[wednesday][end]': None},
+    ]
+    for case in invalid_cases:
+        payload = dict(common, _hjn=owner_nonce, hj_schedule_revision='0', name_fa='Must not be saved', **case)
+        payload = {k:v for k,v in payload.items() if v is not None}
+        code, text = request(owner, url, payload)
+        check(code == 422 and 'hours_wednesday' in json.loads(text).get('errors', {}), 'invalid booking hours rejected before first save')
+        check(state(owner, doctor_id) == baseline, 'invalid hours preserve snapshot, mirror and profile name')
+    valid = dict(common, _hjn=owner_nonce, hj_schedule_revision='0', **{'hours[wednesday][start]': '9:00:00', 'hours[wednesday][end]': '12:00:00'})
+    code, text = request(owner, url, valid)
+    check(code == 200 and json.loads(text)['success'], 'repository ajax_save accepts valid whole-minute time and writes canonical schedule')
     saved = state(owner, doctor_id); row = saved['snapshot']
     check(int(row['revision']) == 1 and json.loads(row['rows_json'])[0]['start_time'] == '09:00:00' and row['rows_hash'] == hashlib.sha256(row['rows_json'].encode()).hexdigest(), 'first canonical revision and hash persisted')
     check(saved['display'][0]['start_time'] == '09:00:00', 'best-effort display mirror saved')
     check(json.loads(text)['data']['schedule_revision'] == 1, 'save response includes next revision')
+    payload = dict(common, _hjn=owner_nonce, hj_schedule_revision='1', name_fa='Must not be saved', **{'hours[wednesday][start]':'24:00', 'hours[wednesday][end]':'25:00'})
+    code, body = request(owner, url, payload)
+    check(code == 422 and 'hours_wednesday' in json.loads(body).get('errors', {}) and state(owner, doctor_id) == saved, 'invalid pair cannot clear or rewrite an existing schedule')
     stale = dict(common, _hjn=owner_nonce, hj_schedule_revision='0', name_fa='Stale profile overwrite')
     code, response = request(owner, url, stale)
     check(code == 409 and not json.loads(response)['success'] and 'بازخوانی' in json.loads(response)['message'], 'stale tab receives conflict and reload instruction')
