@@ -155,6 +155,22 @@ try:
         check(int(created_state['snapshot']['revision'])==1 and json.loads(created_state['snapshot']['rows_json'])[0]['start_time']=='09:00:00', 'each duplicated profile has its own committed schedule')
     check(names=={'Synthetic Concurrent 1','Synthetic Concurrent 2'}, 'both concurrent payloads persisted on separate doctor posts')
 
+    # Kill the separate schedule transaction immediately before COMMIT, after creating the post.
+    failed_owner, failed_nonce = login('synthetic_profile_failure')
+    check(ajax(failed_owner, {'action':'hj_ci_own_profiles'})['ids']==[], 'failure doctor starts without a profile')
+    failed_payload=dict(empty_week(), action='hj_dash_save', pid='0', _hjn=failed_nonce, hj_schedule_revision='0', hj_schedule_precision='seconds-v1', hj_ci_kill_before_commit='1', name_fa='Synthetic Partial Profile', **{'hours[wednesday][start]':'10:00','hours[wednesday][end]':'12:00'})
+    code, body=request(failed_owner, '/wp-admin/admin-ajax.php', failed_payload)
+    check(code==503 and 'نامشخص' in json.loads(body)['message'], 'first-profile schedule connection killed before COMMIT returns unknown failure')
+    failed_profiles=ajax(failed_owner, {'action':'hj_ci_own_profiles'})
+    check(len(failed_profiles['ids'])==1 and failed_profiles['linked']==failed_profiles['ids'][0], 'profile and linked usermeta persist despite schedule rollback')
+    partial_id=failed_profiles['ids'][0]; partial_state=state(failed_owner, partial_id)
+    check(partial_state['snapshot'] is None and not partial_state['name'], 'failed first save leaves no schedule or name field')
+    # Only after independently inspecting the fixture state, perform a controlled retry.
+    retry=dict(failed_payload); retry.pop('hj_ci_kill_before_commit')
+    code, body=request(failed_owner, '/wp-admin/admin-ajax.php', retry); reply=json.loads(body)
+    check(code==200 and reply['success'] and not reply['data']['created'] and int(reply['data']['schedule_revision'])==1, 'controlled retry reuses partial profile and saves schedule')
+    check(ajax(failed_owner, {'action':'hj_ci_own_profiles'})['ids']==[partial_id] and int(state(failed_owner, partial_id)['snapshot']['revision'])==1, 'controlled retry leaves one profile with initial snapshot')
+
     owner, owner_nonce = login('synthetic_doctor_a')
     other, other_nonce = login('synthetic_doctor_b')
     url = '/wp-admin/admin-ajax.php'
