@@ -73,3 +73,5 @@
 **بازآزمایی گام ۵.۹:** [رزرو](https://github.com/lakanzino/OR-site/actions/runs/42327027711) و [اجرای بعدی homepage](https://github.com/lakanzino/OR-site/actions/runs/42327027653) موفق شدند؛ نوسان قبلی homepage هنوز ریشه‌یابی نشده است.
 
 **گام ۵.۱۰، در انتظار CI:** [نمونهٔ intent پایدار و بازیابی بدون کلید مرورگر](BOOKING-DURABLE-INTENT-DESIGN.fa.md) برای v1 مستقل نوشته شد. writer قدیمی می‌تواند آن را دور بزند، رفع بن‌بست و انتقال/اتصال محصولی هنوز طراحی نشده‌اند؛ هیچ آمادگی نصب اعلام نمی‌شود.
+
+**نتیجهٔ گام ۵.۱۰:** [CI درخواست بررسی](https://github.com/lakanzino/OR-site/actions/runs/42360155273) و [CI شاخه](https://github.com/lakanzino/OR-site/actions/runs/42360151085) موفق شدند. بازیابی actor بدون کلید و رقابت آزمایش شد؛ نمونهٔ v1 مستقل است، writer قدیمی آن را دور می‌زند و بازیابی عملیاتی، v2 و اتصال محصولی بازند.

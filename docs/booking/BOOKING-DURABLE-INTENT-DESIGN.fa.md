@@ -23,3 +23,5 @@
 ## آزمون طراحی‌شده
 
 `tools/hj-booking-integration/schedule-intent-fixture.php` و `schedule-intent-race.py` در CI، گم‌شدن پاسخ پس از commit آماده‌سازی و commit اجرا با SIGKILL، بازیابی بدون کلید، مجوز بازیگر و محدودهٔ پزشک، writer قدیمی، replay تاریخی، رقابت ۹ worker با انتظار واقعی mutex، شکست ثبت نتیجه و قطع اتصال پیش از commit را با دادهٔ ساختگی بررسی می‌کنند. این‌ها قطع در میانهٔ COMMIT یا E2E محصول نیستند. نتیجهٔ CI در انتظار است.
+
+**نتیجه:** [CI شاخه](https://github.com/lakanzino/OR-site/actions/runs/42360151085) و [CI درخواست بررسی](https://github.com/lakanzino/OR-site/actions/runs/42360155273) موفق شدند. در رقابت آماده‌سازی، هشت درخواست همسان همان intent را دیدند و درخواست متفاوت مسدود شد؛ در اجرای هم‌زمان پس از قطع پیش از commit، یک ذخیره و هفت replay رخ داد. دسترسی actor و scope، بازیابی پس از SIGKILL بعد از commit و شکست ثبت نتیجه بررسی شدند. writer قدیمی توانست intent را دور بزند؛ این نتیجه محدودیت بحرانی است، نه رفع آن. قطع در میانهٔ COMMIT و هرگونه endpoint، اتصال محصولی یا بازگردانی عملیاتی اثبات نشدند.
