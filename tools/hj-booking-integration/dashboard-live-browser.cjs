@@ -77,5 +77,44 @@ const doctor=String(process.env.HJ_BROWSER_DOCTOR);
    for(const f of [ready,release]) try {fs.unlinkSync(f);} catch(e) {if(e.code!=='ENOENT')throw e;}
   }
 
+  // Drop the response only after the real WordPress handler has returned it.
+  await page.locator('[name="name_fa"]').fill('Synthetic Committed Response Lost');
+  await page.locator('[name="hours[wednesday][start]"]').fill('11:00');
+  await page.evaluate(()=>{
+   const real=window.fetch.bind(window);window.__drop=true;window.__droppedStatus=null;
+   window.fetch=async (url,opts)=>{
+    const isSave=opts && opts.body instanceof FormData && opts.body.get('action')==='hj_dash_save';
+    const response=await real(url,opts);
+    if(isSave && window.__drop) {window.__drop=false;window.__droppedStatus=response.status;await response.text();throw new Error('synthetic response loss after handler completed');}
+    return response;
+   };
+  });
+  await page.locator('[data-hj="save"]').click();
+  await page.waitForFunction(()=>document.querySelector('[data-err="form"]').textContent.includes('نتیجهٔ ذخیره مشخص نیست'));
+  assert.equal(await page.evaluate(()=>window.__droppedStatus),200,'real endpoint completed before response was discarded');
+  assert.equal(await page.locator('[data-hj="save"]').isDisabled(),true);
+  assert.equal(await page.locator('[name="hj_schedule_revision"]').inputValue(),String(revision+3));
+  const committed=await state();
+  assert.equal(Number(committed.snapshot.revision),revision+4); assert.equal(committed.name,'Synthetic Committed Response Lost');
+  assert.equal(JSON.parse(committed.snapshot.rows_json)[0].start_time,'11:00:00');
+  await page.evaluate(()=>document.querySelector('#hj-dash-form').dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})));
+  assert.equal(await page.evaluate(()=>window.__saveCalls),3,'blocked form does not send another request');
+  assert.equal(Number((await state()).snapshot.revision),revision+4,'no second commit from same page');
+  // New page context within the same logged-in browser deliberately shows that the in-memory guard is not durable.
+  const reopened=await context.newPage();
+  try {
+   const nav=await reopened.goto(base+'/wp-admin/admin-ajax.php?action=hj_ci_render_dashboard'); assert.equal(nav.status(),200);
+   const fresh=await reopened.evaluate(async ()=>{
+    async function call(action){const r=await fetch('/wp-admin/admin-ajax.php',{method:'POST',body:new URLSearchParams({action})});if(!r.ok)throw Error('fixture '+r.status);return (await r.json()).data;}
+    return {nonce:(await call('hj_ci_dashboard_nonce')).nonce,html:(await call('hj_ci_render_dashboard')).html};
+   });
+   await reopened.evaluate(({html,nonce})=>{document.body.innerHTML=html;window.HJ_DASH={nonce,ajax:'/wp-admin/admin-ajax.php',i18n:{fail:'failed'}};},fresh);
+   await reopened.addScriptTag({path:path.join(process.env.GITHUB_WORKSPACE,'plugins/hamyar-doctors/assets/js/dashboard.js')});
+   assert.equal(await reopened.locator('[name="hj_schedule_revision"]').inputValue(),String(revision+4));
+   assert.equal(await reopened.locator('[name="name_fa"]').inputValue(),'Synthetic Committed Response Lost');
+   assert.equal(await reopened.locator('[data-hj="save"]').isDisabled(),false,'fresh page cannot retain in-memory unknown lock');
+  } finally {await reopened.close();}
+  console.log('PASS real committed save with synthetic dropped response, blocked retry and nonpersistent page lock');
+
  } finally {await context.close();await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

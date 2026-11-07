@@ -262,7 +262,7 @@ try:
 
     # Real authenticated browser -> WordPress AJAX -> MariaDB, using a dedicated synthetic doctor.
     browser_http=subprocess.run(['node',str(workspace/'tools/hj-booking-integration/dashboard-live-browser.cjs')],capture_output=True,text=True,timeout=80,env=dict(os.environ,HJ_BROWSER_DOCTOR=str(doctor2_id)))
-    check(browser_http.returncode==0 and 'PASS real authenticated Chromium dashboard save' in browser_http.stdout and 'PASS real browser in-flight edits' in browser_http.stdout, 'real browser dashboard save: '+browser_http.stderr[-1800:])
+    check(browser_http.returncode==0 and 'PASS real authenticated Chromium dashboard save' in browser_http.stdout and 'PASS real browser in-flight edits' in browser_http.stdout and 'PASS real committed save with synthetic dropped response' in browser_http.stdout, 'real browser dashboard save: '+browser_http.stderr[-1800:])
     check(ajax(other, {'action':'hj_ci_replace_snapshot','doctor':str(doctor2_id),'_hjn':other_nonce,'rows_json':original['snapshot']['rows_json']})['status']=='updated', 'restore synthetic schedule after browser save')
     doctor2_revision = int(state(other, doctor2_id)['snapshot']['revision'])
     patients = [login(f'synthetic_race_{i}')[0] for i in range(8)]

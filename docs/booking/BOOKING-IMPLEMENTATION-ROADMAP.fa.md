@@ -122,4 +122,6 @@
 
 **گام ۵.۲۴، CI موفق:** [آزمون اتصال مرورگر به ذخیرهٔ داشبورد](BOOKING-DASHBOARD-BROWSER-E2E.fa.md) در محیط دورریختنی؛ OAuth و محیط واقعی خارج از پوشش.
 
-**گام ۵.۲۵، در انتظار CI:** [race ویرایش فرم با writer واقعی](BOOKING-DASHBOARD-PENDING-E2E.fa.md)؛ آزمون دورریختنی و محدود.
+**گام ۵.۲۵، CI موفق:** [race ویرایش فرم با writer واقعی](BOOKING-DASHBOARD-PENDING-E2E.fa.md)؛ آزمون دورریختنی و محدود.
+
+**گام ۵.۲۶، در انتظار CI:** [پاسخ ازدست‌رفته پس از ذخیرهٔ واقعی](BOOKING-DASHBOARD-LOST-RESPONSE-E2E.fa.md)؛ شبیه‌سازی بعد از پاسخ کامل، نه قطع COMMIT.
