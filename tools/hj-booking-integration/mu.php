@@ -45,6 +45,13 @@ add_action( 'hj_booking_test_event', function ( $event, $db, $context ) {
 		if ( ! is_file( $prefix . '-released' ) ) { throw new RuntimeException( 'Lost response barrier timeout' ); }
 	}
 }, 10, 3 );
+// CI-only barrier after the product's first-profile check, before WordPress inserts the post.
+add_filter( 'wp_insert_post_data', function ( $data, $postarr ) {
+ if ( ( $_POST['action'] ?? '' ) === 'hj_dash_save' && ( $_POST['pid'] ?? '' ) === '0' && isset( $_POST['hj_ci_profile_insert_hold'] ) && is_string( $_POST['hj_ci_profile_insert_hold'] ) && ( $data['post_type'] ?? '' ) === 'doctor' && empty( $postarr['ID'] ) ) {
+  hj_prod_ci_barrier( 'profile-hold-' . $_POST['hj_ci_profile_insert_hold'], true );
+ }
+ return $data;
+}, 10, 2 );
 add_filter( 'update_post_metadata', function ( $check, $id, $key ) {
 	return $key === 'working_hours' && isset( $_POST['hj_ci_mirror_fail'] ) ? true : $check;
 }, 10, 3 );

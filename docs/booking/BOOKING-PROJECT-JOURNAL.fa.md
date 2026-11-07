@@ -526,6 +526,10 @@
 
 [طرح و محدودیت](BOOKING-DASHBOARD-LOST-RESPONSE-E2E.fa.md): در Chromium متصل به وردپرس، پاسخ واقعی و کامل پس از commit عمداً توسط wrapper آزمون دور انداخته می‌شود؛ حفظ snapshot، قفل همان صفحه و از بین رفتن قفل در صفحهٔ تازه بررسی می‌شود. این قطع شبکه/میانهٔ COMMIT، idempotency یا بازیابی پایدار نیست؛ کد افزونه و ZIP بدون تغییر، [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42416162949) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42416163047) موفق، سه بدهی و migration باز، **۷۵٪ ثابت**.
 
-### مرحلهٔ ۵.۲۷ — ساخت اولین پروفایل و ویرایش در حال انتظار | در انتظار CI
+### مرحلهٔ ۵.۲۷ — ساخت اولین پروفایل و ویرایش در حال انتظار | CI موفق
 
-[طرح](BOOKING-FIRST-PROFILE-BROWSER.fa.md): فرم واقعی، کوکی WordPress، جراح تازه و barrier در مسیر ذخیرهٔ واقعی؛ تأیید حفظ ویرایش‌های بعد از ارسال هنگام ایجاد. آزمون محدود به fixture، کد افزونه بدون تغییر، CI در انتظار؛ بدهی‌ها باز، **۷۵٪ ثابت**.
+[طرح](BOOKING-FIRST-PROFILE-BROWSER.fa.md): فرم واقعی، کوکی WordPress، جراح تازه و barrier در مسیر ذخیرهٔ واقعی؛ تأیید حفظ ویرایش‌های بعد از ارسال هنگام ایجاد. آزمون محدود به fixture، کد افزونه بدون تغییر؛ [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42416938576) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42416938686) موفق؛ بدهی‌ها باز، **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۲۸ — race ایجاد اولین پروفایل | در انتظار CI
+
+[طرح](BOOKING-FIRST-PROFILE-RACE.fa.md): دو نشست برای یک جراح بدون پروفایل پس از check و پیش از درج زیر barrier CI به رقابت گذاشته می‌شوند؛ نتیجهٔ هر دو پست و snapshot سنجیده خواهد شد. آزمون ضدنمونه است، نه رفع، کد افزونه و ZIP بدون تغییر، CI در انتظار؛ سه بدهی و migration باز و **۷۵٪ ثابت**.

@@ -131,6 +131,30 @@ try:
     else: raise RuntimeError('fixture HTTP server did not start')
     new_profile_browser=subprocess.run(['node',str(workspace/'tools/hj-booking-integration/dashboard-new-profile-browser.cjs')],capture_output=True,text=True,timeout=80,env=os.environ.copy())
     check(new_profile_browser.returncode==0 and 'PASS actual first profile creation with in-flight edits' in new_profile_browser.stdout, 'real first-profile browser save: '+new_profile_browser.stderr[-1800:])
+    # A deterministic counterexample: two sessions have both passed the first-profile check before either inserts.
+    racer1, nonce1 = login('synthetic_profile_race'); racer2, nonce2 = login('synthetic_profile_race')
+    check(ajax(racer1, {'action':'hj_ci_own_profiles'})['ids']==[], 'race doctor starts with no profiles')
+    profile_tokens=[uuid.uuid4().hex, uuid.uuid4().hex]
+    profile_barriers=[barrier('profile-hold-'+token) for token in profile_tokens]
+    def profile_create(args):
+        opener,nonce,token,number=args
+        payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=nonce,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_profile_insert_hold=token,name_fa='Synthetic Concurrent '+str(number),**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
+        return request(opener,'/wp-admin/admin-ajax.php',payload)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+        results=[pool.submit(profile_create,args) for args in ((racer1,nonce1,profile_tokens[0],1),(racer2,nonce2,profile_tokens[1],2))]
+        try: wait_ready([b[0] for b in profile_barriers])
+        finally:
+            for _,released in profile_barriers: released.touch()
+        replies=[result.result(timeout=40) for result in results]
+    check(all(code==200 and json.loads(body)['success'] and json.loads(body)['data']['created'] for code,body in replies), 'counterexample: both actual requests report first-profile creation')
+    profiles=ajax(racer1, {'action':'hj_ci_own_profiles'}); ids=profiles['ids']
+    check(len(ids)==2 and len(set(ids))==2 and profiles['linked'] in ids, 'counterexample: one synthetic doctor has two profiles')
+    names=set()
+    for profile_id in ids:
+        created_state=state(racer1,profile_id); names.add(created_state['name'])
+        check(int(created_state['snapshot']['revision'])==1 and json.loads(created_state['snapshot']['rows_json'])[0]['start_time']=='09:00:00', 'each duplicated profile has its own committed schedule')
+    check(names=={'Synthetic Concurrent 1','Synthetic Concurrent 2'}, 'both concurrent payloads persisted on separate doctor posts')
+
     owner, owner_nonce = login('synthetic_doctor_a')
     other, other_nonce = login('synthetic_doctor_b')
     url = '/wp-admin/admin-ajax.php'
