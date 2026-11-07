@@ -136,4 +136,4 @@
 
 **گام ۵.۳۱، CI موفق با ناپایداری barrier باز:** [مرگ worker و مسیر غیرهماهنگ در نمونهٔ claim](BOOKING-FIRST-PROFILE-CLAIM-FAILURE.fa.md)، بازیابی عملیاتی هنوز طراحی و اثبات نشده است.
 
-**گام ۵.۳۲، در انتظار CI:** [جداسازی workerهای دو race پروفایل](BOOKING-PROFILE-RACE-CI-ISOLATION.fa.md)؛ ریشهٔ شکست‌های پیشین نامعلوم.
+**گام ۵.۳۲، CI موفق:** [جداسازی workerهای دو race پروفایل](BOOKING-PROFILE-RACE-CI-ISOLATION.fa.md)؛ ریشهٔ شکست‌های پیشین نامعلوم.

@@ -546,6 +546,6 @@
 
 [آزمون](BOOKING-FIRST-PROFILE-CLAIM-FAILURE.fa.md): SIGKILL worker دورریختنی پس از claim و پیش از درج، claim بی‌پست را باقی گذاشت و retry هماهنگ ۴۰۹ گرفت؛ writer اصلی بدون claim پست و snapshot ساخت. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42419441515) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42419441465) موفق؛ دو اجرای پیشین barrier شکست خوردند و علت ناپایداری هنوز مشخص نیست. محصول و ZIP بدون تغییر، **۷۵٪ ثابت**.
 
-### مرحلهٔ ۵.۳۲ — جداسازی workerهای آزمون race | در انتظار CI
+### مرحلهٔ ۵.۳۲ — جداسازی workerهای آزمون race | CI موفق
 
-[طرح](BOOKING-PROFILE-RACE-CI-ISOLATION.fa.md): دو درخواست barrier هرکدام سرور loopback و worker مستقل ولی پایگاه دادهٔ مشترک دارند. فرضیهٔ صف‌شدن هنوز اثبات نشده؛ کد محصول تغییر نکرد، **۷۵٪ ثابت** و بدهی‌ها بازند.
+[طرح](BOOKING-PROFILE-RACE-CI-ISOLATION.fa.md): دو درخواست barrier هرکدام سرور loopback و worker مستقل ولی پایگاه دادهٔ مشترک دارند. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42425204064) موفق. فرضیهٔ صف‌شدن هنوز اثبات نشده؛ کد محصول تغییر نکرد، **۷۵٪ ثابت** و بدهی‌ها بازند.
