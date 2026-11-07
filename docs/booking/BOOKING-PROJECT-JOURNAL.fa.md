@@ -553,3 +553,7 @@
 ### مرحلهٔ ۵.۳۳ — تکرار race و اثبات worker مستقل | CI موفق
 
 [طرح](BOOKING-PROFILE-RACE-CI-REPETITION.fa.md): هر race سه بار با حساب تازه، PID دو worker بررسی و marker به‌صورت اتمیک در fixture منتشر شد؛ هر سه ضدنمونه دو پست و هر سه نمونهٔ claim یک پست و یک رد داشتند. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42425497364) موفق؛ علت شکست‌های قبلی اثبات نشده، کد افزونه بدون تغییر، **۷۵٪ ثابت**.
+
+### مرحلهٔ ۵.۳۴ — قطع اتصال WordPress پس از claim | در انتظار CI
+
+[آزمون](BOOKING-PROFILE-CLAIM-RECONNECT.fa.md) claim ثبت‌شده، درخواست رقیب و KILL اتصال writer قبل از درج را در WordPress/MariaDB دورریختنی بررسی می‌کند؛ نمونه CI-only است، **۷۵٪ ثابت** و بدهی‌ها بازند.

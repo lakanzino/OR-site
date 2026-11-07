@@ -63,9 +63,16 @@ add_filter( 'wp_insert_post_data', function ( $data, $postarr ) {
   // Duplicate, unexpected row count and SQL errors all reject without creating a post.
   if ( $n !== 1 ) { wp_send_json( array( 'success'=>false, 'message'=>'CI claim unavailable' ), 409 ); }
   if ( isset( $_POST['hj_ci_claim_hold_owned'] ) ) { hj_prod_ci_barrier( 'claim-owned-' . $token, true, getmypid() ); }
+  if ( isset( $_POST['hj_ci_claim_kill_wpdb'] ) ) { $GLOBALS['hj_ci_claim_old_db_id'] = (int) $wpdb->get_var( 'SELECT CONNECTION_ID()' ); hj_prod_ci_kill( $wpdb ); }
  }
  return $data;
 }, 10, 2 );
+// Report the actual WordPress writer connection after the deliberately killed one reconnects.
+add_action( 'wp_after_insert_post', function ( $id, $post, $update ) {
+ if ( $update || $post->post_type !== 'doctor' || empty( $GLOBALS['hj_ci_claim_old_db_id'] ) || ! isset( $_POST['hj_ci_claim_kill_wpdb'], $_POST['hj_ci_claim_token'] ) ) { return; }
+ global $wpdb; $new_id = (int) $wpdb->get_var( 'SELECT CONNECTION_ID()' );
+ hj_prod_ci_barrier( 'claim-reconnect-' . $_POST['hj_ci_claim_token'], false, $GLOBALS['hj_ci_claim_old_db_id'] . ',' . $new_id );
+}, 10, 3 );
 // Read only this authenticated user's CI-only claim, without changing it.
 add_action( 'wp_ajax_hj_ci_profile_claim', function () {
  if ( ! hj_doctors_is_doctor_user() ) { wp_send_json_error( array(), 403 ); }

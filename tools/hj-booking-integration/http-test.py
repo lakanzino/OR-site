@@ -224,6 +224,28 @@ try:
         claim_state=state(claimant1,claimed_id)
         check(int(claim_state['snapshot']['revision'])==1 and claim_state['name']=='Synthetic Claimed '+str(winner+1), 'winning profile and schedule persisted')
 
+    # Kill the WordPress writer's DB connection after its durable claim and check the actual reconnect.
+    reconnect1, rn1=login('synthetic_claim_reconnect'); reconnect2, rn2=login('synthetic_claim_reconnect')
+    reconnect_token=uuid.uuid4().hex; _, first_release=barrier('claim-hold-'+reconnect_token); first_release.touch()
+    first_owned, first_owned_release=barrier('claim-owned-'+reconnect_token); reconnected, _=barrier('claim-reconnect-'+reconnect_token)
+    first_payload=dict(empty_week(), action='hj_dash_save',pid='0',_hjn=rn1,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_claim_prototype='1',hj_ci_claim_token=reconnect_token,hj_ci_claim_hold_owned='1',hj_ci_claim_kill_wpdb='1',name_fa='Synthetic Reconnect',**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
+    other_token=uuid.uuid4().hex; _, second_release=barrier('claim-hold-'+other_token); second_release.touch()
+    second_payload=dict(first_payload, _hjn=rn2, hj_ci_claim_token=other_token); second_payload.pop('hj_ci_claim_hold_owned'); second_payload.pop('hj_ci_claim_kill_wpdb')
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+        first=pool.submit(request,reconnect1,'/wp-admin/admin-ajax.php',first_payload,RACE_BASES[0])
+        try:
+            wait_ready([first_owned])
+            check(ajax(reconnect2, {'action':'hj_ci_profile_claim'})['token']==reconnect_token and ajax(reconnect2, {'action':'hj_ci_own_profiles'})['ids']==[], 'first request has durable claim before WordPress post insert')
+            status, body=request(reconnect2,'/wp-admin/admin-ajax.php',second_payload,RACE_BASES[1])
+            check(status==409 and not json.loads(body)['success'], 'competing coordinated writer is rejected before the first insert')
+        finally: first_owned_release.touch()
+        first_status,first_body=first.result(timeout=40)
+    check(first_status==200 and json.loads(first_body)['success'] and json.loads(first_body)['data']['created'], 'first request completes after WordPress database connection kill')
+    wait_ready([reconnected]); old_conn,new_conn=map(int,reconnected.read_text().split(','))
+    check(old_conn>0 and new_conn>0 and old_conn!=new_conn, 'WordPress insert ran on a different connection after KILL')
+    reconnected_posts=ajax(reconnect2, {'action':'hj_ci_own_profiles'}); reconnected_ids=reconnected_posts['ids']
+    check(len(reconnected_ids)==1 and reconnected_posts['linked']==reconnected_ids[0] and ajax(reconnect2, {'action':'hj_ci_profile_claim'})['token']==reconnect_token and int(state(reconnect2,reconnected_ids[0])['snapshot']['revision'])==1, 'claim survives reconnect with one linked profile and schedule')
+
     # Kill only the disposable PHP worker after its durable claim, before wp_insert_post writes.
     orphan1, on1 = login('synthetic_claim_orphan'); orphan2, on2 = login('synthetic_claim_orphan')
     orphan_token=uuid.uuid4().hex; _, claim_release=barrier('claim-hold-'+orphan_token); claim_release.touch()
