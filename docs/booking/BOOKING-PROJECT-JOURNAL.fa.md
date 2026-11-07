@@ -542,6 +542,6 @@
 
 [نمونهٔ صرفاً CI](BOOKING-FIRST-PROFILE-CLAIM-SPIKE.fa.md) از کلید یکتای کاربر پیش از `wp_insert_post` برای رد دومین تلاش هم‌زمان استفاده می‌کند. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42418532222) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42418532130) موفق: از دو درخواست هماهنگ، یک برنده، یک رد و یک پست ثبت شد. نه محصول است، نه رفع همهٔ writerها یا اتمی‌بودن؛ claim بی‌انقضا ممکن است بازیابی عملیاتی بخواهد، **۷۵٪ ثابت**.
 
-### مرحلهٔ ۵.۳۱ — مرگ worker پس از claim و writer غیرهماهنگ | در انتظار CI
+### مرحلهٔ ۵.۳۱ — مرگ worker پس از claim و writer غیرهماهنگ | CI موفق، ناپایداری barrier باز
 
-[آزمون](BOOKING-FIRST-PROFILE-CLAIM-FAILURE.fa.md): SIGKILL worker دورریختنی پس از claim و پیش از درج، ارزیابی claim رهاشده و retry و سپس ضدنمونهٔ writer غیرهماهنگ. محصول و ZIP بدون تغییر، **۷۵٪ ثابت**.
+[آزمون](BOOKING-FIRST-PROFILE-CLAIM-FAILURE.fa.md): SIGKILL worker دورریختنی پس از claim و پیش از درج، claim بی‌پست را باقی گذاشت و retry هماهنگ ۴۰۹ گرفت؛ writer اصلی بدون claim پست و snapshot ساخت. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42419441515) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42419441465) موفق؛ دو اجرای پیشین barrier شکست خوردند و علت ناپایداری هنوز مشخص نیست. محصول و ZIP بدون تغییر، **۷۵٪ ثابت**.

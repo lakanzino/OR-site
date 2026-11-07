@@ -134,4 +134,4 @@
 
 **گام ۵.۳۰، CI موفق:** [claim یکتای بادوام به‌صورت نمونهٔ آزمایشی](BOOKING-FIRST-PROFILE-CLAIM-SPIKE.fa.md)، بدون تغییر محصول.
 
-**گام ۵.۳۱، در انتظار CI:** [مرگ worker و مسیر غیرهماهنگ در نمونهٔ claim](BOOKING-FIRST-PROFILE-CLAIM-FAILURE.fa.md)، بازیابی عملیاتی هنوز طراحی و اثبات نشده است.
+**گام ۵.۳۱، CI موفق با ناپایداری barrier باز:** [مرگ worker و مسیر غیرهماهنگ در نمونهٔ claim](BOOKING-FIRST-PROFILE-CLAIM-FAILURE.fa.md)، بازیابی عملیاتی هنوز طراحی و اثبات نشده است.
