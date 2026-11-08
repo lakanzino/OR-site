@@ -561,3 +561,7 @@
 ### مرحلهٔ ۵.۳۵ — claim پایدار محصول برای ساخت اولین پروفایل | CI موفق، محدود به مسیر جدید
 
 [طرح، محدودیت و rollback](BOOKING-FIRST-PROFILE-PRODUCT-CLAIM.fa.md): claim اتمیک در options با اتصال مجزای بدون reconnect، schema و کلید یکتای تأییدشده و پاسخ fail-closed به مسیر واقعی داشبورد افزوده شد. در سه race هر بار یک ساخت/یک رد و یک پست ثبت شد؛ قطع اتصال، مرگ worker، schema ناسازگار، رزرو خاموش و قفل محدود InnoDB آزموده شدند. [CI رزرو](https://github.com/lakanzino/OR-site/actions/runs/42427272039) و [MariaDB](https://github.com/lakanzino/OR-site/actions/runs/42427271996) موفق. نسخهٔ آزمایشی ۰٫۳٫۴۸ نصب نشده؛ مهاجرت، نویسندگان غیرهماهنگ، بازیابی claim و اتمی‌بودن فرم باز، **۷۵٪ ثابت** و NO-GO.
+
+### مرحلهٔ ۵.۳۶ — ارتقا با ACF رایگان واقعی | در انتظار CI
+
+[آزمایش](BOOKING-ACF-FREE-UPGRADE.fa.md): در WordPress/MariaDB دورریختنی، ACF نسخهٔ ۶٫۸٫۱۱ و دادهٔ ساختگی، جایگزینی فایل از بستهٔ ۰٫۳٫۲۲ به کد فعلی و خواندن/ویرایش/نمایش بررسی می‌شود. این WordPress upgrader یا دادهٔ سایت نیست؛ **۷۵٪ ثابت**.
