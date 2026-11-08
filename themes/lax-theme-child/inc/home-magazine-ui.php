@@ -23,7 +23,8 @@ function hj_home_magazine_render( $html, $block ) {
 	}
 	$privacy = get_privacy_policy_url();
 	if ( $privacy ) {
-		$updated = str_replace( '<a href="' . esc_url( $privacy ) . '">حریم خصوصی</a>', 'حریم خصوصی', $updated );
+		$anchor = '<a href="' . esc_url( $privacy ) . '">حریم خصوصی</a>';
+		$updated = str_replace( array( ' ' . $anchor, $anchor ), '', $updated );
 	}
 	return $updated;
 }

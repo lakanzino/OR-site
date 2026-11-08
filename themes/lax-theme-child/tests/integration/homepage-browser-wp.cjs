@@ -36,6 +36,7 @@ const base = 'http://example.invalid';
   assert.match(await newsletter.locator('h2').innerText(), /هر وقت هم نخواستی/);
   assert.equal(await newsletter.locator('.hj-magazine-cancel').innerText(), 'لغو');
   assert.equal(await newsletter.locator('a').count(), 0, 'extra links removed only in newsletter');
+  assert.doesNotMatch(await newsletter.innerText(), /حریم خصوصی/, 'no orphaned link label');
   assert.equal(await newsletter.locator('input[name=email][required]').count(), 1);
   assert.equal(await newsletter.locator('input[name=consent][required]').count(), 1);
   assert.match(await newsletter.innerText(), /لینک تأیید به ایمیل شما ارسال می‌شود/);
