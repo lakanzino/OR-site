@@ -160,7 +160,16 @@ jobs:
         if: matrix.plugin == 'current'
         env:
           HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
-        run: php themes/lax-theme-child/tests/integration/paused-sections-wp.php
+        run: |
+          set +e
+          output=$(php themes/lax-theme-child/tests/integration/paused-sections-wp.php 2>&1)
+          status=$?
+          echo "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | head -c 3000 | tr '\n' ' ')
+            echo "::error title=Paused sections integration::$summary"
+          fi
+          exit "$status"
 
       - name: Test in-place homepage update and surgeon rows
         if: matrix.plugin == 'current'
