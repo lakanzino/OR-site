@@ -10,7 +10,7 @@
     text-wrap: balance;
   }
   /* Redistribute short last lines rather than make already-small text tiny. */
-  body:not(.wp-admin) main.hj-static-home .hj-landing :is(.hj-landing-disclaimer, .hj-surgeon-copy > p:not(.hj-landing-eyebrow), .hj-surgeon-copy > .wp-block-group__inner-container > p:not(.hj-landing-eyebrow)) {
+  body:not(.wp-admin) main.hj-static-home .hj-landing :is(.hj-landing-disclaimer, .hj-magazine-form > p:not(.hj-newsletter-status), .hj-surgeon-copy > p:not(.hj-landing-eyebrow), .hj-surgeon-copy > .wp-block-group__inner-container > p:not(.hj-landing-eyebrow)) {
     text-wrap: balance;
   }
 }

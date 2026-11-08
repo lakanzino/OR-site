@@ -15,7 +15,7 @@ const assert = require('node:assert/strict');
     return targets.length >= 4 && targets.every(el => el && el.hasAttribute('data-hj-mobile-wrap'));
    }, null, {timeout:15000});
    const lines = await page.evaluate(() => {
-    const targets = [document.querySelector('.hj-landing-disclaimer'), ...document.querySelectorAll('.hj-feature p:last-child'), ...document.querySelectorAll('.hj-surgeon-copy p:not(.hj-landing-eyebrow)')];
+    const targets = [document.querySelector('.hj-landing-disclaimer'), ...document.querySelectorAll('.hj-feature p:last-child'), ...document.querySelectorAll('.hj-surgeon-copy p:not(.hj-landing-eyebrow)'), ...document.querySelectorAll('.hj-magazine-form > p:not(.hj-newsletter-status)')];
     return targets.map(el => {
      const node=el.firstChild, text=node.textContent, groups=[];
      for (const match of text.matchAll(/\S+/gu)) {
