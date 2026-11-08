@@ -3,10 +3,12 @@ on:
   push:
     paths:
       - 'tools/account-baseline/**'
+      - 'themes/lax-theme-child/**'
       - '.github/workflows/account-baseline.yml'
   pull_request:
     paths:
       - 'tools/account-baseline/**'
+      - 'themes/lax-theme-child/**'
       - '.github/workflows/account-baseline.yml'
   workflow_dispatch:
 permissions:
