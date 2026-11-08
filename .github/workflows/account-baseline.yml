@@ -71,3 +71,7 @@ jobs:
           set -euxo pipefail
           php tools/hamyar-php-review/mariadb-fixture.php install
           php tools/account-baseline/probe.php
+      - name: Exercise patient account presentation and nickname on baseline
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: php tools/account-baseline/member-ui-probe.php

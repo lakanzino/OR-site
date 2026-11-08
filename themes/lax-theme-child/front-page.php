@@ -9,7 +9,7 @@ get_header();
 			<?php if ( ! ( is_preview() && get_post_meta( get_the_ID(), '_hj_home_draft_source', true ) ) && shortcode_exists( 'hj_member_google' ) && ! has_shortcode( get_the_content(), 'hj_member_google' ) ) : ?>
 				<section class="hj-member-home-entry" aria-label="<?php esc_attr_e( 'ورود کاربران سایت', 'lax-theme-child' ); ?>">
 					<h2><?php esc_html_e( 'ورود کاربران سایت', 'lax-theme-child' ); ?></h2>
-					<p><?php esc_html_e( 'برای ورود به سایت و پیگیری نظرها و پیشنهادهای خود از حساب گوگل استفاده کنید.', 'lax-theme-child' ); ?></p>
+					<p><?php esc_html_e( 'برای ثبت نوبت در سامانه ابتدا باید حساب کاربری داشته باشید یا وارد شوید. از این حساب برای پیگیری نظرها و پیشنهادهای خود نیز استفاده کنید.', 'lax-theme-child' ); ?></p>
 					<?php echo do_shortcode( '[hj_member_google]' ); ?>
 				</section>
 			<?php endif; ?>

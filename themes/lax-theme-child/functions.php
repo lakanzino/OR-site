@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.33.26' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.33.27' );
 }
 
 /**
@@ -59,6 +59,8 @@ require_once get_stylesheet_directory() . '/inc/source-whitelist.php';
 require_once get_stylesheet_directory() . '/inc/references-box.php';
 require_once get_stylesheet_directory() . '/inc/faq-accordion.php';
 require_once get_stylesheet_directory() . '/inc/nav-menus.php';
+$hj_member_ui_path = get_stylesheet_directory() . '/inc/member-entry-ui.php';
+if ( is_readable( $hj_member_ui_path ) ) { include_once $hj_member_ui_path; }
 // Reversible public navigation only; original archives and content remain intact.
 $hj_paused_sections = get_stylesheet_directory() . '/inc/paused-sections.php';
 if ( is_readable( $hj_paused_sections ) ) { include_once $hj_paused_sections; }
