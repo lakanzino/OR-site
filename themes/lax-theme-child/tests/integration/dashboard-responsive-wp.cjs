@@ -16,6 +16,9 @@ const base = 'http://example.invalid';
    const response = await page.goto(base + '/?pagename=my-profile', {waitUntil:'networkidle'});
    assert.equal(response.status(),200); assert.equal(await page.locator('#hj-dash-form').count(), 1, `dashboard form missing at ${page.url()}: ${(await page.locator('body').innerText()).slice(0,500)}`);
    await page.evaluate(() => document.fonts.ready);
+   assert.ok(await page.locator('.hj-dash__chip input').count() >= 18, 'fixture has multiple specialty choices');
+   const oversizedChips = await page.locator('.hj-dash__chip input').evaluateAll(els => els.filter(e => {const r=e.getBoundingClientRect(), p=e.parentElement.getBoundingClientRect();return r.width > p.width + 1 || r.left < p.left - 1 || r.right > p.right + 1;}).slice(0,5).map(e => ({input:e.getBoundingClientRect().toJSON(), label:e.parentElement.getBoundingClientRect().toJSON()})));
+   assert.equal(oversizedChips.length, 0, `${width} invisible checkbox overflows its label: ${JSON.stringify(oversizedChips)}`);
    const fields = ['.hj-dash__head','.hj-dash__photo','.hj-dash__grid','.hj-dash__form','.hj-dash__side','.hj-dash__card', '.hj-dash__field input:not([type=hidden])','.hj-dash__field select','.hj-dash__field textarea','.hj-dash__hrow input[type=time]','.hj-dash__chip span','#hj-bookings','.hj-bookings__item'];
    const report = await page.evaluate((selectors) => {
     const vw=document.documentElement.clientWidth;

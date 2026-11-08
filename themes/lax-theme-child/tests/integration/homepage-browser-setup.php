@@ -49,4 +49,5 @@ update_post_meta( $doc, 'name_fa', 'جراح آزمایشی' );
 update_post_meta( $doc, 'specialty_fa', 'جراحی آزمایشی' );
 // Deliberately long labels reveal overflow without involving real user data.
 wp_insert_term( str_repeat( 'رشتهآزمایشی', 10 ), 'specialty', array( 'slug' => 'responsive-long-test' ) );
+for ( $i = 1; $i <= 18; $i++ ) { wp_insert_term( 'رشته تست ' . $i, 'specialty', array( 'slug' => 'responsive-test-' . $i ) ); }
 echo "PASS browser surgeon setup\n";
