@@ -47,3 +47,34 @@ function hj_surgeon_document_title( $parts ) {
 	return $parts;
 }
 add_filter( 'document_title_parts', 'hj_surgeon_document_title' );
+
+/** Replace only the known CPT UI labels, not the post type, roles or records. */
+function hj_surgeon_post_type_labels( $labels ) {
+	$map = array(
+		'name' => 'جراحان', 'singular_name' => 'جراح', 'menu_name' => 'جراحان',
+		'add_new' => 'افزودن جراح', 'add_new_item' => 'افزودن جراح تازه', 'new_item' => 'جراح تازه',
+		'edit_item' => 'ویرایش جراح', 'view_item' => 'دیدن جراح', 'view_items' => 'دیدن جراحان',
+		'search_items' => 'جستجوی جراحان', 'not_found' => 'جراح یافت نشد',
+		'not_found_in_trash' => 'جراح در زباله‌دان نیست', 'all_items' => 'همهٔ جراحان',
+		'archives' => 'بایگانی جراحان', 'attributes' => 'ویژگی‌های جراح',
+		'featured_image' => 'تصویر جراح', 'set_featured_image' => 'انتخاب تصویر جراح',
+		'remove_featured_image' => 'حذف تصویر جراح', 'use_featured_image' => 'استفاده به‌عنوان تصویر جراح',
+	);
+	// Apply only to labels supplied by this plugin, leaving custom translations
+	// and other labels alone. The internal post type slug remains 'doctor'.
+	$known = array(
+		'name' => 'پزشک‌ها', 'singular_name' => 'پزشک', 'menu_name' => 'پزشک‌ها',
+		'add_new' => 'افزودن پزشک', 'add_new_item' => 'افزودن پزشک تازه', 'new_item' => 'پزشک تازه',
+		'edit_item' => 'ویرایش پزشک', 'view_item' => 'دیدن پزشک', 'view_items' => 'دیدن پزشک‌ها',
+		'search_items' => 'جستجوی پزشک‌ها', 'not_found' => 'پزشکی یافت نشد',
+		'not_found_in_trash' => 'پزشکی در زباله‌دان نیست', 'all_items' => 'همهٔ پزشک‌ها',
+		'archives' => 'بایگانی پزشک‌ها', 'attributes' => 'ویژگی‌های پزشک',
+		'featured_image' => 'تصویر پزشک', 'set_featured_image' => 'انتخاب تصویر پزشک',
+		'remove_featured_image' => 'حذف تصویر پزشک', 'use_featured_image' => 'استفاده به‌عنوان تصویر پزشک',
+	);
+	foreach ( $map as $key => $value ) {
+		if ( isset( $labels->$key ) && $labels->$key === $known[ $key ] ) { $labels->$key = $value; }
+	}
+	return $labels;
+}
+add_filter( 'post_type_labels_doctor', 'hj_surgeon_post_type_labels' );

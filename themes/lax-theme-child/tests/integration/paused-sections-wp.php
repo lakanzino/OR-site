@@ -40,7 +40,10 @@ $wp_query->queried_object = get_post( $dashboard ); $wp_query->queried_object_id
 pause_assert( get_the_title( $dashboard ) === 'ناحیهٔ جراح' && get_post( $dashboard )->post_title === 'ناحیهٔ پزشک', 'dashboard title is display-only' );
 $parts = hj_surgeon_document_title( array( 'title' => 'ناحیهٔ پزشک', 'site' => 'site' ) );
 pause_assert( $parts['title'] === 'ناحیهٔ جراح' && $parts['site'] === 'site', 'dashboard document title' );
-register_post_type( 'doctor', array( 'public' => true, 'has_archive' => 'doctors' ) );
+register_post_type( 'doctor', array( 'public' => true, 'has_archive' => 'doctors', 'labels' => array( 'name' => 'پزشک‌ها', 'singular_name' => 'پزشک', 'menu_name' => 'پزشک‌ها', 'add_new' => 'افزودن پزشک', 'edit_item' => 'عنوان سفارشی' ) ) );
+$type = get_post_type_object( 'doctor' );
+pause_assert( $type->name === 'doctor' && $type->labels->menu_name === 'جراحان' && $type->labels->add_new === 'افزودن جراح', 'CPT UI changed without changing slug' );
+pause_assert( $type->labels->edit_item === 'عنوان سفارشی', 'custom admin label retained' );
 $wp_query->is_page = false; $wp_query->is_singular = false; $wp_query->is_post_type_archive = true; $wp_query->query_vars['post_type'] = 'doctor'; $wp_query->queried_object = get_post_type_object( 'doctor' ); $wp_query->queried_object_id = 0;
 $parts = hj_surgeon_document_title( array( 'title' => 'پزشک‌ها', 'site' => 'site' ) );
 pause_assert( $parts['title'] === 'جراحان' && $parts['site'] === 'site', 'archive document title' );
