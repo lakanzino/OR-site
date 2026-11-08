@@ -84,4 +84,5 @@ jobs:
           ln -s "$GITHUB_WORKSPACE/themes/lax-theme" /wordpress/wp-content/themes/lax-theme
           php tools/account-baseline/http-setup.php
           sudo php -S 127.0.0.1:80 -t /wordpress > /tmp/account-http.log 2>&1 &
-          python3 tools/account-baseline/http-test.py || { cat /tmp/account-http.log; exit 1; }
+          output=$(python3 tools/account-baseline/http-test.py 2>&1) || { echo "$output"; summary=$(echo "$output" | tail -8 | tr "\n" " " | sed "s/%/%25/g; s/::/%3A%3A/g"); echo "::error title=Account HTTP fixture::$summary"; cat /tmp/account-http.log; exit 1; }
+          echo "$output"
