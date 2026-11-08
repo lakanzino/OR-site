@@ -6,7 +6,7 @@
     const button = form.querySelector('button[type="submit"]');
     if (!output || !button || !window.fetch || !window.FormData) return;
     let target;
-    try { target = new URL(form.action, window.location.href); } catch (_) { return; }
+    try { target = new URL(form.getAttribute('action') || window.location.href, window.location.href); } catch (_) { return; }
     if (target.origin !== window.location.origin) return;
     form.addEventListener('submit', async event => {
       event.preventDefault();
