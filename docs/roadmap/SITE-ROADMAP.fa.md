@@ -71,3 +71,10 @@
 - نسخهٔ پیشین نقشهٔ تصویری: [Drive](https://drive.google.com/file/d/13La2hLzBP7Ic6ctXuRYqiV2qjdMJwSo1/view)؛ نسخهٔ Word پیشین: [Drive](https://drive.google.com/file/d/1nP6mjr6XgYjc98J70Ir2fY826q0nd4ow/view).
 - تاریخ ثبت این بررسی: ۲۰۲۶-۱۱-۰۱. مشاهده‌ها فقط برای محتوای قابل‌دیدن مهمان در [صفحه نخست](https://hamyarjarahi.ir/)، [راهنمای بیمار](https://hamyarjarahi.ir/patient-guide/)، [جراحی‌ها](https://hamyarjarahi.ir/surgery/)، [حساب اعضا](https://hamyarjarahi.ir/member-account/)، [درباره](https://hamyarjarahi.ir/about/)، [پرسش‌های متداول](https://hamyarjarahi.ir/faq/) و [تماس](https://hamyarjarahi.ir/contact/) است؛ اطلاعات خصوصی، کلیک و ورود گوگل آزمایش نشدند.
 - نسخهٔ تصویری به‌روز این نوبت: [Drive](https://drive.google.com/file/d/1auAcLIGKhd24zV6JyMqDFmEGzDEHI0Qz/view)؛ سند Word به‌روز: [Drive](https://drive.google.com/file/d/1ESBqteozUAjospso08WLbDoUSdvuwr5e/view). منبع قابل بازسازی همین فایل Markdown است و `tools/build-site-roadmap.py` نسخه‌های قابل تحویل را می‌سازد.
+
+### انتشار گیت‌هاب برای به‌روزرسان وردپرس
+- [x] انتشار عمومی [child-v0.33.24](https://github.com/lakanzino/OR-site/releases/tag/child-v0.33.24) روی commit `d308e4d7895f6016924ef497d88dd6dbd7d57401` از همین شاخه ساخته شد؛ PR #119 ادغام نشده است.
+- [x] مانیفست و فایل `releases/lax-theme-child.zip` از خود تگ با GitHub Contents API خوانده شدند؛ نسخهٔ قالب ۰٫۳۳٫۲۴ و SHA-256 برابر با `e77bf2b7ab52aa7c116118c4476b90cc8d2df45ce80fd66a70cb9977d30db3ff` است. CI [42477590817](https://github.com/lakanzino/OR-site/actions/runs/42477590817) موفق شد.
+- [x] کد به‌روزرسان نسخهٔ پایه بررسی شد: انتشار عمومی با پیشوند `child-v` را پیدا می‌کند و در نبود attachment از فایل‌های داخل مخزن در تگ استفاده می‌کند. آپلود مستقیم attachment به `uploads.github.com` به علت EOF ناموفق بود؛ انتشار attachment ندارد و از مسیر جایگزین مخزن استفاده می‌کند.
+- [ ] مشاهدهٔ نسخهٔ ۰٫۳۳٫۲۴ و دانلود/نصب از سرور واقعی وردپرس هنوز تأیید نشده است. اگر مسیر جایگزین روی هاست کار نکند، پیام خطا باید بررسی شود؛ نسخهٔ Drive برای نصب دستی باقی است.
+- [ ] بررسی تنظیم «به‌روزرسانی خودکار» در پیشخوان؛ اگر روشن باشد، انتشار ممکن است پیش از اقدام دستی با زمان‌بندی خودکار نصب شود.
