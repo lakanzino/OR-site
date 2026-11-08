@@ -110,20 +110,25 @@ const base = 'http://example.invalid';
   await page.goto(base + '/', {waitUntil:'domcontentloaded'});
   const form = page.locator('.hj-magazine-section form.hj-magazine-form');
   const email = form.locator('input[name=email]'), status = form.locator('.hj-newsletter-status');
+  async function waitStatus(text) {
+   try { await page.waitForFunction(t => document.querySelector('.hj-newsletter-status')?.textContent.includes(t), text, {timeout:15000}); }
+   catch (err) { throw new Error('Expected status ' + text + ' but saw: ' + await status.innerText() + ' url=' + page.url()); }
+  }
+
   await email.fill('fixture@example.invalid');
   const before = page.url();
   await form.locator('button[type=submit]').click();
-  await status.getByText('درخواست اشتراک ثبت شد.', {exact:false}).waitFor();
+  await waitStatus('درخواست اشتراک ثبت شد.');
   assert.equal(page.url(), before, 'no white page after submission');
   assert.match(await status.innerText(), /برای فعال‌شدن/);
   assert.doesNotMatch(await status.innerText(), /مشترک.*شدید/, 'do not claim unconfirmed subscription');
   const state = await page.evaluate(async () => (await fetch('/wp-admin/admin-post.php?action=hj_fixture_newsletter_state')).json());
   assert.equal(state.status,'draft', 'subscription still awaits email confirmation');
   await email.fill('mail-failure@example.invalid'); await form.locator('button[type=submit]').click();
-  await status.getByText('ارسال ایمیل تأیید ممکن نشد', {exact:false}).waitFor();
+  await waitStatus('ارسال ایمیل تأیید ممکن نشد');
   assert.doesNotMatch(await status.innerText(), /ثبت شد|مشترک.*شدید/, 'mail failure is not success');
   await email.fill('approved@example.invalid'); await form.locator('button[type=submit]').click();
-  await status.getByText('اگر نشانی قابل ثبت باشد', {exact:false}).waitFor();
+  await waitStatus('اگر نشانی قابل ثبت باشد');
   assert.doesNotMatch(await status.innerText(), /مشترک.*شدید/, 'existing account remains non-enumerating');
   const confirm = await page.evaluate(async () => (await fetch('/wp-admin/admin-post.php?action=hj_fixture_confirm_link')).json());
   assert.ok(confirm.url.includes('action=hj_magazine_confirm'), 'fake mail contains confirmation link');
