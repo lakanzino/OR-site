@@ -84,5 +84,23 @@ jobs:
           ln -s "$GITHUB_WORKSPACE/themes/lax-theme" /wordpress/wp-content/themes/lax-theme
           php tools/account-baseline/http-setup.php
           sudo php -S 127.0.0.1:80 -t /wordpress > /tmp/account-http.log 2>&1 &
+          server=$!
+          trap 'sudo kill "$server" || true' EXIT
           output=$(python3 tools/account-baseline/http-test.py 2>&1) || { echo "$output"; summary=$(echo "$output" | tail -30 | tr "\n" " " | sed "s/%/%25/g; s/::/%3A%3A/g"); echo "::error title=Account HTTP fixture::$summary"; cat /tmp/account-http.log; exit 1; }
+          echo "$output"
+      - name: Exercise newsletter in Chrome with installed plugin baseline
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: |
+          set -euo pipefail
+          php themes/lax-theme-child/tests/integration/homepage-browser-setup.php
+          mkdir -p /wordpress/wp-content/mu-plugins
+          ln -s "$GITHUB_WORKSPACE/themes/lax-theme-child/tests/integration/homepage-debug-mu.php" /wordpress/wp-content/mu-plugins/hj-fixture-debug.php
+          npm install --no-save --no-audit --no-fund playwright-core
+          export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          sudo php -S 127.0.0.1:80 -t /wordpress > /tmp/hj-account-newsletter.log 2>&1 &
+          server=$!
+          trap 'sudo kill "$server" || true' EXIT
+          sleep 2
+          output=$(node themes/lax-theme-child/tests/integration/homepage-browser-wp.cjs 2>&1) || { echo "$output"; summary=$(echo "$output" | head -c 3000 | tr "\n" " "); echo "::error title=Baseline newsletter browser::$summary"; cat /tmp/hj-account-newsletter.log; exit 1; }
           echo "$output"

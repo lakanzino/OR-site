@@ -9,11 +9,11 @@ function hj_home_magazine_render( $html, $block ) {
 	// Only adapt the known existing block; preserve unrecognised editorial content.
 	$old_title = 'اشتراک رایگان مجله اینترنتی همیارجراحی، تنها با یک جیمیل';
 	if ( false === strpos( $html, $old_title ) ) { return $html; }
-	$title = '<h2 class="wp-block-heading hj-magazine-title">اینجا جیمیلت رو وارد کن.<span>هر وقت هم نخواستی، می‌تونی <strong class="hj-magazine-cancel">لغو</strong> کنی!</span></h2><span class="hj-magazine-arrow" aria-hidden="true">↓</span>';
+	$title = '<h2 class="wp-block-heading hj-magazine-title">اینجا جیمیلت رو وارد کن.<span>هر وقت هم نخواستی، می‌تونی <strong class="hj-magazine-cancel">لغو</strong> کنی!</span></h2>';
 	$updated = preg_replace( '~<h2\b[^>]*>\s*' . preg_quote( $old_title, '~' ) . '\s*</h2>~u', $title, $html, 1, $title_count );
 	if ( 1 !== $title_count ) { return $html; }
 	$updated = preg_replace( '~<p\b[^>]*\bclass="[^"]*\bhj-magazine-eyebrow\b[^"]*"[^>]*>.*?</p>~us', '', $updated, 1 );
-	$updated = str_replace( 'برای دریافت خبرهای مجله، ایمیل خود را وارد و اشتراک را تأیید کنید.', 'تازه‌های همیار جراحی رو در ایمیلت دریافت کن.', $updated );
+	$updated = str_replace( 'برای دریافت خبرهای مجله، ایمیل خود را وارد و اشتراک را تأیید کنید.', 'تازه‌های همیار جراحی رو در ایمیلت دریافت کن.<span class="hj-magazine-arrow" aria-hidden="true">↓</span>', $updated );
 	$updated = preg_replace( '~<p\b[^>]*\bclass="[^"]*\bhj-magazine-account\b[^"]*"[^>]*>.*?</p>~us', '', $updated, 1 );
 	// WordPress can leave the shortcode for the_content's later shortcode pass.
 	// Render it here when necessary so the known privacy link can be unlinked

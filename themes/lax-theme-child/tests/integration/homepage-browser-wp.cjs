@@ -103,6 +103,26 @@ const base = 'http://example.invalid';
    for(let i=0;i<m.cards.length;i++){let c=m.cards[i];assert.ok(c.link && c.left>=-1 && c.right<=width+1, `${width} card bounds`); if(i) assert.ok(c.top>=m.cards[i-1].bottom,`${width} stacked cards`);}
    console.log(`PASS real WP at ${width}px`);
   }
+  // Synthetic form submission: consent remains operable and payload unchanged;
+  // intercept it so no email is sent and no real subscription is created.
+  await page.setViewportSize({width:375,height:900});
+  await page.goto(base + '/', {waitUntil:'domcontentloaded'});
+  const form = page.locator('.hj-magazine-section form.hj-magazine-form');
+  const email = form.locator('input[name=email]'), consent = form.locator('input[name=consent]');
+  await email.fill('fixture@example.invalid');
+  assert.equal(await form.evaluate(el => el.checkValidity()), false, 'consent required before submission');
+  await consent.check(); assert.equal(await consent.isChecked(), true, 'checkbox clickable');
+  assert.equal(await form.evaluate(el => el.checkValidity()), true);
+  let payload = null;
+  await page.route('**/wp-admin/admin-post.php', async route => {
+    payload = route.request().postData();
+    await route.fulfill({status:200, contentType:'text/plain', body:'synthetic confirmation'});
+  });
+  await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded'}), form.locator('button[type=submit]').click()]);
+  const submitted = new URLSearchParams(payload);
+  assert.equal(submitted.get('action'),'hj_magazine_subscribe');
+  assert.equal(submitted.get('email'),'fixture@example.invalid'); assert.equal(submitted.get('consent'),'1');
+  await page.unroute('**/wp-admin/admin-post.php');
   // Test actual pointer hit-testing on the stretched patient-row links in a
   // disposable browser; destination pages are intercepted, not live content.
   await page.route('**/guide-stage/**', route => route.fulfill({status:200, contentType:'text/html', body:'Synthetic destination'}));
