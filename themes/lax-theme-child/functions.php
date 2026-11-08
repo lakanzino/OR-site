@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.33.31' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.33.32' );
 }
 
 /**
@@ -69,6 +69,10 @@ add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_style( 'hj-home-magazine-ui', get_stylesheet_directory_uri() . '/' . $css, array(), lax_theme_child_asset_ver( $css ) );
 	$js = 'assets/js/home-newsletter-ui.js';
 	wp_enqueue_script( 'hj-home-newsletter-ui', get_stylesheet_directory_uri() . '/' . $js, array(), lax_theme_child_asset_ver( $js ), true );
+	$wrap_css = 'assets/css/home-mobile-wrap.css';
+	wp_enqueue_style( 'hj-home-mobile-wrap', get_stylesheet_directory_uri() . '/' . $wrap_css, array(), lax_theme_child_asset_ver( $wrap_css ) );
+	$wrap_js = 'assets/js/home-mobile-wrap.js';
+	wp_enqueue_script( 'hj-home-mobile-wrap', get_stylesheet_directory_uri() . '/' . $wrap_js, array(), lax_theme_child_asset_ver( $wrap_js ), true );
 }, 1700 );
 // Reversible public navigation only; original archives and content remain intact.
 $hj_paused_sections = get_stylesheet_directory() . '/inc/paused-sections.php';

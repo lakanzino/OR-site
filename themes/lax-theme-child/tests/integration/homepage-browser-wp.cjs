@@ -105,8 +105,35 @@ const base = 'http://example.invalid';
    assert.equal(m.nowrap,'nowrap'); assert.ok(m.textleft>=m.titleleft-1 && m.textright<=m.titleright+1, `${width} slogan clipped ${JSON.stringify(m)}`);
    assert.ok(m.cards.length>=3, `${width} cards present ${JSON.stringify(m)}`);
    for(let i=0;i<m.cards.length;i++){let c=m.cards[i];assert.ok(c.link && c.left>=-1 && c.right<=width+1, `${width} card bounds`); if(i) assert.ok(c.top>=m.cards[i-1].bottom,`${width} stacked cards`);}
+   const logo = await page.locator('.site-header .custom-logo-link').evaluate(el => { const s=getComputedStyle(el); return {background:s.backgroundColor, padding:s.padding, border:s.borderWidth, shadow:s.boxShadow}; });
+   assert.deepEqual(logo, {background:'rgba(0, 0, 0, 0)',padding:'0px',border:'0px',shadow:'none'}, `${width} transparent header logo`);
    console.log(`PASS real WP at ${width}px`);
   }
+  // On mobile, measure real browser line boxes: an orphan line is folded back
+  // when this is possible without reducing text below the readability floor.
+  await page.setViewportSize({width:375,height:900});
+  await page.evaluate(() => {
+    const root = document.querySelector('main.hj-static-home');
+    const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); ctx.font = '20px Arial';
+    const t = 'alpha beta gamma delta epsilon';
+    const p = document.createElement('p'); p.id = 'fixture-wrap-short'; p.textContent = t;
+    p.style.cssText = `font:20px/1.5 Arial;direction:ltr;width:${ctx.measureText(t).width * .94}px;max-width:none;`;
+    root.append(p);
+    const manual = document.createElement('p'); manual.id = 'fixture-wrap-manual'; manual.innerHTML = 'one two<br>three four';
+    manual.style.cssText = 'font:20px/1.5 Arial;direction:ltr;width:240px'; root.append(manual);
+    const long = document.createElement('p'); long.id = 'fixture-wrap-impossible'; long.textContent = 'superlongword superlongword superlongword';
+    long.style.cssText = 'font:20px/1.5 Arial;direction:ltr;width:30px;overflow-wrap:anywhere'; root.append(long);
+  });
+  await page.waitForFunction(() => document.querySelector('#fixture-wrap-short')?.dataset.hjMobileWrap === 'adjusted', null, {timeout:10000});
+  const wrap = await page.locator('#fixture-wrap-short').evaluate(el => ({size:parseFloat(getComputedStyle(el).fontSize), lines:[...(() => { const r=document.createRange();r.selectNodeContents(el);return r.getClientRects(); })()].filter(r=>r.width>0).map(r=>Math.round(r.top))}));
+  assert.ok(wrap.size >= 16.4 && wrap.size < 20, 'limited, readable reduction');
+  assert.equal(new Set(wrap.lines).size, 1, 'short final line returns to the first');
+  assert.equal(await page.locator('#fixture-wrap-manual').getAttribute('data-hj-mobile-wrap'), null, 'manual break left intact');
+  assert.equal(await page.locator('#fixture-wrap-impossible').getAttribute('data-hj-mobile-wrap'), 'unresolved', 'impossible width does not shrink indefinitely');
+  await page.setViewportSize({width:1024,height:900});
+  await page.waitForFunction(() => !document.querySelector('#fixture-wrap-short')?.hasAttribute('data-hj-mobile-wrap'), null, {timeout:10000});
+  assert.equal(await page.locator('#fixture-wrap-short').evaluate(el => parseFloat(getComputedStyle(el).fontSize)), 20, 'desktop font restored');
+  await page.evaluate(() => ['fixture-wrap-short','fixture-wrap-manual','fixture-wrap-impossible'].forEach(id => document.getElementById(id).remove()));
   // The mail transport is stubbed, no actual message leaves the fixture.
   await page.setViewportSize({width:375,height:900});
   await page.goto(base + '/', {waitUntil:'domcontentloaded'});
