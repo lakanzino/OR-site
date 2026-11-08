@@ -38,6 +38,7 @@ echo "PASS browser homepage setup\n";
 // Disposable surgeon and editable draft: no external identity provider or real data.
 $dashboard = hj_doctors_ensure_dashboard_page();
 if ( ! $dashboard ) { throw new RuntimeException( 'dashboard page missing' ); }
+wp_update_post( array( 'ID' => $dashboard, 'post_content' => '[hj_doctors_dashboard]', 'post_status' => 'publish' ) );
 $user_id = wp_create_user( 'responsive_surgeon', 'disposable-password-please-ignore', 'responsive@example.invalid' );
 if ( is_wp_error( $user_id ) || ! hj_doctors_assign_doctor_role( $user_id ) ) { throw new RuntimeException( 'fixture surgeon role setup failed' ); }
 update_user_meta( $user_id, 'show_admin_bar_front', 'false' );
