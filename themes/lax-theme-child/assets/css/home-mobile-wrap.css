@@ -2,3 +2,15 @@
 @media (max-width: 767px) {
   body:not(.wp-admin) main.hj-static-home :is(h1, h2, h3, h4, p):not(.screen-reader-text) { text-wrap: pretty; }
 }
+
+@media (max-width: 767px) {
+  /* A floated feature icon used to steal the first text line's width. */
+  body:not(.wp-admin) main.hj-static-home .hj-landing .hj-feature :is(p:last-child) {
+    clear: both;
+    text-wrap: balance;
+  }
+  /* Redistribute short last lines rather than make already-small text tiny. */
+  body:not(.wp-admin) main.hj-static-home .hj-landing :is(.hj-landing-disclaimer, .hj-surgeon-copy > p:not(.hj-landing-eyebrow), .hj-surgeon-copy > .wp-block-group__inner-container > p:not(.hj-landing-eyebrow)) {
+    text-wrap: balance;
+  }
+}

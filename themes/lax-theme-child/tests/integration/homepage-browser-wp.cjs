@@ -75,7 +75,7 @@ const base = 'http://example.invalid';
   await page.goto(base + '/wp-admin/admin-post.php?action=hj_fixture_revision_debug');
   const revisionReport = JSON.parse(await page.locator('body').innerText());
   assert.equal(revisionReport.expected_found, true, 'updated content retains other blocks byte-for-byte and has a pre-change revision');
-  for (const width of [280,320,360,375,414,768,980,1280,1440]) {
+  for (const width of [280,320,360,375,393,414,768,980,1280,1440]) {
    await page.setViewportSize({width,height:900});
    response=await page.goto(base + '/', {waitUntil:'domcontentloaded'}); assert.equal(response.status(),200);
    await page.waitForSelector('.hj-hero-slogan'); await page.waitForSelector('.hj-surgeon-card');
@@ -94,6 +94,30 @@ const base = 'http://example.invalid';
    assert.equal(await contentMarkup(page.locator('.hj-landing-grid').first()), patientHtmlBefore, `${width} patient grid preserved through manager action`);
    assert.match(await page.locator('.hj-hero-slogan').innerText(), /آرامش در مسیر جراحی با همیار\s*جراحی/);
    await page.evaluate(async () => {await document.fonts.ready;});
+   // The actual Persian paragraphs from the user's screenshots, not just
+   // generic Latin fixtures. Count real rendered words after fonts and layout.
+   if (width >= 320 && width <= 414) {
+    await page.waitForFunction(() => {
+     const targets = [document.querySelector('.hj-landing-disclaimer'), ...document.querySelectorAll('.hj-feature p:last-child'), ...document.querySelectorAll('.hj-surgeon-copy p:not(.hj-landing-eyebrow)')];
+     return targets.length >= 3 && targets.every(el => el && el.hasAttribute('data-hj-mobile-wrap'));
+    }, null, {timeout:15000});
+    const lines = await page.evaluate(() => {
+      const targets = [document.querySelector('.hj-landing-disclaimer'), ...document.querySelectorAll('.hj-feature p:last-child'), ...document.querySelectorAll('.hj-surgeon-copy p:not(.hj-landing-eyebrow)')];
+      return targets.map(el => {
+       const node=el.firstChild, text=node.textContent, counts=[];
+       for (const token of text.matchAll(/\S+/gu)) {
+        const range=document.createRange(); range.setStart(node,token.index); range.setEnd(node,token.index+token[0].length);
+        const rect=[...range.getClientRects()].find(r=>r.width>0); if (!rect) continue;
+        const y=Math.round(rect.top); let group=counts.find(c=>Math.abs(c.y-y)<4);
+        if (!group) {group={y,words:[]};counts.push(group)} group.words.push(token[0]);
+       }
+       return {text:el.textContent, state:el.dataset.hjMobileWrap,size:getComputedStyle(el).fontSize, counts:counts.sort((a,b)=>a.y-b.y).map(c=>c.words)};
+      });
+    });
+    for (const entry of lines) {
+      if (entry.counts.length > 1) assert.ok(entry.counts.every(c=>c.length>=3), `${width} orphan screenshot text ${JSON.stringify(entry)}`);
+    }
+   }
    const m=await page.evaluate(() => {
     const rect=e=>e.getBoundingClientRect();
     const hero=rect(document.querySelector('.hj-landing-hero')), copy=rect(document.querySelector('.hj-landing-hero-copy'));
