@@ -34,6 +34,7 @@ const base='http://example.invalid';
   let res=await ajax('hj_dash_submit',pid); assert.equal(res.code,422,JSON.stringify(res)); assert.match(res.data.message,/تکمیل کنید/,'incomplete review rejected');
   res=await ajax('hj_dash_submit',pid,false); assert.equal(res.code,403,'nonce required');
   res=await ajax('hj_dash_submit',info.other); assert.equal(res.code,403,'cannot submit another profile');
+  res=await ajax('hj_dash_save',info.other); assert.equal(res.code,403,'cannot save another profile');
   await page.locator('input[name=specialty_fa]').fill('جراحی آزمایشی');
   await page.locator('input[name=phone_clinic]').fill('02112345678');
   await page.locator('input[name=address_clinic]').fill('نشانی ساختگی');
@@ -53,6 +54,8 @@ const base='http://example.invalid';
   await page.locator('[data-hj=submit-review]').click(); result=await (await done).json();
   assert.equal(result.success,true,JSON.stringify(result)); assert.equal(result.data.status,'pending');
   await page.waitForFunction(()=>document.querySelector('[data-hj=status-chip]')?.dataset.status==='pending');
+  const pendingGuest=await browser.newContext();
+  try {const g=await pendingGuest.newPage(); const r=await g.goto(base+'/?post_type=doctor&p='+pid); assert.notEqual(r.status(),200,'pending profile not publicly available');} finally {await pendingGuest.close();}
   // Use a fresh context so the synthetic admin login cannot interfere with the surgeon session.
   const admin=await browser.newPage();
   try {
@@ -68,8 +71,14 @@ const base='http://example.invalid';
    info=await admin.evaluate(async ()=>(await fetch('/wp-admin/admin-post.php?action=hj_fixture_surgeon_journey')).json());
    assert.equal(info.status,'publish'); assert.equal(info.profile_status,'published');
   } finally {await admin.context().close();}
+  await page.reload({waitUntil:'networkidle'});
+  assert.equal(await page.locator('[data-hj=status-chip]').getAttribute('data-status'),'published');
+  await page.locator('input[name=address_clinic]').fill('نشانی ساختگی ویرایش شده');
+  done=page.waitForResponse(r=>r.url().includes('admin-ajax.php')&&r.request().postData()?.includes('hj_dash_save'));
+  await save.click(); result=await (await done).json();
+  assert.equal(result.success,true,JSON.stringify(result)); assert.equal(result.data.status,'published','baseline default keeps edits published');
   const publicContext=await browser.newContext();
   try {const p=await publicContext.newPage();const response=await p.goto(base+'/?post_type=doctor&p='+pid);assert.equal(response.status(),200,'published profile visible');} finally {await publicContext.close();}
-  console.log('PASS synthetic save, ownership, nonce, review, admin publication; booking disabled; no OAuth');
+  console.log('PASS synthetic save, ownership, nonce, review, admin publication and published edit behavior; booking disabled; no OAuth');
  } finally {await browser.close();}
 })().catch(err=>{console.error(err);process.exit(1)});
