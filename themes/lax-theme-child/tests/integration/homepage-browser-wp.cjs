@@ -30,6 +30,20 @@ const base = 'http://example.invalid';
     assert.equal(new URL(await link.getAttribute('href')).pathname, path);
   }
   const patientHtmlBefore = await patientGrid.innerHTML();
+  const newsletter = page.locator('.hj-magazine-section');
+  assert.equal(await newsletter.count(), 1, 'newsletter fixture present');
+  assert.match(await newsletter.locator('h2').innerText(), /اینجا جیمیلت رو وارد کن/);
+  assert.match(await newsletter.locator('h2').innerText(), /هر وقت هم نخواستی/);
+  assert.equal(await newsletter.locator('.hj-magazine-cancel').innerText(), 'لغو');
+  assert.equal(await newsletter.locator('a').count(), 0, 'extra links removed only in newsletter');
+  assert.equal(await newsletter.locator('input[name=email][required]').count(), 1);
+  assert.equal(await newsletter.locator('input[name=consent][required]').count(), 1);
+  assert.match(await newsletter.innerText(), /لینک تأیید به ایمیل شما ارسال می‌شود/);
+  await page.goto(base + '/?pagename=fixture-other-newsletter', {waitUntil:'domcontentloaded'});
+  assert.match(await page.locator('.hj-magazine-section h2').innerText(), /اشتراک رایگان مجله اینترنتی/);
+  assert.ok(await page.locator('.hj-magazine-section a').count() > 0, 'non-home newsletter left unchanged');
+  await page.goto(base + '/', {waitUntil:'domcontentloaded'});
+
   const position = await page.evaluate(() => ({content:document.querySelector('.entry-content')?.getBoundingClientRect().bottom, login:document.querySelector('.hj-member-home-entry')?.getBoundingClientRect().top}));
   assert.ok(position.login > position.content, 'automatic member login is below content');
   await page.goto(base + '/wp-login.php', {waitUntil:'domcontentloaded'});
@@ -58,6 +72,19 @@ const base = 'http://example.invalid';
    await page.setViewportSize({width,height:900});
    response=await page.goto(base + '/', {waitUntil:'domcontentloaded'}); assert.equal(response.status(),200);
    await page.waitForSelector('.hj-hero-slogan'); await page.waitForSelector('.hj-surgeon-card');
+   const mag = await page.evaluate(() => {
+     const r = e => { const b=e.getBoundingClientRect(); return {left:b.left,right:b.right,top:b.top,bottom:b.bottom,width:b.width}; };
+     const section=document.querySelector('.hj-magazine-section'), above=[...document.querySelectorAll('.hj-landing-grid')].at(-1);
+     const email=section.querySelector('input[name=email]'), button=section.querySelector('.hj-magazine-row button'), consent=section.querySelector('input[name=consent]'), label=section.querySelector('.hj-magazine-consent');
+     const cancel=section.querySelector('.hj-magazine-cancel');
+     return {section:r(section),above:r(above),email:r(email),button:r(button),consent:r(consent),label:r(label),color:getComputedStyle(cancel).color,weight:getComputedStyle(cancel).fontWeight};
+   });
+   assert.ok(mag.section.top - mag.above.bottom >= 39, `${width} newsletter spacing ${JSON.stringify(mag)}`);
+   for (const [name,r] of Object.entries({section:mag.section,email:mag.email,button:mag.button,consent:mag.consent})) assert.ok(r.left>=-1 && r.right<=width+1 && r.width>0, `${width} ${name} bounds ${JSON.stringify(mag)}`);
+   assert.ok(mag.consent.left >= mag.label.left-1 && mag.consent.right <= mag.label.right+1, `${width} checkbox inside label`);
+   assert.equal(mag.color,'rgb(181, 31, 50)'); assert.ok(Number(mag.weight)>=700, 'cancel bold red');
+   if (width<=600) assert.ok(mag.button.top >= mag.email.bottom, `${width} fields stack`);
+
    assert.equal(await page.locator('.hj-landing-grid').first().innerHTML(), patientHtmlBefore, `${width} patient grid preserved through manager action`);
    assert.match(await page.locator('.hj-hero-slogan').innerText(), /آرامش در مسیر جراحی با همیار\s*جراحی/);
    await page.evaluate(async () => {await document.fonts.ready;});

@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.33.28' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.33.29' );
 }
 
 /**
@@ -61,6 +61,13 @@ require_once get_stylesheet_directory() . '/inc/faq-accordion.php';
 require_once get_stylesheet_directory() . '/inc/nav-menus.php';
 $hj_member_ui_path = get_stylesheet_directory() . '/inc/member-entry-ui.php';
 if ( is_readable( $hj_member_ui_path ) ) { include_once $hj_member_ui_path; }
+$hj_magazine_ui_path = get_stylesheet_directory() . '/inc/home-magazine-ui.php';
+if ( is_readable( $hj_magazine_ui_path ) ) { include_once $hj_magazine_ui_path; }
+add_action( 'wp_enqueue_scripts', function () {
+	if ( ! is_front_page() ) { return; }
+	$css = 'assets/css/home-magazine-ui.css';
+	wp_enqueue_style( 'hj-home-magazine-ui', get_stylesheet_directory_uri() . '/' . $css, array(), lax_theme_child_asset_ver( $css ) );
+}, 1700 );
 // Reversible public navigation only; original archives and content remain intact.
 $hj_paused_sections = get_stylesheet_directory() . '/inc/paused-sections.php';
 if ( is_readable( $hj_paused_sections ) ) { include_once $hj_paused_sections; }

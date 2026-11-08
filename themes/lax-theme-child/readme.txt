@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.33.28
+Stable tag: 0.33.29
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.33.29 =
+* اصلاح نمایشی و فاصلهٔ بخش اشتراک صفحه نخست، با حفظ فرم و رضایت.
 
 = 0.33.28 =
 * حذف پیوند ناحیهٔ جراح از صفحهٔ حساب عمومی، با حفظ خروج و پنل جراح.

@@ -21,6 +21,18 @@ $content = strtr( $content, array(
 	'{{DISEASES}}' => home_url( '/diseases/' ), '{{GLOSSARY}}' => home_url( '/glossary/' ), '{{FAQ}}' => home_url( '/faq/' ),
 	'{{CONTACT}}' => home_url( '/contact/' ), '{{IMAGE}}' => home_url( '/fixture-image.png' ),
 ) );
+// Reproduce the live editable newsletter block and its surrounding content.
+$magazine = '<!-- wp:group {"className":"hj-magazine-section","layout":{"type":"constrained"}} --><div class="wp-block-group hj-magazine-section">'
+    . '<!-- wp:paragraph {"className":"hj-magazine-eyebrow"} --><p class="hj-magazine-eyebrow">نامه‌ای از همیار جراحی</p><!-- /wp:paragraph -->'
+    . '<!-- wp:heading {"level":2} --><h2 class="wp-block-heading">اشتراک رایگان مجله اینترنتی همیارجراحی، تنها با یک جیمیل</h2><!-- /wp:heading -->'
+    . '<!-- wp:paragraph --><p>برای دریافت خبرهای مجله، ایمیل خود را وارد و اشتراک را تأیید کنید.</p><!-- /wp:paragraph -->'
+    . '<!-- wp:shortcode -->[hj_magazine_subscribe]<!-- /wp:shortcode -->'
+    . '<!-- wp:paragraph {"className":"hj-magazine-account"} --><p class="hj-magazine-account">حساب اعضا: [hj_member_account_link] &nbsp; | &nbsp; جراح هستید؟ از بخش ثبت‌نام جراحان وارد شوید.</p><!-- /wp:paragraph -->'
+    . '</div><!-- /wp:group -->';
+$content = str_replace( '{{MAGAZINE}}', $magazine, $content );
+$privacy = wp_insert_post( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Synthetic privacy', 'post_name' => 'fixture-privacy' ) );
+update_option( 'wp_page_for_privacy_policy', $privacy );
+wp_insert_post( wp_slash( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Other newsletter', 'post_name' => 'fixture-other-newsletter', 'post_content' => $magazine ) ) );
 $content = preg_replace( '/\{\{[A-Z_]+\}\}/', '', $content );
 $page = wp_insert_post( wp_slash( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Synthetic Browser Home', 'post_content' => $content ) ), true );
 if ( is_wp_error( $page ) ) { throw new RuntimeException( $page->get_error_message() ); }
