@@ -29,6 +29,8 @@ assert status == 200, f'login failed {status}'
 status,html,_=request('/?pagename=member-account')
 assert status == 200 and 'hj_child_nickname_save' in html, 'patient form not rendered'
 assert 'تنظیمات کامل حساب' not in html, 'account settings still points to WordPress profile'
+assert 'ناحیه اختصاصی جراحان' not in html, 'surgeon link remains in public account'
+assert 'خروج</a>' in html, 'logout link missing'
 p=Forms(); p.feed(html); forms={f['inputs'].get('action'):f for f in p.forms if f['inputs'].get('action')}
 nick=forms['hj_child_nickname_save']; display=forms['hj_member_save']
 status,_,_=request(nick['action'], {'action':'hj_child_nickname_save','_wpnonce':'invalid','nickname':'bad'})
