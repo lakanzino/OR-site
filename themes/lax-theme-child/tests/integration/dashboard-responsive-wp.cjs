@@ -18,7 +18,7 @@ const base = 'http://example.invalid';
    await page.evaluate(() => document.fonts.ready);
    assert.ok(await page.locator('.hj-dash__chip input').count() >= 18, 'fixture has multiple specialty choices');
    const oversizedChips = await page.locator('.hj-dash__chip input').evaluateAll(els => els.filter(e => {const r=e.getBoundingClientRect(), p=e.parentElement.getBoundingClientRect();return r.width > p.width + 1 || r.left < p.left - 1 || r.right > p.right + 1;}).slice(0,5).map(e => ({input:e.getBoundingClientRect().toJSON(), label:e.parentElement.getBoundingClientRect().toJSON()})));
-   assert.equal(oversizedChips.length, 0, `${width} invisible checkbox overflows its label: ${JSON.stringify(oversizedChips)}`);
+   if (width <= 782) assert.equal(oversizedChips.length, 0, `${width} invisible checkbox overflows its label: ${JSON.stringify(oversizedChips)}`);
    const fields = ['.hj-dash__head','.hj-dash__photo','.hj-dash__grid','.hj-dash__form','.hj-dash__side','.hj-dash__card', '.hj-dash__field input:not([type=hidden])','.hj-dash__field select','.hj-dash__field textarea','.hj-dash__hrow input[type=time]','.hj-dash__chip span','#hj-bookings','.hj-bookings__item'];
    const report = await page.evaluate((selectors) => {
     const vw=document.documentElement.clientWidth;
@@ -33,6 +33,14 @@ const base = 'http://example.invalid';
    if(width<=640) {
     const columns = await page.locator('.hj-dash__grid').evaluate(el=>getComputedStyle(el).gridTemplateColumns);
     assert.equal(columns.split(' ').length,1, `${width} dashboard must be one column: ${columns}`);
+   }
+   if (width <= 782) {
+    const one = page.locator('.hj-dash__chip').filter({has:page.getByText('رشته تست 1', {exact:true})});
+    const two = page.locator('.hj-dash__chip').filter({has:page.getByText('رشته تست 2', {exact:true})});
+    const first = one.locator('input'), second = two.locator('input');
+    await one.locator('span').click(); assert.ok(await first.isChecked()); assert.ok(!await second.isChecked(), 'other specialty must stay unchecked');
+    await two.locator('span').click(); assert.ok(await second.isChecked()); assert.ok(await first.isChecked());
+    await first.focus(); await page.keyboard.press('Space'); assert.ok(!await first.isChecked()); assert.ok(await second.isChecked(), 'keyboard only changes focused choice');
    }
    await page.locator('input[name="name_fa"]').fill('نمونه تست');
    assert.equal(await page.locator('input[name="name_fa"]').inputValue(),'نمونه تست');

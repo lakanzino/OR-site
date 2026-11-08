@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.33.25
+Stable tag: 0.33.26
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.33.26 =
+* محدود کردن اندازهٔ کنترل انتخاب رشته‌ها در پنل جراح روی موبایل، بدون تغییر داده یا شورت‌کد.
 
 = 0.33.25 =
 * اصلاح نمایشی برچسب‌های شناخته‌شدهٔ جراح در صفحهٔ نخست و عنوان صفحات و برچسب‌های شناخته‌شدهٔ مدیریت جراحان، بدون تغییر محتوای ذخیره‌شده.

@@ -218,3 +218,28 @@ jobs:
             echo "::error title=Dashboard responsive browser test::$summary"
           fi
           exit "$status"
+
+      - name: Exercise installed-baseline dashboard in Chrome
+        if: matrix.plugin == 'installed-0.3.12'
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: |
+          set -euo pipefail
+          php themes/lax-theme-child/tests/integration/homepage-browser-setup.php
+          mkdir -p /wordpress/wp-content/mu-plugins
+          ln -s "$GITHUB_WORKSPACE/themes/lax-theme-child/tests/integration/homepage-debug-mu.php" /wordpress/wp-content/mu-plugins/hj-fixture-debug.php
+          npm install --no-save --no-audit --no-fund playwright-core
+          export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          sudo php -S 127.0.0.1:80 -t /wordpress > /tmp/hj-dashboard-server.log 2>&1 &
+          server=$!
+          trap 'sudo kill "$server" || true' EXIT
+          sleep 2
+          set +e
+          output=$(node themes/lax-theme-child/tests/integration/dashboard-responsive-wp.cjs 2>&1)
+          status=$?
+          echo "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | head -c 3000 | tr '\n' ' ')
+            echo "::error title=Installed-baseline dashboard test::$summary"
+          fi
+          exit "$status"
