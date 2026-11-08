@@ -29,6 +29,15 @@ pause_assert( hj_pause_home_card( $external, $card ) === $external, 'external no
 $multi = '<div><a href="/student/">student</a><a href="/patient-guide/">guide</a></div>';
 pause_assert( hj_pause_home_card( $multi, $card ) === $multi, 'ambiguous card preserved' );
 pause_assert( ! hj_paused_section_url( '/student/child/' ) && ! hj_paused_section_url( '/student/?x=1' ), 'no descendants or query matching' );
+pause_assert( hj_paused_section_url( '/student/' ) && hj_paused_section_url( '/or-environment/' ), 'both root-relative archive destinations match' );
+pause_assert( ! hj_paused_section_url( '/patient-guide/' ) && ! hj_paused_section_url( '/guide-stage/during/' ) && ! hj_paused_section_url( '/surgery/' ), 'patient and surgery destinations are not paused' );
+pause_assert( ! hj_paused_section_url( 'https://other.invalid/student/' ) && ! hj_paused_section_url( '/student/#section' ), 'other hosts and fragments do not match' );
+$unrelated_card = '<div><a href="/patient-guide/">patient guide</a></div>';
+pause_assert( hj_pause_home_card( $unrelated_card, $card ) === $unrelated_card, 'patient card unchanged' );
+$unknown_card = array( 'blockName' => 'core/group', 'attrs' => array( 'className' => 'other' ) );
+$single_paused = '<div><a href="/student/">student</a></div>';
+pause_assert( hj_pause_home_card( $single_paused, $unknown_card ) === $single_paused, 'unknown card class unchanged' );
+pause_assert( hj_pause_home_card( $single_paused, $card ) === '', 'recognized single-link card hidden' );
 function item( $id, $url, $parent = 0 ) { return (object) array( 'ID' => $id, 'url' => $url, 'menu_item_parent' => (string) $parent, 'type' => 'custom', 'object' => 'custom' ); }
 $parent = item( 1, home_url( '/student/' ) ); $child = item( 2, home_url( '/patient-guide/' ), 1 ); $other = item( 3, 'https://other.invalid/student/' );
 $menu = hj_pause_primary_menu_items( array( $parent, $child, $other ), (object) array( 'theme_location' => 'primary' ) );

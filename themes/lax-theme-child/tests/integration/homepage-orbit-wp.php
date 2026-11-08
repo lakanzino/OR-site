@@ -13,12 +13,15 @@ $new_title = '<!-- wp:heading {"level":1,"className":"hj-hero-title"} --><h1 cla
 $old_title = '<!-- wp:heading {"level":1} --><h1 class="wp-block-heading">آگاهی بیشتر،<br>آرامش در مسیر <mark>جراحی.</mark></h1>';
 $source = str_replace( $new_title, $old_title, $source );
 $source = str_replace( 'از نخستین پرسش تا روزهای پس از عمل، کنار شما هستیم. اطلاعات روشن، راهنمای کاربردی و آشنایی با جراحان <span class="hj-hero-emphasis">برتر</span>.', 'از نخستین پرسش تا روزهای پس از عمل، کنار شما هستیم. اطلاعات روشن، راهنمای کاربردی و فضایی برای آشنایی با جراحان.', $source );
-$source = str_replace( 'ورود به پنل جراح', 'ورود به پنل پزشک', $source );
-$source .= '<!-- wp:paragraph --><p>متن شخصی بدون تغییر</p><!-- /wp:paragraph -->';
+$source = str_replace( array( 'ورود به پنل جراح', 'جراحان و متخصصان', 'جراح هستید؟' ), array( 'ورود به پنل پزشک', 'پزشکان و متخصصان', 'پزشک هستید؟' ), $source );
+$source .= '<!-- wp:paragraph --><p>متن شخصی بدون تغییر؛ شماره نظام پزشکی؛ مراجعه به پزشک</p><!-- /wp:paragraph -->';
 $built = hj_orbit_build_content( $source );
 orbit_assert( is_string( $built ), 'known hero recognized' );
 orbit_assert( strpos( $built, 'hj-hero-slogan' ) !== false && strpos( $built, 'جراحان <span class="hj-hero-emphasis">برتر</span>' ) !== false, 'requested text and classes' );
-orbit_assert( strpos( $built, 'ورود به پنل جراح' ) !== false && strpos( $built, 'متن شخصی بدون تغییر' ) !== false, 'label changed and unrelated text retained' );
+orbit_assert( strpos( $built, 'ورود به پنل جراح' ) !== false && strpos( $built, 'جراحان و متخصصان' ) !== false && strpos( $built, 'جراح هستید؟' ) !== false, 'three recognized surgeon labels changed' );
+orbit_assert( strpos( $built, 'ورود به پنل پزشک' ) === false && strpos( $built, 'پزشکان و متخصصان' ) === false && strpos( $built, 'پزشک هستید؟' ) === false, 'old recognized labels removed' );
+orbit_assert( strpos( $built, 'متن شخصی بدون تغییر؛ شماره نظام پزشکی؛ مراجعه به پزشک' ) !== false, 'unrelated personal, medical and license text retained' );
+orbit_assert( strpos( $built, 'قبل از عمل' ) !== false && strpos( $built, 'حین عمل' ) !== false && strpos( $built, 'بعد از عمل و ریکاوری' ) !== false, 'patient journey retained' );
 orbit_assert( strpos( $built, '[hj_home_surgeons]' ) !== false && strpos( $built, '[hj_home_google]' ) !== false, 'shortcodes retained' );
 orbit_assert( serialize_blocks( parse_blocks( $built ) ) === $built, 'modified content parses and roundtrips' );
 $custom = str_replace( 'آگاهی بیشتر،', 'متن سفارشی من،', $source );
