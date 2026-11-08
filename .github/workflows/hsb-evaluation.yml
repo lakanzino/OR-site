@@ -56,7 +56,13 @@ jobs:
           find "$RUNNER_TEMP/hsb/wp-plugin/hamyar-surgery-booking" -name '*.php' -print0 | xargs -0 -n1 php -l
       - name: Run candidate's bundled stub tests
         continue-on-error: true
-        run: php "$RUNNER_TEMP/hsb/wp-plugin/hamyar-surgery-booking/tests/run.php"
+        run: |
+          if php "$RUNNER_TEMP/hsb/wp-plugin/hamyar-surgery-booking/tests/run.php"; then
+            echo '::notice title=HSB bundled tests::All 23 stub tests passed; not proof of WordPress or MariaDB safety.'
+          else
+            echo '::warning title=HSB bundled tests::One or more bundled stub tests failed.'
+            exit 1
+          fi
       - name: Prepare disposable WordPress
         run: |
           set -euxo pipefail

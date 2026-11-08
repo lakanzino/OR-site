@@ -61,3 +61,35 @@ $appt_table=HSB_Activator::table('appointments');
 $count=(int)$wpdb->get_var("SELECT COUNT(*) FROM $appt_table");
 if ($count!==3) { throw new RuntimeException('Unexpected synthetic row count: '.$count); }
 echo "DONE: 3 synthetic appointments; defects reproduced in-process, not HTTP or browser. Candidate NO-GO.\n";
+// Force a disconnect immediately before INSERT. A second same-user DB connection
+// observes whether the INSERT becomes visible before the plugin's COMMIT.
+$connection_id = (int) $wpdb->get_var('SELECT CONNECTION_ID()');
+$observer = mysqli_init();
+mysqli_real_connect($observer, '127.0.0.1', DB_USER, DB_PASSWORD, DB_NAME, 3306);
+if (!$observer || !$connection_id) { throw new RuntimeException('Observer connection unavailable'); }
+$reconnect_key = 'fedcba12-3456-4789-abcd-abcdef123456';
+$killed = false;
+$visible_before_commit = false;
+$filter = function ($sql) use ($observer, $connection_id, $reconnect_key, &$killed, &$visible_before_commit) {
+    if (!$killed && preg_match('/^\s*INSERT\s+INTO\s+`?hjt_hsb_appointments`?/i', $sql)) {
+        if (!mysqli_query($observer, 'KILL CONNECTION ' . $connection_id)) { throw new RuntimeException('Failed to kill fixture connection'); }
+        $killed = true;
+    } elseif ($killed && preg_match('/^\s*COMMIT\s*$/i', $sql)) {
+        $q = mysqli_prepare($observer, 'SELECT COUNT(*) FROM hjt_hsb_appointments WHERE idempotency_key = ?');
+        mysqli_stmt_bind_param($q, 's', $reconnect_key);
+        mysqli_stmt_execute($q);
+        mysqli_stmt_bind_result($q, $n);
+        mysqli_stmt_fetch($q);
+        $visible_before_commit = ((int)$n === 1);
+        mysqli_stmt_close($q);
+    }
+    return $sql;
+};
+add_filter('query', $filter);
+$reconnect_body=$body; $reconnect_body['time']='10:30';
+$reconnect=HSB_Booking::book($reconnect_body,$patient_a,$reconnect_key);
+remove_filter('query',$filter);
+mysqli_close($observer);
+if (!$killed || !$visible_before_commit || empty($reconnect['ok'])) { throw new RuntimeException('Disconnect counterexample not reproduced; killed='.($killed?'yes':'no').' visible='.($visible_before_commit?'yes':'no').' ok='.(empty($reconnect['ok'])?'no':'yes')); }
+echo "CONFIRMED DEFECT: after connection kill before INSERT, another DB connection sees the inserted row before COMMIT and the request reports success.\n";
+echo "::notice title=HSB evaluation::Confirmed cross-user replay disclosure, changed-payload replay, invalid-key duplicates and post-disconnect autocommit. Candidate NO-GO.\n";
