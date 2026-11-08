@@ -96,6 +96,7 @@ jobs:
         run: |
           set -euo pipefail
           php themes/lax-theme-child/tests/integration/homepage-browser-setup.php
+          php tools/account-baseline/surgeon-journey-setup.php
           mkdir -p /wordpress/wp-content/mu-plugins
           ln -s "$GITHUB_WORKSPACE/themes/lax-theme-child/tests/integration/homepage-debug-mu.php" /wordpress/wp-content/mu-plugins/hj-fixture-debug.php
           npm install --no-save --no-audit --no-fund playwright
@@ -106,6 +107,7 @@ jobs:
           sleep 2
           output=$(node themes/lax-theme-child/tests/integration/homepage-browser-wp.cjs 2>&1) || { echo "$output"; summary=$(echo "$output" | head -c 3000 | tr "\n" " "); echo "::error title=Baseline newsletter browser::$summary"; cat /tmp/hj-account-newsletter.log; exit 1; }
           echo "$output"
+          node tools/account-baseline/surgeon-journey-browser.cjs
           npx playwright install --with-deps firefox
           echo '127.0.0.1 example.invalid' | sudo tee -a /etc/hosts
           node themes/lax-theme-child/tests/integration/homepage-mobile-firefox.cjs

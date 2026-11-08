@@ -39,3 +39,15 @@ add_action( 'admin_post_hj_fixture_confirm_link', function () {
     if ( ! current_user_can( 'manage_options' ) ) { wp_die( 'forbidden', '', array( 'response' => 403 ) ); }
     wp_send_json( get_option( 'hj_fixture_mail', array() ) );
 } );
+
+// Only this synthetic CI installation exposes fixture IDs and moderation state.
+add_action( 'admin_post_hj_fixture_surgeon_journey', function () {
+    if ( ! current_user_can( 'manage_options' ) ) { wp_die( 'forbidden', '', array( 'response' => 403 ) ); }
+    $user = get_user_by( 'login', 'journey_surgeon' );
+    $data = get_option( 'hj_fixture_surgeon_journey', array() );
+    $id = $user ? (int) get_user_meta( $user->ID, 'hj_doctor_post_id', true ) : 0;
+    $data['pid'] = $id;
+    $data['status'] = $id ? get_post_status( $id ) : 'missing';
+    $data['profile_status'] = $id ? get_post_meta( $id, 'hj_profile_status', true ) : '';
+    wp_send_json( $data );
+} );
