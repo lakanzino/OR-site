@@ -41,7 +41,7 @@ pause_assert( get_the_title( $dashboard ) === 'ناحیهٔ جراح' && get_pos
 $parts = hj_surgeon_document_title( array( 'title' => 'ناحیهٔ پزشک', 'site' => 'site' ) );
 pause_assert( $parts['title'] === 'ناحیهٔ جراح' && $parts['site'] === 'site', 'dashboard document title' );
 register_post_type( 'doctor', array( 'public' => true, 'has_archive' => 'doctors' ) );
-$wp_query->is_page = false; $wp_query->is_singular = false; $wp_query->is_post_type_archive = true; $wp_query->queried_object = get_post_type_object( 'doctor' ); $wp_query->queried_object_id = 0;
+$wp_query->is_page = false; $wp_query->is_singular = false; $wp_query->is_post_type_archive = true; $wp_query->query_vars['post_type'] = 'doctor'; $wp_query->queried_object = get_post_type_object( 'doctor' ); $wp_query->queried_object_id = 0;
 $parts = hj_surgeon_document_title( array( 'title' => 'پزشک‌ها', 'site' => 'site' ) );
 pause_assert( $parts['title'] === 'جراحان' && $parts['site'] === 'site', 'archive document title' );
 $wp_query->is_page = true; $wp_query->is_singular = true; $wp_query->is_post_type_archive = false;
