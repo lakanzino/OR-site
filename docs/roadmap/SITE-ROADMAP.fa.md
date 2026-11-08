@@ -130,3 +130,10 @@
 - [ ] سنجش نمایش فیلترها، صفحه‌بندی، دسته‌ها و تصاویر در موبایل/دسکتاپ و مطابقت محتوا، منابع و نام‌گذاری؛ بازبینی نمونه تضمین صحت کل مطالب نیست.
 - مرجع برای خوانایی: [راهنمای اطلاعات بیمار NHS](https://library.hee.nhs.uk/learning-academy/learning-zone/evidence-searching-and-national-guidance/types-of-searches/patient-information-resources) بر زبان ساده و نظم اطلاعات تأکید می‌کند.
 - نقشهٔ تصویری شروع مرحلهٔ ۲: [Drive](https://drive.google.com/file/d/1ANwHaU7dZ9iSuSDFqYY2ERjsnq_se551/view)؛ سند Word: [Drive](https://drive.google.com/file/d/1z76wlHBx2iFg7W9ZoeZemKE4dLKrae4d/view).
+
+### صف مشکلات محتوایی مرحلهٔ ۲
+- [x] طبق درخواست کاربر، جملهٔ مشکل‌دار تنفس در مقالهٔ رینوپلاستی برای اصلاح در فرصت بعدی ثبت شد؛ همچنان منتشرشده و اصلاح‌نشده است.
+- [x] نمونهٔ [مراقبت پس از تعویض زانو](https://hamyarjarahi.ir/surgery/knee-replacement-recovery/) با منابع مقایسه شد: ترتیب پاها هنگام استفاده از پله در متن مقاله برعکس [MedlinePlus](https://medlineplus.gov/ency/patientinstructions/000369.htm) و [راهنمای NHS تعویض زانو](https://www.swbh.nhs.uk/wp-content/uploads/2024/09/Exercises-following-a-Total-Knee-Replacement-ML5099.pdf) است و خطر زمین‌خوردن دارد؛ فوری به مدیر اطلاع و برای اصلاح تخصصی ثبت شد، اما متن زنده هنوز تغییر نکرده است.
+- [x] مرور محدود دارو، ناشتایی، لخته، زخم و آمادگی و جزئیات و موارد احتمالی در [صف بازبینی](CONTENT-REVIEW-QUEUE.fa.md) ثبت شد؛ این بازبینی تأیید یا رد جامع همهٔ مطالب نیست.
+- [ ] اصلاح و بازبینی تخصصی دو مورد اولویت‌دار، بررسی تناقض فوریت تنفس و موارد بعدی، بدون حذف داده و بدون تغییر خودکار سایت.
+- نقشهٔ تصویری بررسی محتوا: [Drive](https://drive.google.com/file/d/11-FlIdbl6J6FzeuEXMjgReEuB8C9P29r/view)؛ سند Word: [Drive](https://drive.google.com/file/d/17aGoD6I8FewhZL6coEXf3gTcK2XixquZ/view).
