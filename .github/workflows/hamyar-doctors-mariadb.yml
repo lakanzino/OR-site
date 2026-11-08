@@ -156,6 +156,12 @@ jobs:
           fi
           exit "$status"
 
+      - name: Test paused section entry points without data deletion
+        if: matrix.plugin == 'current'
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: php themes/lax-theme-child/tests/integration/paused-sections-wp.php
+
       - name: Test in-place homepage update and surgeon rows
         if: matrix.plugin == 'current'
         env:

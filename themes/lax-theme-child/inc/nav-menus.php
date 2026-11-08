@@ -241,8 +241,6 @@ function hj_header_primary_links() {
 /** A useful menu if no primary WordPress menu has yet been assigned. */
 function hj_header_menu_fallback() {
 	$links = hj_header_primary_links();
-	$links[] = array( 'label' => 'اتاق عمل، تیم و تجهیزات', 'url' => get_post_type_archive_link( 'or_environment' ) ?: home_url( '/or-environment/' ) );
-	$links[] = array( 'label' => 'ویژه دانشجویان', 'url' => get_post_type_archive_link( 'student_content' ) ?: home_url( '/student/' ) );
 	$doctor_archive = get_post_type_archive_link( 'doctor' );
 	if ( $doctor_archive ) { $links[] = array( 'label' => 'جراحان', 'url' => $doctor_archive ); }
 	$links[] = array( 'label' => 'درباره ما', 'url' => hj_page_url( 'about' ) );

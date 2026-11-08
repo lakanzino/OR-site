@@ -19,10 +19,6 @@ $hj_footer_sections = array(
 		'label' => 'راهنمای بیمار',
 	),
 	array(
-		'url'   => hj_archive_url( 'or_environment' ),
-		'label' => 'اتاق عمل، تیم و تجهیزات',
-	),
-	array(
 		'url'   => hj_archive_url( 'surgery' ),
 		'label' => 'جراحی‌ها',
 	),
@@ -71,7 +67,7 @@ $hj_footer_pages = array(
 				<?php else : ?>
 					<a class="hj-footer__name" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a>
 				<?php endif; ?>
-				<p class="hj-footer__tagline">مرجع آموزشی بیمارمحور برای شناخت اتاق عمل، تیم درمان و مسیر جراحی؛ از تصمیم تا بازگشت به زندگی.</p>
+				<p class="hj-footer__tagline">راهنمای بیمارمحور برای آگاهی در مسیر جراحی؛ از تصمیم تا بازگشت به زندگی.</p>
 				<a class="hj-footer__email" href="mailto:mail@hamyarjarahi.ir">mail@hamyarjarahi.ir</a>
 			</div>
 
