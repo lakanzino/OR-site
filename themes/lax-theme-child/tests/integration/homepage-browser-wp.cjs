@@ -71,5 +71,22 @@ const base = 'http://example.invalid';
    for(let i=0;i<m.cards.length;i++){let c=m.cards[i];assert.ok(c.link && c.left>=-1 && c.right<=width+1, `${width} card bounds`); if(i) assert.ok(c.top>=m.cards[i-1].bottom,`${width} stacked cards`);}
    console.log(`PASS real WP at ${width}px`);
   }
+  // Test actual pointer hit-testing on the stretched patient-row links in a
+  // disposable browser; destination pages are intercepted, not live content.
+  await page.route('**/guide-stage/**', route => route.fulfill({status:200, contentType:'text/html', body:'Synthetic destination'}));
+  for (const width of [375, 1280]) {
+   await page.setViewportSize({width, height:900});
+   for (const [i, path] of ['/guide-stage/before/', '/guide-stage/during/', '/guide-stage/after/'].entries()) {
+    await page.goto(base + '/', {waitUntil:'domcontentloaded'});
+    const row = page.locator('.hj-landing-grid').first().locator('.hj-landing-card').nth(i);
+    await row.scrollIntoViewIfNeeded();
+    const box = await row.boundingBox(); assert.ok(box, `${width} row ${i} visible`);
+    const target = await page.evaluate(({x,y}) => document.elementFromPoint(x,y)?.closest('a')?.getAttribute('href'), {x:box.x+box.width/2,y:box.y+box.height/2});
+    assert.equal(new URL(target || '/', base).pathname, path, `${width} row ${i} hit target`);
+    await Promise.all([page.waitForURL(url => url.pathname === path), page.mouse.click(box.x+box.width/2, box.y+box.height/2)]);
+    assert.equal(await page.locator('body').innerText(), 'Synthetic destination');
+   }
+   console.log(`PASS synthetic patient row clicks at ${width}px`);
+  }
  } finally {await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});
