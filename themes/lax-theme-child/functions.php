@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.33.24' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.33.25' );
 }
 
 /**
@@ -62,6 +62,9 @@ require_once get_stylesheet_directory() . '/inc/nav-menus.php';
 // Reversible public navigation only; original archives and content remain intact.
 $hj_paused_sections = get_stylesheet_directory() . '/inc/paused-sections.php';
 if ( is_readable( $hj_paused_sections ) ) { include_once $hj_paused_sections; }
+// Exact public UI labels only; stored pages and professional records stay intact.
+$hj_surgeon_labels = get_stylesheet_directory() . '/inc/surgeon-display-labels.php';
+if ( is_readable( $hj_surgeon_labels ) ) { include_once $hj_surgeon_labels; }
 // Optional while an in-place theme update is copying files.
 $hj_surgeons_path = get_stylesheet_directory() . '/inc/home-surgeons.php';
 if ( is_readable( $hj_surgeons_path ) ) { include_once $hj_surgeons_path; }
