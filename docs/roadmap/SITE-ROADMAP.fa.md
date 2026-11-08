@@ -250,3 +250,7 @@
 - [ ] نصب و تأیید مدیر روی سایت، بررسی ورود مجدد و تفکیک نقش‌ها و جلوگیری از تبدیل ناخواسته؛ پیوند شناسنامه در صفحهٔ عضو جایگزین شد ولی دسترسی مستقیم به wp-admin مسدود نشده است.
 - [قالب پیشنهادی ۰٫۳۳٫۲۷](https://drive.google.com/file/d/1awjm7wPFnPfZVG1-JQoc2kd80PhvQH-H/view)؛ [بازگشت ۰٫۳۳٫۲۶](https://drive.google.com/file/d/10jMyHUox8DfMMA-9TGLa7Zc3I4bziKdu/view).
 - نقشهٔ جدید: [تصویر](https://drive.google.com/file/d/19sqZWzeT_UXRPVsiTOKWvqO3Qf5xHw4b/view)؛ [Word](https://drive.google.com/file/d/1vbRrjLYERH9q1pTcbNzhSLHcuAVYonU5/view).
+
+### مرحلهٔ ۵ — حذف پیوند جراح از حساب عمومی
+- [x] نسخهٔ پیشنهادی قالب ۰٫۳۳٫۲۸ پیوند جراح را از خروجی حساب عمومی حذف می‌کند و خروج و پنل جراح را نگه می‌دارد؛ تست WordPress/MariaDB با افزونهٔ ۰٫۳٫۲۲ [42507243919](https://github.com/lakanzino/OR-site/actions/runs/42507243919) و آزمون قالب [42507244018](https://github.com/lakanzino/OR-site/actions/runs/42507244018) سبز هستند.
+- [ ] نصب و تست کاربر روی سایت و بررسی کامل تفکیک نقش/مجوز؛ مخفی‌سازی پیوند امنیت یا عدم تبدیل نقش را اثبات نمی‌کند. [Release](https://github.com/lakanzino/OR-site/releases/tag/child-v0.33.28)؛ [ZIP Drive](https://drive.google.com/file/d/18d7E-u7rjceFz6IpWkWg3tJztqAqb3mx/view)؛ [بازگشت ۰٫۳۳٫۲۷](https://drive.google.com/file/d/1awjm7wPFnPfZVG1-JQoc2kd80PhvQH-H/view).
