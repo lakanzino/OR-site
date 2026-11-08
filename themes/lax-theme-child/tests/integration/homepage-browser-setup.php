@@ -27,7 +27,7 @@ $content = strtr( $content, array(
 	'{{CONTACT}}' => home_url( '/contact/' ), '{{IMAGE}}' => home_url( '/fixture-image.png' ),
 ) );
 // Synthetic published articles for the welcome email.
-for ( $i = 1; $i <= 3; $i++ ) { wp_insert_post( array( 'post_type' => 'patient_guide', 'post_status' => 'publish', 'post_title' => 'Fixture article ' . $i ) ); }
+for ( $i = 1; $i <= 3; $i++ ) { wp_insert_post( array( 'post_type' => 'post', 'post_status' => 'publish', 'post_title' => 'Fixture article ' . $i ) ); }
 // Reproduce the live editable newsletter block and its surrounding content.
 $magazine = '<!-- wp:group {"className":"hj-magazine-section","layout":{"type":"constrained"}} --><div class="wp-block-group hj-magazine-section">'
     . '<!-- wp:paragraph {"className":"hj-magazine-eyebrow"} --><p class="hj-magazine-eyebrow">نامه‌ای از همیار جراحی</p><!-- /wp:paragraph -->'
