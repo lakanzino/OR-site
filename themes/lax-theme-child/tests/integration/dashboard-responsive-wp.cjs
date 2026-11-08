@@ -13,8 +13,8 @@ const base = 'http://example.invalid';
   await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded'}),page.locator('#wp-submit').click()]);
   for (const width of [280,320,360,375,393,414,768,1024]) {
    await page.setViewportSize({width,height:850});
-   const response = await page.goto(base + '/my-profile/', {waitUntil:'networkidle'});
-   assert.equal(response.status(),200); await page.locator('#hj-dash-form').waitFor();
+   const response = await page.goto(base + '/?pagename=my-profile', {waitUntil:'networkidle'});
+   assert.equal(response.status(),200); assert.equal(await page.locator('#hj-dash-form').count(), 1, `dashboard form missing at ${page.url()}: ${(await page.locator('body').innerText()).slice(0,500)}`);
    await page.evaluate(() => document.fonts.ready);
    const fields = ['.hj-dash__head','.hj-dash__photo','.hj-dash__grid','.hj-dash__form','.hj-dash__side','.hj-dash__card', '.hj-dash__field input:not([type=hidden])','.hj-dash__field select','.hj-dash__field textarea','.hj-dash__hrow input[type=time]','.hj-dash__chip span','#hj-bookings','.hj-bookings__item'];
    const report = await page.evaluate((selectors) => {
