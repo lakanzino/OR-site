@@ -11,7 +11,17 @@ do_action( 'init' );
 $content = file_get_contents( dirname( __DIR__, 2 ) . '/homepage/starter.html' );
 $content = str_replace( '<!-- wp:heading {"level":1,"className":"hj-hero-title"} --><h1 class="wp-block-heading hj-hero-title"><span class="hj-hero-slogan">آرامش در مسیر <span class="hj-hero-surgery">جراحی</span> با <span class="hj-hero-brand">همیار</span><span class="hj-hero-surgery">جراحی</span></span></h1>', '<!-- wp:heading {"level":1} --><h1 class="wp-block-heading">آگاهی بیشتر،<br>آرامش در مسیر <mark>جراحی.</mark></h1>', $content );
 $content = str_replace( 'از نخستین پرسش تا روزهای پس از عمل، کنار شما هستیم. اطلاعات روشن، راهنمای کاربردی و آشنایی با جراحان <span class="hj-hero-emphasis">برتر</span>.', 'از نخستین پرسش تا روزهای پس از عمل، کنار شما هستیم. اطلاعات روشن، راهنمای کاربردی و فضایی برای آشنایی با جراحان.', $content );
-$content = preg_replace( '/\{\{[A-Z_]+\}\}/', home_url( '/' ), $content );
+// Reproduce the observed older live labels and distinct destinations; still
+// entirely synthetic data and no provider/network calls.
+$content = str_replace( array( 'جراح هستید؟', 'جراحان و متخصصان', 'ورود به پنل جراح' ), array( 'پزشک هستید؟', 'پزشکان و متخصصان', 'ورود به پنل پزشک' ), $content );
+$content = strtr( $content, array(
+	'{{GUIDES}}' => home_url( '/patient-guide/' ), '{{SURGERIES}}' => home_url( '/surgery/' ), '{{DOCTORS}}' => home_url( '/doctors/' ),
+	'{{BEFORE}}' => home_url( '/guide-stage/before/' ), '{{DURING}}' => home_url( '/guide-stage/during/' ), '{{AFTER}}' => home_url( '/guide-stage/after/' ),
+	'{{OR}}' => home_url( '/or-environment/' ), '{{STUDENTS}}' => home_url( '/student/' ), '{{PROFILE}}' => home_url( '/my-profile/' ),
+	'{{DISEASES}}' => home_url( '/diseases/' ), '{{GLOSSARY}}' => home_url( '/glossary/' ), '{{FAQ}}' => home_url( '/faq/' ),
+	'{{CONTACT}}' => home_url( '/contact/' ), '{{IMAGE}}' => home_url( '/fixture-image.png' ),
+) );
+$content = preg_replace( '/\{\{[A-Z_]+\}\}/', '', $content );
 $page = wp_insert_post( wp_slash( array( 'post_type' => 'page', 'post_status' => 'publish', 'post_title' => 'Synthetic Browser Home', 'post_content' => $content ) ), true );
 if ( is_wp_error( $page ) ) { throw new RuntimeException( $page->get_error_message() ); }
 update_option( 'show_on_front', 'page' ); update_option( 'page_on_front', $page );

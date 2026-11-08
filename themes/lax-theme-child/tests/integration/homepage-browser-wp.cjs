@@ -9,6 +9,22 @@ const base = 'http://example.invalid';
   const page = await browser.newPage({viewport:{width:375,height:850}});
   let response = await page.goto(base + '/', {waitUntil:'domcontentloaded'});
   assert.equal(response.status(),200); assert.match(await page.locator('.hj-landing-hero h1').innerText(), /آگاهی بیشتر/);
+  // Before any admin action, version 0.33.25 must display the three known
+  // surgeon labels but must not touch the stored hero or patient grid.
+  assert.match(await page.locator('.hj-landing-note').first().innerText(), /جراح هستید؟/);
+  assert.equal(await page.getByText('جراحان و متخصصان', {exact:true}).count(), 1);
+  const dashboardLink = page.getByRole('link', {name:'ورود به پنل جراح'});
+  assert.equal(await dashboardLink.count(), 1);
+  assert.equal(new URL(await dashboardLink.getAttribute('href')).pathname, '/my-profile/');
+  assert.equal(await page.getByText('ویژه دانشجویان اتاق عمل', {exact:true}).count(), 0);
+  assert.equal(await page.getByText('اتاق عمل، تیم و تجهیزات', {exact:true}).count(), 0);
+  const patientGrid = page.locator('.hj-landing-grid').first();
+  for (const [text,path] of [['راهنمای پیش از عمل', '/guide-stage/before/'], ['راهنمای حین عمل', '/guide-stage/during/'], ['راهنمای پس از عمل', '/guide-stage/after/']]) {
+    const link = patientGrid.getByRole('link', {name:new RegExp(text)});
+    assert.equal(await link.count(), 1, text);
+    assert.equal(new URL(await link.getAttribute('href')).pathname, path);
+  }
+  const patientHtmlBefore = await patientGrid.innerHTML();
   const position = await page.evaluate(() => ({content:document.querySelector('.entry-content')?.getBoundingClientRect().bottom, login:document.querySelector('.hj-member-home-entry')?.getBoundingClientRect().top}));
   assert.ok(position.login > position.content, 'automatic member login is below content');
   await page.goto(base + '/wp-login.php', {waitUntil:'domcontentloaded'});
@@ -37,6 +53,8 @@ const base = 'http://example.invalid';
    await page.setViewportSize({width,height:900});
    response=await page.goto(base + '/', {waitUntil:'domcontentloaded'}); assert.equal(response.status(),200);
    await page.waitForSelector('.hj-hero-slogan'); await page.waitForSelector('.hj-surgeon-card');
+   assert.equal(await page.locator('.hj-landing-grid').first().innerHTML(), patientHtmlBefore, `${width} patient grid preserved through manager action`);
+   assert.match(await page.locator('.hj-hero-slogan').innerText(), /آرامش در مسیر جراحی با همیار\s*جراحی/);
    await page.evaluate(async () => {await document.fonts.ready;});
    const m=await page.evaluate(() => {
     const rect=e=>e.getBoundingClientRect();
