@@ -1,5 +1,10 @@
 """Disposable real WordPress HTTP test; no external identity provider."""
-import os, socket, re, http.cookiejar, urllib.request, urllib.parse
+import os, socket, re, time, http.cookiejar, urllib.request, urllib.parse
+for _ in range(50):
+    try:
+        with socket.create_connection(('127.0.0.1', 80), timeout=1): break
+    except OSError: time.sleep(0.1)
+else: raise RuntimeError('Fixture server did not start')
 from html.parser import HTMLParser
 if os.environ.get('GITHUB_ACTIONS') != 'true' or os.environ.get('HJ_DISPOSABLE_MARIADB_FIXTURE') != '1': raise SystemExit(1)
 old = socket.getaddrinfo
