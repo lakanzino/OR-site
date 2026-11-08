@@ -252,12 +252,12 @@ try:
     token=uuid.uuid4().hex; owned,owned_release=barrier('profile-owned-'+token)
     orphan_payload=dict(empty_week(),action='hj_dash_save',pid='0',_hjn=on1,hj_schedule_revision='0',hj_schedule_precision='seconds-v1',hj_ci_profile_token=token,hj_ci_profile_owned='1',name_fa='Synthetic Orphan',**{'hours[wednesday][start]':'09:00','hours[wednesday][end]':'12:00'})
     def interrupted_claim():
-        try: return request(orphan1,'/wp-admin/admin-ajax.php',orphan_payload)
+        try: return request(orphan1,'/wp-admin/admin-ajax.php',orphan_payload,base=RACE_BASES[0])
         except (OSError,http.client.HTTPException): return None
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
         running=pool.submit(interrupted_claim)
         try:
-            wait_ready([owned]); worker=int(owned.read_text()); check(worker>1 and worker!=server.pid and os.getpgid(worker)==server.pid, 'worker belongs to disposable server')
+            wait_ready([owned]); worker=int(owned.read_text()); check(worker>1 and worker==race_servers[0].pid and worker!=server.pid and os.getpgid(worker)==worker, 'worker is the dedicated disposable race server')
             check(ajax(orphan2,{'action':'hj_ci_profile_claim'})['value']=='1' and ajax(orphan2,{'action':'hj_ci_own_profiles'})['ids']==[], 'claim committed before post creation')
             os.kill(worker,signal.SIGKILL); check(running.result(timeout=30) is None, 'claimed worker died before response')
         finally: owned_release.touch()
