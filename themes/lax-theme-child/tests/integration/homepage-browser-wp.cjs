@@ -29,7 +29,9 @@ const base = 'http://example.invalid';
     assert.equal(await link.count(), 1, text);
     assert.equal(new URL(await link.getAttribute('href')).pathname, path);
   }
-  const patientHtmlBefore = await patientGrid.innerHTML();
+  // Ignore only transient typography metadata/styles; compare all content and links.
+  async function contentMarkup(locator) { return locator.evaluate(el => { const clone=el.cloneNode(true); clone.querySelectorAll('[data-hj-mobile-wrap]').forEach(n => { if (n.dataset.hjMobileWrap === 'adjusted') { n.style.removeProperty('font-size'); if (!n.getAttribute('style')) n.removeAttribute('style'); } n.removeAttribute('data-hj-mobile-wrap'); }); return clone.innerHTML; }); }
+  const patientHtmlBefore = await contentMarkup(patientGrid);
   const logoStyle = await page.locator('.site-header .custom-logo-link').evaluate(el => { const s = getComputedStyle(el); return {bg:s.backgroundColor, padding:s.padding, shadow:s.boxShadow}; });
   assert.equal(logoStyle.bg, 'rgba(0, 0, 0, 0)'); assert.equal(logoStyle.padding, '0px'); assert.equal(logoStyle.shadow, 'none');
   const newsletter = page.locator('.hj-magazine-section');
@@ -89,7 +91,7 @@ const base = 'http://example.invalid';
    assert.equal(mag.color,'rgb(181, 31, 50)'); assert.ok(Number(mag.weight)>=700, 'cancel bold red');
    if (width<=600) assert.ok(mag.button.top >= mag.email.bottom, `${width} fields stack`);
 
-   assert.equal(await page.locator('.hj-landing-grid').first().innerHTML(), patientHtmlBefore, `${width} patient grid preserved through manager action`);
+   assert.equal(await contentMarkup(page.locator('.hj-landing-grid').first()), patientHtmlBefore, `${width} patient grid preserved through manager action`);
    assert.match(await page.locator('.hj-hero-slogan').innerText(), /آرامش در مسیر جراحی با همیار\s*جراحی/);
    await page.evaluate(async () => {await document.fonts.ready;});
    const m=await page.evaluate(() => {
