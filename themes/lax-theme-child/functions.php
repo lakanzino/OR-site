@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.33.20' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.33.21' );
 }
 
 /**
@@ -344,3 +344,12 @@ if ( is_readable( $hj_home_draft_path ) ) { require_once $hj_home_draft_path; }
 // Opt-in targeted update of the current landing page and scoped presentation.
 $hj_orbit_path = get_stylesheet_directory() . '/inc/homepage-orbit.php';
 if ( is_readable( $hj_orbit_path ) ) { require_once $hj_orbit_path; }
+
+/** Front-page visual study; no content migration or data changes. */
+add_action( 'wp_enqueue_scripts', function () {
+	if ( is_admin() || ! is_front_page() ) { return; }
+	$relative = 'assets/css/home-calm-cyber.css';
+	if ( is_readable( get_stylesheet_directory() . '/' . $relative ) ) {
+		wp_enqueue_style( 'hj-home-calm-cyber', get_stylesheet_directory_uri() . '/' . $relative, array(), lax_theme_child_asset_ver( $relative ) );
+	}
+}, 1700 );

@@ -3,7 +3,7 @@ Contributors: محمدرضا لک
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 0.33.20
+Stable tag: 0.33.21
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 3. یک بار وارد پیشخوان شوید تا دسته‌ها ساخته و پیوندهای یکتا تازه‌سازی شوند.
 
 == Changelog ==
+
+= 0.33.21 =
+* مطالعهٔ رنگ صفحهٔ اول و بخش تیره جراح، بدون تغییر محتوا یا تنظیمات.
 
 = 0.33.20 =
 * اصلاح هیروی فعلی به درخواست مدیر، انتقال ورود عمومی خودکار و نمایش نواری جراحان؛ برگه فعلی انتخاب‌شده تغییر نمی‌کند.
