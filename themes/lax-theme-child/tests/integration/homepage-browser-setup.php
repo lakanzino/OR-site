@@ -8,6 +8,11 @@ wp_set_current_user( 1 );
 $active = activate_plugin( 'hamyar-doctors/hamyar-doctors.php' );
 if ( is_wp_error( $active ) ) { throw new RuntimeException( $active->get_error_message() ); }
 do_action( 'init' );
+// The database and address are synthetic; no real mail is sent by the fixture.
+$sub = wp_insert_post( array( 'post_type' => 'hj_subscription', 'post_status' => 'publish', 'post_title' => 'approved@example.invalid' ), true );
+if ( is_wp_error( $sub ) ) { throw new RuntimeException( 'fixture subscription creation failed' ); }
+update_post_meta( $sub, '_hj_email', 'approved@example.invalid' );
+
 $content = file_get_contents( dirname( __DIR__, 2 ) . '/homepage/starter.html' );
 $content = str_replace( '<!-- wp:heading {"level":1,"className":"hj-hero-title"} --><h1 class="wp-block-heading hj-hero-title"><span class="hj-hero-slogan">آرامش در مسیر <span class="hj-hero-surgery">جراحی</span> با <span class="hj-hero-brand">همیار</span><span class="hj-hero-surgery">جراحی</span></span></h1>', '<!-- wp:heading {"level":1} --><h1 class="wp-block-heading">آگاهی بیشتر،<br>آرامش در مسیر <mark>جراحی.</mark></h1>', $content );
 $content = str_replace( 'از نخستین پرسش تا روزهای پس از عمل، کنار شما هستیم. اطلاعات روشن، راهنمای کاربردی و آشنایی با جراحان <span class="hj-hero-emphasis">برتر</span>.', 'از نخستین پرسش تا روزهای پس از عمل، کنار شما هستیم. اطلاعات روشن، راهنمای کاربردی و فضایی برای آشنایی با جراحان.', $content );

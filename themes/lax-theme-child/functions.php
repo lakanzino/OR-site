@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.33.29' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.33.30' );
 }
 
 /**
@@ -67,6 +67,8 @@ add_action( 'wp_enqueue_scripts', function () {
 	if ( ! is_front_page() ) { return; }
 	$css = 'assets/css/home-magazine-ui.css';
 	wp_enqueue_style( 'hj-home-magazine-ui', get_stylesheet_directory_uri() . '/' . $css, array(), lax_theme_child_asset_ver( $css ) );
+	$js = 'assets/js/home-newsletter-ui.js';
+	wp_enqueue_script( 'hj-home-newsletter-ui', get_stylesheet_directory_uri() . '/' . $js, array(), lax_theme_child_asset_ver( $js ), true );
 }, 1700 );
 // Reversible public navigation only; original archives and content remain intact.
 $hj_paused_sections = get_stylesheet_directory() . '/inc/paused-sections.php';

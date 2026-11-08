@@ -38,11 +38,13 @@ const base = 'http://example.invalid';
   assert.equal(await newsletter.locator('a').count(), 0, 'extra links removed only in newsletter');
   assert.doesNotMatch(await newsletter.innerText(), /حریم خصوصی/, 'no orphaned link label');
   assert.equal(await newsletter.locator('input[name=email][required]').count(), 1);
-  assert.equal(await newsletter.locator('input[name=consent][required]').count(), 1);
+  assert.equal(await newsletter.locator('input[name=consent][type=checkbox]').count(), 0);
+  assert.equal(await newsletter.locator('input[name=consent][type=hidden][value="1"]').count(), 1);
   assert.match(await newsletter.innerText(), /لینک تأیید به ایمیل شما ارسال می‌شود/);
   await page.goto(base + '/?pagename=fixture-other-newsletter', {waitUntil:'domcontentloaded'});
   assert.match(await page.locator('.hj-magazine-section h2').innerText(), /اشتراک رایگان مجله اینترنتی/);
   assert.ok(await page.locator('.hj-magazine-section a').count() > 0, 'non-home newsletter left unchanged');
+  assert.equal(await page.locator('.hj-magazine-section input[name=consent][type=checkbox][required]').count(), 1, 'other page form unchanged');
   await page.goto(base + '/', {waitUntil:'domcontentloaded'});
 
   const position = await page.evaluate(() => ({content:document.querySelector('.entry-content')?.getBoundingClientRect().bottom, login:document.querySelector('.hj-member-home-entry')?.getBoundingClientRect().top}));
@@ -76,13 +78,12 @@ const base = 'http://example.invalid';
    const mag = await page.evaluate(() => {
      const r = e => { const b=e.getBoundingClientRect(); return {left:b.left,right:b.right,top:b.top,bottom:b.bottom,width:b.width}; };
      const section=document.querySelector('.hj-magazine-section'), above=[...document.querySelectorAll('.hj-landing-grid')].at(-1);
-     const email=section.querySelector('input[name=email]'), button=section.querySelector('.hj-magazine-row button'), consent=section.querySelector('input[name=consent]'), label=section.querySelector('.hj-magazine-consent');
+     const email=section.querySelector('input[name=email]'), button=section.querySelector('.hj-magazine-row button');
      const cancel=section.querySelector('.hj-magazine-cancel');
-     return {section:r(section),above:r(above),email:r(email),button:r(button),consent:r(consent),label:r(label),color:getComputedStyle(cancel).color,weight:getComputedStyle(cancel).fontWeight};
+     return {section:r(section),above:r(above),email:r(email),button:r(button),color:getComputedStyle(cancel).color,weight:getComputedStyle(cancel).fontWeight};
    });
    assert.ok(mag.section.top - mag.above.bottom >= 39, `${width} newsletter spacing ${JSON.stringify(mag)}`);
-   for (const [name,r] of Object.entries({section:mag.section,email:mag.email,button:mag.button,consent:mag.consent})) assert.ok(r.left>=-1 && r.right<=width+1 && r.width>0, `${width} ${name} bounds ${JSON.stringify(mag)}`);
-   assert.ok(mag.consent.left >= mag.label.left-1 && mag.consent.right <= mag.label.right+1, `${width} checkbox inside label`);
+   for (const [name,r] of Object.entries({section:mag.section,email:mag.email,button:mag.button})) assert.ok(r.left>=-1 && r.right<=width+1 && r.width>0, `${width} ${name} bounds ${JSON.stringify(mag)}`);
    assert.equal(mag.color,'rgb(181, 31, 50)'); assert.ok(Number(mag.weight)>=700, 'cancel bold red');
    if (width<=600) assert.ok(mag.button.top >= mag.email.bottom, `${width} fields stack`);
 
@@ -104,26 +105,43 @@ const base = 'http://example.invalid';
    for(let i=0;i<m.cards.length;i++){let c=m.cards[i];assert.ok(c.link && c.left>=-1 && c.right<=width+1, `${width} card bounds`); if(i) assert.ok(c.top>=m.cards[i-1].bottom,`${width} stacked cards`);}
    console.log(`PASS real WP at ${width}px`);
   }
-  // Synthetic form submission: consent remains operable and payload unchanged;
-  // intercept it so no email is sent and no real subscription is created.
+  // Exercise the actual plugin endpoint; CI intercepts wp_mail and never sends.
   await page.setViewportSize({width:375,height:900});
   await page.goto(base + '/', {waitUntil:'domcontentloaded'});
   const form = page.locator('.hj-magazine-section form.hj-magazine-form');
-  const email = form.locator('input[name=email]'), consent = form.locator('input[name=consent]');
+  const email = form.locator('input[name=email]'), status = form.locator('.hj-newsletter-status');
   await email.fill('fixture@example.invalid');
-  assert.equal(await form.evaluate(el => el.checkValidity()), false, 'consent required before submission');
-  await consent.check(); assert.equal(await consent.isChecked(), true, 'checkbox clickable');
-  assert.equal(await form.evaluate(el => el.checkValidity()), true);
-  let payload = null;
-  await page.route('**/wp-admin/admin-post.php', async route => {
-    payload = route.request().postData();
-    await route.fulfill({status:200, contentType:'text/plain', body:'synthetic confirmation'});
-  });
-  await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded'}), form.locator('button[type=submit]').click()]);
-  const submitted = new URLSearchParams(payload);
-  assert.equal(submitted.get('action'),'hj_magazine_subscribe');
-  assert.equal(submitted.get('email'),'fixture@example.invalid'); assert.equal(submitted.get('consent'),'1');
-  await page.unroute('**/wp-admin/admin-post.php');
+  const before = page.url();
+  await form.locator('button[type=submit]').click();
+  await status.getByText('درخواست اشتراک ثبت شد.', {exact:false}).waitFor();
+  assert.equal(page.url(), before, 'no white page after submission');
+  assert.match(await status.innerText(), /برای فعال‌شدن/);
+  assert.doesNotMatch(await status.innerText(), /مشترک.*شدید/, 'do not claim unconfirmed subscription');
+  const state = await page.evaluate(async () => (await fetch('/wp-admin/admin-post.php?action=hj_fixture_newsletter_state')).json());
+  assert.equal(state.status,'draft', 'subscription still awaits email confirmation');
+  await email.fill('mail-failure@example.invalid'); await form.locator('button[type=submit]').click();
+  await status.getByText('ارسال ایمیل تأیید ممکن نشد', {exact:false}).waitFor();
+  assert.doesNotMatch(await status.innerText(), /ثبت شد|مشترک.*شدید/, 'mail failure is not success');
+  await email.fill('approved@example.invalid'); await form.locator('button[type=submit]').click();
+  await status.getByText('اگر نشانی قابل ثبت باشد', {exact:false}).waitFor();
+  assert.doesNotMatch(await status.innerText(), /مشترک.*شدید/, 'existing account remains non-enumerating');
+  const confirm = await page.evaluate(async () => (await fetch('/wp-admin/admin-post.php?action=hj_fixture_confirm_link')).json());
+  assert.ok(confirm.url.includes('action=hj_magazine_confirm'), 'fake mail contains confirmation link');
+  await page.goto(confirm.url, {waitUntil:'domcontentloaded'});
+  await Promise.all([page.waitForURL(url => url.searchParams.get('hj_newsletter_result') === 'confirmed'), page.locator('form button[type=submit]').click()]);
+  assert.match(await page.locator('.hj-newsletter-status').innerText(), /شما مشترک همیار جراحی شدید/);
+  const active = await page.evaluate(async () => (await fetch('/wp-admin/admin-post.php?action=hj_fixture_newsletter_state')).json());
+  assert.equal(active.status,'publish', 'confirmed subscription is active');
+
+  const noJS = await browser.newContext({javaScriptEnabled:false, viewport:{width:375,height:900}});
+  try {
+   const p = await noJS.newPage(); await p.goto(base + '/', {waitUntil:'domcontentloaded'});
+   const f=p.locator('.hj-magazine-section form.hj-magazine-form');
+   await f.locator('input[name=email]').fill('no-js@example.invalid');
+   await Promise.all([p.waitForURL(url => url.searchParams.get('hj_newsletter_result') === 'pending'), f.locator('button[type=submit]').click()]);
+   assert.match(await f.locator('.hj-newsletter-status').innerText(), /برای فعال‌شدن/);
+   assert.ok(!p.url().includes('no-js%40'), 'email omitted from result URL');
+  } finally { await noJS.close(); }
   // Test actual pointer hit-testing on the stretched patient-row links in a
   // disposable browser; destination pages are intercepted, not live content.
   await page.route('**/guide-stage/**', route => route.fulfill({status:200, contentType:'text/html', body:'Synthetic destination'}));
