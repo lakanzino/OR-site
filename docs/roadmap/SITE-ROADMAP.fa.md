@@ -181,3 +181,10 @@
 - [ ] بررسی رابط مستقیم Google، تجربهٔ ساده بدون حذف callback وردپرس، آزمون دوباره با حساب/دستگاه دیگر، حفظ دسترسی مدیر و محدودسازی واقعی ورود رمز فقط با طرح مورد توافق.
 - [ ] آزمون اثر ذخیره و انتشار یک انتخاب از رشتهٔ هم‌نام با اجازه و دادهٔ تست، قبل از هر تغییر.
 - نقشهٔ آزمون گوگل: [تصویر](https://drive.google.com/file/d/1FAwUKjYViWg2Hy4-grBCTA4WnKqIsskL/view)؛ [Word](https://drive.google.com/file/d/1s9dYqB4CeCI5MOmPyDg4IGxGUiw_dwgU/view).
+
+### اصلاح نمایش موبایل پنل جراح ۰٫۳۳٫۲۶
+- [x] بنا بر تصویر مدیر، پنل به شکل افقی جابه‌جا می‌شد. در آزمایش وردپرس و Chrome کنترل نامرئی گزینه‌های رشته بیش از اندازه بزرگ و هم‌پوشان بود؛ ارتباط قطعی آن با کل وضعیت سایت زنده از عکس اثبات نشده است.
+- [x] CSS محدود پنل در قالب ۰٫۳۳٫۲۶ اصلاح و ZIP تولید شد؛ بدون تغییر افزونه، داده، نقش و فرم. آزمون واقعی مرورگر با دادهٔ ساختگی، هر دو مبنای افزونه و عرض‌های ۲۸۰ تا ۱۰۲۴ در [CI](https://github.com/lakanzino/OR-site/actions/runs/42494464541) موفق بود.
+- [ ] نصب و آزمون روی Brave/اندروید با حساب مدیر، با پرهیز از نمایش دادهٔ خصوصی؛ در صورت تداوم سرریز، علت زنده/زوم جدا بررسی شود.
+- [گزارش و بستهٔ نسخه‌دار](SURGEON-DASHBOARD-RESPONSIVE-0.33.26.fa.md)؛ [ZIP در Drive](https://drive.google.com/file/d/10jMyHUox8DfMMA-9TGLa7Zc3I4bziKdu/view).
+- نقشهٔ تصویری این اصلاح: [Drive](https://drive.google.com/file/d/1V7NZMIN20hATcuwyRt4OG4u9-iJtfPfA/view)؛ [Word](https://drive.google.com/file/d/1Ch0eKWfY_JxICWCiICcxwF5uqBFNfODA/view).
