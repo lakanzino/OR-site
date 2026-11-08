@@ -18,7 +18,7 @@ const base = 'http://example.invalid';
    await page.evaluate(() => document.fonts.ready);
    assert.ok(await page.locator('.hj-dash__chip input').count() >= 18, 'fixture has multiple specialty choices');
    const oversizedChips = await page.locator('.hj-dash__chip input').evaluateAll(els => els.filter(e => {const r=e.getBoundingClientRect(), p=e.parentElement.getBoundingClientRect();return r.width > p.width + 1 || r.left < p.left - 1 || r.right > p.right + 1;}).slice(0,5).map(e => ({input:e.getBoundingClientRect().toJSON(), label:e.parentElement.getBoundingClientRect().toJSON()})));
-   if (width <= 782) assert.equal(oversizedChips.length, 0, `${width} invisible checkbox overflows its label: ${JSON.stringify(oversizedChips)}`);
+   assert.equal(oversizedChips.length, 0, `${width} invisible checkbox overflows its label: ${JSON.stringify(oversizedChips)}`);
    const fields = ['.hj-dash__head','.hj-dash__photo','.hj-dash__grid','.hj-dash__form','.hj-dash__side','.hj-dash__card', '.hj-dash__field input:not([type=hidden])','.hj-dash__field select','.hj-dash__field textarea','.hj-dash__hrow input[type=time]','.hj-dash__chip span','#hj-bookings','.hj-bookings__item'];
    const report = await page.evaluate((selectors) => {
     const vw=document.documentElement.clientWidth;
