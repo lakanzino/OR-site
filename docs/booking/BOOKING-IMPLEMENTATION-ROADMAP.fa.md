@@ -144,4 +144,4 @@
 
 **گام ۵.۳۵، CI موفق برای مسیر داشبورد جدید:** [claim محصول برای ساخت اولین پروفایل](BOOKING-FIRST-PROFILE-PRODUCT-CLAIM.fa.md) با fail-closed؛ فقط writer داشبورد جدید را پوشش می‌دهد.
 
-**گام ۵.۳۶، در انتظار CI:** [آزمون واقعی ACF رایگان و جایگزینی فایل](BOOKING-ACF-FREE-UPGRADE.fa.md)، بدون ادعای نصب یا migration واقعی.
+**گام ۵.۳۶، CI موفق با محدودیت:** [آزمون واقعی ACF رایگان و جایگزینی فایل](BOOKING-ACF-FREE-UPGRADE.fa.md)، بدون ادعای نصب یا migration واقعی.

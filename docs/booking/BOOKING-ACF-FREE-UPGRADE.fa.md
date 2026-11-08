@@ -6,4 +6,4 @@
 
 این فقط جایگزینی فایل و smoke test است؛ WordPress upgrader، ACF Pro، دادهٔ زنده، cache واقعی، OAuth، مهاجرت برنامهٔ رزرو و پیکربندی کامل سایت را شبیه‌سازی نمی‌کند. رزرو برای اجتناب از فرض migration خاموش است. رویکرد [عدم وجود repeater در نسخهٔ رایگان](https://stackoverflow.com/questions/40108139/i-am-using-custom-fields-plugin-but-i-do-not-see-repeater-field-in-that) و [تفاوت مقادیر و field key](https://support.advancedcustomfields.com/forums/topic/update_field-inconsistency/) فقط برای طراحی آزمون استفاده شده‌اند، نه کپی کد.
 
-**نتیجه در انتظار CI**، بستهٔ آزمایشی نصب نشده، پروفایل تکراری سایر writerها، بازیابی claim و اتمی‌بودن فرم باز، **۷۵٪ ثابت و NO-GO**.
+**نتیجه:** [CI رزرو 42429319979](https://github.com/lakanzino/OR-site/actions/runs/42429319979) در جایگزینی فایل، حفظ و ویرایش نام و ساعات نمونه با ACF واقعی رایگان موفق بود؛ اجرای قبلی [42429062379](https://github.com/lakanzino/OR-site/actions/runs/42429062379) به‌علت فرض نادرست PID در آزمون SIGKILL شکست خورد و با انتخاب worker اختصاصی اصلاح شد. این نتیجه مجوز نصب روی سایت نیست، بستهٔ آزمایشی نصب نشده، پروفایل تکراری سایر writerها، بازیابی claim و اتمی‌بودن فرم باز، **۷۵٪ ثابت و NO-GO**.
