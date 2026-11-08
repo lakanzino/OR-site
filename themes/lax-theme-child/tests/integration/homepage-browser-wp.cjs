@@ -30,6 +30,8 @@ const base = 'http://example.invalid';
     assert.equal(new URL(await link.getAttribute('href')).pathname, path);
   }
   const patientHtmlBefore = await patientGrid.innerHTML();
+  const logoStyle = await page.locator('.site-header .custom-logo-link').evaluate(el => { const s = getComputedStyle(el); return {bg:s.backgroundColor, padding:s.padding, shadow:s.boxShadow}; });
+  assert.equal(logoStyle.bg, 'rgba(0, 0, 0, 0)'); assert.equal(logoStyle.padding, '0px'); assert.equal(logoStyle.shadow, 'none');
   const newsletter = page.locator('.hj-magazine-section');
   assert.equal(await newsletter.count(), 1, 'newsletter fixture present');
   assert.match(await newsletter.locator('h2').innerText(), /اینجا جیمیلت رو وارد کن/);
@@ -40,7 +42,7 @@ const base = 'http://example.invalid';
   assert.equal(await newsletter.locator('input[name=email][required]').count(), 1);
   assert.equal(await newsletter.locator('input[name=consent][type=checkbox]').count(), 0);
   assert.equal(await newsletter.locator('input[name=consent][type=hidden][value="1"]').count(), 1);
-  assert.match(await newsletter.innerText(), /لینک تأیید به ایمیل شما ارسال می‌شود/);
+  assert.doesNotMatch(await newsletter.innerText(), /لینک تأیید به ایمیل شما ارسال می‌شود/);
   await page.goto(base + '/?pagename=fixture-other-newsletter', {waitUntil:'domcontentloaded'});
   assert.match(await page.locator('.hj-magazine-section h2').innerText(), /اشتراک رایگان مجله اینترنتی/);
   assert.ok(await page.locator('.hj-magazine-section a').count() > 0, 'non-home newsletter left unchanged');
@@ -105,7 +107,7 @@ const base = 'http://example.invalid';
    for(let i=0;i<m.cards.length;i++){let c=m.cards[i];assert.ok(c.link && c.left>=-1 && c.right<=width+1, `${width} card bounds`); if(i) assert.ok(c.top>=m.cards[i-1].bottom,`${width} stacked cards`);}
    console.log(`PASS real WP at ${width}px`);
   }
-  // Exercise the actual plugin endpoint; CI intercepts wp_mail and never sends.
+  // The mail transport is stubbed, no actual message leaves the fixture.
   await page.setViewportSize({width:375,height:900});
   await page.goto(base + '/', {waitUntil:'domcontentloaded'});
   const form = page.locator('.hj-magazine-section form.hj-magazine-form');
@@ -114,40 +116,49 @@ const base = 'http://example.invalid';
    try { await page.waitForFunction(t => document.querySelector('.hj-newsletter-status')?.textContent.includes(t), text, {timeout:15000}); }
    catch (err) { throw new Error('Expected status ' + text + ' but saw: ' + await status.innerText() + ' url=' + page.url()); }
   }
-
   await email.fill('fixture@example.invalid');
   const before = page.url();
-  const pendingResponse = page.waitForResponse(r => r.url().includes('admin-post.php') && r.request().method() === 'POST');
   await form.locator('button[type=submit]').click();
-  const pendingDebug = await pendingResponse;
-  try { await waitStatus('درخواست اشتراک ثبت شد.'); }
-  catch (err) { throw new Error(err.message + ' HTTP=' + pendingDebug.status() + ' body=' + (await pendingDebug.text()).slice(0,800)); }
-  assert.equal(page.url(), before, 'no white page after submission');
-  assert.match(await status.innerText(), /برای فعال‌شدن/);
-  assert.doesNotMatch(await status.innerText(), /مشترک.*شدید/, 'do not claim unconfirmed subscription');
-  const state = await page.evaluate(async () => (await fetch('/wp-admin/admin-post.php?action=hj_fixture_newsletter_state')).json());
-  assert.equal(state.status,'draft', 'subscription still awaits email confirmation');
-  await email.fill('mail-failure@example.invalid'); await form.locator('button[type=submit]').click();
-  await waitStatus('ارسال ایمیل تأیید ممکن نشد');
-  assert.doesNotMatch(await status.innerText(), /ثبت شد|مشترک.*شدید/, 'mail failure is not success');
-  await email.fill('approved@example.invalid'); await form.locator('button[type=submit]').click();
-  await waitStatus('اگر نشانی قابل ثبت باشد');
-  assert.doesNotMatch(await status.innerText(), /مشترک.*شدید/, 'existing account remains non-enumerating');
-  const confirm = await page.evaluate(async () => (await fetch('/wp-admin/admin-post.php?action=hj_fixture_confirm_link')).json());
-  assert.ok(confirm.url.includes('action=hj_magazine_confirm'), 'fake mail contains confirmation link');
-  await page.goto(confirm.url, {waitUntil:'domcontentloaded'});
-  await Promise.all([page.waitForURL(url => url.searchParams.get('hj_newsletter_result') === 'confirmed'), page.locator('form button[type=submit]').click()]);
-  assert.match(await page.locator('.hj-newsletter-status').innerText(), /شما مشترک همیار جراحی شدید/);
-  const active = await page.evaluate(async () => (await fetch('/wp-admin/admin-post.php?action=hj_fixture_newsletter_state')).json());
-  assert.equal(active.status,'publish', 'confirmed subscription is active');
+  await waitStatus('یه بار جیمیلت رو چک کن');
+  let state = await page.evaluate(async () => (await fetch('/wp-admin/admin-post.php?action=hj_fixture_newsletter_state')).json());
+  assert.equal(state.status, 'missing', 'first click only reviews, does not subscribe');
+  await form.locator('button[type=submit]').click();
+  await waitStatus('شما مشترک همیار جراحی شدین');
+  assert.equal(page.url(), before, 'no navigation or white page');
+  assert.equal(await status.getAttribute('data-state'), 'confirmed');
+  state = await page.evaluate(async () => (await fetch('/wp-admin/admin-post.php?action=hj_fixture_newsletter_state')).json());
+  assert.equal(state.status, 'publish', 'subscription active immediately');
+  const mail = await page.evaluate(async () => (await fetch('/wp-admin/admin-post.php?action=hj_fixture_confirm_link')).json());
+  assert.match(mail.message, /شما مشترک همیار جراحی شدین/);
+  assert.match(mail.message, /Fixture article/);
+  assert.doesNotMatch(mail.message, /hj_magazine_confirm|تأیید اشتراک/);
+  const cancel = mail.message.match(/href="([^"]*action=hj_magazine_cancel[^"]*)"/);
+  assert.ok(cancel, 'welcome mail has a cancellation link');
+  const cancelUrl = await page.evaluate(href => { const e = document.createElement('textarea'); e.innerHTML = href; return e.value; }, cancel[1]);
+  await email.fill('mail-failure@example.invalid'); await form.locator('button[type=submit]').click(); await waitStatus('یه بار جیمیلت رو چک کن');
+  await form.locator('button[type=submit]').click(); await waitStatus('ارسال ایمیل خوش‌آمد ممکن نشد');
+  assert.doesNotMatch(await status.innerText(), /مشترک.*شدین/, 'mail failure is not success');
+  // Changing email after review requires another review.
+  await email.fill('changed@example.invalid'); await form.locator('button[type=submit]').click(); await waitStatus('یه بار جیمیلت رو چک کن');
+  await email.fill('approved@example.invalid'); await form.locator('button[type=submit]').click(); await waitStatus('یه بار جیمیلت رو چک کن');
+  await form.locator('button[type=submit]').click(); await waitStatus('شما مشترک همیار جراحی شدین');
+  // Existing published subscriptions do not have their old cancel token rotated.
+  await email.fill('fixture@example.invalid'); await form.locator('button[type=submit]').click(); await form.locator('button[type=submit]').click(); await waitStatus('شما مشترک همیار جراحی شدین');
+  await page.goto(cancelUrl, {waitUntil:'domcontentloaded'});
+  await page.locator('form button[type=submit]').click();
+  state = await page.evaluate(async () => (await fetch('/wp-admin/admin-post.php?action=hj_fixture_newsletter_state')).json());
+  assert.equal(state.status, 'missing', 'original unsubscribe link remains usable');
 
   const noJS = await browser.newContext({javaScriptEnabled:false, viewport:{width:375,height:900}});
   try {
    const p = await noJS.newPage(); await p.goto(base + '/', {waitUntil:'domcontentloaded'});
    const f=p.locator('.hj-magazine-section form.hj-magazine-form');
    await f.locator('input[name=email]').fill('no-js@example.invalid');
-   await Promise.all([p.waitForURL(url => url.searchParams.get('hj_newsletter_result') === 'pending'), f.locator('button[type=submit]').click()]);
-   assert.match(await f.locator('.hj-newsletter-status').innerText(), /برای فعال‌شدن/);
+   await Promise.all([p.waitForResponse(r => r.request().method() === 'POST'), f.locator('button[type=submit]').click()]);
+   await f.locator('.hj-newsletter-status').waitFor();
+   assert.match(await f.locator('.hj-newsletter-status').innerText(), /یه بار جیمیلت رو چک کن/);
+   await Promise.all([p.waitForURL(url => url.searchParams.get('hj_newsletter_result') === 'confirmed'), f.locator('button[type=submit]').click()]);
+   assert.match(await f.locator('.hj-newsletter-status').innerText(), /شما مشترک همیار جراحی شدین/);
    assert.ok(!p.url().includes('no-js%40'), 'email omitted from result URL');
   } finally { await noJS.close(); }
   // Test actual pointer hit-testing on the stretched patient-row links in a

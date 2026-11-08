@@ -13,11 +13,12 @@ body:not(.wp-admin) .site-header .site-header__inner {
   flex-wrap: nowrap;
 }
 body:not(.wp-admin) .site-header .site-branding { flex: 0 1 auto; min-width: 0; }
-/* The site's logo contains dark strokes; a small light chip keeps it visible. */
+/* Match the transparent footer logo treatment. */
 body:not(.wp-admin) .site-header .custom-logo-link {
-  background: #fff;
-  border-radius: 8px;
-  padding: 5px 8px;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
   line-height: 0;
 }
 body:not(.wp-admin) .site-header .custom-logo { max-width: 180px; max-height: 46px; object-fit: contain; }

@@ -26,6 +26,8 @@ $content = strtr( $content, array(
 	'{{DISEASES}}' => home_url( '/diseases/' ), '{{GLOSSARY}}' => home_url( '/glossary/' ), '{{FAQ}}' => home_url( '/faq/' ),
 	'{{CONTACT}}' => home_url( '/contact/' ), '{{IMAGE}}' => home_url( '/fixture-image.png' ),
 ) );
+// Synthetic published articles for the welcome email.
+for ( $i = 1; $i <= 3; $i++ ) { wp_insert_post( array( 'post_type' => 'patient_guide', 'post_status' => 'publish', 'post_title' => 'Fixture article ' . $i ) ); }
 // Reproduce the live editable newsletter block and its surrounding content.
 $magazine = '<!-- wp:group {"className":"hj-magazine-section","layout":{"type":"constrained"}} --><div class="wp-block-group hj-magazine-section">'
     . '<!-- wp:paragraph {"className":"hj-magazine-eyebrow"} --><p class="hj-magazine-eyebrow">نامه‌ای از همیار جراحی</p><!-- /wp:paragraph -->'
@@ -50,6 +52,9 @@ for ( $i = 1; $i <= 3; $i++ ) {
 	update_post_meta( $id, 'education', 'مدرک آزمایشی' );
 }
 switch_theme( 'lax-theme-child' );
+$logo = wp_insert_attachment( array( 'post_title' => 'Fixture logo', 'post_mime_type' => 'image/png', 'guid' => home_url( '/fixture-image.png' ) ) );
+update_post_meta( $logo, '_wp_attached_file', 'fixture-image.png' );
+set_theme_mod( 'custom_logo', $logo );
 echo "PASS browser homepage setup\n";
 
 // Disposable surgeon and editable draft: no external identity provider or real data.

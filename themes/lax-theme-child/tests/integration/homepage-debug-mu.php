@@ -26,7 +26,7 @@ add_action( 'hj_doctor_dashboard_appointments', function () {
 // CI fixture only: never send actual mail; simulate transport failures.
 add_filter( 'pre_wp_mail', function ( $result, $atts ) {
     $to = is_array( $atts['to'] ) ? implode( ',', $atts['to'] ) : (string) $atts['to'];
-    if ( $to === 'fixture@example.invalid' && preg_match( '~https?://[^\s]+action=hj_magazine_confirm[^\s]+~', $atts['message'], $match ) ) { update_option( 'hj_fixture_confirm_link', $match[0], false ); }
+    if ( $to === 'fixture@example.invalid' ) { update_option( 'hj_fixture_mail', $atts, false ); }
     return false === strpos( $to, 'mail-failure@example.invalid' );
 }, 10, 2 );
 add_action( 'admin_post_hj_fixture_newsletter_state', function () {
@@ -37,5 +37,5 @@ add_action( 'admin_post_hj_fixture_newsletter_state', function () {
 
 add_action( 'admin_post_hj_fixture_confirm_link', function () {
     if ( ! current_user_can( 'manage_options' ) ) { wp_die( 'forbidden', '', array( 'response' => 403 ) ); }
-    wp_send_json( array( 'url' => get_option( 'hj_fixture_confirm_link', '' ) ) );
+    wp_send_json( get_option( 'hj_fixture_mail', array() ) );
 } );

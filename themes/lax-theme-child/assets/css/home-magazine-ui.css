@@ -37,5 +37,8 @@ body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-form :focus-visible
   body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-form .hj-magazine-row { flex-direction: column; }
   body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-row :is(input, button) { width: 100%; }
 }
-body:not(.wp-admin) .hj-static-home .hj-landing .hj-newsletter-status:not(:empty) { margin-top: 16px; padding: 12px 16px; border-radius: 14px; background: #e6f7ee; color: #061710; font-weight: 700; line-height: 1.9; }
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-newsletter-status:not(:empty) { margin-top: 16px; padding: 12px 16px; border-radius: 14px; background: rgba(255,255,255,.65); color: #061710; font-weight: 700; line-height: 1.9; }
 body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-row button:disabled { opacity: .65; cursor: wait; }
+
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-newsletter-status[data-state="confirmed"] { background: rgba(51, 187, 107, .14); border: 1px solid rgba(8, 113, 79, .4); color: #075a3f; }
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-newsletter-status[data-state="confirmed"]::before { content: "✓"; display: inline-block; color: #08714f; font-size: 1.35em; font-weight: 900; margin-inline-end: 8px; }
