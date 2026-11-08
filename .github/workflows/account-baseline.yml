@@ -75,3 +75,13 @@ jobs:
         env:
           HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
         run: php tools/account-baseline/member-ui-probe.php
+      - name: Exercise patient account through real WordPress HTTP
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: |
+          set -euxo pipefail
+          ln -s "$GITHUB_WORKSPACE/themes/lax-theme-child" /wordpress/wp-content/themes/lax-theme-child
+          ln -s "$GITHUB_WORKSPACE/themes/lax-theme" /wordpress/wp-content/themes/lax-theme
+          php tools/account-baseline/http-setup.php
+          sudo php -S 127.0.0.1:80 -t /wordpress > /tmp/account-http.log 2>&1 &
+          python3 tools/account-baseline/http-test.py || { cat /tmp/account-http.log; exit 1; }
