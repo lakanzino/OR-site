@@ -117,8 +117,11 @@ const base = 'http://example.invalid';
 
   await email.fill('fixture@example.invalid');
   const before = page.url();
+  const pendingResponse = page.waitForResponse(r => r.url().includes('admin-post.php') && r.request().method() === 'POST');
   await form.locator('button[type=submit]').click();
-  await waitStatus('درخواست اشتراک ثبت شد.');
+  const pendingDebug = await pendingResponse;
+  try { await waitStatus('درخواست اشتراک ثبت شد.'); }
+  catch (err) { throw new Error(err.message + ' HTTP=' + pendingDebug.status() + ' body=' + (await pendingDebug.text()).slice(0,800)); }
   assert.equal(page.url(), before, 'no white page after submission');
   assert.match(await status.innerText(), /برای فعال‌شدن/);
   assert.doesNotMatch(await status.innerText(), /مشترک.*شدید/, 'do not claim unconfirmed subscription');
