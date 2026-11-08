@@ -208,5 +208,13 @@ jobs:
           if [ "$status" -ne 0 ]; then
             summary=$(printf '%s' "$output" | head -c 3000 | tr '\n' ' ')
             echo "::error title=Real homepage browser test::$summary"
+            exit "$status"
+          fi
+          output=$(node themes/lax-theme-child/tests/integration/dashboard-responsive-wp.cjs 2>&1)
+          status=$?
+          echo "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | head -c 3000 | tr '\n' ' ')
+            echo "::error title=Dashboard responsive browser test::$summary"
           fi
           exit "$status"

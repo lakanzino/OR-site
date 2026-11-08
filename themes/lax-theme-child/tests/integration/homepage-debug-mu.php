@@ -17,3 +17,8 @@ add_action( 'admin_post_hj_fixture_revision_debug', function () {
 	}
 	wp_send_json( $data );
 } );
+
+// Synthetic hook output reflects the booking card in the screenshots.
+add_action( 'hj_doctor_dashboard_appointments', function () {
+    echo '<div id="hj-bookings"><section class="hj-bookings" dir="rtl"><h2>لیست نوبت‌ها</h2><nav><a href="#">امروز</a><a href="#">آینده</a><a href="#">همه</a></nav><article class="hj-bookings__item"><p>این یک نمونهٔ ساختگی است</p></article></section></div>';
+} );

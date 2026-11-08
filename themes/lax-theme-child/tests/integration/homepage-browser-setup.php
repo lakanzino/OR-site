@@ -34,3 +34,18 @@ for ( $i = 1; $i <= 3; $i++ ) {
 }
 switch_theme( 'lax-theme-child' );
 echo "PASS browser homepage setup\n";
+
+// Disposable surgeon and editable draft: no external identity provider or real data.
+$dashboard = hj_doctors_ensure_dashboard_page();
+if ( ! $dashboard ) { throw new RuntimeException( 'dashboard page missing' ); }
+$user_id = wp_create_user( 'responsive_surgeon', 'disposable-password-please-ignore', 'responsive@example.invalid' );
+if ( is_wp_error( $user_id ) || ! hj_doctors_assign_doctor_role( $user_id ) ) { throw new RuntimeException( 'fixture surgeon role setup failed' ); }
+update_user_meta( $user_id, 'show_admin_bar_front', 'false' );
+$doc = wp_insert_post( array( 'post_type' => 'doctor', 'post_status' => 'draft', 'post_author' => $user_id, 'post_title' => 'جراح آزمایشی' ), true );
+if ( is_wp_error( $doc ) ) { throw new RuntimeException( $doc->get_error_message() ); }
+update_user_meta( $user_id, 'hj_doctor_post_id', $doc );
+update_post_meta( $doc, 'name_fa', 'جراح آزمایشی' );
+update_post_meta( $doc, 'specialty_fa', 'جراحی آزمایشی' );
+// Deliberately long labels reveal overflow without involving real user data.
+wp_insert_term( str_repeat( 'رشتهآزمایشی', 10 ), 'specialty', array( 'slug' => 'responsive-long-test' ) );
+echo "PASS browser surgeon setup\n";
