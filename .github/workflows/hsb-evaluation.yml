@@ -1,0 +1,99 @@
+name: HSB candidate isolated evaluation
+on:
+  push:
+    paths:
+      - 'tools/hsb-evaluation/**'
+      - '.github/workflows/hsb-evaluation.yml'
+  pull_request:
+    paths:
+      - 'tools/hsb-evaluation/**'
+      - '.github/workflows/hsb-evaluation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: fixture_root_password
+          MARIADB_DATABASE: hj_fixture_db
+          MARIADB_USER: fixture_user
+          MARIADB_PASSWORD: fixture_only_password
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s --health-timeout=5s --health-retries=20
+    env:
+      HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+      HSB_DISPOSABLE_FIXTURE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mysqli, mbstring
+          coverage: none
+      - name: Extract exact user archive
+        run: |
+          set -euxo pipefail
+          git show '637d9719c51c8e3cef72b28fa3358644502e917c:independent-wordpress-booking-plugin (1).zip' > "$RUNNER_TEMP/hsb.zip"
+          echo 'fc0a63e288527d151264990112565c1bceb85691dd8a24e995f4c078d85657c9  '"$RUNNER_TEMP/hsb.zip" | sha256sum -c -
+          python3 - "$RUNNER_TEMP/hsb.zip" "$RUNNER_TEMP/hsb" <<'PY'
+          import pathlib, stat, sys, zipfile
+          with zipfile.ZipFile(sys.argv[1]) as z:
+              for item in z.infolist():
+                  p=pathlib.PurePosixPath(item.filename)
+                  if p.is_absolute() or '..' in p.parts or stat.S_ISLNK(item.external_attr >> 16):
+                      raise SystemExit('Unsafe archive entry')
+              z.extractall(sys.argv[2])
+          PY
+          find "$RUNNER_TEMP/hsb/wp-plugin/hamyar-surgery-booking" -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Run candidate's bundled stub tests
+        continue-on-error: true
+        run: |
+          if php "$RUNNER_TEMP/hsb/wp-plugin/hamyar-surgery-booking/tests/run.php"; then
+            echo '::notice title=HSB bundled tests::All 23 stub tests passed; not proof of WordPress or MariaDB safety.'
+          else
+            echo '::warning title=HSB bundled tests::One or more bundled stub tests failed.'
+            exit 1
+          fi
+      - name: Prepare disposable WordPress
+        run: |
+          set -euxo pipefail
+          mkdir -p "$RUNNER_TEMP/hsb-wp"
+          curl --fail --location --silent --show-error --max-time 120 https://codeload.github.com/WordPress/WordPress/zip/refs/tags/7.1.4 -o "$RUNNER_TEMP/hsb-wp/wordpress.zip"
+          echo '9de885e4f00ae95549e7e599bbaff4333cbcfd77425cabb24e088adf6dd6f848  '"$RUNNER_TEMP/hsb-wp/wordpress.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/hsb-wp/wordpress.zip" -d "$RUNNER_TEMP/hsb-wp"
+          sudo ln -s "$RUNNER_TEMP/hsb-wp/WordPress-7.1.4" /wordpress
+          cat > /wordpress/wp-config.php <<'PHP'
+          <?php
+          define('DB_NAME', 'hj_fixture_db');
+          define('DB_USER', 'fixture_user');
+          define('DB_PASSWORD', 'fixture_only_password');
+          define('DB_HOST', '127.0.0.1:3306');
+          define('DB_CHARSET', 'utf8mb4');
+          define('DB_COLLATE', '');
+          define('WP_HOME', 'http://example.invalid');
+          define('WP_SITEURL', 'http://example.invalid');
+          define('AUTH_KEY', 'fixture-only-not-a-secret');
+          define('SECURE_AUTH_KEY', 'fixture-only-not-a-secret-2');
+          define('LOGGED_IN_KEY', 'fixture-only-not-a-secret-3');
+          define('NONCE_KEY', 'fixture-only-not-a-secret-4');
+          define('AUTH_SALT', 'fixture-only-not-a-secret-5');
+          define('SECURE_AUTH_SALT', 'fixture-only-not-a-secret-6');
+          define('LOGGED_IN_SALT', 'fixture-only-not-a-secret-7');
+          define('NONCE_SALT', 'fixture-only-not-a-secret-8');
+          $table_prefix = 'hjt_';
+          if (!defined('ABSPATH')) { define('ABSPATH', __DIR__ . '/'); }
+          require_once ABSPATH . 'wp-settings.php';
+          PHP
+          php tools/hamyar-php-review/mariadb-fixture.php install
+          cp -a "$RUNNER_TEMP/hsb/wp-plugin/hamyar-surgery-booking" /wordpress/wp-content/plugins/
+      - name: Probe candidate with real WordPress and MariaDB
+        run: php tools/hsb-evaluation/wordpress-probe.php

@@ -25,7 +25,8 @@ if ( ! have_posts() ) {
 
 		if ( class_exists( 'HJ_Profile_Page' ) ) {
 			// خروجی render کامل escape شده است.
-			echo HJ_Profile_Page::render( $doctor_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			$profile_html = HJ_Profile_Page::render( $doctor_id );
+			echo function_exists( 'hj_child_booking_account_notice' ) ? hj_child_booking_account_notice( $profile_html ) : $profile_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			continue;
 		}
 

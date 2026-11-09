@@ -357,3 +357,20 @@ jobs:
             echo "::error title=Plugin booking integration failure::$summary"
             exit "$status"
           fi
+      - name: Test real ACF free with installed-to-candidate file replacement
+        run: |
+          set -euo pipefail
+          ACF_SHA=dae1d08f9da899a3386db5c479c91bb70ea96148
+          curl --fail --location --silent --show-error --max-time 120 "https://codeload.github.com/AdvancedCustomFields/acf/zip/$ACF_SHA" -o "$RUNNER_TEMP/hj-acf-free.zip"
+          echo 'aa22ad6c8c680146707c3869b8cc7a6c06d689523dfb2f640b7f40751b618352  '"$RUNNER_TEMP/hj-acf-free.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/hj-acf-free.zip" -d "$RUNNER_TEMP"
+          export HJ_ACF_CI_PATH="$RUNNER_TEMP/acf-$ACF_SHA"
+          set +e
+          output=$(python3 tools/hj-booking-integration/acf-upgrade-http.py 2>&1)
+          status=$?
+          printf '%s\n' "$output"
+          if [ "$status" -ne 0 ]; then
+            summary=$(printf '%s' "$output" | tail -c 3500 | tr '\n' ' ')
+            echo "::error title=Real ACF upgrade fixture failure::$summary"
+            exit "$status"
+          fi

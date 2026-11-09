@@ -41,7 +41,10 @@ function hj_orbit_walk( &$blocks, &$hero_count, &$counts ) {
 		$classes = preg_split( '/\s+/', $class, -1, PREG_SPLIT_NO_EMPTY );
 		if ( $b['blockName'] === 'core/group' && in_array( 'hj-landing-hero-copy', $classes, true ) ) {
 			++$hero_count; hj_orbit_edit_hero( $b['innerBlocks'], $counts );
-		} elseif ( ! empty( $b['innerBlocks'] ) ) { hj_orbit_walk( $b['innerBlocks'], $hero_count, $counts ); }
+		}
+		// The hero may also contain a recognized surgeon label. Walk its
+		// children too; the heading/lead transformation above stays separate.
+		if ( ! empty( $b['innerBlocks'] ) ) { hj_orbit_walk( $b['innerBlocks'], $hero_count, $counts ); }
 		// Only known exact UI labels; never substitute within arbitrary prose or user data.
 		$html = $b['innerHTML']; $replacement = null;
 		if ( empty( $b['innerBlocks'] ) && $b['blockName'] === 'core/button' && in_array( 'hj-btn-secondary', $classes, true ) && strpos( $html, '>ورود به پنل پزشک</a>' ) !== false ) {

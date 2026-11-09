@@ -1,0 +1,44 @@
+/* Only the existing homepage newsletter block: do not alter the cards above. */
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-section {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  margin: clamp(40px, 6vw, 72px) auto 42px !important;
+  padding: clamp(22px, 4vw, 48px);
+  direction: rtl;
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-title {
+  color: #061710;
+  font-size: clamp(22px, 3vw, 36px);
+  font-weight: 800;
+  line-height: 1.75;
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-title span { display: block; }
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-cancel { color: #b51f32; font-weight: 900; }
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-arrow {
+  display: block;
+  color: #08714f;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  margin: 4px 8px 8px 0;
+  pointer-events: none;
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-form { width: 100%; max-width: 650px; min-width: 0; margin-top: 16px; }
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-form .hj-magazine-row { display: flex; gap: 12px; align-items: stretch; }
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-row input { flex: 1 1 0; width: 100%; min-width: 0; min-height: 48px; }
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-row button { flex: 0 0 auto; min-height: 48px; }
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-consent { display: flex; align-items: flex-start; gap: 9px; line-height: 1.9; margin-top: 16px; }
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-consent input[type="checkbox"] { appearance: auto; position: static; opacity: 1; width: 18px; height: 18px; min-width: 18px; flex: 0 0 18px; margin: 3px 0 0; }
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-form :focus-visible { outline: 3px solid #08714f; outline-offset: 3px; }
+@media (max-width: 600px) {
+  body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-form .hj-magazine-row { flex-direction: column; }
+  body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-row :is(input, button) { width: 100%; }
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-newsletter-status:not(:empty) { margin-top: 16px; padding: 12px 16px; border-radius: 14px; background: rgba(255,255,255,.65); color: #061710; font-weight: 700; line-height: 1.9; }
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-magazine-row button:disabled { opacity: .65; cursor: wait; }
+
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-newsletter-status[data-state="confirmed"] { background: rgba(51, 187, 107, .14); border: 1px solid rgba(8, 113, 79, .4); color: #075a3f; }
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-newsletter-status[data-state="confirmed"]::before { content: "✓"; display: inline-block; color: #08714f; font-size: 1.35em; font-weight: 900; margin-inline-end: 8px; }

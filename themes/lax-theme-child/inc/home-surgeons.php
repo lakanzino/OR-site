@@ -64,6 +64,7 @@ add_shortcode( 'hj_home_surgeons', function ( $atts ) {
 
 /** Show the doctor's signed-intent Google entry only when its plugin is active. */
 function hj_home_google_shortcode() {
+	if ( is_front_page() ) { return ''; }
 	return shortcode_exists( 'hj_google_login' ) ? do_shortcode( '[hj_google_login label="ثبت‌نام جراح با گوگل"]' ) : '';
 }
 add_shortcode( 'hj_home_google', 'hj_home_google_shortcode' );

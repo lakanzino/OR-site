@@ -1107,6 +1107,11 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 				if ( $existing && self::can_edit( $existing ) ) {
 					$pid = $existing;
 				} else {
+					if ( defined( 'HJ_BOOKING_TESTING' ) && HJ_BOOKING_TESTING === true ) { do_action( 'hj_doctors_profile_test_event', 'before_claim', $uid ); }
+					if ( ! function_exists( 'hj_doctors_claim_first_profile' ) || ! hj_doctors_claim_first_profile( $uid ) ) {
+						self::fail( 'ساخت پروفایل در حال بررسی است یا نتیجهٔ آن نامشخص است؛ پیش از تلاش مجدد با مدیر سایت تماس بگیرید.', 409 );
+					}
+					if ( defined( 'HJ_BOOKING_TESTING' ) && HJ_BOOKING_TESTING === true ) { do_action( 'hj_doctors_profile_test_event', 'after_claim', $uid ); }
 					$new = wp_insert_post( wp_slash( array(
 						'post_type'   => 'doctor',
 						'post_status' => 'draft',

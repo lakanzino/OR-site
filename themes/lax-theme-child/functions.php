@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'LAX_THEME_CHILD_VERSION' ) ) {
-	define( 'LAX_THEME_CHILD_VERSION', '0.33.20' );
+	define( 'LAX_THEME_CHILD_VERSION', '0.33.34' );
 }
 
 /**
@@ -59,6 +59,27 @@ require_once get_stylesheet_directory() . '/inc/source-whitelist.php';
 require_once get_stylesheet_directory() . '/inc/references-box.php';
 require_once get_stylesheet_directory() . '/inc/faq-accordion.php';
 require_once get_stylesheet_directory() . '/inc/nav-menus.php';
+$hj_member_ui_path = get_stylesheet_directory() . '/inc/member-entry-ui.php';
+if ( is_readable( $hj_member_ui_path ) ) { include_once $hj_member_ui_path; }
+$hj_magazine_ui_path = get_stylesheet_directory() . '/inc/home-magazine-ui.php';
+if ( is_readable( $hj_magazine_ui_path ) ) { include_once $hj_magazine_ui_path; }
+add_action( 'wp_enqueue_scripts', function () {
+	if ( ! is_front_page() ) { return; }
+	$css = 'assets/css/home-magazine-ui.css';
+	wp_enqueue_style( 'hj-home-magazine-ui', get_stylesheet_directory_uri() . '/' . $css, array(), lax_theme_child_asset_ver( $css ) );
+	$js = 'assets/js/home-newsletter-ui.js';
+	wp_enqueue_script( 'hj-home-newsletter-ui', get_stylesheet_directory_uri() . '/' . $js, array(), lax_theme_child_asset_ver( $js ), true );
+	$wrap_css = 'assets/css/home-mobile-wrap.css';
+	wp_enqueue_style( 'hj-home-mobile-wrap', get_stylesheet_directory_uri() . '/' . $wrap_css, array(), lax_theme_child_asset_ver( $wrap_css ) );
+	$wrap_js = 'assets/js/home-mobile-wrap.js';
+	wp_enqueue_script( 'hj-home-mobile-wrap', get_stylesheet_directory_uri() . '/' . $wrap_js, array(), lax_theme_child_asset_ver( $wrap_js ), true );
+}, 1700 );
+// Reversible public navigation only; original archives and content remain intact.
+$hj_paused_sections = get_stylesheet_directory() . '/inc/paused-sections.php';
+if ( is_readable( $hj_paused_sections ) ) { include_once $hj_paused_sections; }
+// Exact public UI labels only; stored pages and professional records stay intact.
+$hj_surgeon_labels = get_stylesheet_directory() . '/inc/surgeon-display-labels.php';
+if ( is_readable( $hj_surgeon_labels ) ) { include_once $hj_surgeon_labels; }
 // Optional while an in-place theme update is copying files.
 $hj_surgeons_path = get_stylesheet_directory() . '/inc/home-surgeons.php';
 if ( is_readable( $hj_surgeons_path ) ) { include_once $hj_surgeons_path; }
@@ -344,3 +365,12 @@ if ( is_readable( $hj_home_draft_path ) ) { require_once $hj_home_draft_path; }
 // Opt-in targeted update of the current landing page and scoped presentation.
 $hj_orbit_path = get_stylesheet_directory() . '/inc/homepage-orbit.php';
 if ( is_readable( $hj_orbit_path ) ) { require_once $hj_orbit_path; }
+
+/** Front-page visual study; no content migration or data changes. */
+add_action( 'wp_enqueue_scripts', function () {
+	if ( is_admin() || ! is_front_page() ) { return; }
+	$relative = 'assets/css/home-calm-cyber.css';
+	if ( is_readable( get_stylesheet_directory() . '/' . $relative ) ) {
+		wp_enqueue_style( 'hj-home-calm-cyber', get_stylesheet_directory_uri() . '/' . $relative, array(), lax_theme_child_asset_ver( $relative ) );
+	}
+}, 1700 );

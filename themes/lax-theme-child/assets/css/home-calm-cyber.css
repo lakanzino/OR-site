@@ -1,0 +1,82 @@
+/* v0.33.22: front-page colour study, scoped to the existing landing page.
+   No markup, content, ordering, login controls or patient-journey cards change. */
+body:not(.wp-admin) .hj-static-home .hj-landing {
+  --hj-home-ink: #061710;
+  --hj-home-blue: #1764b0;
+  --hj-home-cyber: #081b3b;
+  --hj-home-cyber-card: #1b3a68;
+  --hj-home-cyber-text: #edf5f4;
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-hero {
+  background: linear-gradient(130deg, #f7fcfa 0%, #e6f5ee 47%, #e8f2fc 100%) !important;
+  border: 1px solid #b8d9d1 !important;
+  box-shadow: 0 16px 42px rgba(20, 75, 65, .12), inset 0 1px 0 #fff !important;
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-hero-copy :is(h1, .hj-landing-lead) {
+  color: var(--hj-home-ink);
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-hero-copy .hj-landing-eyebrow {
+  color: #075d42;
+}
+/* Colored glass buttons; the Google button is deliberately not targeted. */
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-hero-copy .hj-btn-primary .wp-block-button__link {
+  background: linear-gradient(135deg, #e3fff1, #a6e6c8) !important;
+  color: #061710 !important;
+  border: 1px solid #559b7c !important;
+  min-height: 48px;
+  box-shadow: 0 8px 20px rgba(8, 116, 79, .15), inset 0 1px 0 #fff !important;
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-hero-copy .hj-btn-secondary .wp-block-button__link {
+  background: linear-gradient(135deg, #f2f9ff, #c9e2fa) !important;
+  color: #092d4e !important;
+  border: 1px solid #6b9fc7 !important;
+  min-height: 48px;
+  box-shadow: 0 8px 20px rgba(23, 100, 176, .13), inset 0 1px 0 #fff !important;
+}
+/* A quiet cyber-glass surface for the surgeon registration area only. */
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-surgeon {
+  background: linear-gradient(135deg, #081b3b, #173762) !important;
+  color: var(--hj-home-cyber-text) !important;
+  border: 1px solid #6689b2 !important;
+  box-shadow: 0 18px 42px rgba(8, 27, 59, .22), inset 0 1px 0 rgba(255,255,255,.10) !important;
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-surgeon :is(h2, h3) {
+  color: #f3faf8 !important;
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-surgeon :is(.hj-surgeon-copy > p:not(.hj-landing-eyebrow), .hj-surgeon-copy > .wp-block-group__inner-container > p:not(.hj-landing-eyebrow), .hj-feature > p:last-child, .hj-feature > .wp-block-group__inner-container > p:last-child) {
+  color: #dce9fb !important;
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-surgeon .hj-landing-eyebrow {
+  color: #e2efff !important;
+  background: #244775 !important;
+  border: 1px solid #7197c1 !important;
+  box-shadow: none !important;
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-surgeon .hj-feature {
+  background: rgba(31, 60, 104, .96) !important;
+  color: #edf5f4 !important;
+  border: 1px solid #7197c1 !important;
+  border-radius: 18px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 10px 25px rgba(0,0,0,.15) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-surgeon .hj-feature-icon {
+  background: #244775 !important;
+  color: #c7e4ff !important;
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-surgeon .hj-btn-secondary .wp-block-button__link {
+  min-height: 48px;
+  background: #dbeaff !important;
+  color: #061710 !important;
+  border: 1px solid #96b8df !important;
+}
+body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-surgeon :is(a, button):focus-visible {
+  outline: 3px solid #f8c845;
+  outline-offset: 3px;
+}
+/* Keep the pre-existing patient-journey cards and their layout untouched. */
+@media (max-width: 768px) {
+  body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-surgeon { grid-template-columns: minmax(0, 1fr); }
+  body:not(.wp-admin) .hj-static-home .hj-landing .hj-landing-surgeon .wp-block-button__link { max-width: 100%; }
+}

@@ -13,11 +13,14 @@ body:not(.wp-admin) .site-header .site-header__inner {
   flex-wrap: nowrap;
 }
 body:not(.wp-admin) .site-header .site-branding { flex: 0 1 auto; min-width: 0; }
-/* The site's logo contains dark strokes; a small light chip keeps it visible. */
+/* Match the transparent footer logo treatment. */
 body:not(.wp-admin) .site-header .custom-logo-link {
-  background: #fff;
-  border-radius: 8px;
-  padding: 5px 8px;
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
   line-height: 0;
 }
 body:not(.wp-admin) .site-header .custom-logo { max-width: 180px; max-height: 46px; object-fit: contain; }
@@ -142,6 +145,6 @@ body:not(.wp-admin) .site-header .header-search { background: #000; border-color
 @media (max-width: 1024px) {
   body:not(.wp-admin) .hj-desktop-nav { display: none; }
   body:not(.wp-admin) .site-header .site-branding { flex: 1 1 auto; }
-  body:not(.wp-admin) .site-header .custom-logo { max-width: min(180px, 48vw); max-height: 42px; }
+  body:not(.wp-admin) .site-header .custom-logo { display: block; width: auto; height: auto; max-width: min(160px, 45vw); max-height: 42px; object-fit: contain; background: transparent; border: 0; box-shadow: none; }
   body:not(.wp-admin) .site-header .main-navigation > #primary-menu { right: 12px; width: calc(100vw - 24px); }
 }

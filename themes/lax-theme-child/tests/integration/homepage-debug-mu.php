@@ -17,3 +17,45 @@ add_action( 'admin_post_hj_fixture_revision_debug', function () {
 	}
 	wp_send_json( $data );
 } );
+
+// Synthetic hook output reflects the booking card in the screenshots.
+add_action( 'hj_doctor_dashboard_appointments', function () {
+    echo '<div id="hj-bookings"><section class="hj-bookings" dir="rtl"><h2>لیست نوبت‌ها</h2><nav><a href="#">امروز</a><a href="#">آینده</a><a href="#">همه</a></nav><article class="hj-bookings__item"><p>این یک نمونهٔ ساختگی است</p></article></section></div>';
+} );
+
+// CI fixture only: never send actual mail; simulate transport failures.
+add_filter( 'pre_wp_mail', function ( $result, $atts ) {
+    $to = is_array( $atts['to'] ) ? implode( ',', $atts['to'] ) : (string) $atts['to'];
+    if ( $to === 'fixture@example.invalid' ) { update_option( 'hj_fixture_mail', $atts, false ); }
+    return false === strpos( $to, 'mail-failure@example.invalid' );
+}, 10, 2 );
+add_action( 'admin_post_hj_fixture_newsletter_state', function () {
+    if ( ! current_user_can( 'manage_options' ) ) { wp_die( 'forbidden', '', array( 'response' => 403 ) ); }
+    $id = hj_magazine_find( 'fixture@example.invalid' );
+    wp_send_json( array( 'status' => $id ? get_post_status( $id ) : 'missing' ) );
+} );
+
+add_action( 'admin_post_hj_fixture_confirm_link', function () {
+    if ( ! current_user_can( 'manage_options' ) ) { wp_die( 'forbidden', '', array( 'response' => 403 ) ); }
+    wp_send_json( get_option( 'hj_fixture_mail', array() ) );
+} );
+
+// Only this synthetic CI installation exposes fixture IDs and moderation state.
+add_action( 'admin_post_hj_fixture_surgeon_journey', function () {
+    if ( ! current_user_can( 'manage_options' ) ) { wp_die( 'forbidden', '', array( 'response' => 403 ) ); }
+    $user = get_user_by( 'login', 'journey_surgeon' );
+    $data = get_option( 'hj_fixture_surgeon_journey', array() );
+    $id = $user ? (int) get_user_meta( $user->ID, 'hj_doctor_post_id', true ) : 0;
+    $data['pid'] = $id;
+    $data['status'] = $id ? get_post_status( $id ) : 'missing';
+    $data['profile_status'] = $id ? get_post_meta( $id, 'hj_profile_status', true ) : '';
+    $data['docs'] = $id ? get_post_meta( $id, 'hj_private_docs', true ) : array();
+    wp_send_json( $data );
+} );
+
+// Generate a nonce bound to the current synthetic account; does not authorize the document.
+add_action( 'wp_ajax_hj_fixture_doc_nonce', function () {
+    $pid = isset($_POST['pid']) ? absint($_POST['pid']) : 0;
+    $doc = isset($_POST['doc']) && is_string($_POST['doc']) ? sanitize_key(wp_unslash($_POST['doc'])) : '';
+    wp_send_json_success( array( 'nonce' => wp_create_nonce('hj_doc_dl_' . $pid . '_' . $doc) ) );
+} );

@@ -614,3 +614,26 @@ video {
 	line-height: 1.7;
 	margin: 0;
 }
+
+/* Surgeon dashboard: generic field sizing also reaches the invisible specialty
+   checkboxes. Keep each native checkbox inside its label rather than letting a
+   100%-wide transparent control overlap other chips or enlarge the page. */
+body:not(.wp-admin) .hj-dash .hj-dash__chip {
+	position: relative;
+	min-width: 0;
+	max-width: 100%;
+}
+body:not(.wp-admin) .hj-dash .hj-dash__chip input[type="checkbox"] {
+	position: absolute;
+	inset-block-start: 0;
+	inset-inline-start: 0;
+	width: 1px;
+	height: 1px;
+	min-height: 0;
+	padding: 0;
+	margin: 0;
+}
+body:not(.wp-admin) .hj-dash .hj-dash__chip span {
+	max-width: 100%;
+	overflow-wrap: anywhere;
+}
