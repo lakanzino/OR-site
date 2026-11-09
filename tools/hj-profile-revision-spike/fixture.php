@@ -8,6 +8,7 @@ require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/store.php
 require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/snapshot.php';
 require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/preflight.php';
 require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/role-lock.php';
+require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/publish-one-field.php';
 function spike_assert($condition,$message) { if (!$condition) { throw new RuntimeException($message); } }
 function spike_fields($name) {
     return array('name_fa'=>$name,'name_en'=>'','specialty_fa'=>'جراحی نمونه','specialty_en'=>'','bio_fa'=>'','bio_en'=>'','medical_license'=>'','experience_years'=>'','education'=>'','surgeries_performed'=>'','phone_clinic'=>'','phone_mobile'=>'','address_clinic'=>'','address_hospital'=>'','map_link'=>'');
@@ -186,6 +187,35 @@ if ($mode === 'revoke-verify') {
     wp_set_current_user(get_user_by('login','fixture_admin')->ID); $r=HJ_Profile_Spike_Store::read($pid);
     spike_assert($r['status']==='ok' && $r['data']['fields']['name_fa']==='پس از قطع دسترسی','in-flight test write was not revoked');
     echo "PASS counterexample: revoked in-flight writer can still modify spike draft; coordination required\n"; exit;
+}
+if ($mode === 'publish-one-probe') {
+    $uid=get_user_by('login','surgeon_fixture')->ID; $other=get_user_by('login','normal_fixture')->ID; $admin=get_user_by('login','fixture_admin')->ID;
+    $pid=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'Synthetic public title','post_author'=>$uid),true);
+    spike_assert(!is_wp_error($pid) && $pid>0,'publish fixture');
+    if (function_exists('update_field')) { update_field('field_hj_name_fa','نام عمومی نخست',$pid); } else { update_post_meta($pid,'name_fa','نام عمومی نخست'); }
+    wp_set_current_user($uid); $base=HJ_Profile_Spike_Publish_One::baseline($pid); spike_assert($base['status']==='ok','baseline capture');
+    $draft=HJ_Profile_Spike_Store::create($pid,$base['hash'],spike_fields('نام پیشنهادی')); spike_assert($draft['status']==='saved','test proposal created');
+    $sent=HJ_Profile_Spike_Store::change($pid,$draft['data']['generation'],null,true); $token=$sent['data']['generation'];
+    spike_assert(get_post_meta($pid,'name_fa',true)==='نام عمومی نخست','public name retained after submit');
+    spike_assert(HJ_Profile_Spike_Publish_One::approve($pid,$token)['status']==='forbidden','surgeon cannot approve');
+    wp_set_current_user($other); spike_assert(HJ_Profile_Spike_Publish_One::approve($pid,$token)['status']==='forbidden','other surgeon cannot approve');
+    wp_set_current_user($admin); spike_assert(HJ_Profile_Spike_Publish_One::approve($pid,str_repeat('0',32))['status']==='conflict','wrong generation refused');
+    update_post_meta($pid,'name_fa','تغییر دیگر');
+    spike_assert(HJ_Profile_Spike_Publish_One::approve($pid,$token)['status']==='public_changed','changed public base refused');
+    spike_assert(HJ_Profile_Spike_Store::read($pid)['data']['state']==='submitted','conflict leaves proposal pending');
+    update_post_meta($pid,'name_fa','نام عمومی نخست');
+    $kill=function($id,$session) { global $wpdb; $conn=(int)$session->get_var('SELECT CONNECTION_ID()'); spike_assert($conn>0 && $wpdb->query('KILL '.$conn)!==false,'kill test connection'); };
+    add_action('hj_spike_publish_before_commit',$kill,10,2);
+    $failed=HJ_Profile_Spike_Publish_One::approve($pid,$token); remove_action('hj_spike_publish_before_commit',$kill,10);
+    spike_assert($failed['status']==='unknown','lost connection before commit reports unknown');
+    wp_cache_delete($pid,'post_meta'); if (function_exists('acf_flush_value_cache')) { acf_flush_value_cache($pid,'name_fa'); }
+    spike_assert(get_post_meta($pid,'name_fa',true)==='نام عمومی نخست' && HJ_Profile_Spike_Store::read($pid)['data']['state']==='submitted','pre-commit disconnect rolled back test writes');
+    $result=HJ_Profile_Spike_Publish_One::approve($pid,$token); spike_assert($result['status']==='applied','approved test field');
+    spike_assert(get_post_meta($pid,'name_fa',true)==='نام پیشنهادی','public meta changed after approval');
+    if (function_exists('get_field')) { spike_assert(get_field('name_fa',$pid)==='نام پیشنهادی','ACF view sees committed test value'); }
+    spike_assert(HJ_Profile_Spike_Store::read($pid)['data']['state']==='applied' && get_post_status($pid)==='publish' && get_the_title($pid)==='Synthetic public title','submitted marker and unchanged title/status');
+    spike_assert(HJ_Profile_Spike_Publish_One::approve($pid,$token)['status']==='conflict','stale approval cannot reapply');
+    echo "PASS isolated one-field approval, stale base conflict, precommit interruption and ACF read\n"; exit;
 }
 if ($mode === 'setup') {
     $uid=get_user_by('login','surgeon_fixture')->ID; $other=get_user_by('login','normal_fixture')->ID; $admin=get_user_by('login','fixture_admin')->ID;
