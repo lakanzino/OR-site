@@ -10,6 +10,43 @@ function spike_fields($name) {
     return array('name_fa'=>$name,'name_en'=>'','specialty_fa'=>'جراحی نمونه','specialty_en'=>'','bio_fa'=>'','bio_en'=>'','medical_license'=>'','experience_years'=>'','education'=>'','surgeries_performed'=>'','phone_clinic'=>'','phone_mobile'=>'','address_clinic'=>'','address_hospital'=>'','map_link'=>'');
 }
 $mode=$argv[1] ?? '';
+if ($mode === 'publication-probe') {
+    // Counterexample: WordPress callbacks and request-local cache are outside DB rollback.
+    global $wpdb;
+    foreach (array($wpdb->posts,$wpdb->postmeta) as $table) {
+        $engine=$wpdb->get_var($wpdb->prepare('SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=%s',$table));
+        spike_assert(is_string($engine) && strcasecmp($engine,'InnoDB')===0,'transactional fixture tables required');
+    }
+    $uid=get_user_by('login','surgeon_fixture')->ID;
+    $pid=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'Transaction fixture','post_author'=>$uid),true);
+    spike_assert(!is_wp_error($pid) && $pid>0,'publication probe fixture');
+    update_post_meta($pid,'name_fa','نسخه عمومی قبلی');
+    $marker=tempnam(sys_get_temp_dir(),'hj-profile-hook-'); spike_assert(is_string($marker),'marker file'); unlink($marker);
+    $hook=function($meta_id,$object_id,$key,$value) use($pid,$marker) {
+        if ((int)$object_id===$pid && $key==='name_fa') { file_put_contents($marker,'synthetic external side effect'); }
+    };
+    $reader=new HJ_Profile_Spike_DB(DB_USER,DB_PASSWORD,DB_NAME,DB_HOST); $reader->suppress_errors(true);
+    add_action('updated_post_meta',$hook,10,4);
+    try {
+        spike_assert($wpdb->query('START TRANSACTION')!==false,'start transaction');
+        spike_assert(update_post_meta($pid,'name_fa','پیشنهاد ناتمام')!==false,'WP metadata update');
+        spike_assert(get_post_meta($pid,'name_fa',true)==='پیشنهاد ناتمام','request cached uncommitted value');
+        $outside=$reader->get_var($reader->prepare("SELECT meta_value FROM `{$wpdb->postmeta}` WHERE post_id=%d AND meta_key=%s",$pid,'name_fa'));
+        spike_assert($outside==='نسخه عمومی قبلی','other connection sees committed value');
+        spike_assert(is_file($marker),'callback side effect already occurred');
+        spike_assert($wpdb->query('ROLLBACK')!==false,'rollback transaction');
+        $actual=$reader->get_var($reader->prepare("SELECT meta_value FROM `{$wpdb->postmeta}` WHERE post_id=%d AND meta_key=%s",$pid,'name_fa'));
+        spike_assert($actual==='نسخه عمومی قبلی','rollback restored database');
+        spike_assert(get_post_meta($pid,'name_fa',true)==='پیشنهاد ناتمام','request cache still has rolled-back value');
+        spike_assert(is_file($marker),'rollback did not undo callback side effect');
+        wp_cache_delete($pid,'post_meta');
+        spike_assert(get_post_meta($pid,'name_fa',true)==='نسخه عمومی قبلی','cache invalidation restores correct read');
+        echo "PASS counterexample: WP hook side effect and request cache outlive DB rollback\n";
+    } finally {
+        $wpdb->query('ROLLBACK'); remove_action('updated_post_meta',$hook,10); $reader->close(); if (is_file($marker)) { unlink($marker); }
+    }
+    exit;
+}
 if ($mode === 'setup') {
     $uid=get_user_by('login','surgeon_fixture')->ID; $other=get_user_by('login','normal_fixture')->ID; $admin=get_user_by('login','fixture_admin')->ID;
     $pid=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'جراح آزمایشی','post_author'=>$uid),true);
