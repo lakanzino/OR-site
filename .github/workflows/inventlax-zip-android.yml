@@ -1,0 +1,75 @@
+name: Build Invent.Lax ZIP Android test APK
+on:
+  push:
+    branches: ['arena/81295dac-or-site']
+    paths: ['.github/workflows/inventlax-zip-android.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platforms;android-35 build-tools;35.0.0'
+      - name: Build Android APK from exact requested ZIP
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euxo pipefail
+          mkdir -p /tmp/inventlax-source
+          gh api repos/lakanzino/OR-site/git/blobs/9a14c975b2f121c77581a24121f0dfb1664889f9 --jq .content | base64 -d > /tmp/inventlax.zip
+          test "$(git hash-object /tmp/inventlax.zip)" = 9a14c975b2f121c77581a24121f0dfb1664889f9
+          unzip -q /tmp/inventlax.zip -d /tmp/inventlax-source
+          cd /tmp/inventlax-source
+          npm ci
+          npx tsc --noEmit
+          npm run build
+          cp LICENSE dist/LICENSE.txt
+          npm install --no-save --ignore-scripts @capacitor/core@7.6.10 @capacitor/cli@7.6.10 @capacitor/android@7.6.10 @resvg/resvg-js@2.6.2
+          npx cap init 'Invent.Lax' com.inventlax.app --web-dir dist
+          npx cap add android
+          npx cap sync android
+          # Use the original project logo for the Android launcher, without editing web code.
+          mkdir -p android/app/src/main/res/drawable-nodpi
+          node --input-type=module -e "import {Resvg} from '@resvg/resvg-js'; import fs from 'node:fs'; fs.writeFileSync('android/app/src/main/res/drawable-nodpi/invent_icon.png', new Resvg(fs.readFileSync('public/app-logo.svg'),{fitTo:{mode:'width',value:512}}).render().asPng())"
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('android/app/src/main/AndroidManifest.xml')
+          s = p.read_text().replace('@mipmap/ic_launcher_round', '@drawable/invent_icon').replace('@mipmap/ic_launcher', '@drawable/invent_icon')
+          p.write_text(s)
+          PY
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/Invent.Lax-test.apk"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$GITHUB_WORKSPACE/Invent.Lax-test.apk"
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$GITHUB_WORKSPACE/Invent.Lax-test.apk" | head -12
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump permissions "$GITHUB_WORKSPACE/Invent.Lax-test.apk"
+          sha256sum "$GITHUB_WORKSPACE/Invent.Lax-test.apk"
+      - name: Stage APK for Drive transfer
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import base64, json, os, pathlib, subprocess
+          data = pathlib.Path('Invent.Lax-test.apk').read_bytes()
+          payload = json.dumps({'content': base64.b64encode(data).decode(), 'encoding': 'base64'})
+          sha = subprocess.check_output(['gh', 'api', f"repos/{os.environ['GITHUB_REPOSITORY']}/git/blobs", '-X', 'POST', '--input', '-', '--jq', '.sha'], input=payload, text=True).strip()
+          print(f'::notice title=APK_BLOB::{sha}')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: InventLax-test-apk
+          path: Invent.Lax-test.apk
+          retention-days: 7
