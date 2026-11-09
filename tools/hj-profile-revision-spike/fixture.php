@@ -198,6 +198,19 @@ if ($mode === 'publish-race-setup') {
     spike_assert($draft['status']==='saved','race draft'); $sent=HJ_Profile_Spike_Store::change($pid,$draft['data']['generation'],null,true);
     spike_assert($sent['status']==='saved','race submit'); echo json_encode(array('pid'=>$pid,'token'=>$sent['data']['generation'])),"\n"; exit;
 }
+if ($mode === 'publish-rest-cache') {
+    $pid=(int)$argv[2]; $phase=$argv[3]; wp_set_current_user(0);
+    spike_assert(class_exists('HJ_Doctors_REST') && HJ_Doctors_REST::ttl()>0,'REST cache enabled in fixture');
+    spike_assert(HJ_Doctors_REST::is_public($pid),'synthetic profile visible');
+    $req=new WP_REST_Request('GET','/hj/v1/doctor/'.$pid); $req['id']=$pid;
+    $response=HJ_Doctors_REST::get_doctor($req);
+    spike_assert($response instanceof WP_REST_Response && $response->get_status()===200,'REST response ok');
+    $item=$response->get_data(); $actual=get_post_meta($pid,'name_fa',true);
+    spike_assert(($item['name']['fa']??null)==='نام عمومی قبل','cached REST still serves original name');
+    if ($phase==='warm') { spike_assert($actual==='نام عمومی قبل','REST warm matches public db'); }
+    else { spike_assert($phase==='stale' && $actual==='نام عمومی جدید','REST stale despite committed new public db value'); }
+    echo 'PASS synthetic REST cache '.$phase."\n"; exit;
+}
 if ($mode === 'publish-race-worker') {
     $pid=(int)$argv[2]; $token=$argv[3]; $dir=$argv[4]; $label=$argv[5];
     if (!in_array($label,array('a','b'),true) || !is_dir($dir)) { exit(1); }

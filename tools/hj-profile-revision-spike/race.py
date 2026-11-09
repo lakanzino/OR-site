@@ -132,6 +132,8 @@ print(verified.stdout.strip())
 
 # Two reviewers: first holds both test writes uncommitted, second blocks on the proposal row.
 pub=json.loads(subprocess.run(['php',script,'publish-race-setup'],check=True,text=True,capture_output=True).stdout.strip())
+warm=subprocess.run(['php',script,'publish-rest-cache',str(pub['pid']),'warm'],check=True,text=True,capture_output=True,timeout=10)
+print(warm.stdout.strip())
 with tempfile.TemporaryDirectory(prefix='hj-publish-race-') as temp:
     a=subprocess.Popen(['php',script,'publish-race-worker',str(pub['pid']),pub['token'],temp,'a'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
     b=None
@@ -162,3 +164,5 @@ with tempfile.TemporaryDirectory(prefix='hj-publish-race-') as temp:
             if p is not None and p.poll() is None: p.kill(); p.wait()
 peek=subprocess.run(['php',script,'publish-race-peek',str(pub['pid']),'after'],check=True,text=True,capture_output=True,timeout=10)
 print(peek.stdout.strip())
+stale=subprocess.run(['php',script,'publish-rest-cache',str(pub['pid']),'stale'],check=True,text=True,capture_output=True,timeout=10)
+print(stale.stdout.strip())
