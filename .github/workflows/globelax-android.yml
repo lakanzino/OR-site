@@ -114,11 +114,14 @@ jobs:
           echo "── permission audit ──"
           "$BT_DIR/aapt2" dump permissions "$ALIGNED_APK" | tee /tmp/globelax_permissions.txt
           echo "::notice title=GlobeLaxPermissions::$(tr '\n' '|' < /tmp/globelax_permissions.txt | head -c 900)"
-          # The app is fully offline: every permission is unexpected except the
-          # framework-injected ones that carry no user data (see README).
+          # The app is fully offline, so only framework-injected entries that grant no
+          # user data are tolerated: INTERNET / ACCESS_NETWORK_STATE (unused, stripped at
+          # runtime) and the self-defined signature permission that AndroidX core adds for
+          # registerReceiver(..., RECEIVER_NOT_EXPORTED). Neither shows a user prompt.
           UNEXPECTED=$(grep -o "uses-permission: name='[^']*'" /tmp/globelax_permissions.txt \
             | sed "s/.*name='\(.*\)'/\1/" \
-            | grep -v -E '^(android\.permission\.INTERNET|android\.permission\.ACCESS_NETWORK_STATE)$' || true)
+            | grep -v -E '^(android\.permission\.INTERNET|android\.permission\.ACCESS_NETWORK_STATE)$' \
+            | grep -v -E '^com\.globelax\.app\.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION$' || true)
           if [ -n "$UNEXPECTED" ]; then
             echo "::error title=UnexpectedPermission::Unexpected permissions: $(echo $UNEXPECTED | tr '\n' ' ')"
             exit 1

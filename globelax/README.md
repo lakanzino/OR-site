@@ -105,7 +105,7 @@ cd android
 | `applicationId` | `com.globelax.app` |
 | `versionName` / `versionCode` | `1.0.0` / `1` |
 | `minSdk` / `targetSdk` / `compileSdk` | `23` (اندروید ۶) / `35` / `35` |
-| مجوزها | **هیچ** (`INTERNET` و `ACCESS_NETWORK_STATE` حذف شده‌اند) |
+| مجوزها | **هیچ مجوز قابل‌درخواستی** — فقط `com.globelax.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` که خود AndroidX به‌صورت سطح-امضا اضافه می‌کند و هیچ پرسشی به کاربر نشان نمی‌دهد |
 | کوچک‌سازی | `minifyEnabled true` + `shrinkResources true` (R8 کامل) |
 | جهت صفحه | هر دو (عمودی/افقی)، پشتیبانی از `displayCutout` و `edge-to-edge` |
 
@@ -251,7 +251,7 @@ four quiz modes.
 
 **Purpose:** built to teach the teenagers and young people of beloved Iran.
 **Designer & developer:** محمدرضا لک (mohamadreza.lak) · **License:** MIT
-**Privacy:** 100 % offline, zero tracking, zero permissions.
+**Privacy:** 100 % offline, zero tracking, no runtime permissions.
 
 ### Stack
 
