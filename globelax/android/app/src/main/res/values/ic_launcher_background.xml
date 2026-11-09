@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Deep navy brand background for the adaptive launcher icon -->
+    <color name="ic_launcher_background">#050B24</color>
+    <color name="brand_navy">#040C24</color>
+    <color name="brand_yellow">#FFC400</color>
+    <color name="brand_red">#EF2B3A</color>
+</resources>

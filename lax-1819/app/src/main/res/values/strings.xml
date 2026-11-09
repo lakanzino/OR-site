@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lax-1819 – Persian (default) strings. Designer & developer: mohamadreza.lak – MIT License -->
+<resources>
+    <string name="app_name">Lax-1819</string>
+    <string name="app_tagline">دفتر روزانه‌ی هوشمند و ساده</string>
+
+    <!-- Navigation -->
+    <string name="nav_calendar">تقویم</string>
+    <string name="nav_guide">راهنما</string>
+    <string name="nav_settings">تنظیمات</string>
+    <string name="back">بازگشت</string>
+    <string name="more">گزینه‌های بیشتر</string>
+
+    <!-- Generic -->
+    <string name="save">ذخیره</string>
+    <string name="cancel">انصراف</string>
+    <string name="confirm">تأیید</string>
+    <string name="close">بستن</string>
+    <string name="add">افزودن</string>
+    <string name="create">ایجاد</string>
+    <string name="delete">حذف</string>
+    <string name="change">تغییر</string>
+    <string name="rename">تغییر نام</string>
+    <string name="duplicate">تکثیر</string>
+    <string name="undo">بازگردانی</string>
+    <string name="clear_value">پاک کردن مقدار</string>
+    <string name="search">جستجو</string>
+    <string name="search_hint">جستجو در ردیف‌ها…</string>
+    <string name="columns">ستون‌ها</string>
+
+    <!-- Calendar -->
+    <string name="today">امروز</string>
+    <string name="prev_month">ماه قبل</string>
+    <string name="next_month">ماه بعد</string>
+    <string name="prev_year">سال قبل</string>
+    <string name="next_year">سال بعد</string>
+    <string name="new_sheet">+ برگه جدید</string>
+    <string name="sheets_of">برگه‌های</string>
+    <string name="sheet">برگه</string>
+    <string name="sheet_title_hint">عنوان برگه (اختیاری)</string>
+    <string name="rows_unit">ردیف</string>
+    <string name="empty_day_title">برگه‌ای برای این روز نیست</string>
+    <string name="empty_day_body">با دکمه‌ی «+ برگه جدید» اولین برگه‌ی این روز را بسازید. برای هر روز هر تعداد برگه مستقل می‌توانید داشته باشید.</string>
+    <string name="copy_previous_option">کپی ردیف‌ها از آخرین برگه‌ی قبلی</string>
+    <string name="demo_banner">داده‌های نمونه برای آشنایی اضافه شده است. هر زمان خواستید حذفشان کنید.</string>
+    <string name="demo_remove">حذف نمونه‌ها</string>
+
+    <!-- Sheet -->
+    <string name="new_row">+ ردیف جدید</string>
+    <string name="edit_row">ویرایش ردیف</string>
+    <string name="empty_row">ردیف خالی (برای ویرایش لمس کنید)</string>
+    <string name="row_deleted">ردیف حذف شد</string>
+    <string name="empty_sheet_title">هنوز ردیفی ثبت نشده</string>
+    <string name="empty_sheet_body">دکمه‌ی «+ ردیف جدید» را بزنید. همه‌ی ستون‌ها اختیاری‌اند و از آیکن ستون‌ها می‌توانید تعیین کنید چه چیزی دیده شود.</string>
+    <string name="empty_search_title">نتیجه‌ای پیدا نشد</string>
+    <string name="empty_search_body">عبارت دیگری را جستجو کنید.</string>
+    <string name="no_visible_columns">هیچ ستونی روشن نیست. از مدیریت ستون‌ها حداقل یک ستون را روشن کنید.</string>
+    <string name="rename_sheet">تغییر عنوان برگه</string>
+    <string name="copy_previous">کپی از روز قبل</string>
+    <string name="save_template">ذخیره به‌عنوان قالب</string>
+    <string name="apply_template">اعمال قالب</string>
+    <string name="template_name">نام قالب</string>
+    <string name="no_templates">هنوز قالبی ذخیره نکرده‌اید.</string>
+    <string name="share_summary">اشتراک‌گذاری خلاصه</string>
+    <string name="delete_sheet">حذف برگه</string>
+    <string name="delete_sheet_confirm">این برگه و همه‌ی ردیف‌های آن برای همیشه حذف می‌شود. ادامه می‌دهید؟</string>
+    <string name="msg_copied">ردیف‌های روز قبل اضافه شد</string>
+    <string name="msg_no_previous">برگه‌ی قبلی برای کپی پیدا نشد</string>
+
+    <!-- Quick items -->
+    <string name="quick_add_name">+ نام</string>
+    <string name="quick_add_product">+ محصول</string>
+    <string name="quick_add_service">+ خدمات</string>
+    <string name="quick_new">مورد جدید</string>
+    <string name="quick_empty">هنوز موردی ذخیره نشده. موارد جدید خودکار در اخیرها ذخیره می‌شوند؛ با ستاره آن‌ها را ثابت کنید.</string>
+    <string name="quick_pick">انتخاب از علاقه‌مندی‌ها و اخیرها</string>
+
+    <!-- Summary -->
+    <string name="sum_count">تعداد</string>
+    <string name="sum_cost">جمع هزینه</string>
+    <string name="sum_deposit">جمع بیعانه</string>
+    <string name="sum_inst_remaining">مانده اقساط</string>
+    <string name="sum_quantity">جمع مقدار</string>
+
+    <!-- Default column names -->
+    <string name="col_full_name">نام کامل</string>
+    <string name="col_product">نام محصول</string>
+    <string name="col_service">نام خدمات</string>
+    <string name="col_prod_date">تاریخ تولید</string>
+    <string name="col_exp_date">تاریخ انقضا</string>
+    <string name="col_arrive">ساعت مراجعه</string>
+    <string name="col_end">ساعت پایان</string>
+    <string name="col_visit">ساعت ویزیت</string>
+    <string name="col_quantity">مقدار / تعداد</string>
+    <string name="col_cost">هزینه</string>
+    <string name="col_deposit">بیعانه</string>
+    <string name="col_installment">اقساط</string>
+    <string name="col_note">یادداشت</string>
+    <string name="col_status">وضعیت</string>
+
+    <!-- Installments -->
+    <string name="inst_count">تعداد اقساط</string>
+    <string name="inst_amount">مبلغ هر قسط</string>
+    <string name="inst_paid">قسط‌های پرداخت‌شده</string>
+    <string name="inst_remaining">مانده</string>
+
+    <!-- Column manager -->
+    <string name="column_manager">مدیریت ستون‌ها</string>
+    <string name="add_column">+ ستون جدید</string>
+    <string name="column_name">نام ستون</string>
+    <string name="column_type">نوع ستون</string>
+    <string name="rename_column">تغییر نام ستون</string>
+    <string name="delete_column">حذف ستون</string>
+    <string name="delete_column_confirm">این ستون سفارشی حذف می‌شود (مقادیر ثبت‌شده در برگه‌ها باقی می‌مانند ولی دیده نمی‌شوند). ادامه می‌دهید؟</string>
+    <string name="custom">سفارشی</string>
+    <string name="lock">قفل کردن</string>
+    <string name="unlock">باز کردن قفل</string>
+    <string name="reorder">جابه‌جایی</string>
+    <string name="quick_modes">حالت‌های سریع</string>
+    <string name="quick_modes_hint">با یک ضربه ستون‌های مناسب شغل شما روشن می‌شود (ستون‌های قفل‌شده تغییر نمی‌کنند).</string>
+    <string name="quantity_unit">واحد مقدار</string>
+    <string name="quantity_unit_hint">مثلاً عدد، کیلو، لیتر، بسته</string>
+    <string name="type_text">متن</string>
+    <string name="type_number">عدد</string>
+    <string name="type_date">تاریخ جلالی</string>
+    <string name="type_time">ساعت</string>
+    <string name="type_quantity">مقدار با واحد</string>
+    <string name="type_money">مبلغ</string>
+    <string name="type_installment">اقساط</string>
+    <string name="type_note">یادداشت</string>
+    <string name="type_status">وضعیت رنگی</string>
+
+    <!-- Settings -->
+    <string name="appearance">ظاهر</string>
+    <string name="theme_system">مطابق سیستم</string>
+    <string name="theme_light">روشن</string>
+    <string name="theme_dark">تاریک</string>
+    <string name="currency">واحد پول</string>
+    <string name="currency_hint">واحد پول در کنار همه‌ی مبالغ نمایش داده می‌شود.</string>
+    <string name="currency_change_title">تغییر واحد پول</string>
+    <string name="currency_convert_to_rial">می‌خواهید مبالغ ثبت‌شده هم از تومان به ریال تبدیل شوند (×۱۰)؟</string>
+    <string name="currency_convert_to_toman">می‌خواهید مبالغ ثبت‌شده هم از ریال به تومان تبدیل شوند (÷۱۰)؟</string>
+    <string name="convert_values">تبدیل مبالغ</string>
+    <string name="label_only">فقط برچسب</string>
+    <string name="columns_and_modes">ستون‌ها و حالت‌ها</string>
+    <string name="columns_and_modes_hint">ستون‌ها را نمایش/پنهان، قفل، تغییر نام و مرتب کنید.</string>
+
+    <string name="app_lock">قفل برنامه</string>
+    <string name="lock_enabled">قفل برنامه فعال است.</string>
+    <string name="lock_disabled">قفل برنامه غیرفعال است.</string>
+    <string name="set_pin">تعیین رمز</string>
+    <string name="change_pin">تغییر رمز</string>
+    <string name="remove_pin">حذف رمز</string>
+    <string name="pin">رمز</string>
+    <string name="pin_repeat">تکرار رمز</string>
+    <string name="pin_rules">رمز باید ۴ تا ۸ رقم باشد.</string>
+    <string name="use_biometric">استفاده از اثر انگشت</string>
+    <string name="biometric_title">ورود به Lax-1819</string>
+    <string name="use_pin">استفاده از رمز</string>
+    <string name="enter_pin">رمز را وارد کنید</string>
+    <string name="wrong_pin">رمز اشتباه است</string>
+    <string name="unlock_app">ورود</string>
+
+    <string name="backup_restore">پشتیبان‌گیری و بازیابی</string>
+    <string name="backup_hint">همه‌ی داده‌ها فقط روی همین گوشی هستند. از آن‌ها پشتیبان بگیرید.</string>
+    <string name="backup_json">پشتیبان‌گیری کامل (JSON)</string>
+    <string name="backup_zip">پشتیبان با پایگاه داده (ZIP)</string>
+    <string name="restore">بازیابی از پشتیبان</string>
+    <string name="restore_confirm">با بازیابی، همه‌ی داده‌های فعلی با محتوای فایل پشتیبان جایگزین می‌شود. ابتدا از داده‌های فعلی پشتیبان بگیرید. ادامه می‌دهید؟</string>
+    <string name="restore_pick_file">انتخاب فایل</string>
+    <string name="export_csv">خروجی CSV (اکسل)</string>
+    <string name="msg_backup_done">پشتیبان‌گیری انجام شد</string>
+    <string name="msg_restore_done">بازیابی با موفقیت انجام شد</string>
+    <string name="msg_csv_done">خروجی CSV ذخیره شد</string>
+    <string name="msg_cleared">همه‌ی داده‌ها حذف شد</string>
+    <string name="msg_saved">ذخیره شد</string>
+    <string name="msg_mode_applied">حالت اعمال شد</string>
+    <string name="msg_error">خطا در انجام عملیات. فایل یا دسترسی را بررسی کنید.</string>
+
+    <string name="support">پشتیبانی</string>
+    <string name="contact_email">ارسال ایمیل به پشتیبانی</string>
+    <string name="contact_telegram">ارتباط در تلگرام</string>
+    <string name="rate_app">امتیاز دادن به برنامه</string>
+    <string name="report_issue">گزارش مشکل / پیشنهاد</string>
+
+    <string name="about_and_license">درباره و مجوز</string>
+    <string name="about">درباره‌ی برنامه</string>
+    <string name="version_label">نسخه</string>
+    <string name="designed_by">طراحی و توسعه: mohamadreza.lak</string>
+    <string name="license_short">منبع‌باز با مجوز MIT – استفاده، تغییر و توزیع آزاد است.</string>
+    <string name="license_title">مجوز (MIT License)</string>
+    <string name="show_license">نمایش متن کامل مجوز</string>
+    <string name="hide_license">پنهان کردن متن مجوز</string>
+    <string name="about_desc">Lax-1819 یک دفتر روزانه‌ی ساده، سریع و کاملاً آفلاین با تقویم جلالی است. برای مغازه‌دار، خدمات‌دهنده، فروشنده‌ی اقساطی و استفاده‌ی شخصی؛ با ستون‌های کاملاً قابل تنظیم.</string>
+    <string name="credits">سپاس‌ها</string>
+    <string name="credits_body">Jetpack Compose و Material 3 • Room • Hilt • DataStore • kotlinx.serialization • Reorderable (Calvin-LL) • فونت وزیرمتن (Saber Rastikerdar، OFL) • الگوریتم تقویم جلالی برگرفته از jalaali-js (MIT)</string>
+
+    <string name="danger_zone">منطقه‌ی خطر</string>
+    <string name="clear_all_data">حذف همه‌ی داده‌ها</string>
+    <string name="clear_warning">همه‌ی برگه‌ها، ردیف‌ها، ستون‌ها و قالب‌ها برای همیشه پاک می‌شود و قابل بازگشت نیست. پیش از ادامه حتماً پشتیبان بگیرید.</string>
+    <string name="backup_first">ابتدا پشتیبان‌گیری</string>
+    <string name="clear_word">حذف</string>
+    <string name="clear_type_hint">برای تأیید، کلمه‌ی «%1$s» را تایپ کنید:</string>
+    <string name="delete_everything">حذف همه چیز</string>
+
+    <!-- Onboarding -->
+    <string name="skip">رد کردن</string>
+    <string name="next">بعدی</string>
+    <string name="start_using">شروع کنید</string>
+    <string name="onb1_title">برای هر روز، برگه‌های مستقل</string>
+    <string name="onb1_body">روی تقویم جلالی هر روز را انتخاب کنید و هر تعداد برگه بسازید؛ برای فروش، نوبت‌ها یا خرج‌های شخصی.</string>
+    <string name="onb2_title">ستون‌ها دست خودتان است</string>
+    <string name="onb2_body">همه‌چیز اختیاری است. ستون‌ها را روشن یا خاموش، قفل، تغییر نام و مرتب کنید و ستون دلخواه بسازید.</string>
+    <string name="onb3_title">عددها، پول و اقساط</string>
+    <string name="onb3_body">جداکننده‌ی هزارگان خودکار، تومان یا ریال، بیعانه، اقساط با مانده‌ی خودکار و جمع‌های هوشمند پایین صفحه.</string>
+    <string name="onb4_title">کاملاً آفلاین و امن</string>
+    <string name="onb4_body">داده‌ها فقط روی گوشی شما می‌مانند. پشتیبان‌گیری، قفل رمز و اثر انگشت هم دارید. بخش «راهنما» همیشه در دسترس است.</string>
+
+    <string name="guide_intro">توضیح کامل همه‌ی امکانات و ستون‌ها با مثال برای هر شغل. روی هر بخش بزنید.</string>
+</resources>

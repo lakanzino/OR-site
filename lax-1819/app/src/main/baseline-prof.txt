@@ -1,0 +1,11 @@
+# Baseline profile (hand-written, wildcard form) – compiles hot startup paths AOT
+# for a faster cold start. AGP packages this file automatically; ProfileInstaller applies it.
+# To generate a measured profile later, add a Macrobenchmark module (see README).
+HSPLcom/lax1819/app/**;->**(**)**
+Lcom/lax1819/app/**;
+HSPLandroidx/compose/material3/**;->**(**)**
+HSPLandroidx/compose/foundation/lazy/**;->**(**)**
+HSPLandroidx/compose/animation/**;->**(**)**
+HSPLandroidx/navigation/compose/**;->**(**)**
+HSPLandroidx/room/**;->**(**)**
+HSPLandroidx/datastore/**;->**(**)**

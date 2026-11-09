@@ -1,0 +1,34 @@
+# ── Web ──
+node_modules/
+dist/
+.vite/
+*.log
+
+# ── Build caches used by the icon generator & test harness ──
+tools/.cache/
+node_modules/.cache/
+
+# ── Android (Capacitor) ──
+android/.gradle/
+android/build/
+android/app/build/
+android/capacitor-cordova-android-plugins/build/
+android/local.properties
+android/.idea/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/capacitor.settings.gradle
+android/app/capacitor.build.gradle
+!android/app/src/main/assets/.gitkeep
+
+# ── Secrets: never commit signing material ──
+*.jks
+*.keystore
+keystore.properties
+*.p12
+!android/gradle/wrapper/gradle-wrapper.jar
+
+# ── OS junk ──
+.DS_Store
+Thumbs.db

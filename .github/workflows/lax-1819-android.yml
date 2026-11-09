@@ -1,0 +1,171 @@
+name: Build Lax-1819 Android APK
+
+on:
+  push:
+    paths:
+      - 'lax-1819/**'
+      - '.github/workflows/lax-1819-android.yml'
+  pull_request:
+    paths:
+      - 'lax-1819/**'
+      - '.github/workflows/lax-1819-android.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Assemble Signed Lax-1819 Release APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK 35
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools platforms;android-35 build-tools;35.0.0'
+
+      - name: Set up Gradle 8.9
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: '8.9'
+
+      - name: Generate ephemeral release keystore & build signed release APK/AAB
+        id: gradle
+        working-directory: lax-1819
+        shell: bash
+        run: |
+          set -euo pipefail
+          PASS="$(openssl rand -hex 24)"
+          keytool -genkeypair -noprompt -v \
+            -keystore my-release-key.jks \
+            -storetype JKS \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -alias lax1819 \
+            -storepass "$PASS" \
+            -keypass "$PASS" \
+            -dname "CN=Lax-1819, OU=Mobile, O=mohamadreza.lak, C=IR" >/dev/null 2>&1
+
+          printf 'storeFile=my-release-key.jks\nstorePassword=%s\nkeyAlias=lax1819\nkeyPassword=%s\n' "$PASS" "$PASS" > keystore.properties
+
+          set +e
+          gradle assembleRelease bundleRelease --no-daemon --stacktrace --console=plain > ../lax-1819-gradle.log 2>&1
+          status=$?
+          set -e
+
+          rm -f my-release-key.jks keystore.properties
+          tail -n 150 ../lax-1819-gradle.log
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+
+      - name: Clean up any signing files
+        if: always()
+        working-directory: lax-1819
+        shell: bash
+        run: rm -f my-release-key.jks keystore.properties
+
+      - name: Upload Gradle log on failure
+        if: steps.gradle.outputs.status != '0'
+        uses: actions/upload-artifact@v7
+        with:
+          name: lax-1819-build-log
+          path: lax-1819-gradle.log
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Surface Gradle errors as annotations
+        if: steps.gradle.outputs.status != '0'
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import pathlib, re
+          log = pathlib.Path('lax-1819-gradle.log')
+          messages = []
+          if log.exists():
+              text = log.read_text(errors='replace').splitlines()
+              for line in text:
+                  if re.search(r'^e: |error:|FAILED$|What went wrong|Execution failed|Caused by:|Could not ', line):
+                      messages.append(line.strip())
+          seen = set()
+          for message in messages[:25]:
+              message = ' '.join(message.split())[:1200]
+              if message and message not in seen:
+                  seen.add(message)
+                  print('::error::' + message.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A'))
+          if not seen:
+              print('::error::Gradle failed; see the lax-1819-build-log artifact for the full output.')
+          PY
+          exit 1
+
+      - name: Verify signed release APK and AAB
+        if: steps.gradle.outputs.status == '0'
+        shell: bash
+        run: |
+          set -euo pipefail
+          APK="lax-1819/app/build/outputs/apk/release/app-release.apk"
+          AAB="lax-1819/app/build/outputs/bundle/release/app-release.aab"
+          ls -lh "$APK" "$AAB"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/apksigner.txt
+          "$ANDROID_HOME/build-tools/35.0.0/aapt2" dump badging "$APK" | head -n 30 | tee /tmp/aapt2.txt
+
+      - name: Stage APK blob for sandbox retrieval
+        if: steps.gradle.outputs.status == '0' && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/arena/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64, hashlib, json, os, pathlib, subprocess
+
+          apk_path = pathlib.Path("lax-1819/app/build/outputs/apk/release/app-release.apk")
+          raw = apk_path.read_bytes()
+          sha256 = hashlib.sha256(raw).hexdigest()
+          size = len(raw)
+
+          req_path = pathlib.Path("/tmp/blob_req.json")
+          req_path.write_text(json.dumps({
+              "content": base64.b64encode(raw).decode("ascii"),
+              "encoding": "base64",
+          }))
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          out = subprocess.check_output(
+              ["gh", "api", "-X", "POST", f"repos/{repo}/git/blobs", "--input", str(req_path)],
+              text=True,
+          )
+          blob_sha = json.loads(out)["sha"]
+          req_path.unlink(missing_ok=True)
+
+          apksigner_lines = [l.strip() for l in pathlib.Path("/tmp/apksigner.txt").read_text().splitlines() if any(k in l for k in ["Verifies", "Verified using", "Signer #1 certificate SHA-256"])]
+          aapt2_lines = [l.strip() for l in pathlib.Path("/tmp/aapt2.txt").read_text().splitlines() if any(l in l for l in ["package:", "sdkVersion:", "targetSdkVersion:", "application-label:"])]
+
+          meta = {
+              "blob_sha": blob_sha,
+              "sha256": sha256,
+              "size": size,
+              "apksigner": apksigner_lines,
+              "aapt2": aapt2_lines,
+          }
+          print(f"::notice title=LAX_APK_META::{json.dumps(meta)}")
+          PY
+
+      - name: Upload signed Lax-1819 Release APK
+        if: steps.gradle.outputs.status == '0'
+        uses: actions/upload-artifact@v7
+        with:
+          name: Lax-1819-release-apk
+          path: lax-1819/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+          retention-days: 30

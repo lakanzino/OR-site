@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <!-- Launcher label shown under the app icon (Persian, no extra characters) -->
+    <string name="app_name">کره زمین</string>
+    <string name="title_activity_main">کره زمین</string>
+    <string name="package_name">com.globelax.app</string>
+    <string name="custom_url_scheme">com.globelax.app</string>
+</resources>
