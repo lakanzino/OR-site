@@ -2,83 +2,91 @@ package com.globelax.app;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
-import android.view.WindowInsetsController;
-import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebView;
 
 import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.getcapacitor.BridgeActivity;
 
 /**
  * Globe.Lax host activity.
  *
- * <p>Everything the app needs is local, so this class only wires up the few
- * genuinely native behaviours: a share sheet, status-bar tinting, and a
- * JS bridge ({@code GlobeNative}) the web layer can call.
+ * <p>Deliberately minimal — it mirrors the shell that is known to launch
+ * reliably on a wide range of devices. Everything visual lives in the web
+ * layer, so the Java side only does three things: paint the window navy so
+ * there is no white flash, expose a tiny share/version bridge, and keep the
+ * system bars in sync with the in-app theme.
  */
 public class MainActivity extends BridgeActivity {
 
-    /** Theme colours shared with the web layer (must match src/index.css tokens). */
+    /** Brand navy — must match src/index.css (--navy). */
     private static final String NAVY = "#040C24";
+    private static final String CREAM = "#F7F5EE";
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(Color.parseColor(NAVY));
-        window.setNavigationBarColor(Color.parseColor(NAVY));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // Draw behind the notch, matching the CSS safe-area insets.
-            window.getAttributes().layoutInDisplayCutoutMode =
-                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-        }
-        WindowCompat.setDecorFitsSystemWindows(window, true);
+        applySystemBarTheme(true);
 
-        if (getBridge() != null && getBridge().getWebView() != null) {
-            getBridge().getWebView().addJavascriptInterface(new NativeBridge(), "GlobeNative");
-            getBridge().getWebView().setBackgroundColor(Color.parseColor(NAVY));
+        if (this.bridge != null && this.bridge.getWebView() != null) {
+            WebView webView = this.bridge.getWebView();
+            webView.addJavascriptInterface(new NativeBridge(), "GlobeNative");
+            webView.setBackgroundColor(Color.parseColor(NAVY));
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void applySystemBarTheme(boolean isDark) {
+        Window window = getWindow();
+        if (window == null) {
+            return;
+        }
+        int bg = Color.parseColor(isDark ? NAVY : CREAM);
+        window.getDecorView().setBackgroundColor(bg);
+        window.setStatusBarColor(bg);
+        window.setNavigationBarColor(bg);
+
+        WindowInsetsControllerCompat controller =
+                WindowCompat.getInsetsController(window, window.getDecorView());
+        if (controller != null) {
+            controller.setAppearanceLightStatusBars(!isDark);
+            controller.setAppearanceLightNavigationBars(!isDark);
         }
     }
 
     /** Small, explicit native surface exposed to the offline web layer. */
-    public class NativeBridge {
+    public final class NativeBridge {
 
         /** Opens the system share sheet with the given text. */
         @JavascriptInterface
-        public void share(String text, String title) {
+        public boolean share(String text, String title) {
+            if (text == null || text.trim().isEmpty()) {
+                return false;
+            }
             runOnUiThread(() -> {
                 Intent send = new Intent(Intent.ACTION_SEND);
                 send.setType("text/plain");
+                if (title != null && !title.trim().isEmpty()) {
+                    send.putExtra(Intent.EXTRA_SUBJECT, title);
+                }
                 send.putExtra(Intent.EXTRA_TEXT, text);
-                send.putExtra(Intent.EXTRA_SUBJECT, title);
-                startActivity(Intent.createChooser(send, title));
+                String chooser = (title != null && !title.trim().isEmpty())
+                        ? title
+                        : getString(R.string.app_name);
+                startActivity(Intent.createChooser(send, chooser));
             });
+            return true;
         }
 
         /** Keeps the system bars in sync with the in-app dark/light theme. */
         @JavascriptInterface
         public void setTheme(final boolean dark) {
-            runOnUiThread(() -> {
-                Window window = getWindow();
-                String barColor = dark ? NAVY : "#F7F5EE";
-                window.setStatusBarColor(Color.parseColor(barColor));
-                window.setNavigationBarColor(Color.parseColor(barColor));
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    WindowInsetsController controller = window.getInsetsController();
-                    if (controller != null) {
-                        int mask = WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                                | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
-                        controller.setSystemBarsAppearance(dark ? 0 : mask, mask);
-                    }
-                }
-            });
+            runOnUiThread(() -> applySystemBarTheme(dark));
         }
 
         /** Reports the app version, used on the About screen. */
@@ -87,7 +95,7 @@ public class MainActivity extends BridgeActivity {
             try {
                 return getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             } catch (Exception e) {
-                return "1.0.0";
+                return "1.0.1";
             }
         }
 
