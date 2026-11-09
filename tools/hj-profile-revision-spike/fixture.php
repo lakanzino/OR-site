@@ -211,6 +211,37 @@ if ($mode === 'publish-rest-cache') {
     else { spike_assert($phase==='stale' && $actual==='نام عمومی جدید','REST stale despite committed new public db value'); }
     echo 'PASS synthetic REST cache '.$phase."\n"; exit;
 }
+// Reproduce a cache-fill race even when the DB version changes atomically.
+if ($mode === 'rest-fill-worker') {
+    $pid=(int)$argv[2]; $dir=$argv[3]; $pin=($argv[4]??'')==='pinned'; wp_set_current_user(0);
+    if ($pin) { HJ_Doctors_REST::ver(); }
+    add_filter('hj_rest_doctor_item',function($item,$id) use($pid,$dir) {
+        if ((int)$id===$pid) {
+            spike_assert(($item['name']['fa']??null)==='نام عمومی قبل','reader built old public data');
+            file_put_contents($dir.'/built','1'); $until=microtime(true)+20;
+            while (!file_exists($dir.'/release')) { if (microtime(true)>$until) { throw new RuntimeException('REST fill barrier timeout'); } usleep(10000); }
+        }
+        return $item;
+    },10,2);
+    $req=new WP_REST_Request('GET','/hj/v1/doctor/'.$pid); $req['id']=$pid;
+    $response=HJ_Doctors_REST::get_doctor($req);
+    spike_assert($response instanceof WP_REST_Response && $response->get_status()===200 && ($response->get_data()['name']['fa']??null)==='نام عمومی قبل','in-flight reader got old data');
+    echo "done\n"; exit;
+}
+if ($mode === 'rest-fill-approve') {
+    wp_set_current_user(get_user_by('login','fixture_admin')->ID);
+    echo json_encode(HJ_Profile_Spike_Publish_One::approve((int)$argv[2],$argv[3],true)),"\n"; exit;
+}
+if ($mode === 'rest-fill-check') {
+    $pid=(int)$argv[2]; $expected=$argv[3]; wp_set_current_user(0);
+    $req=new WP_REST_Request('GET','/hj/v1/doctor/'.$pid); $req['id']=$pid;
+    $response=HJ_Doctors_REST::get_doctor($req);
+    spike_assert($response instanceof WP_REST_Response && $response->get_status()===200,'REST fill check response');
+    $actual=get_post_meta($pid,'name_fa',true); $item=$response->get_data();
+    spike_assert($actual==='نام عمومی جدید','public meta committed');
+    spike_assert(($item['name']['fa']??null)===($expected==='stale' ? 'نام عمومی قبل' : 'نام عمومی جدید'),'REST cache fill result');
+    echo 'PASS atomic version and REST fill: '.$expected."\n"; exit;
+}
 if ($mode === 'publish-race-worker') {
     $pid=(int)$argv[2]; $token=$argv[3]; $dir=$argv[4]; $label=$argv[5];
     if (!in_array($label,array('a','b'),true) || !is_dir($dir)) { exit(1); }

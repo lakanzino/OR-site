@@ -166,3 +166,24 @@ peek=subprocess.run(['php',script,'publish-race-peek',str(pub['pid']),'after'],c
 print(peek.stdout.strip())
 stale=subprocess.run(['php',script,'publish-rest-cache',str(pub['pid']),'stale'],check=True,text=True,capture_output=True,timeout=10)
 print(stale.stdout.strip())
+
+# Actual REST cache-miss code reads the version only after building an item.
+# Hold an old item in-flight while the publisher atomically changes DB version.
+for pinned,expected in ((False,'stale'),(True,'fresh')):
+    pub=json.loads(subprocess.run(['php',script,'publish-race-setup'],check=True,text=True,capture_output=True).stdout.strip())
+    with tempfile.TemporaryDirectory(prefix='hj-rest-fill-') as temp:
+        reader=subprocess.Popen(['php',script,'rest-fill-worker',str(pub['pid']),temp,'pinned' if pinned else 'normal'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+        try:
+            deadline=time.monotonic()+20
+            while not (pathlib.Path(temp)/'built').exists():
+                if reader.poll() is not None or time.monotonic()>=deadline: raise RuntimeError('REST reader did not build old item')
+                time.sleep(.01)
+            approval=subprocess.run(['php',script,'rest-fill-approve',str(pub['pid']),pub['token']],check=True,text=True,capture_output=True,timeout=15)
+            if json.loads(approval.stdout)['status']!='applied': raise RuntimeError(f'atomic version approval failed: {approval.stdout} {approval.stderr}')
+            (pathlib.Path(temp)/'release').touch()
+            out,err=reader.communicate(timeout=15)
+            if reader.returncode or out.strip()!='done': raise RuntimeError(f'REST reader failed: {out} {err}')
+        finally:
+            if reader.poll() is None: reader.kill(); reader.wait()
+    check=subprocess.run(['php',script,'rest-fill-check',str(pub['pid']),expected],check=True,text=True,capture_output=True,timeout=15)
+    print(check.stdout.strip())

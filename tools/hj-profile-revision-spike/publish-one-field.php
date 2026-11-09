@@ -30,7 +30,7 @@ final class HJ_Profile_Spike_Publish_One {
         try { $snap=self::snapshot($db,(int)$pid,false); return $snap ? array('status'=>'ok','hash'=>$snap['hash']) : array('status'=>'unavailable'); }
         finally { $db->close(); }
     }
-    public static function approve($pid,$generation) {
+    public static function approve($pid,$generation,$atomic_rest_version=false) {
         global $wpdb;
         $pid=(int)$pid;
         if (!is_user_logged_in() || !hj_doctors_user_can_manage('approve')) { return array('status'=>'forbidden'); }
@@ -57,9 +57,20 @@ final class HJ_Profile_Spike_Publish_One {
             $new=wp_json_encode($draft,JSON_UNESCAPED_UNICODE); if (!is_string($new)) { return array('status'=>'invalid'); }
             $changed=$db->query($db->prepare("UPDATE `{$wpdb->options}` SET option_value=%s WHERE option_name=%s AND BINARY option_value=BINARY %s",$new,$key,$raw));
             if ($changed!==1) { return array('status'=>'unknown'); }
+            // Alternative experiment only: bump REST version *within* the same transaction.
+            // This still bypasses WP hooks and cannot guarantee persistent cache coherence.
+            if ($atomic_rest_version) {
+                if (!class_exists('HJ_Doctors_REST')) { return array('status'=>'unavailable'); }
+                $ver_key=HJ_Doctors_REST::VER_OPTION;
+                $old=$db->get_var($db->prepare("SELECT option_value FROM `{$wpdb->options}` WHERE option_name=%s FOR UPDATE",$ver_key));
+                if ($db->last_error || !is_string($old) || $old==='') { return array('status'=>'unavailable'); }
+                $ver=bin2hex(random_bytes(16));
+                if ($db->query($db->prepare("UPDATE `{$wpdb->options}` SET option_value=%s WHERE option_name=%s AND BINARY option_value=BINARY %s",$ver,$ver_key,$old))!==1) { return array('status'=>'unknown'); }
+            }
             do_action('hj_spike_publish_before_commit',$pid,$db);
             if ($db->query('COMMIT')===false) { $active=false; return array('status'=>'unknown'); }
             $active=false;
+            if ($atomic_rest_version) { wp_cache_delete('alloptions','options'); wp_cache_delete(HJ_Doctors_REST::VER_OPTION,'options'); }
             wp_cache_delete($pid,'post_meta');
             if (function_exists('acf_flush_value_cache')) { acf_flush_value_cache($pid,'name_fa'); }
             return array('status'=>'applied');
