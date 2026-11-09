@@ -75,6 +75,15 @@ jobs:
         shell: bash
         run: rm -f my-release-key.jks keystore.properties
 
+      - name: Upload Gradle log on failure
+        if: steps.gradle.outputs.status != '0'
+        uses: actions/upload-artifact@v7
+        with:
+          name: lax-1819-build-log
+          path: lax-1819-gradle.log
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: Surface Gradle errors as annotations
         if: steps.gradle.outputs.status != '0'
         shell: bash
@@ -118,12 +127,3 @@ jobs:
           path: lax-1819/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
           retention-days: 30
-
-      - name: Upload Gradle log on failure
-        if: steps.gradle.outputs.status != '0'
-        uses: actions/upload-artifact@v7
-        with:
-          name: lax-1819-build-log
-          path: lax-1819-gradle.log
-          if-no-files-found: ignore
-          retention-days: 14
