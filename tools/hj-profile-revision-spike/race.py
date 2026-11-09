@@ -185,5 +185,6 @@ for pinned,expected in ((False,'stale'),(True,'fresh')):
             if reader.returncode or out.strip()!='done': raise RuntimeError(f'REST reader failed: {out} {err}')
         finally:
             if reader.poll() is None: reader.kill(); reader.wait()
-    check=subprocess.run(['php',script,'rest-fill-check',str(pub['pid']),expected],check=True,text=True,capture_output=True,timeout=15)
+    check=subprocess.run(['php',script,'rest-fill-check',str(pub['pid']),expected],text=True,capture_output=True,timeout=15)
+    if check.returncode: raise RuntimeError(f'REST fill check failed: {check.stdout} {check.stderr}')
     print(check.stdout.strip())

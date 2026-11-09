@@ -239,7 +239,7 @@ if ($mode === 'rest-fill-check') {
     spike_assert($response instanceof WP_REST_Response && $response->get_status()===200,'REST fill check response');
     $actual=get_post_meta($pid,'name_fa',true); $item=$response->get_data();
     spike_assert($actual==='نام عمومی جدید','public meta committed');
-    spike_assert(($item['name']['fa']??null)===($expected==='stale' ? 'نام عمومی قبل' : 'نام عمومی جدید'),'REST cache fill result');
+    spike_assert(($item['name']['fa']??null)===($expected==='stale' ? 'نام عمومی قبل' : 'نام عمومی جدید'),'REST cache fill result: '.wp_json_encode($item['name']??null,JSON_UNESCAPED_UNICODE));
     echo 'PASS atomic version and REST fill: '.$expected."\n"; exit;
 }
 if ($mode === 'publish-race-worker') {
