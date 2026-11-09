@@ -6,6 +6,7 @@ require '/wordpress/wp-load.php';
 if ( DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || WP_HOME !== 'http://example.invalid' || $GLOBALS['wpdb']->prefix !== 'hjt_' || HJ_DOCTORS_VERSION !== (getenv('HJ_SPIKE_VERSION') ?: '0.3.22') ) { exit(1); }
 require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/store.php';
 require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/snapshot.php';
+require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/preflight.php';
 function spike_assert($condition,$message) { if (!$condition) { throw new RuntimeException($message); } }
 function spike_fields($name) {
     return array('name_fa'=>$name,'name_en'=>'','specialty_fa'=>'جراحی نمونه','specialty_en'=>'','bio_fa'=>'','bio_en'=>'','medical_license'=>'','experience_years'=>'','education'=>'','surgeries_performed'=>'','phone_clinic'=>'','phone_mobile'=>'','address_clinic'=>'','address_hospital'=>'','map_link'=>'');
@@ -73,6 +74,28 @@ if ($mode === 'snapshot-probe') {
     update_post_meta($pid,'name_fa',array('malformed fixture'));
     spike_assert(HJ_Profile_Spike_Snapshot::fingerprint($pid)['status']==='unavailable','non-scalar fields fail closed');
     echo "PASS partial server-side fingerprint detects tested text, title, terms and photo reference changes; schedule excluded\n"; exit;
+}
+if ($mode === 'preflight-probe') {
+    $uid=get_user_by('login','surgeon_fixture')->ID; $admin=get_user_by('login','fixture_admin')->ID;
+    $pid=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'Preflight synthetic','post_author'=>$uid),true);
+    spike_assert(!is_wp_error($pid) && $pid>0,'preflight profile'); update_post_meta($pid,'name_fa','نام عمومی');
+    wp_set_current_user($uid); $base=HJ_Profile_Spike_Snapshot::fingerprint($pid);
+    $draft=HJ_Profile_Spike_Store::create($pid,$base['hash'],spike_fields('نام پیشنهادی'));
+    spike_assert($draft['status']==='saved','preflight draft');
+    $sent=HJ_Profile_Spike_Store::change($pid,$draft['data']['generation'],null,true);
+    $token=$sent['data']['generation'];
+    spike_assert(HJ_Profile_Spike_Preflight::inspect($pid,$token)['status']==='forbidden','surgeon cannot preflight admin approval');
+    wp_set_current_user($admin);
+    spike_assert(HJ_Profile_Spike_Preflight::inspect($pid,$token)['status']==='matches_partial_snapshot','unchanged snapshot matches');
+    spike_assert(HJ_Profile_Spike_Preflight::inspect($pid,str_repeat('0',32))['status']==='conflict','wrong generation rejected');
+    update_post_meta($pid,'name_fa','ویرایش مدیر');
+    spike_assert(HJ_Profile_Spike_Preflight::inspect($pid,$token)['status']==='public_changed','admin edit detected');
+    update_post_meta($pid,'name_fa','نام عمومی');
+    spike_assert(HJ_Profile_Spike_Preflight::inspect($pid,$token)['status']==='matches_partial_snapshot','matching text restored');
+    // A separate writer can change public data immediately after preflight.
+    update_post_meta($pid,'name_fa','ویرایش پس از بررسی');
+    spike_assert(HJ_Profile_Spike_Preflight::inspect($pid,$token)['status']==='public_changed','preflight alone cannot lock out another writer');
+    echo "PASS partial preflight detects tested external edits; no lock or publication is implied\n"; exit;
 }
 if ($mode === 'setup') {
     $uid=get_user_by('login','surgeon_fixture')->ID; $other=get_user_by('login','normal_fixture')->ID; $admin=get_user_by('login','fixture_admin')->ID;
