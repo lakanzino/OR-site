@@ -1,0 +1,61 @@
+name: Build original Globe.Lax ZIP for Android
+on:
+  push:
+    branches: ['arena/4e2ce6a8-or-site']
+    paths: ['.github/workflows/globelax-original-zip.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+      - name: Build the original ZIP without modifying its source
+        run: |
+          set -euxo pipefail
+          mkdir -p /tmp/original-globelax
+          unzip -q 'develop-globelax-android-app (1).zip' -d /tmp/original-globelax
+          cd /tmp/original-globelax
+          npm ci
+          npm run build
+          # Preserve the copyright and MIT grant in the packaged assets.
+          cp LICENSE dist/LICENSE.txt
+          npm install --no-save --ignore-scripts @capacitor/core@7.6.10 @capacitor/cli@7.6.10 @capacitor/android@7.6.10
+          npx cap init 'Globe.Lax' com.globelax.original --web-dir dist
+          npx cap add android
+          npx cap sync android
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/Globe.Lax-original-test.apk"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$GITHUB_WORKSPACE/Globe.Lax-original-test.apk"
+          sha256sum "$GITHUB_WORKSPACE/Globe.Lax-original-test.apk"
+      - name: Upload test APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: GlobeLax-original-test-apk
+          path: Globe.Lax-original-test.apk
+          retention-days: 7
+      - name: Launch original app on Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          script: |
+            adb install -r Globe.Lax-original-test.apk
+            adb shell am start -n com.globelax.original/.MainActivity
+            sleep 20
+            adb shell uiautomator dump /sdcard/window.xml
+            adb shell cat /sdcard/window.xml > window.xml
+            cat window.xml
+            grep -q 'Welcome to Globe.Lax' window.xml
