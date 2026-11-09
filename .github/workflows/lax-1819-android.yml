@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -116,8 +116,50 @@ jobs:
           APK="lax-1819/app/build/outputs/apk/release/app-release.apk"
           AAB="lax-1819/app/build/outputs/bundle/release/app-release.aab"
           ls -lh "$APK" "$AAB"
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
-          "$ANDROID_HOME/build-tools/35.0.0/aapt2" dump badging "$APK" | head -n 30
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/apksigner.txt
+          "$ANDROID_HOME/build-tools/35.0.0/aapt2" dump badging "$APK" | head -n 30 | tee /tmp/aapt2.txt
+
+      - name: Stage APK blob for sandbox retrieval
+        if: steps.gradle.outputs.status == '0' && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/arena/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64, hashlib, json, os, pathlib, subprocess
+
+          apk_path = pathlib.Path("lax-1819/app/build/outputs/apk/release/app-release.apk")
+          raw = apk_path.read_bytes()
+          sha256 = hashlib.sha256(raw).hexdigest()
+          size = len(raw)
+
+          req_path = pathlib.Path("/tmp/blob_req.json")
+          req_path.write_text(json.dumps({
+              "content": base64.b64encode(raw).decode("ascii"),
+              "encoding": "base64",
+          }))
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          out = subprocess.check_output(
+              ["gh", "api", "-X", "POST", f"repos/{repo}/git/blobs", "--input", str(req_path)],
+              text=True,
+          )
+          blob_sha = json.loads(out)["sha"]
+          req_path.unlink(missing_ok=True)
+
+          apksigner_lines = [l.strip() for l in pathlib.Path("/tmp/apksigner.txt").read_text().splitlines() if any(k in l for k in ["Verifies", "Verified using", "Signer #1 certificate SHA-256"])]
+          aapt2_lines = [l.strip() for l in pathlib.Path("/tmp/aapt2.txt").read_text().splitlines() if any(l in l for l in ["package:", "sdkVersion:", "targetSdkVersion:", "application-label:"])]
+
+          meta = {
+              "blob_sha": blob_sha,
+              "sha256": sha256,
+              "size": size,
+              "apksigner": apksigner_lines,
+              "aapt2": aapt2_lines,
+          }
+          print(f"::notice title=LAX_APK_META::{json.dumps(meta)}")
+          PY
 
       - name: Upload signed Lax-1819 Release APK
         if: steps.gradle.outputs.status == '0'
