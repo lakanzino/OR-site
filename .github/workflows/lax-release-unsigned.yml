@@ -36,7 +36,7 @@ jobs:
           if [ "$APP" = globe ]; then
             cp -a globelax-original/. /tmp/lax-src/
             APP_ID=com.globelax.audited
-            APP_NAME='Globe.Lax بررسی‌شده'
+            APP_NAME='Globe.Lax'
           else
             gh api repos/lakanzino/OR-site/git/blobs/9a14c975b2f121c77581a24121f0dfb1664889f9 --jq .content | base64 -d > /tmp/invent.zip
             test "$(git hash-object /tmp/invent.zip)" = 9a14c975b2f121c77581a24121f0dfb1664889f9
