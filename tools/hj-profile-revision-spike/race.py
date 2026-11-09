@@ -169,7 +169,7 @@ print(stale.stdout.strip())
 
 # Compare old ZIP with current REST source during the same cache-fill race.
 # Explicit pin remains a control, even when the old ZIP is under test.
-normal_expected='stale' if os.environ.get('HJ_SPIKE_VERSION')=='0.3.22' else 'fresh'
+normal_expected='stale' if os.environ.get('HJ_SPIKE_VERSION','0.3.22')=='0.3.22' else 'fresh'
 for pinned,expected in ((False,normal_expected),(True,'fresh')):
     subprocess.run(['php',script,'rest-version-noautoload'],check=True,text=True,capture_output=True,timeout=10)
     pub=json.loads(subprocess.run(['php',script,'publish-race-setup'],check=True,text=True,capture_output=True).stdout.strip())
