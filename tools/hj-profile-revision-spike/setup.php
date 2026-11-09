@@ -3,6 +3,8 @@ if ( PHP_SAPI !== 'cli' || getenv('GITHUB_ACTIONS') !== 'true' || getenv('HJ_DIS
 require '/wordpress/wp-load.php';
 if (DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || WP_HOME !== 'http://example.invalid' || $GLOBALS['wpdb']->prefix !== 'hjt_') { exit(1); }
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
+if (getenv('HJ_SPIKE_ACF') === 'free' && (!function_exists('acf') || acf()->settings['version'] !== '6.8.11')) { throw new RuntimeException('ACF Free fixture missing or wrong version'); }
+if (getenv('HJ_SPIKE_ACF') === 'none' && function_exists('acf')) { throw new RuntimeException('Unexpected ACF in fixture'); }
 $result=activate_plugin('hamyar-doctors/hamyar-doctors.php');
 if (is_wp_error($result)) { throw new RuntimeException($result->get_error_message()); }
 require_once WP_PLUGIN_DIR . '/hamyar-doctors/hamyar-doctors.php';

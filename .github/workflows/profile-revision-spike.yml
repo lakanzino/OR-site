@@ -22,6 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         plugin: ['0.3.22', '0.3.48']
+        acf: ['none', 'free']
     services:
       db:
         image: mariadb:11.4
@@ -37,6 +38,7 @@ jobs:
     env:
       HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
       HJ_SPIKE_VERSION: ${{ matrix.plugin }}
+      HJ_SPIKE_ACF: ${{ matrix.acf }}
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
@@ -56,6 +58,13 @@ jobs:
             unzip -q releases/hamyar-doctors-0.3.22.zip -d /wordpress/wp-content/plugins
           else
             ln -s "$GITHUB_WORKSPACE/plugins/hamyar-doctors" /wordpress/wp-content/plugins/hamyar-doctors
+          fi
+          if [ "$HJ_SPIKE_ACF" = 'free' ]; then
+            ACF_SHA=dae1d08f9da899a3386db5c479c91bb70ea96148
+            curl --fail --location --silent --show-error --max-time 120 "https://codeload.github.com/AdvancedCustomFields/acf/zip/$ACF_SHA" -o "$RUNNER_TEMP/wp/acf.zip"
+            echo 'aa22ad6c8c680146707c3869b8cc7a6c06d689523dfb2f640b7f40751b618352  '"$RUNNER_TEMP/wp/acf.zip" | sha256sum -c -
+            unzip -q "$RUNNER_TEMP/wp/acf.zip" -d "$RUNNER_TEMP/wp"
+            ln -s "$RUNNER_TEMP/wp/acf-$ACF_SHA" /wordpress/wp-content/plugins/advanced-custom-fields
           fi
           cat > /wordpress/wp-config.php <<'PHP'
           <?php
@@ -82,5 +91,5 @@ jobs:
       - name: Run synthetic draft workflow and concurrent writers
         run: |
           set -euo pipefail
-          output=$(bash -e -c 'php tools/hamyar-php-review/mariadb-fixture.php install; php tools/hj-profile-revision-spike/setup.php; php -l tools/hj-profile-revision-spike/store.php; python3 tools/hj-profile-revision-spike/race.py; php tools/hj-profile-revision-spike/fixture.php publication-probe; php tools/hj-profile-revision-spike/fixture.php snapshot-probe; php tools/hj-profile-revision-spike/fixture.php preflight-probe' 2>&1) || { echo "$output"; echo "::error title=Isolated profile spike::$(echo "$output" | tail -c 3000 | tr "\n" " ")"; exit 1; }
+          output=$(bash -e -c 'php tools/hamyar-php-review/mariadb-fixture.php install; if [ "$HJ_SPIKE_ACF" = free ]; then php tools/hj-profile-revision-spike/activate-acf.php; fi; php tools/hj-profile-revision-spike/setup.php; php -l tools/hj-profile-revision-spike/store.php; python3 tools/hj-profile-revision-spike/race.py; php tools/hj-profile-revision-spike/fixture.php publication-probe; php tools/hj-profile-revision-spike/fixture.php snapshot-probe; php tools/hj-profile-revision-spike/fixture.php preflight-probe' 2>&1) || { echo "$output"; echo "::error title=Isolated profile spike::$(echo "$output" | tail -c 3000 | tr "\n" " ")"; exit 1; }
           echo "$output"
