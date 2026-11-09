@@ -170,6 +170,7 @@ print(stale.stdout.strip())
 # Actual REST cache-miss code reads the version only after building an item.
 # Hold an old item in-flight while the publisher atomically changes DB version.
 for pinned,expected in ((False,'stale'),(True,'fresh')):
+    subprocess.run(['php',script,'rest-version-noautoload'],check=True,text=True,capture_output=True,timeout=10)
     pub=json.loads(subprocess.run(['php',script,'publish-race-setup'],check=True,text=True,capture_output=True).stdout.strip())
     with tempfile.TemporaryDirectory(prefix='hj-rest-fill-') as temp:
         reader=subprocess.Popen(['php',script,'rest-fill-worker',str(pub['pid']),temp,'pinned' if pinned else 'normal'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)

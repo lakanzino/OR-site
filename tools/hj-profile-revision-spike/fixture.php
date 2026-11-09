@@ -211,6 +211,14 @@ if ($mode === 'publish-rest-cache') {
     else { spike_assert($phase==='stale' && $actual==='نام عمومی جدید','REST stale despite committed new public db value'); }
     echo 'PASS synthetic REST cache '.$phase."\n"; exit;
 }
+if ($mode === 'rest-version-noautoload') {
+    // Exercise the supported non-autoload option layout explicitly; no production changes.
+    global $wpdb; $value=bin2hex(random_bytes(16));
+    spike_assert(update_option(HJ_Doctors_REST::VER_OPTION,$value,false),'set disposable version and disable autoload');
+    $row=$wpdb->get_row($wpdb->prepare("SELECT option_value,autoload FROM `{$wpdb->options}` WHERE option_name=%s",HJ_Doctors_REST::VER_OPTION),ARRAY_A);
+    spike_assert(is_array($row) && $row['option_value']===$value && $row['autoload']==='off','version is not autoloaded');
+    echo "no-autoload\n"; exit;
+}
 // Reproduce a cache-fill race even when the DB version changes atomically.
 if ($mode === 'rest-fill-worker') {
     $pid=(int)$argv[2]; $dir=$argv[3]; $pin=($argv[4]??'')==='pinned'; wp_set_current_user(0);
