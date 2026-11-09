@@ -50,7 +50,7 @@ final class HJ_Profile_Spike_Store {
         if ( $db->last_error ) { return array('status'=>'unknown'); }
         if ( $raw === null ) { return array('status'=>'missing'); }
         $data = json_decode($raw, true);
-        if ( ! is_array($data) || ($data['schema'] ?? null) !== 1 || ! in_array($data['state'] ?? '', array('draft','submitted','rejected'), true) || ! preg_match('/^[a-f0-9]{32}$/D', $data['generation'] ?? '') || ! preg_match('/^[a-f0-9]{64}$/D', $data['base_hash'] ?? '') || self::text_payload($data['fields'] ?? null) === false ) { return array('status'=>'corrupt'); }
+        if ( ! is_array($data) || ($data['schema'] ?? null) !== 1 || ! in_array($data['state'] ?? '', array('draft','submitted','rejected'), true) || ! is_string($data['generation'] ?? null) || ! preg_match('/^[a-f0-9]{32}$/D', $data['generation']) || ! is_string($data['base_hash'] ?? null) || ! preg_match('/^[a-f0-9]{64}$/D', $data['base_hash']) || self::text_payload($data['fields'] ?? null) === false || ( isset($data['review_note']) && (!is_string($data['review_note']) || strlen($data['review_note'])>2000) ) ) { return array('status'=>'corrupt'); }
         return array('status'=>'ok','raw'=>$raw,'data'=>$data);
     }
     public static function read( $pid ) {

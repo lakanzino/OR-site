@@ -74,6 +74,14 @@ if ($mode === 'verify') {
     spike_assert($updated['status']==='saved' && $updated['data']['state']==='draft' && !isset($updated['data']['review_note']),'rejected draft can be corrected');
     spike_assert(HJ_Profile_Spike_Store::change($pid,$updated['data']['generation'],null,true)['data']['state']==='submitted','corrected draft can be resubmitted');
     spike_assert(get_post_meta($pid,'name_fa',true)==='نام عمومی' && get_post_status($pid)==='publish','reject and correction never alter public profile');
+    global $wpdb;
+    $key='hj_profile_spike_'.$pid;
+    $original=$wpdb->get_var($wpdb->prepare("SELECT option_value FROM {$wpdb->options} WHERE option_name=%s",$key));
+    $broken=wp_json_encode(array('schema'=>1,'state'=>'draft','generation'=>array('not a string'),'base_hash'=>array(),'fields'=>spike_fields('bad')));
+    spike_assert($wpdb->update($wpdb->options,array('option_value'=>$broken),array('option_name'=>$key))===1,'inject malformed test row');
+    spike_assert(HJ_Profile_Spike_Store::read($pid)['status']==='corrupt','malformed row fails closed without PHP type error');
+    spike_assert($wpdb->update($wpdb->options,array('option_value'=>$original),array('option_name'=>$key))===1,'restore synthetic test row');
+    spike_assert(HJ_Profile_Spike_Store::read($pid)['status']==='ok','restored test row readable');
     echo "PASS synthetic draft CAS, owner isolation, stale writers, submission and public data unchanged\n"; exit;
 }
 exit(1);
