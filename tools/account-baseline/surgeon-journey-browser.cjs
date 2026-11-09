@@ -35,6 +35,42 @@ const base='http://example.invalid';
   res=await ajax('hj_dash_submit',pid,false); assert.equal(res.code,403,'nonce required');
   res=await ajax('hj_dash_submit',info.other); assert.equal(res.code,403,'cannot submit another profile');
   res=await ajax('hj_dash_save',info.other); assert.equal(res.code,403,'cannot save another profile');
+
+  // One synthetic document only. The builtin PHP web server ignores .htaccess;
+  // direct access here demonstrates a deployment-dependent risk, not the live server's configuration.
+  const uploaded=await page.evaluate(async pid=>{
+   const form=new FormData();form.set('action','hj_dash_doc');form.set('pid',String(pid));form.set('_hjn',window.HJ_DASH.nonce);
+   form.set('doc',new File(['%PDF-1.4\n% synthetic CI fixture only\n%%EOF\n'],'fixture.pdf',{type:'application/pdf'}));
+   const r=await fetch('/wp-admin/admin-ajax.php',{method:'POST',body:form});return {status:r.status,body:await r.json()};
+  },pid);
+  assert.equal(uploaded.status,200,JSON.stringify(uploaded));assert.equal(uploaded.body.success,true);
+  const link=await page.evaluate(html=>{const el=document.createElement('div');el.innerHTML=html;return el.querySelector('a').href;},uploaded.body.data.docs_html);
+  let docDownload=await page.evaluate(async link=>(await fetch(link)).status,link);assert.equal(docDownload,200,'owner may download synthetic document');
+  const docsAdmin=await browser.newPage();
+  try {
+   await docsAdmin.goto(base+'/wp-login.php',{waitUntil:'domcontentloaded'});
+   await docsAdmin.locator('#user_login').fill('fixture_admin');await docsAdmin.locator('#user_pass').fill('disposable-password-please-ignore');
+   await Promise.all([docsAdmin.waitForNavigation({waitUntil:'domcontentloaded'}),docsAdmin.locator('#wp-submit').click()]);
+   let state=await docsAdmin.evaluate(async ()=>(await fetch('/wp-admin/admin-post.php?action=hj_fixture_surgeon_journey')).json());
+   assert.equal(state.docs.length,1); const doc=state.docs[0];
+   const stranger=await browser.newPage();
+   try {
+    await stranger.goto(base+'/wp-login.php',{waitUntil:'domcontentloaded'});
+    await stranger.locator('#user_login').fill('responsive_surgeon');await stranger.locator('#user_pass').fill('disposable-password-please-ignore');
+    await Promise.all([stranger.waitForNavigation({waitUntil:'domcontentloaded'}),stranger.locator('#wp-submit').click()]);
+    const nonce=await stranger.evaluate(async ({pid,id})=>{const f=new FormData();f.set('action','hj_fixture_doc_nonce');f.set('pid',pid);f.set('doc',id);return (await (await fetch('/wp-admin/admin-ajax.php',{method:'POST',body:f})).json()).data.nonce;},{pid:String(pid),id:doc.id});
+    const url=new URL(link);url.searchParams.set('_wpnonce',nonce);
+    assert.equal(await stranger.evaluate(async url=>(await fetch(url)).status,url.toString()),403,'valid nonce alone cannot authorize another surgeon');
+   } finally {await stranger.context().close();}
+   const guestDoc=await browser.newContext();
+   try {
+    const g=await guestDoc.newPage();await g.goto(base+'/',{waitUntil:'domcontentloaded'});
+    assert.notEqual(await g.evaluate(async url=>(await fetch(url)).status,link),200,'guest cannot use authenticated handler');
+    const raw=await g.evaluate(async file=>{const r=await fetch('/wp-content/uploads/hj-private/'+file);return {status:r.status,text:await r.text()};},doc.file);
+    assert.equal(raw.status,200,'PHP built-in server exposes synthetic file because it ignores .htaccess');
+    assert.match(raw.text,/synthetic CI fixture only/);
+   } finally {await guestDoc.close();}
+  } finally {await docsAdmin.context().close();}
   await page.locator('input[name=specialty_fa]').fill('جراحی آزمایشی');
   await page.locator('input[name=phone_clinic]').fill('02112345678');
   await page.locator('input[name=address_clinic]').fill('نشانی ساختگی');

@@ -49,5 +49,13 @@ add_action( 'admin_post_hj_fixture_surgeon_journey', function () {
     $data['pid'] = $id;
     $data['status'] = $id ? get_post_status( $id ) : 'missing';
     $data['profile_status'] = $id ? get_post_meta( $id, 'hj_profile_status', true ) : '';
+    $data['docs'] = $id ? get_post_meta( $id, 'hj_private_docs', true ) : array();
     wp_send_json( $data );
+} );
+
+// Generate a nonce bound to the current synthetic account; does not authorize the document.
+add_action( 'wp_ajax_hj_fixture_doc_nonce', function () {
+    $pid = isset($_POST['pid']) ? absint($_POST['pid']) : 0;
+    $doc = isset($_POST['doc']) && is_string($_POST['doc']) ? sanitize_key(wp_unslash($_POST['doc'])) : '';
+    wp_send_json_success( array( 'nonce' => wp_create_nonce('hj_doc_dl_' . $pid . '_' . $doc) ) );
 } );
