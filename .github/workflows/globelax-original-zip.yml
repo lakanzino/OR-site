@@ -1,0 +1,64 @@
+name: Build audited Globe.Lax for Android
+on:
+  push:
+    branches: ['arena/4e2ce6a8-or-site']
+    paths: ['.github/workflows/globelax-original-zip.yml', 'globelax-original/**']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: 'platforms;android-35 build-tools;35.0.0'
+      - name: Build the audited copy of the original ZIP
+        run: |
+          set -euxo pipefail
+          mkdir -p /tmp/original-globelax
+          cp -a globelax-original/. /tmp/original-globelax/
+          cd /tmp/original-globelax
+          npm ci
+          npx tsc --noEmit
+          npm run build
+          python3 tools/verify-audit.py
+          # Preserve the copyright and MIT grant in the packaged assets.
+          cp LICENSE dist/LICENSE.txt
+          cp audit/README.fa.md dist/THIRD-PARTY-NOTICES.txt
+          npm install --no-save --ignore-scripts @capacitor/core@7.6.10 @capacitor/cli@7.6.10 @capacitor/android@7.6.10
+          npx cap init 'Globe.Lax بررسی‌شده' com.globelax.audited --web-dir dist
+          npx cap add android
+          npx cap sync android
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+          cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/Globe.Lax-audited-test.apk"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$GITHUB_WORKSPACE/Globe.Lax-audited-test.apk"
+          sha256sum "$GITHUB_WORKSPACE/Globe.Lax-audited-test.apk"
+      - name: Stage APK for transfer to Drive
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 - <<'PYCODE'
+          import base64, json, os, pathlib, subprocess
+          data = pathlib.Path('Globe.Lax-audited-test.apk').read_bytes()
+          payload = json.dumps({'content': base64.b64encode(data).decode(), 'encoding': 'base64'})
+          sha = subprocess.check_output(['gh', 'api', f"repos/{os.environ['GITHUB_REPOSITORY']}/git/blobs", '-X', 'POST', '--input', '-', '--jq', '.sha'], input=payload, text=True).strip()
+          print(f'::notice title=APK_BLOB::{sha}')
+          PYCODE
+      - name: Upload test APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: GlobeLax-audited-test-apk
+          path: Globe.Lax-audited-test.apk
+          retention-days: 7
