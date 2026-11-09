@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        plugin: ['0.3.22', '0.3.48']
+        plugin: ['0.3.22', '0.3.49']
         acf: ['none', 'free']
     services:
       db:

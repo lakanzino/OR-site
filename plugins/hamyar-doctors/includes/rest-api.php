@@ -930,9 +930,13 @@ class HJ_Doctors_REST {
 
         if (self::ttl() <= 0) { return false; }
 
+        // Capture before a miss is built: a concurrent version bump must not
+        // label an old in-flight item with the newer version when it is cached.
+        $version = self::ver();
+
         $c = get_transient($key);
 
-        if (is_array($c) && isset($c['v']) && array_key_exists('d', $c) && $c['v'] === self::ver()) {
+        if (is_array($c) && isset($c['v']) && array_key_exists('d', $c) && $c['v'] === $version) {
 
             return $c['d'];
 
