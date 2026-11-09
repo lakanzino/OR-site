@@ -5,11 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#040c24" />
     <meta name="description" content="Globe.Lax – آموزش آفلاین کشورها، پایتخت‌ها، پرچم‌ها و واحد پول‌ها برای نوجوانان و جوانان ایران عزیز" />
-    <link rel="icon" type="image/svg+xml" href="/app-logo.svg" />
+    <link rel="icon" type="image/svg+xml" href="./app-logo.svg" />
     <title>Globe.Lax – کشورها و پایتخت‌ها</title>
+    <style>
+      /* Boot screen: shown instantly, removed once React mounts. */
+      html, body { margin: 0; height: 100%; background: #040C24; }
+      #boot {
+        position: fixed; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 18px;
+        background: #040C24; color: #FFC400; z-index: 9999;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        text-align: center; padding: 24px;
+      }
+      #boot .ring {
+        width: 46px; height: 46px; border-radius: 50%;
+        border: 3px solid rgba(255,196,0,.25); border-top-color: #FFC400;
+        animation: spin .9s linear infinite;
+      }
+      #boot .msg { color: #F7F5EE; font-size: 15px; line-height: 1.9; max-width: 34ch; }
+      #boot .err { color: #EF2B3A; font-size: 13px; direction: ltr; text-align: left;
+                   white-space: pre-wrap; word-break: break-word; max-width: 90vw;
+                   font-family: ui-monospace, Menlo, monospace; display: none; }
+      #boot.failed .ring { display: none; }
+      #boot.failed .err { display: block; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
   </head>
   <body>
+    <div id="boot">
+      <div class="ring"></div>
+      <div class="msg" id="boot-msg">در حال آماده‌سازی…</div>
+      <div class="err" id="boot-err"></div>
+    </div>
+
     <div id="root"></div>
+
+    <script>
+      // ── Boot watchdog ──────────────────────────────────────────────────────
+      // If the bundle fails to parse or React never mounts, the user would
+      // otherwise stare at a blank navy screen forever. Surface the real error
+      // instead so it can be reported, and (on the web) keep a retry hint.
+      (function () {
+        var BOOT_MS = 12000;
+        var boot = document.getElementById("boot");
+        var msg = document.getElementById("boot-msg");
+        var err = document.getElementById("boot-err");
+
+        function showError(text) {
+          if (!boot || boot.classList.contains("failed")) return;
+          boot.classList.add("failed");
+          msg.textContent =
+            "برنامه بالا نیامد. لطفاً دوباره باز کنید یا نسخهٔ برنامه را به‌روزرسانی کنید.";
+          err.textContent = String(text || "unknown error").slice(0, 600);
+        }
+
+        window.addEventListener("error", function (e) {
+          showError((e && (e.message || e.error)) || "script error");
+        });
+        window.addEventListener("unhandledrejection", function (e) {
+          showError((e && e.reason) || "unhandled rejection");
+        });
+
+        // React sets this once the first paint is on screen.
+        window.__GLOBELAX_BOOTED__ = function () {
+          if (boot && boot.parentNode) boot.parentNode.removeChild(boot);
+          window.__globelaxBooted = true;
+        };
+
+        setTimeout(function () {
+          if (!window.__globelaxBooted) showError("timeout waiting for the app to start");
+        }, BOOT_MS);
+      })();
+    </script>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

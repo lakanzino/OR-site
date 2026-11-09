@@ -60,6 +60,7 @@ jobs:
           npm run build
           node tools/smoke.mjs
           node tools/e2e-smoke.mjs
+          node tools/boot-guard.mjs
 
       - name: Sync Capacitor Android project
         working-directory: globelax
