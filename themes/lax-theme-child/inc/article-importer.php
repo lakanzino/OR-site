@@ -154,7 +154,6 @@ function hj_importer_get_defaults(): array {
 		array(
 			'status_mode'          => 'draft',        // draft | publish | manifest.
 			'keep_existing_status' => 1,              // Preserve publish status when updating a live post.
-			'draft_on_deficiency'  => 0,              // Force draft if critical image/SEO deficiency exists.
 			'duplicate_mode'       => 'smart_update', // smart_update | warn_skip | create_copy.
 			'update_image'         => 1,              // Replace featured image if SHA-256 differs.
 			'normalize_content'    => 1,              // Normalize 0.10.2 single-sentence disclaimer & tables.
@@ -1397,7 +1396,6 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 			array(
 				'status_mode'          => $defaults['status_mode'],
 				'keep_existing_status' => ! empty( $defaults['keep_existing_status'] ),
-				'draft_on_deficiency'  => ! empty( $defaults['draft_on_deficiency'] ),
 				'duplicate_mode'       => $defaults['duplicate_mode'],
 				'target_post_type'     => 'auto', // auto | specific CPT.
 				'default_cpt_fallback' => 'patient_guide',
@@ -1524,10 +1522,6 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 		}
 
 		$forced_draft_reason = '';
-		if ( 'publish' === $desired_status && ! empty( $opts['draft_on_deficiency'] ) && ! empty( $audit['critical'] ) ) {
-			$desired_status      = 'draft';
-			$forced_draft_reason = 'به دلیل وجود کمبود جدی در تصویر شاخص یا متای سئو و فعال بودن «سپر کیفیت»، مقاله به‌صورت پیش‌نویس ذخیره شد.';
-		}
 
 		// Handle create_copy mode when duplicate exists.
 		if ( $is_duplicate && 'create_copy' === $opts['duplicate_mode'] ) {
@@ -1781,12 +1775,11 @@ function hj_importer_import_package( $zip_path, $source = 'upload', array $optio
 
 		$action_code = $updating_existing ? 'updated' : ( $is_duplicate ? 'created_copy' : 'created' );
 
-		// The publish gate (child 0.16.0) may have demoted a new publish to
-		// draft; report what the database actually holds, not what we asked for.
+		// Report the status actually stored by WordPress, including changes by other code.
 		$actual_status = (string) get_post_status( $post_id );
 		if ( '' !== $actual_status && $actual_status !== $desired_status ) {
 			$forced_draft_reason = trim(
-				$forced_draft_reason . ' دروازهٔ انتشار (قالب ۰٫۱۶) انتشار را نپذیرفت و مقاله پیش‌نویس ماند؛ باکس «دروازهٔ انتشار» در ویرایشگر دلیل را نشان می‌دهد.'
+				$forced_draft_reason . ' وضعیت ذخیره‌شده با وضعیت درخواستی متفاوت است؛ مجوزها و افزونه‌های دیگر را بررسی کنید.'
 			);
 			$desired_status      = $actual_status;
 		}
@@ -1912,7 +1905,6 @@ function hj_importer_handle_request() {
 	}
 
 	$keep_existing_status = ! empty( $_POST['keep_existing_status'] ) ? 1 : 0;
-	$draft_on_deficiency  = ! empty( $_POST['draft_on_deficiency'] ) ? 1 : 0;
 	$update_image         = ! empty( $_POST['update_image'] ) ? 1 : 0;
 	$normalize_content    = ! empty( $_POST['normalize_content'] ) ? 1 : 0;
 	$purge_cache          = ! empty( $_POST['purge_cache'] ) ? 1 : 0;
@@ -1924,7 +1916,6 @@ function hj_importer_handle_request() {
 			array(
 				'status_mode'          => $status_mode,
 				'keep_existing_status' => $keep_existing_status,
-				'draft_on_deficiency'  => $draft_on_deficiency,
 				'duplicate_mode'       => $duplicate_mode,
 				'update_image'         => $update_image,
 				'normalize_content'    => $normalize_content,
@@ -1952,7 +1943,6 @@ function hj_importer_handle_request() {
 	$import_opts = array(
 		'status_mode'          => $status_mode,
 		'keep_existing_status' => (bool) $keep_existing_status,
-		'draft_on_deficiency'  => (bool) $draft_on_deficiency,
 		'duplicate_mode'       => $duplicate_mode,
 		'target_post_type'     => $target_post_type,
 		'default_cpt_fallback' => '' !== $return_cpt ? $return_cpt : 'patient_guide',
@@ -2442,10 +2432,8 @@ function hj_importer_render_page() {
 							<input type="checkbox" name="keep_existing_status" value="1" <?php checked( ! empty( $defaults['keep_existing_status'] ) ); ?>>
 							در صورت آپدیت مقاله‌ی از پیش موجود، وضعیت فعلی آن (منتشرشده/پیش‌نویس) تغییر نکند
 						</label>
-						<label class="hj-imp-check">
-							<input type="checkbox" name="draft_on_deficiency" value="1" <?php checked( ! empty( $defaults['draft_on_deficiency'] ) ); ?>>
-							<strong>سپر کیفیت:</strong> اگر تصویر شاخص یا متای سئو کسری مهم داشت، خودکار پیش‌نویس شود
-						</label>
+						<p class="description">کمبودهای تصویر و سئو فقط گزارش می‌شوند و وضعیت انتخاب‌شده را تغییر نمی‌دهند.</p>
+						<p class="description">بسته‌های دارای تصاویر داخلی برای حفظ یکپارچگی رسانه ابتدا به صورت پیش‌نویس وارد می‌شوند؛ سپس می‌توانید آن‌ها را از ویرایشگر منتشر کنید.</p>
 					</div>
 
 					<div class="hj-imp-opt-box">
