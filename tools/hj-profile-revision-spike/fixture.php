@@ -5,6 +5,7 @@ define('HJ_PROFILE_REVISION_SPIKE', true);
 require '/wordpress/wp-load.php';
 if ( DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || WP_HOME !== 'http://example.invalid' || $GLOBALS['wpdb']->prefix !== 'hjt_' || HJ_DOCTORS_VERSION !== (getenv('HJ_SPIKE_VERSION') ?: '0.3.22') ) { exit(1); }
 require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/store.php';
+require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/snapshot.php';
 function spike_assert($condition,$message) { if (!$condition) { throw new RuntimeException($message); } }
 function spike_fields($name) {
     return array('name_fa'=>$name,'name_en'=>'','specialty_fa'=>'جراحی نمونه','specialty_en'=>'','bio_fa'=>'','bio_en'=>'','medical_license'=>'','experience_years'=>'','education'=>'','surgeries_performed'=>'','phone_clinic'=>'','phone_mobile'=>'','address_clinic'=>'','address_hospital'=>'','map_link'=>'');
@@ -46,6 +47,32 @@ if ($mode === 'publication-probe') {
         $wpdb->query('ROLLBACK'); remove_action('updated_post_meta',$hook,10); $reader->close(); if (is_file($marker)) { unlink($marker); }
     }
     exit;
+}
+if ($mode === 'snapshot-probe') {
+    $uid=get_user_by('login','surgeon_fixture')->ID; $other=get_user_by('login','normal_fixture')->ID; $admin=get_user_by('login','fixture_admin')->ID;
+    $pid=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'Synthetic snapshot','post_author'=>$uid),true);
+    spike_assert(!is_wp_error($pid) && $pid>0,'snapshot fixture');
+    update_post_meta($pid,'name_fa','نام نخست');
+    wp_set_current_user($uid); $first=HJ_Profile_Spike_Snapshot::fingerprint($pid);
+    spike_assert($first['status']==='ok' && $first===HJ_Profile_Spike_Snapshot::fingerprint($pid),'stable fingerprint');
+    wp_set_current_user($other); spike_assert(HJ_Profile_Spike_Snapshot::fingerprint($pid)['status']==='forbidden','other surgeon cannot read fingerprint');
+    wp_set_current_user(0); spike_assert(HJ_Profile_Spike_Snapshot::fingerprint($pid)['status']==='forbidden','guest cannot read fingerprint');
+    wp_set_current_user($admin); spike_assert(HJ_Profile_Spike_Snapshot::fingerprint($pid)===$first,'approver sees same fingerprint');
+    update_post_meta($pid,'name_fa','نام تغییرکرده'); $second=HJ_Profile_Spike_Snapshot::fingerprint($pid);
+    spike_assert($second['status']==='ok' && $second['hash']!==$first['hash'],'published name change detected');
+    wp_update_post(array('ID'=>$pid,'post_title'=>'Changed synthetic title'));
+    $third=HJ_Profile_Spike_Snapshot::fingerprint($pid); spike_assert($third['hash']!==$second['hash'],'title change detected');
+    $city=wp_insert_term('شهر ساختگی اثر انگشت','city',array('slug'=>'spike-snapshot-city'));
+    spike_assert(!is_wp_error($city),'synthetic city');
+    spike_assert(!is_wp_error(wp_set_object_terms($pid,array((int)$city['term_id']),'city')),'assign synthetic city');
+    $fourth=HJ_Profile_Spike_Snapshot::fingerprint($pid); spike_assert($fourth['hash']!==$third['hash'],'term change detected');
+    update_post_meta($pid,'profile_photo',12345); $fifth=HJ_Profile_Spike_Snapshot::fingerprint($pid);
+    spike_assert($fifth['hash']!==$fourth['hash'],'photo reference change detected');
+    update_post_meta($pid,'working_hours',array('unreviewed synthetic value'));
+    spike_assert(HJ_Profile_Spike_Snapshot::fingerprint($pid)===$fifth,'known limitation: schedule is outside this partial fingerprint');
+    update_post_meta($pid,'name_fa',array('malformed fixture'));
+    spike_assert(HJ_Profile_Spike_Snapshot::fingerprint($pid)['status']==='unavailable','non-scalar fields fail closed');
+    echo "PASS partial server-side fingerprint detects tested text, title, terms and photo reference changes; schedule excluded\n"; exit;
 }
 if ($mode === 'setup') {
     $uid=get_user_by('login','surgeon_fixture')->ID; $other=get_user_by('login','normal_fixture')->ID; $admin=get_user_by('login','fixture_admin')->ID;
