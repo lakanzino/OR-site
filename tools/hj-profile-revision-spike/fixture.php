@@ -62,9 +62,28 @@ if ($mode === 'lost-verify') {
     spike_assert(HJ_Profile_Spike_Store::change($pid,$old,spike_fields('پاسخ ساختگی گم شده'))['status']==='conflict','retry cannot establish its own outcome: open idempotency debt');
     echo "PASS counterexample: committed update, lost response, retry conflicts; idempotency unresolved\n"; exit;
 }
+if ($mode === 'receipt-worker') {
+    $pid=(int)$argv[2]; $uid=(int)$argv[3]; $path=$argv[4]; wp_set_current_user($uid);
+    $r=HJ_Profile_Spike_Store::read($pid); spike_assert($r['status']==='ok' && $r['data']['state']==='draft','receipt fixture needs draft');
+    file_put_contents($path,$r['data']['generation']);
+    add_action('hj_profile_spike_after_cas',function() { exit(0); });
+    HJ_Profile_Spike_Store::change_once($pid,$r['data']['generation'],spike_fields('ویرایش دارای رسید'),str_repeat('b',32));
+    throw new RuntimeException('receipt response-loss hook not reached');
+}
+if ($mode === 'receipt-verify') {
+    $pid=(int)$argv[2]; $uid=(int)$argv[3]; $path=$argv[4]; wp_set_current_user($uid);
+    $old=file_get_contents($path); $r=HJ_Profile_Spike_Store::read($pid);
+    spike_assert($r['status']==='ok' && $r['data']['fields']['name_fa']==='ویرایش دارای رسید','receipt edit persisted');
+    $replay=HJ_Profile_Spike_Store::change_once($pid,$old,spike_fields('ویرایش دارای رسید'),str_repeat('b',32));
+    spike_assert($replay['status']==='replayed' && $replay['generation']===$r['data']['generation'],'same key and payload recovers outcome');
+    spike_assert(HJ_Profile_Spike_Store::change_once($pid,$old,spike_fields('بار متفاوت'),str_repeat('b',32))['status']==='key_conflict','same key different payload rejected');
+    spike_assert(HJ_Profile_Spike_Store::change_once($pid,$old,spike_fields('ویرایش دارای رسید'),str_repeat('c',32))['status']==='conflict','new key cannot reuse stale generation');
+    spike_assert(HJ_Profile_Spike_Store::read($pid)['data']['generation']===$r['data']['generation'],'replays do not mutate state');
+    echo "PASS one synthetic text edit recovers lost response with bounded non-evicting receipt\n"; exit;
+}
 if ($mode === 'verify') {
     $pid=(int)$argv[2]; $uid=(int)$argv[3]; wp_set_current_user($uid);
-    $r=HJ_Profile_Spike_Store::read($pid); spike_assert($r['status']==='ok' && in_array($r['data']['fields']['name_fa'],array('رقابت a','رقابت b','پاسخ ساختگی گم شده'),true),'one winner persisted');
+    $r=HJ_Profile_Spike_Store::read($pid); spike_assert($r['status']==='ok' && in_array($r['data']['fields']['name_fa'],array('رقابت a','رقابت b','پاسخ ساختگی گم شده','ویرایش دارای رسید'),true),'one winner persisted');
     spike_assert(get_post_meta($pid,'name_fa',true)==='نام عمومی' && get_post_status($pid)==='publish','race did not change published profile');
     $gen=$r['data']['generation'];
     $cut = function ($post_id, $session) {

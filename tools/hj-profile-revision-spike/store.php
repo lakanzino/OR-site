@@ -94,6 +94,48 @@ final class HJ_Profile_Spike_Store {
             return $n===1 ? array('status'=>'saved','data'=>$data) : array('status'=>'conflict');
         } finally { $db->close(); }
     }
+    /**
+     * Research-only receipt experiment for a text edit, not submission or approval.
+     * Receipts are never silently evicted; capacity exhaustion fails closed.
+     */
+    public static function change_once( $pid, $expected, $fields, $operation ) {
+        global $wpdb;
+        $pid=(int)$pid;
+        if (!self::authorized($pid,true)) { return array('status'=>'forbidden'); }
+        if (!is_string($expected) || !preg_match('/^[a-f0-9]{32}$/D',$expected) || !is_string($operation) || !preg_match('/^[a-f0-9]{32}$/D',$operation)) { return array('status'=>'invalid'); }
+        $fields=self::text_payload($fields); if ($fields===false) { return array('status'=>'invalid'); }
+        $sig=hash('sha256',wp_json_encode(array('edit',get_current_user_id(),$pid,$expected,$fields),JSON_UNESCAPED_UNICODE));
+        $key=hash('sha256',$operation);
+        $db=self::db(); if (!$db) { return array('status'=>'unavailable'); }
+        try {
+            $current=self::raw($db,$pid); if ($current['status']!=='ok') { return array('status'=>$current['status']); }
+            $data=$current['data']; $receipts=$data['receipts'] ?? array();
+            if (!is_array($receipts) || count($receipts)>32) { return array('status'=>'corrupt'); }
+            foreach ($receipts as $receipt) {
+                if (!is_array($receipt) || !is_string($receipt['key'] ?? null) || !preg_match('/^[a-f0-9]{64}$/D',$receipt['key']) || !is_string($receipt['signature'] ?? null) || !preg_match('/^[a-f0-9]{64}$/D',$receipt['signature']) || !is_string($receipt['generation'] ?? null) || !preg_match('/^[a-f0-9]{32}$/D',$receipt['generation'])) { return array('status'=>'corrupt'); }
+                if (hash_equals($receipt['key'],$key)) { return hash_equals($receipt['signature'],$sig) ? array('status'=>'replayed','generation'=>$receipt['generation']) : array('status'=>'key_conflict'); }
+            }
+            if (count($receipts)===32) { return array('status'=>'receipt_capacity'); }
+            if ($data['generation']!==$expected || !in_array($data['state'],array('draft','rejected'),true)) { return array('status'=>'conflict'); }
+            $data['fields']=$fields; $data['state']='draft'; unset($data['review_note']);
+            $data['generation']=bin2hex(random_bytes(16));
+            $data['receipts'][]=array('key'=>$key,'signature'=>$sig,'generation'=>$data['generation']);
+            $json=wp_json_encode($data,JSON_UNESCAPED_UNICODE); if (!is_string($json)) { return array('status'=>'invalid'); }
+            do_action('hj_profile_spike_before_cas',$pid,$db);
+            $n=$db->query($db->prepare("UPDATE `{$wpdb->options}` SET option_value=%s WHERE option_name=%s AND BINARY option_value=BINARY %s",$json,self::key($pid),$current['raw']));
+            if ($n===false) { return array('status'=>'unknown'); }
+            if ($n===1) { do_action('hj_profile_spike_after_cas',$pid,$db); return array('status'=>'saved','generation'=>$data['generation']); }
+            // A concurrent identical request may have just stored this receipt.
+            $current=self::raw($db,$pid); if ($current['status']!=='ok') { return array('status'=>$current['status']); }
+            $receipts=$current['data']['receipts'] ?? array();
+            if (!is_array($receipts)) { return array('status'=>'corrupt'); }
+            foreach ($receipts as $receipt) {
+                if (!is_array($receipt) || !is_string($receipt['key'] ?? null) || !is_string($receipt['signature'] ?? null) || !is_string($receipt['generation'] ?? null)) { return array('status'=>'corrupt'); }
+                if (hash_equals($receipt['key'],$key)) { return hash_equals($receipt['signature'],$sig) ? array('status'=>'replayed','generation'=>$receipt['generation']) : array('status'=>'key_conflict'); }
+            }
+            return array('status'=>'conflict');
+        } finally { $db->close(); }
+    }
     public static function change( $pid, $expected, $fields, $submit = false ) {
         global $wpdb;
         $pid=(int)$pid;

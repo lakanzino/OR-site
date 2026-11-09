@@ -30,5 +30,11 @@ with tempfile.TemporaryDirectory(prefix='hj-profile-lost-') as temp:
     if worker.stdout.strip() or worker.stderr.strip(): raise AssertionError('expected deliberately lost response')
     lost=subprocess.run(['php',script,'lost-verify',str(values['pid']),str(values['uid']),token_file],check=True,text=True,capture_output=True)
     print(lost.stdout.strip())
+with tempfile.TemporaryDirectory(prefix='hj-profile-receipt-') as temp:
+    token_file=str(pathlib.Path(temp)/'generation')
+    worker=subprocess.run(['php',script,'receipt-worker',str(values['pid']),str(values['uid']),token_file],check=True,text=True,capture_output=True,timeout=30)
+    if worker.stdout.strip() or worker.stderr.strip(): raise AssertionError('expected deliberately lost receipt response')
+    recovered=subprocess.run(['php',script,'receipt-verify',str(values['pid']),str(values['uid']),token_file],check=True,text=True,capture_output=True)
+    print(recovered.stdout.strip())
 verify=subprocess.run(['php',script,'verify',str(values['pid']),str(values['uid'])],check=True,text=True,capture_output=True)
 print(verify.stdout.strip())
