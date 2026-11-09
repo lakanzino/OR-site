@@ -93,9 +93,14 @@ with tempfile.TemporaryDirectory(prefix='hj-role-lock-') as temp:
         while not (pathlib.Path(temp)/'revoke-ready').exists():
             if revoke.poll() is not None or time.monotonic()>=deadline: raise RuntimeError('role revocation did not start')
             time.sleep(.01)
-        # The role update must not complete while the writer owns the row lock.
-        time.sleep(.3)
-        if revoke.poll() is not None: raise AssertionError('revocation completed while role row was locked')
+        # Observe the actual UPDATE on the revocation connection, not merely a sleeping process.
+        connection=(pathlib.Path(temp)/'revoke-ready').read_text().strip()
+        if not connection.isdigit(): raise RuntimeError('invalid revocation connection id')
+        deadline=time.monotonic()+10
+        while True:
+            if revoke.poll() is not None or time.monotonic()>=deadline: raise AssertionError('revocation UPDATE did not wait on locked row')
+            probe=subprocess.run(['php',script,'guard-check',connection],check=True,text=True,capture_output=True,timeout=10)
+            if probe.stdout.strip()=='waiting': break
         (pathlib.Path(temp)/'release').touch()
         out,err=writer.communicate(timeout=30)
         if writer.returncode or json.loads(out)['status']!='saved': raise RuntimeError(f'guarded writer failed {out} {err}')

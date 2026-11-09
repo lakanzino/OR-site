@@ -129,7 +129,13 @@ if ($mode === 'guard-worker') {
 if ($mode === 'guard-revoke') {
     $uid=(int)$argv[2]; $dir=$argv[3]; $user=get_userdata($uid);
     spike_assert($user instanceof WP_User && $user->user_login==='spike_guarded_surgeon','refuse nonfixture user');
-    file_put_contents($dir.'/revoke-ready','1'); $user->set_role('subscriber'); echo "revoked\n"; exit;
+    global $wpdb; $connection=(int)$wpdb->get_var('SELECT CONNECTION_ID()'); spike_assert($connection>0,'revocation connection');
+    file_put_contents($dir.'/revoke-ready',(string)$connection); $user->set_role('subscriber'); echo "revoked\n"; exit;
+}
+if ($mode === 'guard-check') {
+    global $wpdb; $connection=(int)$argv[2];
+    $info=$wpdb->get_var($wpdb->prepare('SELECT INFO FROM information_schema.PROCESSLIST WHERE ID=%d',$connection));
+    echo is_string($info) && preg_match('/^UPDATE\s+`?'.preg_quote($wpdb->usermeta,'/').'`?\s+/i',$info) ? "waiting\n" : "not-waiting\n"; exit;
 }
 if ($mode === 'guard-verify') {
     $uid=(int)$argv[2]; $option=$argv[3]; $user=get_userdata($uid);
