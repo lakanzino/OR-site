@@ -50,7 +50,7 @@ final class HJ_Profile_Spike_Store {
         if ( $db->last_error ) { return array('status'=>'unknown'); }
         if ( $raw === null ) { return array('status'=>'missing'); }
         $data = json_decode($raw, true);
-        if ( ! is_array($data) || ($data['schema'] ?? null) !== 1 || ! in_array($data['state'] ?? '', array('draft','submitted'), true) || ! preg_match('/^[a-f0-9]{32}$/D', $data['generation'] ?? '') || ! preg_match('/^[a-f0-9]{64}$/D', $data['base_hash'] ?? '') || self::text_payload($data['fields'] ?? null) === false ) { return array('status'=>'corrupt'); }
+        if ( ! is_array($data) || ($data['schema'] ?? null) !== 1 || ! in_array($data['state'] ?? '', array('draft','submitted','rejected'), true) || ! preg_match('/^[a-f0-9]{32}$/D', $data['generation'] ?? '') || ! preg_match('/^[a-f0-9]{64}$/D', $data['base_hash'] ?? '') || self::text_payload($data['fields'] ?? null) === false ) { return array('status'=>'corrupt'); }
         return array('status'=>'ok','raw'=>$raw,'data'=>$data);
     }
     public static function read( $pid ) {
@@ -74,6 +74,25 @@ final class HJ_Profile_Spike_Store {
             return $n === 1 ? array('status'=>'saved','data'=>$data) : array('status'=>'conflict');
         } finally { $db->close(); }
     }
+    /** Reject only the exact submitted generation; does not publish anything. */
+    public static function reject( $pid, $expected, $note ) {
+        global $wpdb;
+        $pid=(int)$pid;
+        if ( ! is_user_logged_in() || get_post_type($pid)!=='doctor' || get_post_status($pid)!=='publish' || ! hj_doctors_user_can_manage('approve') ) { return array('status'=>'forbidden'); }
+        if ( ! is_string($expected) || ! preg_match('/^[a-f0-9]{32}$/D',$expected) || ! is_string($note) || strlen($note)>2000 || ! preg_match('//u',$note) ) { return array('status'=>'invalid'); }
+        $db=self::db(); if (!$db) { return array('status'=>'unavailable'); }
+        try {
+            $current=self::raw($db,$pid); if ($current['status']!=='ok') { return array('status'=>$current['status']); }
+            $data=$current['data'];
+            if ($data['generation']!==$expected || $data['state']!=='submitted') { return array('status'=>'conflict'); }
+            $data['generation']=bin2hex(random_bytes(16)); $data['state']='rejected'; $data['review_note']=sanitize_textarea_field($note);
+            $json=wp_json_encode($data,JSON_UNESCAPED_UNICODE); if (!is_string($json)) { return array('status'=>'invalid'); }
+            do_action('hj_profile_spike_before_cas',$pid);
+            $n=$db->query($db->prepare("UPDATE `{$wpdb->options}` SET option_value=%s WHERE option_name=%s AND BINARY option_value=BINARY %s",$json,self::key($pid),$current['raw']));
+            if ($n===false) { return array('status'=>'unknown'); }
+            return $n===1 ? array('status'=>'saved','data'=>$data) : array('status'=>'conflict');
+        } finally { $db->close(); }
+    }
     public static function change( $pid, $expected, $fields, $submit = false ) {
         global $wpdb;
         $pid=(int)$pid;
@@ -84,8 +103,9 @@ final class HJ_Profile_Spike_Store {
         try {
             $current=self::raw($db,$pid); if ($current['status'] !== 'ok') { return array('status'=>$current['status']); }
             $data=$current['data'];
-            if ($data['generation'] !== $expected || $data['state'] !== 'draft') { return array('status'=>'conflict'); }
-            if ($submit) { $data['state']='submitted'; } else { $data['fields']=$fields; }
+            if ($data['generation'] !== $expected || ! in_array($data['state'],array('draft','rejected'),true)) { return array('status'=>'conflict'); }
+            if ($submit) { $data['state']='submitted'; } else { $data['fields']=$fields; $data['state']='draft'; }
+            unset($data['review_note']);
             $data['generation']=bin2hex(random_bytes(16));
             $json=wp_json_encode($data,JSON_UNESCAPED_UNICODE); if (! is_string($json)) { return array('status'=>'invalid'); }
             // The hook exists only in this isolated spike, for a deterministic race barrier.

@@ -53,6 +53,16 @@ if ($mode === 'verify') {
     $gen=$r['data']['generation'];
     $submitted=HJ_Profile_Spike_Store::change($pid,$gen,null,true); spike_assert($submitted['status']==='saved' && $submitted['data']['state']==='submitted','submission freezes snapshot');
     spike_assert(HJ_Profile_Spike_Store::change($pid,$submitted['data']['generation'],spike_fields('دستکاری'))['status']==='conflict','submitted snapshot immutable');
+    spike_assert(HJ_Profile_Spike_Store::reject($pid,$submitted['data']['generation'],'اصلاح شود')['status']==='forbidden','owner cannot reject');
+    wp_set_current_user(get_user_by('login','fixture_admin')->ID);
+    $rejected=HJ_Profile_Spike_Store::reject($pid,$submitted['data']['generation'],'اصلاح شود');
+    spike_assert($rejected['status']==='saved' && $rejected['data']['state']==='rejected' && $rejected['data']['review_note']==='اصلاح شود','admin rejects exact generation');
+    spike_assert(HJ_Profile_Spike_Store::reject($pid,$submitted['data']['generation'],'بار دوم')['status']==='conflict','stale moderation rejected');
+    wp_set_current_user($uid);
+    $updated=HJ_Profile_Spike_Store::change($pid,$rejected['data']['generation'],spike_fields('اصلاح شده'));
+    spike_assert($updated['status']==='saved' && $updated['data']['state']==='draft' && !isset($updated['data']['review_note']),'rejected draft can be corrected');
+    spike_assert(HJ_Profile_Spike_Store::change($pid,$updated['data']['generation'],null,true)['data']['state']==='submitted','corrected draft can be resubmitted');
+    spike_assert(get_post_meta($pid,'name_fa',true)==='نام عمومی' && get_post_status($pid)==='publish','reject and correction never alter public profile');
     echo "PASS synthetic draft CAS, owner isolation, stale writers, submission and public data unchanged\n"; exit;
 }
 exit(1);
