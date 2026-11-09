@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="s" cx="35%" cy="28%" r="80%">
+      <stop offset="0" stop-color="#4C78F0"/><stop offset="0.45" stop-color="#14307F"/><stop offset="1" stop-color="#050F33"/>
+    </radialGradient>
+    <linearGradient id="y" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE680"/><stop offset="1" stop-color="#FFB800"/></linearGradient>
+    <linearGradient id="r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF5461"/><stop offset="1" stop-color="#C4101E"/></linearGradient>
+    <radialGradient id="g" cx="32%" cy="22%" r="45%"><stop offset="0" stop-color="#fff" stop-opacity="0.75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <clipPath id="c"><circle cx="256" cy="256" r="178"/></clipPath>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#071544"/>
+  <ellipse cx="256" cy="448" rx="150" ry="22" fill="#000" opacity="0.35"/>
+  <circle cx="256" cy="256" r="178" fill="url(#s)"/>
+  <g clip-path="url(#c)">
+    <path d="M110 190c30-40 80-58 118-44 18 8 6 34-14 44-22 12-18 40-44 46-26 6-48-8-60-46z" fill="url(#y)"/>
+    <path d="M268 250c34-8 70 6 98 36 26 30 22 70-4 96-18 18-42 20-54-2-14-26-34-30-44-56-8-22-6-64 4-74z" fill="url(#y)"/>
+    <path d="M300 120c22-10 54-4 74 18-24 4-34 22-52 26-14 4-34-10-22-44z" fill="url(#r)"/>
+    <g fill="none" stroke="#fff" stroke-opacity="0.14" stroke-width="3">
+      <ellipse cx="256" cy="256" rx="178" ry="70"/><ellipse cx="256" cy="256" rx="70" ry="178"/><line x1="78" y1="256" x2="434" y2="256"/>
+    </g>
+  </g>
+  <circle cx="256" cy="256" r="178" fill="url(#g)"/>
+  <ellipse cx="256" cy="256" rx="226" ry="64" fill="none" stroke="url(#r)" stroke-width="18" stroke-linecap="round" transform="rotate(-24 256 256)" stroke-dasharray="330 600" stroke-dashoffset="-70"/>
+  <ellipse cx="256" cy="256" rx="226" ry="64" fill="none" stroke="url(#y)" stroke-width="10" stroke-linecap="round" transform="rotate(-24 256 256)" stroke-dasharray="250 800" stroke-dashoffset="-520"/>
+  <circle cx="256" cy="256" r="178" fill="none" stroke="#fff" stroke-opacity="0.2" stroke-width="3"/>
+</svg>
