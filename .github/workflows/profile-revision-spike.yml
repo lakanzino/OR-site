@@ -1,0 +1,95 @@
+name: Isolated profile revision prototype
+on:
+  push:
+    paths:
+      - 'tools/hj-profile-revision-spike/**'
+      - 'plugins/hamyar-doctors/**'
+      - 'releases/hamyar-doctors-0.3.22.zip'
+      - '.github/workflows/profile-revision-spike.yml'
+  pull_request:
+    paths:
+      - 'tools/hj-profile-revision-spike/**'
+      - 'plugins/hamyar-doctors/**'
+      - 'releases/hamyar-doctors-0.3.22.zip'
+      - '.github/workflows/profile-revision-spike.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  spike:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        plugin: ['0.3.22', '0.3.48']
+        acf: ['none', 'free']
+    services:
+      db:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: fixture_root_password
+          MARIADB_DATABASE: hj_fixture_db
+          MARIADB_USER: fixture_user
+          MARIADB_PASSWORD: fixture_only_password
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s --health-timeout=5s --health-retries=20
+    env:
+      HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+      HJ_SPIKE_VERSION: ${{ matrix.plugin }}
+      HJ_SPIKE_ACF: ${{ matrix.acf }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mysqli
+          coverage: none
+      - name: Set up disposable WordPress
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/wp"
+          curl --fail --location --silent --show-error --max-time 120 https://codeload.github.com/WordPress/WordPress/zip/refs/tags/7.1.4 -o "$RUNNER_TEMP/wp/wordpress.zip"
+          echo '9de885e4f00ae95549e7e599bbaff4333cbcfd77425cabb24e088adf6dd6f848  '"$RUNNER_TEMP/wp/wordpress.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/wp/wordpress.zip" -d "$RUNNER_TEMP/wp"
+          sudo ln -s "$RUNNER_TEMP/wp/WordPress-7.1.4" /wordpress
+          if [ "$HJ_SPIKE_VERSION" = '0.3.22' ]; then
+            unzip -q releases/hamyar-doctors-0.3.22.zip -d /wordpress/wp-content/plugins
+          else
+            ln -s "$GITHUB_WORKSPACE/plugins/hamyar-doctors" /wordpress/wp-content/plugins/hamyar-doctors
+          fi
+          if [ "$HJ_SPIKE_ACF" = 'free' ]; then
+            ACF_SHA=dae1d08f9da899a3386db5c479c91bb70ea96148
+            curl --fail --location --silent --show-error --max-time 120 "https://codeload.github.com/AdvancedCustomFields/acf/zip/$ACF_SHA" -o "$RUNNER_TEMP/wp/acf.zip"
+            echo 'aa22ad6c8c680146707c3869b8cc7a6c06d689523dfb2f640b7f40751b618352  '"$RUNNER_TEMP/wp/acf.zip" | sha256sum -c -
+            unzip -q "$RUNNER_TEMP/wp/acf.zip" -d "$RUNNER_TEMP/wp"
+            ln -s "$RUNNER_TEMP/wp/acf-$ACF_SHA" /wordpress/wp-content/plugins/advanced-custom-fields
+          fi
+          cat > /wordpress/wp-config.php <<'PHP'
+          <?php
+          define('DB_NAME', 'hj_fixture_db');
+          define('DB_USER', 'fixture_user');
+          define('DB_PASSWORD', 'fixture_only_password');
+          define('DB_HOST', '127.0.0.1:3306');
+          define('DB_CHARSET', 'utf8mb4');
+          define('DB_COLLATE', '');
+          define('WP_HOME', 'http://example.invalid');
+          define('WP_SITEURL', 'http://example.invalid');
+          define('AUTH_KEY', 'fixture-only-not-a-secret');
+          define('SECURE_AUTH_KEY', 'fixture-only-not-a-secret-2');
+          define('LOGGED_IN_KEY', 'fixture-only-not-a-secret-3');
+          define('NONCE_KEY', 'fixture-only-not-a-secret-4');
+          define('AUTH_SALT', 'fixture-only-not-a-secret-5');
+          define('SECURE_AUTH_SALT', 'fixture-only-not-a-secret-6');
+          define('LOGGED_IN_SALT', 'fixture-only-not-a-secret-7');
+          define('NONCE_SALT', 'fixture-only-not-a-secret-8');
+          $table_prefix = 'hjt_';
+          if (!defined('ABSPATH')) { define('ABSPATH', __DIR__ . '/'); }
+          require_once ABSPATH . 'wp-settings.php';
+          PHP
+      - name: Run synthetic draft workflow and concurrent writers
+        run: |
+          set -euo pipefail
+          output=$(bash -e -c 'php tools/hamyar-php-review/mariadb-fixture.php install; if [ "$HJ_SPIKE_ACF" = free ]; then php tools/hj-profile-revision-spike/activate-acf.php; fi; php tools/hj-profile-revision-spike/setup.php; php -l tools/hj-profile-revision-spike/store.php; python3 tools/hj-profile-revision-spike/race.py; php tools/hj-profile-revision-spike/fixture.php publication-probe; php tools/hj-profile-revision-spike/fixture.php snapshot-probe; php tools/hj-profile-revision-spike/fixture.php preflight-probe; php tools/hj-profile-revision-spike/fixture.php acf-probe' 2>&1) || { echo "$output"; echo "::error title=Isolated profile spike::$(echo "$output" | tail -c 3000 | tr "\n" " ")"; exit 1; }
+          echo "$output"
