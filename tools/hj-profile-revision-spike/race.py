@@ -36,5 +36,25 @@ with tempfile.TemporaryDirectory(prefix='hj-profile-receipt-') as temp:
     if worker.stdout.strip() or worker.stderr.strip(): raise AssertionError('expected deliberately lost receipt response')
     recovered=subprocess.run(['php',script,'receipt-verify',str(values['pid']),str(values['uid']),token_file],check=True,text=True,capture_output=True)
     print(recovered.stdout.strip())
+token=subprocess.run(['php',script,'receipt-race-token',str(values['pid']),str(values['uid'])],check=True,text=True,capture_output=True).stdout.strip()
+with tempfile.TemporaryDirectory(prefix='hj-receipt-race-') as temp:
+    workers=[subprocess.Popen(['php',script,'receipt-race-worker',str(values['pid']),str(values['uid']),token,temp,label],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True) for label in ('a','b')]
+    try:
+        deadline=time.monotonic()+25
+        while not all((pathlib.Path(temp)/('ready-'+label)).exists() for label in ('a','b')):
+            if any(p.poll() is not None for p in workers) or time.monotonic()>=deadline: raise RuntimeError('receipt workers did not reach barrier')
+            time.sleep(.01)
+        (pathlib.Path(temp)/'release').touch()
+        results=[]
+        for p in workers:
+            stdout,stderr=p.communicate(timeout=30)
+            if p.returncode: raise RuntimeError(f'receipt worker failure: {stderr} {stdout}')
+            results.append(json.loads(stdout.strip()))
+        if sorted(r['status'] for r in results)!=['replayed','saved'] or results[0]['generation']!=results[1]['generation']:
+            raise AssertionError(f'concurrent receipt mismatch {results}')
+        print('PASS simultaneous identical requests share one receipt and generation')
+    finally:
+        for p in workers:
+            if p.poll() is None: p.kill(); p.wait()
 verify=subprocess.run(['php',script,'verify',str(values['pid']),str(values['uid'])],check=True,text=True,capture_output=True)
 print(verify.stdout.strip())

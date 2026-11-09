@@ -81,11 +81,36 @@ if ($mode === 'receipt-verify') {
     spike_assert(HJ_Profile_Spike_Store::read($pid)['data']['generation']===$r['data']['generation'],'replays do not mutate state');
     echo "PASS one synthetic text edit recovers lost response with bounded non-evicting receipt\n"; exit;
 }
+if ($mode === 'receipt-race-token') {
+    $pid=(int)$argv[2]; $uid=(int)$argv[3]; wp_set_current_user($uid);
+    $r=HJ_Profile_Spike_Store::read($pid); spike_assert($r['status']==='ok' && $r['data']['state']==='draft','receipt race requires draft');
+    echo $r['data']['generation'],"\n"; exit;
+}
+if ($mode === 'receipt-race-worker') {
+    $pid=(int)$argv[2]; $uid=(int)$argv[3]; $token=$argv[4]; $dir=$argv[5]; $label=$argv[6]; wp_set_current_user($uid);
+    if (!preg_match('/^[ab]$/D',$label) || !is_dir($dir)) { exit(1); }
+    add_action('hj_profile_spike_before_cas',function() use ($dir,$label) {
+        file_put_contents($dir.'/ready-'.$label,'1'); $deadline=microtime(true)+20;
+        while (!file_exists($dir.'/release')) { if (microtime(true)>$deadline) { throw new RuntimeException('receipt race barrier timeout'); } usleep(10000); }
+    });
+    echo json_encode(HJ_Profile_Spike_Store::change_once($pid,$token,spike_fields('درخواست همزمان یکسان'),str_repeat('d',32))),"\n"; exit;
+}
 if ($mode === 'verify') {
     $pid=(int)$argv[2]; $uid=(int)$argv[3]; wp_set_current_user($uid);
-    $r=HJ_Profile_Spike_Store::read($pid); spike_assert($r['status']==='ok' && in_array($r['data']['fields']['name_fa'],array('رقابت a','رقابت b','پاسخ ساختگی گم شده','ویرایش دارای رسید'),true),'one winner persisted');
+    $r=HJ_Profile_Spike_Store::read($pid); spike_assert($r['status']==='ok' && in_array($r['data']['fields']['name_fa'],array('رقابت a','رقابت b','پاسخ ساختگی گم شده','ویرایش دارای رسید','درخواست همزمان یکسان'),true),'one winner persisted');
     spike_assert(get_post_meta($pid,'name_fa',true)==='نام عمومی' && get_post_status($pid)==='publish','race did not change published profile');
     $gen=$r['data']['generation'];
+    // Capacity is deliberately fail-closed; production needs a safe retention design.
+    $first=null;
+    for ($i=0; $i<30; $i++) {
+        $key=sprintf('%032x',100+$i); $fields=spike_fields('آزمایش ظرفیت '.$i);
+        if ($i===0) { $first=array($gen,$key,$fields); }
+        $saved=HJ_Profile_Spike_Store::change_once($pid,$gen,$fields,$key);
+        spike_assert($saved['status']==='saved','receipt capacity fixture save'); $gen=$saved['generation'];
+    }
+    spike_assert(HJ_Profile_Spike_Store::change_once($pid,$gen,spike_fields('بیش از ظرفیت'),str_repeat('e',32))['status']==='receipt_capacity','full ledger fails closed');
+    spike_assert(HJ_Profile_Spike_Store::change_once($pid,$first[0],$first[2],$first[1])['status']==='replayed','existing receipt survives full ledger');
+    $r=HJ_Profile_Spike_Store::read($pid); spike_assert($r['status']==='ok' && $r['data']['generation']===$gen,'receipt capacity leaves draft intact');
     $cut = function ($post_id, $session) {
         global $wpdb;
         $connection=(int)$session->get_var('SELECT CONNECTION_ID()');
