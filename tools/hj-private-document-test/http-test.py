@@ -31,10 +31,12 @@ def info(s):
 def dashboard_nonce(s):
     code,body=req(s,'/wp-admin/admin-ajax.php',{'action':'hj_ci_dash_nonce'})
     assert code==200; return json.loads(body)['data']['nonce']
-def upload(s,nonce):
+def upload(s,nonce,fail_meta=False):
     boundary='----hjfixtureboundary'
     parts=[]
-    for k,v in {'action':'hj_dash_doc','pid':pid,'_hjn':nonce}.items():
+    fields={'action':'hj_dash_doc','pid':pid,'_hjn':nonce}
+    if fail_meta: fields['hj_ci_fail_meta']='1'
+    for k,v in fields.items():
         parts.append(f'--{boundary}\r\nContent-Disposition: form-data; name="{k}"\r\n\r\n{v}\r\n'.encode())
     parts.append(f'--{boundary}\r\nContent-Disposition: form-data; name="doc"; filename="fixture.pdf"\r\nContent-Type: application/pdf\r\n\r\n'.encode()+b'%PDF-1.4\nsynthetic private fixture\n%%EOF\n\r\n')
     parts.append(f'--{boundary}--\r\n'.encode())
@@ -61,7 +63,7 @@ def run(mode):
         assert req(session(),'/wp-content/uploads/hj-private/'+fixture['legacy'])[0]==200
         code,result=upload(owner,before['nonce'])
         if mode!='verified':
-            assert code==503 and not result['success'],(mode,code,result)
+            assert code==(500 if mode=='profilelink' else 503) and not result['success'],(mode,code,result)
             assert len(info(owner)['docs'])==1 and not list(private.rglob('*.pdf')),(mode,'unexpected write')
             print('PASS fail-closed mode',mode,flush=True); return
         assert code==200 and result['success'],(code,result)
@@ -75,6 +77,9 @@ def run(mode):
         assert req(stranger,foreignurl)[0]==403 and req(session(),url)[0]!=200
         assert req(session(),'/wp-content/uploads/hj-private/'+new['file'])[0]==404
         assert (private/new['file']).read_bytes().startswith(b'%PDF-1.4')
+        code,failed=upload(owner,before['nonce'],True)
+        assert code==500 and not failed['success'],(code,failed)
+        assert len(info(owner)['docs'])==2 and len(list(private.rglob('*.pdf')))==2,'failed metadata retains private orphan without false success'
         print('PASS private-v2 owner/admin access, stranger and guest denied; legacy preserved',flush=True)
     finally:
         server.terminate(); server.wait(timeout=10)
@@ -82,6 +87,10 @@ def doc_nonce(s,doc):
     code,body=req(s,'/wp-admin/admin-ajax.php',{'action':'hj_ci_doc_nonce','pid':pid,'doc':doc})
     assert code==200,(code,body); return json.loads(body)['data']['nonce']
 try:
-    for mode in ('missing','unverified','inside','symlink','verified'): run(mode)
+    for mode in ('missing','unverified','inside','symlink'): run(mode)
+    profilelink=private/('p'+pid); profilelink.symlink_to(inside,target_is_directory=True)
+    try: run('profilelink')
+    finally: profilelink.unlink()
+    run('verified')
 finally:
     mu.unlink(missing_ok=True)

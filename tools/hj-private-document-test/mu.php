@@ -2,7 +2,7 @@
 /** CI-only test adapter; this file is never distributed as part of the plugin. */
 if ( getenv('GITHUB_ACTIONS') !== 'true' || getenv('HJ_DISPOSABLE_MARIADB_FIXTURE') !== '1' || DB_NAME !== 'hj_fixture_db' || WP_HOME !== 'http://example.invalid' ) { exit(1); }
 $mode = getenv('HJ_DOC_FIXTURE_MODE');
-if (in_array($mode,array('verified','unverified','inside','symlink'),true)) {
+if (in_array($mode,array('verified','unverified','inside','symlink','profilelink'),true)) {
     $base = $mode === 'inside' ? ABSPATH . 'wp-content/uploads/hj-private-test' : getenv('RUNNER_TEMP') . ($mode === 'symlink' ? '/hj-doc-fixture-symlink' : '/hj-doc-fixture-private');
     define('HJ_PRIVATE_DOCUMENT_DIR',$base);
     if ($mode !== 'unverified') { define('HJ_PRIVATE_DOCUMENT_STORAGE_VERIFIED',true); }
@@ -17,3 +17,7 @@ add_action('wp_ajax_hj_ci_doc_nonce',function() {
     wp_send_json_success(array('nonce'=>wp_create_nonce('hj_doc_dl_'.$pid.'_'.$id)));
 });
 add_action('wp_ajax_hj_ci_dash_nonce',function() { wp_send_json_success(array('nonce'=>wp_create_nonce('hj_dash_nonce'))); });
+// Deliberately fail only this synthetic request's metadata write.
+add_filter('update_post_metadata',function($check,$object_id,$key) {
+    return $key==='hj_private_docs' && isset($_POST['hj_ci_fail_meta']) ? false : $check;
+},10,3);
