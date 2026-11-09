@@ -7,6 +7,7 @@ if ( DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || WP_HOME !== 
 require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/store.php';
 require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/snapshot.php';
 require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/preflight.php';
+require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/role-lock.php';
 function spike_assert($condition,$message) { if (!$condition) { throw new RuntimeException($message); } }
 function spike_fields($name) {
     return array('name_fa'=>$name,'name_en'=>'','specialty_fa'=>'جراحی نمونه','specialty_en'=>'','bio_fa'=>'','bio_en'=>'','medical_license'=>'','experience_years'=>'','education'=>'','surgeries_performed'=>'','phone_clinic'=>'','phone_mobile'=>'','address_clinic'=>'','address_hospital'=>'','map_link'=>'');
@@ -110,6 +111,32 @@ if ($mode === 'preflight-probe') {
     update_post_meta($pid,'name_fa','ویرایش پس از بررسی');
     spike_assert(HJ_Profile_Spike_Preflight::inspect($pid,$token)['status']==='public_changed','preflight alone cannot lock out another writer');
     echo "PASS partial preflight detects tested external edits; no lock or publication is implied\n"; exit;
+}
+if ($mode === 'guard-setup') {
+    $uid=wp_create_user('spike_guarded_surgeon','fixture-only','guarded-spike@example.invalid');
+    spike_assert(!is_wp_error($uid) && hj_doctors_assign_doctor_role($uid),'guarded fixture user');
+    $option='hj_spike_guard_'.$uid; spike_assert(add_option($option,'old','','no'),'guarded fixture option');
+    echo json_encode(array('uid'=>$uid,'option'=>$option)),"\n"; exit;
+}
+if ($mode === 'guard-worker') {
+    $uid=(int)$argv[2]; $option=$argv[3]; $dir=$argv[4]; wp_set_current_user($uid);
+    add_action('hj_spike_role_after_lock',function() use($dir) {
+        file_put_contents($dir.'/locked','1'); $until=microtime(true)+20;
+        while (!file_exists($dir.'/release')) { if (microtime(true)>$until) { throw new RuntimeException('guard barrier timeout'); } usleep(10000); }
+    });
+    echo json_encode(hj_spike_guarded_role_write($uid,$option)),"\n"; exit;
+}
+if ($mode === 'guard-revoke') {
+    $uid=(int)$argv[2]; $dir=$argv[3]; $user=get_userdata($uid);
+    spike_assert($user instanceof WP_User && $user->user_login==='spike_guarded_surgeon','refuse nonfixture user');
+    file_put_contents($dir.'/revoke-ready','1'); $user->set_role('subscriber'); echo "revoked\n"; exit;
+}
+if ($mode === 'guard-verify') {
+    $uid=(int)$argv[2]; $option=$argv[3]; $user=get_userdata($uid);
+    spike_assert($user instanceof WP_User && $user->user_login==='spike_guarded_surgeon' && !hj_doctors_is_doctor_user($uid),'synthetic role revoked');
+    spike_assert(get_option($option)==='saved','first writer completed before revocation');
+    wp_set_current_user($uid); spike_assert(hj_spike_guarded_role_write($uid,$option)['status']==='forbidden','subsequent writer denied');
+    echo "PASS stock WP role removal serialized with prototype locked role write; no universal authorization claim\n"; exit;
 }
 if ($mode === 'revoke-setup') {
     $uid=wp_create_user('spike_revoked_surgeon','fixture-only','revoked-spike@example.invalid');

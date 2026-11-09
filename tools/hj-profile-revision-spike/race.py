@@ -77,3 +77,32 @@ with tempfile.TemporaryDirectory(prefix='hj-profile-revoke-') as temp:
         if p.poll() is None: p.kill(); p.wait()
 verified=subprocess.run(['php',script,'revoke-verify',str(rev['pid']),str(rev['uid'])],check=True,text=True,capture_output=True)
 print(verified.stdout.strip())
+
+# Contrast: a write holding the capability row lock serializes with stock WP set_role.
+guard=json.loads(subprocess.run(['php',script,'guard-setup'],check=True,text=True,capture_output=True).stdout.strip())
+with tempfile.TemporaryDirectory(prefix='hj-role-lock-') as temp:
+    writer=subprocess.Popen(['php',script,'guard-worker',str(guard['uid']),guard['option'],temp],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+    revoke=None
+    try:
+        deadline=time.monotonic()+20
+        while not (pathlib.Path(temp)/'locked').exists():
+            if writer.poll() is not None or time.monotonic()>=deadline: raise RuntimeError('role lock not acquired')
+            time.sleep(.01)
+        revoke=subprocess.Popen(['php',script,'guard-revoke',str(guard['uid']),temp],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+        deadline=time.monotonic()+20
+        while not (pathlib.Path(temp)/'revoke-ready').exists():
+            if revoke.poll() is not None or time.monotonic()>=deadline: raise RuntimeError('role revocation did not start')
+            time.sleep(.01)
+        # The role update must not complete while the writer owns the row lock.
+        time.sleep(.3)
+        if revoke.poll() is not None: raise AssertionError('revocation completed while role row was locked')
+        (pathlib.Path(temp)/'release').touch()
+        out,err=writer.communicate(timeout=30)
+        if writer.returncode or json.loads(out)['status']!='saved': raise RuntimeError(f'guarded writer failed {out} {err}')
+        out,err=revoke.communicate(timeout=30)
+        if revoke.returncode or out.strip()!='revoked': raise RuntimeError(f'revocation failed {out} {err}')
+    finally:
+        for p in (writer,revoke):
+            if p is not None and p.poll() is None: p.kill(); p.wait()
+verified=subprocess.run(['php',script,'guard-verify',str(guard['uid']),guard['option']],check=True,text=True,capture_output=True)
+print(verified.stdout.strip())
