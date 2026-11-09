@@ -54,7 +54,15 @@ def run(mode):
             except OSError:
                 if time.monotonic()>deadline: raise
                 time.sleep(.05)
-        owner=login('surgeon_fixture'); before=info(owner); assert len(before['docs'])==1
+        owner=login('surgeon_fixture'); before=info(owner)
+        if mode=='disabled-read':
+            assert len(before['docs'])==2
+            new=before['docs'][1]
+            url='/wp-admin/admin-ajax.php?'+urllib.parse.urlencode({'action':'hj_doc_download','pid':pid,'doc':new['id'],'_wpnonce':doc_nonce(owner,new['id'])})
+            code,body=req(owner,url); assert code==200 and 'synthetic private fixture' in body
+            code,result=upload(owner,before['nonce']); assert code==503 and not result['success']
+            print('PASS disabling new uploads retains authorized reads of stored v2 document',flush=True); return
+        assert len(before['docs'])==1
         assert upload(owner,'bad-nonce')[0]==403
         stranger=login('normal_fixture'); assert upload(stranger,dashboard_nonce(stranger))[0]==403
         # Legacy file remains present and owner-readable; builtin PHP serves it directly.
@@ -92,5 +100,6 @@ try:
     try: run('profilelink')
     finally: profilelink.unlink()
     run('verified')
+    run('disabled-read')
 finally:
     mu.unlink(missing_ok=True)
