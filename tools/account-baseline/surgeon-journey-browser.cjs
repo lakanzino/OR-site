@@ -113,6 +113,25 @@ const base='http://example.invalid';
   done=page.waitForResponse(r=>r.url().includes('admin-ajax.php')&&r.request().postData()?.includes('hj_dash_save'));
   await save.click(); result=await (await done).json();
   assert.equal(result.success,true,JSON.stringify(result)); assert.equal(result.data.status,'published','baseline default keeps edits published');
+
+  // Separate photo endpoint bypasses save/submit in the installed baseline.
+  async function uploadPhoto() {
+   return page.evaluate(async pid=>{
+    const b=atob('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aFioAAAAASUVORK5CYII=');
+    const bytes=new Uint8Array(Array.from(b,c=>c.charCodeAt(0)));
+    const f=new FormData();f.set('action','hj_dash_photo');f.set('pid',String(pid));f.set('_hjn',window.HJ_DASH.nonce);f.set('photo',new File([bytes],'fixture.png',{type:'image/png'}));
+    const r=await fetch('/wp-admin/admin-ajax.php',{method:'POST',body:f});return {status:r.status,body:await r.json()};
+   },pid);
+  }
+  const photo1=await uploadPhoto();assert.equal(photo1.status,200,JSON.stringify(photo1));assert.equal(photo1.body.data.status,'published');
+  assert.ok(photo1.body.data.url,'published photo URL');
+  const photo2=await uploadPhoto();assert.equal(photo2.status,200,JSON.stringify(photo2));assert.equal(photo2.body.data.status,'published');
+  assert.notEqual(photo1.body.data.url,photo2.body.data.url,'replacement uses a new attachment');
+  const imgGuest=await browser.newContext();
+  try {const g=await imgGuest.newPage();await g.goto(base+'/',{waitUntil:'domcontentloaded'});
+   assert.equal(await g.evaluate(async url=>(await fetch(url)).status,photo2.body.data.url),200,'new photo immediately public');
+   assert.equal(await g.evaluate(async url=>(await fetch(url)).status,photo1.body.data.url),404,'previous dashboard-uploaded photo deleted');
+  } finally {await imgGuest.close();}
   const publicContext=await browser.newContext();
   try {const p=await publicContext.newPage();const response=await p.goto(base+'/?post_type=doctor&p='+pid);assert.equal(response.status(),200,'published profile visible');} finally {await publicContext.close();}
   console.log('PASS synthetic save, ownership, nonce, review, admin publication and published edit behavior; booking disabled; no OAuth');
