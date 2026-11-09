@@ -5,7 +5,7 @@ on:
     paths: ['.github/workflows/globelax-original-zip.yml']
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -42,6 +42,17 @@ jobs:
           cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/Globe.Lax-original-test.apk"
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$GITHUB_WORKSPACE/Globe.Lax-original-test.apk"
           sha256sum "$GITHUB_WORKSPACE/Globe.Lax-original-test.apk"
+      - name: Stage APK for transfer to Drive
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 - <<'PYCODE'
+          import base64, json, os, pathlib, subprocess
+          data = pathlib.Path('Globe.Lax-original-test.apk').read_bytes()
+          payload = json.dumps({'content': base64.b64encode(data).decode(), 'encoding': 'base64'})
+          sha = subprocess.check_output(['gh', 'api', f"repos/{os.environ['GITHUB_REPOSITORY']}/git/blobs", '-X', 'POST', '--input', '-', '--jq', '.sha'], input=payload, text=True).strip()
+          print(f'::notice title=APK_BLOB::{sha}')
+          PYCODE
       - name: Upload test APK
         uses: actions/upload-artifact@v4
         with:
