@@ -90,6 +90,7 @@ final class HJ_Profile_Spike_Store {
             do_action('hj_profile_spike_before_cas',$pid,$db);
             $n=$db->query($db->prepare("UPDATE `{$wpdb->options}` SET option_value=%s WHERE option_name=%s AND BINARY option_value=BINARY %s",$json,self::key($pid),$current['raw']));
             if ($n===false) { return array('status'=>'unknown'); }
+            if ($n===1) { do_action('hj_profile_spike_after_cas',$pid,$db); }
             return $n===1 ? array('status'=>'saved','data'=>$data) : array('status'=>'conflict');
         } finally { $db->close(); }
     }
@@ -112,6 +113,7 @@ final class HJ_Profile_Spike_Store {
             do_action('hj_profile_spike_before_cas',$pid,$db);
             $n=$db->query($db->prepare("UPDATE `{$wpdb->options}` SET option_value=%s WHERE option_name=%s AND BINARY option_value=BINARY %s",$json,self::key($pid),$current['raw']));
             if ($n===false) { return array('status'=>'unknown'); }
+            if ($n===1) { do_action('hj_profile_spike_after_cas',$pid,$db); }
             return $n===1 ? array('status'=>'saved','data'=>$data) : array('status'=>'conflict');
         } finally { $db->close(); }
     }

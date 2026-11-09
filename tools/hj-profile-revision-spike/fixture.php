@@ -46,9 +46,25 @@ if ($mode === 'worker') {
     });
     echo json_encode(HJ_Profile_Spike_Store::change($pid,$token,spike_fields('رقابت '.$label)),JSON_UNESCAPED_UNICODE),"\n"; exit;
 }
+if ($mode === 'lost-worker') {
+    $pid=(int)$argv[2]; $uid=(int)$argv[3]; $path=$argv[4]; wp_set_current_user($uid);
+    $r=HJ_Profile_Spike_Store::read($pid); spike_assert($r['status']==='ok' && $r['data']['state']==='draft','lost-response fixture needs draft');
+    file_put_contents($path,$r['data']['generation']);
+    // Test-only: drop the response after the database has accepted the update.
+    add_action('hj_profile_spike_after_cas',function() { exit(0); });
+    HJ_Profile_Spike_Store::change($pid,$r['data']['generation'],spike_fields('پاسخ ساختگی گم شده'));
+    throw new RuntimeException('lost-response hook not reached');
+}
+if ($mode === 'lost-verify') {
+    $pid=(int)$argv[2]; $uid=(int)$argv[3]; $path=$argv[4]; wp_set_current_user($uid);
+    $old=file_get_contents($path); $r=HJ_Profile_Spike_Store::read($pid);
+    spike_assert($r['status']==='ok' && $r['data']['generation']!==$old && $r['data']['fields']['name_fa']==='پاسخ ساختگی گم شده','write committed despite missing response');
+    spike_assert(HJ_Profile_Spike_Store::change($pid,$old,spike_fields('پاسخ ساختگی گم شده'))['status']==='conflict','retry cannot establish its own outcome: open idempotency debt');
+    echo "PASS counterexample: committed update, lost response, retry conflicts; idempotency unresolved\n"; exit;
+}
 if ($mode === 'verify') {
     $pid=(int)$argv[2]; $uid=(int)$argv[3]; wp_set_current_user($uid);
-    $r=HJ_Profile_Spike_Store::read($pid); spike_assert($r['status']==='ok' && in_array($r['data']['fields']['name_fa'],array('رقابت a','رقابت b'),true),'one winner persisted');
+    $r=HJ_Profile_Spike_Store::read($pid); spike_assert($r['status']==='ok' && in_array($r['data']['fields']['name_fa'],array('رقابت a','رقابت b','پاسخ ساختگی گم شده'),true),'one winner persisted');
     spike_assert(get_post_meta($pid,'name_fa',true)==='نام عمومی' && get_post_status($pid)==='publish','race did not change published profile');
     $gen=$r['data']['generation'];
     $cut = function ($post_id, $session) {

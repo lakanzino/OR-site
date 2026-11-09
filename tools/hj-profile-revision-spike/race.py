@@ -24,5 +24,11 @@ with tempfile.TemporaryDirectory(prefix='hj-profile-spike-') as temp:
     finally:
         for p in workers:
             if p.poll() is None: p.kill(); p.wait()
+with tempfile.TemporaryDirectory(prefix='hj-profile-lost-') as temp:
+    token_file=str(pathlib.Path(temp)/'generation')
+    worker=subprocess.run(['php',script,'lost-worker',str(values['pid']),str(values['uid']),token_file],check=True,text=True,capture_output=True,timeout=30)
+    if worker.stdout.strip() or worker.stderr.strip(): raise AssertionError('expected deliberately lost response')
+    lost=subprocess.run(['php',script,'lost-verify',str(values['pid']),str(values['uid']),token_file],check=True,text=True,capture_output=True)
+    print(lost.stdout.strip())
 verify=subprocess.run(['php',script,'verify',str(values['pid']),str(values['uid'])],check=True,text=True,capture_output=True)
 print(verify.stdout.strip())
