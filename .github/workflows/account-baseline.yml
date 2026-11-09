@@ -3,11 +3,13 @@ on:
   push:
     paths:
       - 'tools/account-baseline/**'
+      - 'tools/hj-profile-revision-spike/**'
       - 'themes/lax-theme-child/**'
       - '.github/workflows/account-baseline.yml'
   pull_request:
     paths:
       - 'tools/account-baseline/**'
+      - 'tools/hj-profile-revision-spike/**'
       - 'themes/lax-theme-child/**'
       - '.github/workflows/account-baseline.yml'
   workflow_dispatch:
@@ -89,6 +91,14 @@ jobs:
           server=$!
           trap 'sudo kill "$server" || true' EXIT
           output=$(python3 tools/account-baseline/http-test.py 2>&1) || { echo "$output"; summary=$(echo "$output" | tail -30 | tr "\n" " " | sed "s/%/%25/g; s/::/%3A%3A/g"); echo "::error title=Account HTTP fixture::$summary"; cat /tmp/account-http.log; exit 1; }
+          echo "$output"
+      - name: Exercise isolated profile revision store prototype
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: |
+          php -l tools/hj-profile-revision-spike/store.php
+          php -l tools/hj-profile-revision-spike/fixture.php
+          output=$(python3 tools/hj-profile-revision-spike/race.py 2>&1) || { echo "$output"; echo "::error title=Profile revision prototype::$(echo "$output" | head -c 2500 | tr "\n" " " )"; exit 1; }
           echo "$output"
       - name: Exercise newsletter in Chrome with installed plugin baseline
         env:
