@@ -1,0 +1,52 @@
+{
+  "name": "globelax",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "verify:data": "node tools/verify-data.mjs",
+    "test": "node tools/verify-data.mjs && node tools/smoke.mjs && node tools/e2e-smoke.mjs",
+    "icons": "python3 tools/gen-icons.py",
+    "android:sync": "npm run build && npx cap sync android",
+    "android:apk": "npm run android:sync && cd android && ./gradlew assembleRelease",
+    "android:bundle": "npm run android:sync && cd android && ./gradlew bundleRelease"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.6.10",
+    "@capacitor/app": "^7.1.2",
+    "@capacitor/cli": "^7.6.10",
+    "@capacitor/core": "^7.6.10",
+    "@capacitor/splash-screen": "^7.0.5",
+    "@capacitor/status-bar": "^7.0.6",
+    "@fontsource-variable/vazirmatn": "^5.3.0",
+    "country-flag-icons": "^1.6.20",
+    "d3-geo": "^3.1.2",
+    "i18n-iso-countries": "^7.14.0",
+    "lucide-react": "^1.70.0",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "@tailwindcss/vite": "4.1.17",
+    "@types/d3-geo": "^3.1.1",
+    "@types/node": "22.19.17",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "@types/topojson-client": "^3.1.5",
+    "@vitejs/plugin-react": "5.1.1",
+    "jsdom": "^31.0.0",
+    "tailwindcss": "4.1.17",
+    "typescript": "5.9.3",
+    "vite": "7.3.2",
+    "vite-plugin-singlefile": "2.3.0"
+  },
+  "description": "Globe.Lax — offline bilingual (Persian/English) countries, capitals, currencies & flags learning app.",
+  "license": "MIT",
+  "author": "Mohammad Reza Lak (mohamadreza.lak)"
+}

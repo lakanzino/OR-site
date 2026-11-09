@@ -1,0 +1,170 @@
+name: Build Globe.Lax Unsigned Release APK
+
+on:
+  push:
+    branches:
+      - main
+      - 'arena/**'
+    paths:
+      - 'globelax/**'
+      - '.github/workflows/globelax-android.yml'
+  pull_request:
+    paths:
+      - 'globelax/**'
+      - '.github/workflows/globelax-android.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-unsigned-apk:
+    name: Build, test & align unsigned Globe.Lax release APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: globelax/package-lock.json
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Set up Android SDK 35
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platforms;android-35 build-tools;35.0.0'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Install web dependencies
+        working-directory: globelax
+        run: npm ci
+
+      - name: Type-check, unit-test data & build single-file web bundle
+        working-directory: globelax
+        run: |
+          npx tsc --noEmit
+          node tools/verify-data.mjs
+          npm run build
+          node tools/smoke.mjs
+          node tools/e2e-smoke.mjs
+
+      - name: Sync Capacitor Android project
+        working-directory: globelax
+        run: |
+          npx cap sync android
+          chmod +x android/gradlew
+
+      - name: Build unsigned release APK with R8
+        id: gradle
+        working-directory: globelax/android
+        continue-on-error: true
+        run: |
+          ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 | tee gradle-build.log
+          status=${PIPESTATUS[0]}
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit "$status"
+
+      - name: Upload Gradle log on failure
+        if: steps.gradle.outputs.status != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: globelax-gradle-failure-log
+          path: globelax/android/gradle-build.log
+          retention-days: 5
+
+      - name: Surface Gradle errors as annotations
+        if: steps.gradle.outputs.status != '0'
+        working-directory: globelax/android
+        run: |
+          python3 - <<'PY'
+          import pathlib
+          lines = pathlib.Path("gradle-build.log").read_text(errors="replace").splitlines()
+          for idx, line in enumerate(lines):
+              if any(k in line for k in ("FAILURE:", "Execution failed", "e: ", "error:", "Exception")):
+                  snippet = " | ".join(lines[max(0, idx - 1):min(len(lines), idx + 6)])
+                  print(f"::error title=GradleBuildError::{snippet[:900]}")
+          print("::error title=GradleTail::" + " | ".join(lines[-40:])[:900])
+          PY
+          exit 1
+
+      - name: Align, verify & audit unsigned release APK
+        if: steps.gradle.outputs.status == '0'
+        env:
+          BT_DIR: ${{ env.ANDROID_SDK_ROOT }}/build-tools/35.0.0
+        run: |
+          UNSIGNED_APK="globelax/android/app/build/outputs/apk/release/app-release-unsigned.apk"
+          ALIGNED_APK="/tmp/globelax-release-unsigned-aligned.apk"
+          test -f "$UNSIGNED_APK"
+          "$BT_DIR/zipalign" -f -p -v 4 "$UNSIGNED_APK" "$ALIGNED_APK"
+          "$BT_DIR/zipalign" -c -v -p 4 "$ALIGNED_APK" >/dev/null
+          "$BT_DIR/aapt2" dump badging "$ALIGNED_APK" | tee /tmp/globelax_badging.txt
+          echo "── permission audit (must be empty) ──"
+          "$BT_DIR/aapt2" dump permissions "$ALIGNED_APK" | tee /tmp/globelax_permissions.txt
+          if grep -q "uses-permission" /tmp/globelax_permissions.txt; then
+            echo "::error title=UnexpectedPermission::The app must ship with zero permissions."
+            exit 1
+          fi
+          sha256sum "$ALIGNED_APK"
+          ls -l "$ALIGNED_APK"
+
+      - name: Stage unsigned APK & apksigner blobs for private signing
+        if: steps.gradle.outputs.status == '0' && github.event_name == 'push' && startsWith(github.ref, 'refs/heads/arena/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BT_DIR: ${{ env.ANDROID_SDK_ROOT }}/build-tools/35.0.0
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, json, os, pathlib, subprocess
+
+          def post_blob(path: pathlib.Path):
+              data = path.read_bytes()
+              sha256 = hashlib.sha256(data).hexdigest()
+              payload = json.dumps({
+                  "content": base64.b64encode(data).decode("ascii"),
+                  "encoding": "base64",
+              })
+              repo = os.environ["GITHUB_REPOSITORY"]
+              blob_sha = subprocess.check_output(
+                  ["gh", "api", f"repos/{repo}/git/blobs", "-X", "POST", "--input", "-", "--jq", ".sha"],
+                  input=payload,
+                  text=True,
+              ).strip()
+              return blob_sha, sha256, len(data)
+
+          apk_blob, apk_sha256, apk_size = post_blob(pathlib.Path("/tmp/globelax-release-unsigned-aligned.apk"))
+          signer_blob, signer_sha256, signer_size = post_blob(
+              pathlib.Path(os.environ["BT_DIR"]) / "lib" / "apksigner.jar"
+          )
+          badging = pathlib.Path("/tmp/globelax_badging.txt").read_text().splitlines()
+          meta = {
+              "apk_blob_sha": apk_blob,
+              "apk_sha256": apk_sha256,
+              "apk_size": apk_size,
+              "apksigner_blob_sha": signer_blob,
+              "apksigner_sha256": signer_sha256,
+              "apksigner_size": signer_size,
+              "aapt2": badging[:40],
+          }
+          print("::notice title=GLOBELAX_UNSIGNED_META::" + json.dumps(meta))
+          PY
+
+      - name: Upload unsigned aligned release APK artifact
+        if: steps.gradle.outputs.status == '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: GlobeLax-unsigned-release-apk
+          path: /tmp/globelax-release-unsigned-aligned.apk
+          retention-days: 7
