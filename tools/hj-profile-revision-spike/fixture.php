@@ -113,7 +113,8 @@ if ($mode === 'preflight-probe') {
     echo "PASS partial preflight detects tested external edits; no lock or publication is implied\n"; exit;
 }
 if ($mode === 'guard-setup') {
-    $uid=wp_create_user('spike_guarded_surgeon','fixture-only','guarded-spike@example.invalid');
+    $login=($argv[2] ?? '')==='reverse' ? 'spike_guarded_reverse' : 'spike_guarded_surgeon';
+    $uid=wp_create_user($login,'fixture-only',$login.'@example.invalid');
     spike_assert(!is_wp_error($uid) && hj_doctors_assign_doctor_role($uid),'guarded fixture user');
     $option='hj_spike_guard_'.$uid; spike_assert(add_option($option,'old','','no'),'guarded fixture option');
     echo json_encode(array('uid'=>$uid,'option'=>$option)),"\n"; exit;
@@ -126,9 +127,23 @@ if ($mode === 'guard-worker') {
     });
     echo json_encode(hj_spike_guarded_role_write($uid,$option)),"\n"; exit;
 }
+if ($mode === 'guard-reverse-worker') {
+    $uid=(int)$argv[2]; $option=$argv[3]; $dir=$argv[4]; wp_set_current_user($uid);
+    add_action('hj_spike_role_before_lock',function() use($dir) {
+        file_put_contents($dir.'/ready','1'); $until=microtime(true)+20;
+        while (!file_exists($dir.'/release')) { if (microtime(true)>$until) { throw new RuntimeException('reverse guard barrier timeout'); } usleep(10000); }
+    });
+    echo json_encode(hj_spike_guarded_role_write($uid,$option)),"\n"; exit;
+}
+if ($mode === 'guard-reverse-verify') {
+    $uid=(int)$argv[2]; $option=$argv[3]; $user=get_userdata($uid);
+    spike_assert($user instanceof WP_User && $user->user_login==='spike_guarded_reverse' && !hj_doctors_is_doctor_user($uid),'reverse fixture role revoked');
+    spike_assert(get_option($option)==='old','write refused after prior revocation');
+    echo "PASS prior stock WP role removal blocks test write after fresh locked role read\n"; exit;
+}
 if ($mode === 'guard-revoke') {
     $uid=(int)$argv[2]; $dir=$argv[3]; $user=get_userdata($uid);
-    spike_assert($user instanceof WP_User && $user->user_login==='spike_guarded_surgeon','refuse nonfixture user');
+    spike_assert($user instanceof WP_User && in_array($user->user_login,array('spike_guarded_surgeon','spike_guarded_reverse'),true),'refuse nonfixture user');
     global $wpdb; $connection=(int)$wpdb->get_var('SELECT CONNECTION_ID()'); spike_assert($connection>0,'revocation connection');
     file_put_contents($dir.'/revoke-ready',(string)$connection); $user->set_role('subscriber'); echo "revoked\n"; exit;
 }

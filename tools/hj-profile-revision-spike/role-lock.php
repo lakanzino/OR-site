@@ -14,6 +14,7 @@ function hj_spike_guarded_role_write($uid,$option) {
         }
         if ($db->query('SET SESSION innodb_lock_wait_timeout = 3')===false || $db->query('START TRANSACTION')===false) { return array('status'=>'unavailable'); }
         $active=true;
+        do_action('hj_spike_role_before_lock',$db);
         $rows=$db->get_results($db->prepare("SELECT umeta_id,meta_value FROM `{$wpdb->usermeta}` WHERE user_id=%d AND meta_key=%s FOR UPDATE",$uid,$wpdb->prefix.'capabilities'),ARRAY_A);
         if ($db->last_error || !is_array($rows) || count($rows)!==1) { return array('status'=>'unavailable'); }
         $roles=maybe_unserialize($rows[0]['meta_value']);

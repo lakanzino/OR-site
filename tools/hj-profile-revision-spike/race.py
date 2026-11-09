@@ -111,3 +111,21 @@ with tempfile.TemporaryDirectory(prefix='hj-role-lock-') as temp:
             if p is not None and p.poll() is None: p.kill(); p.wait()
 verified=subprocess.run(['php',script,'guard-verify',str(guard['uid']),guard['option']],check=True,text=True,capture_output=True)
 print(verified.stdout.strip())
+
+# Reverse ordering: revoke after initial PHP authorization but before locked SQL read.
+reverse=json.loads(subprocess.run(['php',script,'guard-setup','reverse'],check=True,text=True,capture_output=True).stdout.strip())
+with tempfile.TemporaryDirectory(prefix='hj-role-reverse-') as temp:
+    writer=subprocess.Popen(['php',script,'guard-reverse-worker',str(reverse['uid']),reverse['option'],temp],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+    try:
+        deadline=time.monotonic()+20
+        while not (pathlib.Path(temp)/'ready').exists():
+            if writer.poll() is not None or time.monotonic()>=deadline: raise RuntimeError('reverse writer did not reach barrier')
+            time.sleep(.01)
+        subprocess.run(['php',script,'guard-revoke',str(reverse['uid']),temp],check=True,text=True,capture_output=True,timeout=15)
+        (pathlib.Path(temp)/'release').touch()
+        out,err=writer.communicate(timeout=30)
+        if writer.returncode or json.loads(out)['status']!='forbidden': raise RuntimeError(f'reverse writer should fail closed: {out} {err}')
+    finally:
+        if writer.poll() is None: writer.kill(); writer.wait()
+verified=subprocess.run(['php',script,'guard-reverse-verify',str(reverse['uid']),reverse['option']],check=True,text=True,capture_output=True)
+print(verified.stdout.strip())
