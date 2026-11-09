@@ -16,9 +16,8 @@ final class HJ_Profile_Spike_Snapshot {
         $fields=array('name_fa','name_en','specialty_fa','specialty_en','bio_fa','bio_en','medical_license','experience_years','education','surgeries_performed','phone_clinic','phone_mobile','address_clinic','address_hospital','map_link','profile_photo');
         $snapshot=array('schema'=>1,'pid'=>$pid,'title'=>$post->post_title,'status'=>$post->post_status,'fields'=>array(),'thumbnail'=>(int)get_post_thumbnail_id($pid),'terms'=>array());
         foreach ($fields as $key) {
-            // ACF may cache a formatted value after a direct post-meta update.
-            // Include both underlying WP data and ACF's current view: disagreement
-            // cannot be allowed to hide a change in this partial fingerprint.
+            // An ACF-formatted view can differ from raw post meta. Include both so
+            // a raw change is not hidden by that difference in this experiment.
             $raw=get_post_meta($pid,$key,true);
             $value=function_exists('get_field') ? get_field($key,$pid) : false;
             if ($value===false || $value===null) { $value=$raw; }

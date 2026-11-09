@@ -75,6 +75,20 @@ if ($mode === 'snapshot-probe') {
     spike_assert(HJ_Profile_Spike_Snapshot::fingerprint($pid)['status']==='unavailable','non-scalar fields fail closed');
     echo "PASS partial server-side fingerprint detects tested text, title, terms and photo reference changes; schedule excluded\n"; exit;
 }
+if ($mode === 'acf-probe') {
+    if (getenv('HJ_SPIKE_ACF')!=='free') { echo "SKIP ACF-specific probe: ACF disabled\n"; exit; }
+    spike_assert(function_exists('acf_get_field') && is_array(acf_get_field('field_hj_name_fa')),'local ACF field available');
+    $uid=get_user_by('login','surgeon_fixture')->ID; $pid=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'ACF synthetic','post_author'=>$uid),true);
+    spike_assert(!is_wp_error($pid) && $pid>0,'ACF test profile'); wp_set_current_user($uid);
+    update_field('field_hj_name_fa','ACF first',$pid);
+    $first=get_field('name_fa',$pid); $before=HJ_Profile_Spike_Snapshot::fingerprint($pid);
+    spike_assert($first==='ACF first' && $before['status']==='ok','ACF initial value');
+    update_post_meta($pid,'name_fa','raw second');
+    $raw=get_post_meta($pid,'name_fa',true); $formatted=get_field('name_fa',$pid); $after=HJ_Profile_Spike_Snapshot::fingerprint($pid);
+    spike_assert($raw==='raw second' && $after['status']==='ok' && $before['hash']!==$after['hash'],'partial fingerprint includes raw update');
+    $behavior=$formatted==='ACF first' ? 'formatted view remains old in same request' : ($formatted==='raw second' ? 'formatted view reflects raw change' : 'formatted view differs');
+    echo '::notice title=Synthetic ACF direct meta update::'.$behavior."\n"; exit;
+}
 if ($mode === 'preflight-probe') {
     $uid=get_user_by('login','surgeon_fixture')->ID; $admin=get_user_by('login','fixture_admin')->ID;
     $pid=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'Preflight synthetic','post_author'=>$uid),true);
