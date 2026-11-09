@@ -87,7 +87,7 @@ final class HJ_Profile_Spike_Store {
             if ($data['generation']!==$expected || $data['state']!=='submitted') { return array('status'=>'conflict'); }
             $data['generation']=bin2hex(random_bytes(16)); $data['state']='rejected'; $data['review_note']=sanitize_textarea_field($note);
             $json=wp_json_encode($data,JSON_UNESCAPED_UNICODE); if (!is_string($json)) { return array('status'=>'invalid'); }
-            do_action('hj_profile_spike_before_cas',$pid);
+            do_action('hj_profile_spike_before_cas',$pid,$db);
             $n=$db->query($db->prepare("UPDATE `{$wpdb->options}` SET option_value=%s WHERE option_name=%s AND BINARY option_value=BINARY %s",$json,self::key($pid),$current['raw']));
             if ($n===false) { return array('status'=>'unknown'); }
             return $n===1 ? array('status'=>'saved','data'=>$data) : array('status'=>'conflict');
@@ -109,7 +109,7 @@ final class HJ_Profile_Spike_Store {
             $data['generation']=bin2hex(random_bytes(16));
             $json=wp_json_encode($data,JSON_UNESCAPED_UNICODE); if (! is_string($json)) { return array('status'=>'invalid'); }
             // The hook exists only in this isolated spike, for a deterministic race barrier.
-            do_action('hj_profile_spike_before_cas',$pid);
+            do_action('hj_profile_spike_before_cas',$pid,$db);
             $n=$db->query($db->prepare("UPDATE `{$wpdb->options}` SET option_value=%s WHERE option_name=%s AND BINARY option_value=BINARY %s",$json,self::key($pid),$current['raw']));
             if ($n===false) { return array('status'=>'unknown'); }
             return $n===1 ? array('status'=>'saved','data'=>$data) : array('status'=>'conflict');

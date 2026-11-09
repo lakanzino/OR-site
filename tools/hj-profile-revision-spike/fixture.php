@@ -51,6 +51,17 @@ if ($mode === 'verify') {
     $r=HJ_Profile_Spike_Store::read($pid); spike_assert($r['status']==='ok' && in_array($r['data']['fields']['name_fa'],array('رقابت a','رقابت b'),true),'one winner persisted');
     spike_assert(get_post_meta($pid,'name_fa',true)==='نام عمومی' && get_post_status($pid)==='publish','race did not change published profile');
     $gen=$r['data']['generation'];
+    $cut = function ($post_id, $session) {
+        global $wpdb;
+        $connection=(int)$session->get_var('SELECT CONNECTION_ID()');
+        spike_assert($connection>0 && $wpdb->query('KILL '. $connection)!==false,'kill dedicated write connection');
+    };
+    add_action('hj_profile_spike_before_cas',$cut,10,2);
+    $lost=HJ_Profile_Spike_Store::change($pid,$gen,spike_fields('این تغییر باید متوقف شود'));
+    remove_action('hj_profile_spike_before_cas',$cut,10);
+    spike_assert($lost['status']==='unknown','interrupted connection must not report success');
+    $after=HJ_Profile_Spike_Store::read($pid);
+    spike_assert($after['status']==='ok' && $after['data']['generation']===$gen && $after['data']['fields']===$r['data']['fields'],'pre-write disconnect leaves row unchanged');
     $submitted=HJ_Profile_Spike_Store::change($pid,$gen,null,true); spike_assert($submitted['status']==='saved' && $submitted['data']['state']==='submitted','submission freezes snapshot');
     spike_assert(HJ_Profile_Spike_Store::change($pid,$submitted['data']['generation'],spike_fields('دستکاری'))['status']==='conflict','submitted snapshot immutable');
     spike_assert(HJ_Profile_Spike_Store::reject($pid,$submitted['data']['generation'],'اصلاح شود')['status']==='forbidden','owner cannot reject');
