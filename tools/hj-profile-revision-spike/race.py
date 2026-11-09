@@ -129,3 +129,36 @@ with tempfile.TemporaryDirectory(prefix='hj-role-reverse-') as temp:
         if writer.poll() is None: writer.kill(); writer.wait()
 verified=subprocess.run(['php',script,'guard-reverse-verify',str(reverse['uid']),reverse['option']],check=True,text=True,capture_output=True)
 print(verified.stdout.strip())
+
+# Two reviewers: first holds both test writes uncommitted, second blocks on the proposal row.
+pub=json.loads(subprocess.run(['php',script,'publish-race-setup'],check=True,text=True,capture_output=True).stdout.strip())
+with tempfile.TemporaryDirectory(prefix='hj-publish-race-') as temp:
+    a=subprocess.Popen(['php',script,'publish-race-worker',str(pub['pid']),pub['token'],temp,'a'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+    b=None
+    try:
+        deadline=time.monotonic()+20
+        while not (pathlib.Path(temp)/'held').exists():
+            if a.poll() is not None or time.monotonic()>=deadline: raise RuntimeError('first publisher did not reach precommit barrier')
+            time.sleep(.01)
+        peek=subprocess.run(['php',script,'publish-race-peek',str(pub['pid']),'before'],check=True,text=True,capture_output=True,timeout=10)
+        print(peek.stdout.strip())
+        b=subprocess.Popen(['php',script,'publish-race-worker',str(pub['pid']),pub['token'],temp,'b'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+        deadline=time.monotonic()+15
+        while not (pathlib.Path(temp)/'contender').exists():
+            if b.poll() is not None or time.monotonic()>=deadline: raise RuntimeError('second publisher did not start')
+            time.sleep(.01)
+        connection=(pathlib.Path(temp)/'contender').read_text().strip()
+        if not connection.isdigit(): raise RuntimeError('bad publisher connection')
+        deadline=time.monotonic()+10
+        while True:
+            if b.poll() is not None or time.monotonic()>=deadline: raise RuntimeError('second publisher did not wait for proposal lock')
+            probe=subprocess.run(['php',script,'publish-race-check',connection],check=True,text=True,capture_output=True,timeout=10)
+            if probe.stdout.strip()=='waiting': break
+        (pathlib.Path(temp)/'release').touch()
+        ao,ae=a.communicate(timeout=30); bo,be=b.communicate(timeout=30)
+        if a.returncode or b.returncode or json.loads(ao)['status']!='applied' or json.loads(bo)['status']!='conflict': raise RuntimeError(f'publish race unexpected: {ao} {ae} {bo} {be}')
+    finally:
+        for p in (a,b):
+            if p is not None and p.poll() is None: p.kill(); p.wait()
+peek=subprocess.run(['php',script,'publish-race-peek',str(pub['pid']),'after'],check=True,text=True,capture_output=True,timeout=10)
+print(peek.stdout.strip())

@@ -39,6 +39,7 @@ final class HJ_Profile_Spike_Publish_One {
         try {
             if ($db->query('START TRANSACTION')===false) { return array('status'=>'unavailable'); } $active=true;
             $key='hj_profile_spike_'.$pid;
+            do_action('hj_spike_publish_before_proposal_lock',$pid,$db);
             $raw=$db->get_var($db->prepare("SELECT option_value FROM `{$wpdb->options}` WHERE option_name=%s FOR UPDATE",$key));
             if ($db->last_error || !is_string($raw)) { return array('status'=>'unavailable'); }
             $draft=json_decode($raw,true);

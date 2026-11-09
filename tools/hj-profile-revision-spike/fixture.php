@@ -188,6 +188,46 @@ if ($mode === 'revoke-verify') {
     spike_assert($r['status']==='ok' && $r['data']['fields']['name_fa']==='پس از قطع دسترسی','in-flight test write was not revoked');
     echo "PASS counterexample: revoked in-flight writer can still modify spike draft; coordination required\n"; exit;
 }
+if ($mode === 'publish-race-setup') {
+    $uid=get_user_by('login','surgeon_fixture')->ID;
+    $pid=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'Concurrent publish synthetic','post_author'=>$uid),true);
+    spike_assert(!is_wp_error($pid) && $pid>0,'race publish profile');
+    if (function_exists('update_field')) { update_field('field_hj_name_fa','نام عمومی قبل',$pid); } else { update_post_meta($pid,'name_fa','نام عمومی قبل'); }
+    wp_set_current_user($uid); $base=HJ_Profile_Spike_Publish_One::baseline($pid);
+    spike_assert($base['status']==='ok','race baseline'); $draft=HJ_Profile_Spike_Store::create($pid,$base['hash'],spike_fields('نام عمومی جدید'));
+    spike_assert($draft['status']==='saved','race draft'); $sent=HJ_Profile_Spike_Store::change($pid,$draft['data']['generation'],null,true);
+    spike_assert($sent['status']==='saved','race submit'); echo json_encode(array('pid'=>$pid,'token'=>$sent['data']['generation'])),"\n"; exit;
+}
+if ($mode === 'publish-race-worker') {
+    $pid=(int)$argv[2]; $token=$argv[3]; $dir=$argv[4]; $label=$argv[5];
+    if (!in_array($label,array('a','b'),true) || !is_dir($dir)) { exit(1); }
+    wp_set_current_user(get_user_by('login','fixture_admin')->ID);
+    if ($label==='a') {
+        add_action('hj_spike_publish_before_commit',function() use($dir) {
+            file_put_contents($dir.'/held','1'); $until=microtime(true)+20;
+            while (!file_exists($dir.'/release')) { if (microtime(true)>$until) { throw new RuntimeException('publish race barrier timeout'); } usleep(10000); }
+        });
+    } else {
+        add_action('hj_spike_publish_before_proposal_lock',function($id,$session) use($dir) {
+            $connection=(int)$session->get_var('SELECT CONNECTION_ID()'); spike_assert($connection>0,'publish contender connection');
+            file_put_contents($dir.'/contender',(string)$connection);
+        },10,2);
+    }
+    echo json_encode(HJ_Profile_Spike_Publish_One::approve($pid,$token)),"\n"; exit;
+}
+if ($mode === 'publish-race-check') {
+    global $wpdb; $connection=(int)$argv[2];
+    $info=$wpdb->get_var($wpdb->prepare('SELECT INFO FROM information_schema.PROCESSLIST WHERE ID=%d',$connection));
+    echo is_string($info) && stripos($info,'SELECT option_value FROM')===0 && stripos($info,$wpdb->options)!==false && stripos($info,'FOR UPDATE')!==false ? "waiting\n" : "not-waiting\n"; exit;
+}
+if ($mode === 'publish-race-peek') {
+    $pid=(int)$argv[2]; $expect=$argv[3];
+    wp_set_current_user(get_user_by('login','fixture_admin')->ID); $draft=HJ_Profile_Spike_Store::read($pid);
+    $name=get_post_meta($pid,'name_fa',true);
+    if ($expect==='before') { spike_assert($name==='نام عمومی قبل' && $draft['data']['state']==='submitted','reader before commit sees old name and pending proposal'); }
+    else { spike_assert($name==='نام عمومی جدید' && $draft['data']['state']==='applied','reader after commit sees new name and applied proposal'); }
+    echo "PASS synthetic reader ".$expect." commit\n"; exit;
+}
 if ($mode === 'publish-one-probe') {
     $uid=get_user_by('login','surgeon_fixture')->ID; $other=get_user_by('login','normal_fixture')->ID; $admin=get_user_by('login','fixture_admin')->ID;
     $pid=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'Synthetic public title','post_author'=>$uid),true);
