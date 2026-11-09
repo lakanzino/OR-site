@@ -3,7 +3,7 @@
 if ( PHP_SAPI !== 'cli' || getenv('GITHUB_ACTIONS') !== 'true' || getenv('HJ_DISPOSABLE_MARIADB_FIXTURE') !== '1' ) { exit(1); }
 define('HJ_PROFILE_REVISION_SPIKE', true);
 require '/wordpress/wp-load.php';
-if ( DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || WP_HOME !== 'http://example.invalid' || $GLOBALS['wpdb']->prefix !== 'hjt_' || HJ_DOCTORS_VERSION !== '0.3.22' ) { exit(1); }
+if ( DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || WP_HOME !== 'http://example.invalid' || $GLOBALS['wpdb']->prefix !== 'hjt_' || HJ_DOCTORS_VERSION !== (getenv('HJ_SPIKE_VERSION') ?: '0.3.22') ) { exit(1); }
 require getenv('GITHUB_WORKSPACE') . '/tools/hj-profile-revision-spike/store.php';
 function spike_assert($condition,$message) { if (!$condition) { throw new RuntimeException($message); } }
 function spike_fields($name) {
