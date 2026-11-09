@@ -2,7 +2,7 @@
 /** Disposable GitHub Actions WordPress only. Never point this at a real DB. */
 if ( PHP_SAPI !== 'cli' || getenv('GITHUB_ACTIONS') !== 'true' || getenv('HJ_DISPOSABLE_MARIADB_FIXTURE') !== '1' ) { exit(1); }
 require '/wordpress/wp-load.php';
-if ( DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || WP_HOME !== 'http://example.invalid' || $GLOBALS['wpdb']->prefix !== 'hjt_' || HJ_DOCTORS_VERSION !== '0.3.22' ) { exit(1); }
+if ( DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || WP_HOME !== 'http://example.invalid' || $GLOBALS['wpdb']->prefix !== 'hjt_' || HJ_DOCTORS_VERSION !== (getenv('HJ_JOURNEY_EXPECTED_VERSION') ?: '0.3.22') ) { exit(1); }
 if ( defined('HJ_BOOKING_ENABLED') && HJ_BOOKING_ENABLED ) { throw new RuntimeException('Booking must remain disabled'); }
 $user = wp_create_user('journey_surgeon', 'fixture-journey-only', 'journey@example.invalid');
 if ( is_wp_error($user) || ! hj_doctors_assign_doctor_role($user) ) { throw new RuntimeException('surgeon fixture setup failed'); }

@@ -7,7 +7,7 @@ if ( DB_NAME !== 'hj_fixture_db' || DB_HOST !== '127.0.0.1:3306' || $wpdb->prefi
 require WP_PLUGIN_DIR . '/hamyar-doctors/hamyar-doctors.php';
 hj_doctors();
 do_action('init');
-if ( HJ_DOCTORS_VERSION !== '0.3.22' ) { throw new RuntimeException('Wrong baseline'); }
+if ( HJ_DOCTORS_VERSION !== (getenv('HJ_JOURNEY_EXPECTED_VERSION') ?: '0.3.22') ) { throw new RuntimeException('Wrong baseline'); }
 $ok = static function($condition, $message) { if (!$condition) { throw new RuntimeException($message); } };
 $make = static function($name, $role) {
     $id = wp_create_user($name, 'fixture-password-only', $name . '@example.invalid');
@@ -38,7 +38,7 @@ $ok(hj_doctors_user_can_access_dashboard($surgeon), 'Surgeon should access own d
 wp_set_current_user($member);
 $html = do_shortcode('[hj_doctors_dashboard]');
 $ok(false !== strpos($html, 'hj_doctors_join'), 'Expected member opt-in form in baseline');
-echo "PASS: 0.3.22 replaces subscriber role on surgeon-intent callback\n";
+echo 'PASS: ' . HJ_DOCTORS_VERSION . " replaces subscriber role on surgeon-intent callback\n";
 echo "PASS: member intent preserved member role in this fixture\n";
 echo "PASS: administrator role was not replaced\n";
 echo "PASS: member-account form also renders for surgeon\n";

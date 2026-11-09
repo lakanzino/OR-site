@@ -43,6 +43,11 @@ const base='http://example.invalid';
    form.set('doc',new File(['%PDF-1.4\n% synthetic CI fixture only\n%%EOF\n'],'fixture.pdf',{type:'application/pdf'}));
    const r=await fetch('/wp-admin/admin-ajax.php',{method:'POST',body:form});return {status:r.status,body:await r.json()};
   },pid);
+  if (process.env.HJ_STAGE6_PREVIEW === '1') {
+   assert.equal(uploaded.status,503,JSON.stringify(uploaded));
+   assert.equal(uploaded.body.success,false);
+   assert.match(await page.locator('.hj-dash__docs-wrap').locator('..').innerText(),/بارگذاری مدرک جدید تا بررسی محل نگهداری/);
+  } else {
   assert.equal(uploaded.status,200,JSON.stringify(uploaded));assert.equal(uploaded.body.success,true);
   const link=await page.evaluate(html=>{const el=document.createElement('div');el.innerHTML=html;return el.querySelector('a').href;},uploaded.body.data.docs_html);
   let docDownload=await page.evaluate(async link=>(await fetch(link)).status,link);assert.equal(docDownload,200,'owner may download synthetic document');
@@ -71,6 +76,7 @@ const base='http://example.invalid';
     assert.match(raw.text,/synthetic CI fixture only/);
    } finally {await guestDoc.close();}
   } finally {await docsAdmin.context().close();}
+  }
   await page.locator('input[name=specialty_fa]').fill('جراحی آزمایشی');
   await page.locator('input[name=phone_clinic]').fill('02112345678');
   await page.locator('input[name=address_clinic]').fill('نشانی ساختگی');

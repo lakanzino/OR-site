@@ -1,0 +1,134 @@
+name: Stage 6 baseline-derived preview journey
+on:
+  push:
+    paths:
+      - 'tools/account-baseline/**'
+      - 'tools/hj-live-review-preview/**'
+      - 'releases/hamyar-doctors-0.3.51-stage6-preview.zip'
+      - 'tools/hj-profile-revision-spike/**'
+      - 'themes/lax-theme-child/**'
+      - '.github/workflows/stage6-live-preview.yml'
+  pull_request:
+    paths:
+      - 'tools/account-baseline/**'
+      - 'tools/hj-live-review-preview/**'
+      - 'releases/hamyar-doctors-0.3.51-stage6-preview.zip'
+      - 'tools/hj-profile-revision-spike/**'
+      - 'themes/lax-theme-child/**'
+      - '.github/workflows/stage6-live-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    env:
+      HJ_JOURNEY_EXPECTED_VERSION: '0.3.51'
+      HJ_SPIKE_VERSION: '0.3.51'
+      HJ_STAGE6_PREVIEW: '1'
+    services:
+      db:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: fixture_root_password
+          MARIADB_DATABASE: hj_fixture_db
+          MARIADB_USER: fixture_user
+          MARIADB_PASSWORD: fixture_only_password
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s --health-timeout=5s --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mysqli
+          coverage: none
+      - name: Create disposable WordPress and extract baseline
+        run: |
+          set -euxo pipefail
+          mkdir -p "$RUNNER_TEMP/account-wp"
+          curl --fail --location --silent --show-error --max-time 120 https://codeload.github.com/WordPress/WordPress/zip/refs/tags/7.1.4 -o "$RUNNER_TEMP/account-wp/wordpress.zip"
+          echo '9de885e4f00ae95549e7e599bbaff4333cbcfd77425cabb24e088adf6dd6f848  '"$RUNNER_TEMP/account-wp/wordpress.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/account-wp/wordpress.zip" -d "$RUNNER_TEMP/account-wp"
+          sudo ln -s "$RUNNER_TEMP/account-wp/WordPress-7.1.4" /wordpress
+          python3 tools/hj-live-review-preview/build.py --check
+          unzip -q releases/hamyar-doctors-0.3.51-stage6-preview.zip -d /wordpress/wp-content/plugins
+          cat > /wordpress/wp-config.php <<'PHP'
+          <?php
+          define('DB_NAME', 'hj_fixture_db');
+          define('DB_USER', 'fixture_user');
+          define('DB_PASSWORD', 'fixture_only_password');
+          define('DB_HOST', '127.0.0.1:3306');
+          define('DB_CHARSET', 'utf8mb4');
+          define('DB_COLLATE', '');
+          define('WP_HOME', 'http://example.invalid');
+          define('WP_SITEURL', 'http://example.invalid');
+          define('AUTH_KEY', 'fixture-only-not-a-secret');
+          define('SECURE_AUTH_KEY', 'fixture-only-not-a-secret-2');
+          define('LOGGED_IN_KEY', 'fixture-only-not-a-secret-3');
+          define('NONCE_KEY', 'fixture-only-not-a-secret-4');
+          define('AUTH_SALT', 'fixture-only-not-a-secret-5');
+          define('SECURE_AUTH_SALT', 'fixture-only-not-a-secret-6');
+          define('LOGGED_IN_SALT', 'fixture-only-not-a-secret-7');
+          define('NONCE_SALT', 'fixture-only-not-a-secret-8');
+          $table_prefix = 'hjt_';
+          if (!defined('ABSPATH')) { define('ABSPATH', __DIR__ . '/'); }
+          require_once ABSPATH . 'wp-settings.php';
+          PHP
+      - name: Probe identity behavior with disposable accounts
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: |
+          set -euxo pipefail
+          php tools/hamyar-php-review/mariadb-fixture.php install
+          php tools/account-baseline/probe.php
+      - name: Exercise patient account presentation and nickname on baseline
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: php tools/account-baseline/member-ui-probe.php
+      - name: Exercise patient account through real WordPress HTTP
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: |
+          set -euxo pipefail
+          ln -s "$GITHUB_WORKSPACE/themes/lax-theme-child" /wordpress/wp-content/themes/lax-theme-child
+          ln -s "$GITHUB_WORKSPACE/themes/lax-theme" /wordpress/wp-content/themes/lax-theme
+          php tools/account-baseline/http-setup.php
+          sudo php -S 127.0.0.1:80 -t /wordpress > /tmp/account-http.log 2>&1 &
+          server=$!
+          trap 'sudo kill "$server" || true' EXIT
+          output=$(python3 tools/account-baseline/http-test.py 2>&1) || { echo "$output"; summary=$(echo "$output" | tail -30 | tr "\n" " " | sed "s/%/%25/g; s/::/%3A%3A/g"); echo "::error title=Account HTTP fixture::$summary"; cat /tmp/account-http.log; exit 1; }
+          echo "$output"
+      - name: Exercise isolated profile revision store prototype
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: |
+          php -l tools/hj-profile-revision-spike/store.php
+          php -l tools/hj-profile-revision-spike/fixture.php
+          output=$(python3 tools/hj-profile-revision-spike/race.py 2>&1) || { echo "$output"; echo "::error title=Profile revision prototype::$(echo "$output" | head -c 2500 | tr "\n" " " )"; exit 1; }
+          echo "$output"
+      - name: Exercise newsletter in Chrome with installed plugin baseline
+        env:
+          HJ_DISPOSABLE_MARIADB_FIXTURE: '1'
+        run: |
+          set -euo pipefail
+          php themes/lax-theme-child/tests/integration/homepage-browser-setup.php
+          output=$(php tools/account-baseline/surgeon-journey-setup.php 2>&1) || { echo "$output"; echo "::error title=Surgeon setup::$(echo "$output" | head -c 2000 | tr "\n" " ")"; exit 1; }
+          echo "$output"
+          mkdir -p /wordpress/wp-content/mu-plugins
+          ln -s "$GITHUB_WORKSPACE/themes/lax-theme-child/tests/integration/homepage-debug-mu.php" /wordpress/wp-content/mu-plugins/hj-fixture-debug.php
+          npm install --no-save --no-audit --no-fund playwright
+          export CHROMIUM_PATH=$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)
+          sudo php -S 127.0.0.1:80 -t /wordpress > /tmp/hj-account-newsletter.log 2>&1 &
+          server=$!
+          trap 'sudo kill "$server" || true' EXIT
+          sleep 2
+          output=$(node themes/lax-theme-child/tests/integration/homepage-browser-wp.cjs 2>&1) || { echo "$output"; summary=$(echo "$output" | head -c 3000 | tr "\n" " "); echo "::error title=Baseline newsletter browser::$summary"; cat /tmp/hj-account-newsletter.log; exit 1; }
+          echo "$output"
+          output=$(node tools/account-baseline/surgeon-journey-browser.cjs 2>&1) || { echo "$output"; echo "::error title=Surgeon journey::$(echo "$output" | head -c 2000 | tr "\n" " ")"; exit 1; }
+          echo "$output"
+          npx playwright install --with-deps firefox
+          echo '127.0.0.1 example.invalid' | sudo tee -a /etc/hosts
+          node themes/lax-theme-child/tests/integration/homepage-mobile-firefox.cjs
