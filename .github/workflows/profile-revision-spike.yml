@@ -3,12 +3,14 @@ on:
   push:
     paths:
       - 'tools/hj-profile-revision-spike/**'
+      - 'tools/hj-private-document-test/**'
       - 'plugins/hamyar-doctors/**'
       - 'releases/hamyar-doctors-0.3.22.zip'
       - '.github/workflows/profile-revision-spike.yml'
   pull_request:
     paths:
       - 'tools/hj-profile-revision-spike/**'
+      - 'tools/hj-private-document-test/**'
       - 'plugins/hamyar-doctors/**'
       - 'releases/hamyar-doctors-0.3.22.zip'
       - '.github/workflows/profile-revision-spike.yml'
@@ -21,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        plugin: ['0.3.22', '0.3.49']
+        plugin: ['0.3.22', '0.3.50']
         acf: ['none', 'free']
     services:
       db:
@@ -93,3 +95,11 @@ jobs:
           set -euo pipefail
           output=$(bash -e -c 'php tools/hamyar-php-review/mariadb-fixture.php install; if [ "$HJ_SPIKE_ACF" = free ]; then php tools/hj-profile-revision-spike/activate-acf.php; fi; php tools/hj-profile-revision-spike/setup.php; php -l tools/hj-profile-revision-spike/store.php; python3 tools/hj-profile-revision-spike/race.py; php tools/hj-profile-revision-spike/fixture.php publication-probe; php tools/hj-profile-revision-spike/fixture.php snapshot-probe; php tools/hj-profile-revision-spike/fixture.php preflight-probe; php tools/hj-profile-revision-spike/fixture.php acf-probe; php tools/hj-profile-revision-spike/fixture.php publish-one-probe' 2>&1) || { echo "$output"; echo "::error title=Isolated profile spike::$(echo "$output" | tail -c 3000 | tr "\n" " ")"; exit 1; }
           echo "$output"
+
+      - name: Exercise new private document storage over HTTP
+        if: matrix.plugin == '0.3.50' && matrix.acf == 'none'
+        run: |
+          set -euo pipefail
+          php -l plugins/hamyar-doctors/includes/security.php
+          php -l plugins/hamyar-doctors/includes/dashboard.php
+          python3 tools/hj-private-document-test/http-test.py

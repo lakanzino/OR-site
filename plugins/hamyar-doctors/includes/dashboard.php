@@ -755,7 +755,8 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
       <!-- ۵) مدارک -->
       <section class="hj-dash__card">
         <h3 class="hj-dash__h">مدارک</h3>
-        <p class="hj-dash__muted">مدارک فقط برای بررسی مدیریت نگه‌داری می‌شوند و عمومی نیستند. فرمت PDF، JPG یا PNG.</p>
+        <p class="hj-dash__muted">مدارک برای بررسی مدیریت هستند. فرمت PDF، JPG یا PNG. امنیت محل نگهداری باید توسط مدیر بررسی شود.</p>
+        <?php if ( ! function_exists( 'hj_sec_new_document_dir' ) || hj_sec_new_document_dir() === '' ) : ?><p class="hj-dash__muted">بارگذاری مدرک جدید تا آماده‌سازی محل خصوصی توسط مدیر غیرفعال است.</p><?php endif; ?>
         <div class="hj-dash__docs-wrap">
           <input class="hj-dash__file" type="file" id="hj-dash-doc" accept="application/pdf,image/jpeg,image/png" data-needs-pid<?php echo $pid ? '' : ' disabled'; ?>>
           <label class="hj-dash__btn hj-dash__btn--ghost" for="hj-dash-doc">بارگذاری مدرک</label>
@@ -1304,7 +1305,14 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 		}
 
 		private static function doc_path( $pid, $doc ) {
-			$base = self::private_base();
+			$storage = isset( $doc['storage'] ) ? $doc['storage'] : 'legacy';
+			if ( $storage === 'private-v2' ) {
+				if ( ! function_exists( 'hj_sec_new_document_dir' ) || ! isset( $doc['file'] ) || ! is_string( $doc['file'] ) || ! preg_match( '/^p' . (int) $pid . '\/[a-f0-9]{32}\.(?:pdf|jpg|png)$/D', $doc['file'] ) ) { return ''; }
+				$base = hj_sec_new_document_dir( false );
+				if ( $base === '' || is_link( $base . '/p' . (int) $pid ) || is_link( $base . '/' . $doc['file'] ) ) { return ''; }
+			} elseif ( $storage === 'legacy' ) {
+				$base = self::private_base();
+			} else { return ''; }
 			if ( $base === '' || empty( $doc['file'] ) ) {
 				return '';
 			}
@@ -1365,16 +1373,13 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 			if ( ! isset( $exts[ $mime ] ) ) {
 				self::fail( 'فقط PDF، JPG و PNG مجاز است.', 422 );
 			}
-			$base = self::private_base();
+			$base = function_exists( 'hj_sec_new_document_dir' ) ? hj_sec_new_document_dir() : '';
 			if ( $base === '' ) {
-				self::fail( 'پوشهٔ مدارک آماده نیست.', 500 );
+				self::fail( 'بارگذاری مدرک تا آماده‌سازی محل خصوصی توسط مدیر غیرفعال است.', 503 );
 			}
 			$dir = $base . '/p' . (int) $pid;
-			if ( ! wp_mkdir_p( $dir ) ) {
+			if ( is_link( $dir ) || ( ! is_dir( $dir ) && ! @mkdir( $dir, 0700 ) && ! is_dir( $dir ) ) || realpath( $dir ) !== $dir ) { // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 				self::fail( 'ذخیرهٔ مدرک ناموفق بود.', 500 );
-			}
-			if ( ! file_exists( $dir . '/index.php' ) ) {
-				@file_put_contents( $dir . '/index.php', "<?php\n// Silence is golden.\n" ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 			}
 			$stored = bin2hex( random_bytes( 16 ) ) . '.' . $exts[ $mime ];
 			$dest   = $dir . '/' . $stored;
@@ -1387,11 +1392,15 @@ if ( ! class_exists( 'HJ_Doctors_Dashboard', false ) ) :
 				'id'   => substr( bin2hex( random_bytes( 8 ) ), 0, 12 ),
 				'name' => self::cut( sanitize_text_field( wp_basename( (string) $file['name'] ) ), 80 ),
 				'file' => 'p' . (int) $pid . '/' . $stored,
+				'storage' => 'private-v2',
 				'mime' => $mime,
 				'size' => (int) filesize( $dest ),
 				'time' => time(),
 			);
-			update_post_meta( $pid, self::META_DOCS, $docs );
+			if ( ! update_post_meta( $pid, self::META_DOCS, $docs ) ) {
+				// Keep the new file for administrator recovery; do not report false success.
+				self::fail( 'ثبت مدرک کامل نشد؛ برای بررسی با مدیر تماس بگیرید.', 500 );
+			}
 
 			self::ok( array( 'docs_html' => self::render_docs( $pid ) ) );
 		}

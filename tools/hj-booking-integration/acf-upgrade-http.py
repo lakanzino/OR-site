@@ -69,7 +69,7 @@ try:
     check(pid>0 and before['name']=='Synthetic ACF Before' and isinstance(before['hours_meta'],list),'old plugin saves name and raw synthetic working hours')
     stop(server); server=None; product.unlink(); product.symlink_to(workspace/'plugins/hamyar-doctors',target_is_directory=True)
     server=start(); after=ajax({'action':'hj_ci_acf_state'})
-    check(after['acf_version']=='6.8.11' and after['plugin_version']=='0.3.49' and after['profile']==pid and after['name']==before['name'] and after['hours_meta']==before['hours_meta'],'file replacement retains old ACF profile fields and raw hours')
+    check(after['acf_version']=='6.8.11' and after['plugin_version']=='0.3.50' and after['profile']==pid and after['name']==before['name'] and after['hours_meta']==before['hours_meta'],'file replacement retains old ACF profile fields and raw hours')
     updated=dict(first,pid=str(pid),name_fa='Synthetic ACF After'); response=ajax(updated)
     check(not response['created'],'new plugin edits existing synthetic profile')
     final=ajax({'action':'hj_ci_acf_state'}); html=ajax({'action':'hj_ci_acf_render'})['html']

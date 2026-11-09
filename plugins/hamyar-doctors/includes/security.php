@@ -122,6 +122,42 @@ if ( ! function_exists( 'hj_sec_private_dir' ) ) {
 	}
 }
 
+if ( ! function_exists( 'hj_sec_new_document_dir' ) ) {
+	/**
+	 * Explicit, pre-existing storage for NEW documents. The deployment operator
+	 * must independently verify server aliases, CDN and backup access. Legacy
+	 * documents continue to use hj_sec_private_dir(), not this directory.
+	 *
+	 * @param bool $for_upload Whether to require the operator's upload opt-in.
+	 * @return string Canonical path or empty string (fail closed).
+	 */
+	function hj_sec_new_document_dir( $for_upload = true ) {
+		if ( ! defined( 'HJ_PRIVATE_DOCUMENT_DIR' ) || ! is_string( HJ_PRIVATE_DOCUMENT_DIR ) || HJ_PRIVATE_DOCUMENT_DIR === '' || is_link( HJ_PRIVATE_DOCUMENT_DIR ) ) {
+			return '';
+		}
+		if ( $for_upload && ( ! defined( 'HJ_PRIVATE_DOCUMENT_STORAGE_VERIFIED' ) || HJ_PRIVATE_DOCUMENT_STORAGE_VERIFIED !== true ) ) {
+			return '';
+		}
+		$base = realpath( HJ_PRIVATE_DOCUMENT_DIR );
+		$docroot = isset( $_SERVER['DOCUMENT_ROOT'] ) && is_string( $_SERVER['DOCUMENT_ROOT'] ) ? realpath( $_SERVER['DOCUMENT_ROOT'] ) : false;
+		$wp_root = realpath( ABSPATH );
+		$content = realpath( WP_CONTENT_DIR );
+		$uploads = wp_get_upload_dir();
+		$upload_root = ! empty( $uploads['basedir'] ) ? realpath( $uploads['basedir'] ) : false;
+		if ( ! $base || ! is_dir( $base ) || ! is_writable( $base ) || ! $docroot || ! $wp_root || ! $content || ! $upload_root ) {
+			return '';
+		}
+		$base = rtrim( wp_normalize_path( $base ), '/' );
+		foreach ( array( $docroot, $wp_root, $content, $upload_root ) as $root ) {
+			$root = rtrim( wp_normalize_path( $root ), '/' );
+			if ( $root === '' || $base === $root || strpos( $base, $root . '/' ) === 0 || strpos( $root, $base . '/' ) === 0 ) {
+				return '';
+			}
+		}
+		return $base;
+	}
+}
+
 if ( ! function_exists( 'hj_sec_validate_upload' ) ) {
 	/**
 	 * اعتبارسنجی فایل بارگذاری‌شده پیش از ذخیره.
