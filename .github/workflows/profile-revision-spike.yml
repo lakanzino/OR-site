@@ -4,6 +4,8 @@ on:
     paths:
       - 'tools/hj-profile-revision-spike/**'
       - 'tools/hj-private-document-test/**'
+      - 'tools/hj-live-review-preview/**'
+      - 'releases/hamyar-doctors-0.3.51-stage6-preview.zip'
       - 'plugins/hamyar-doctors/**'
       - 'releases/hamyar-doctors-0.3.22.zip'
       - '.github/workflows/profile-revision-spike.yml'
@@ -11,6 +13,8 @@ on:
     paths:
       - 'tools/hj-profile-revision-spike/**'
       - 'tools/hj-private-document-test/**'
+      - 'tools/hj-live-review-preview/**'
+      - 'releases/hamyar-doctors-0.3.51-stage6-preview.zip'
       - 'plugins/hamyar-doctors/**'
       - 'releases/hamyar-doctors-0.3.22.zip'
       - '.github/workflows/profile-revision-spike.yml'
@@ -23,8 +27,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        plugin: ['0.3.22', '0.3.50']
+        plugin: ['0.3.22', '0.3.50', '0.3.51']
         acf: ['none', 'free']
+        exclude:
+          - plugin: '0.3.51'
+            acf: 'free'
     services:
       db:
         image: mariadb:11.4
@@ -58,6 +65,9 @@ jobs:
           sudo ln -s "$RUNNER_TEMP/wp/WordPress-7.1.4" /wordpress
           if [ "$HJ_SPIKE_VERSION" = '0.3.22' ]; then
             unzip -q releases/hamyar-doctors-0.3.22.zip -d /wordpress/wp-content/plugins
+          elif [ "$HJ_SPIKE_VERSION" = '0.3.51' ]; then
+            python3 tools/hj-live-review-preview/build.py --check
+            unzip -q releases/hamyar-doctors-0.3.51-stage6-preview.zip -d /wordpress/wp-content/plugins
           else
             ln -s "$GITHUB_WORKSPACE/plugins/hamyar-doctors" /wordpress/wp-content/plugins/hamyar-doctors
           fi
@@ -103,3 +113,11 @@ jobs:
           php -l plugins/hamyar-doctors/includes/security.php
           php -l plugins/hamyar-doctors/includes/dashboard.php
           python3 tools/hj-private-document-test/http-test.py
+
+      - name: Exercise baseline-derived preview over HTTP
+        if: matrix.plugin == '0.3.51'
+        run: |
+          set -euo pipefail
+          php -l /wordpress/wp-content/plugins/hamyar-doctors/includes/dashboard.php
+          php -l /wordpress/wp-content/plugins/hamyar-doctors/includes/rest-api.php
+          python3 tools/hj-live-review-preview/http-test.py

@@ -21,3 +21,4 @@ add_action('wp_ajax_hj_ci_dash_nonce',function() { wp_send_json_success(array('n
 add_filter('update_post_metadata',function($check,$object_id,$key) {
     return $key==='hj_private_docs' && isset($_POST['hj_ci_fail_meta']) ? false : $check;
 },10,3);
+add_action('wp_ajax_hj_ci_render_profile',function() { wp_send_json_success(array('html'=>do_shortcode('[hj_doctors_dashboard]'))); });
