@@ -58,3 +58,22 @@ with tempfile.TemporaryDirectory(prefix='hj-receipt-race-') as temp:
             if p.poll() is None: p.kill(); p.wait()
 verify=subprocess.run(['php',script,'verify',str(values['pid']),str(values['uid'])],check=True,text=True,capture_output=True)
 print(verify.stdout.strip())
+
+# A separate, synthetic role is removed after the worker's authorization check.
+rev=json.loads(subprocess.run(['php',script,'revoke-setup'],check=True,text=True,capture_output=True).stdout.strip())
+with tempfile.TemporaryDirectory(prefix='hj-profile-revoke-') as temp:
+    p=subprocess.Popen(['php',script,'revoke-worker',str(rev['pid']),str(rev['uid']),rev['token'],temp],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+    try:
+        deadline=time.monotonic()+25
+        while not (pathlib.Path(temp)/'ready').exists():
+            if p.poll() is not None or time.monotonic()>=deadline: raise RuntimeError('revocation worker did not reach barrier')
+            time.sleep(.01)
+        subprocess.run(['php',script,'revoke-role',str(rev['uid'])],check=True,text=True,capture_output=True)
+        (pathlib.Path(temp)/'release').touch()
+        stdout,stderr=p.communicate(timeout=30)
+        if p.returncode: raise RuntimeError(f'revoked worker failure: {stderr} {stdout}')
+        if json.loads(stdout)['status']!='saved': raise AssertionError('expected in-flight revocation counterexample')
+    finally:
+        if p.poll() is None: p.kill(); p.wait()
+verified=subprocess.run(['php',script,'revoke-verify',str(rev['pid']),str(rev['uid'])],check=True,text=True,capture_output=True)
+print(verified.stdout.strip())

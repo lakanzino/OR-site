@@ -111,6 +111,34 @@ if ($mode === 'preflight-probe') {
     spike_assert(HJ_Profile_Spike_Preflight::inspect($pid,$token)['status']==='public_changed','preflight alone cannot lock out another writer');
     echo "PASS partial preflight detects tested external edits; no lock or publication is implied\n"; exit;
 }
+if ($mode === 'revoke-setup') {
+    $uid=wp_create_user('spike_revoked_surgeon','fixture-only','revoked-spike@example.invalid');
+    spike_assert(!is_wp_error($uid) && hj_doctors_assign_doctor_role($uid),'revocation fixture user');
+    $pid=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'Revocation fixture','post_author'=>$uid),true);
+    spike_assert(!is_wp_error($pid) && $pid>0,'revocation fixture profile'); wp_set_current_user($uid);
+    $r=HJ_Profile_Spike_Store::create($pid,str_repeat('a',64),spike_fields('نسخه قبلی'));
+    spike_assert($r['status']==='saved','revocation fixture draft');
+    echo json_encode(array('uid'=>$uid,'pid'=>$pid,'token'=>$r['data']['generation'])),"\n"; exit;
+}
+if ($mode === 'revoke-worker') {
+    $pid=(int)$argv[2]; $uid=(int)$argv[3]; $token=$argv[4]; $dir=$argv[5]; wp_set_current_user($uid);
+    add_action('hj_profile_spike_before_cas',function() use($dir) {
+        file_put_contents($dir.'/ready','1'); $deadline=microtime(true)+20;
+        while (!file_exists($dir.'/release')) { if (microtime(true)>$deadline) { throw new RuntimeException('revocation barrier timeout'); } usleep(10000); }
+    });
+    echo json_encode(HJ_Profile_Spike_Store::change($pid,$token,spike_fields('پس از قطع دسترسی'))),"\n"; exit;
+}
+if ($mode === 'revoke-role') {
+    $uid=(int)$argv[2]; $user=get_userdata($uid); spike_assert($user instanceof WP_User && $user->user_login==='spike_revoked_surgeon','refuse nonfixture account');
+    $user->set_role('subscriber'); spike_assert(!hj_doctors_is_doctor_user($uid),'synthetic role removed'); echo "revoked\n"; exit;
+}
+if ($mode === 'revoke-verify') {
+    $pid=(int)$argv[2]; $uid=(int)$argv[3];
+    wp_set_current_user($uid); spike_assert(HJ_Profile_Spike_Store::read($pid)['status']==='forbidden','new request denies revoked user');
+    wp_set_current_user(get_user_by('login','fixture_admin')->ID); $r=HJ_Profile_Spike_Store::read($pid);
+    spike_assert($r['status']==='ok' && $r['data']['fields']['name_fa']==='پس از قطع دسترسی','in-flight test write was not revoked');
+    echo "PASS counterexample: revoked in-flight writer can still modify spike draft; coordination required\n"; exit;
+}
 if ($mode === 'setup') {
     $uid=get_user_by('login','surgeon_fixture')->ID; $other=get_user_by('login','normal_fixture')->ID; $admin=get_user_by('login','fixture_admin')->ID;
     $pid=wp_insert_post(array('post_type'=>'doctor','post_status'=>'publish','post_title'=>'جراح آزمایشی','post_author'=>$uid),true);
